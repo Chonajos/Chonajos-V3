@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="./../templates/main.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content">
+        <h:form id="formContent">
+            <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
+            <p:growl id="messagess" showDetail="true" life="2000" />
+            <p:panel>
+                <div>
+                    <h3>#{beanVenta.title}</h3>
+                </div>
+                <div class="container-fluid">
+                    <div class="form-group">
+                        <p:commandButton value="Agregar" update=":formContent" ajax="true" action="#{beanVenta.addProducto}"/>
+                        <p:commandButton value="Vender" update=":formContent" ajax="true" action="#{beanVenta.insert}" immediate="true" resetValues="true"/>
+                    </div>
+
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="autocompletePoducto" value ="Producto:" /> 
+                            <p:autoComplete  placeholder="Seleccione un Producto" id="autocompletePoducto"  required="true" requiredMessage="Ingresa un valor para el campo Producto." styleClass="autocomplete-input-text-media"
+                                             value="#{beanVenta.subProducto}" completeMethod="#{beanVenta.autoComplete}" forceSelection="true" var="producto"  inputStyle="width: 200px"
+                                             itemLabel="#{producto.nombreSubproducto}"
+                                             itemValue="#{producto.idSubproductoPk}" converter="#{productoConverter}">
+                                <p:ajax event="itemSelect" update=":formContent:txtPrecioVenta" listener="#{beanVenta.searchById()}" />
+                                <p:ajax event="change" update=":formContent:txtPrecioVenta" listener="#{beanVenta.searchById}" />
+                            </p:autoComplete>
+                            <pe:keyFilter for="autocompletePoducto" regEx="/[a-z0-9-_Ã±\s]/i" />
+
+                        </div>
+                        <div class="col-lg-5 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="txtTipoEmpaque" value ="Tipo de Empaque:" /> 
+                            <h:selectOneMenu  id="txtTipoEmpaque" class=" col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanVenta.data.idTipoEmpaqueFk}" requiredMessage="Ingresa un valor para el campo Tipo de Empaque.">
+                                <f:selectItem itemLabel="Seleccione un empaque" itemValue="-1" />
+                                <f:selectItems value="#{beanVenta.lstTipoEmpaque}" var="empaque" itemLabel="#{empaque.nombreEmpaque}" itemValue="#{empaque.idTipoEmpaquePk}"/>
+                                <p:ajax event="change" update=":formContent" />
+                            </h:selectOneMenu>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="txtPrecioVenta" value ="Precio de venta:" /> 
+                            <p:inputText id="txtPrecioVenta"  class=" col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanVenta.data.precioProducto}" required="true"
+                                         requiredMessage="Ingresa un valor para el campo Precio de venta." />
+                        </div>
+
+                    </div>
+                    <div id ="divEmpaque" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="txtKilos" value ="Kilos:" /> 
+                            <p:inputText id="txtKilos" class=" col-lg-4 col-md-8 col-sm-8 col-xs-12" value="#{beanVenta.data.kilosVenta}" required="true"
+                                         requiredMessage="Ingresa un valor para el campo de Kilos."/>
+                        </div>
+
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12" >
+                            <p:outputLabel class="col-lg-8 col-md-4 col-sm-4 col-xs-12"  for="txtCantidadEmpaque" value ="Cantidad de Empaques" rendered="#{beanVenta.data.idTipoEmpaqueFk != -1}" /> 
+                            <p:inputText id="txtCantidadEmpaque" maxlength="6" class=" col-lg-4 col-md-8 col-sm-8 col-xs-12" value="#{beanVenta.data.cantidadEmpaque}" required="true" rendered="#{beanVenta.data.idTipoEmpaqueFk != -1}"
+                                         requiredMessage="Ingresa un valor para el campo Cantidad de Empaques."/>
+                            <pe:keyFilter regEx="/[\d\-]/" for="txtCantidadEmpaque"/>  
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <p:dataTable var="model" value="#{beanVenta.lstVenta}" styleClass="ui-datatable-hor-scroll"  emptyMessage="Productos.">
+
+                            <p:column headerText="Producto" style="width:50px;text-align:center">
+                                <h:outputText value="#{model.nombreProducto}" />
+                            </p:column>
+                            <p:column headerText="Kilos" style="width:60px;text-align:center">
+                                <h:outputText value="#{model.kilosVenta}" />
+                            </p:column>
+                            <p:column headerText="Empaque" style="width:100px;text-align:center">
+                                <h:outputText value="#{model.nombreEmpaque}" />
+                            </p:column>
+                            <p:column headerText="Cantidad" style="width:60px;text-align:center">
+                                <h:outputText value="#{model.cantidadEmpaque}" />
+                            </p:column>
+                            <p:column headerText="Precio de venta" style="width:60px;text-align:center">
+                                <h:outputText value="#{model.precioProducto}" />
+                            </p:column>
+                            <p:column headerText="Total" style="width:60px;text-align:center">
+                                <h:outputText value="$#{model.total}" />
+                            </p:column>
+                            <p:column headerText="Remover" style="width:50px;text-align:center">
+                                <p:commandButton id="remover" ajax="true" immediate="true" action="#{beanVenta.remove}" icon="ui-icon-close" styleClass="ui-priority-primary" update=":formContent">
+                                    <f:setPropertyActionListener value="#{model}" target="#{beanVenta.dataRemove}"/>
+                                </p:commandButton>
+                            </p:column>
+                            <p:columnGroup type="footer">
+                                <p:row>
+                                    <p:column colspan="5" style="text-align:right" footerText="Total de Venta:" />
+                                    <p:column colspan="2" footerText="$#{beanVenta.totalVenta}" />
+                                </p:row>
+                            </p:columnGroup>
+                        </p:dataTable>
+                    </div>
+                </div>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>

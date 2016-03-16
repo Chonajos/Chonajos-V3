@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<faces-config version="2.0"
+              xmlns="http://java.sun.com/xml/ns/javaee" 
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
+    
+   <application>
+    	<el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver>
+    	<action-listener>org.primefaces.application.DialogActionListener</action-listener>
+        <navigation-handler>org.primefaces.application.DialogNavigationHandler</navigation-handler>
+        <view-handler>org.primefaces.application.DialogViewHandler</view-handler>
+	     <resource-bundle>
+	     	<base-name>messages</base-name>
+	     	<var>msgs</var>
+	     </resource-bundle>
+    </application>
+
+<!--    <managed-bean>
+        <managed-bean-name>dominioUsuario</managed-bean-name>
+        <managed-bean-class>com.web.chon.dominio.Usuario</managed-bean-class>
+        <managed-bean-scope>none</managed-bean-scope>
+    </managed-bean>
+
+    <managed-bean>
+        <managed-bean-name>usuarioBean</managed-bean-name>
+        <managed-bean-class>com.web.chon.bean.BeanUsuario</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+        <managed-property>
+            <property-name>usuario</property-name>
+            <value>#{dominioUsuario}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>serviceUsuario</property-name>
+            <value>#{usuarioService}</value>
+        </managed-property>
+    </managed-bean> 
+    
+    Productos
+    <managed-bean>
+        <managed-bean-name>dominioProducto</managed-bean-name>
+        <managed-bean-class>com.web.chon.dominio.Producto</managed-bean-class>
+        <managed-bean-scope>none</managed-bean-scope>
+    </managed-bean>  
+    
+    <managed-bean>
+        <managed-bean-name>beanProducto</managed-bean-name>
+        <managed-bean-class>com.web.chon.bean.BeanProducto</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+        <managed-property>
+            <property-name>serviceProducto</property-name>
+            <value>#{serviceProducto}</value>
+        </managed-property>
+    </managed-bean>     
+    
+    subProductos
+    
+    <managed-bean>
+        <managed-bean-name>beanSubProducto</managed-bean-name>
+        <managed-bean-class>com.web.chon.bean.BeanSubProducto</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+        <managed-property>
+            <property-name>serviceSubProducto</property-name>
+            <value>#{serviceSubProducto}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>serviceProducto</property-name>
+            <value>#{serviceProducto}</value>
+        </managed-property>
+    </managed-bean> 
+    
+    Usuarios    
+        
+    <managed-bean>
+        <managed-bean-name>beanCatUsuario</managed-bean-name>
+        <managed-bean-class>com.web.chon.bean.BeanCatUsuario</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+        <managed-property>
+            <property-name>serviceCatUsuario</property-name>
+            <value>#{serviceCatUsuario}</value>
+        </managed-property>
+    </managed-bean>
+    
+    Catalog Tipo Empaque
+    <managed-bean>
+        <managed-bean-name>beanEmpaque</managed-bean-name>
+        <managed-bean-class>com.web.chon.bean.BeanEmpaque</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+        <managed-property>
+            <property-name>serviceEmpaque</property-name>
+            <value>#{serviceEmpaque}</value>
+        </managed-property>
+    </managed-bean>
+    
+    Venta de productos
+    <managed-bean>
+        <managed-bean-name>beanVenta</managed-bean-name>
+        <managed-bean-class>com.web.chon.bean.BeanVenta</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+        <managed-property>
+            <property-name>serviceSubProducto</property-name>
+            <value>#{serviceSubProducto}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>serviceEmpaque</property-name>
+            <value>#{serviceEmpaque}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>serviceVenta</property-name>
+            <value>#{serviceVenta}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>serviceVentaProducto</property-name>
+            <value>#{serviceVentaProducto}</value>
+        </managed-property>
+    </managed-bean>
+    
+    Mantenimeinto a Precios
+    <managed-bean>
+        <managed-bean-name>beanMantenimientoPrecio</managed-bean-name>
+        <managed-bean-class>com.web.chon.bean.BeanMantenimientoPrecio</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+        <managed-property>
+            <property-name>serviceSubProducto</property-name>
+            <value>#{serviceSubProducto}</value>
+        </managed-property>
+    </managed-bean>
+    Init controller
+     <managed-bean>
+        <managed-bean-name>initViewController</managed-bean-name>
+        <managed-bean-class>com.web.chon.bean.BeanInit</managed-bean-class>
+    
+        <managed-bean-scope>session</managed-bean-scope></managed-bean>
+    
+    Images 
+    <managed-bean>
+        <managed-bean-name>beanImages</managed-bean-name>
+        <managed-bean-class>com.web.chon.bean.BeanImages</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>-->
+
+</faces-config>

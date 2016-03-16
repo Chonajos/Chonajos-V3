@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="./../templates/main.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                xmlns:o="http://omnifaces.org/ui">
+
+    <ui:define name="content">
+
+
+        <h:form id="formUsuario">
+            <div>
+                <h1>#{beanCatUsuario.title}</h1>
+            </div>
+            <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
+            <p:panel rendered="#{beanCatUsuario.viewEstate=='init'}" style="border: 0px;" >
+                <div class="form-group">
+                    <p:commandButton value="Nuevo" update=":formUsuario" ajax="true" action="#{beanCatUsuario.viewNew}" icon="ui-icon-person" />
+                    <p:commandButton value="Eliminar" update=":formUsuario" ajax="true" action="#{beanCatUsuario.delete()}" icon="ui-icon-trash" />
+                </div>
+                <p:dataTable var="model" value="#{beanCatUsuario.model}" rows="10" scrollable="true"
+                             paginator="true" selection="#{beanCatUsuario.selectedUsuario}" rowKey="#{model.idUsuarioPk}"
+                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} "
+                             rowsPerPageTemplate="5,10,15" emptyMessage="No se encontraron Registros.">
+
+                    <p:column selectionMode="multiple" style="width:32px;text-align:center"/>
+                    <p:column headerText="Id" style="width:32px;text-align:center">
+                        <h:outputText value="#{model.idUsuarioPk}" />
+                    </p:column>
+
+                    <p:column headerText="Nombre del Usuario" style="width:60px;text-align:center">
+                        <h:outputText value="#{model.nombreUsuario}" />
+                    </p:column>
+
+                    <p:column headerText="Apellido Paterno del Usuario" style="width:60px;text-align:center">
+                        <h:outputText value="#{model.apaternoUsuario}" />
+                    </p:column>
+
+                    <p:column headerText="Apellido Materno del Usuario" style="width:60px;text-align:center">
+                        <h:outputText value="#{model.amaternoUsuario}" />
+                    </p:column>
+
+                    <p:column headerText="Clave del Usuario" style="width:60px;text-align:center">
+                        <h:outputText value="#{model.claveUsuario}" />
+                    </p:column>
+
+                    <p:column headerText="RFC del Usuario" style="width:70px;text-align:center">
+                        <h:outputText value="#{model.rfcUsuario}" />
+                    </p:column>
+                    <p:column headerText="Editar" style="width:50px;text-align:center">
+                        <p:commandButton id="ajax" ajax="true"  action="#{beanCatUsuario.searchById}" icon="ui-icon-pencil" styleClass="ui-priority-primary" update=":formUsuario">
+                            <f:setPropertyActionListener value="#{model}" target="#{beanCatUsuario.data}"/>
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </p:panel>
+            <p:panel rendered="#{beanCatUsuario.viewEstate=='searchById' || beanCatUsuario.viewEstate=='new'}">
+                <div class="container">
+                    <div class="form-group">
+                        <p:commandButton value="Guardar" update=":formUsuario" ajax="true" action="#{beanCatUsuario.insert}" rendered="#{beanCatUsuario.viewEstate=='new'}"/>
+                        <p:commandButton value="Actualizar" update=":formUsuario" ajax="true" action="#{beanCatUsuario.update}" rendered="#{beanCatUsuario.viewEstate=='searchById'}"/>
+                        <p:commandButton value="Atras" immediate="true" resetValues="true" update=":formUsuario" ajax="true" action="#{beanCatUsuario.backView}" />
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtNombre" value ="Nombre:" /> 
+                        <p:inputText id="txtNombre" maxlength="20" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatUsuario.data.nombreUsuario}" required="true"
+                                     requiredMessage="Ingresa un valor para el campo Nombre del usuario.">
+                                     <pe:keyFilter regEx="/[a-z_]/i"/>
+                        </p:inputText>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtPaterno" value ="Apellido Paterno:" /> 
+                        <p:inputText id="txtPaterno" maxlength="20" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatUsuario.data.apaternoUsuario}" required="true"
+                                     requiredMessage="Ingresa un valor para el campo Apellido Paterno del usuario.">
+                                     <pe:keyFilter regEx="/[a-z_]/i"/>
+                        </p:inputText>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtMaterno" value ="Apellido Materno:" /> 
+                        <p:inputText id="txtMaterno" maxlength="20" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatUsuario.data.amaternoUsuario}" required="true"
+                                     requiredMessage="Ingresa un valor para el campo Apellido Materno del usuario.">
+                                     <pe:keyFilter regEx="/[a-z_]/i"/>
+                        </p:inputText>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtClave" value ="Clave:" /> 
+                        <p:inputText id="txtClave" maxlength="13" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatUsuario.data.claveUsuario}" required="true"
+                                     requiredMessage="Ingresa un valor para el campo Clave del usuario.">
+                            <pe:keyFilter regEx="/[a-z_]/i"/>
+                        </p:inputText>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtContrasena" value ="Contraseña:" /> 
+                        <p:password id="txtContrasena" maxlength="13" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatUsuario.data.contrasenaUsuario}" required="true"
+                                    requiredMessage="Ingresa un valor para el campo Contraseña del usuario.">
+                            <pe:keyFilter regEx="/[a-z0-9_]/i"/>
+                            <f:validateLength maximum="8" minimum="8" />
+                        </p:password>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtConfirmar" value ="Confirmar contraseña:" /> 
+                        <p:password id="txtConfirmar" maxlength="8" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatUsuario.data.confirmaUsuario}" required="true"
+                                    requiredMessage="Confirma el valor para el campo Contraseña del usuario." validatorMessage="La contraseña debe tener como minimo 8 caracteres">
+                            <pe:keyFilter regEx="/[a-z0-9_]/i"/>
+                            <p:ajax event="blur" process="txtContrasena txtConfirmar equal" />
+                            <f:validateLength maximum="8" minimum="8" />
+                        </p:password>
+                        <h:message for="txtConfirmar" />
+
+                        <o:validateEqual id="equal" components="txtContrasena txtConfirmar"
+                                         message="Las contraseñas escritas no coinciden. Verificar campos." showMessageFor="txtConfirmar" />
+
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtRFC" value ="RFC:" /> 
+                        <p:inputText id="txtRFC" maxlength="13" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatUsuario.data.rfcUsuario}" required="true"
+                                     requiredMessage="Ingresa un valor para el campo RFC del usuario.">
+                            <f:validateLength maximum="13" minimum="13"/>
+                        </p:inputText>
+                    </div>
+                </div>
+            </p:panel>
+        </h:form>
+
+
+    </ui:define>
+
+</ui:composition>

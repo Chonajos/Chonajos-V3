@@ -1,0 +1,22 @@
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:body>        
+        <h:form>
+            <!-- comentario -->
+            <p:menubar styleClass="hidden-xs" model="#{beanInit.model}">
+
+                <div style="z-index: 1020; background-color: red" id="ll">  
+                    <f:facet name="options" id="pp" >							
+                        <p:menuButton value="#{usuarioBean.usuario.nombreUsuario}" >			        
+                            <p:separator />
+                            <p:menuitem value="Finalizar Sesión"
+                                        ajax="false" action="#{usuarioBean.doLogout()}"/>
+                        </p:menuButton>
+                    </f:facet>	        
+                </div> 			                		 		     
+            </p:menubar>				
+        </h:form>			
+    </h:body>
+</html>  

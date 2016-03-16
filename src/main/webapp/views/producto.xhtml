@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="./../templates/main.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content">
+
+
+        <h:form id="formProducto">
+            <div>
+                <h1>#{beanSubProducto.title}</h1>
+
+            </div>
+            <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
+            <p:panel rendered="#{beanSubProducto.viewEstate=='init'}" style="border: 0px;" >
+                <div class="form-group">
+                    <p:commandButton value="Nuevo" update=":formProducto" ajax="true" action="#{beanSubProducto.viewNew}" icon="ui-icon-person" />
+                    <p:commandButton value="Eliminar" update=":formProducto" ajax="true" action="#{beanSubProducto.delete}" icon="ui-icon-trash" />
+                </div>
+                <p:dataTable var="model" value="#{beanSubProducto.model}" rows="10" scrollable="true"
+                             paginator="true" selection="#{beanSubProducto.selectedSubProducto}" rowKey="#{model.idSubproductoPk}"
+                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} "
+                             rowsPerPageTemplate="5,10,15" emptyMessage="No se encontraron Registros.">
+
+                    <p:column selectionMode="multiple" style="width:32px;text-align:center"/>
+                    <p:column headerText="Id" style="width:32px;text-align:center">
+                        <h:outputText value="#{model.idSubproductoPk}" />
+                    </p:column>
+
+                    <p:column headerText="Categoría" style="width:200px;text-align:center">
+                        <h:outputText value="#{model.nombreCategoria}" />
+                    </p:column>
+
+                    <p:column headerText="Nombre de Producto" style="width:200px;text-align:center">
+                        <h:outputText value="#{model.nombreSubproducto}" />
+                    </p:column>
+
+                    <!--                    <p:column headerText="Precio minimo" style="width:150px;text-align:center">
+                                            <h:outputText value="#{model.precioMinimo}" />
+                                        </p:column>
+                                        <p:column headerText="Precio venta" style="width:150px;text-align:center">
+                                            <h:outputText value="#{model.precioVenta}" />
+                                        </p:column>
+                                        <p:column headerText="Precio maximo" style="width:150px;text-align:center">
+                                            <h:outputText value="#{model.precioMaximo}" />
+                                        </p:column>-->
+                    <p:column headerText="Editar" style="width:50px;text-align:center">
+                        <p:commandButton id="ajax" ajax="true"  action="#{beanSubProducto.searchById}" icon="ui-icon-pencil" styleClass="ui-priority-primary" update=":formProducto">
+                            <f:setPropertyActionListener value="#{model}" target="#{beanSubProducto.data}"/>
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </p:panel>
+            <p:panel rendered="#{beanSubProducto.viewEstate=='searchById' || beanSubProducto.viewEstate=='new'}">
+                <div class="container">
+                    <div class="form-group">
+                        <p:commandButton value="Guardar" update=":formProducto" ajax="true" action="#{beanSubProducto.insert}" rendered="#{beanSubProducto.viewEstate=='new'}"/>
+                        <p:commandButton value="Actualizar" update=":formProducto" ajax="true" action="#{beanSubProducto.update}" rendered="#{beanSubProducto.viewEstate=='searchById'}"/>
+                        <p:commandButton value="Atras" immediate="true" resetValues="true" update=":formProducto" ajax="true" action="#{beanSubProducto.backView}" />
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-6"  for="selectProductos" value ="Categoría:"/> 
+
+                            <h:selectOneMenu id="selectProductos" value="#{beanSubProducto.data.idProductoFk}" required="true" class="col-lg-8 col-md-8 col-sm-8 col-xs-6" requiredMessage="Ingresa un valor para el campo Producto.">
+                                <f:selectItem itemLabel="Seleccione la opción" itemValue="-1" noSelectionOption="true" />
+                                <f:selectItems value="#{beanSubProducto.lstProducto}" var="producto" itemLabel="#{producto.nombreProducto}" itemValue="#{producto.idProductoPk}" />
+                            </h:selectOneMenu>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-6"  for="txtNombre" value ="Nombre:" /> 
+                            <p:inputText id="txtNombre" maxlength="45" class=" col-lg-8 col-md-8 col-sm-8 col-xs-6" value="#{beanSubProducto.data.nombreSubproducto}" required="true"
+                                         requiredMessage="Ingresa un valor para el campo Nombre."/>
+                        </div>
+
+
+                    </div>
+                    <!--                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                                            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-6"  for="txtDescripcion" value ="Descripción:" /> 
+                                                <p:inputText id="txtDescripcion" maxlength="45" class=" col-lg-8 col-md-8 col-sm-8 col-xs-6" value="#{beanSubProducto.data.descripcionSubproducto}" required="true"
+                                                             requiredMessage="Ingresa un valor para el campo Descripción."/>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-6"  for="txtPrecioVenta" value ="Precio de venta:" /> 
+                                                <p:inputText id="txtPrecioVenta" maxlength="10" class=" col-lg-8 col-md-8 col-sm-8 col-xs-6" value="#{beanSubProducto.data.precioVenta}" required="true"
+                                                             requiredMessage="Ingresa un valor para el campo Precio de venta." />
+                                                  <pe:keyFilter regEx="/[\d\-\.]/" for="txtPrecioVenta"/>    
+                                                
+                                                    
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                                            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-6"  for="txtPrecioMinimo" value ="Precio minimo:" /> 
+                                                <p:inputText id="txtPrecioMinimo" maxlength="10" class=" col-lg-8 col-md-8 col-sm-8 col-xs-6" value="#{beanSubProducto.data.precioMinimo}" required="true"
+                                                             requiredMessage="Ingresa un valor para el campo Precio minimo."/>
+                                                <pe:keyFilter regEx="/[\d\-\.]/" for="txtPrecioMinimo"/> 
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-6"  for="txtPrecioMaximo" value ="Precio maximo:" /> 
+                                                <p:inputText id="txtPrecioMaximo" maxlength="10" class=" col-lg-8 col-md-8 col-sm-8 col-xs-6" value="#{beanSubProducto.data.precioMaximo}" required="true"
+                                                             requiredMessage="Ingresa un valor para el campo Precio maximo."/>
+                                                <pe:keyFilter regEx="/[\d\-\.]/" for="txtPrecioMaximo"/>
+                                            </div>
+                                        </div>-->
+                </div>
+            </p:panel>
+        </h:form>
+
+
+    </ui:define>
+
+</ui:composition>

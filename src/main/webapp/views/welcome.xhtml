@@ -1,0 +1,24 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<ui:composition template="./../templates/main.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="content">
+        <div><h1>Bienvenido #{usuarioBean.usuario.nombreUsuario} #{usuarioBean.usuario.apaternoUsuario} #{usuarioBean.usuario.amaternoUsuario} </h1></div>
+        <h:form>
+          
+
+           <p:gmap center="19.726241, -99.332605" zoom="4" type="ROADMAP" style="width:100%;height:400px" />
+        </h:form>
+<!--             <p:messages id="messages" showDetail="false" autoUpdate="true" closable="true" />
+        
+                <p:galleria value="#{beanImages.images}" var="image" panelWidth="500" panelHeight="313" showCaption="true">
+                    <p:graphicImage name="resources/img/nature/#{image}" alt="Image Description for #{image}" title="#{image}"/>
+                </p:galleria>-->
+
+    </ui:define>
+
+</ui:composition>
