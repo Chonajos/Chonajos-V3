@@ -258,24 +258,24 @@ MINVALUE 0;
 
 
 
-tablas eliminadas
+/*tablas eliminadas
 COMPRA_PRODUCTOS
 EXISTENCIA_PRODUCTO
 subproductos
 productos
+*/
 
 
 
-
-//Inserts default
+--Inserts default
 
 INSERT INTO TIPO_EMPAQUE (ID_TIPO_EMPAQUE_PK,NOMBRE_EMPAQUE,ESTATUS_EMPAQUE) values(S_TIPO_EMPAQUE.NextVal,'kilos',1)
 
 
 
 
-//Creacion de Tabla Clientes:
-//Freddy.
+--Creacion de Tabla Clientes:
+--Freddy.
 
 CREATE TABLE "CHONAJOS"."CLIENTE" 
    (	"ID_CLIENTE" NUMBER, 
