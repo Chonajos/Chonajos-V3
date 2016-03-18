@@ -14,14 +14,16 @@ import java.util.ArrayList;
  * @author Juan
  */
 public interface IfaceCatUsuario {
-    
+
     public ArrayList<Usuario> getUsuarios();
-    
+
     public Usuario getUsuariosById(int idUsuario);
-    
+
     public int deleteUsuarios(int idUsuario);
-    
-    public int updateUsuario(Usuario usuario );
-    
-    public int insertarUsuarios(Usuario usuario );
+
+    public int updateUsuario(Usuario usuario);
+
+    public int insertarUsuarios(Usuario usuario);
+
+    public ArrayList<Usuario> getUsuarioByNombreCompleto(String nombre);
 }

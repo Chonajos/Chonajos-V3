@@ -44,8 +44,17 @@ public class EjbCatUsuario implements NegocioCatUsuario {
     }
 
     @Override
-    public Object[] getUsuarioById(int idUsuario) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Object[]> getUsuarioById(int idUsuario) {
+        try {
+            Query query = em.createNativeQuery("SELECT * FROM Usuario WHERE ID_USUARIO_PK = ?");
+            query.setParameter(1, idUsuario);
+
+            return query.getResultList();
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbProducto.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 
     @Override
@@ -100,7 +109,7 @@ public class EjbCatUsuario implements NegocioCatUsuario {
             resultList = querySel.getResultList();
 
             if (resultList.isEmpty()) {
-                
+
                 System.out.println("insert : " + usuario.getNombreUsuario() + " " + usuario.getRfcUsuario());
                 Query query = em.createNativeQuery("INSERT INTO USUARIO (ID_USUARIO_PK,NOMBRE_USUARIO, APATERNO_USUARIO, AMATERNO_USUARIO, "
                         + "CLAVE_USUARIO, CONTRASENA_USUARIO, RFC_USUARIO) VALUES (S_USUARIO.NextVal,?,?,?,?,?,?)");
@@ -110,15 +119,14 @@ public class EjbCatUsuario implements NegocioCatUsuario {
                 query.setParameter(4, usuario.getClaveUsuario());
                 query.setParameter(5, usuario.getContrasenaUsuario());
                 query.setParameter(6, usuario.getRfcUsuario());
-                
+
                 return query.executeUpdate();
-                
+
             } else {
 
                 return 0;
 
             }
-
 
         } catch (Exception ex) {
             Logger.getLogger(EjbProducto.class.getName()).log(Level.SEVERE, null, ex);
@@ -129,6 +137,13 @@ public class EjbCatUsuario implements NegocioCatUsuario {
     @Override
     public int insertarUsuario(Usuario usuario) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<Object[]> getUsuarioByNombreCompleto(String nombreUsuario) {
+        Query query = em.createNativeQuery("SELECT * FROM USUARIO WHERE UPPER(NOMBRE_USUARIO ||' '|| APATERNO_USUARIO ||' '|| AMATERNO_USUARIO )  LIKE UPPER('%" + nombreUsuario + "%')");
+
+        return query.getResultList();
     }
 
 }

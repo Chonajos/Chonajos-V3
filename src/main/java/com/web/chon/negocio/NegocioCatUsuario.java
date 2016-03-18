@@ -13,7 +13,7 @@ public interface NegocioCatUsuario {
 
     public List<Object[]> getUsuarios();
 
-    public Object[] getUsuarioById(int idUsuario);
+    public List<Object[]> getUsuarioById(int idUsuario);
 
     public int deleteUsuario(int idUsuario);
 
@@ -22,5 +22,7 @@ public interface NegocioCatUsuario {
     public int insertUsuario(Usuario usuario);
 
     public int insertarUsuario(Usuario usuario);
+    
+    public List<Object[]> getUsuarioByNombreCompleto(String nombreUsuario);
 
 }

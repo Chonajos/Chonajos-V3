@@ -18,7 +18,7 @@ public interface NegocioCatCliente {
     
     public List<Object[]> getClientes();
 
-    public Object[] getClienteById(int idCliente);
+    public List<Object[]> getClienteById(int idCliente);
 
     public int deleteCliente(int idCliente);
 
@@ -26,5 +26,8 @@ public interface NegocioCatCliente {
 
     public int insertCliente(Cliente clie);
 
+    public List<Object[]> getClienteByNombreCompleto(String nombreCliente) ;
+
+    
     
 }
