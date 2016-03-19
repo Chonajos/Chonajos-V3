@@ -9,10 +9,10 @@
 
                 <div style="z-index: 1020; background-color: red" id="ll">  
                     <f:facet name="options" id="pp" >							
-                        <p:menuButton value="#{usuarioBean.usuario.nombreUsuario}" >			        
+                        <p:menuButton value="#{beanUsuario.usuario.nombreUsuario}" >			        
                             <p:separator />
                             <p:menuitem value="Finalizar Sesión"
-                                        ajax="false" action="#{usuarioBean.doLogout()}"/>
+                                        ajax="false" action="#{beanUsuario.doLogout()}"/>
                         </p:menuButton>
                     </f:facet>	        
                 </div> 			                		 		     

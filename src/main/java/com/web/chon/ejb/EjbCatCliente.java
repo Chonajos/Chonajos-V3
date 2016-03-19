@@ -21,32 +21,39 @@ import javax.persistence.Query;
  * @author fredy
  */
 @Stateless(mappedName = "ejbCatCliente")
-public class EjbCatCliente implements NegocioCatCliente
-{
+public class EjbCatCliente implements NegocioCatCliente {
 
-   @PersistenceContext(unitName = "persistenceJR")
+    @PersistenceContext(unitName = "persistenceJR")
     EntityManager em;
 
     @Override
-    public List<Object[]> getClientes() 
-    {
-    try {
+    public List<Object[]> getClientes() {
+        try {
 
             System.out.println("EJB_GET_CLIENTE");
             Query query = em.createNativeQuery("SELECT * FROM CLIENTE");
             List<Object[]> resultList = null;
             resultList = query.getResultList();
             return resultList;
-        } catch (Exception ex) 
-        {
+        } catch (Exception ex) {
             Logger.getLogger(EjbCatCliente.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
     }
 
     @Override
-    public Object[] getClienteById(int idCliente) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Object[]> getClienteById(int idCliente) {
+        try {
+
+            Query query = em.createNativeQuery("SELECT * FROM ClIENTE WHERE ID_CLIENTE = ?");
+            query.setParameter(1, idCliente);
+
+            return query.getResultList();
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbCatCliente.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 
     @Override
@@ -82,7 +89,7 @@ public class EjbCatCliente implements NegocioCatCliente
             query.setParameter(8, clie.getSexo());
             query.setParameter(9, clie.getFecha_nacimiento());
             query.setParameter(10, clie.getTel_movil());
-            query.setParameter(11, clie.getTel_fijo());  
+            query.setParameter(11, clie.getTel_fijo());
             query.setParameter(12, clie.getExt());
             query.setParameter(13, clie.getEmail());
             query.setParameter(14, clie.getNum_int());
@@ -116,14 +123,13 @@ public class EjbCatCliente implements NegocioCatCliente
     }
 
     @Override
-    public int insertCliente(Cliente clie) 
-    {
+    public int insertCliente(Cliente clie) {
         System.out.println("EJB_INSERTA_CLIENTE");
         try {
 
             Query querySel = em.createNativeQuery("SELECT NOMBRE FROM CLIENTE WHERE EMAIL = '" + clie.getEmail() + "' ");
             List<Object[]> resultList = null;
-            
+
             resultList = querySel.getResultList();
 
             if (resultList.isEmpty()) 
@@ -142,7 +148,7 @@ public class EjbCatCliente implements NegocioCatCliente
                 query.setParameter(8, clie.getSexo());
                 query.setParameter(9, clie.getFecha_nacimiento());
                 query.setParameter(10, clie.getTel_movil());
-                query.setParameter(11, clie.getTel_fijo());  
+                query.setParameter(11, clie.getTel_fijo());
                 query.setParameter(12, clie.getExt());
                 query.setParameter(13, clie.getEmail());
                 query.setParameter(14, clie.getNum_int());
@@ -166,25 +172,27 @@ public class EjbCatCliente implements NegocioCatCliente
                 query.setParameter(32, clie.getNextelclave());
 
                 return query.executeUpdate();
-                
-            } else 
-            {
+
+            } else {
 
                 return 0;
 
             }
 
-
         } catch (Exception ex) {
             Logger.getLogger(EjbCatCliente.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
-        
+
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
- 
- 
+    @Override
+    public List<Object[]> getClienteByNombreCompleto(String nombreCliente) {
+        Query query = em.createNativeQuery("SELECT * FROM CLIENTE WHERE UPPER(NOMBRE ||' '|| APELLIDO_PATERNO ||' '|| APELLIDO_MATERNO )  LIKE UPPER('%" + nombreCliente + "%')");
+
+        return query.getResultList();
+    }
+
 }

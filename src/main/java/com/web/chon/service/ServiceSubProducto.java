@@ -37,10 +37,10 @@ public class ServiceSubProducto implements IfaceSubProducto {
                 subProducto.setDescripcionSubproducto(obj[2] == null ? "" : obj[2].toString());
                 subProducto.setUrlImagenSubproducto(obj[3] == null ? "" : obj[3].toString());
                 subProducto.setIdProductoFk(obj[4] == null ? null : obj[4].toString());
-                subProducto.setPrecioMinimo(obj[5] == null ? null : new BigInteger(obj[5].toString()));
-                subProducto.setPrecioMaximo(obj[6] == null ? null : new BigInteger(obj[6].toString()));
-                subProducto.setPrecioVenta(obj[7] == null ? null : new BigInteger(obj[7].toString()));
-                subProducto.setNombreCategoria(obj[9] == null ? "" : obj[9].toString());
+//                subProducto.setPrecioMinimo(obj[5] == null ? null : new BigInteger(obj[5].toString()));
+//                subProducto.setPrecioMaximo(obj[6] == null ? null : new BigInteger(obj[6].toString()));
+//                subProducto.setPrecioVenta(obj[7] == null ? null : new BigInteger(obj[7].toString()));
+                subProducto.setNombreCategoria(obj[5] == null ? "" : obj[5].toString());
 
                 lstSubProducto.add(subProducto);
             }
@@ -66,9 +66,9 @@ public class ServiceSubProducto implements IfaceSubProducto {
                 subProducto.setDescripcionSubproducto(obj[2] == null ? "" : obj[2].toString());
                 subProducto.setUrlImagenSubproducto(obj[3] == null ? "" : obj[3].toString());
                 subProducto.setIdProductoFk(obj[4] == null ? null : obj[4].toString());
-                subProducto.setPrecioMinimo(obj[5] == null ? null : new BigInteger(obj[5].toString()));
-                subProducto.setPrecioMaximo(obj[6] == null ? null : new BigInteger(obj[6].toString()));
-                subProducto.setPrecioVenta(obj[7] == null ? null : new BigInteger(obj[7].toString()));
+//                subProducto.setPrecioMinimo(obj[5] == null ? null : new BigInteger(obj[5].toString()));
+//                subProducto.setPrecioMaximo(obj[6] == null ? null : new BigInteger(obj[6].toString()));
+//                subProducto.setPrecioVenta(obj[7] == null ? null : new BigInteger(obj[7].toString()));
             }
 
             return subProducto;

@@ -19,9 +19,6 @@ public class Subproducto implements Serializable {
     private String nombreSubproducto;
     private String descripcionSubproducto;
     private String urlImagenSubproducto;
-    private BigInteger precioMinimo;
-    private BigInteger precioMaximo;
-    private BigInteger precioVenta;
     private String idProductoFk;
     private String nombreCategoria;
 
@@ -69,37 +66,12 @@ public class Subproducto implements Serializable {
         this.urlImagenSubproducto = urlImagenSubproducto;
     }
 
-    public BigInteger getPrecioMinimo() {
-        return precioMinimo;
-    }
-
-    public void setPrecioMinimo(BigInteger precioMinimo) {
-        this.precioMinimo = precioMinimo;
-    }
-
-    public BigInteger getPrecioMaximo() {
-        return precioMaximo;
-    }
-
-    public void setPrecioMaximo(BigInteger precioMaximo) {
-        this.precioMaximo = precioMaximo;
-    }
-
     public String getIdProductoFk() {
         return idProductoFk;
     }
 
     public void setIdProductoFk(String idProductoFk) {
         this.idProductoFk = idProductoFk;
-    }
-
-  
-    public BigInteger getPrecioVenta() {
-        return precioVenta;
-    }
-
-    public void setPrecioVenta(BigInteger precioVenta) {
-        this.precioVenta = precioVenta;
     }
 
     public String getNombreCategoria() {
@@ -135,8 +107,10 @@ public class Subproducto implements Serializable {
 
     @Override
     public String toString() {
-        return "Subproducto{" + "idSubproductoPk=" + idSubproductoPk + ", nombreSubproducto=" + nombreSubproducto + ", descripcionSubproducto=" + descripcionSubproducto + ", urlImagenSubproducto=" + urlImagenSubproducto + ", precioMinimo=" + precioMinimo + ", precioMaximo=" + precioMaximo + ", precioVenta=" + precioVenta + ", idProductoFk=" + idProductoFk + '}';
+        return "Subproducto{" + "idSubproductoPk=" + idSubproductoPk + ", nombreSubproducto=" + nombreSubproducto + ", descripcionSubproducto=" + descripcionSubproducto + ", urlImagenSubproducto=" + urlImagenSubproducto + ", idProductoFk=" + idProductoFk + ", nombreCategoria=" + nombreCategoria + '}';
     }
+
+   
 
     
     

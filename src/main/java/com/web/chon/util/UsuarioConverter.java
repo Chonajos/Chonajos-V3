@@ -1,7 +1,7 @@
 package com.web.chon.util;
 
-import com.web.chon.dominio.Subproducto;
-import com.web.chon.service.ServiceSubProducto;
+import com.web.chon.dominio.Usuario;
+import com.web.chon.service.IfaceCatUsuario;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -12,10 +12,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 
-public class ProductoConverter implements Converter {
+public class UsuarioConverter implements Converter {
 
     @Autowired
-    ServiceSubProducto serviceSubProducto;
+    IfaceCatUsuario ifaceCatUsuario;
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
@@ -24,7 +24,7 @@ public class ProductoConverter implements Converter {
 
             try {
 
-                Object object = serviceSubProducto.getSubProductoById(value);
+                Object object = ifaceCatUsuario.getUsuariosById(Integer.parseInt(value));
 
                 return object;
 
@@ -45,9 +45,9 @@ public class ProductoConverter implements Converter {
 
         if (value != null) {
 
-            if (value instanceof Subproducto) {
+            if (value instanceof Usuario) {
 
-                return String.valueOf(((Subproducto) value).getNombreSubproducto());
+                return String.valueOf(((Usuario) value).getNombreUsuario());
 
             } else {
 

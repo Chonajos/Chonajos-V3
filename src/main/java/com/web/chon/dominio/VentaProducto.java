@@ -21,7 +21,7 @@ public class VentaProducto implements Serializable {
     private String idProductoFk;
     private BigDecimal idTipoEmpaqueFk;
     private TipoVenta idTipoVentaFk;
-    private BigInteger cantidadEmpaque;
+    private BigDecimal cantidadEmpaque;
     private BigDecimal kilosVenta;
     private BigDecimal total;
     private String nombreProducto;
@@ -74,11 +74,11 @@ public class VentaProducto implements Serializable {
         this.idTipoVentaFk = idTipoVentaFk;
     }
 
-    public BigInteger getCantidadEmpaque() {
+    public BigDecimal getCantidadEmpaque() {
         return cantidadEmpaque;
     }
 
-    public void setCantidadEmpaque(BigInteger cantidadEmpaque) {
+    public void setCantidadEmpaque(BigDecimal cantidadEmpaque) {
         this.cantidadEmpaque = cantidadEmpaque;
     }
 
@@ -137,8 +137,10 @@ public class VentaProducto implements Serializable {
 
     @Override
     public String toString() {
-        return "VentaProducto{" + "idVentaProductoPk=" + idVentaProductoPk + ", precioProducto=" + precioProducto + ", idProductoFk=" + idProductoFk + ", idTipoEmpaqueFk=" + idTipoEmpaqueFk + ", idTipoVentaFk=" + idTipoVentaFk + ", cantidadEmpaque=" + cantidadEmpaque + ", total=" + total + '}';
+        return "VentaProducto{" + "idVentaProductoPk=" + idVentaProductoPk + ", precioProducto=" + precioProducto + ", idProductoFk=" + idProductoFk + ", idTipoEmpaqueFk=" + idTipoEmpaqueFk + ", idTipoVentaFk=" + idTipoVentaFk + ", cantidadEmpaque=" + cantidadEmpaque + ", kilosVenta=" + kilosVenta + ", total=" + total + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + '}';
     }
+
+   
 
     public void reset() {
         

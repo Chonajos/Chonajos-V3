@@ -2,7 +2,6 @@ package com.web.chon.bean;
 
 import com.web.chon.dominio.Usuario;
 import com.web.chon.service.IfaceCatUsuario;
-import com.web.chon.service.ServiceCatUsuario;
 import java.util.ArrayList;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;

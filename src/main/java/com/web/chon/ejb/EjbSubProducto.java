@@ -57,14 +57,14 @@ public class EjbSubProducto implements NegocioSubProducto {
     @Override
     public int insertarSubProducto(Subproducto subProducto) {
         try {
-            Query query = em.createNativeQuery("INSERT INTO SUBPRODUCTO (ID_SUBPRODUCTO_PK,NOMBRE_SUBPRODUCTO,DESCRIPCION_SUBPRODUCTO,ID_PRODUCTO_FK,PRECIO_MINIMO,PRECIO_MAXIMO,PRECIO_VENTA) values(?,?,?,?,?,?,?)");
+            Query query = em.createNativeQuery("INSERT INTO SUBPRODUCTO (ID_SUBPRODUCTO_PK,NOMBRE_SUBPRODUCTO,DESCRIPCION_SUBPRODUCTO,ID_PRODUCTO_FK) values(?,?,?,?)");
             query.setParameter(1, subProducto.getIdSubproductoPk());
             query.setParameter(2, subProducto.getNombreSubproducto());
             query.setParameter(3, subProducto.getDescripcionSubproducto());
             query.setParameter(4, subProducto.getIdProductoFk());
-            query.setParameter(5, subProducto.getPrecioMinimo());
-            query.setParameter(6, subProducto.getPrecioMaximo());
-            query.setParameter(7, subProducto.getPrecioVenta());
+//            query.setParameter(5, subProducto.getPrecioMinimo());
+//            query.setParameter(6, subProducto.getPrecioMaximo());
+//            query.setParameter(7, subProducto.getPrecioVenta());
 
             return query.executeUpdate();
 
@@ -80,13 +80,13 @@ public class EjbSubProducto implements NegocioSubProducto {
         try {
 
             
-            Query query = em.createNativeQuery("UPDATE SUBPRODUCTO set NOMBRE_SUBPRODUCTO = ?,DESCRIPCION_SUBPRODUCTO =?,ID_PRODUCTO_FK = ?,PRECIO_MINIMO =?,PRECIO_MAXIMO =?,PRECIO_VENTA =?  where ID_SUBPRODUCTO_PK = ?");
+            Query query = em.createNativeQuery("UPDATE SUBPRODUCTO set NOMBRE_SUBPRODUCTO = ?,DESCRIPCION_SUBPRODUCTO =?,ID_PRODUCTO_FK = ? where ID_SUBPRODUCTO_PK = ?");
             query.setParameter(1, subProducto.getNombreSubproducto());
             query.setParameter(2, subProducto.getDescripcionSubproducto());
             query.setParameter(3, subProducto.getIdProductoFk());
-            query.setParameter(4, subProducto.getPrecioMinimo());
-            query.setParameter(5, subProducto.getPrecioMaximo());
-            query.setParameter(6, subProducto.getPrecioVenta());
+//            query.setParameter(4, subProducto.getPrecioMinimo());
+//            query.setParameter(5, subProducto.getPrecioMaximo());
+//            query.setParameter(6, subProducto.getPrecioVenta());
             query.setParameter(7, subProducto.getIdSubproductoPk());
 
             return query.executeUpdate();

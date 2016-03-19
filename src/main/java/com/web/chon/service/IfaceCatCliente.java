@@ -24,4 +24,6 @@ public interface IfaceCatCliente
     
     public int insertCliente(Cliente cliente);
     
+    public ArrayList<Cliente> getClienteByNombreCompleto(String nombre);
+    
 }
