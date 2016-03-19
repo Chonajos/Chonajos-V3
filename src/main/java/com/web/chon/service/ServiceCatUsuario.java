@@ -121,7 +121,6 @@ public class ServiceCatUsuario implements IfaceCatUsuario {
                 usuario.setNombreUsuario(obj[1] == null ? "" : obj[1].toString());
                 usuario.setApaternoUsuario(obj[2] == null ? "" : obj[2].toString());
                 usuario.setAmaternoUsuario(obj[3] == null ? "" : obj[3].toString());
-                usuario.setNombreUsuario(usuario.getNombreUsuario() + " " + usuario.getApaternoUsuario() + " " + usuario.getAmaternoUsuario());
 
                 lstUsuario.add(usuario);
             }

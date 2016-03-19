@@ -2,7 +2,6 @@ package com.web.chon.bean;
 
 import com.web.chon.dominio.Usuario;
 import com.web.chon.service.IfaceUsuario;
-import com.web.chon.service.ServiceUsuario;
 import java.io.IOException;
 import javax.annotation.PostConstruct;
 import javax.faces.context.ExternalContext;

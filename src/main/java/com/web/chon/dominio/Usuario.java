@@ -43,6 +43,7 @@ public class Usuario extends Generic {
     private String longitudUsuario;
     private Municipios idMunicipioFk;
     private Rol idRolFk;
+    private String nombreCompletoUsuario;
     private List<Venta> ventaList;
     private List<Venta> ventaList1;
     private List<Camion> camionList;
@@ -317,6 +318,16 @@ public class Usuario extends Generic {
     public void setSucursalList(List<Sucursal> sucursalList) {
         this.sucursalList = sucursalList;
     }
+
+    public String getNombreCompletoUsuario() {
+        return nombreUsuario+" "+apaternoUsuario+" "+amaternoUsuario;
+    }
+
+    public void setNombreCompletoUsuario(String nombreCompletoUsuario) {
+        this.nombreCompletoUsuario = nombreCompletoUsuario;
+    }
+    
+    
 
     @Override
     public int hashCode() {

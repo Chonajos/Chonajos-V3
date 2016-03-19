@@ -102,7 +102,9 @@ public class Venta implements Serializable {
 
     @Override
     public String toString() {
-        return "com.web.chon.entities.Venta[ idVentaPk=" + idVentaPk + " ]";
+        return "Venta{" + "idVentaPk=" + idVentaPk + ", fechaVenta=" + fechaVenta + ", fechaPromesaPago=" + fechaPromesaPago + ", idClienteFk=" + idClienteFk + ", idVendedorFk=" + idVendedorFk + ", lstVentaProducto=" + lstVentaProducto + '}';
     }
+
+    
     
 }

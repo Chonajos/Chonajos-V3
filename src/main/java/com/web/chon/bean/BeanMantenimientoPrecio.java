@@ -2,9 +2,12 @@ package com.web.chon.bean;
 
 import com.web.chon.dominio.MantenimientoPrecios;
 import com.web.chon.dominio.Subproducto;
+import com.web.chon.dominio.TipoEmpaque;
 import com.web.chon.service.IfaceEmpaque;
+import com.web.chon.service.IfaceMantenimientoPrecio;
 import com.web.chon.service.IfaceSubProducto;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -28,12 +31,16 @@ public class BeanMantenimientoPrecio implements Serializable {
     private IfaceSubProducto ifaceSubProducto;
     @Autowired
     private IfaceEmpaque ifaceEmpaque;
-    
+    @Autowired
+    private IfaceMantenimientoPrecio ifaceMantenimientoPrecio;
+
     private ArrayList<Subproducto> lstProducto;
+    private ArrayList<TipoEmpaque> lstTipoEmpaque;
 
     private String title = "";
     private String viewEstate = "";
     private String idProductoSelecionado = "";
+    private boolean update;
     private MantenimientoPrecios data;
     private Subproducto subproducto;
 
@@ -43,6 +50,7 @@ public class BeanMantenimientoPrecio implements Serializable {
         data = new MantenimientoPrecios();
         subproducto = new Subproducto();
         lstProducto = new ArrayList<Subproducto>();
+        lstTipoEmpaque = ifaceEmpaque.getEmpaques();
 
         setTitle("Mantenimiento de Precios.");
         setViewEstate("init");
@@ -51,22 +59,50 @@ public class BeanMantenimientoPrecio implements Serializable {
 
     public String updatePrecio() {
 
-//        if (ifaceSubProducto.updateSubProducto(null) == 1) {
-//            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro modificado."));
-//        } else {
-//            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "Registro modificado."));
-//        }
+        if (update) {
+            if (ifaceMantenimientoPrecio.updateMantenimientoPrecio(data) == 1) {
+
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro modificado."));
+            } else {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "No se puede Modificar el Registro."));
+            }
+        } else {
+            insertarPrecio();
+        }
+        return "mantenimientoPrecios";
+    }
+
+    public String insertarPrecio() {
+
+        if (ifaceMantenimientoPrecio.insertarMantenimientoPrecio(data) == 1) {
+
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro Insertado."));
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "No se puede Insertar el Registro."));
+        }
         return "mantenimientoPrecios";
     }
 
     public ArrayList<Subproducto> autoComplete(String nombreProducto) {
-        lstProducto = ifaceSubProducto.getSubProductoByNombre(nombreProducto);
+        lstProducto = ifaceSubProducto.getSubProductoByNombre(nombreProducto.toUpperCase());
         return lstProducto;
 
     }
 
     public void searchById() {
-//        data = ifaceSubProducto.getSubProductoById(subproducto.getIdSubproductoPk());
+        int idEmpaque = data.getIdTipoEmpaquePk() == null ? 0 : data.getIdTipoEmpaquePk().intValue();
+        String idSubProducto = subproducto.getIdSubproductoPk() == null ? "" : subproducto.getIdSubproductoPk();
+        data = ifaceMantenimientoPrecio.getMantenimientoPrecioById(idSubProducto, idEmpaque);
+        
+        if (data.getIdSubproducto() != null && (!data.getIdSubproducto().equals(""))) {
+            update = true;
+        } else {
+            update = false;
+        }
+        
+        data.setIdSubproducto(idSubProducto);
+        data.setIdTipoEmpaquePk(new BigDecimal(idEmpaque));
+       
     }
 
     public String getTitle() {
@@ -114,7 +150,16 @@ public class BeanMantenimientoPrecio implements Serializable {
     }
 
     public void setSubproducto(Subproducto subproducto) {
+        System.out.println("set subproducto:" + subproducto.toString());
         this.subproducto = subproducto;
+    }
+
+    public ArrayList<TipoEmpaque> getLstTipoEmpaque() {
+        return lstTipoEmpaque;
+    }
+
+    public void setLstTipoEmpaque(ArrayList<TipoEmpaque> lstTipoEmpaque) {
+        this.lstTipoEmpaque = lstTipoEmpaque;
     }
 
 }

@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-
 public class UsuarioConverter implements Converter {
 
     @Autowired
@@ -24,6 +23,7 @@ public class UsuarioConverter implements Converter {
 
             try {
 
+                System.out.println("value converter: "+value);
                 Object object = ifaceCatUsuario.getUsuariosById(Integer.parseInt(value));
 
                 return object;
@@ -47,7 +47,7 @@ public class UsuarioConverter implements Converter {
 
             if (value instanceof Usuario) {
 
-                return String.valueOf(((Usuario) value).getNombreUsuario());
+                return String.valueOf(((Usuario) value).getIdUsuarioPk());
 
             } else {
 

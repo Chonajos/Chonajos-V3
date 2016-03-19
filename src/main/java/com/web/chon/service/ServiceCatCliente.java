@@ -172,7 +172,7 @@ public class ServiceCatCliente implements IfaceCatCliente {
                 cliente.setNombre(obj[1] == null ? "" : obj[1].toString());
                 cliente.setPaterno(obj[2] == null ? "" : obj[2].toString());
                 cliente.setMaterno(obj[3] == null ? "" : obj[3].toString());
-                cliente.setNombre(cliente.getNombre()+" "+cliente.getPaterno()+" "+cliente.getMaterno());
+                cliente.setNombreCombleto(cliente.getNombre()+" "+cliente.getPaterno()+" "+cliente.getMaterno());
 
                 lstCliente.add(cliente);
             }

@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-
 public class ClienteConverter implements Converter {
 
     @Autowired
@@ -47,7 +46,7 @@ public class ClienteConverter implements Converter {
 
             if (value instanceof Cliente) {
 
-                return String.valueOf(((Cliente) value).getNombre());
+                return String.valueOf(((Cliente) value).getId_cliente());
 
             } else {
 
