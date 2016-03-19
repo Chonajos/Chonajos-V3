@@ -34,41 +34,43 @@ public class ServiceCatCliente implements IfaceCatCliente {
              
             for(Object[] obj: lstObject )
             {
-                 
                 Cliente cliente = new Cliente();
                 cliente.setId_cliente(Integer.parseInt(obj[0].toString()));
                 cliente.setNombre(obj[1].toString());
                 cliente.setPaterno(obj[2].toString());
-                cliente.setMaterno(obj[3].toString());
-                cliente.setEmpresa(obj[4].toString());
-                cliente.setCalle(obj[5].toString());
+                cliente.setMaterno(obj[3] == null ? "" : obj[3].toString());
+                cliente.setEmpresa(obj[4] == null ? "" : obj[4].toString());
+                cliente.setCalle(obj[5] == null ? "" : obj[5].toString());
                 cliente.setCp(Integer.parseInt(obj[6].toString()));
-                cliente.setEstado(obj[7].toString());
-                String auxiliar_sexo=obj[8].toString();
+                cliente.setEstado(obj[7] == null ? "" : obj[7].toString());
+                String auxiliar_sexo=obj[8] == null ? "" : obj[8].toString();
                 cliente.setSexo(auxiliar_sexo.charAt(0));
                 cliente.setFecha_nacimiento((Date) obj[9]);
                 cliente.setTel_movil(Integer.parseInt(obj[10].toString()));
                 cliente.setTel_fijo(Integer.parseInt(obj[11].toString()));
                 cliente.setExt(Integer.parseInt(obj[12].toString()));
-                cliente.setEmail(obj[13].toString());
+                cliente.setEmail(obj[13] == null ? "" : obj[13].toString());
                 cliente.setNum_int(Integer.parseInt(obj[14].toString()));
                 cliente.setNum_ext(Integer.parseInt(obj[15].toString()));
-                cliente.setColonia(obj[16].toString());
-                cliente.setClave_tel(Integer.parseInt(obj[17].toString()));
-                cliente.setLada(Integer.parseInt(obj[18].toString()));
-                cliente.setDel_Mun(obj[19].toString());
-                cliente.setCalleFiscal(obj[20].toString());
+                cliente.setColonia(obj[16] == null ? "" : obj[16].toString());
+                cliente.setClavecelular(Integer.parseInt(obj[17].toString()));
+                cliente.setLadacelular(Integer.parseInt(obj[18].toString()));
+                cliente.setDel_Mun(obj[19] == null ? "" : obj[19].toString());
+                cliente.setCalleFiscal(obj[20] == null ? "" : obj[20].toString());
                 cliente.setNum_int_fiscal(Integer.parseInt(obj[21].toString()));
                 cliente.setNum_ext_fiscal(Integer.parseInt(obj[22].toString()));
-                cliente.setColoniaFiscal(obj[23].toString());
-                cliente.setEstadoFiscal(obj[24].toString());
-                cliente.setDel_mun_fiscal(obj[25].toString());
+                cliente.setColoniaFiscal(obj[23] == null ? "" : obj[23].toString());
+                cliente.setEstadoFiscal(obj[24] == null ? "" : obj[24].toString());
+                cliente.setDel_mun_fiscal(obj[25] == null ? "" : obj[25].toString());
                 cliente.setNextel(Integer.parseInt(obj[26].toString()));
-                cliente.setRazon_social(obj[27].toString());
-                cliente.setRfcFiscal(obj[28].toString());
+                cliente.setRazon_social(obj[27] == null ? "" : obj[27].toString());
+                cliente.setRfcFiscal(obj[28] == null ? "" : obj[28].toString());
                 cliente.setcpFiscal(Integer.parseInt(obj[29].toString()));
+                cliente.setLadaoficina(Integer.parseInt(obj[30].toString()));
+                cliente.setNextelclave(Integer.parseInt(obj[31].toString()));
+                cliente.setcpFiscal(Integer.parseInt(obj[32].toString()));
+                
                 lista_clientes.add(cliente);
-                 
             }
             return lista_clientes;
         }catch(Exception ex)

@@ -20,7 +20,7 @@ public class Entidad implements Serializable {
     private String nombreEntidad;
     private String abreabiacionEntidad;
     private String idPais;
-    private List<Municipios> municipiosList;
+
 
     public Entidad() {
     }
@@ -61,13 +61,6 @@ public class Entidad implements Serializable {
         this.idPais = idPais;
     }
 
-    public List<Municipios> getMunicipiosList() {
-        return municipiosList;
-    }
-
-    public void setMunicipiosList(List<Municipios> municipiosList) {
-        this.municipiosList = municipiosList;
-    }
 
     @Override
     public int hashCode() {

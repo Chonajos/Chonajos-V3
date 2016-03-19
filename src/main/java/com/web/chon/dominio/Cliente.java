@@ -32,8 +32,48 @@ public class Cliente implements Serializable
     private int num_int;
     private int num_ext;
     private String colonia;
-    private int clave_tel;
-    private int lada;
+    private int clavecelular;
+
+    public int getClavecelular() {
+        return clavecelular;
+    }
+
+    public void setClavecelular(int clavecelular) {
+        this.clavecelular = clavecelular;
+    }
+
+    public int getLadacelular() {
+        return ladacelular;
+    }
+
+    public void setLadacelular(int ladacelular) {
+        this.ladacelular = ladacelular;
+    }
+
+    public int getLadaoficina() {
+        return ladaoficina;
+    }
+
+    public void setLadaoficina(int ladaoficina) {
+        this.ladaoficina = ladaoficina;
+    }
+
+    public int getClaveoficina() {
+        return claveoficina;
+    }
+
+    public void setClaveoficina(int claveoficina) {
+        this.claveoficina = claveoficina;
+    }
+
+    public int getNextelclave() {
+        return nextelclave;
+    }
+
+    public void setNextelclave(int nextelclave) {
+        this.nextelclave = nextelclave;
+    }
+    private int ladacelular;
     private String Del_Mun;
     
     private String calleFiscal;
@@ -46,6 +86,9 @@ public class Cliente implements Serializable
     private String razon_social;
     private String rfcFiscal;
     private int cpFiscal;
+    private int ladaoficina;
+    private int claveoficina;
+    private int nextelclave;
 
     public int getcpFiscal() {
         return cpFiscal;
@@ -153,8 +196,8 @@ public class Cliente implements Serializable
                 ", Num_Interior" + num_int + 
                 ", Num_Exterior" + num_ext + 
                 ", Colonia" + colonia + 
-                ", Clave Tel" + clave_tel + 
-                ", Lada" + lada + 
+                ", Clave Tel" + clavecelular + 
+                ", Lada" + ladacelular + 
                 ", Del Mun" + Del_Mun + 
                 ", Calle Fiscal" + num_int_fiscal + 
                 ", Num_Interior Fiscal" + num_int_fiscal+ 
@@ -303,22 +346,6 @@ public class Cliente implements Serializable
 
     public void setColonia(String colonia) {
         this.colonia = colonia;
-    }
-
-    public int getClave_tel() {
-        return clave_tel;
-    }
-
-    public void setClave_tel(int clave_tel) {
-        this.clave_tel = clave_tel;
-    }
-
-    public int getLada() {
-        return lada;
-    }
-
-    public void setLada(int lada) {
-        this.lada = lada;
     }
 
     public String getDel_Mun() {

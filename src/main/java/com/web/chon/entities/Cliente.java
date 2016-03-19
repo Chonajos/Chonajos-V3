@@ -63,6 +63,20 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Cliente.findByCpfiscal", query = "SELECT c FROM Cliente c WHERE c.cpfiscal = :cpfiscal")})
 public class Cliente implements Serializable {
 
+    @Column(name = "CLAVECELULAR")
+    private BigInteger clavecelular;
+    @Column(name = "LADACELULAR")
+    private BigInteger ladacelular;
+    @Size(max = 20)
+    @Column(name = "LADAOFICINA")
+    private String ladaoficina;
+    @Size(max = 20)
+    @Column(name = "CLAVEOFICINA")
+    private String claveoficina;
+    @Size(max = 20)
+    @Column(name = "NEXTELCLAVE")
+    private String nextelclave;
+
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id
@@ -417,6 +431,46 @@ public class Cliente implements Serializable {
     @Override
     public String toString() {
         return "com.web.chon.entities.Cliente[ idCliente=" + idCliente + " ]";
+    }
+
+    public BigInteger getClavecelular() {
+        return clavecelular;
+    }
+
+    public void setClavecelular(BigInteger clavecelular) {
+        this.clavecelular = clavecelular;
+    }
+
+    public BigInteger getLadacelular() {
+        return ladacelular;
+    }
+
+    public void setLadacelular(BigInteger ladacelular) {
+        this.ladacelular = ladacelular;
+    }
+
+    public String getLadaoficina() {
+        return ladaoficina;
+    }
+
+    public void setLadaoficina(String ladaoficina) {
+        this.ladaoficina = ladaoficina;
+    }
+
+    public String getClaveoficina() {
+        return claveoficina;
+    }
+
+    public void setClaveoficina(String claveoficina) {
+        this.claveoficina = claveoficina;
+    }
+
+    public String getNextelclave() {
+        return nextelclave;
+    }
+
+    public void setNextelclave(String nextelclave) {
+        this.nextelclave = nextelclave;
     }
     
 }

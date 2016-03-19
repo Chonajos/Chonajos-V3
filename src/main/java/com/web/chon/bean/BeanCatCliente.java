@@ -6,7 +6,11 @@
 package com.web.chon.bean;
 
 import com.web.chon.dominio.Cliente;
+import com.web.chon.dominio.Entidad;
+import com.web.chon.dominio.Municipios;
 import com.web.chon.service.IfaceCatCliente;
+import com.web.chon.service.IfaceCatEntidad;
+import com.web.chon.service.IfaceCatMunicipio;
 import java.util.ArrayList;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -26,23 +30,54 @@ public class BeanCatCliente implements BeanSimple
  
     @Autowired
     private IfaceCatCliente ifaceCatCliente;
+    @Autowired
+    private IfaceCatEntidad ifaceCatEntidad;
+    @Autowired
+    private IfaceCatMunicipio ifaceCatMunicipio;
+    
+    
     private ArrayList<Cliente> model;
+    private ArrayList<Entidad> lista_entidades;
+    private ArrayList<Municipios> lista_municipios;
+    
+    
+    private ArrayList<Entidad> lista_entidades_2;
+    private ArrayList<Municipios> lista_municipios_2;
+    
+    private int selectedEntidad;
     private ArrayList<Cliente> selectedCliente;
     private String title;
     private String viewEstate;
     private Cliente data;
+    
     
     @PostConstruct
     public void init() {
 
         data = new Cliente();
         model = new ArrayList<Cliente>();
+        lista_entidades = new ArrayList<Entidad>();
+        lista_municipios = new ArrayList<Municipios>();
+        
+        lista_entidades_2 = new ArrayList<Entidad>();
+        lista_municipios_2 = new ArrayList<Municipios>();
+        
+        
         selectedCliente = new ArrayList<Cliente>();
+        selectedEntidad = 1;
         model = ifaceCatCliente.getClientes();
+        //lista_entidades = ifaceCatEntidad.getEntidades();
 
         setTitle("Catalogo de Clientes.");
         setViewEstate("init");
+    }
 
+    public ArrayList<Entidad> getLista_entidades() {
+        return lista_entidades;
+    }
+
+    public void setLista_entidades(ArrayList<Entidad> lista_entidades) {
+        this.lista_entidades = lista_entidades;
     }
 
     @Override
@@ -107,7 +142,9 @@ public class BeanCatCliente implements BeanSimple
     }
 
     @Override
-    public void searchById() {
+    public void searchById() 
+    {
+        
         setTitle("Editar Cliente.");
         setViewEstate("searchById");
 
@@ -115,11 +152,34 @@ public class BeanCatCliente implements BeanSimple
     
     public void viewNew() 
     {
+        lista_entidades = ifaceCatEntidad.getEntidades();      
+        //lista_municipios =ifaceCatMunicipio.getMunicipios(8);
+        
+        lista_entidades_2 = ifaceCatEntidad.getEntidades();      
+        //lista_municipios_2 =ifaceCatMunicipio.getMunicipios(8);
+        
         data = new Cliente();
         setTitle("Alta de Clientes");
         setViewEstate("new");
     }
-    public Cliente getCliente() {
+    public void buscaMunicipios() 
+    {
+  
+        lista_municipios =ifaceCatMunicipio.getMunicipios(Integer.parseInt(data.getEstado()));
+        data = new Cliente();
+        setTitle("Alta de Clientes");
+        setViewEstate("new");
+    }
+    public void buscaMunicipios2() 
+    {
+        
+        lista_municipios_2 =ifaceCatMunicipio.getMunicipios(Integer.parseInt(data.getEstadoFiscal()));
+        data = new Cliente();
+        setTitle("Alta de Clientes");
+        setViewEstate("new");
+    }
+    public Cliente getCliente() 
+    {
         return data;
     }
 
@@ -160,6 +220,37 @@ public class BeanCatCliente implements BeanSimple
 
     public void setData(Cliente data) {
         this.data = data;
+    }
+     public int getSelectedEntidad() {
+        return selectedEntidad;
+    }
+
+    public void setSelectedEntidad(int selectedEntidad) {
+        this.selectedEntidad = selectedEntidad;
+    }
+    
+    public ArrayList<Municipios> getLista_municipios() {
+        return lista_municipios;
+    }
+
+    public void setLista_municipios(ArrayList<Municipios> lista_municipios) {
+        this.lista_municipios = lista_municipios;
+    }
+    
+    public ArrayList<Entidad> getLista_entidades_2() {
+        return lista_entidades_2;
+    }
+
+    public void setLista_entidades_2(ArrayList<Entidad> lista_entidades_2) {
+        this.lista_entidades_2 = lista_entidades_2;
+    }
+
+    public ArrayList<Municipios> getLista_municipios_2() {
+        return lista_municipios_2;
+    }
+
+    public void setLista_municipios_2(ArrayList<Municipios> lista_municipios_2) {
+        this.lista_municipios_2 = lista_municipios_2;
     }
 
 
