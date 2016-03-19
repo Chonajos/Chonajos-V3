@@ -7,6 +7,7 @@ package com.web.chon.ejb;
 
 import com.web.chon.dominio.Usuario;
 import com.web.chon.negocio.NegocioLogin;
+import java.math.BigDecimal;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -38,6 +39,7 @@ public class SessionUsuario implements NegocioLogin {
             if (lista.size() > 0) {
 
                 for (Object[] object : lista) {
+                    usuario.setIdUsuarioPk(object[0] == null ? null: new BigDecimal(object[0].toString()));
                     usuario.setNombreUsuario(object[1] == null ? "" : object[1].toString());
                     usuario.setApaternoUsuario(object[2] == null ? "" : object[2].toString());
                     usuario.setAmaternoUsuario(object[3] == null ? "" : object[3].toString());

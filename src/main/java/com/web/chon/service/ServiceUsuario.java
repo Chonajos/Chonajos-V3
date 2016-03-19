@@ -19,13 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 public class ServiceUsuario implements IfaceUsuario {
-
-//    @PersistenceContext private EntityManager entityManager;
   NegocioLogin ejb;
-//    @Autowired
-//    UsuarioRepository usuarioRepository;
 
-//    @Transactional(readOnly = true)
     @Override
     public Usuario validarLogin(Usuario obj) throws Exception {
        ejb = (NegocioLogin) Utilidades.getEJBRemote("ejbUsuario", NegocioLogin.class.getName());

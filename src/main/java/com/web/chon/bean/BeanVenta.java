@@ -1,6 +1,7 @@
 package com.web.chon.bean;
 
 import com.web.chon.dominio.Cliente;
+import com.web.chon.dominio.MantenimientoPrecios;
 import com.web.chon.dominio.Subproducto;
 import com.web.chon.dominio.TipoEmpaque;
 import com.web.chon.dominio.Usuario;
@@ -9,6 +10,7 @@ import com.web.chon.dominio.VentaProducto;
 import com.web.chon.service.IfaceCatCliente;
 import com.web.chon.service.IfaceCatUsuario;
 import com.web.chon.service.IfaceEmpaque;
+import com.web.chon.service.IfaceMantenimientoPrecio;
 import com.web.chon.service.IfaceSubProducto;
 import com.web.chon.service.IfaceVenta;
 import com.web.chon.service.IfaceVentaProducto;
@@ -59,7 +61,10 @@ public class BeanVenta implements Serializable, BeanSimple {
     IfaceCatCliente ifaceCatCliente;
     @Autowired
     IfaceCatUsuario ifaceCatUsuario;
-
+    @Autowired
+    IfaceMantenimientoPrecio ifaceMantenimientoPrecio;
+    @Autowired
+    BeanUsuario beanUsuario;
     private ArrayList<VentaProducto> lstVenta;
     private ArrayList<Subproducto> lstProducto;
     private ArrayList<TipoEmpaque> lstTipoEmpaque;
@@ -72,44 +77,41 @@ public class BeanVenta implements Serializable, BeanSimple {
     private VentaProducto dataEdit;
     private Usuario usuario;
     private Cliente cliente;
-//   private BeanUsuario beanUsuario;
-
     private String title = "";
     private String nombreEmpaque = "";
     private String viewEstate = "";
     private BigDecimal totalVenta;
     private VentaProducto data;
     private Venta venta;
-    private String line = "___________________________________________\n";
-    private String contentTicket = "" + (char) 27 + (char) 112 + (char) 0 + (char) 10 + (char) 100 + "\033[1m             COMERCIALIZADORA Y \n"
-            + "\033[0m             EXPORTADORA CHONAJOS\033[0m\n"
-            + "\033[0m                 S DE RL DE CV\033[0m\n"
-            + "\033[0m                55-56-40-58-46\033[0m\n"
-            + "\033[0m                   Bod.  Q85\033[0m\n"
-            + "\033[0m                 VALE DE VENTA\033[0m\n"
-            + "\033[0m                 {{dateTime}}\033[0m\n"
+    private String line = "_______________________________________________\n";
+    private String contentTicket = "              COMERCIALIZADORA Y \n"
+            + "             EXPORTADORA CHONAJOS\n"
+            + "                 S DE RL DE CV\n"
+            + "                55-56-40-58-46\n"
+            + "                   Bod.  Q85\n"
+            + "                 VALE DE VENTA\n"
+            + "                {{dateTime}}\n"
             + "Vale No. {{valeNum}}     \n"
             + "C:{{cliente}}\n"
+            + "Vendedor:{{vendedor}}\n"
             + "BULT/CAJ    PRODUCTO     PRECIO      TOTAL\n"
             + "{{items}}\n"
             + line
-            + "\033[1mVENTA:        {{total}}\n"
-            + "{{totalLetra}}\n\n"
-            + "\033[1m               P A G A D O\033[0m"
+            + "VENTA:        {{total}}\n"
+            + "{{totalLetra}}\n\n\n"
+            + "               P A G A D O\n\n"
             + "\n" + (char) 27 + (char) 112 + (char) 0 + (char) 10 + (char) 100 + "\n"
             + (char) 27 + "m";
 
     @PostConstruct
     public void init() {
-
+        usuario = beanUsuario.getUsuario();
         venta = new Venta();
         data = new VentaProducto();
         data.setIdTipoEmpaqueFk(new BigDecimal(-1));
         lstProducto = new ArrayList<Subproducto>();
-        subProducto = new Subproducto();
         lstTipoEmpaque = ifaceEmpaque.getEmpaques();
         lstVenta = new ArrayList<VentaProducto>();
-        //System.out.println("Nombre de usuario :" + beanUsuario.getUsuario().getNombreUsuario());
 
         selectedTipoEmpaque();
         setTitle("Venta de Productos.");
@@ -128,6 +130,8 @@ public class BeanVenta implements Serializable, BeanSimple {
             }
 
         }
+
+        searchById();
 
     }
 
@@ -164,6 +168,8 @@ public class BeanVenta implements Serializable, BeanSimple {
                 idVenta = ifaceVenta.getNextVal();
 
                 venta.setIdVentaPk(new BigDecimal(idVenta));
+                venta.setIdClienteFk(new BigDecimal(cliente.getId_cliente()));
+                venta.setIdVendedorFk(usuario.getIdUsuarioPk());
                 int ventaInsertada = ifaceVenta.insertarVenta(venta);
                 if (ventaInsertada != 0) {
                     for (VentaProducto producto : lstVenta) {
@@ -181,6 +187,7 @@ public class BeanVenta implements Serializable, BeanSimple {
             }
 
         } catch (Exception ex) {
+            ex.printStackTrace();
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", ex.toString()));
         }
         return "venta";
@@ -194,12 +201,14 @@ public class BeanVenta implements Serializable, BeanSimple {
     @Override
     public void searchById() {
 
-        if (subProducto.getIdSubproductoPk() != null) {
-            subProducto = ifaceSubProducto.getSubProductoById(subProducto.getIdSubproductoPk());
-//            data.setPrecioProducto(subProducto.getPrecioVenta());
-            data.setIdProductoFk(subProducto.getIdSubproductoPk());
-            data.setNombreProducto(subProducto.getNombreSubproducto());
-        }
+        MantenimientoPrecios mantenimentoPrecio = new MantenimientoPrecios();
+        int idEmpaque = data.getIdTipoEmpaqueFk() == null ? 0 : data.getIdTipoEmpaqueFk().intValue();
+        String idSubProducto = subProducto == null ? "" : (subProducto.getIdSubproductoPk() == null ? "" : subProducto.getIdSubproductoPk());
+        mantenimentoPrecio = ifaceMantenimientoPrecio.getMantenimientoPrecioById(idSubProducto.trim(), idEmpaque);
+
+        data.setIdProductoFk(idSubProducto);
+        data.setIdTipoEmpaqueFk(new BigDecimal(idEmpaque));
+        data.setPrecioProducto(mantenimentoPrecio.getPrecioVenta() == null ? null : mantenimentoPrecio.getPrecioVenta().toBigInteger());
     }
 
     public void addProducto() {
@@ -209,13 +218,13 @@ public class BeanVenta implements Serializable, BeanSimple {
         empaque = getEmpaque(data.getIdTipoEmpaqueFk());
 
         venta.setCantidadEmpaque(data.getCantidadEmpaque());
-        venta.setIdProductoFk(data.getIdProductoFk());
+
         venta.setIdTipoEmpaqueFk(data.getIdTipoEmpaqueFk());
         venta.setIdVentaProductoPk(data.getIdVentaProductoPk());
         venta.setKilosVenta(data.getKilosVenta());
         venta.setPrecioProducto(data.getPrecioProducto());
-        venta.setNombreProducto(data.getNombreProducto());
-        venta.setIdProductoFk(data.getIdProductoFk());
+        venta.setNombreProducto(subProducto.getNombreSubproducto());
+        venta.setIdProductoFk(subProducto.getIdSubproductoPk());
         venta.setNombreEmpaque(empaque.getNombreEmpaque());
 
         venta.setTotal(new BigDecimal(venta.getPrecioProducto()).multiply(venta.getCantidadEmpaque()));
@@ -223,7 +232,9 @@ public class BeanVenta implements Serializable, BeanSimple {
         calcularTotalVenta();
 
         data.reset();
+        subProducto = new Subproducto();
         selectedTipoEmpaque();
+
     }
 
     private void calcularTotalVenta() {
@@ -263,7 +274,6 @@ public class BeanVenta implements Serializable, BeanSimple {
         }
 
         String totalVentaStr = numeroLetra.Convertir(df.format(totalVenta), true);
-
         putValues("ChonAjos", "1", "Q85", Utilerias.getFechaDDMMYYYYHHMM(date), productos, nf.format(totalVenta), totalVentaStr, idVenta);
         imprimirDefault();
 
@@ -280,12 +290,8 @@ public class BeanVenta implements Serializable, BeanSimple {
         contentTicket = contentTicket.replace("{{totalLetra}}", totalVentaStr);
         contentTicket = contentTicket.replace("{{valeNum}}", Integer.toString(idVenta));
         contentTicket = contentTicket.replace("{{dateTime}}", dateTime);
-
-    }
-
-    private String espacios(String str, int espacios) {
-
-        return str;
+        contentTicket = contentTicket.replace("{{vendedor}}", usuario.getNombreCompletoUsuario());
+        contentTicket = contentTicket.replace("{{cliente}}", cliente.getNombreCombleto());
 
     }
 
@@ -318,7 +324,7 @@ public class BeanVenta implements Serializable, BeanSimple {
     public void editProducto() {
 
         subProducto = ifaceSubProducto.getSubProductoById(dataEdit.getIdProductoFk());
-        autoComplete(subProducto.getNombreSubproducto());
+        autoComplete(dataEdit.getNombreProducto());
         searchById();
         data.setCantidadEmpaque(dataEdit.getCantidadEmpaque());
         data.setIdProductoFk(dataEdit.getIdProductoFk());
@@ -361,7 +367,6 @@ public class BeanVenta implements Serializable, BeanSimple {
         subProducto = new Subproducto();
 
         viewEstate = "init";
-        autoComplete("");
 
         data.reset();
     }
@@ -509,7 +514,5 @@ public class BeanVenta implements Serializable, BeanSimple {
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
-    
-    
 
 }

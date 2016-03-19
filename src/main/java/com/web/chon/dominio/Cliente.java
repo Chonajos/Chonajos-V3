@@ -33,6 +33,7 @@ public class Cliente implements Serializable
     private int num_ext;
     private String colonia;
     private int clavecelular;
+    private String nombreCombleto;
 
     public int getClavecelular() {
         return clavecelular;
@@ -355,4 +356,14 @@ public class Cliente implements Serializable
     public void setDel_Mun(String Del_Mun) {
         this.Del_Mun = Del_Mun;
     }
+
+    public String getNombreCombleto() {
+        return nombre+" "+paterno+" "+materno;
+    }
+
+    public void setNombreCombleto(String nombreCombleto) {
+        this.nombreCombleto = nombreCombleto;
+    }
+    
+    
 }

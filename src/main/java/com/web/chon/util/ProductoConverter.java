@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-
 public class ProductoConverter implements Converter {
 
     @Autowired
@@ -47,7 +46,7 @@ public class ProductoConverter implements Converter {
 
             if (value instanceof Subproducto) {
 
-                return String.valueOf(((Subproducto) value).getNombreSubproducto());
+                return String.valueOf(((Subproducto) value).getIdSubproductoPk());
 
             } else {
 
