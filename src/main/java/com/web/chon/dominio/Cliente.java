@@ -361,7 +361,8 @@ public class Cliente implements Serializable
     }
 
     public String getNombreCombleto() {
-        return nombre+" "+paterno+" "+materno;
+        String nombreCompleto = nombre+" "+paterno+" "+materno;
+        return nombreCompleto.trim();
     }
 
     public void setNombreCombleto(String nombreCombleto) {
