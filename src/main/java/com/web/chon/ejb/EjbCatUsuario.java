@@ -76,7 +76,7 @@ public class EjbCatUsuario implements NegocioCatUsuario {
     @Override
     public int updateUsuario(Usuario usuario) {
 
-        try {
+        try {//5543445575
 
             System.out.println("Usuario a modificar :" + usuario.getNombreUsuario() + " desc " + usuario.getRfcUsuario() + " " + usuario.getIdUsuarioPk().intValue());
             Query query = em.createNativeQuery("UPDATE Usuario SET NOMBRE_USUARIO = ?, APATERNO_USUARIO = ?, AMATERNO_USUARIO = ?, "

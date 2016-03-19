@@ -46,7 +46,7 @@ public class ServiceCatCliente implements IfaceCatCliente {
                 cliente.setCalle(obj[5] == null ? "" : obj[5].toString());
                 cliente.setCp(Integer.parseInt(obj[6].toString()));
                 cliente.setEstado(obj[7] == null ? "" : obj[7].toString());
-                String auxiliar_sexo=obj[8] == null ? "" : obj[8].toString();
+                String auxiliar_sexo=obj[8] == null ? "M" : obj[8].toString();
                 cliente.setSexo(auxiliar_sexo.charAt(0));
                 cliente.setFecha_nacimiento((Date) obj[9]);
                 cliente.setTel_movil(Integer.parseInt(obj[10].toString()));
@@ -102,9 +102,11 @@ public class ServiceCatCliente implements IfaceCatCliente {
                 cliente.setCalle(obj[5] == null ? "":obj[5].toString());
                 cliente.setCp(obj[6] == null ? 0:Integer.parseInt(obj[6].toString()));
                 cliente.setEstado(obj[7] == null ? "":obj[7].toString());
-                String auxiliar_sexo=obj[8] == null ? "":obj[8].toString();
+                
+                String auxiliar_sexo=obj[8] == null ? "M":obj[8].toString();
+                
                 cliente.setSexo(auxiliar_sexo.charAt(0));
-                cliente.setFecha_nacimiento(obj[9] == null ? null:(Date) obj[9]);
+                cliente.setFecha_nacimiento((Date) (obj[9] == null ? "2015-01-23":(Date) obj[9]));
                 cliente.setTel_movil(Integer.parseInt(obj[10] == null ? "":obj[10].toString()));
                 cliente.setTel_fijo(Integer.parseInt(obj[11] == null ? "":obj[11].toString()));
                 cliente.setExt(Integer.parseInt(obj[12] == null ? "":obj[12].toString()));
@@ -119,8 +121,8 @@ public class ServiceCatCliente implements IfaceCatCliente {
                 cliente.setNum_int_fiscal(Integer.parseInt(obj[21] == null ? "":obj[21].toString()));
                 cliente.setNum_ext_fiscal(Integer.parseInt(obj[22] == null ? "":obj[22].toString()));
                 cliente.setColoniaFiscal(obj[23] == null ? "":obj[23].toString());
-                cliente.setEstadoFiscal(obj[24] == null ? "":obj[24].toString());
-                cliente.setDel_mun_fiscal(obj[25] == null ? "":obj[25].toString());
+                cliente.setEstadoFiscal(obj[24] == null ? "1":obj[24].toString());
+                cliente.setDel_mun_fiscal(obj[25] == null ? "1":obj[25].toString());
                 cliente.setNextel(Integer.parseInt(obj[26] == null ? "":obj[26].toString()));
                 cliente.setRazon_social(obj[27] == null ? "":obj[27].toString());
                 cliente.setRfcFiscal(obj[28] == null ? "":obj[28].toString());

@@ -78,7 +78,7 @@ public class EjbCatCliente implements NegocioCatCliente {
         try {
 
             System.out.println("Cliente a modificar :" + clie.getNombre());
-            Query query = em.createNativeQuery("UPDATE CLIENTE SET NOMBRE=?, APELLIDO_PATERNO=?, APELLIDO_MATERNO=?, EMPRESA=?, CALLE=?, CP=?, ESTADO=?, SEXO=?, FECHA_NACIMIENTO=?,TELEFONO_MOVIL=?, TELEFONO_FIJO=?, EXTENSION=?, EMAIL=?, NUM_INT=?, NUM_EXT=?, COLONIA=?, CLAVECELULAR=?, LADACELULAR=?, DEL_MUN=?,CALLEFISCAL=?,NUMINTFIS=?,NUMEXTFIS=?,COLONIAFISCAL=?,ESTADOFISCAL=?,DEL_MUN_FISCAL=?,NEXTEL=?,RAZON=?,RFC=?,CPFISCAL=? LADAOFICINA=?,CLAVEOFICINA=?,NEXTELCLAVE=?WHERE ID_CLIENTE = ? ");
+            Query query = em.createNativeQuery("UPDATE CLIENTE SET NOMBRE = ?, APELLIDO_PATERNO = ?, APELLIDO_MATERNO = ?, EMPRESA = ?, CALLE = ?, CP = ?, ESTADO = ?, SEXO = ?, FECHA_NACIMIENTO = ?,TELEFONO_MOVIL = ?, TELEFONO_FIJO = ?, EXTENSION = ?, EMAIL = ?, NUM_INT = ? , NUM_EXT = ?, COLONIA = ?, CLAVECELULAR = ?, LADACELULAR = ?, DEL_MUN = ?,CALLEFISCAL = ?,NUMINTFIS = ?,NUMEXTFIS = ?,COLONIAFISCAL = ?,ESTADOFISCAL = ?, DEL_MUN_FISCAL = ?, NEXTEL=?,RAZON = ?,RFC = ?,CPFISCAL = ? LADAOFICINA = ?,CLAVEOFICINA = ?,NEXTELCLAVE = ? WHERE ID_CLIENTE = ? ");
             query.setParameter(1, clie.getNombre());
             query.setParameter(2, clie.getPaterno());
             query.setParameter(3, clie.getMaterno());

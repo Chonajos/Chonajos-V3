@@ -180,35 +180,38 @@ public class Cliente implements Serializable
     @Override
     public String toString() {
         return "Cliente:  {" + "idCliente=" + id_cliente + 
-                ", Nombre= " + nombre + 
-                ", paterno= " + paterno+ 
-                ", materno= " + materno + 
-                ", Empresa= " + empresa + 
-                ", Calle= " + calle+            
-                ", cp= "+ cp+ 
-                ", sexo= " + sexo + 
+                ", Nombre = " + nombre + 
+                ", paterno = " + paterno+ 
+                ", materno = " + materno + 
+                ", Empresa = " + empresa + 
+                ", Calle = " + calle+            
+                ", cp = "+ cp+ 
                 ", Estado ="+ estado+
-                ", telefonoMovil" + tel_movil + 
+                ", sexo = " + sexo + 
                 ", Fecha Nacimiento = " + fecha_nacimiento + 
-                ", telefonoFijo=" + tel_fijo+ 
-                ", Extension" + ext + 
+                ", telefonoMovil = " + tel_movil + 
+                ", telefonoFijo =" + tel_fijo+ 
+                ", Extension = " + ext + 
                 ", correoCliente=" + email+ 
-                ", Num_Interior" + num_int + 
+                ", Num_Interior = " + num_int + 
                 ", Num_Exterior" + num_ext + 
-                ", Colonia" + colonia + 
-                ", Clave Tel" + clavecelular + 
-                ", Lada" + ladacelular + 
-                ", Del Mun" + Del_Mun + 
-                ", Calle Fiscal" + num_int_fiscal + 
-                ", Num_Interior Fiscal" + num_int_fiscal+ 
-                ", Num_Exterior Fiscal" + num_ext_fiscal +
-                ", Colonia Fiscal" + coloniaFiscal + 
-                ", Estado Fiscal" + estadoFiscal + 
-                ", Del Mun Fiscal" + del_mun_fiscal + 
-                ", Nextel" + nextel + 
-                ", Razon" + razon_social+ 
-                ", RFC" + rfcFiscal + 
-                ", CPFiscal" + cpFiscal + 
+                ", Colonia = " + colonia + 
+                ", ClaveCelular = " + clavecelular + 
+                ", LadaCelular = " + ladacelular + 
+                ", Del Mun = " + Del_Mun + 
+                ", Calle Fiscal =" + num_int_fiscal + 
+                ", Num_Interior Fiscal = " + num_int_fiscal+ 
+                ", Num_Exterior Fiscal = " + num_ext_fiscal +
+                ", Colonia Fiscal = " + coloniaFiscal + 
+                ", Estado Fiscal = " + estadoFiscal + 
+                ", Del Mun Fiscal = " + del_mun_fiscal + 
+                ", Nextel = " + nextel + 
+                ", Razon = " + razon_social+ 
+                ", RFC =" + rfcFiscal + 
+                ", CPFiscal = " + cpFiscal + 
+                 ",LADAOFICINA = " + ladaoficina +
+                 ",CLAVE OFICINA = " + claveoficina + 
+                ", NEXTELCLAVE = " + nextelclave + 
                 + '}';
     }
 
