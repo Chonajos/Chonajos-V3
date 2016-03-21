@@ -49,11 +49,32 @@ public class BeanCatCliente implements BeanSimple
     private String title;
     private String viewEstate;
     private Cliente data;
+    private int estado;
+    private int estado_fis;
+
+    public int getEstado() {
+        return estado;
+    }
+
+    public void setEstado(int estado) {
+        this.estado = estado;
+    }
+
+    public int getEstado_fis() {
+        return estado_fis;
+    }
+
+    public void setEstado_fis(int estado_fis) {
+        this.estado_fis = estado_fis;
+    }
     
     
     @PostConstruct
     public void init() {
-
+            
+        estado=1;
+        estado_fis=1;
+        
         data = new Cliente();
         model = new ArrayList<Cliente>();
         lista_entidades = new ArrayList<Entidad>();
@@ -70,9 +91,13 @@ public class BeanCatCliente implements BeanSimple
 
         setTitle("Catalogo de Clientes.");
         setViewEstate("init");
+        
+        lista_entidades = ifaceCatEntidad.getEntidades();      
+        lista_entidades_2 = ifaceCatEntidad.getEntidades(); 
     }
 
-    public ArrayList<Entidad> getLista_entidades() {
+    public ArrayList<Entidad> getLista_entidades()
+    {
         return lista_entidades;
     }
 
@@ -130,7 +155,8 @@ public class BeanCatCliente implements BeanSimple
     }
 
     @Override
-    public String update() {
+    public String update() 
+    {
         try {
             ifaceCatCliente.updateCliente(data);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro modificado."));
@@ -144,7 +170,8 @@ public class BeanCatCliente implements BeanSimple
     @Override
     public void searchById() 
     {
-        
+        System.out.println("data :"+data.toString());
+             
         setTitle("Editar Cliente.");
         setViewEstate("searchById");
 
@@ -152,12 +179,7 @@ public class BeanCatCliente implements BeanSimple
     
     public void viewNew() 
     {
-        lista_entidades = ifaceCatEntidad.getEntidades();      
-        //lista_municipios =ifaceCatMunicipio.getMunicipios(8);
-        
-        lista_entidades_2 = ifaceCatEntidad.getEntidades();      
-        //lista_municipios_2 =ifaceCatMunicipio.getMunicipios(8);
-        
+
         data = new Cliente();
         setTitle("Alta de Clientes");
         setViewEstate("new");
@@ -166,17 +188,17 @@ public class BeanCatCliente implements BeanSimple
     {
   
         lista_municipios =ifaceCatMunicipio.getMunicipios(Integer.parseInt(data.getEstado()));
-        data = new Cliente();
-        setTitle("Alta de Clientes");
-        setViewEstate("new");
+        //data = new Cliente();
+        //setTitle("Alta de Clientes");
+        //setViewEstate("new");
     }
     public void buscaMunicipios2() 
     {
         
         lista_municipios_2 =ifaceCatMunicipio.getMunicipios(Integer.parseInt(data.getEstadoFiscal()));
-        data = new Cliente();
-        setTitle("Alta de Clientes");
-        setViewEstate("new");
+        //data = new Cliente();
+        //setTitle("Alta de Clientes");
+        //setViewEstate("new");
     }
     public Cliente getCliente() 
     {
