@@ -12,33 +12,31 @@
 
         <h:form id="formProducto">
             <div>
-                <h1>#{beanProducto.title}</h1>
-
+                <h3>#{beanProducto.title}</h3>
             </div>
             <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
-            <p:panel rendered="#{beanProducto.viewEstate=='init'}" style="border: 0px;" >
+            <p:panel rendered="#{beanProducto.viewEstate=='init'}"  style="border: 0px;" >
                 <div class="form-group">
                     <p:commandButton value="Nuevo" update=":formProducto" ajax="true" action="#{beanProducto.viewNew}" icon="ui-icon-person" />
                     <p:commandButton value="Eliminar" update=":formProducto" ajax="true" action="#{beanProducto.delete}" icon="ui-icon-trash" />
                 </div>
                 <p:dataTable var="model" value="#{beanProducto.model}" rows="10" scrollable="true"
                              paginator="true" selection="#{beanProducto.selectedProducto}" rowKey="#{model.idProductoPk}"
-                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} "
-                             rowsPerPageTemplate="5,10,15" emptyMessage="No se encontraron Registros.">
+                             emptyMessage="No se encontraron Registros." >
 
-                    <p:column selectionMode="multiple" style="width:32px;text-align:center"/>
-                    <p:column headerText="Id" style="width:32px;text-align:center">
+                    <p:column selectionMode="multiple" width="32px; !important" style="text-align:center"/>
+                    <p:column headerText="Id" width="50px; !important" style="text-align:center">
                         <h:outputText value="#{model.idProductoPk}" />
                     </p:column>
 
-                    <p:column headerText="Nombre de Producto" style="width:350px;text-align:center">
+                    <p:column headerText="Nombre de Producto" width="350px; !important"  style="text-align:center">
                         <h:outputText value="#{model.nombreProducto}" />
                     </p:column>
 
-                    <p:column headerText="Descripción" style="width:350px;text-align:center">
+                    <p:column headerText="Descripción" width="350px; !important" style="text-align:center">
                         <h:outputText value="#{model.descripcionProducto}" />
                     </p:column>
-                    <p:column headerText="Editar" style="width:50px;text-align:center">
+                    <p:column headerText="Editar" width="60px; !important" style="text-align:center">
                         <p:commandButton id="ajax" ajax="true"  action="#{beanProducto.searchById}" icon="ui-icon-pencil" styleClass="ui-priority-primary" update=":formProducto">
                             <f:setPropertyActionListener value="#{model}" target="#{beanProducto.data}"/>
                         </p:commandButton>
@@ -59,7 +57,7 @@
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-12"  for="txtDescripcion" value ="Descripción:" /> 
-                        <p:inputText id="txtDescripcion" maxlength="45" class=" col-lg-5 col-md-5 col-sm-8 col-xs-12" value="#{beanProducto.data.descripcionProducto}" required="true"
+                        <p:inputText id="txtDescripcion" maxlength="45" class=" col-lg-5 col-md-5 col-sm-8 col-xs-12" value="#{beanProducto.data.descripcionProducto}"
                                      requiredMessage="Ingresa un valor para el campo Descripción."/>
                     </div>
                 </div>

@@ -10,7 +10,7 @@
     <ui:define name="content">
         <h:form id="formProducto">
             <div>
-                <h1>#{beanSubProducto.title}</h1>
+                <h3>#{beanSubProducto.title}</h3>
             </div>
             <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:panel rendered="#{beanSubProducto.viewEstate=='init'}" style="border: 0px;" >
@@ -20,19 +20,18 @@
                 </div>
                 <p:dataTable var="model" value="#{beanSubProducto.model}" rows="10" scrollable="true"
                              paginator="true" selection="#{beanSubProducto.selectedSubProducto}" rowKey="#{model.idSubproductoPk}"
-                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} "
-                             rowsPerPageTemplate="5,10,15" emptyMessage="No se encontraron Registros.">
-                    <p:column selectionMode="multiple" style="width:32px;text-align:center"/>
-                    <p:column headerText="Id" style="width:32px;text-align:center">
+                             emptyMessage="No se encontraron Registros.">
+                    <p:column selectionMode="multiple" width="32px; !important" style="text-align:center"/>
+                    <p:column headerText="Id" width="75px; !important" style="text-align:center">
                         <h:outputText value="#{model.idSubproductoPk}" />
                     </p:column>
-                    <p:column headerText="Categoría" style="width:200px;text-align:center">
+                    <p:column headerText="Categoría" width="350px; !important" style="text-align:center">
                         <h:outputText value="#{model.nombreCategoria}" />
                     </p:column>
-                    <p:column headerText="Nombre de Producto" style="width:200px;text-align:center">
+                    <p:column headerText="Nombre de Producto" width="350px; !important" style="text-align:center">
                         <h:outputText value="#{model.nombreSubproducto}" />
                     </p:column>
-                    <p:column headerText="Editar" style="width:50px;text-align:center">
+                    <p:column headerText="Editar" width="60px; !important" style="text-align:center">
                         <p:commandButton id="ajax" ajax="true"  action="#{beanSubProducto.searchById}" icon="ui-icon-pencil" styleClass="ui-priority-primary" update=":formProducto">
                             <f:setPropertyActionListener value="#{model}" target="#{beanSubProducto.data}"/>
                         </p:commandButton>
@@ -48,15 +47,15 @@
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-6"  for="selectProductos" value ="Categoría:"/> 
-                            <h:selectOneMenu id="selectProductos" value="#{beanSubProducto.data.idProductoFk}" required="true" class="col-lg-8 col-md-8 col-sm-8 col-xs-6" requiredMessage="Ingresa un valor para el campo Producto.">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="selectProductos" value ="Categoría:"/> 
+                            <h:selectOneMenu id="selectProductos" value="#{beanSubProducto.data.idProductoFk}" required="true" class="col-lg-8 col-md-8 col-sm-8 col-xs-12" requiredMessage="Ingresa un valor para el campo Producto.">
                                 <f:selectItem itemLabel="Seleccione la opción" itemValue="-1" noSelectionOption="true" />
                                 <f:selectItems value="#{beanSubProducto.lstProducto}" var="producto" itemLabel="#{producto.nombreProducto}" itemValue="#{producto.idProductoPk}" />
                             </h:selectOneMenu>
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-6"  for="txtNombre" value ="Nombre:" /> 
-                            <p:inputText id="txtNombre" maxlength="45" class=" col-lg-8 col-md-8 col-sm-8 col-xs-6" value="#{beanSubProducto.data.nombreSubproducto}" required="true"
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="txtNombre" value ="Nombre:" /> 
+                            <p:inputText id="txtNombre" maxlength="45" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanSubProducto.data.nombreSubproducto}" required="true"
                                          requiredMessage="Ingresa un valor para el campo Nombre."/>
                         </div>
                     </div>

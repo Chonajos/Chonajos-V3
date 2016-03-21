@@ -11,7 +11,7 @@
     <ui:define name="content">
         <h:form id="formContent">
             <div>
-                <h1>#{beanMantenimientoPrecio.title}</h1>
+                <h3>#{beanMantenimientoPrecio.title}</h3>
             </div>
             <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:panel>
@@ -24,7 +24,7 @@
                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="autocompletePoducto" value ="Producto:" /> 
                             <p:autoComplete  placeholder="Seleccione un Producto" id="autocompletePoducto"  required="true" requiredMessage="Ingresa un valor para el campo Producto." styleClass="autocomplete-input-text-media"
-                                             value="#{beanMantenimientoPrecio.subproducto}" completeMethod="#{beanMantenimientoPrecio.autoComplete}" forceSelection="true" var="producto"  inputStyle="width: 350px"
+                                             value="#{beanMantenimientoPrecio.subproducto}" completeMethod="#{beanMantenimientoPrecio.autoComplete}" forceSelection="true" var="producto"  inputStyle="width: 200px"
                                              itemLabel="#{producto.nombreSubproducto}"
                                              itemValue="#{producto.idSubproductoPk}" converter="#{productoConverter}">
                                 <p:ajax event="itemSelect" update=":formContent" listener="#{beanMantenimientoPrecio.searchById}" />
