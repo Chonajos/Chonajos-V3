@@ -215,6 +215,7 @@ public class BeanVenta implements Serializable, BeanSimple {
 
         VentaProducto venta = new VentaProducto();
         TipoEmpaque empaque = new TipoEmpaque();
+        DecimalFormat df = new DecimalFormat("#,###.##");
         empaque = getEmpaque(data.getIdTipoEmpaqueFk());
 
         venta.setCantidadEmpaque(data.getCantidadEmpaque());
@@ -264,7 +265,7 @@ public class BeanVenta implements Serializable, BeanSimple {
     private void imprimirTicket(int idVenta) {
 
         NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
-        DecimalFormat df = new DecimalFormat("###.##");
+        DecimalFormat df = new DecimalFormat("#,###.##");
         Date date = new Date();
         String productos = "";
         NumeroALetra numeroLetra = new NumeroALetra();
