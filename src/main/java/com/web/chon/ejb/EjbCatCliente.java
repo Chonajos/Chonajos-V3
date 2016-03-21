@@ -31,7 +31,16 @@ public class EjbCatCliente implements NegocioCatCliente {
         try {
 
             System.out.println("EJB_GET_CLIENTE");
-            Query query = em.createNativeQuery("SELECT * FROM CLIENTE");
+            Query query = em.createNativeQuery("select c.* ,en.ID_ENTIDAD_PK, en.NOMBRE_ENTIDAD ,en1.ID_ENTIDAD_PK, en1.NOMBRE_ENTIDAD,m.NOMBRE_MUNICIPIO,m1.NOMBRE_MUNICIPIO\n" +
+"                                from Cliente c\n" +
+"                                INNER JOIN Municipios m\n" +
+"                                on c.del_mun=m.id_municipio_pk\n" +
+"                                INNER JOIN ENTIDAD en\n" +
+"                                on en.ID_ENTIDAD_PK=m.ID_ENTIDAD_FK\n" +
+"                                INNER JOIN Municipios m1\n" +
+"                                on c.DEL_MUN_FISCAL=m1.id_municipio_pk\n" +
+"                                INNER JOIN ENTIDAD en1\n" +
+"                                on en1.ID_ENTIDAD_PK=m1.ID_ENTIDAD_FK");
             List<Object[]> resultList = null;
             resultList = query.getResultList();
             return resultList;

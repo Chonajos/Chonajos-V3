@@ -170,8 +170,8 @@ public class BeanCatCliente implements BeanSimple
     @Override
     public void searchById() 
     {
-        System.out.println("data :"+data.toString());
-             
+        buscaMunicipios();
+        buscaMunicipios2();
         setTitle("Editar Cliente.");
         setViewEstate("searchById");
 

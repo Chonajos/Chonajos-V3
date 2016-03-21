@@ -1,3 +1,9 @@
+BASE DE DATOS : choni
+USUARIO: choni
+Contraseña: choni
+
+
+
 create table rol(
 id_rol_pk number(3) not null,
 nombre_rol varchar(120) not null,
@@ -17,12 +23,12 @@ descripcion_producto varchar(255),
 CONSTRAINT c_id_producto_pk PRIMARY KEY (id_producto_pk)
 );
 
-
+create table subproducto(
+id_subproducto_pk varchar(8) not null,
+nombre_subproducto varchar (120) not null,
+descripcion_subproducto varchar(255),
 url_imagen_subproducto varchar(255),
 id_producto_fk number ,
-precio_minimo number,
-precio_maximo number,
-precio_venta number,
 CONSTRAINT c_id_subproducto_pk PRIMARY KEY (id_subproducto_pk),
 CONSTRAINT c_id_producto_fk FOREIGN KEY(id_producto_fk) references producto(id_producto_pk)
 );
@@ -34,8 +40,6 @@ nombre_empaque varchar (120),
 estatus_empaque char(1),
 CONSTRAINT c_id_tipo_empaque_pk PRIMARY KEY (id_tipo_empaque_pk)
 );
-
-
 
 CREATE SEQUENCE s_tipo_empaque
 INCREMENT BY 1
@@ -238,16 +242,73 @@ INCREMENT BY 1
 START WITH 1
 MINVALUE 0;
 
+
+
+CREATE TABLE CLIENTE(
+   ID_CLIENTE  NUMBER, 
+	 NOMBRE  VARCHAR(50), 
+	 APELLIDO_PATERNO  VARCHAR(50), 
+	 APELLIDO_MATERNO  VARCHAR(50), 
+	 EMPRESA  VARCHAR(20), 
+	 CALLE  VARCHAR(60), 
+	 CP  NUMBER(5,0),
+	 SEXO  CHAR(1), 
+	 FECHA_NACIMIENTO  DATE, 
+	 TELEFONO_MOVIL  NUMBER, 
+	 TELEFONO_FIJO  NUMBER, 
+	 EXTENSION  NUMBER, 
+	 EMAIL  VARCHAR(50), 
+	 NUM_INT  NUMBER, 
+	 NUM_EXT  NUMBER, 
+	 COLONIA  VARCHAR(50), 
+	 CLAVECELULAR  NUMBER, 
+	 LADACELULAR  NUMBER, 
+	 DEL_MUN  NUMBER, 
+	 CALLEFISCAL  VARCHAR(50), 
+	 NUMINTFIS  NUMBER, 
+	 NUMEXTFIS  NUMBER, 
+	 COLONIAFISCAL  VARCHAR(50), 
+	 DEL_MUN_FISCAL  NUMBER, 
+	 NEXTEL  NUMBER, 
+	 RAZON  VARCHAR(100), 
+	 RFC  VARCHAR(20), 
+	 CPFISCAL  VARCHAR(20), 
+	 LADAOFICINA  VARCHAR(20), 
+	 CLAVEOFICINA  VARCHAR(20), 
+	 NEXTELCLAVE  VARCHAR(20),
+	 CONSTRAINT c_id_cliente_pk PRIMARY KEY (ID_CLIENTE),
+	 CONSTRAINT c_id_mun_clientes_fk FOREIGN KEY(DEL_MUN) references municipios(id_municipio_pk),
+	 CONSTRAINT c_id_mun_clientes_fiscal_fk FOREIGN KEY(DEL_MUN_FISCAL) references municipios(id_municipio_pk)
+	 );
+
+CREATE SEQUENCE S_CLIENTE
+INCREMENT BY 1
+START WITH 1
+MINVALUE 0;
+
+
+
+
+
+
+
+
+
+
 create table venta_producto(
 id_venta_producto_pk number not null,
-id_producto_fk number,
-precio_producto number,
-kilos_vendidos number,
+id_subproducto_fk varchar(8),
+precio_producto number(10,2),
+kilos_vendidos number(15,3),
+cantidad_empaque number(6),
+total_venta number(15,4),
 id_tipo_empaque_fk number,
 id_tipo_venta_fk number,
+id_venta_fk number NOT NULL ENABLE,
 CONSTRAINT c_id_tipo_venta_fk FOREIGN KEY(id_tipo_venta_fk) references tipo_venta(id_tipo_venta_pk),
 CONSTRAINT c_id_tipo_empaque_venta_fk FOREIGN KEY(id_tipo_empaque_fk) references tipo_empaque(id_tipo_empaque_pk),
-CONSTRAINT c_id_producto_venta_fk FOREIGN KEY(id_producto_fk) references producto(id_producto_pk),
+CONSTRAINT c_id_producto_venta_fk FOREIGN KEY(id_subproducto_fk) references subproducto(ID_SUBPRODUCTO_PK),
+CONSTRAINT c_id_venta_fk FOREIGN KEY(id_venta_fk) references VENTA(ID_VENTA_PK),
 CONSTRAINT c_id_venta_producto_pk PRIMARY KEY (id_venta_producto_pk)
 );
 
@@ -257,68 +318,21 @@ START WITH 1
 MINVALUE 0;
 
 
+create table mantenimiento_precio(
+id_subproducto_fk varchar(8),
+id_tipo_empaque_fk number,
+precio_venta number(8,2),
+precio_minimo number(8,2),
+precio_maximo number(8,2),
+CONSTRAINT c_precio_id_subproducto_fk FOREIGN KEY(id_subproducto_fk) references subproducto(id_subproducto_pk),
+CONSTRAINT c_precio_id_empaque_fk FOREIGN KEY(id_tipo_empaque_fk) references tipo_empaque(id_tipo_empaque_pk)
+);
 
-/*tablas eliminadas
+CREATE SEQUENCE s_entidad1
+INCREMENT BY 1
+START WITH 1
+MINVALUE 0;
+
+tablas eliminadas
 COMPRA_PRODUCTOS
 EXISTENCIA_PRODUCTO
-subproductos
-productos
-*/
-
-
-
---Inserts default
-
-INSERT INTO TIPO_EMPAQUE (ID_TIPO_EMPAQUE_PK,NOMBRE_EMPAQUE,ESTATUS_EMPAQUE) values(S_TIPO_EMPAQUE.NextVal,'kilos',1)
-
-
-
-
---Creacion de Tabla Clientes:
---Freddy.
-
-CREATE TABLE "CHONAJOS"."CLIENTE" 
-   (	"ID_CLIENTE" NUMBER, 
-	"NOMBRE" VARCHAR2(50 BYTE), 
-	"APELLIDO_PATERNO" VARCHAR2(50 BYTE), 
-	"APELLIDO_MATERNO" VARCHAR2(50 BYTE), 
-	"EMPRESA" VARCHAR2(20 BYTE), 
-	"CALLE" VARCHAR2(60 BYTE), 
-	"CP" NUMBER(5,0), 
-	"ESTADO" VARCHAR2(20 BYTE), 
-	"SEXO" CHAR(1 BYTE), 
-	"FECHA_NACIMIENTO" DATE, 
-	"TELEFONO_MOVIL" NUMBER, 
-	"TELEFONO_FIJO" NUMBER, 
-	"EXTENSION" NUMBER, 
-	"EMAIL" VARCHAR2(50 BYTE), 
-	"NUM_INT" NUMBER, 
-	"NUM_EXT" NUMBER, 
-	"COLONIA" VARCHAR2(50 BYTE), 
-	"CLAVECELULAR" NUMBER, 
-	"LADACELULAR" NUMBER, 
-	"DEL_MUN" VARCHAR2(50 BYTE), 
-	"CALLEFISCAL" VARCHAR2(50 BYTE), 
-	"NUMINTFIS" NUMBER, 
-	"NUMEXTFIS" NUMBER, 
-	"COLONIAFISCAL" VARCHAR2(50 BYTE), 
-	"ESTADOFISCAL" VARCHAR2(50 BYTE), 
-	"DEL_MUN_FISCAL" VARCHAR2(50 BYTE), 
-	"NEXTEL" NUMBER, 
-	"RAZON" VARCHAR2(100 BYTE), 
-	"RFC" VARCHAR2(20 BYTE), 
-	"CPFISCAL" VARCHAR2(20 BYTE), 
-	"LADAOFICINA" VARCHAR2(20 BYTE), 
-	"CLAVEOFICINA" VARCHAR2(20 BYTE), 
-	"NEXTELCLAVE" VARCHAR2(20 BYTE)
-   ) SEGMENT CREATION IMMEDIATE 
-  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING
-  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
-  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
-  TABLESPACE "USERS" ;
-REM INSERTING into CHONAJOS.CLIENTE
-SET DEFINE OFF;
-
-CREATE SEQUENCE  "CHONAJOS"."S_CLIENTE"  MINVALUE 1 MAXVALUE 99999999999 INCREMENT BY 1 START WITH 28 CACHE 20 ORDER  NOCYCLE ;
-
-

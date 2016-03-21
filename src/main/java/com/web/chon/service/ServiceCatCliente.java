@@ -55,7 +55,7 @@ public class ServiceCatCliente implements IfaceCatCliente {
                 cliente.setColonia(obj[15] == null ? "" : obj[15].toString());
                 cliente.setClavecelular(Integer.parseInt(obj[16].toString()));
                 cliente.setLadacelular(Integer.parseInt(obj[17].toString()));
-                cliente.setDel_Mun(Integer.parseInt(obj[18].toString()));
+                cliente.setDel_Mun(Integer.parseInt(obj[18].toString()));//
                 cliente.setCalleFiscal(obj[19] == null ? "" : obj[19].toString());
                 cliente.setNum_int_fiscal(Integer.parseInt(obj[20].toString()));
                 cliente.setNum_ext_fiscal(Integer.parseInt(obj[21].toString()));
@@ -70,6 +70,12 @@ public class ServiceCatCliente implements IfaceCatCliente {
                 cliente.setNextelclave(Integer.parseInt(obj[29].toString()));
                 cliente.setcpFiscal(Integer.parseInt(obj[30].toString()));
                 
+                cliente.setEstado(obj[31] == null ? "":(obj[31].toString()));
+                cliente.setNombreEstado(obj[32] == null ? "":(obj[32].toString()));
+                cliente.setEstadoFiscal(obj[33] == null ? "":(obj[33].toString()));
+                cliente.setNombreEstadoFiscal(obj[34] == null ? "":(obj[34].toString()));
+                cliente.setNombreDelegacionMunicipio(obj[35] == null ? "":(obj[35].toString()));
+                cliente.setNombreDeleMunFiscal(obj[36] == null ? "":(obj[36].toString()));
                 lista_clientes.add(cliente);
             }
             return lista_clientes;

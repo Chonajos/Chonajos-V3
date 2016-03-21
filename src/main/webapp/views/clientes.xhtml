@@ -89,7 +89,9 @@
                             <h:outputLabel for="acp" value="Código Postal: " />
                             <h:outputText id="acp" value="#{beanCatCliente.data.cp}"/>
                             <h:outputLabel for="aestado" value="Estado: " />
-                            <h:outputText id="aestado" value="#{beanCatCliente.data.del_Mun}" />
+                            <h:outputText id="aestado" value="#{beanCatCliente.data.nombreEstado}" />
+                            <h:outputLabel for="amuni" value="Delegación o municipio: " />
+                            <h:outputText id="amuni" value="#{beanCatCliente.data.nombreDelegacionMunicipio}" />
                             <h:outputLabel for="acelular" value="Teléfono Celular " />
                             <h:outputText id="acelular" value="#{beanCatCliente.data.tel_movil}"/>
                             <h:outputLabel for="aofice" value="Teléfono de Oficina" />
@@ -112,8 +114,7 @@
                         <!--Datos de Facturacion-->
                         <h4 class="first">Datos de Facturación</h4>
                         <p:panelGrid  columns="6" columnClasses="value" rendered="#{not empty beanCatCliente.data}">
-                            <h:outputLabel for="adelmun" value="Delegacion o Municipio: " />
-                            <h:outputText id="adelmun" value="#{beanCatCliente.data.del_Mun}"  />
+                            
                             <h:outputLabel for="acallefiscal" value="Calle: " />
                             <h:outputText id="acallefiscal" value="#{beanCatCliente.data.calleFiscal}"/>
                             <h:outputLabel for="anumintfis" value="Número Interior: " />
@@ -123,9 +124,9 @@
                             <h:outputLabel for="acoloniafiscal" value="Colonia Fiscal: " />
                             <h:outputText id="acoloniafiscal" value="#{beanCatCliente.data.coloniaFiscal}"/>
                             <h:outputLabel for="aestadofiscal" value="Estado: " />
-                            <h:outputText id="aestadofiscal" value="#{beanCatCliente.data.del_mun_fiscal}"/>
+                            <h:outputText id="aestadofiscal" value="#{beanCatCliente.data.nombreEstadoFiscal}"/>
                             <h:outputLabel for="adelmunfiscal" value="Delegacion o Municipio: " />
-                            <h:outputText id="adelmunfiscal" value="#{beanCatCliente.data.del_mun_fiscal}"/>
+                            <h:outputText id="adelmunfiscal" value="#{beanCatCliente.data.nombreDeleMunFiscal}"/>
                             <h:outputLabel for="adeno" value="Razon o Denominacion Social: " />
                             <h:outputText id="aadeno" value="#{beanCatCliente.data.razon_social}"/>
                             <h:outputLabel for="arfc" value="RFC: " />
@@ -175,7 +176,7 @@
                     
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <h:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6" for="radioSexo" value="Sexo:"/>
-                        <h:selectOneRadio id="radioSexo" label="Sexo" value="#{beanCatCliente.data.sexo}">
+                        <h:selectOneRadio id="radioSexo" label="Sexo" value="#{beanCatCliente.data.sexo}" required="true">
                         <f:selectItem itemLabel="Masculino" itemValue="M"/>
                         <f:selectItem itemLabel="Femenino" itemValue="F"/>
                         </h:selectOneRadio>
@@ -208,27 +209,27 @@
                         </p:inputText>
                                                
                     </div>
-                    <div class="row">
-                        <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 form-group">
-                            <p:outputLabel class="col-lg-6 col-md-3 col-sm-4 col-xs-6"  for="txtNumInt" value ="Número Interior" /> 
-                            <p:inputText id="txtNumInt" maxlength="5" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.num_int}" >
+              
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"   for="txtNumInt" value ="Número Interior" /> 
+                            <p:inputText id="txtNumInt" maxlength="5" class=" col-lg-1 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.num_int}" >
                             <pe:keyFilter regEx="/[0-9_]/i"/>
                             </p:inputText>
                         </div>
-                        <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 form-group">
-                            <p:outputLabel class="col-lg-6 col-md-3 col-sm-4 col-xs-6"  for="txtNumExt" value ="Número Exterior" /> 
-                            <p:inputText id="txtNumExt" maxlength="5" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.num_ext}" >
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtNumExt" value ="Número Exterior" /> 
+                            <p:inputText id="txtNumExt" maxlength="5" class=" col-lg-1 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.num_ext}" >
                             <pe:keyFilter regEx="/[0-9_]/i"/>
                             </p:inputText>
                         </div>
-                        <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 form-group">
-                            <p:outputLabel class="col-lg-6 col-md-3 col-sm-4 col-xs-6"  for="txtCP" value ="Código Postal" /> 
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtCP" value ="Código Postal" /> 
                             <p:inputText id="txtCP" maxlength="5" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.cp}" >
                             <pe:keyFilter regEx="/[0-9_]/i"/>
                             </p:inputText>
                         </div>
                         <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 form-group"></div>
-                    </div>    
+                       
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtColonia" value ="Colonia:" /> 
                         <p:inputText id="txtColonia" maxlength="50" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.colonia}" ></p:inputText>
@@ -244,77 +245,80 @@
                                 <p:ajax event="change" update=":formCliente:txtMunicipio1" listener="#{beanCatCliente.buscaMunicipios()}" />
                             </h:selectOneMenu>
                     </div>
-                    <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12"></div>
-                    <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12"></div>
+                    
                     <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-3 col-md-4 col-sm-4 col-xs-12"  for="txtMunicipio1" value ="Municipio:" /> 
                             <h:selectOneMenu  id="txtMunicipio1" class=" col-lg-5 col-md-8 col-sm-8 col-xs-12" value="#{beanCatCliente.data.del_Mun}">
-                                <f:selectItem itemLabel="Selecciona un Municipio" itemValue="-1" />
+                                <f:selectItem itemLabel="Selecciona un Municipio" itemValue="2493" />
                                 <f:selectItems value="#{beanCatCliente.lista_municipios}" var="municipito" itemLabel="#{municipito.nombreMunicipio}" itemValue="#{municipito.idMunicipioPk}"/>
                               
                             </h:selectOneMenu>
                     </div>
                     
                     
-                    <div class="row">
-                        <div class="col-lg-1 col-md-12 col-sm-12 col-xs-12 well form-group ">
-                            <p:outputLabel class="col-lg-2 col-md-3 col-sm-4 col-xs-6"  for="txtTelOfilada" value ="LADA:(01)" /> 
-                        </div>
-                            <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 well form-group ">
-                            <p:inputText id="txtTelOfilada" maxlength="4" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.ladaoficina}" >
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                       <h4 class="first">Teléfono de Oficina</h4>
+                    </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"   for="txtTelOfilada" value ="LADA:(01)" /> 
+                            <p:inputText id="txtTelOfilada" maxlength="4" class=" col-lg-1 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.ladaoficina}" >
                             <pe:keyFilter regEx="/[0-9_]/i"/>
                             </p:inputText>
                         </div>
-                        <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 form-group" >
-                            <p:outputLabel class="col-lg-2 col-md-3 col-sm-4 col-xs-6"  for="txtTelOfiClave" value ="CLAVE:(55)" /> 
-                            <p:inputText id="txtTelOfiClave" maxlength="2" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.claveoficina}" >
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group" >
+                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtTelOfiClave" value ="CLAVE:(55)" /> 
+                            <p:inputText id="txtTelOfiClave" maxlength="2" class=" col-lg-1 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.claveoficina}" >
                             <pe:keyFilter regEx="/[0-9_]/i"/>
                             </p:inputText>
                         </div>
-                        <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 form-group">
-                            <p:outputLabel class="col-lg-2 col-md-3 col-sm-4 col-xs-6" for="txtTelOfi" value ="Telefono de Oficina" /> 
-                            <p:inputText id="txtTelOfi" maxlength="10" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.tel_fijo}" >
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6" for="txtTelOfi" value ="Número:" /> 
+                            <p:inputText id="txtTelOfi" maxlength="10" class=" col-lg-1 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.tel_fijo}" >
                             <pe:keyFilter regEx="/[0-9_]/i"/>
                             </p:inputText>
                         </div>
-                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 form-group"></div>
-                    </div>    
+                       
+                       
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtOfiExt" value ="Extensión:" /> 
-                        <p:inputText id="txtOfiExt" maxlength="5" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.num_ext}" >
+                        <p:inputText id="txtOfiExt" maxlength="5" class=" col-lg-1 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.num_ext}" >
                         <pe:keyFilter regEx="/[0-9_]/i"/>
                         </p:inputText>
                     </div>
                     
-                    
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                       <h4 class="first">Teléfono Celular:</h4>
+                    </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtCellLada" value ="LADA:(044)" /> 
-                        <p:inputText id="txtCellLada" maxlength="4" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.ladaoficina}" >
+                        <p:inputText id="txtCellLada" maxlength="4" class=" col-lg-1 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.ladaoficina}" >
                         <pe:keyFilter regEx="/[0-9_]/i"/>
                         </p:inputText>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtTelCellClave" value ="CLAVE:(55)" /> 
-                        <p:inputText id="txtTelCellClave" maxlength="2" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.claveoficina}" >
+                        <p:inputText id="txtTelCellClave" maxlength="2" class=" col-lg-1 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.claveoficina}" >
                         <pe:keyFilter regEx="/[0-9_]/i"/>
                         </p:inputText>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                        <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtCelu" value ="Número de Celular" /> 
-                        <p:inputText id="txtCelu" maxlength="8" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.tel_fijo}" >
+                        <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtCelu" value ="Número:" /> 
+                        <p:inputText id="txtCelu" maxlength="8" class=" col-lg-1 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.tel_fijo}" >
                         <pe:keyFilter regEx="/[0-9_]/i"/>
                         </p:inputText>
                     </div>
-                    
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                       <h4 class="first">Radio Nextel</h4>
+                    </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtNextelClave" value ="ID:" /> 
-                        <p:inputText id="txtNextelClave" maxlength="5" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.nextelclave}" >
+                        <p:inputText id="txtNextelClave" maxlength="5" class=" col-lg-1 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.nextelclave}" >
                         <pe:keyFilter regEx="/[0-9_]/i"/>
                         </p:inputText>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtNextel" value ="Nextel:" /> 
-                        <p:inputText id="txtNextel" maxlength="5" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.nextel}" >
+                        <p:inputText id="txtNextel" maxlength="5" class=" col-lg-1 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.nextel}" >
                         <pe:keyFilter regEx="/[0-9_]/i"/>
                         </p:inputText>
                     </div>
@@ -324,8 +328,11 @@
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtEmail" value ="Correo Electrónico:" /> 
                         <p:inputText id="txtEmail" maxlength="30" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.email}" required="true">
-                        <!--<f:validator validatorId="clientes.emailValidator" />-->
+                        
+                            <f:validator validatorId="custom.emailValidator" />
+                        
                         </p:inputText>
+                        
                     </div>
                     
     
@@ -346,9 +353,7 @@
                         </p:inputText>
                     </div>
 
-                       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6" value ="Dirección Fiscal" /> 
-                       </div>
+                     
                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtCalleFiscal" value ="Calle" /> 
                             <p:inputText id="txtCalleFiscal" maxlength="20" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.calleFiscal}" >
@@ -357,25 +362,26 @@
                         </div>
                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtNumeroIntFiscal" value ="Número Interior" /> 
-                            <p:inputText id="txtNumeroIntFiscal" maxlength="5" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.num_int_fiscal}" >
+                            <p:inputText id="txtNumeroIntFiscal" maxlength="5" class=" col-lg-1 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.num_int_fiscal}" >
 
                             </p:inputText>
                         </div>
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtNumeroExtFiscal" value ="Número Exterior" /> 
-                            <p:inputText id="txtNumeroExtFiscal" maxlength="5" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.num_ext_fiscal}" >
+                            <p:inputText id="txtNumeroExtFiscal" maxlength="5" class=" col-lg-1 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.num_ext_fiscal}" >
 
                             </p:inputText>
                         </div>
-                       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtColoniaFiscal" value ="Colonia" /> 
-                            <p:inputText id="txtColoniaFiscal" maxlength="20" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.coloniaFiscal}" >
-
-                            </p:inputText>
-                        </div>
+                       
                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtCPFiscal" value ="Código Postal" /> 
-                            <p:inputText id="txtCPFiscal" maxlength="5" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.cpFiscal}">
+                            <p:inputText id="txtCPFiscal" maxlength="5" class=" col-lg-1 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.cpFiscal}">
+
+                            </p:inputText>
+                        </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtColoniaFiscal" value ="Colonia" /> 
+                            <p:inputText id="txtColoniaFiscal" maxlength="20" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.coloniaFiscal}" >
 
                             </p:inputText>
                         </div>
@@ -392,7 +398,7 @@
                     <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-3 col-md-4 col-sm-4 col-xs-12"  for="txtMunicipioFiscal" value ="Municipio:" /> 
                             <h:selectOneMenu  id="txtMunicipioFiscal" class=" col-lg-5 col-md-8 col-sm-8 col-xs-12" value="#{beanCatCliente.data.del_mun_fiscal}">
-                                <f:selectItem itemLabel="Selecciona un Municipio" itemValue="-1" />
+                                <f:selectItem itemLabel="Selecciona un Municipio" itemValue="2493" />
                                 <f:selectItems value="#{beanCatCliente.lista_municipios_2}" var="municipitofiscal" itemLabel="#{municipitofiscal.nombreMunicipio}" itemValue="#{municipitofiscal.idMunicipioPk}"/>
                               
                             </h:selectOneMenu>
@@ -402,5 +408,46 @@
                 </div>
             </p:panel>
         </h:form>
+         
+<script type="text/javascript">
+    /**
+     * Faces Validator
+     */
+    PrimeFaces.validator['custom.emailValidator'] = {
+ 
+        pattern: /\S+@\S+/,
+ 
+        validate: function(element, value) {
+            //use element.data() to access validation metadata, in this case there is none.
+            if(!this.pattern.test(value)) {
+                throw {
+                    summary: 'Validation Error',
+                    detail: value + ' is not a valid email.'
+                }
+            }
+        }
+    };
+ 
+    /**
+     * Bean validator
+     */
+    PrimeFaces.validator['Email'] = {
+ 
+        pattern: /\S+@\S+/,
+ 
+        MESSAGE_ID: 'org.primefaces.examples.validate.email.message',
+ 
+        validate: function(element, value) {
+            var vc = PrimeFaces.util.ValidationContext;
+ 
+            if(!this.pattern.test(value)) {
+                var msgStr = element.data('p-email-msg'),
+                msg = msgStr ? {summary:msgStr, detail: msgStr} : vc.getMessage(this.MESSAGE_ID);
+ 
+                throw msg;
+            }
+        }
+    };
+</script>
     </ui:define>
 </ui:composition>

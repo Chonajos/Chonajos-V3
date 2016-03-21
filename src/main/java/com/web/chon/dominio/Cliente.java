@@ -49,6 +49,42 @@ public class Cliente implements Serializable
     private int ladaoficina;
     private int claveoficina;
     private int nextelclave;
+    private String nombreEstado;
+    private String nombreDelegacionMunicipio;
+
+    public String getNombreEstado() {
+        return nombreEstado;
+    }
+
+    public void setNombreEstado(String nombreEstado) {
+        this.nombreEstado = nombreEstado;
+    }
+
+    public String getNombreDelegacionMunicipio() {
+        return nombreDelegacionMunicipio;
+    }
+
+    public void setNombreDelegacionMunicipio(String nombreDelegacionMunicipio) {
+        this.nombreDelegacionMunicipio = nombreDelegacionMunicipio;
+    }
+
+    public String getNombreEstadoFiscal() {
+        return nombreEstadoFiscal;
+    }
+
+    public void setNombreEstadoFiscal(String nombreEstadoFiscal) {
+        this.nombreEstadoFiscal = nombreEstadoFiscal;
+    }
+
+    public String getNombreDeleMunFiscal() {
+        return nombreDeleMunFiscal;
+    }
+
+    public void setNombreDeleMunFiscal(String nombreDeleMunFiscal) {
+        this.nombreDeleMunFiscal = nombreDeleMunFiscal;
+    }
+    private String nombreEstadoFiscal;
+    private String nombreDeleMunFiscal;
 
     public int getClavecelular() {
         return clavecelular;
