@@ -9,13 +9,13 @@
                 xmlns:pe="http://primefaces.org/ui/extensions">
 
     <ui:define name="content">
+        <div>
+            <h3>#{beanVenta.title}</h3>
+        </div>
         <h:form id="formContent">
             <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:growl id="messagess" showDetail="true" life="2000" />
             <p:panel>
-                <div>
-                    <h3>#{beanVenta.title}</h3>
-                </div>
                 <div class="container-fluid">
                     <div class="form-group">
                         <p:commandButton value="Agregar" update=":formContent" ajax="true" action="#{beanVenta.addProducto}" rendered="#{beanVenta.viewEstate =='init'}"/>
@@ -86,30 +86,27 @@
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <p:dataTable var="model" value="#{beanVenta.lstVenta}" styleClass="ui-datatable-hor-scroll"  emptyMessage="Productos.">
 
-                            <p:column headerText="Producto" style="width:50px;text-align:center">
+                            <p:column headerText="Producto" width="150px;" style="text-align:center">
                                 <h:outputText value="#{model.nombreProducto}" />
                             </p:column>
-                            <!--                            <p:column headerText="Kilos" style="width:60px;text-align:center">
-                                                            <h:outputText value="#{model.kilosVenta}" />
-                                                        </p:column>-->
-                            <p:column headerText="Empaque" style="width:100px;text-align:center">
+                            <p:column headerText="Empaque" width="150px;" style="text-align:center">
                                 <h:outputText value="#{model.nombreEmpaque}" />
                             </p:column>
-                            <p:column headerText="Cantidad" style="width:60px;text-align:center">
+                            <p:column headerText="Cantidad" width="85px;" style="text-align:center">
                                 <h:outputText value="#{model.cantidadEmpaque}" />
                             </p:column>
-                            <p:column headerText="Precio de venta" style="width:60px;text-align:center">
+                            <p:column headerText="Precio de venta" width="60px;" style="text-align:center">
                                 <h:outputText value="#{model.precioProducto}" />
                             </p:column>
-                            <p:column headerText="Total" style="width:60px;text-align:center">
+                            <p:column headerText="Total" width="90px;" style="text-align:center">
                                 <h:outputText value="$#{model.total}" />
                             </p:column>
-                            <p:column headerText="Editar" style="width:50px;text-align:center">
+                            <p:column headerText="Editar" width="60px;" style="text-align:center">
                                 <p:commandButton id="editar" ajax="true" process="@this" action="#{beanVenta.editProducto}" icon="ui-icon-pencil" styleClass="ui-priority-primary" update=":formContent">
                                     <f:setPropertyActionListener value="#{model}" target="#{beanVenta.dataEdit}"/>
                                 </p:commandButton>
                             </p:column>
-                            <p:column headerText="Remover" style="width:50px;text-align:center">
+                            <p:column headerText="Remover" width="80px;" style="text-align:center">
                                 <p:commandButton id="remover" ajax="true" immediate="true" action="#{beanVenta.remove}" icon="ui-icon-close" styleClass="ui-priority-primary" update=":formContent">
                                     <f:setPropertyActionListener value="#{model}" target="#{beanVenta.dataRemove}"/>
                                 </p:commandButton>

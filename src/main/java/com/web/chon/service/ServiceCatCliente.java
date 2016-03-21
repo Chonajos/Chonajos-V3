@@ -5,11 +5,8 @@
  */
 package com.web.chon.service;
 import com.web.chon.dominio.Cliente;
-import com.web.chon.dominio.Usuario;
 import com.web.chon.negocio.NegocioCatCliente;
-import com.web.chon.negocio.NegocioCatUsuario;
 import com.web.chon.util.Utilidades;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -103,7 +100,8 @@ public class ServiceCatCliente implements IfaceCatCliente {
                 cliente.setCp(obj[6] == null ? 0:Integer.parseInt(obj[6].toString()));
                 //cliente.setEstado(obj[7] == null ? "":obj[7].toString());               
                 String auxiliar_sexo=obj[7] == null ? "M":obj[7].toString();
-                
+              
+                cliente.setEstado(obj[7] == null ? "":obj[7].toString());
                 cliente.setSexo(auxiliar_sexo.charAt(0));
                 cliente.setFecha_nacimiento((Date) obj[8]);
                 cliente.setTel_movil(Integer.parseInt(obj[9] == null ? "":obj[9].toString()));
@@ -171,7 +169,7 @@ public class ServiceCatCliente implements IfaceCatCliente {
                 cliente.setNombre(obj[1] == null ? "" : obj[1].toString());
                 cliente.setPaterno(obj[2] == null ? "" : obj[2].toString());
                 cliente.setMaterno(obj[3] == null ? "" : obj[3].toString());
-                cliente.setNombreCombleto(cliente.getNombre()+" "+cliente.getPaterno()+" "+cliente.getMaterno());
+                
 
                 lstCliente.add(cliente);
             }
