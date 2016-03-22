@@ -26,8 +26,6 @@ public interface NegocioCatCliente {
 
     public int insertCliente(Cliente clie);
 
-    public List<Object[]> getClienteByNombreCompleto(String nombreCliente) ;
-
-    
-    
+    public List<Object[]> getClienteByNombreCompleto(String nombreCliente);
+  
 }

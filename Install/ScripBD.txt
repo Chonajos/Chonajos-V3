@@ -336,3 +336,21 @@ MINVALUE 0;
 tablas eliminadas
 COMPRA_PRODUCTOS
 EXISTENCIA_PRODUCTO
+
+
+create table status_venta(
+id_status_pk number not null,
+nombre_status varchar (50) not null,
+descripcion_status varchar(75),
+CONSTRAINT c_id_status_fk PRIMARY KEY(id_status_pk)
+);
+
+CREATE SEQUENCE s_status_venta
+INCREMENT BY 1
+START WITH 1
+MINVALUE 0;
+
+alter table VENTA add  CONSTRAINT c_status_fk FOREIGN KEY(STATUS_FK) references STATUS_VENTA(ID_STATUS_PK);
+
+INSERT INTO STATUS_VENTA (ID_STATUS_pk,NOMBRE_STATUS,DESCRIPCION_STATUS)VALUES(S_STATUS_VENTA.NextVal,'Vendido','Se hizo una venta aun no pagada')
+INSERT INTO STATUS_VENTA (ID_STATUS_pk,NOMBRE_STATUS,DESCRIPCION_STATUS)VALUES(S_STATUS_VENTA.NextVal,'Pagado','Se ha realizado el pago en caja.')

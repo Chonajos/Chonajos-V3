@@ -27,7 +27,8 @@ public class EjbCatCliente implements NegocioCatCliente {
     EntityManager em;
 
     @Override
-    public List<Object[]> getClientes() {
+    public List<Object[]> getClientes() 
+    {
         try {
 
             System.out.println("EJB_GET_CLIENTE");
@@ -85,7 +86,6 @@ public class EjbCatCliente implements NegocioCatCliente {
     public int updateCliente(Cliente clie) {
 
         try {
-
             System.out.println("Cliente a modificar :" + clie.getNombre());
             Query query = em.createNativeQuery("UPDATE CLIENTE SET NOMBRE = ?, APELLIDO_PATERNO = ?, APELLIDO_MATERNO = ?, EMPRESA = ?, CALLE = ?, CP = ?, SEXO = ?, FECHA_NACIMIENTO = ?,TELEFONO_MOVIL = ?, TELEFONO_FIJO = ?, EXTENSION = ?, EMAIL = ?, NUM_INT = ? , NUM_EXT = ?, COLONIA = ?, CLAVECELULAR = ?, LADACELULAR = ?, DEL_MUN = ?,CALLEFISCAL = ?,NUMINTFIS = ?,NUMEXTFIS = ?,COLONIAFISCAL = ?, DEL_MUN_FISCAL = ?, NEXTEL = ?,RAZON = ?,RFC = ?,CPFISCAL = ?, LADAOFICINA = ?,CLAVEOFICINA = ?,NEXTELCLAVE = ? WHERE ID_CLIENTE = ? ");
             query.setParameter(1, clie.getNombre());
@@ -121,7 +121,6 @@ public class EjbCatCliente implements NegocioCatCliente {
             query.setParameter(29, clie.getClaveoficina());
             query.setParameter(30, clie.getNextelclave());
             query.setParameter(31, clie.getId_cliente());
-
             return query.executeUpdate();
 
         } catch (Exception ex) 

@@ -27,7 +27,7 @@ public class EjbVenta implements NegocioVenta {
 
     @Override
     public int insertarVenta(Venta venta) {
-        Query query = em.createNativeQuery("INSERT INTO VENTA(ID_VENTA_PK,FECHA_VENTA,ID_CLIENTE_FK,ID_VENDEDOR_FK) VALUES(?,sysdate,?,?)");
+        Query query = em.createNativeQuery("INSERT INTO VENTA(ID_VENTA_PK,FECHA_VENTA,ID_CLIENTE_FK,ID_VENDEDOR_FK,STATUS_FK) VALUES(?,sysdate,?,?,1)");
         System.out.println("venta ejb :"+venta.toString());
         query.setParameter(1, venta.getIdVentaPk());
         query.setParameter(2, venta.getIdClienteFk());
