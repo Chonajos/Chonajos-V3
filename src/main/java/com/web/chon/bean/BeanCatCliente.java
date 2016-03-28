@@ -6,9 +6,11 @@
 package com.web.chon.bean;
 
 import com.web.chon.dominio.Cliente;
+import com.web.chon.dominio.CodigoPostal;
 import com.web.chon.dominio.Entidad;
 import com.web.chon.dominio.Municipios;
 import com.web.chon.service.IfaceCatCliente;
+import com.web.chon.service.IfaceCatCodigosPostales;
 import com.web.chon.service.IfaceCatEntidad;
 import com.web.chon.service.IfaceCatMunicipio;
 import java.util.ArrayList;
@@ -35,6 +37,11 @@ public class BeanCatCliente implements BeanSimple
     @Autowired
     private IfaceCatMunicipio ifaceCatMunicipio;
     
+    @Autowired
+    private IfaceCatCodigosPostales ifaceCatCodigosPostales;
+
+    
+    private ArrayList<CodigoPostal> lista_codigos_postales;
     
     private ArrayList<Cliente> model;
     private ArrayList<Entidad> lista_entidades;
@@ -70,7 +77,8 @@ public class BeanCatCliente implements BeanSimple
     
     
     @PostConstruct
-    public void init() {
+    public void init() 
+    {
             
         estado=1;
         estado_fis=1;
@@ -273,6 +281,14 @@ public class BeanCatCliente implements BeanSimple
 
     public void setLista_municipios_2(ArrayList<Municipios> lista_municipios_2) {
         this.lista_municipios_2 = lista_municipios_2;
+    }
+    
+    public ArrayList<CodigoPostal> getLista_codigos_postales() {
+        return lista_codigos_postales;
+    }
+
+    public void setLista_codigos_postales(ArrayList<CodigoPostal> lista_codigos_postales) {
+        this.lista_codigos_postales = lista_codigos_postales;
     }
 
 

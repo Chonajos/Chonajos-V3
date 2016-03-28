@@ -87,40 +87,40 @@ public class EjbCatCliente implements NegocioCatCliente {
 
         try {
             System.out.println("Cliente a modificar :" + clie.getNombre());
-            Query query = em.createNativeQuery("UPDATE CLIENTE SET NOMBRE = ?, APELLIDO_PATERNO = ?, APELLIDO_MATERNO = ?, EMPRESA = ?, CALLE = ?, CP = ?, SEXO = ?, FECHA_NACIMIENTO = ?,TELEFONO_MOVIL = ?, TELEFONO_FIJO = ?, EXTENSION = ?, EMAIL = ?, NUM_INT = ? , NUM_EXT = ?, COLONIA = ?, CLAVECELULAR = ?, LADACELULAR = ?, DEL_MUN = ?,CALLEFISCAL = ?,NUMINTFIS = ?,NUMEXTFIS = ?,COLONIAFISCAL = ?, DEL_MUN_FISCAL = ?, NEXTEL = ?,RAZON = ?,RFC = ?,CPFISCAL = ?, LADAOFICINA = ?,CLAVEOFICINA = ?,NEXTELCLAVE = ? WHERE ID_CLIENTE = ? ");
+            Query query = em.createNativeQuery("UPDATE CLIENTE SET NOMBRE = ?, APELLIDO_PATERNO = ?, APELLIDO_MATERNO = ?, EMPRESA = ?, CALLE = ?, SEXO = ?, FECHA_NACIMIENTO = ?,TELEFONO_MOVIL = ?, TELEFONO_FIJO = ?, EXTENSION = ?, EMAIL = ?, NUM_INT = ? , NUM_EXT = ?, COLONIA = ?, CLAVECELULAR = ?, LADACELULAR = ?, ID_CP= ?,CALLEFISCAL = ?,NUMINTFIS = ?,NUMEXTFIS = ?,COLONIAFISCAL = ?, ID_CP_FISCAL = ?, NEXTEL = ?,RAZON = ?,RFC = ?, LADAOFICINA = ?,CLAVEOFICINA = ?,NEXTELCLAVE = ? WHERE ID_CLIENTE = ? ");
             query.setParameter(1, clie.getNombre());
             query.setParameter(2, clie.getPaterno());
             query.setParameter(3, clie.getMaterno());
             query.setParameter(4, clie.getEmpresa());
             query.setParameter(5, clie.getCalle());
-            query.setParameter(6, clie.getCp());
-            //query.setParameter(7, clie.getEstado());
-            query.setParameter(7, clie.getSexo());
-            query.setParameter(8, clie.getFecha_nacimiento());
-            query.setParameter(9, clie.getTel_movil());
-            query.setParameter(10, clie.getTel_fijo());
-            query.setParameter(11, clie.getExt());
-            query.setParameter(12, clie.getEmail());
-            query.setParameter(13, clie.getNum_int());
-            query.setParameter(14, clie.getNum_ext());
-            query.setParameter(15, clie.getColonia());
-            query.setParameter(16, clie.getClavecelular());
-            query.setParameter(17, clie.getLadacelular());
-            query.setParameter(18, clie.getDel_Mun());
-            query.setParameter(19, clie.getCalleFiscal());
-            query.setParameter(20, clie.getNum_int_fiscal());
-            query.setParameter(21, clie.getNum_ext_fiscal());
-            query.setParameter(22, clie.getColoniaFiscal());
+            //query.setParameter(6, clie.getCp());
+           
+            query.setParameter(6, clie.getSexo());
+            query.setParameter(7, clie.getFecha_nacimiento());
+            query.setParameter(8, clie.getTel_movil());
+            query.setParameter(9, clie.getTel_fijo());
+            query.setParameter(10, clie.getExt());
+            query.setParameter(11, clie.getEmail());
+            query.setParameter(12, clie.getNum_int());
+            query.setParameter(13, clie.getNum_ext());
+            query.setParameter(14, clie.getColonia());
+            query.setParameter(15, clie.getClavecelular());
+            query.setParameter(16, clie.getLadacelular());
+            query.setParameter(17, clie.getID_CP());
+            query.setParameter(18, clie.getCalleFiscal());
+            query.setParameter(19, clie.getNum_int_fiscal());
+            query.setParameter(20, clie.getNum_ext_fiscal());
+            query.setParameter(21, clie.getColoniaFiscal());
             //query.setParameter(24, clie.getEstadoFiscal());
-            query.setParameter(23, clie.getDel_mun_fiscal());
-            query.setParameter(24, clie.getNextel());
-            query.setParameter(25, clie.getRazon_social());
-            query.setParameter(26, clie.getRfcFiscal());
-            query.setParameter(27, clie.getCpFiscal());
-            query.setParameter(28, clie.getLadaoficina());
-            query.setParameter(29, clie.getClaveoficina());
-            query.setParameter(30, clie.getNextelclave());
-            query.setParameter(31, clie.getId_cliente());
+            query.setParameter(22, clie.getID_CP_FISCAL());
+            query.setParameter(23, clie.getNextel());
+            query.setParameter(24, clie.getRazon_social());
+            query.setParameter(25, clie.getRfcFiscal());
+            //query.setParameter(27, clie.getCpFiscal());
+            query.setParameter(26, clie.getLadaoficina());
+            query.setParameter(27, clie.getClaveoficina());
+            query.setParameter(28, clie.getNextelclave());
+            query.setParameter(29, clie.getId_cliente());
             return query.executeUpdate();
 
         } catch (Exception ex) 
@@ -147,40 +147,40 @@ public class EjbCatCliente implements NegocioCatCliente {
                 
                 
                 //System.out.println("insert : " + usuario.getNombreUsuario() + " " + usuario.getRfcUsuario());
-                Query query = em.createNativeQuery("INSERT INTO CLIENTE (ID_CLIENTE,NOMBRE, APELLIDO_PATERNO, APELLIDO_MATERNO, EMPRESA, CALLE, CP, SEXO, FECHA_NACIMIENTO,TELEFONO_MOVIL, TELEFONO_FIJO, EXTENSION, EMAIL, NUM_INT, NUM_EXT, COLONIA, CLAVECELULAR, LADACELULAR, DEL_MUN,CALLEFISCAL,NUMINTFIS,NUMEXTFIS,COLONIAFISCAL,DEL_MUN_FISCAL,NEXTEL,RAZON,RFC,CPFISCAL,LADAOFICINA,CLAVEOFICINA,NEXTELCLAVE) "
-                        + "VALUES (S_CLIENTE.NextVal,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                Query query = em.createNativeQuery("INSERT INTO CLIENTE (ID_CLIENTE,NOMBRE, APELLIDO_PATERNO, APELLIDO_MATERNO, EMPRESA, CALLE, SEXO, FECHA_NACIMIENTO,TELEFONO_MOVIL, TELEFONO_FIJO, EXTENSION, EMAIL, NUM_INT, NUM_EXT, COLONIA, CLAVECELULAR, LADACELULAR,ID_CP,CALLEFISCAL,NUMINTFIS,NUMEXTFIS,COLONIAFISCAL,ID_CP_FISCAL,NEXTEL,RAZON,RFC,LADAOFICINA,CLAVEOFICINA,NEXTELCLAVE) "
+                        + "VALUES (S_CLIENTE.NextVal,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
                 query.setParameter(1, clie.getNombre());
                 query.setParameter(2, clie.getPaterno());
                 query.setParameter(3, clie.getMaterno());
                 query.setParameter(4, clie.getEmpresa());
                 query.setParameter(5, clie.getCalle());
-                query.setParameter(6, clie.getCp());
+                //query.setParameter(6, clie.getCp());
                 //query.setParameter(7, clie.getEstado());
-                query.setParameter(7, clie.getSexo());
-                query.setParameter(8, clie.getFecha_nacimiento());
-                query.setParameter(9, clie.getTel_movil());
-                query.setParameter(10, clie.getTel_fijo());
-                query.setParameter(11, clie.getExt());
-                query.setParameter(12, clie.getEmail());
-                query.setParameter(13, clie.getNum_int());
-                query.setParameter(14, clie.getNum_ext());
-                query.setParameter(15, clie.getColonia());
-                query.setParameter(16, clie.getClavecelular());
-                query.setParameter(17, clie.getLadacelular());
-                query.setParameter(18, clie.getDel_Mun());
-                query.setParameter(19, clie.getCalleFiscal());
-                query.setParameter(20, clie.getNum_int_fiscal());
-                query.setParameter(21, clie.getNum_ext_fiscal());
-                query.setParameter(22, clie.getColoniaFiscal());
+                query.setParameter(6, clie.getSexo());
+                query.setParameter(7, clie.getFecha_nacimiento());
+                query.setParameter(8, clie.getTel_movil());
+                query.setParameter(9, clie.getTel_fijo());
+                query.setParameter(10, clie.getExt());
+                query.setParameter(11, clie.getEmail());
+                query.setParameter(12, clie.getNum_int());
+                query.setParameter(13, clie.getNum_ext());
+                query.setParameter(14, clie.getColonia());
+                query.setParameter(15, clie.getClavecelular());
+                query.setParameter(16, clie.getLadacelular());
+                query.setParameter(17, clie.getID_CP());
+                query.setParameter(18, clie.getCalleFiscal());
+                query.setParameter(19, clie.getNum_int_fiscal());
+                query.setParameter(20, clie.getNum_ext_fiscal());
+                query.setParameter(21, clie.getColoniaFiscal());
                 //query.setParameter(24, clie.getEstadoFiscal());
-                query.setParameter(23, clie.getDel_mun_fiscal());
-                query.setParameter(24, clie.getNextel());
-                query.setParameter(25, clie.getRazon_social());
-                query.setParameter(26, clie.getRfcFiscal());
-                query.setParameter(27, clie.getCpFiscal());
-                query.setParameter(28, clie.getLadaoficina());
-                query.setParameter(29, clie.getClaveoficina());
-                query.setParameter(30, clie.getNextelclave());
+                query.setParameter(22, clie.getID_CP_FISCAL());
+                query.setParameter(23, clie.getNextel());
+                query.setParameter(24, clie.getRazon_social());
+                query.setParameter(25, clie.getRfcFiscal());
+                //query.setParameter(27, clie.getCpFiscal());
+                query.setParameter(26, clie.getLadaoficina());
+                query.setParameter(27, clie.getClaveoficina());
+                query.setParameter(28, clie.getNextelclave());
 
                 return query.executeUpdate();
 

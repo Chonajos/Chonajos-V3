@@ -21,7 +21,23 @@ public class Cliente implements Serializable
     private String materno;
     private String empresa;
     private String calle;
-    private int cp;
+    private int ID_CP;
+
+    public int getID_CP() {
+        return ID_CP;
+    }
+
+    public void setID_CP(int ID_CP) {
+        this.ID_CP = ID_CP;
+    }
+
+    public int getID_CP_FISCAL() {
+        return ID_CP_FISCAL;
+    }
+
+    public void setID_CP_FISCAL(int ID_CP_FISCAL) {
+        this.ID_CP_FISCAL = ID_CP_FISCAL;
+    }
     private String estado;
     private Character sexo;
     private Date fecha_nacimiento;
@@ -35,17 +51,17 @@ public class Cliente implements Serializable
     private int clavecelular;
     private String nombreCombleto;
     private int ladacelular;
-    private int Del_Mun; 
+    private int ID_CP_FISCAL; 
     private String calleFiscal;
     private int num_int_fiscal;
     private int num_ext_fiscal;
     private String coloniaFiscal;
     private String estadoFiscal;
-    private int del_mun_fiscal;
+    
     private int nextel;
     private String razon_social;
     private String rfcFiscal;
-    private int cpFiscal;
+
     private int ladaoficina;
     private int claveoficina;
     private int nextelclave;
@@ -127,13 +143,7 @@ public class Cliente implements Serializable
     }
 
 
-    public int getcpFiscal() {
-        return cpFiscal;
-    }
-
-    public void setcpFiscal(int  cpFiscal) {
-        this.cpFiscal = cpFiscal;
-    }
+    
     public String getRazon_social() {
         return razon_social;
     }
@@ -150,9 +160,7 @@ public class Cliente implements Serializable
         this.rfcFiscal = rfcFiscal;
     }
 
-    public int getCpFiscal() {
-        return cpFiscal;
-    }
+  
 
     
 
@@ -196,14 +204,7 @@ public class Cliente implements Serializable
         this.estadoFiscal = estadoFiscal;
     }
 
-    public int getDel_mun_fiscal() {
-        return del_mun_fiscal;
-    }
-
-    public void setDel_mun_fiscal(int del_mun_fiscal) {
-        this.del_mun_fiscal = del_mun_fiscal;
-    }
-
+   
     public int getNextel() {
         return nextel;
     }
@@ -214,8 +215,10 @@ public class Cliente implements Serializable
 
     @Override
     public String toString() {
-        return "Cliente{" + "id_cliente=" + id_cliente + ", nombre=" + nombre + ", paterno=" + paterno + ", materno=" + materno + ", empresa=" + empresa + ", calle=" + calle + ", cp=" + cp + ", estado=" + estado + ", sexo=" + sexo + ", fecha_nacimiento=" + fecha_nacimiento + ", tel_movil=" + tel_movil + ", tel_fijo=" + tel_fijo + ", ext=" + ext + ", email=" + email + ", num_int=" + num_int + ", num_ext=" + num_ext + ", colonia=" + colonia + ", clavecelular=" + clavecelular + ", nombreCombleto=" + nombreCombleto + ", ladacelular=" + ladacelular + ", Del_Mun=" + Del_Mun + ", calleFiscal=" + calleFiscal + ", num_int_fiscal=" + num_int_fiscal + ", num_ext_fiscal=" + num_ext_fiscal + ", coloniaFiscal=" + coloniaFiscal + ", estadoFiscal=" + estadoFiscal + ", del_mun_fiscal=" + del_mun_fiscal + ", nextel=" + nextel + ", razon_social=" + razon_social + ", rfcFiscal=" + rfcFiscal + ", cpFiscal=" + cpFiscal + ", ladaoficina=" + ladaoficina + ", claveoficina=" + claveoficina + ", nextelclave=" + nextelclave + '}';
+        return "Cliente{" + "id_cliente=" + id_cliente + ", nombre=" + nombre + ", paterno=" + paterno + ", materno=" + materno + ", empresa=" + empresa + ", calle=" + calle + ", ID_CP=" + ID_CP + ", estado=" + estado + ", sexo=" + sexo + ", fecha_nacimiento=" + fecha_nacimiento + ", tel_movil=" + tel_movil + ", tel_fijo=" + tel_fijo + ", ext=" + ext + ", email=" + email + ", num_int=" + num_int + ", num_ext=" + num_ext + ", colonia=" + colonia + ", clavecelular=" + clavecelular + ", nombreCombleto=" + nombreCombleto + ", ladacelular=" + ladacelular + ", ID_CP_FISCAL=" + ID_CP_FISCAL + ", calleFiscal=" + calleFiscal + ", num_int_fiscal=" + num_int_fiscal + ", num_ext_fiscal=" + num_ext_fiscal + ", coloniaFiscal=" + coloniaFiscal + ", estadoFiscal=" + estadoFiscal + ", nextel=" + nextel + ", razon_social=" + razon_social + ", rfcFiscal=" + rfcFiscal + ", ladaoficina=" + ladaoficina + ", claveoficina=" + claveoficina + ", nextelclave=" + nextelclave + ", nombreEstado=" + nombreEstado + ", nombreDelegacionMunicipio=" + nombreDelegacionMunicipio + ", nombreEstadoFiscal=" + nombreEstadoFiscal + ", nombreDeleMunFiscal=" + nombreDeleMunFiscal + '}';
     }
+
+    
    
    
 
@@ -267,13 +270,7 @@ public class Cliente implements Serializable
         this.calle = calle;
     }
 
-    public int getCp() {
-        return cp;
-    }
-
-    public void setCp(int cp) {
-        this.cp = cp;
-    }
+  
 
     public String getEstado() {
         return estado;
@@ -355,13 +352,7 @@ public class Cliente implements Serializable
         this.colonia = colonia;
     }
 
-    public int getDel_Mun() {
-        return Del_Mun;
-    }
-
-    public void setDel_Mun(int Del_Mun) {
-        this.Del_Mun = Del_Mun;
-    }
+   
 
     public String getNombreCombleto() {
         String nombreCompleto = nombre+" "+paterno+" "+materno;
