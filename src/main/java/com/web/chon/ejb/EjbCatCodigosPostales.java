@@ -31,7 +31,7 @@ public class EjbCatCodigosPostales implements NegocioCatCodigosPostales{
         try {
 
             System.out.println("EJB_GET_CODIGOS_POSTALES");
-            Query query = em.createNativeQuery("select cp.id_pk,cp.NOMBRE_COLONIA,cp.ID_MUNICIPIO_FK,m.ID_MUNICIPIO_PK,m.NOMBRE_MUNICIPIO,e.ID_ENTIDAD_PK,e.NOMBRE_ENTIDAD\n" +
+            Query query = em.createNativeQuery("select cp.id_pk,cp.NOMBRE_COLONIA,m.ID_MUNICIPIO_PK,m.NOMBRE_MUNICIPIO,e.ID_ENTIDAD_PK,e.NOMBRE_ENTIDAD\n" +
 "from CODIGOS_POSTALES cp\n" +
 "INNER JOIN municipios m\n" +
 "on cp.ID_MUNICIPIO_FK=m.ID_MUNICIPIO_PK\n" +

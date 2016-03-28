@@ -6,6 +6,7 @@
 package com.web.chon.service;
 
 import com.web.chon.dominio.CodigoPostal;
+import java.util.ArrayList;
 
 /**
  *
@@ -13,5 +14,5 @@ import com.web.chon.dominio.CodigoPostal;
  */
 public interface IfaceCatCodigosPostales 
 {
-    public CodigoPostal getMunicipioById(String codigo_postal);
+    public ArrayList<CodigoPostal> getCodigoPostalById(String codigo_postal);
 }

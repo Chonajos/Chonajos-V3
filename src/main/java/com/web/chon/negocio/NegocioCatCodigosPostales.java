@@ -7,11 +7,13 @@ package com.web.chon.negocio;
 
 
 import java.util.List;
+import javax.ejb.Remote;
 
 /**
  *
  * @author freddy
  */
+@Remote
 public interface NegocioCatCodigosPostales 
 {
       public List<Object[]> getCodigosByCP(String cp);

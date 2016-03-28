@@ -22,22 +22,6 @@ public class Cliente implements Serializable
     private String empresa;
     private String calle;
     private int ID_CP;
-
-    public int getID_CP() {
-        return ID_CP;
-    }
-
-    public void setID_CP(int ID_CP) {
-        this.ID_CP = ID_CP;
-    }
-
-    public int getID_CP_FISCAL() {
-        return ID_CP_FISCAL;
-    }
-
-    public void setID_CP_FISCAL(int ID_CP_FISCAL) {
-        this.ID_CP_FISCAL = ID_CP_FISCAL;
-    }
     private String estado;
     private Character sexo;
     private Date fecha_nacimiento;
@@ -57,7 +41,15 @@ public class Cliente implements Serializable
     private int num_ext_fiscal;
     private String coloniaFiscal;
     private String estadoFiscal;
-    
+    private String codigoPostal;
+
+    public String getCodigoPostal() {
+        return codigoPostal;
+    }
+
+    public void setCodigoPostal(String codigoPostal) {
+        this.codigoPostal = codigoPostal;
+    }
     private int nextel;
     private String razon_social;
     private String rfcFiscal;
@@ -361,6 +353,23 @@ public class Cliente implements Serializable
 
     public void setNombreCombleto(String nombreCombleto) {
         this.nombreCombleto = nombreCombleto;
+    }
+    
+    
+    public int getID_CP() {
+        return ID_CP;
+    }
+
+    public void setID_CP(int ID_CP) {
+        this.ID_CP = ID_CP;
+    }
+
+    public int getID_CP_FISCAL() {
+        return ID_CP_FISCAL;
+    }
+
+    public void setID_CP_FISCAL(int ID_CP_FISCAL) {
+        this.ID_CP_FISCAL = ID_CP_FISCAL;
     }
     
     

@@ -87,7 +87,7 @@
                             <h:outputLabel for="acalle" value="Calle: " />
                             <h:outputText id="acalle" value="#{beanCatCliente.data.calle}"  />
                             <h:outputLabel for="acp" value="Código Postal: " />
-                            <h:outputText id="acp" value="#{beanCatCliente.data.cp}"/>
+                            <h:outputText id="acp" value="#{beanCatCliente.data.ID_CP}"/>
                             <h:outputLabel for="aestado" value="Estado: " />
                             <h:outputText id="aestado" value="#{beanCatCliente.data.nombreEstado}" />
                             <h:outputLabel for="amuni" value="Delegación o municipio: " />
@@ -132,7 +132,7 @@
                             <h:outputLabel for="arfc" value="RFC: " />
                             <h:outputText id="arfc" value="#{beanCatCliente.data.rfcFiscal}"/>
                             <h:outputLabel for="apostfis" value="Código Postal: " />
-                            <h:outputText id="apostfis" value="#{beanCatCliente.data.cpFiscal}"/>
+                            <h:outputText id="apostfis" value="#{beanCatCliente.data.ID_CP_FISCAL}"/>
                         </p:panelGrid>
                     </p:outputPanel>
                 </p:dialog>
@@ -224,15 +224,15 @@
                         </div>
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtCP" value ="Código Postal" /> 
-                            <p:inputText id="txtCP" maxlength="5" class=" col-lg-1 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.cp}" >
-                            <p:ajax event="blur" update=":formCliente:txtColonia"/>
+                            <p:inputText id="txtCP" maxlength="5" class=" col-lg-1 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.codigoPostal}" >
+                            <p:ajax event="blur" update=":formCliente:txtColonia" listener="#{beanCatCliente.buscaColonias()}"/>
                             <pe:keyFilter regEx="/[0-9_]/i"/>
                             </p:inputText>
                         </div>
                         
                      <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-3 col-md-4 col-sm-4 col-xs-12"  for="txtColonia" value ="Estado:" /> 
-                            <h:selectOneMenu  id="txtColonia" class=" col-lg-5 col-md-8 col-sm-8 col-xs-12" value="#{beanCatCliente.data.estado}">
+                            <p:outputLabel class="col-lg-3 col-md-4 col-sm-4 col-xs-12"  for="txtColonia" value ="Colonia:" /> 
+                            <h:selectOneMenu  id="txtColonia" class=" col-lg-5 col-md-8 col-sm-8 col-xs-12" value="#{beanCatCliente.data.ID_CP}">
                                 <f:selectItem itemLabel="Selecciona un Colonia" itemValue="-1" />
                                 <f:selectItems value="#{beanCatCliente.lista_codigos_postales}" var="colonita" itemLabel="#{colonita.nombreColonia}" itemValue="#{colonita.id_cp}"/>
                                                              
@@ -240,10 +240,7 @@
                             </h:selectOneMenu>
                     </div>  
                         
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                        <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtColonia" value ="Colonia:" /> 
-                        <p:inputText id="txtColonia" maxlength="50" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.colonia}" ></p:inputText>
-                    </div>
+                    
                     
                     <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-3 col-md-4 col-sm-4 col-xs-12"  for="txtEstado1" value ="Estado:" /> 
@@ -258,7 +255,7 @@
                     
                     <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-3 col-md-4 col-sm-4 col-xs-12"  for="txtMunicipio1" value ="Municipio:" /> 
-                            <h:selectOneMenu  id="txtMunicipio1" class=" col-lg-5 col-md-8 col-sm-8 col-xs-12" value="#{beanCatCliente.data.del_Mun}">
+                            <h:selectOneMenu  id="txtMunicipio1" class=" col-lg-5 col-md-8 col-sm-8 col-xs-12" value="#{beanCatCliente.data.ID_CP}">
                                 <f:selectItem itemLabel="Selecciona un Municipio" itemValue="2493" />
                                 <f:selectItems value="#{beanCatCliente.lista_municipios}" var="municipito" itemLabel="#{municipito.nombreMunicipio}" itemValue="#{municipito.idMunicipioPk}"/>
                             </h:selectOneMenu>
@@ -385,7 +382,7 @@
                        
                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtCPFiscal" value ="Código Postal" /> 
-                            <p:inputText id="txtCPFiscal" maxlength="5" class=" col-lg-1 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.cpFiscal}">
+                            <p:inputText id="txtCPFiscal" maxlength="5" class=" col-lg-1 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.ID_CP_FISCAL}">
 
                             </p:inputText>
                         </div>
@@ -407,7 +404,7 @@
                     </div>
                     <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-3 col-md-4 col-sm-4 col-xs-12"  for="txtMunicipioFiscal" value ="Municipio:" /> 
-                            <h:selectOneMenu  id="txtMunicipioFiscal" class=" col-lg-5 col-md-8 col-sm-8 col-xs-12" value="#{beanCatCliente.data.del_mun_fiscal}">
+                            <h:selectOneMenu  id="txtMunicipioFiscal" class=" col-lg-5 col-md-8 col-sm-8 col-xs-12" value="#{beanCatCliente.data.ID_CP_FISCAL}">
                                 <f:selectItem itemLabel="Selecciona un Municipio" itemValue="2493" />
                                 <f:selectItems value="#{beanCatCliente.lista_municipios_2}" var="municipitofiscal" itemLabel="#{municipitofiscal.nombreMunicipio}" itemValue="#{municipitofiscal.idMunicipioPk}"/>
                               

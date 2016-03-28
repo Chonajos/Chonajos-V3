@@ -85,6 +85,9 @@ public class BeanCatCliente implements BeanSimple
         
         data = new Cliente();
         model = new ArrayList<Cliente>();
+        lista_codigos_postales= new ArrayList<CodigoPostal>();
+        lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalById("55296");
+        
         lista_entidades = new ArrayList<Entidad>();
         lista_municipios = new ArrayList<Municipios>();
         
@@ -207,6 +210,11 @@ public class BeanCatCliente implements BeanSimple
         //data = new Cliente();
         //setTitle("Alta de Clientes");
         //setViewEstate("new");
+    }
+    public void buscaColonias() 
+    {
+      
+        lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalById(data.getCodigoPostal());
     }
     public Cliente getCliente() 
     {
