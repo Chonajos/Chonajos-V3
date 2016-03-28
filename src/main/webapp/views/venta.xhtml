@@ -19,7 +19,8 @@
                 <div class="container-fluid">
                     <div class="form-group">
                         <p:commandButton value="Agregar" update=":formContent" ajax="true" action="#{beanVenta.addProducto}" rendered="#{beanVenta.viewEstate =='init'}"/>
-                        <p:commandButton value="Vender" update=":formContent" ajax="true" action="#{beanVenta.insert}" immediate="true" resetValues="true" rendered="#{beanVenta.viewEstate =='init'}"/>
+                        <p:commandButton value="Vender"  ajax="false" onclick="this.form.target = '_blank';" update=":formContent" action="#{beanVenta.inserts}" immediate="true" resetValues="true" rendered="#{beanVenta.viewEstate =='init'}"/>
+                        <p:commandButton value="descragar"  ajax="false" update=":formContent" action="#{beanVenta.downloadFile}" immediate="true" resetValues="true" rendered="#{beanVenta.viewEstate =='init'}"/>
                         <p:commandButton value="Aceptar" update=":formContent" ajax="true" action="#{beanVenta.updateProducto}" rendered="#{beanVenta.viewEstate =='update'}"/>
                         <p:commandButton value="Cancelar" update=":formContent" ajax="true" action="#{beanVenta.cancel}" immediate="true" resetValues="true" rendered="#{beanVenta.viewEstate =='update'}"/>
                     </div>
@@ -130,6 +131,7 @@
                                 </p:row>
                             </p:columnGroup>
                         </p:dataTable>
+                         
                     </div>
                 </div>
             </p:panel>

@@ -1,5 +1,12 @@
 package com.web.chon.bean;
 
+import com.lowagie.text.Document;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
 import com.web.chon.dominio.Cliente;
 import com.web.chon.dominio.MantenimientoPrecios;
 import com.web.chon.dominio.Subproducto;
@@ -14,17 +21,32 @@ import com.web.chon.service.IfaceMantenimientoPrecio;
 import com.web.chon.service.IfaceSubProducto;
 import com.web.chon.service.IfaceVenta;
 import com.web.chon.service.IfaceVentaProducto;
+import com.web.chon.util.JasperReportUtil;
 import com.web.chon.util.NumeroALetra;
 import com.web.chon.util.Utilerias;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.print.Doc;
 import javax.print.DocFlavor;
@@ -34,6 +56,22 @@ import javax.print.PrintServiceLookup;
 import javax.print.SimpleDoc;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import net.sf.jasperreports.engine.JREmptyDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRExporter;
+import net.sf.jasperreports.engine.JRExporterParameter;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperPrintManager;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.JasperRunManager;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
+import net.sf.jasperreports.engine.export.JRPdfExporterParameter;
+import net.sf.jasperreports.engine.util.JRLoader;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -77,6 +115,9 @@ public class BeanVenta implements Serializable, BeanSimple {
     private VentaProducto dataEdit;
     private Usuario usuario;
     private Cliente cliente;
+
+    private Map paramReport = new HashMap();
+
     private String title = "";
     private String nombreEmpaque = "";
     private String viewEstate = "";
@@ -102,6 +143,11 @@ public class BeanVenta implements Serializable, BeanSimple {
             + "               P A G A D O\n\n"
             + "\n" + (char) 27 + (char) 112 + (char) 0 + (char) 10 + (char) 100 + "\n"
             + (char) 27 + "m";
+
+    private StreamedContent media;
+    private ByteArrayOutputStream outputStream;
+    private String number;
+    private String pathFileJasper = "C:/Users/Juan/Documents/NetBeansProjects/Chonajos-V2/ticket.jasper";
 
     @PostConstruct
     public void init() {
@@ -158,8 +204,7 @@ public class BeanVenta implements Serializable, BeanSimple {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public String insert() {
+    public void inserts() {
         int idVenta = 0;
         Venta venta = new Venta();
         try {
@@ -178,6 +223,7 @@ public class BeanVenta implements Serializable, BeanSimple {
                     }
                     imprimirTicket(idVenta);
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info!", "La venta se realizo correctamente."));
+                    generateReport();
 
                 } else {
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al insertar la venta."));
@@ -190,7 +236,7 @@ public class BeanVenta implements Serializable, BeanSimple {
             ex.printStackTrace();
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", ex.toString()));
         }
-        return "venta";
+
     }
 
     @Override
@@ -265,34 +311,59 @@ public class BeanVenta implements Serializable, BeanSimple {
     private void imprimirTicket(int idVenta) {
 
         NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
-        DecimalFormat df = new DecimalFormat("#,###.##");
+        DecimalFormat df = new DecimalFormat("###.##");
         Date date = new Date();
-        String productos = "";
+        ArrayList<String> productos = new ArrayList<String>();
         NumeroALetra numeroLetra = new NumeroALetra();
         for (VentaProducto venta : lstVenta) {
             String cantidad = venta.getCantidadEmpaque() + " " + venta.getNombreEmpaque();
-            productos += line + cantidad + " " + venta.getNombreProducto() + " " + nf.format(venta.getPrecioProducto()) + " " + nf.format(venta.getTotal()) + "\n";
+            productos.add(cantidad + " " + venta.getNombreProducto() + " " + nf.format(venta.getPrecioProducto()) + " " + nf.format(venta.getTotal()));
         }
 
         String totalVentaStr = numeroLetra.Convertir(df.format(totalVenta), true);
-        putValues("ChonAjos", "1", "Q85", Utilerias.getFechaDDMMYYYYHHMM(date), productos, nf.format(totalVenta), totalVentaStr, idVenta);
-        imprimirDefault();
+
+        putValues(Utilerias.getFechaDDMMYYYYHHMM(date), productos, nf.format(totalVenta), totalVentaStr, idVenta);
 
     }
 
-    private void putValues(String nameLocal, String box, String caissier, String dateTime, String items, String total, String totalVentaStr, int idVenta) {
+    public void imprimir() throws IOException {
+//        JasperReport jasperReport;
+//        JasperPrint jasperPrint;
+        try {
+            //se carga el reporte
+            File f = new File("C:/Users/Juan/Documents/NetBeansProjects/Chonajos-V2/ticket.jasper");
+            f.getCanonicalPath();
 
-        contentTicket = contentTicket.replace("{{nameLocal}}", nameLocal);
-        contentTicket = contentTicket.replace("{{box}}", box);
-        contentTicket = contentTicket.replace("{{cajero}}", caissier);
-        contentTicket = contentTicket.replace("{{dateTime}}", dateTime);
-        contentTicket = contentTicket.replace("{{items}}", items);
-        contentTicket = contentTicket.replace("{{total}}", total);
-        contentTicket = contentTicket.replace("{{totalLetra}}", totalVentaStr);
-        contentTicket = contentTicket.replace("{{valeNum}}", Integer.toString(idVenta));
-        contentTicket = contentTicket.replace("{{dateTime}}", dateTime);
-        contentTicket = contentTicket.replace("{{vendedor}}", usuario.getNombreCompletoUsuario());
-        contentTicket = contentTicket.replace("{{cliente}}", cliente.getNombreCombleto());
+            System.out.println("ruta" + f.getAbsolutePath());
+            JasperReport jasperReport = (JasperReport) JRLoader.loadObject(f);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, paramReport, new JREmptyDataSource());
+            JRExporter exporter = new JRPdfExporter();
+            exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+            exporter.exportReport();
+
+//            jasperReport = (JasperReport) JRLoader.loadObject(f);
+////           jasperReport = (JasperReport) JRLoader.loadObject("ticket.jasper");
+//            //se procesa el archivo jasper
+//            jasperPrint = JasperFillManager.fillReport(jasperReport, paramReport, new JREmptyDataSource());
+//            //impresion de reportes
+//            // TRUE: muestra la ventana de dialogo "preferencias de impresion"
+//            JasperPrintManager.
+//            JasperPrintManager.getStreamContentFromOutputStream(jasperPrint, false);
+        } catch (JRException ex) {
+            System.err.println("Error iReport: " + ex.getMessage());
+        }
+    }
+
+    private void putValues(String dateTime, ArrayList<String> items, String total, String totalVentaStr, int idVenta) {
+
+        paramReport.put("fechaVenta", dateTime);
+        paramReport.put("noVenta", Integer.toString(idVenta));
+        paramReport.put("cliente", cliente.getNombreCombleto());
+        paramReport.put("vendedor", usuario.getNombreCompletoUsuario());
+        paramReport.put("productos", items);
+        paramReport.put("ventaTotal", total);
+        paramReport.put("totalLetra", totalVentaStr);
+        paramReport.put("estado", "POR ENTREGAR");
 
     }
 
@@ -370,6 +441,92 @@ public class BeanVenta implements Serializable, BeanSimple {
         viewEstate = "init";
 
         data.reset();
+    }
+
+    public void generateReport() {
+
+        JasperReport compiledTemplate = null;
+        JRExporter exporter = null;
+        ByteArrayOutputStream out = null;
+        ByteArrayInputStream input = null;
+        BufferedOutputStream output = null;
+
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = facesContext.getExternalContext();
+        HttpServletResponse response = (HttpServletResponse) externalContext.getResponse();
+
+        try {
+
+            JasperPrint jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport, new JREmptyDataSource());
+            outputStream = JasperReportUtil.getOutputStreamFromReport(paramReport, getPathFileJasper());
+            exporter = new JRPdfExporter();
+
+            exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
+            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, outputStream);
+
+            exporter.exportReport();
+            input = new ByteArrayInputStream(outputStream.toByteArray());
+
+            response.reset();
+            response.setHeader("Content-Type", "application/pdf");
+            
+//            response.setHeader("Content-Type", "application/pdf");
+            response.setHeader("Content-Length", String.valueOf(outputStream.toByteArray().length));
+            response.setHeader("Content-Disposition", "inline; filename=\"fileName.pdf\"");
+            output = new BufferedOutputStream(response.getOutputStream(), 75);
+
+            byte[] buffer = new byte[75];
+            int length;
+            while ((length = input.read(buffer)) > 0) {
+                output.write(buffer, 0, length);
+            }
+            output.flush();
+
+        } catch (Exception exception) {
+             System.out.println("Error >" + exception.getMessage());
+        } finally {
+            try {
+                if (output != null) {
+                    output.close();
+                }
+                if (input != null) {
+                    input.close();
+                }
+            } catch (Exception exception) {
+               System.out.println("Error >" + exception.getMessage());
+            }
+        }
+        facesContext.responseComplete();
+      
+    }
+
+    public String getPathFileJasper() {
+        return pathFileJasper;
+    }
+
+    public String getNameFilePdf() {
+        return "reporte_dummy.pdf";
+    }
+
+    public void downloadFile() {
+        try {
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+
+            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+            response.reset();
+
+            response.setContentType("application/pdf");
+            response.setHeader("Content-disposition", "attachment; filename=" + getNameFilePdf());
+
+            OutputStream output = response.getOutputStream();
+            output.write(outputStream.toByteArray());
+            output.close();
+
+            facesContext.responseComplete();
+        } catch (Exception e) {
+            System.out.println("Error >" + e.getMessage());
+//            log.error(e.getMessage(), e);
+        }
     }
 
     public ArrayList<VentaProducto> getLstVenta() {
@@ -514,6 +671,35 @@ public class BeanVenta implements Serializable, BeanSimple {
 
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
+    }
+
+    public StreamedContent getMedia() {
+        return media;
+    }
+
+    public void setMedia(StreamedContent media) {
+        this.media = media;
+    }
+
+    public ByteArrayOutputStream getOutputStream() {
+        return outputStream;
+    }
+
+    public void setOutputStream(ByteArrayOutputStream outputStream) {
+        this.outputStream = outputStream;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    @Override
+    public String insert() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
