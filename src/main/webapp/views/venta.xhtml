@@ -19,7 +19,7 @@
                 <div class="container-fluid">
                     <div class="form-group">
                         <p:commandButton value="Agregar" update=":formContent" ajax="true" action="#{beanVenta.addProducto}" rendered="#{beanVenta.viewEstate =='init'}"/>
-                        <p:commandButton value="Vender" update=":formContent" ajax="true" action="#{beanVenta.insert}" immediate="true" resetValues="true" rendered="#{beanVenta.viewEstate =='init'}"/>
+                        <p:commandButton value="Vender"  ajax="false" onclick="(#{beanVenta.lstVenta.size()} => 1) ? (this.form.target = '_blank';):(this.form.target = '_blank';)" update=":formContent" action="#{beanVenta.inserts}" immediate="true" resetValues="true" rendered="#{beanVenta.viewEstate =='init'}"/>
                         <p:commandButton value="Aceptar" update=":formContent" ajax="true" action="#{beanVenta.updateProducto}" rendered="#{beanVenta.viewEstate =='update'}"/>
                         <p:commandButton value="Cancelar" update=":formContent" ajax="true" action="#{beanVenta.cancel}" immediate="true" resetValues="true" rendered="#{beanVenta.viewEstate =='update'}"/>
                     </div>

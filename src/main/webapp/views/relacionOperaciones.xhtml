@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="./../templates/main.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content">
+        <div>
+            <h3>#{beanRelacionOperaciones.title}</h3>
+        </div>
+        <h:form id="formContent">
+            <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
+            <p:growl id="messagess" showDetail="true" life="2000" />
+            <p:panel>
+                <div class="container-fluid">
+                    <div class="form-group">
+                        <p:commandButton value="Buscar" update=":formContent" ajax="true" action="#{beanRelacionOperaciones.searchById()}" rendered="#{beanRelacionOperaciones.viewEstate =='init'}"/>
+                        <p:commandButton value="Cancelar" update=":formContent" ajax="true" action="#{beanRelacionOperaciones.cancel}" immediate="true" resetValues="true" rendered="#{beanRelacionOperaciones.viewEstate =='searchById'}"/>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-5 col-md-4 col-sm-4 col-xs-12"  for="calendarInicio" value ="Fecha de Inicio:" /> 
+                            <p:calendar id="calendarInicio" class="col-lg-7 col-md-8 col-sm-8 col-xs-12 calendario" navigator="true" placeholder="dd/mm/yyyy"
+                                        value="#{beanRelacionOperaciones.fechaInicio}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button">
+                            </p:calendar>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-5 col-md-4 col-sm-4 col-xs-12"  for="calendarFin" value ="Fecha de Fin:" /> 
+                            <p:calendar id="calendarFin" class="col-lg-7 col-md-8 col-sm-8 col-xs-12 calendario" navigator="true" placeholder="dd/mm/yyyy"
+                                        value="#{beanRelacionOperaciones.fechaFin}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button">
+                            </p:calendar>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="selectFiltro" value ="Producto:" /> 
+                            <h:selectOneMenu  id="selectFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanRelacionOperaciones.filtro}">
+                                <f:selectItem itemLabel="Seleccione un Filtro" itemValue="-1" />
+                                <f:selectItem itemLabel="Día" itemValue="1"/>
+                                <f:selectItem itemLabel="Mes" itemValue="2"/>
+                                <f:selectItem itemLabel="Año" itemValue="3"/>
+                                <p:ajax event="change" update=":formContent" listener="#{beanRelacionOperaciones.setFechaInicioFin}"/>
+                            </h:selectOneMenu>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <p:dataTable var="model" value="#{beanRelacionOperaciones.model}" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros.">
+
+                            <p:column headerText="Numero de Venta" width="150px;" style="text-align:center">
+                                <h:outputText value="#{model.idVentaPk}" />
+                            </p:column>
+                            <p:column headerText="Cliente" width="350px;" style="text-align:center">
+                                <h:outputText value="#{model.nombreCliente}" />
+                            </p:column>
+                            <p:column headerText="Vendedor" width="350px;" style="text-align:center">
+                                <h:outputText value="#{model.nombreVendedor}" />
+                            </p:column>
+                            <p:column headerText="Total de Venta" width="150px;" style="text-align:center">
+                                <h:outputText value="#{model.totalVenta}">
+                                    <f:convertNumber pattern="#,##0.00"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Ver" width="60px;" style="text-align:center">
+                                <p:commandButton id="editar" ajax="true" process="@this" action="#{beanRelacionOperaciones.detallesVenta}" icon="ui-icon-search" styleClass="ui-priority-primary" update=":formContent">
+                                    <f:setPropertyActionListener value="#{model}" target="#{beanRelacionOperaciones.data}"/>
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+                </div>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>
