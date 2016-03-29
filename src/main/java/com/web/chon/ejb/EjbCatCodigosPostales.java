@@ -31,7 +31,7 @@ public class EjbCatCodigosPostales implements NegocioCatCodigosPostales{
         try {
 
             System.out.println("EJB_GET_CODIGOS_POSTALES");
-            Query query = em.createNativeQuery("select cp.id_pk,cp.NOMBRE_COLONIA,m.ID_MUNICIPIO_PK,m.NOMBRE_MUNICIPIO,e.ID_ENTIDAD_PK,e.NOMBRE_ENTIDAD\n" +
+            Query query = em.createNativeQuery("select cp.id_pk,cp.CODIGO_POSTAL,cp.NOMBRE_COLONIA,m.ID_MUNICIPIO_PK,m.NOMBRE_MUNICIPIO,e.ID_ENTIDAD_PK,e.NOMBRE_ENTIDAD\n" +
 "from CODIGOS_POSTALES cp\n" +
 "INNER JOIN municipios m\n" +
 "on cp.ID_MUNICIPIO_FK=m.ID_MUNICIPIO_PK\n" +
@@ -48,6 +48,32 @@ public class EjbCatCodigosPostales implements NegocioCatCodigosPostales{
             return null;
         }
        
+    }
+
+    @Override
+    public List<Object[]> getCodigosByIdMun(int idMun) 
+    {
+        
+         try {
+
+            System.out.println("EJB_GET_CODIGOS_POSTALES");
+            Query query = em.createNativeQuery("select cp.id_pk,cp.CODIGO_POSTAL,cp.NOMBRE_COLONIA,m.ID_MUNICIPIO_PK,m.NOMBRE_MUNICIPIO,e.ID_ENTIDAD_PK,e.NOMBRE_ENTIDAD\n" +
+"from CODIGOS_POSTALES cp\n" +
+"INNER JOIN municipios m\n" +
+"on cp.ID_MUNICIPIO_FK=m.ID_MUNICIPIO_PK\n" +
+"INNER JOIN entidad e\n" +
+"on m.ID_ENTIDAD_FK=e.ID_ENTIDAD_PK\n" +
+"where cp.ID_MUNICIPIO_FK=?");
+            query.setParameter(1, idMun);
+            List<Object[]> resultList = null;
+            resultList = query.getResultList();
+            return resultList;
+        } catch (Exception ex) 
+        {
+            Logger.getLogger(EjbCatCodigosPostales.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    
     }
 
     

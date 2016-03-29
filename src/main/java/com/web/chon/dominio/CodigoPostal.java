@@ -68,11 +68,30 @@ public class CodigoPostal
     public void setNombreEntidad(String nombreEntidad) {
         this.nombreEntidad = nombreEntidad;
     }
-    private String codigoPostal;
+    
 
     @Override
     public String toString() {
         return "CodigoPostal{" + "id_cp=" + id_cp + ", codigoPostal=" + codigoPostal + ", nombreColonia=" + nombreColonia + ", idMunicipio=" + idMunicipio + ", nombreMunicipio=" + nombreMunicipio + ", idEntidad=" + idEntidad + ", nombreEntidad=" + nombreEntidad + '}';
+    }
+    private String numeropostal;
+
+    public String getNumeropostal() {
+        return numeropostal;
+    }
+
+    public void setNumeropostal(String numeropostal) {
+        this.numeropostal = numeropostal;
+    }
+    private String codigoPostal;
+    private String codigoPostalFiscal;
+
+    public String getCodigoPostalFiscal() {
+        return codigoPostalFiscal;
+    }
+
+    public void setCodigoPostalFiscal(String codigoPostalFiscal) {
+        this.codigoPostalFiscal = codigoPostalFiscal;
     }
     private String nombreColonia;
     private int idMunicipio;

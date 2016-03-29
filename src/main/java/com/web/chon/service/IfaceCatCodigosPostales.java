@@ -15,4 +15,5 @@ import java.util.ArrayList;
 public interface IfaceCatCodigosPostales 
 {
     public ArrayList<CodigoPostal> getCodigoPostalById(String codigo_postal);
+    public ArrayList<CodigoPostal> getCodigoPostalByIdMun(int idMunicipioPK);
 }

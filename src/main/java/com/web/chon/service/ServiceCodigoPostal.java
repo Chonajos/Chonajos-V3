@@ -38,12 +38,12 @@ public class ServiceCodigoPostal implements IfaceCatCodigosPostales {
             {
                 CodigoPostal colonia = new CodigoPostal();
                 colonia.setId_cp(Integer.parseInt(obj[0] == null ? "":obj[0].toString()));
-                //colonia.setCodigoPostal(obj[1] == null ? "" : obj[1].toString());
-                colonia.setNombreColonia(obj[1] == null ? "" : obj[1].toString());
-                colonia.setIdMunicipio(Integer.parseInt(obj[2] == null ? "":obj[2].toString()));
-                colonia.setNombreMunicipio(obj[3] == null ? "" : obj[3].toString());
-                colonia.setIdEntidad(Integer.parseInt(obj[4] == null ? "":obj[4].toString()));
-                colonia.setNombreEntidad(obj[5] == null ? "" : obj[5].toString());
+                colonia.setNumeropostal(obj[1] == null ? "" : obj[1].toString());
+                colonia.setNombreColonia(obj[2] == null ? "" : obj[2].toString());
+                colonia.setIdMunicipio(Integer.parseInt(obj[3] == null ? "":obj[3].toString()));
+                colonia.setNombreMunicipio(obj[4] == null ? "" : obj[4].toString());
+                colonia.setIdEntidad(Integer.parseInt(obj[5] == null ? "":obj[5].toString()));
+                colonia.setNombreEntidad(obj[6] == null ? "" : obj[6].toString());
                 lista_codigos.add(colonia);
                
             }
@@ -57,6 +57,42 @@ public class ServiceCodigoPostal implements IfaceCatCodigosPostales {
             }
         
         
+    }
+
+    @Override
+    public ArrayList<CodigoPostal> getCodigoPostalByIdMun(int idMunicipioPK) 
+    {
+         try
+       {
+            ArrayList <CodigoPostal> lista_codigos= new ArrayList<CodigoPostal>();
+            
+            ejb = (NegocioCatCodigosPostales) Utilidades.getEJBRemote("ejbCatCodigosPostales", NegocioCatCodigosPostales.class.getName());
+            List<Object[]> lstObject = ejb.getCodigosByIdMun(idMunicipioPK);
+             
+            for(Object[] obj: lstObject )
+            {
+                CodigoPostal colonia = new CodigoPostal();
+                colonia.setId_cp(Integer.parseInt(obj[0] == null ? "":obj[0].toString()));
+                colonia.setNumeropostal(obj[1] == null ? "" : obj[1].toString());
+                colonia.setNombreColonia(obj[2] == null ? "" : obj[2].toString());
+                colonia.setIdMunicipio(Integer.parseInt(obj[3] == null ? "":obj[3].toString()));
+                colonia.setNombreMunicipio(obj[4] == null ? "" : obj[4].toString());
+                colonia.setIdEntidad(Integer.parseInt(obj[5] == null ? "":obj[5].toString()));
+                colonia.setNombreEntidad(obj[6] == null ? "" : obj[6].toString());
+                lista_codigos.add(colonia);
+               
+            }
+            return lista_codigos;
+        }catch(Exception ex)
+            {
+                
+                Logger.getLogger(ServiceCodigoPostal.class.getName()).log(Level.SEVERE, null, ex);
+                return null;
+
+            }
+        
+       
+    
     }
     
 }

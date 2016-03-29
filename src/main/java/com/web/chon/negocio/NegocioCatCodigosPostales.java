@@ -17,5 +17,6 @@ import javax.ejb.Remote;
 public interface NegocioCatCodigosPostales 
 {
       public List<Object[]> getCodigosByCP(String cp);
+      public List<Object[]> getCodigosByIdMun(int idMun);
     
 }

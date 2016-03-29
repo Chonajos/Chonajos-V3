@@ -150,7 +150,7 @@ public class EjbCatCliente implements NegocioCatCliente {
             {
                 
                 
-                //System.out.println("insert : " + usuario.getNombreUsuario() + " " + usuario.getRfcUsuario());
+                System.out.println("insert : "+clie );
                 Query query = em.createNativeQuery("INSERT INTO CLIENTE (ID_CLIENTE,NOMBRE, APELLIDO_PATERNO, APELLIDO_MATERNO, EMPRESA, CALLE, SEXO, FECHA_NACIMIENTO,TELEFONO_MOVIL, TELEFONO_FIJO, EXTENSION, EMAIL, NUM_INT, NUM_EXT, COLONIA, CLAVECELULAR, LADACELULAR,ID_CP,CALLEFISCAL,NUMINTFIS,NUMEXTFIS,COLONIAFISCAL,ID_CP_FISCAL,NEXTEL,RAZON,RFC,LADAOFICINA,CLAVEOFICINA,NEXTELCLAVE) "
                         + "VALUES (S_CLIENTE.NextVal,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
                 query.setParameter(1, clie.getNombre());
@@ -158,8 +158,7 @@ public class EjbCatCliente implements NegocioCatCliente {
                 query.setParameter(3, clie.getMaterno());
                 query.setParameter(4, clie.getEmpresa());
                 query.setParameter(5, clie.getCalle());
-                //query.setParameter(6, clie.getCp());
-                //query.setParameter(7, clie.getEstado());
+                
                 query.setParameter(6, clie.getSexo());
                 query.setParameter(7, clie.getFecha_nacimiento());
                 query.setParameter(8, clie.getTel_movil());
@@ -175,13 +174,11 @@ public class EjbCatCliente implements NegocioCatCliente {
                 query.setParameter(18, clie.getCalleFiscal());
                 query.setParameter(19, clie.getNum_int_fiscal());
                 query.setParameter(20, clie.getNum_ext_fiscal());
-                query.setParameter(21, clie.getColoniaFiscal());
-                //query.setParameter(24, clie.getEstadoFiscal());
+                query.setParameter(21, clie.getColoniaFiscal());         
                 query.setParameter(22, clie.getID_CP_FISCAL());
                 query.setParameter(23, clie.getNextel());
                 query.setParameter(24, clie.getRazon_social());
-                query.setParameter(25, clie.getRfcFiscal());
-                //query.setParameter(27, clie.getCpFiscal());
+                query.setParameter(25, clie.getRfcFiscal());               
                 query.setParameter(26, clie.getLadaoficina());
                 query.setParameter(27, clie.getClaveoficina());
                 query.setParameter(28, clie.getNextelclave());

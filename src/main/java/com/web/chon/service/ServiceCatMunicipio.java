@@ -38,7 +38,7 @@ public class ServiceCatMunicipio implements IfaceCatMunicipio
                 Municipios muni = new Municipios();
                 muni.setIdMunicipioPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
                 muni.setNombreMunicipio(obj[1].toString());
-                System.out.println(muni.getIdMunicipioPk()+muni.getNombreMunicipio());
+              
                 lista_municipios.add(muni);
                
             }
