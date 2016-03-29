@@ -12,6 +12,10 @@
         <div>
             <h3>#{beanVenta.title}</h3>
         </div>
+        <script>
+             function printDocument(documentId) { var doc = document.getElementById(documentId); //Wait until PDF is ready to print if (typeof doc.print === 'undefined') { setTimeout(function(){printDocument(documentId);}, 1000); } else { doc.print(); } } 
+
+                            </script>
         <h:form id="formContent">
             <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:growl id="messagess" showDetail="true" life="2000" />
@@ -19,11 +23,13 @@
                 <div class="container-fluid">
                     <div class="form-group">
                         <p:commandButton value="Agregar" update=":formContent" ajax="true" action="#{beanVenta.addProducto}" rendered="#{beanVenta.viewEstate =='init'}"/>
-                        <p:commandButton value="Vender"  ajax="false" onclick="this.form.target = '_blank';" update=":formContent" action="#{beanVenta.inserts}" immediate="true" resetValues="true" rendered="#{beanVenta.viewEstate =='init'}"/>
-                        <p:commandButton value="descragar"  ajax="false" update=":formContent" action="#{beanVenta.downloadFile}" immediate="true" resetValues="true" rendered="#{beanVenta.viewEstate =='init'}"/>
+                        <p:commandButton value="Vender"  ajax="false" update=":formContent" action="#{beanVenta.inserts}" immediate="true" resetValues="true" rendered="#{beanVenta.viewEstate =='init'}"/>
+                       
+                        <p:commandButton value="imprimir"  ajax="false" onclick="this.form.target = '_blank';" update=":formContent" action="#{beanVenta.imprimirRelatorio}"  resetValues="true" rendered="#{beanVenta.viewEstate =='init'}"/>
                         <p:commandButton value="Aceptar" update=":formContent" ajax="true" action="#{beanVenta.updateProducto}" rendered="#{beanVenta.viewEstate =='update'}"/>
                         <p:commandButton value="Cancelar" update=":formContent" ajax="true" action="#{beanVenta.cancel}" immediate="true" resetValues="true" rendered="#{beanVenta.viewEstate =='update'}"/>
                     </div>
+                     <!--<p:commandButton value="Vender"  ajax="false" onclick="this.form.target = '_blank';" update=":formContent" action="{beanVenta.inserts}'" immediate="true" resetValues="true" rendered="{beanVenta.viewEstate =='init'}"/>-->
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
 
                         <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
@@ -62,7 +68,7 @@
                             <h:selectOneMenu  id="txtTipoEmpaque" class=" col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanVenta.data.idTipoEmpaqueFk}" requiredMessage="Ingresa un valor para el campo Tipo de Empaque.">
                                 <f:selectItem itemLabel="Seleccione un empaque" itemValue="-1" />
                                 <f:selectItems value="#{beanVenta.lstTipoEmpaque}" var="empaque" itemLabel="#{empaque.nombreEmpaque}" itemValue="#{empaque.idTipoEmpaquePk}"/>
-                                <p:ajax event="change" update=":formContent" listener="#{beanVenta.selectedTipoEmpaque}"/>
+                                <p:ajax event="change" update=":formContent:txtPrecioVenta" listener="#{beanVenta.selectedTipoEmpaque}"/>
                             </h:selectOneMenu>
                         </div>
                         <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">

@@ -58,6 +58,7 @@ import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporter;
@@ -222,8 +223,10 @@ public class BeanVenta implements Serializable, BeanSimple {
                         ifaceVentaProducto.insertarVentaProducto(producto, idVenta);
                     }
                     imprimirTicket(idVenta);
+                    
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info!", "La venta se realizo correctamente."));
-                    generateReport();
+//                    generateReport();
+imprimir();
 
                 } else {
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al insertar la venta."));
@@ -336,10 +339,15 @@ public class BeanVenta implements Serializable, BeanSimple {
 
             System.out.println("ruta" + f.getAbsolutePath());
             JasperReport jasperReport = (JasperReport) JRLoader.loadObject(f);
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, paramReport, new JREmptyDataSource());
-            JRExporter exporter = new JRPdfExporter();
-            exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
-            exporter.exportReport();
+            try {
+                outputStream = JasperReportUtil.getOutputStreamFromReport(paramReport, getPathFileJasper());
+            } catch (Exception ex) {
+                Logger.getLogger(BeanVenta.class.getName()).log(Level.SEVERE, null, ex);
+            }
+//            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, paramReport, new JREmptyDataSource());
+//            JRExporter exporter = new JRPdfExporter();
+//            exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+//            exporter.exportReport();
 
 //            jasperReport = (JasperReport) JRLoader.loadObject(f);
 ////           jasperReport = (JasperReport) JRLoader.loadObject("ticket.jasper");
@@ -469,7 +477,7 @@ public class BeanVenta implements Serializable, BeanSimple {
 
             response.reset();
             response.setHeader("Content-Type", "application/pdf");
-            
+
 //            response.setHeader("Content-Type", "application/pdf");
             response.setHeader("Content-Length", String.valueOf(outputStream.toByteArray().length));
             response.setHeader("Content-Disposition", "inline; filename=\"fileName.pdf\"");
@@ -483,7 +491,7 @@ public class BeanVenta implements Serializable, BeanSimple {
             output.flush();
 
         } catch (Exception exception) {
-             System.out.println("Error >" + exception.getMessage());
+            System.out.println("Error >" + exception.getMessage());
         } finally {
             try {
                 if (output != null) {
@@ -493,11 +501,11 @@ public class BeanVenta implements Serializable, BeanSimple {
                     input.close();
                 }
             } catch (Exception exception) {
-               System.out.println("Error >" + exception.getMessage());
+                System.out.println("Error >" + exception.getMessage());
             }
         }
         facesContext.responseComplete();
-      
+
     }
 
     public String getPathFileJasper() {
@@ -702,4 +710,25 @@ public class BeanVenta implements Serializable, BeanSimple {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    protected void redirect(String page) {
+        FacesContext ctx = FacesContext.getCurrentInstance();
+        ExternalContext ec = ctx.getExternalContext();
+        try {
+            ec.redirect(ec.getRequestContextPath() + page);
+        } catch (IOException ex) {
+            System.out.println((ex.getMessage()));
+        }
+    }
+
+    public void imprimirRelatorio() throws Exception {
+        try {
+            FacesContext ctx = FacesContext.getCurrentInstance();
+            HttpSession session = (HttpSession) ctx.getExternalContext().getSession(false);
+            session.setAttribute("listagem", paramReport);
+            session.setAttribute("relatorio", "ticket.jasper");
+            redirect("/RelatorioServlet");
+        } catch (Exception ex) {
+            System.out.println((ex.getMessage()));
+        }
+    }
 }
