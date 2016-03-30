@@ -1,6 +1,7 @@
 package com.web.chon.service;
 
 import com.web.chon.dominio.BuscaVenta;
+import java.util.ArrayList;
 
 /**
  *
@@ -8,6 +9,6 @@ import com.web.chon.dominio.BuscaVenta;
  */
 public interface IfaceBuscaVenta 
 {
-    public BuscaVenta getVentaById(int idVenta);
+    public ArrayList<BuscaVenta> getVentaById(int idVenta);
     public int updateCliente(int idVenta);
 }

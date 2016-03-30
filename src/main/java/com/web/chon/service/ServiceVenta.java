@@ -1,11 +1,14 @@
 package com.web.chon.service;
 
+import com.web.chon.dominio.RelacionOperaciones;
 import com.web.chon.dominio.Subproducto;
 import com.web.chon.dominio.Venta;
 import com.web.chon.negocio.NegocioVenta;
+import com.web.chon.util.Utilerias;
 import com.web.chon.util.Utilidades;
-import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,7 +27,10 @@ public class ServiceVenta implements IfaceVenta {
 
     private void getEjb() {
         try {
-            ejb = (NegocioVenta) Utilidades.getEJBRemote("ejbVenta", NegocioVenta.class.getName());
+            if (ejb == null) {
+                ejb = (NegocioVenta) Utilidades.getEJBRemote("ejbVenta", NegocioVenta.class.getName());
+            }
+
         } catch (Exception ex) {
             Logger.getLogger(ServiceVenta.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -32,20 +38,40 @@ public class ServiceVenta implements IfaceVenta {
 
     @Override
     public int insertarVenta(Venta venta) {
-        if (ejb == null) {
-            getEjb();
-        }
-       
+        getEjb();
         return ejb.insertarVenta(venta);
     }
 
     @Override
     public int getNextVal() {
-        if (ejb == null) {
-            getEjb();
+        getEjb();
+        return ejb.getNextVal();
+    }
+
+    @Override
+    public ArrayList<RelacionOperaciones> getVentasByIntervalDate(Date fechaInicio, Date fechaFin) {
+        getEjb();
+        ArrayList<RelacionOperaciones> lstVenta = new ArrayList<RelacionOperaciones>();
+        List<Object[]> lstObject = ejb.getVentasByInterval(Utilerias.getFechaDDMMYYYY(fechaInicio),Utilerias.getFechaDDMMYYYY(fechaFin));
+        for(Object[] obj : lstObject){
+            
+            RelacionOperaciones venta = new RelacionOperaciones();
+            
+            venta.setIdVentaPk(new BigDecimal(obj[0].toString()));
+            venta.setIdClienteFk(new BigDecimal(obj[1].toString()));
+            venta.setIdVendedorFk(new BigDecimal(obj[2].toString()));
+            venta.setFechaVenta((Date)obj[3]);
+            venta.setFechaPromesaPago(obj[4] == null ? null: (Date) obj[4]);
+            venta.setEstatus(obj[5].toString());
+            venta.setFechaPago(obj[6] == null ? null: (Date) obj[6]);
+            venta.setNombreCliente(obj[7].toString());
+            venta.setNombreVendedor(obj[8].toString());
+            venta.setTotalVenta(new BigDecimal(obj[9].toString()));
+            
+            lstVenta.add(venta);
         }
         
-        return ejb.getNextVal();
+        return lstVenta;
     }
 
 }

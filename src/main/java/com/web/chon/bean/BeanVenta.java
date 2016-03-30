@@ -223,10 +223,11 @@ public class BeanVenta implements Serializable, BeanSimple {
                         ifaceVentaProducto.insertarVentaProducto(producto, idVenta);
                     }
                     imprimirTicket(idVenta);
-                    
+
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info!", "La venta se realizo correctamente."));
 //                    generateReport();
-imprimir();
+                    imprimirRelatorio();
+//imprimir();
 
                 } else {
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al insertar la venta."));
@@ -239,7 +240,6 @@ imprimir();
             ex.printStackTrace();
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", ex.toString()));
         }
-
     }
 
     @Override
@@ -477,8 +477,6 @@ imprimir();
 
             response.reset();
             response.setHeader("Content-Type", "application/pdf");
-
-//            response.setHeader("Content-Type", "application/pdf");
             response.setHeader("Content-Length", String.valueOf(outputStream.toByteArray().length));
             response.setHeader("Content-Disposition", "inline; filename=\"fileName.pdf\"");
             output = new BufferedOutputStream(response.getOutputStream(), 75);

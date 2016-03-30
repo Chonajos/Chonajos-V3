@@ -18,49 +18,64 @@
             <p:panel>
                 <div class="container-fluid">
                     <div class="form-group">
-                        <p:commandButton value="Buscar" update=":formContent" ajax="true" action="#{beanRelacionOperaciones.searchById()}" rendered="#{beanRelacionOperaciones.viewEstate =='init'}"/>
-                        <p:commandButton value="Cancelar" update=":formContent" ajax="true" action="#{beanRelacionOperaciones.cancel}" immediate="true" resetValues="true" rendered="#{beanRelacionOperaciones.viewEstate =='searchById'}"/>
+                        <p:commandButton value="Atras" update=":formContent" ajax="true" action="#{beanRelacionOperaciones.cancel}" rendered="#{beanRelacionOperaciones.viewEstate =='searchById'}"/>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-5 col-md-4 col-sm-4 col-xs-12"  for="calendarInicio" value ="Fecha de Inicio:" /> 
+                            <p:outputLabel class="col-lg-5 col-md-4 col-sm-4 col-xs-12"  for="calendarInicio" value ="Fecha de Inicio:" rendered="#{beanRelacionOperaciones.viewEstate =='init'}"/> 
                             <p:calendar id="calendarInicio" class="col-lg-7 col-md-8 col-sm-8 col-xs-12 calendario" navigator="true" placeholder="dd/mm/yyyy"
-                                        value="#{beanRelacionOperaciones.fechaInicio}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button">
+                                        value="#{beanRelacionOperaciones.data.fechaFiltroInicio}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button" rendered="#{beanRelacionOperaciones.viewEstate =='init'}">
+                                <p:ajax   event="dateSelect" resetValues="true"
+                                          listener="#{beanRelacionOperaciones.getVentasByIntervalDate}"
+                                          update=":formContent" />
                             </p:calendar>
                         </div>
                         <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-5 col-md-4 col-sm-4 col-xs-12"  for="calendarFin" value ="Fecha de Fin:" /> 
+                            <p:outputLabel class="col-lg-5 col-md-4 col-sm-4 col-xs-12"  for="calendarFin" value ="Fecha de Fin:" rendered="#{beanRelacionOperaciones.viewEstate =='init'}"/> 
                             <p:calendar id="calendarFin" class="col-lg-7 col-md-8 col-sm-8 col-xs-12 calendario" navigator="true" placeholder="dd/mm/yyyy"
-                                        value="#{beanRelacionOperaciones.fechaFin}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button">
+                                        value="#{beanRelacionOperaciones.data.fechaFiltroFin}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button" rendered="#{beanRelacionOperaciones.viewEstate =='init'}">
+                                <p:ajax event="dateSelect" resetValues="true"
+                                        listener="#{beanRelacionOperaciones.getVentasByIntervalDate}"
+                                        update=":formContent" />
                             </p:calendar>
                         </div>
                         <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="selectFiltro" value ="Producto:" /> 
-                            <h:selectOneMenu  id="selectFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanRelacionOperaciones.filtro}">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="selectFiltro" value ="Producto:" rendered="#{beanRelacionOperaciones.viewEstate =='init'}"/> 
+                            <h:selectOneMenu  id="selectFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanRelacionOperaciones.filtro}" rendered="#{beanRelacionOperaciones.viewEstate =='init'}">
                                 <f:selectItem itemLabel="Seleccione un Filtro" itemValue="-1" />
                                 <f:selectItem itemLabel="Día" itemValue="1"/>
                                 <f:selectItem itemLabel="Mes" itemValue="2"/>
                                 <f:selectItem itemLabel="Año" itemValue="3"/>
-                                <p:ajax event="change" update=":formContent" listener="#{beanRelacionOperaciones.setFechaInicioFin}"/>
+                                <p:ajax event="change" update=":formContent" listener="#{beanRelacionOperaciones.getVentasByIntervalDate}"/>
                             </h:selectOneMenu>
                         </div>
                     </div>
 
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <p:dataTable var="model" value="#{beanRelacionOperaciones.model}" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros.">
+                        <p:dataTable var="model" value="#{beanRelacionOperaciones.model}" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." rendered="#{beanRelacionOperaciones.viewEstate =='init'}">
 
-                            <p:column headerText="Numero de Venta" width="150px;" style="text-align:center">
+                            <p:column headerText="N° Venta" width="90px;" style="text-align:center">
                                 <h:outputText value="#{model.idVentaPk}" />
                             </p:column>
-                            <p:column headerText="Cliente" width="350px;" style="text-align:center">
+                            <p:column headerText="Fecha de venta" width="120px;" style="text-align:center">
+                                <h:outputText value="#{model.fechaVenta}">
+                                    <f:convertDateTime pattern="dd/mm/yyyy"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Hora de venta" width="120px;" style="text-align:center">
+                                <h:outputText value="#{model.fechaVenta}">
+                                    <f:convertDateTime pattern="HH:mm" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Cliente" width="300px;" style="text-align:center">
                                 <h:outputText value="#{model.nombreCliente}" />
                             </p:column>
-                            <p:column headerText="Vendedor" width="350px;" style="text-align:center">
+                            <p:column headerText="Vendedor" width="300px;" style="text-align:center">
                                 <h:outputText value="#{model.nombreVendedor}" />
                             </p:column>
-                            <p:column headerText="Total de Venta" width="150px;" style="text-align:center">
+                            <p:column headerText="Total de Venta" width="120px;" style="text-align:center">
                                 <h:outputText value="#{model.totalVenta}">
-                                    <f:convertNumber pattern="#,##0.00"/>
+                                    <f:convertNumber pattern="#,##0.00" />
                                 </h:outputText>
                             </p:column>
                             <p:column headerText="Ver" width="60px;" style="text-align:center">
@@ -68,6 +83,57 @@
                                     <f:setPropertyActionListener value="#{model}" target="#{beanRelacionOperaciones.data}"/>
                                 </p:commandButton>
                             </p:column>
+                            <p:columnGroup type="footer">
+                                <p:column colspan="5" footerText="Total: " style="text-align:right"/>
+                                <p:column colspan="2" >
+                                    <f:facet name="footer">
+                                        <h:outputText value="#{beanRelacionOperaciones.totalVenta}">
+                                            <f:convertNumber pattern="#,###.000"/>
+                                        </h:outputText>
+                                    </f:facet>
+                                </p:column>
+                            </p:columnGroup>
+                        </p:dataTable>
+
+                        <p:dataTable rendered="#{beanRelacionOperaciones.viewEstate =='searchById'}" var="model" value="#{beanRelacionOperaciones.lstVenta}" styleClass="ui-datatable-hor-scroll"  emptyMessage="Productos.">
+
+                            <p:column headerText="Producto" width="150px;" style="text-align:center">
+                                <h:outputText value="#{model.nombreSubproducto}" />
+                            </p:column>
+                            <p:column headerText="Empaque" width="150px;" style="text-align:center">
+                                <h:outputText value="#{model.nombreEmpaque}" />
+                            </p:column>
+                            <p:column headerText="Cantidad" width="85px;" style="text-align:center">
+                                <h:outputText value="#{model.cantidadEmpaque}" />
+                            </p:column>
+                            <p:column headerText="Precio de venta" width="60px;" style="text-align:center">
+                                <h:outputText value="#{model.precioProducto}">
+                                    <f:convertNumber pattern="#,##0.00"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Total" width="90px;" style="text-align:center">
+                                <h:outputText value="#{model.total}">
+                                    <f:convertNumber pattern="#,##0.00"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Status" width="90px;" style="text-align:center">
+                                <h:outputText value="#{model.nombreStatus}"> 
+                                </h:outputText>
+                            </p:column>
+                            <p:columnGroup type="footer">
+                                <p:row>
+                                    <p:column colspan="4" style="text-align:right" footerText="Total de Venta:" />
+                                    <p:column colspan="1">
+                                        <f:facet name="footer">
+                                            <h:outputText value="#{beanRelacionOperaciones.totalVenta}">
+                                                <f:convertNumber for="totalVenta" pattern="#,##0.00"/>
+                                            </h:outputText>
+                                        </f:facet>
+                                    </p:column>
+                                    <p:column colspan="1" />
+
+                                </p:row>
+                            </p:columnGroup>
                         </p:dataTable>
                     </div>
                 </div>

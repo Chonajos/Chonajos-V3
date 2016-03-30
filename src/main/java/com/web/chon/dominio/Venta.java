@@ -22,6 +22,8 @@ public class Venta implements Serializable {
     private Date fechaPromesaPago;
     private BigDecimal idClienteFk;
     private BigDecimal idVendedorFk;
+    private String status;
+    private Date fechaPago;
     private ArrayList<VentaProducto> lstVentaProducto;
 
     public Venta() {
@@ -78,28 +80,24 @@ public class Venta implements Serializable {
     public void setLstVentaProducto(ArrayList<VentaProducto> lstVentaProducto) {
         this.lstVentaProducto = lstVentaProducto;
     }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Date getFechaPago() {
+        return fechaPago;
+    }
+
+    public void setFechaPago(Date fechaPago) {
+        this.fechaPago = fechaPago;
+    }
     
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (idVentaPk != null ? idVentaPk.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Venta)) {
-            return false;
-        }
-        Venta other = (Venta) object;
-        if ((this.idVentaPk == null && other.idVentaPk != null) || (this.idVentaPk != null && !this.idVentaPk.equals(other.idVentaPk))) {
-            return false;
-        }
-        return true;
-    }
-
+  
     @Override
     public String toString() {
         return "Venta{" + "idVentaPk=" + idVentaPk + ", fechaVenta=" + fechaVenta + ", fechaPromesaPago=" + fechaPromesaPago + ", idClienteFk=" + idClienteFk + ", idVendedorFk=" + idVendedorFk + ", lstVentaProducto=" + lstVentaProducto + '}';
