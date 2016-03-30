@@ -66,7 +66,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
         model = new ArrayList<RelacionOperaciones>();
         data = new RelacionOperaciones();
         lstVenta = new ArrayList<BuscaVenta>();
-        setTitle("Relación de Operaciones.");
+        setTitle("Relación de Operaciónes.");
         setViewEstate("init");
 
     }
@@ -119,6 +119,8 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
 
             model = ifaceVenta.getVentasByIntervalDate(data.getFechaFiltroInicio(), data.getFechaFiltroFin());
             getTotalVentaByInterval();
+        }else{
+            model = new ArrayList<RelacionOperaciones>();
         }
 
     }
