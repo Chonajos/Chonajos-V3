@@ -6,6 +6,7 @@
 package com.web.chon.negocio;
 
 import com.web.chon.dominio.Cliente;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Remote;
 
@@ -27,5 +28,7 @@ public interface NegocioCatCliente {
     public int insertCliente(Cliente clie);
 
     public List<Object[]> getClienteByNombreCompleto(String nombreCliente);
+    
+    public int getNextVal ();
   
 }

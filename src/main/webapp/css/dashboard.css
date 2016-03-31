@@ -6,7 +6,16 @@
 /*
  * CSS Choanajos
  */
-.calendario input {
+.calendario input 
+{
     width:105px;
+}
+.statusActivo
+{
+    color:green;
+}
+.statusInactivo
+{
+    color:red;
 }
 

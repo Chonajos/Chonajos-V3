@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.web.chon.dominio;
 
 import java.io.Serializable;
@@ -21,8 +17,19 @@ public class Municipios implements Serializable {
     private List<Usuario> usuarioList;
     private Entidad idEntidadFk;
     private List<Sucursal> sucursalList;
+    private String nombreMunicipioFiscal;
 
-    public Municipios() {
+    public String getNombreMunicipioFiscal() {
+        return nombreMunicipioFiscal;
+    }
+
+    public void setNombreMunicipioFiscal(String nombreMunicipioFiscal) {
+        this.nombreMunicipioFiscal = nombreMunicipioFiscal;
+    }
+
+    public Municipios() 
+    {
+        
     }
 
     public Municipios(BigDecimal idMunicipioPk) {

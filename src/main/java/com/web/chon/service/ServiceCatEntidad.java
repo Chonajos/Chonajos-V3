@@ -38,8 +38,6 @@ public class ServiceCatEntidad  implements IfaceCatEntidad  {
                 Entidad enti = new Entidad();
                 enti.setIdEntidadPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
                 enti.setNombreEntidad(obj[1].toString());
-                enti.setAbreabiacionEntidad(obj[2].toString());
-                //System.out.println(enti.getIdEntidadPk()+enti.getNombreEntidad());
                 lista_entidades.add(enti);
                
             }

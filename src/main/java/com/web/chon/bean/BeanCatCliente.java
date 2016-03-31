@@ -1,22 +1,21 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.web.chon.bean;
 
 import com.web.chon.dominio.Cliente;
 import com.web.chon.dominio.CodigoPostal;
+import com.web.chon.dominio.Correos;
 import com.web.chon.dominio.Entidad;
 import com.web.chon.dominio.Municipios;
 import com.web.chon.service.IfaceCatCliente;
 import com.web.chon.service.IfaceCatCodigosPostales;
+import com.web.chon.service.IfaceCatCorreos;
 import com.web.chon.service.IfaceCatEntidad;
 import com.web.chon.service.IfaceCatMunicipio;
 import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import org.primefaces.event.RowEditEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -37,9 +36,425 @@ public class BeanCatCliente implements BeanSimple {
     private IfaceCatMunicipio ifaceCatMunicipio;
     @Autowired
     private IfaceCatCodigosPostales ifaceCatCodigosPostales;
+    @Autowired
+    private IfaceCatCorreos ifaceCatCorreos;
 
     private ArrayList<CodigoPostal> lista_codigos_postales;
-     private ArrayList<CodigoPostal>  lista_codigos_postales_2;
+    private ArrayList<CodigoPostal> lista_codigos_postales_2;
+    private ArrayList<Cliente> model;
+
+    private ArrayList<Entidad> lista_entidades;
+    private ArrayList<Municipios> lista_municipios;
+    private ArrayList<Entidad> lista_entidades_2;
+    private ArrayList<Municipios> lista_municipios_2;
+    private int selectedEntidad;
+    private ArrayList<Cliente> selectedCliente;
+    private String title;
+    private String viewEstate;
+    private Cliente data;
+
+    private int estado;
+    private int estado_fis;
+
+    private ArrayList<Correos> lista_emails;
+      private ArrayList<Correos> emails_del_cliente;
+      
+    private boolean permissionToWrite;
+
+    
+
+    @PostConstruct
+    public void init() 
+    {
+
+        data = new Cliente();
+        model = new ArrayList<Cliente>();
+        model = new ArrayList<Cliente>();
+        permissionToWrite=false;
+        lista_emails = new ArrayList<Correos>();
+        Correos c1 = new Correos();
+        c1.setTipo("Personal");
+        Correos c2 = new Correos();
+        c2.setTipo("Trabajo");
+        lista_emails.add(c1);
+        lista_emails.add(c2);
+
+        lista_codigos_postales = new ArrayList<CodigoPostal>();
+        lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalById("1");
+
+        lista_codigos_postales_2 = new ArrayList<CodigoPostal>();
+        lista_codigos_postales_2 = ifaceCatCodigosPostales.getCodigoPostalById("1");
+
+        lista_entidades = new ArrayList<Entidad>();
+        lista_municipios = new ArrayList<Municipios>();
+
+        lista_entidades_2 = new ArrayList<Entidad>();
+        lista_municipios_2 = new ArrayList<Municipios>();
+
+        selectedCliente = new ArrayList<Cliente>();
+        selectedEntidad = 1;
+        model = ifaceCatCliente.getClientes();
+        
+        //Inicializar Correos
+//        for(int h = 0; h<model.size();h++)
+//        {
+//            emails_del_cliente=ifaceCatCorreos.SearchCorreosbyidClientPk(model.get(h).getId_cliente());
+//            model.get(h).setEmails(lista_emails);  
+//        }
+//        
+        for(Cliente dominio: model){
+            emails_del_cliente = ifaceCatCorreos.SearchCorreosbyidClientPk(dominio.getId_cliente());
+            dominio.setEmails(emails_del_cliente);
+           
+        }
+        
+
+        setTitle("Catalogo de Clientes.");
+        setViewEstate("init");
+
+        lista_entidades = ifaceCatEntidad.getEntidades();
+        lista_entidades_2 = ifaceCatEntidad.getEntidades();
+    }
+    
+
+    public void onRowEdit(RowEditEvent event) {
+        FacesMessage msg = new FacesMessage("Correo  Modificado", ((Correos) event.getObject()).getCorreo());
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+
+    public void onRowCancel(RowEditEvent event) {
+        FacesMessage msg = new FacesMessage("Edit Cancelled", ((Correos) event.getObject()).getCorreo());
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+
+    @Override
+    public String delete() {
+        if (!selectedCliente.isEmpty()) {
+            for (Cliente cl : selectedCliente) {
+                try {
+                    ifaceCatCliente.deleteCliente(cl.getId_cliente());
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro eliminado."));
+                } catch (Exception ex) {
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar eliminar el registro :" + data.getNombre() + "."));
+                }
+            }
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Warning!", "Elija un registro a eliminar."));
+        }
+
+        return "clientes";
+    }
+
+    @Override
+    public String insert() 
+    {
+
+        try {
+            int id_cliente_next_val = ifaceCatCliente.getNextVal();
+            data.setId_cliente(id_cliente_next_val);
+            
+            System.out.println("Cliente Bean: " + data.toString());
+            if (ifaceCatCliente.insertCliente(data) == 0) 
+            {
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al registrar"));
+
+                } else 
+            {
+            for (int i = 0; i < lista_emails.size(); i++) 
+            {
+                Correos temporal = (Correos) lista_emails.get(i);
+                if (temporal.getCorreo() != null) //agregar solo correos != null 
+                {
+                    temporal.setId_cliente_fk(id_cliente_next_val);
+                    System.out.println("Correo #: " + i + " : " + temporal.toString());
+                    if (ifaceCatCorreos.insertCorreo(temporal) == 0) 
+                    {
+                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ya se encuentra registrado ese correo."));
+                    } 
+                }
+
+            }
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro insertado."));
+                
+            }
+            
+
+        } catch (Exception ex) {
+            System.out.println("error" + ex.getMessage());
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar insertar el registro :"));
+        }
+
+        backView();
+
+        return "clientes";
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void backView() 
+    {
+        setTitle("Catalogo de Clientes");
+        setViewEstate("init");
+        data = new Cliente();
+        System.out.println("Pruebas: "+data.getPaterno());
+        
+    }
+
+    public void addCorreo() {
+        Correos c = new Correos();
+        data.getEmails().add(c);
+        
+    }
+
+    @Override
+    public String update() {
+        try {
+            if(data.isStatusClienteBoolean())
+            {
+                data.setStatus_cliente(1);
+            }
+            else
+            {
+                data.setStatus_cliente(2);
+              
+            }
+            ifaceCatCliente.updateCliente(data);
+           
+            for(int y = 0 ; y<data.getEmails().size();y++)
+            {
+                data.getEmails().get(y).setId_cliente_fk(data.getId_cliente());
+                
+                if (ifaceCatCorreos.updateCorreos(data.getEmails().get(y))==0)
+                {
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "No se modificó o no se inserto correo repetido:" + data.getNombre() + "."));
+                }
+                else
+                {
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Los datos del cliente se han modificado."));
+                }
+            }
+            
+            
+        } catch (Exception ex) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar modificar el registro :" + data.getNombre() + "."));
+        }
+        backView();
+        return "clientes";
+        
+    }
+
+    @Override
+    public void searchById() {
+        buscaMunicipios();
+        buscaMunicipios2();
+        setTitle("Editar Cliente.");
+        setViewEstate("searchById");
+        permissionToWrite=false;
+       
+    }
+    public void viewDetails()
+    {
+        setTitle("Detalles de Cliente");
+        setViewEstate("viewDetails");
+        permissionToWrite=true;
+    }
+
+    public void viewNew() {
+
+        data = new Cliente();
+        setTitle("Alta de Clientes");
+        setViewEstate("new");
+        permissionToWrite=false;
+    }
+
+    public void buscaMunicipios() {
+        lista_municipios = ifaceCatMunicipio.getMunicipios(Integer.parseInt(data.getEstado()));
+    }
+
+    public void buscaMunicipios2() {
+
+        lista_municipios_2 = ifaceCatMunicipio.getMunicipios(Integer.parseInt(data.getEstadoFiscal()));
+
+    }
+
+    public void buscaColonias() {
+
+        lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalById(data.getCodigoPostal());
+
+        if (lista_codigos_postales.isEmpty()) {
+
+            lista_entidades = ifaceCatEntidad.getEntidades();
+            lista_municipios = ifaceCatMunicipio.getMunicipios(Integer.parseInt(data.getEstado()));
+            data.setEstado("-1");
+            data.setMunicipio("-1");
+            lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalById("");
+            data.setCodigoPostal("");
+            //data.setID_CP(-1);
+        } else {
+
+            data.setEstado(Integer.toString(lista_codigos_postales.get(0).getIdEntidad()));
+            data.setMunicipio(Integer.toString(lista_codigos_postales.get(0).getIdMunicipio()));
+            data.setID_CP(lista_codigos_postales.get(0).getId_cp());
+            lista_municipios = ifaceCatMunicipio.getMunicipios(Integer.parseInt(data.getEstado()));
+        }
+
+    }
+
+    public void buscaColonias2() {
+
+        lista_codigos_postales_2 = ifaceCatCodigosPostales.getCodigoPostalById(data.getCodigoPostalFiscal());
+
+        if (lista_codigos_postales_2.isEmpty()) {
+
+            lista_entidades_2 = ifaceCatEntidad.getEntidades();
+            lista_municipios_2 = ifaceCatMunicipio.getMunicipios(Integer.parseInt(data.getEstadoFiscal()));
+            data.setEstadoFiscal("-1");
+            data.setMunicipioFiscal("-1");
+            lista_codigos_postales_2 = ifaceCatCodigosPostales.getCodigoPostalById("");
+            data.setCodigoPostalFiscal("");
+            System.out.println("Lista Vacia");
+
+        } else {
+            System.out.println("Lista llena");
+            data.setEstadoFiscal(Integer.toString(lista_codigos_postales_2.get(0).getIdEntidad()));
+            data.setMunicipioFiscal(Integer.toString(lista_codigos_postales_2.get(0).getIdMunicipio()));
+            data.setID_CP_FISCAL(lista_codigos_postales_2.get(0).getId_cp());
+            lista_municipios_2 = ifaceCatMunicipio.getMunicipios(Integer.parseInt(data.getEstadoFiscal()));
+        }
+
+    }
+
+    public void buscaColoniasMun() {
+        System.out.println("Aqui estoy: " + data.getMunicipio());
+        lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalByIdMun(Integer.parseInt(data.getMunicipio()));
+        data.setCodigoPostal(lista_codigos_postales.get(0).getNumeropostal());
+    }
+
+    public void buscaColoniasMun2() {
+        lista_codigos_postales_2 = ifaceCatCodigosPostales.getCodigoPostalByIdMun(Integer.parseInt(data.getMunicipioFiscal()));
+        data.setCodigoPostalFiscal(lista_codigos_postales_2.get(0).getCodigoPostalFiscal());
+    }
+
+    public void ActualizaCodigoPostal() {
+        for (int i = 0; i < lista_codigos_postales.size(); i++) {
+            if (lista_codigos_postales.get(i).getId_cp() == data.getID_CP()) {
+                data.setCodigoPostal(lista_codigos_postales.get(i).getNumeropostal());
+            }
+        }
+
+    }
+
+    public Cliente getCliente() {
+        return data;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.data = cliente;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getViewEstate() {
+        return viewEstate;
+    }
+
+    public void setViewEstate(String viewEstate) {
+        this.viewEstate = viewEstate;
+    }
+
+    public ArrayList<Cliente> getModel() {
+        return model;
+    }
+
+    public void setModel(ArrayList<Cliente> model) {
+        this.model = model;
+    }
+
+    public ArrayList<Cliente> getSelectedCliente() {
+        return selectedCliente;
+    }
+
+    public void setSelectedCliente(ArrayList<Cliente> selectedCliente) {
+        this.selectedCliente = selectedCliente;
+    }
+
+    public Cliente getData() {
+        return data;
+    }
+
+    public void setData(Cliente data) {
+        this.data = data;
+    }
+
+    public int getSelectedEntidad() {
+        return selectedEntidad;
+    }
+
+    public void setSelectedEntidad(int selectedEntidad) {
+        this.selectedEntidad = selectedEntidad;
+    }
+
+    public ArrayList<Municipios> getLista_municipios() {
+        return lista_municipios;
+    }
+
+    public void setLista_municipios(ArrayList<Municipios> lista_municipios) {
+        this.lista_municipios = lista_municipios;
+    }
+
+    public ArrayList<Entidad> getLista_entidades_2() {
+        return lista_entidades_2;
+    }
+
+    public void setLista_entidades_2(ArrayList<Entidad> lista_entidades_2) {
+        this.lista_entidades_2 = lista_entidades_2;
+    }
+
+    public ArrayList<Municipios> getLista_municipios_2() 
+    {
+        return lista_municipios_2;
+    }
+
+    public void setLista_municipios_2(ArrayList<Municipios> lista_municipios_2) {
+        this.lista_municipios_2 = lista_municipios_2;
+    }
+
+    public ArrayList<CodigoPostal> getLista_codigos_postales() {
+        return lista_codigos_postales;
+    }
+
+    public void setLista_codigos_postales(ArrayList<CodigoPostal> lista_codigos_postales) {
+        this.lista_codigos_postales = lista_codigos_postales;
+    }
+
+    public ArrayList<Entidad> getLista_entidades() {
+        return lista_entidades;
+    }
+
+    public void setLista_entidades(ArrayList<Entidad> lista_entidades) {
+        this.lista_entidades = lista_entidades;
+    }
+
+    public int getEstado() {
+        return estado;
+    }
+
+    public void setEstado(int estado) {
+        this.estado = estado;
+    }
+
+    public int getEstado_fis() {
+        return estado_fis;
+    }
+
+    public void setEstado_fis(int estado_fis) {
+        this.estado_fis = estado_fis;
+    }
 
     public IfaceCatCliente getIfaceCatCliente() {
         return ifaceCatCliente;
@@ -81,309 +496,19 @@ public class BeanCatCliente implements BeanSimple {
         this.lista_codigos_postales_2 = lista_codigos_postales_2;
     }
 
-    private ArrayList<Cliente> model;
-    private ArrayList<Entidad> lista_entidades;
-    private ArrayList<Municipios> lista_municipios;
-
-    private ArrayList<Entidad> lista_entidades_2;
-    private ArrayList<Municipios> lista_municipios_2;
-
-    private int selectedEntidad;
-    private ArrayList<Cliente> selectedCliente;
-    private String title;
-    private String viewEstate;
-    private Cliente data;
-    private int estado;
-    private int estado_fis;
-
-    @PostConstruct
-    public void init() {
-
-        //estado = 1;
-        //estado_fis = 1;
-
-        data = new Cliente();
-       
-        model = new ArrayList<Cliente>();
-        lista_codigos_postales = new ArrayList<CodigoPostal>();
-        lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalById("1");
-
-        lista_codigos_postales_2 = new ArrayList<CodigoPostal>();
-        lista_codigos_postales_2 = ifaceCatCodigosPostales.getCodigoPostalById("1");
-        
-        lista_entidades = new ArrayList<Entidad>();
-        lista_municipios = new ArrayList<Municipios>();
-
-        lista_entidades_2 = new ArrayList<Entidad>();
-        lista_municipios_2 = new ArrayList<Municipios>();
-
-        selectedCliente = new ArrayList<Cliente>();
-        selectedEntidad = 1;
-        model = ifaceCatCliente.getClientes();
-        //lista_entidades = ifaceCatEntidad.getEntidades();
-
-        setTitle("Catalogo de Clientes.");
-        setViewEstate("init");
-
-        lista_entidades = ifaceCatEntidad.getEntidades();
-        lista_entidades_2 = ifaceCatEntidad.getEntidades();
+    public List<Correos> getLista_emails() {
+        return lista_emails;
     }
 
-    @Override
-    public String delete() {
-        if (!selectedCliente.isEmpty()) {
-            for (Cliente cl : selectedCliente) {
-                try {
-                    ifaceCatCliente.deleteCliente(cl.getId_cliente());
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro eliminado."));
-                } catch (Exception ex) {
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar eliminar el registro :" + data.getNombre() + "."));
-                }
-            }
-        } else {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Warning!", "Elija un registro a eliminar."));
-        }
-
-        return "clientes";
+    public void setLista_emails(List<Correos> lista_emails) {
+        this.lista_emails = (ArrayList<Correos>) lista_emails;
+    }
+    public boolean isPermissionToWrite() {
+        return permissionToWrite;
     }
 
-    @Override
-    public String insert() {
-
-        try {
-            System.out.println("data" + data.toString());
-            if (ifaceCatCliente.insertCliente(data) == 0) {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Error"));
-            } else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro insertado."));
-            }
-
-        } catch (Exception ex) {
-            System.out.println("error" + ex.getMessage());
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar insertar el registro :"));
-        }
-        backView();
-        return "clientes";
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void setPermissionToWrite(boolean permissionToWrite) {
+        this.permissionToWrite = permissionToWrite;
     }
-
-    public void backView() {
-        setTitle("Catalogo de Clientes");
-        setViewEstate("init");
-    }
-
-    @Override
-    public String update() {
-        try {
-            ifaceCatCliente.updateCliente(data);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro modificado."));
-        } catch (Exception ex) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar modificar el registro :" + data.getNombre() + "."));
-        }
-
-        return "clientes";
-    }
-
-    @Override
-    public void searchById() {
-        buscaMunicipios();
-        buscaMunicipios2();
-        setTitle("Editar Cliente.");
-        setViewEstate("searchById");
-
-    }
-
-    public void viewNew() {
-
-        data = new Cliente();
-        setTitle("Alta de Clientes");
-        setViewEstate("new");
-    }
-
-    public void buscaMunicipios() {
-        lista_municipios = ifaceCatMunicipio.getMunicipios(Integer.parseInt(data.getEstado()));
-    }
-
-    public void buscaMunicipios2() 
-    {
-
-        lista_municipios_2 = ifaceCatMunicipio.getMunicipios(Integer.parseInt(data.getEstadoFiscal()));
-
-    }
-
-    public void buscaColonias() {
-
-        lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalById(data.getCodigoPostal());
-
-        if (lista_codigos_postales.isEmpty())
-        {
-
-            lista_entidades = ifaceCatEntidad.getEntidades();
-            lista_municipios = ifaceCatMunicipio.getMunicipios(Integer.parseInt(data.getEstado()));
-            data.setEstado("-1");
-            data.setMunicipio("-1");
-            lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalById("");
-            data.setCodigoPostal("");
-            //data.setID_CP(-1);
-        } else 
-        {
-            
-            data.setEstado(Integer.toString(lista_codigos_postales.get(0).getIdEntidad()));
-            data.setMunicipio(Integer.toString(lista_codigos_postales.get(0).getIdMunicipio()));
-            data.setID_CP(lista_codigos_postales.get(0).getId_cp());
-            lista_municipios = ifaceCatMunicipio.getMunicipios(Integer.parseInt(data.getEstado()));
-        }
-       
-    
-}
-    public void buscaColonias2() 
-    {
-
-        lista_codigos_postales_2 = ifaceCatCodigosPostales.getCodigoPostalById(data.getCodigoPostalFiscal());
-
-        if (lista_codigos_postales_2.isEmpty())
-        {
-
-            lista_entidades_2 = ifaceCatEntidad.getEntidades();
-            lista_municipios_2 = ifaceCatMunicipio.getMunicipios(Integer.parseInt(data.getEstadoFiscal()));
-            data.setEstadoFiscal("-1");
-            data.setMunicipioFiscal("-1");
-            lista_codigos_postales_2 = ifaceCatCodigosPostales.getCodigoPostalById("");
-            data.setCodigoPostalFiscal("");
-            System.out.println("Lista Vacia");
-           
-        } else 
-        {
-            System.out.println("Lista llena");
-            data.setEstadoFiscal(Integer.toString(lista_codigos_postales_2.get(0).getIdEntidad()));
-            data.setMunicipioFiscal(Integer.toString(lista_codigos_postales_2.get(0).getIdMunicipio()));
-            data.setID_CP_FISCAL(lista_codigos_postales_2.get(0).getId_cp());
-            lista_municipios_2 = ifaceCatMunicipio.getMunicipios(Integer.parseInt(data.getEstadoFiscal()));
-        }
-    
-    }
-    
-    
-    
-    
-    
-    public void buscaColoniasMun() 
-    {
-        lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalByIdMun(Integer.parseInt(data.getMunicipio()));
-        data.setCodigoPostal(lista_codigos_postales.get(0).getNumeropostal());
-    } 
-     public void buscaColoniasMun2() 
-    {
-        lista_codigos_postales_2 = ifaceCatCodigosPostales.getCodigoPostalByIdMun(Integer.parseInt(data.getMunicipioFiscal()));
-        data.setCodigoPostalFiscal(lista_codigos_postales_2.get(0).getCodigoPostalFiscal());
-    } 
-public Cliente getCliente() 
-    {
-        return data;
-    }
-   
-
-    public void setCliente(Cliente cliente) {
-        this.data = cliente;
-    }
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-    public String getViewEstate() {
-        return viewEstate;
-    }
-
-    public void setViewEstate(String viewEstate) {
-        this.viewEstate = viewEstate;
-    }
-    public ArrayList<Cliente> getModel() {
-        return model;
-    }
-
-    public void setModel(ArrayList<Cliente> model) {
-        this.model = model;
-    }
-      public ArrayList<Cliente> getSelectedCliente() {
-        return selectedCliente;
-    }
-
-    public void setSelectedCliente(ArrayList<Cliente> selectedCliente) {
-        this.selectedCliente = selectedCliente;
-    }
-    public Cliente getData() {
-        return data;
-    }
-
-    public void setData(Cliente data) {
-        this.data = data;
-    }
-     public int getSelectedEntidad() {
-        return selectedEntidad;
-    }
-
-    public void setSelectedEntidad(int selectedEntidad) {
-        this.selectedEntidad = selectedEntidad;
-    }
-    
-    public ArrayList<Municipios> getLista_municipios() {
-        return lista_municipios;
-    }
-
-    public void setLista_municipios(ArrayList<Municipios> lista_municipios) {
-        this.lista_municipios = lista_municipios;
-    }
-    
-    public ArrayList<Entidad> getLista_entidades_2() {
-        return lista_entidades_2;
-    }
-
-    public void setLista_entidades_2(ArrayList<Entidad> lista_entidades_2) {
-        this.lista_entidades_2 = lista_entidades_2;
-    }
-
-    public ArrayList<Municipios> getLista_municipios_2() {
-        return lista_municipios_2;
-    }
-
-    public void setLista_municipios_2(ArrayList<Municipios> lista_municipios_2) {
-        this.lista_municipios_2 = lista_municipios_2;
-    }
-    
-    public ArrayList<CodigoPostal> getLista_codigos_postales() {
-        return lista_codigos_postales;
-    }
-
-    public void setLista_codigos_postales(ArrayList<CodigoPostal> lista_codigos_postales) {
-        this.lista_codigos_postales = lista_codigos_postales;
-    }
-    
-    public ArrayList<Entidad> getLista_entidades()
-    {
-        return lista_entidades;
-    }
-
-    public void setLista_entidades(ArrayList<Entidad> lista_entidades) {
-        this.lista_entidades = lista_entidades;
-    }
-     public int getEstado() {
-        return estado;
-    }
-
-    public void setEstado(int estado) {
-        this.estado = estado;
-    }
-
-    public int getEstado_fis() {
-        return estado_fis;
-    }
-
-    public void setEstado_fis(int estado_fis) {
-        this.estado_fis = estado_fis;
-    }
-
 
 }

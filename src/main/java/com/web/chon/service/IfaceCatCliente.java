@@ -6,6 +6,7 @@
 package com.web.chon.service;
 
 import com.web.chon.dominio.Cliente;
+import com.web.chon.dominio.Correos;
 import java.util.ArrayList;
 
 /**
@@ -23,7 +24,9 @@ public interface IfaceCatCliente
     public int updateCliente(Cliente cliente);
     
     public int insertCliente(Cliente cliente);
-    
+ 
     public ArrayList<Cliente> getClienteByNombreCompleto(String nombre);
+    
+    public int getNextVal ();
     
 }

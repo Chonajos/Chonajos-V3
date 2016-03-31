@@ -6,6 +6,7 @@
 package com.web.chon.dominio;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -22,7 +23,7 @@ public class Cliente implements Serializable
     private String empresa;
     private String calle;
     private int ID_CP;
-    private String estado;
+    private String estado_id;
     private String municipio;
     private Character sexo;
     private Date fecha_nacimiento;
@@ -55,6 +56,49 @@ public class Cliente implements Serializable
     private String nombreDelegacionMunicipio;
     private String nombreEstadoFiscal;
     private String nombreDeleMunFiscal;
+    private ArrayList<Correos> emails;
+    private int status_cliente;
+    private boolean statusClienteBoolean;
+
+    public boolean isStatusClienteBoolean() {
+        return statusClienteBoolean;
+    }
+
+    public void setStatusClienteBoolean(boolean statusClienteBoolean) {
+        this.statusClienteBoolean = statusClienteBoolean;
+    }
+    private String nombreStatus;
+    
+    private CodigoPostal codigo_Postal;
+
+    public String getNombreStatus() 
+    {
+        return nombreStatus;
+    }
+
+    public void setNombreStatus(String nombreStatus) 
+    {
+        this.nombreStatus = nombreStatus;
+    }
+
+    
+    public CodigoPostal getCodigo_Postal() {
+        return codigo_Postal;
+    }
+
+    public void setCodigo_Postal(CodigoPostal codigo_Postal) {
+        this.codigo_Postal = codigo_Postal;
+    }
+    
+   
+
+    public int getStatus_cliente() {
+        return status_cliente;
+    }
+
+    public void setStatus_cliente(int status_cliente) {
+        this.status_cliente = status_cliente;
+    }
 
     public int getClavecelular() {
         return clavecelular;
@@ -144,6 +188,14 @@ public class Cliente implements Serializable
 
     public void setNombreDeleMunFiscal(String nombreDeleMunFiscal) {
         this.nombreDeleMunFiscal = nombreDeleMunFiscal;
+    }
+
+    public ArrayList<Correos> getEmails() {
+        return emails;
+    }
+
+    public void setEmails(ArrayList<Correos> emails) {
+        this.emails = emails;
     }
 
     
@@ -250,11 +302,11 @@ public class Cliente implements Serializable
   
 
     public String getEstado() {
-        return estado;
+        return estado_id;
     }
 
     public void setEstado(String estado) {
-        this.estado = estado;
+        this.estado_id = estado;
     }
 
     public Character getSexo() {
@@ -387,11 +439,12 @@ public class Cliente implements Serializable
     public void setCodigoPostal(String codigoPostal) {
         this.codigoPostal = codigoPostal;
     }
+
     @Override
     public String toString() {
-        return "Cliente{" + "id_cliente=" + id_cliente + ", nombre=" + nombre + ", paterno=" + paterno + ", materno=" + materno + ", empresa=" + empresa + ", calle=" + calle + ", ID_CP=" + ID_CP + ", estado=" + estado + ", sexo=" + sexo + ", fecha_nacimiento=" + fecha_nacimiento + ", tel_movil=" + tel_movil + ", tel_fijo=" + tel_fijo + ", ext=" + ext + ", email=" + email + ", num_int=" + num_int + ", num_ext=" + num_ext + ", colonia=" + colonia + ", clavecelular=" + clavecelular + ", nombreCombleto=" + nombreCombleto + ", ladacelular=" + ladacelular + ", ID_CP_FISCAL=" + ID_CP_FISCAL + ", calleFiscal=" + calleFiscal + ", num_int_fiscal=" + num_int_fiscal + ", num_ext_fiscal=" + num_ext_fiscal + ", coloniaFiscal=" + coloniaFiscal + ", estadoFiscal=" + estadoFiscal + ", nextel=" + nextel + ", razon_social=" + razon_social + ", rfcFiscal=" + rfcFiscal + ", ladaoficina=" + ladaoficina + ", claveoficina=" + claveoficina + ", nextelclave=" + nextelclave + ", nombreEstado=" + nombreEstado + ", nombreDelegacionMunicipio=" + nombreDelegacionMunicipio + ", nombreEstadoFiscal=" + nombreEstadoFiscal + ", nombreDeleMunFiscal=" + nombreDeleMunFiscal + '}';
+        return "Cliente{" + "id_cliente=" + id_cliente + ", nombre=" + nombre + ", paterno=" + paterno + ", materno=" + materno + ", empresa=" + empresa + ", calle=" + calle + ", ID_CP=" + ID_CP + ", estado_id=" + estado_id + ", municipio=" + municipio + ", sexo=" + sexo + ", fecha_nacimiento=" + fecha_nacimiento + ", tel_movil=" + tel_movil + ", tel_fijo=" + tel_fijo + ", ext=" + ext + ", email=" + email + ", num_int=" + num_int + ", num_ext=" + num_ext + ", colonia=" + colonia + ", clavecelular=" + clavecelular + ", nombreCombleto=" + nombreCombleto + ", ladacelular=" + ladacelular + ", ID_CP_FISCAL=" + ID_CP_FISCAL + ", calleFiscal=" + calleFiscal + ", num_int_fiscal=" + num_int_fiscal + ", num_ext_fiscal=" + num_ext_fiscal + ", coloniaFiscal=" + coloniaFiscal + ", estadoFiscal=" + estadoFiscal + ", municipioFiscal=" + municipioFiscal + ", codigoPostal=" + codigoPostal + ", codigoPostalFiscal=" + codigoPostalFiscal + ", nextel=" + nextel + ", razon_social=" + razon_social + ", rfcFiscal=" + rfcFiscal + ", ladaoficina=" + ladaoficina + ", claveoficina=" + claveoficina + ", nextelclave=" + nextelclave + ", nombreEstado=" + nombreEstado + ", nombreDelegacionMunicipio=" + nombreDelegacionMunicipio + ", nombreEstadoFiscal=" + nombreEstadoFiscal + ", nombreDeleMunFiscal=" + nombreDeleMunFiscal + ", emails=" + emails + ", status_cliente=" + status_cliente + ", codigo_Postal=" + codigo_Postal + '}';
     }
-
+   
     
    
 }
