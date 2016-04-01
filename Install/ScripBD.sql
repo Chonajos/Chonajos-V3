@@ -1,7 +1,6 @@
-BASE DE DATOS : choni
-USUARIO: choni
-Contraseña: choni
-
+--BASE DE DATOS : choni
+--USUARIO: choni
+--Contraseña: choni
 
 
 create table rol(
@@ -10,7 +9,8 @@ nombre_rol varchar(120) not null,
 descripcion_rol varchar(255),
 CONSTRAINT c_id_rol_pk PRIMARY KEY (id_rol_pk)
 );
-select * from rol;
+
+--select * from rol;
 CREATE SEQUENCE s_rol
 INCREMENT BY 1
 START WITH 1
@@ -61,8 +61,6 @@ MINVALUE 0;
 create table entidad (
 id_entidad_pk number not null,
 nombre_entidad varchar(60),
-abreabiacion_entidad varchar(10),
-id_pais varchar(4),
 CONSTRAINT c_id_entidad_pk PRIMARY KEY (id_entidad_pk)
 );
 
@@ -84,36 +82,54 @@ INCREMENT BY 1
 START WITH 1
 MINVALUE 0;
 
-create table usuario(
-id_usuario_pk number not null,
-nombre_usuario varchar(120) not null,
-aPaterno_usuario varchar(120) not null,
-aMaterno_usuario varchar(120),
-contrasena_usuario varchar(255),
-sexo_usuario char(1),
-telefono_movil_usuario number(15),
-telefono_fijo_usuario number (15),
-id_nextel_usuario varchar(15),
-correo_usuario varchar(255),
-numero_interior_usuario number(3),
-numero_exterio_usuario number(3),
-referencia_direcion_usuario varchar(255),
-calle_usuario varchar(255),
-colonia_usuario varchar (255),
-dias_credito_usuario number(3),
-rfc_usuario varchar (13),
-credito_limite_usuario number(10),
-clave_usuario varchar(10),
-sitio_web varchar(120),
-id_municipio_fk number,
-id_rol_fk number,
-latitud_usuario varchar(30),
-longitud_usuario varchar(30),
-CONSTRAINT c_id_usuario_pk PRIMARY KEY (id_usuario_pk),
-CONSTRAINT c_id_municipio_fk FOREIGN KEY(id_municipio_fk) references municipios(id_municipio_pk),
-CONSTRAINT c_id_rol_fk FOREIGN KEY(id_rol_fk) references rol(id_rol_pk)
+create table CODIGOS_POSTALES(
+	ID_PK NUMBER,
+	CODIGO_POSTAL VARCHAR(10),
+	NOMBRE_COLONIA VARCHAR(200),
+	id_municipio_fk NUMBER,
+	CONSTRAINT ID_cp_pk PRIMARY KEY(ID_PK),
+	CONSTRAINT c_id_munc_fk FOREIGN KEY(id_municipio_fk) references municipios(id_municipio_pk)
+	);
+CREATE SEQUENCE s_codigos_postales
+INCREMENT BY 1
+START WITH 1
+MINVALUE 0;
 
+CREATE SEQUENCE s_codigo_postal
+INCREMENT BY 1
+START WITH 1
+MINVALUE 0;
+
+create table usuario(
+	id_usuario_pk number not null,
+	nombre_usuario varchar(120) not null,
+	aPaterno_usuario varchar(120) not null,
+	aMaterno_usuario varchar(120),
+	contrasena_usuario varchar(255),
+	sexo_usuario char(1),
+	telefono_movil_usuario number(15),
+	telefono_fijo_usuario number (15),
+	id_nextel_usuario varchar(15),
+	correo_usuario varchar(255),
+	numero_interior_usuario number(3),
+	numero_exterio_usuario number(3),
+	referencia_direcion_usuario varchar(255),
+	calle_usuario varchar(255),
+	colonia_usuario varchar (255),
+	dias_credito_usuario number(3),
+	rfc_usuario varchar (13),
+	credito_limite_usuario number(10),
+	clave_usuario varchar(10),
+	sitio_web varchar(120),
+	id_municipio_fk number,
+	id_rol_fk number,
+	latitud_usuario varchar(30),
+	longitud_usuario varchar(30),
+	CONSTRAINT c_id_usuario_pk PRIMARY KEY (id_usuario_pk),
+	CONSTRAINT c_id_municipio_fk FOREIGN KEY(id_municipio_fk) references municipios(id_municipio_pk),
+	CONSTRAINT c_id_rol_fk FOREIGN KEY(id_rol_fk) references rol(id_rol_pk)
 );
+
 CREATE SEQUENCE s_usuario
 INCREMENT BY 1
 START WITH 1
@@ -204,6 +220,8 @@ INCREMENT BY 1
 START WITH 1
 MINVALUE 0;
 
+
+--###Esta Tabla aun no la ocupamos###-
 create table compra_productos(
 id_sucursal_fk number,
 id_producto_fk number,
@@ -226,15 +244,35 @@ INCREMENT BY 1
 START WITH 1
 MINVALUE 0;
 
+--###Esta Tabla aun no la ocupamos###-
+
+create table status_venta(
+id_status_pk number not null,
+nombre_status varchar (50) not null,
+descripcion_status varchar(75),
+CONSTRAINT c_id_status_fk PRIMARY KEY(id_status_pk)
+);
+
+CREATE SEQUENCE s_status_venta
+INCREMENT BY 1
+START WITH 1
+MINVALUE 0;
+
+
+INSERT INTO STATUS_VENTA (ID_STATUS_pk,NOMBRE_STATUS,DESCRIPCION_STATUS)VALUES(S_STATUS_VENTA.NextVal,'Vendido','Se hizo una venta aun no pagada')
+INSERT INTO STATUS_VENTA (ID_STATUS_pk,NOMBRE_STATUS,DESCRIPCION_STATUS)VALUES(S_STATUS_VENTA.NextVal,'Pagado','Se ha realizado el pago en caja.')
+
 create table venta(
 id_venta_pk number not null,
 id_cliente_fk number,
 id_vendedor_fk number,
 fecha_venta date,
 fecha_promesa_pago date,
+status_fk number,
 CONSTRAINT c_id_cliente_fk FOREIGN KEY(id_cliente_fk) references usuario(id_usuario_pk),
 CONSTRAINT c_id_vendedor_fk FOREIGN KEY(id_vendedor_fk) references usuario(id_usuario_pk),
-CONSTRAINT c_id_venta_pk PRIMARY KEY (id_venta_pk)
+CONSTRAINT c_id_venta_pk PRIMARY KEY (id_venta_pk),
+CONSTRAINT c_status_fk FOREIGN KEY(STATUS_FK) references STATUS_VENTA(ID_STATUS_PK);
 );
 
 CREATE SEQUENCE s_venta
@@ -242,57 +280,59 @@ INCREMENT BY 1
 START WITH 1
 MINVALUE 0;
 
+create table STATUS(
+	ID_PK number,
+	STATUS VARCHAR(20),
+	DESCRIPCION_STATUS VARCHAR(80),
+	CONSTRAINT c_id_cli_status_pk PRIMARY KEY(ID_PK) 
+	);
 
+CREATE SEQUENCE s_status
+INCREMENT BY 1
+START WITH 1
+MINVALUE 0;
+
+INSERT INTO STATUS (id_pk,status,descripcion_status) values (s_status.NextVal,'ACTIVO','EL CLIENTE SE ENCUENTRA ACTIVO'),
+INSERT INTO STATUS (id_pk,status,descripcion_status) values (s_status.NextVal,'INACTIVO','EL CLIENTE SE ENCUENTRA INACTIVO'),
 
 CREATE TABLE CLIENTE(
-   ID_CLIENTE  NUMBER, 
-	 NOMBRE  VARCHAR(50), 
-	 APELLIDO_PATERNO  VARCHAR(50), 
-	 APELLIDO_MATERNO  VARCHAR(50), 
-	 EMPRESA  VARCHAR(20), 
-	 CALLE  VARCHAR(60), 
-	 CP  NUMBER(5,0),
-	 SEXO  CHAR(1), 
-	 FECHA_NACIMIENTO  DATE, 
-	 TELEFONO_MOVIL  NUMBER, 
-	 TELEFONO_FIJO  NUMBER, 
-	 EXTENSION  NUMBER, 
-	 EMAIL  VARCHAR(50), 
-	 NUM_INT  NUMBER, 
-	 NUM_EXT  NUMBER, 
-	 COLONIA  VARCHAR(50), 
-	 CLAVECELULAR  NUMBER, 
-	 LADACELULAR  NUMBER, 
-	 DEL_MUN  NUMBER, 
-	 CALLEFISCAL  VARCHAR(50), 
-	 NUMINTFIS  NUMBER, 
-	 NUMEXTFIS  NUMBER, 
-	 COLONIAFISCAL  VARCHAR(50), 
-	 DEL_MUN_FISCAL  NUMBER, 
-	 NEXTEL  NUMBER, 
-	 RAZON  VARCHAR(100), 
-	 RFC  VARCHAR(20), 
-	 CPFISCAL  VARCHAR(20), 
-	 LADAOFICINA  VARCHAR(20), 
-	 CLAVEOFICINA  VARCHAR(20), 
-	 NEXTELCLAVE  VARCHAR(20),
-	 CONSTRAINT c_id_cliente_pk PRIMARY KEY (ID_CLIENTE),
-	 CONSTRAINT c_id_mun_clientes_fk FOREIGN KEY(DEL_MUN) references municipios(id_municipio_pk),
-	 CONSTRAINT c_id_mun_clientes_fiscal_fk FOREIGN KEY(DEL_MUN_FISCAL) references municipios(id_municipio_pk)
-	 );
+	ID_CLIENTE  NUMBER, 
+	NOMBRE  VARCHAR(50), 
+	APELLIDO_PATERNO  VARCHAR(50), 
+	APELLIDO_MATERNO  VARCHAR(50), 
+	EMPRESA  VARCHAR(20), 
+	CALLE  VARCHAR(60), 
+	SEXO  CHAR(1), 
+	FECHA_NACIMIENTO  DATE, 
+	TELEFONO_MOVIL  NUMBER, 
+	TELEFONO_FIJO  NUMBER, 
+	EXTENSION  NUMBER, 
+	NUM_INT  NUMBER, 
+	NUM_EXT  NUMBER, 
+	CLAVECELULAR  NUMBER, 
+	LADACELULAR  NUMBER, 
+	ID_CP NUMBER, 
+	CALLEFISCAL  VARCHAR(50), 
+	NUMINTFIS  NUMBER, 
+	NUMEXTFIS  NUMBER,  
+	ID_CP_FISCAL NUMBER, 
+	NEXTEL  VARCHAR(20), 
+	RAZON  VARCHAR(100), 
+	RFC  VARCHAR(20),  
+	LADAOFICINA  VARCHAR(20), 
+	CLAVEOFICINA  VARCHAR(20), 
+	NEXTELCLAVE  VARCHAR(20),
+	STATUS NUMBER,
+	CONSTRAINT c_id_cliente_pk PRIMARY KEY (ID_CLIENTE),
+	CONSTRAINT c_id_cod_fk FOREIGN KEY(ID_CP) references CODIGOS_POSTALES(ID_PK),
+	CONSTRAINT c_id_cod__FIS_fk FOREIGN KEY(ID_CP_FISCAL) references CODIGOS_POSTALES(ID_PK),
+	CONSTRAINT c_id_status_fk FOREIGN KEY(STATUS) references STATUS (ID_PK)
+	);
 
 CREATE SEQUENCE S_CLIENTE
 INCREMENT BY 1
 START WITH 1
 MINVALUE 0;
-
-
-
-
-
-
-
-
 
 
 create table venta_producto(
@@ -333,24 +373,19 @@ INCREMENT BY 1
 START WITH 1
 MINVALUE 0;
 
-tablas eliminadas
-COMPRA_PRODUCTOS
-EXISTENCIA_PRODUCTO
-
-
-create table status_venta(
-id_status_pk number not null,
-nombre_status varchar (50) not null,
-descripcion_status varchar(75),
-CONSTRAINT c_id_status_fk PRIMARY KEY(id_status_pk)
+create table correos(
+	ID_PK number,
+	id_cliente_fk number,
+	correo varchar(100),
+	tipo varchar(30),
+	CONSTRAINT c_id_corr_pk PRIMARY KEY(ID_PK),
+	CONSTRAINT C_ID_CLIENTE_COR_FK FOREIGN KEY (id_cliente_fk) references cliente(id_cliente)
 );
 
-CREATE SEQUENCE s_status_venta
-INCREMENT BY 1
-START WITH 1
-MINVALUE 0;
 
-alter table VENTA add  CONSTRAINT c_status_fk FOREIGN KEY(STATUS_FK) references STATUS_VENTA(ID_STATUS_PK);
+--tablas eliminadas
+--COMPRA_PRODUCTOS
+--EXISTENCIA_PRODUCTO
 
-INSERT INTO STATUS_VENTA (ID_STATUS_pk,NOMBRE_STATUS,DESCRIPCION_STATUS)VALUES(S_STATUS_VENTA.NextVal,'Vendido','Se hizo una venta aun no pagada')
-INSERT INTO STATUS_VENTA (ID_STATUS_pk,NOMBRE_STATUS,DESCRIPCION_STATUS)VALUES(S_STATUS_VENTA.NextVal,'Pagado','Se ha realizado el pago en caja.')
+
+

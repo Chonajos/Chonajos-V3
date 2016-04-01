@@ -107,7 +107,7 @@
                         <p:inputSwitch value="#{beanCatCliente.data.statusClienteBoolean}" disabled="#{beanCatCliente.permissionToWrite}"/>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 form-group">
-                        <p:dataTable id="ema1" var="correos" value="#{beanCatCliente.data.emails}" editable="#{beanCatCliente.permissionToWrite}" style="margin-bottom:20px">
+                        <p:dataTable id="ema1" var="correos" value="#{beanCatCliente.data.emails}" editable="true" style="margin-bottom:20px">
                             <f:facet name="header">
                                 Correos Electrónicos 
                             </f:facet>

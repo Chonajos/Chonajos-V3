@@ -93,9 +93,18 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
 
     }
 
-    public void setFechaInicioFin() {
+    public void setFechaInicioFin(int filter) {
 
-        switch (filtro) {
+        switch (filter) {
+            case 4:
+                if (data.getFechaFiltroInicio() != null && data.getFechaFiltroFin() != null) {
+                    model = ifaceVenta.getVentasByIntervalDate(data.getFechaFiltroInicio(), data.getFechaFiltroFin());
+                    getTotalVentaByInterval();
+                } else {
+                    model = new ArrayList<RelacionOperaciones>();
+                    getTotalVentaByInterval();
+                }
+                break;
             case 1:
                 data.setFechaFiltroInicio(new Date());
                 data.setFechaFiltroFin(new Date());
@@ -117,8 +126,9 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
 
     }
 
-    public void getVentasByIntervalDate() {
-        setFechaInicioFin();
+    public void getVentasByIntervalDate() 
+    {
+        setFechaInicioFin(filtro);
         if (data.getFechaFiltroInicio() != null && data.getFechaFiltroFin() != null) {
 
             model = ifaceVenta.getVentasByIntervalDate(data.getFechaFiltroInicio(), data.getFechaFiltroFin());

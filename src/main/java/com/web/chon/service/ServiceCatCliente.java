@@ -56,12 +56,12 @@ public class ServiceCatCliente implements IfaceCatCliente {
                 cliente.setNum_int_fiscal(Integer.parseInt(obj[17]==null ? "0": obj[17].toString()));
                 cliente.setNum_ext_fiscal(Integer.parseInt(obj[18]==null ? "0": obj[18].toString()));
                 cliente.setID_CP_FISCAL(Integer.parseInt(obj[19] == null ? "100000" : obj[19].toString()));
-                cliente.setNextel(obj[20].toString());
+                cliente.setNextel(obj[20]== null ? "": obj[20].toString());
                 cliente.setRazon_social(obj[21] == null ? "" : obj[21].toString());
                 cliente.setRfcFiscal(obj[22] == null ? "" : obj[22].toString());
                 cliente.setLadaoficina(Integer.parseInt(obj[23]==null ? "0": obj[23].toString()));
                 cliente.setClaveoficina(Integer.parseInt(obj[24]==null ? "0": obj[24].toString()));
-                cliente.setNextelclave(obj[25].toString());
+                cliente.setNextelclave(obj[25]== null ? "": obj[25].toString());
                 cliente.setStatus_cliente(Integer.parseInt(obj[26]==null ? "0": obj[26].toString()));
                 cliente.setStatusClienteBoolean(obj[26].toString().equals("1"));
 //Hasta aqui terminan los datos de la tabla clientes.
@@ -137,8 +137,7 @@ public class ServiceCatCliente implements IfaceCatCliente {
                 cliente.setRazon_social(obj[24] == null ? "":obj[24].toString());
                 cliente.setRfcFiscal(obj[25] == null ? "":obj[25].toString());
                 //cliente.setcpFiscal(Integer.parseInt(obj[27] == null ? "":obj[27].toString()));
-                */
-                 
+                */          
             }
             return cliente;
         }catch(Exception ex)

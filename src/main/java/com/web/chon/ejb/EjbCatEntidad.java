@@ -31,7 +31,7 @@ public class EjbCatEntidad implements NegocioCatEntidad{
     try {
 
             System.out.println("EJB_GET_ENTIDADES");
-            Query query = em.createNativeQuery("SELECT * FROM ENTIDAD");
+            Query query = em.createNativeQuery("SELECT * FROM ENTIDAD order by nombre_entidad");
             List<Object[]> resultList = null;
             resultList = query.getResultList();
             return resultList;

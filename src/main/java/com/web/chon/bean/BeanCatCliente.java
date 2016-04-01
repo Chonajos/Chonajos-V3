@@ -191,9 +191,18 @@ public class BeanCatCliente implements BeanSimple {
         
     }
 
-    public void addCorreo() {
+    public void addCorreo() 
+    {
         Correos c = new Correos();
-        data.getEmails().add(c);
+        if (data.getEmails()==null)
+        {
+            data.setEmails(lista_emails);
+        }
+        else{
+            data.getEmails().add(c);
+        }
+        
+        
         
     }
 

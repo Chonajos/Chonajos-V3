@@ -26,7 +26,7 @@
                             <p:calendar id="calendarInicio" class="col-lg-7 col-md-8 col-sm-8 col-xs-12 calendario" navigator="true" placeholder="dd/mm/yyyy"
                                         value="#{beanRelacionOperaciones.data.fechaFiltroInicio}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button" rendered="#{beanRelacionOperaciones.viewEstate =='init'}">
                                 <p:ajax   event="dateSelect" resetValues="true"
-                                          listener="#{beanRelacionOperaciones.getVentasByIntervalDate}"
+                                          listener="#{beanRelacionOperaciones.setFechaInicioFin(4)}"
                                           update=":formContent" />
                             </p:calendar>
                         </div>
@@ -35,7 +35,7 @@
                             <p:calendar id="calendarFin" class="col-lg-7 col-md-8 col-sm-8 col-xs-12 calendario" navigator="true" placeholder="dd/mm/yyyy"
                                         value="#{beanRelacionOperaciones.data.fechaFiltroFin}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button" rendered="#{beanRelacionOperaciones.viewEstate =='init'}">
                                 <p:ajax event="dateSelect" resetValues="true"
-                                        listener="#{beanRelacionOperaciones.getVentasByIntervalDate}"
+                                        listener="#{beanRelacionOperaciones.setFechaInicioFin(4)}"
                                         update=":formContent" />
                             </p:calendar>
                         </div>

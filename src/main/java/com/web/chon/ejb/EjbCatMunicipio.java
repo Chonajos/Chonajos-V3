@@ -31,7 +31,7 @@ public class EjbCatMunicipio implements NegocioCatMunicipio {
     try {
 
             System.out.println("EJB_GET_MUNICIPIOS");
-            Query query = em.createNativeQuery("SELECT * FROM MUNICIPIOS WHERE ID_ENTIDAD_FK=?");
+            Query query = em.createNativeQuery("SELECT * FROM MUNICIPIOS WHERE ID_ENTIDAD_FK=? order by nombre_municipio");
             query.setParameter(1, idEntidad);
             List<Object[]> resultList = null;
             resultList = query.getResultList();
