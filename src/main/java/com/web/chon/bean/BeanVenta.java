@@ -71,6 +71,7 @@ import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.JRPdfExporterParameter;
 import net.sf.jasperreports.engine.util.JRLoader;
+import org.primefaces.context.RequestContext;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -222,23 +223,32 @@ public class BeanVenta implements Serializable, BeanSimple {
 
                         ifaceVentaProducto.insertarVentaProducto(producto, idVenta);
                     }
+                    reset();
+
                     imprimirTicket(idVenta);
 
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info!", "La venta se realizo correctamente."));
-//                    generateReport();
-                    imprimirRelatorio();
-//imprimir();
+                    generateReport();
+//                    imprimirRelatorio();
 
                 } else {
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al insertar la venta."));
                 }
             } else {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Necesitas agregar al menos un producto para realizar la venta."));
+                
             }
 
-        } catch (Exception ex) {
+        } catch (StackOverflowError ex) {
             ex.printStackTrace();
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", ex.toString()));
+            reset();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", e.toString()));
+            reset();
+
         }
     }
 
@@ -330,8 +340,7 @@ public class BeanVenta implements Serializable, BeanSimple {
     }
 
     public void imprimir() throws IOException {
-//        JasperReport jasperReport;
-//        JasperPrint jasperPrint;
+
         try {
             //se carga el reporte
             File f = new File("C:/Users/Juan/Documents/NetBeansProjects/Chonajos-V2/ticket.jasper");
@@ -344,19 +353,6 @@ public class BeanVenta implements Serializable, BeanSimple {
             } catch (Exception ex) {
                 Logger.getLogger(BeanVenta.class.getName()).log(Level.SEVERE, null, ex);
             }
-//            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, paramReport, new JREmptyDataSource());
-//            JRExporter exporter = new JRPdfExporter();
-//            exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
-//            exporter.exportReport();
-
-//            jasperReport = (JasperReport) JRLoader.loadObject(f);
-////           jasperReport = (JasperReport) JRLoader.loadObject("ticket.jasper");
-//            //se procesa el archivo jasper
-//            jasperPrint = JasperFillManager.fillReport(jasperReport, paramReport, new JREmptyDataSource());
-//            //impresion de reportes
-//            // TRUE: muestra la ventana de dialogo "preferencias de impresion"
-//            JasperPrintManager.
-//            JasperPrintManager.getStreamContentFromOutputStream(jasperPrint, false);
         } catch (JRException ex) {
             System.err.println("Error iReport: " + ex.getMessage());
         }
@@ -506,6 +502,15 @@ public class BeanVenta implements Serializable, BeanSimple {
 
     }
 
+    public void reset() {
+
+        RequestContext.getCurrentInstance().reset("formContent");
+//        RequestContext.getCurrentInstance().execute("var s = document.getElementById('formContent'); s.reset();");
+        RequestContext.getCurrentInstance().execute("alert('hola mundo')");
+
+        System.out.println(FacesContext.getCurrentInstance().getViewRoot().findComponent("formContent").getId() + " id formulario");
+    }
+
     public String getPathFileJasper() {
         return pathFileJasper;
     }
@@ -531,7 +536,6 @@ public class BeanVenta implements Serializable, BeanSimple {
             facesContext.responseComplete();
         } catch (Exception e) {
             System.out.println("Error >" + e.getMessage());
-//            log.error(e.getMessage(), e);
         }
     }
 
@@ -714,6 +718,7 @@ public class BeanVenta implements Serializable, BeanSimple {
         try {
             ec.redirect(ec.getRequestContextPath() + page);
         } catch (IOException ex) {
+            System.out.println("redirect");
             System.out.println((ex.getMessage()));
         }
     }
@@ -726,6 +731,7 @@ public class BeanVenta implements Serializable, BeanSimple {
             session.setAttribute("relatorio", "ticket.jasper");
             redirect("/RelatorioServlet");
         } catch (Exception ex) {
+            System.out.println("error relatorio");
             System.out.println((ex.getMessage()));
         }
     }
