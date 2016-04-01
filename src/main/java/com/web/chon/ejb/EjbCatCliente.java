@@ -109,7 +109,7 @@ public class EjbCatCliente implements NegocioCatCliente {
                 //query.setParameter(15, clie.getColonia());
                 query.setParameter(13, clie.getClavecelular());
                 query.setParameter(14, clie.getLadacelular());
-                System.out.println("Prurebas: "+clie.getID_CP());
+                
                 query.setParameter(15, clie.getID_CP()== 0 ? 100000:clie.getID_CP());
                 query.setParameter(16, clie.getCalleFiscal());
                 query.setParameter(17, clie.getNum_int_fiscal());

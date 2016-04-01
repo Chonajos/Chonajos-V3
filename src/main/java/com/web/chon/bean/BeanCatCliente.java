@@ -94,14 +94,6 @@ public class BeanCatCliente implements BeanSimple {
         selectedCliente = new ArrayList<Cliente>();
         selectedEntidad = 1;
         model = ifaceCatCliente.getClientes();
-        
-        //Inicializar Correos
-//        for(int h = 0; h<model.size();h++)
-//        {
-//            emails_del_cliente=ifaceCatCorreos.SearchCorreosbyidClientPk(model.get(h).getId_cliente());
-//            model.get(h).setEmails(lista_emails);  
-//        }
-//        
         for(Cliente dominio: model){
             emails_del_cliente = ifaceCatCorreos.SearchCorreosbyidClientPk(dominio.getId_cliente());
             dominio.setEmails(emails_del_cliente);
@@ -195,7 +187,7 @@ public class BeanCatCliente implements BeanSimple {
         setTitle("Catalogo de Clientes");
         setViewEstate("init");
         data = new Cliente();
-        System.out.println("Pruebas: "+data.getPaterno());
+       
         
     }
 
@@ -268,15 +260,17 @@ public class BeanCatCliente implements BeanSimple {
 
     public void buscaMunicipios() {
         lista_municipios = ifaceCatMunicipio.getMunicipios(Integer.parseInt(data.getEstado()));
+        buscaColonias();
     }
 
     public void buscaMunicipios2() {
 
         lista_municipios_2 = ifaceCatMunicipio.getMunicipios(Integer.parseInt(data.getEstadoFiscal()));
-
+        buscaColonias2(); 
     }
 
-    public void buscaColonias() {
+    public void buscaColonias() 
+    {
 
         lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalById(data.getCodigoPostal());
 

@@ -46,12 +46,12 @@ public class Cliente implements Serializable
     private String municipioFiscal;
     private String codigoPostal;
     private String codigoPostalFiscal;
-    private int nextel;
+    private String nextel;
     private String razon_social;
     private String rfcFiscal;
     private int ladaoficina;
     private int claveoficina;
-    private int nextelclave;
+    private String nextelclave;
     private String nombreEstado;
     private String nombreDelegacionMunicipio;
     private String nombreEstadoFiscal;
@@ -132,11 +132,11 @@ public class Cliente implements Serializable
         this.claveoficina = claveoficina;
     }
 
-    public int getNextelclave() {
+    public String getNextelclave() {
         return nextelclave;
     }
 
-    public void setNextelclave(int nextelclave) {
+    public void setNextelclave(String nextelclave) {
         this.nextelclave = nextelclave;
     }
 
@@ -241,11 +241,11 @@ public class Cliente implements Serializable
     }
 
    
-    public int getNextel() {
+    public String getNextel() {
         return nextel;
     }
 
-    public void setNextel(int nextel) {
+    public void setNextel(String nextel) {
         this.nextel = nextel;
     }
 
