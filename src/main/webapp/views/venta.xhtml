@@ -13,7 +13,7 @@
             <h3>#{beanVenta.title}</h3>
         </div>
         <script>
-        var hiddenCode = "#{beanVenta.viewEstate}";
+            var hiddenCode = "#{beanVenta.viewEstate}";
         </script>
         <h:form id="formContent" >
             <p:remoteCommand id="remoteComman" resetValues="true" onstart="alert('onstart')"></p:remoteCommand>
@@ -23,14 +23,12 @@
                 <div class="container-fluid">
                     <div class="form-group">
                         <p:commandButton value="Agregar" update=":formContent" ajax="true" action="#{beanVenta.addProducto}" rendered="#{beanVenta.viewEstate =='init'}"/>
-                        <p:commandButton value="Venderaaa" id="vender" ajax="false" update=":formContent" onclick="this.form.target = 'miFrame';"  action="#{beanVenta.inserts}" immediate="true" resetValues="true" rendered="#{beanVenta.viewEstate =='init'}" oncomplete="alert('alert');">
-                            
-                        </p:commandButton>
-                        <p:commandButton  value="imprimir ticket" id="btonImprimir" ajax="true" rendered="#{beanVenta.viewEstate =='init'}"  onclick="window.frames.miFrame.print();" resetValues="true" action="#{beanVenta.cancel}"/>
+                        <p:commandButton value="Vender" id="vender" ajax="false" update=":formContent"   action="#{beanVenta.inserts}" immediate="true" resetValues="true" rendered="#{beanVenta.viewEstate =='init'}" oncomplete="alert('alert');"/>
+                        <!--<p:commandButton  value="imprimir ticket" id="btonImprimir" ajax="true" rendered="{beanVenta.viewEstate =='init'}"  onclick="window.frames.miFrame.print();" resetValues="true" action="{beanVenta.cancel}"/>-->
                         <p:commandButton value="Aceptar" update=":formContent" ajax="true" action="#{beanVenta.updateProducto}" rendered="#{beanVenta.viewEstate =='update'}"/>
                         <p:commandButton value="Cancelar" update=":formContent" ajax="true" action="#{beanVenta.cancel}" immediate="true" resetValues="true" rendered="#{beanVenta.viewEstate =='update'}"/>
                     </div>
-                    
+
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
 
                         <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
@@ -138,7 +136,7 @@
                                 </p:row>
                             </p:columnGroup>
                         </p:dataTable>
-                        <iframe  id="miFrame" class="hidden" name="miFrame" />
+                        <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanVenta.rutaPDF}"/>
                     </div>
                 </div>
             </p:panel>

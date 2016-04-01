@@ -23,6 +23,7 @@ import com.web.chon.service.IfaceVenta;
 import com.web.chon.service.IfaceVentaProducto;
 import com.web.chon.util.JasperReportUtil;
 import com.web.chon.util.NumeroALetra;
+import com.web.chon.util.UtilUpload;
 import com.web.chon.util.Utilerias;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -33,6 +34,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -56,6 +58,7 @@ import javax.print.PrintServiceLookup;
 import javax.print.SimpleDoc;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -71,6 +74,7 @@ import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.JRPdfExporterParameter;
 import net.sf.jasperreports.engine.util.JRLoader;
+import org.primefaces.component.export.PDFExporter;
 import org.primefaces.context.RequestContext;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -125,26 +129,8 @@ public class BeanVenta implements Serializable, BeanSimple {
     private String viewEstate = "";
     private BigDecimal totalVenta;
     private VentaProducto data;
+    private String rutaPDF;
     private Venta venta;
-    private String line = "_______________________________________________\n";
-    private String contentTicket = "              COMERCIALIZADORA Y \n"
-            + "             EXPORTADORA CHONAJOS\n"
-            + "                 S DE RL DE CV\n"
-            + "                55-56-40-58-46\n"
-            + "                   Bod.  Q85\n"
-            + "                 VALE DE VENTA\n"
-            + "                {{dateTime}}\n"
-            + "Vale No. {{valeNum}}     \n"
-            + "C:{{cliente}}\n"
-            + "Vendedor:{{vendedor}}\n"
-            + "BULT/CAJ    PRODUCTO     PRECIO      TOTAL\n"
-            + "{{items}}\n"
-            + line
-            + "VENTA:        {{total}}\n"
-            + "{{totalLetra}}\n\n\n"
-            + "               P A G A D O\n\n"
-            + "\n" + (char) 27 + (char) 112 + (char) 0 + (char) 10 + (char) 100 + "\n"
-            + (char) 27 + "m";
 
     private StreamedContent media;
     private ByteArrayOutputStream outputStream;
@@ -223,31 +209,31 @@ public class BeanVenta implements Serializable, BeanSimple {
 
                         ifaceVentaProducto.insertarVentaProducto(producto, idVenta);
                     }
-                    reset();
 
-                    imprimirTicket(idVenta);
+                    setParameterTicket(idVenta);
 
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info!", "La venta se realizo correctamente."));
                     generateReport();
-//                    imprimirRelatorio();
+                    cancel();
+                    lstVenta.clear();
+                    totalVenta = new BigDecimal(0);
+                    RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
 
                 } else {
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al insertar la venta."));
                 }
             } else {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Necesitas agregar al menos un producto para realizar la venta."));
-                
+
             }
 
         } catch (StackOverflowError ex) {
             ex.printStackTrace();
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", ex.toString()));
-            reset();
 
         } catch (Exception e) {
             e.printStackTrace();
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", e.toString()));
-            reset();
 
         }
     }
@@ -293,6 +279,7 @@ public class BeanVenta implements Serializable, BeanSimple {
 
         data.reset();
         subProducto = new Subproducto();
+        UtilUpload.deleteFile(rutaPDF);
         selectedTipoEmpaque();
 
     }
@@ -321,7 +308,7 @@ public class BeanVenta implements Serializable, BeanSimple {
         calcularTotalVenta();
     }
 
-    private void imprimirTicket(int idVenta) {
+    private void setParameterTicket(int idVenta) {
 
         NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
         DecimalFormat df = new DecimalFormat("###.##");
@@ -339,25 +326,6 @@ public class BeanVenta implements Serializable, BeanSimple {
 
     }
 
-    public void imprimir() throws IOException {
-
-        try {
-            //se carga el reporte
-            File f = new File("C:/Users/Juan/Documents/NetBeansProjects/Chonajos-V2/ticket.jasper");
-            f.getCanonicalPath();
-
-            System.out.println("ruta" + f.getAbsolutePath());
-            JasperReport jasperReport = (JasperReport) JRLoader.loadObject(f);
-            try {
-                outputStream = JasperReportUtil.getOutputStreamFromReport(paramReport, getPathFileJasper());
-            } catch (Exception ex) {
-                Logger.getLogger(BeanVenta.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } catch (JRException ex) {
-            System.err.println("Error iReport: " + ex.getMessage());
-        }
-    }
-
     private void putValues(String dateTime, ArrayList<String> items, String total, String totalVentaStr, int idVenta) {
 
         paramReport.put("fechaVenta", dateTime);
@@ -368,32 +336,6 @@ public class BeanVenta implements Serializable, BeanSimple {
         paramReport.put("ventaTotal", total);
         paramReport.put("totalLetra", totalVentaStr);
         paramReport.put("estado", "POR ENTREGAR");
-
-    }
-
-    public void imprimirDefault() {
-
-        byte[] bytes;
-        bytes = contentTicket.getBytes();
-        DocFlavor flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE;
-        Doc doc = new SimpleDoc(bytes, flavor, null);
-        System.out.println(contentTicket);
-
-        PrintRequestAttributeSet attributeSet = new HashPrintRequestAttributeSet();
-
-        PrintService defaultPrintService = PrintServiceLookup.lookupDefaultPrintService();
-
-        if (defaultPrintService != null) {
-            DocPrintJob printJob = defaultPrintService.createPrintJob();
-            try {
-                printJob.print(doc, attributeSet);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "No existen impresoras instaladas."));
-        }
 
     }
 
@@ -440,26 +382,18 @@ public class BeanVenta implements Serializable, BeanSimple {
     }
 
     public void cancel() {
+        data.reset();
         subProducto = new Subproducto();
-
         viewEstate = "init";
 
-        data.reset();
     }
 
     public void generateReport() {
-
-        JasperReport compiledTemplate = null;
         JRExporter exporter = null;
-        ByteArrayOutputStream out = null;
-        ByteArrayInputStream input = null;
-        BufferedOutputStream output = null;
-
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        ExternalContext externalContext = facesContext.getExternalContext();
-        HttpServletResponse response = (HttpServletResponse) externalContext.getResponse();
 
         try {
+            ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+            pathFileJasper = servletContext.getRealPath("") + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketVenta" + File.separatorChar + "ticket.jasper";
 
             JasperPrint jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport, new JREmptyDataSource());
             outputStream = JasperReportUtil.getOutputStreamFromReport(paramReport, getPathFileJasper());
@@ -467,48 +401,21 @@ public class BeanVenta implements Serializable, BeanSimple {
 
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
             exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, outputStream);
+//            exporter.setParameter(JRPdfExporterParameter.PDF_JAVASCRIPT, "this.print();");
+            byte[] bytes = outputStream.toByteArray();
 
-            exporter.exportReport();
-            input = new ByteArrayInputStream(outputStream.toByteArray());
-
-            response.reset();
-            response.setHeader("Content-Type", "application/pdf");
-            response.setHeader("Content-Length", String.valueOf(outputStream.toByteArray().length));
-            response.setHeader("Content-Disposition", "inline; filename=\"fileName.pdf\"");
-            output = new BufferedOutputStream(response.getOutputStream(), 75);
-
-            byte[] buffer = new byte[75];
-            int length;
-            while ((length = input.read(buffer)) > 0) {
-                output.write(buffer, 0, length);
-            }
-            output.flush();
+            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf");
 
         } catch (Exception exception) {
             System.out.println("Error >" + exception.getMessage());
         } finally {
             try {
-                if (output != null) {
-                    output.close();
-                }
-                if (input != null) {
-                    input.close();
-                }
+
             } catch (Exception exception) {
                 System.out.println("Error >" + exception.getMessage());
             }
         }
-        facesContext.responseComplete();
 
-    }
-
-    public void reset() {
-
-        RequestContext.getCurrentInstance().reset("formContent");
-//        RequestContext.getCurrentInstance().execute("var s = document.getElementById('formContent'); s.reset();");
-        RequestContext.getCurrentInstance().execute("alert('hola mundo')");
-
-        System.out.println(FacesContext.getCurrentInstance().getViewRoot().findComponent("formContent").getId() + " id formulario");
     }
 
     public String getPathFileJasper() {
@@ -627,14 +534,6 @@ public class BeanVenta implements Serializable, BeanSimple {
         this.venta = venta;
     }
 
-    public String getContentTicket() {
-        return contentTicket;
-    }
-
-    public void setContentTicket(String contentTicket) {
-        this.contentTicket = contentTicket;
-    }
-
     public VentaProducto getDataEdit() {
         return dataEdit;
     }
@@ -707,32 +606,17 @@ public class BeanVenta implements Serializable, BeanSimple {
         this.number = number;
     }
 
+    public String getRutaPDF() {
+        return rutaPDF;
+    }
+
+    public void setRutaPDF(String rutaPDF) {
+        this.rutaPDF = rutaPDF;
+    }
+
     @Override
     public String insert() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    protected void redirect(String page) {
-        FacesContext ctx = FacesContext.getCurrentInstance();
-        ExternalContext ec = ctx.getExternalContext();
-        try {
-            ec.redirect(ec.getRequestContextPath() + page);
-        } catch (IOException ex) {
-            System.out.println("redirect");
-            System.out.println((ex.getMessage()));
-        }
-    }
-
-    public void imprimirRelatorio() throws Exception {
-        try {
-            FacesContext ctx = FacesContext.getCurrentInstance();
-            HttpSession session = (HttpSession) ctx.getExternalContext().getSession(false);
-            session.setAttribute("listagem", paramReport);
-            session.setAttribute("relatorio", "ticket.jasper");
-            redirect("/RelatorioServlet");
-        } catch (Exception ex) {
-            System.out.println("error relatorio");
-            System.out.println((ex.getMessage()));
-        }
-    }
 }
