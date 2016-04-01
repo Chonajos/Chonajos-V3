@@ -59,8 +59,8 @@ public class ServiceCatCliente implements IfaceCatCliente {
                 cliente.setNextel(obj[20]== null ? "": obj[20].toString());
                 cliente.setRazon_social(obj[21] == null ? "" : obj[21].toString());
                 cliente.setRfcFiscal(obj[22] == null ? "" : obj[22].toString());
-                cliente.setLadaoficina(Integer.parseInt(obj[23]==null ? "0": obj[23].toString()));
-                cliente.setClaveoficina(Integer.parseInt(obj[24]==null ? "0": obj[24].toString()));
+                cliente.setLadaoficina(obj[23]==null ? 0: Integer.parseInt(obj[23].toString()));
+                cliente.setClaveoficina(obj[24]==null ? 0: Integer.parseInt(obj[24].toString()));
                 cliente.setNextelclave(obj[25]== null ? "": obj[25].toString());
                 cliente.setStatus_cliente(Integer.parseInt(obj[26]==null ? "0": obj[26].toString()));
                 cliente.setStatusClienteBoolean(obj[26].toString().equals("1"));
