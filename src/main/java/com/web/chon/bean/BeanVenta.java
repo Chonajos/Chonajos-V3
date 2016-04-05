@@ -1,12 +1,5 @@
 package com.web.chon.bean;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfWriter;
 import com.web.chon.dominio.Cliente;
 import com.web.chon.dominio.MantenimientoPrecios;
 import com.web.chon.dominio.Subproducto;
@@ -25,58 +18,41 @@ import com.web.chon.util.JasperReportUtil;
 import com.web.chon.util.NumeroALetra;
 import com.web.chon.util.UtilUpload;
 import com.web.chon.util.Utilerias;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.net.URL;
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
+
 import java.util.Locale;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
-import javax.faces.context.ExternalContext;
+
 import javax.faces.context.FacesContext;
-import javax.print.Doc;
-import javax.print.DocFlavor;
-import javax.print.DocPrintJob;
-import javax.print.PrintService;
-import javax.print.PrintServiceLookup;
-import javax.print.SimpleDoc;
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.PrintRequestAttributeSet;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletOutputStream;
+
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+
 import net.sf.jasperreports.engine.JREmptyDataSource;
-import net.sf.jasperreports.engine.JRException;
+
 import net.sf.jasperreports.engine.JRExporter;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperPrintManager;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.JasperRunManager;
+
 import net.sf.jasperreports.engine.export.JRPdfExporter;
-import net.sf.jasperreports.engine.export.JRPdfExporterParameter;
-import net.sf.jasperreports.engine.util.JRLoader;
-import org.primefaces.component.export.PDFExporter;
 import org.primefaces.context.RequestContext;
-import org.primefaces.model.DefaultStreamedContent;
+
 import org.primefaces.model.StreamedContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -136,21 +112,23 @@ public class BeanVenta implements Serializable, BeanSimple {
     private ByteArrayOutputStream outputStream;
     private String number;
     private String pathFileJasper = "C:/Users/Juan/Documents/NetBeansProjects/Chonajos-V2/ticket.jasper";
-
+    private int idSucu;
     @PostConstruct
-    public void init() {
+    public void init() 
+    {
         usuario = beanUsuario.getUsuario();
+        idSucu=usuario.getIdSucursal();
+        System.out.println("Freddy :"+usuario.getIdSucursal());
         venta = new Venta();
+        venta.setIdSucursal(usuario.getIdSucursal());
         data = new VentaProducto();
         data.setIdTipoEmpaqueFk(new BigDecimal(-1));
         lstProducto = new ArrayList<Subproducto>();
         lstTipoEmpaque = ifaceEmpaque.getEmpaques();
         lstVenta = new ArrayList<VentaProducto>();
-
         selectedTipoEmpaque();
         setTitle("Venta de Productos.");
         setViewEstate("init");
-
     }
 
     public void selectedTipoEmpaque() {
@@ -181,8 +159,9 @@ public class BeanVenta implements Serializable, BeanSimple {
 
     }
 
-    public ArrayList<Usuario> autoCompleteVendedor(String nombreUsuario) {
-        lstUsuario = ifaceCatUsuario.getUsuarioByNombreCompleto(nombreUsuario.toUpperCase());
+    public ArrayList<Usuario> autoCompleteVendedor(String nombreUsuario)
+    {
+        lstUsuario = ifaceCatUsuario.getUsuarioByNombreCompleto(nombreUsuario.toUpperCase(),idSucu);
         return lstUsuario;
 
     }
@@ -195,23 +174,22 @@ public class BeanVenta implements Serializable, BeanSimple {
     public void inserts() {
         int idVenta = 0;
         Venta venta = new Venta();
+        
         try {
-            if (!lstVenta.isEmpty() && lstVenta.size() > 0) {
+            if (!lstVenta.isEmpty() && lstVenta.size() > 0) 
+            {
 
                 idVenta = ifaceVenta.getNextVal();
-
                 venta.setIdVentaPk(new BigDecimal(idVenta));
                 venta.setIdClienteFk(new BigDecimal(cliente.getId_cliente()));
                 venta.setIdVendedorFk(usuario.getIdUsuarioPk());
+                venta.setIdSucursal(idSucu);
                 int ventaInsertada = ifaceVenta.insertarVenta(venta);
                 if (ventaInsertada != 0) {
                     for (VentaProducto producto : lstVenta) {
-
                         ifaceVentaProducto.insertarVentaProducto(producto, idVenta);
                     }
-
                     setParameterTicket(idVenta);
-
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info!", "La venta se realizo correctamente."));
                     generateReport();
                     cancel();
@@ -619,4 +597,15 @@ public class BeanVenta implements Serializable, BeanSimple {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    public int getIdSucu() {
+        return idSucu;
+    }
+
+    public void setIdSucu(int idSucu) {
+        this.idSucu = idSucu;
+    }
+    
+    
+
+    
 }
