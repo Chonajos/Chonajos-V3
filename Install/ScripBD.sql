@@ -1,4 +1,4 @@
---BASE DE DATOS : choni
+﻿--BASE DE DATOS : choni
 --USUARIO: choni
 --Contraseña: choni
 
@@ -381,6 +381,26 @@ create table correos(
 	CONSTRAINT c_id_corr_pk PRIMARY KEY(ID_PK),
 	CONSTRAINT C_ID_CLIENTE_COR_FK FOREIGN KEY (id_cliente_fk) references cliente(id_cliente)
 );
+
+
+//tablas para llevar registro de las entradas de ajos a la central
+
+MINVALUE 0;
+Create table entrada_producto_central(
+id_entrada number(8),
+precio_venta number(8,2),
+toneladas number(12,2),
+fecha  date,
+CONSTRAINT c_id_entrada_pk PRIMARY KEY (id_entrada)
+);
+
+CREATE SEQUENCE S_ENTRADA_PRODUCTO_CENTRAL 
+INCREMENT BY 1
+START WITH 1
+MINVALUE 0;
+	
+
+//tablas para llevar registro de las entradas de ajos a la central
 
 
 --tablas eliminadas
