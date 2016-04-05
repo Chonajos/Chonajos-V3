@@ -108,11 +108,11 @@ public class ServiceCatUsuario implements IfaceCatUsuario {
     }
 
     @Override
-    public ArrayList<Usuario> getUsuarioByNombreCompleto(String nombre) {
+    public ArrayList<Usuario> getUsuarioByNombreCompleto(String nombre,int idSucursal) {
         try {
             ArrayList<Usuario> lstUsuario = new ArrayList<Usuario>();
             ejb = (NegocioCatUsuario) Utilidades.getEJBRemote("ejbCatUsuario", NegocioCatUsuario.class.getName());
-            List<Object[]> object = ejb.getUsuarioByNombreCompleto(nombre);
+            List<Object[]> object = ejb.getUsuarioByNombreCompleto(nombre,idSucursal);
 
             for (Object[] obj : object) {
 
@@ -121,7 +121,7 @@ public class ServiceCatUsuario implements IfaceCatUsuario {
                 usuario.setNombreUsuario(obj[1] == null ? "" : obj[1].toString());
                 usuario.setApaternoUsuario(obj[2] == null ? "" : obj[2].toString());
                 usuario.setAmaternoUsuario(obj[3] == null ? "" : obj[3].toString());
-
+                usuario.setIdSucursal(obj[26] == null ? null : Integer.parseInt(obj[0].toString()));
                 lstUsuario.add(usuario);
             }
 

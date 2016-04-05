@@ -8,6 +8,7 @@ import javax.ejb.Remote;
  * @author Juan de la Cruz
  */
 @Remote
-public interface NegocioLogin {
+public interface NegocioLogin 
+{
     Usuario validarLogin(Usuario obj) throws Exception;
 }

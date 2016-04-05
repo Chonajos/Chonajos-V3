@@ -20,15 +20,14 @@
             <p:panel rendered="#{beanCatCliente.viewEstate=='init'}" style="border: 0px;" >
                 <div class="form-group">
                     <p:commandButton value="Nuevos" update=":formCliente" resetValues="true" ajax="true" action="#{beanCatCliente.viewNew}" icon="ui-icon-person" />
-                    <p:commandButton value="Eliminar" update=":formCliente" ajax="true" action="#{beanCatCliente.delete()}" icon="ui-icon-trash" />
-
+                    
                 </div>
                 <p:dataTable var="model" value="#{beanCatCliente.model}" rows="10" scrollable="true"
                              paginator="true" selection="#{beanCatCliente.selectedCliente}" rowKey="#{model.id_cliente}"
                              paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} "
                              rowsPerPageTemplate="5,10,15" emptyMessage="No se encontraron Registros.">
 
-                    <p:column selectionMode="multiple" width="32px;!important"/>
+                    
                     <p:column headerText="Id" style="width:70px;">
                         <h:outputText value="#{model.id_cliente}" />
                     </p:column>
@@ -53,13 +52,50 @@
                             <f:setPropertyActionListener value="#{model}" target="#{beanCatCliente.data}"/>
                         </p:commandButton>
                     </p:column>
+
+                    <p:column headerText="Eliminar" style="width:100px;text-align:center">
+
+                        <p:commandButton  update=":formCliente" action="#{beanCatCliente.viewDelete()}" icon="ui-icon-trash" styleClass="ui-priority-primary">
+                            <f:setPropertyActionListener value="#{model}" target="#{beanCatCliente.data}"/>
+                        </p:commandButton>
+                    </p:column>
                 </p:dataTable>
             </p:panel>
-            <!--Codigo de Prueba Vista Detalle -->
+            <!--Eliminar Cliente-->
+            <p:panel rendered="#{beanCatCliente.viewEstate=='deleteCliente'}">
+                <div class="container">
+                    <div class="form-group">
+                        <p:commandButton value="Eliminar" update=":formCliente" ajax="true" action="#{beanCatCliente.delete()}" icon="ui-icon-trash" />
+                        <p:commandButton value="Atras" immediate="true" resetValues="true" update=":formCliente" ajax="true" action="#{beanCatCliente.backView}" />
 
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <h3 class="first">Datos de Cliente</h3>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtNombredel" value ="Nombre:" /> 
+                        <p:inputText id="txtNombredel" maxlength="30" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.nombre} #{beanCatCliente.data.paterno} #{beanCatCliente.data.materno}" required="true" disabled="#{beanCatCliente.permissionToWrite}"
+                                     requiredMessage="Ingresa un valor para el campo Nombre del cliente.">
+                            <pe:keyFilter regEx="/[a-z_ ]/i"/>
+                        </p:inputText>
+                    </div>
+
+
+                    <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12">
+                        <p:outputLabel class="col-lg-3 col-md-4 col-sm-4 col-xs-12"  for="txtselmovito" value ="Motivo de baja :" /> 
+                        <h:selectOneMenu  id="txtselmovito" class=" col-lg-5 col-md-8 col-sm-8 col-xs-12" value="#{beanCatCliente.bajaCliente.id_motivo_fk}" required="true">
+                            <f:selectItem itemLabel="Selecciona un motivo de baja" itemValue="" />
+                            <f:selectItems value="#{beanCatCliente.lista_motivos}" var="motivo" itemLabel="#{motivo.nombre_motivo}" itemValue="#{motivo.id_motivo}"/>
+                        </h:selectOneMenu>
+                    </div>
+                    <p:outputLabel class="col-lg-3 col-md-4 col-sm-4 col-xs-12"  for="txtcomentarios" value ="Comentarios:" /> 
+                    <p:inputTextarea id ="txtcomentarios" rows="3" cols="25" value="#{beanCatCliente.bajaCliente.comentarios}" required="true"/>
+
+                </div>
+
+            </p:panel>
 
             <!--##########################  Panel para nuevo usuario ################-->
-
             <p:panel rendered="#{beanCatCliente.viewEstate=='searchById' || beanCatCliente.viewEstate=='new' || beanCatCliente.viewEstate=='viewDetails'}">
                 <div class="container">
                     <div class="form-group">
@@ -104,10 +140,10 @@
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <h:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6" value="Estatus de la Cuenta: "  />
-                        <p:inputSwitch value="#{beanCatCliente.data.statusClienteBoolean}" disabled="#{beanCatCliente.permissionToWrite}"/>
+                        <p:inputSwitch value="#{beanCatCliente.data.statusClienteBoolean}" disabled="#{beanCatCliente.permissionToWriteStatus}"/>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 form-group">
-                        <p:dataTable id="ema1" var="correos" value="#{beanCatCliente.data.emails}" editable="true" style="margin-bottom:20px">
+                        <p:dataTable id="ema1" var="correos" value="#{beanCatCliente.data.emails}" editable="#{beanCatCliente.permissionToEdit}" style="margin-bottom:20px">
                             <f:facet name="header">
                                 Correos Electrónicos 
                             </f:facet>
@@ -266,13 +302,13 @@
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtNextelClave" value ="ID:" /> 
-                        <p:inputText id="txtNextelClave" maxlength="5" class=" col-lg-1 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.nextelclave}" disabled="#{beanCatCliente.permissionToWrite}" >
+                        <p:inputText id="txtNextelClave" maxlength="12" class=" col-lg-1 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.nextelclave}" disabled="#{beanCatCliente.permissionToWrite}" >
                             <pe:keyFilter regEx="/[0-9_ *]/i"/>
                         </p:inputText>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtNextel" value ="Nextel:" /> 
-                        <p:inputText id="txtNextel" maxlength="10" class=" col-lg-1 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.nextel}" disabled="#{beanCatCliente.permissionToWrite}" >
+                        <p:inputText id="txtNextel" maxlength="8" class=" col-lg-1 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.nextel}" disabled="#{beanCatCliente.permissionToWrite}" >
                             <pe:keyFilter regEx="/[0-9_ *]/i"/>
                         </p:inputText>
                     </div>

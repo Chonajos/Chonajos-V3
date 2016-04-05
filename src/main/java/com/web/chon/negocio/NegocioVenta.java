@@ -1,6 +1,7 @@
 package com.web.chon.negocio;
 
 import com.web.chon.dominio.Venta;
+import java.math.BigDecimal;
 import java.util.List;
 import javax.ejb.Remote;
 
@@ -9,7 +10,8 @@ import javax.ejb.Remote;
  * @author Juan de la Cruz
  */
 @Remote
-public interface NegocioVenta {
+public interface NegocioVenta 
+{
 
     public int insertarVenta(Venta venta);
     
@@ -25,6 +27,6 @@ public interface NegocioVenta {
      * @param fechaFin
      * @return 
      */
-    public List<Object[]> getVentasByInterval(String fechaInicio, String fechaFin);
-
+    public List<Object[]> getVentasByInterval(String fechaInicio, String fechaFin,int idSucursal,int idStatusVenta); //default todo
+   
 }

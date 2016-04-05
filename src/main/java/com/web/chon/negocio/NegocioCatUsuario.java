@@ -23,6 +23,6 @@ public interface NegocioCatUsuario {
 
     public int insertarUsuario(Usuario usuario);
     
-    public List<Object[]> getUsuarioByNombreCompleto(String nombreUsuario);
+    public List<Object[]> getUsuarioByNombreCompleto(String nombreUsuario,int idSucursal);
 
 }

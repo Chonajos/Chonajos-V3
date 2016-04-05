@@ -18,4 +18,16 @@
 {
     color:red;
 }
+.statusPagado
+{
+    color:darkorange;
+}
+.statusEntregado
+{
+    color:#4cae4c;
+}
+.statusPedido
+{
+    color:deepskyblue;
+}
 

@@ -1,14 +1,18 @@
 package com.web.chon.bean;
 
+import com.web.chon.dominio.BajaClientes;
 import com.web.chon.dominio.Cliente;
 import com.web.chon.dominio.CodigoPostal;
 import com.web.chon.dominio.Correos;
 import com.web.chon.dominio.Entidad;
+import com.web.chon.dominio.Motivos;
 import com.web.chon.dominio.Municipios;
+import com.web.chon.service.IfaceBajaCliente;
 import com.web.chon.service.IfaceCatCliente;
 import com.web.chon.service.IfaceCatCodigosPostales;
 import com.web.chon.service.IfaceCatCorreos;
 import com.web.chon.service.IfaceCatEntidad;
+import com.web.chon.service.IfaceCatMotivos;
 import com.web.chon.service.IfaceCatMunicipio;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,11 +42,14 @@ public class BeanCatCliente implements BeanSimple {
     private IfaceCatCodigosPostales ifaceCatCodigosPostales;
     @Autowired
     private IfaceCatCorreos ifaceCatCorreos;
+    @Autowired
+    private IfaceCatMotivos ifaceCatMotivos;
+    @Autowired
+    private IfaceBajaCliente ifaceBajaCliente;
 
     private ArrayList<CodigoPostal> lista_codigos_postales;
     private ArrayList<CodigoPostal> lista_codigos_postales_2;
     private ArrayList<Cliente> model;
-
     private ArrayList<Entidad> lista_entidades;
     private ArrayList<Municipios> lista_municipios;
     private ArrayList<Entidad> lista_entidades_2;
@@ -52,54 +59,47 @@ public class BeanCatCliente implements BeanSimple {
     private String title;
     private String viewEstate;
     private Cliente data;
-
-    private int estado;
-    private int estado_fis;
-
-    private ArrayList<Correos> lista_emails;
-      private ArrayList<Correos> emails_del_cliente;
-      
     private boolean permissionToWrite;
+    private boolean permissionToWriteStatus;
 
     
+    private boolean permissionToEdit;
+    private int estado;
+    private int estado_fis;
+    private ArrayList<Correos> lista_emails;
+
+    private ArrayList<Correos> emails_del_cliente;
+    private ArrayList<Motivos> lista_motivos;
+    private BajaClientes bajaCliente;
 
     @PostConstruct
-    public void init() 
-    {
-
+    public void init() {
         data = new Cliente();
         model = new ArrayList<Cliente>();
         model = new ArrayList<Cliente>();
-        permissionToWrite=false;
+        bajaCliente = new BajaClientes();
+        permissionToWrite = false;
+        permissionToEdit = true;
         lista_emails = new ArrayList<Correos>();
-        Correos c1 = new Correos();
-        c1.setTipo("Personal");
+        lista_motivos = new ArrayList<Motivos>();
         Correos c2 = new Correos();
         c2.setTipo("Trabajo");
-        lista_emails.add(c1);
         lista_emails.add(c2);
-
         lista_codigos_postales = new ArrayList<CodigoPostal>();
         lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalById("1");
-
         lista_codigos_postales_2 = new ArrayList<CodigoPostal>();
         lista_codigos_postales_2 = ifaceCatCodigosPostales.getCodigoPostalById("1");
-
         lista_entidades = new ArrayList<Entidad>();
         lista_municipios = new ArrayList<Municipios>();
-
         lista_entidades_2 = new ArrayList<Entidad>();
         lista_municipios_2 = new ArrayList<Municipios>();
-
         selectedCliente = new ArrayList<Cliente>();
         selectedEntidad = 1;
         model = ifaceCatCliente.getClientes();
-        for(Cliente dominio: model){
+        for (Cliente dominio : model) {
             emails_del_cliente = ifaceCatCorreos.SearchCorreosbyidClientPk(dominio.getId_cliente());
             dominio.setEmails(emails_del_cliente);
-           
         }
-        
 
         setTitle("Catalogo de Clientes.");
         setViewEstate("init");
@@ -107,69 +107,67 @@ public class BeanCatCliente implements BeanSimple {
         lista_entidades = ifaceCatEntidad.getEntidades();
         lista_entidades_2 = ifaceCatEntidad.getEntidades();
     }
-    
 
     public void onRowEdit(RowEditEvent event) {
-        FacesMessage msg = new FacesMessage("Correo  Modificado", ((Correos) event.getObject()).getCorreo());
-        FacesContext.getCurrentInstance().addMessage(null, msg);
+        //FacesMessage msg = new FacesMessage("Correo  Modificado", ((Correos) event.getObject()).getCorreo());
+        //FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
     public void onRowCancel(RowEditEvent event) {
-        FacesMessage msg = new FacesMessage("Edit Cancelled", ((Correos) event.getObject()).getCorreo());
-        FacesContext.getCurrentInstance().addMessage(null, msg);
+        // FacesMessage msg = new FacesMessage("Edit Cancelled", ((Correos) event.getObject()).getCorreo());
+        // FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
     @Override
     public String delete() {
-        if (!selectedCliente.isEmpty()) {
-            for (Cliente cl : selectedCliente) {
-                try {
-                    ifaceCatCliente.deleteCliente(cl.getId_cliente());
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro eliminado."));
-                } catch (Exception ex) {
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar eliminar el registro :" + data.getNombre() + "."));
-                }
+        try {
+            if(ifaceBajaCliente.insertCliente(bajaCliente)==0)
+            {
+                
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "El cliente :" + data.getNombre() + " ya está en baja."));
             }
-        } else {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Warning!", "Elija un registro a eliminar."));
+            else{
+                data.setStatus_cliente(2);
+                ifaceCatCliente.updateCliente(data);
+             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "El cliente se ha dado de baja correctamente"));
+            }
+            } catch (Exception ex) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar eliminar el registro :" + data.getNombre() + "."));
         }
 
         return "clientes";
     }
 
     @Override
-    public String insert() 
-    {
+    public String insert() {
 
         try {
             int id_cliente_next_val = ifaceCatCliente.getNextVal();
             data.setId_cliente(id_cliente_next_val);
-            
+
             System.out.println("Cliente Bean: " + data.toString());
-            if (ifaceCatCliente.insertCliente(data) == 0) 
-            {
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al registrar"));
+            if (ifaceCatCliente.insertCliente(data) == 0) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al registrar"));
 
-                } else 
-            {
-            for (int i = 0; i < lista_emails.size(); i++) 
-            {
-                Correos temporal = (Correos) lista_emails.get(i);
-                if (temporal.getCorreo() != null) //agregar solo correos != null 
-                {
-                    temporal.setId_cliente_fk(id_cliente_next_val);
-                    System.out.println("Correo #: " + i + " : " + temporal.toString());
-                    if (ifaceCatCorreos.insertCorreo(temporal) == 0) 
+            } else {
+                for (int i = 0; i < lista_emails.size(); i++) {
+                    Correos temporal = (Correos) lista_emails.get(i);
+
+                    if (temporal.getCorreo() == null) //agregar solo correos != null 
                     {
-                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ya se encuentra registrado ese correo."));
-                    } 
+                        System.out.println("Cadena vacia no agregada");
+                    } else {
+                        temporal.setId_cliente_fk(id_cliente_next_val);
+                        System.out.println("Correo #: " + i + " : " + temporal.toString());
+                        if (ifaceCatCorreos.insertCorreo(temporal) == 0) {
+                            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ya se encuentra registrado ese correo."));
+                        }
+                    }
+
                 }
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro insertado."));
 
             }
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro insertado."));
-                
-            }
-            
 
         } catch (Exception ex) {
             System.out.println("error" + ex.getMessage());
@@ -182,81 +180,93 @@ public class BeanCatCliente implements BeanSimple {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public void backView() 
-    {
+    public void backView() {
         setTitle("Catalogo de Clientes");
         setViewEstate("init");
         data = new Cliente();
-       
-        
+        selectedCliente = null;
+
     }
 
-    public void addCorreo() 
-    {
+    public void addCorreo() {
         Correos c = new Correos();
-        if (data.getEmails()==null)
-        {
+        if (data.getEmails() == null) {
             data.setEmails(lista_emails);
-        }
-        else{
+        } else {
+
+            //Falta condición para no agregar cadenas vacias
             data.getEmails().add(c);
         }
-        
-        
-        
+
     }
 
     @Override
-    public String update() {
+    public String update() 
+    {
         try {
-            if(data.isStatusClienteBoolean())
+            if (data.isStatusClienteBoolean()) 
             {
                 data.setStatus_cliente(1);
-            }
-            else
+                ifaceBajaCliente.deleteCliente(data.getId_cliente());
+            } else 
             {
                 data.setStatus_cliente(2);
-              
             }
             ifaceCatCliente.updateCliente(data);
-           
-            for(int y = 0 ; y<data.getEmails().size();y++)
-            {
+
+            for (int y = 0; y < data.getEmails().size(); y++) {
                 data.getEmails().get(y).setId_cliente_fk(data.getId_cliente());
-                
-                if (ifaceCatCorreos.updateCorreos(data.getEmails().get(y))==0)
-                {
+
+                if (ifaceCatCorreos.updateCorreos(data.getEmails().get(y)) == 0) {
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "No se modificó o no se inserto correo repetido:" + data.getNombre() + "."));
-                }
-                else
-                {
+                } else {
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Los datos del cliente se han modificado."));
                 }
             }
-            
-            
+
         } catch (Exception ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar modificar el registro :" + data.getNombre() + "."));
         }
         backView();
         return "clientes";
-        
+
     }
 
     @Override
-    public void searchById() {
+    public void searchById() 
+    {
         buscaMunicipios();
         buscaMunicipios2();
         setTitle("Editar Cliente.");
         setViewEstate("searchById");
-        permissionToWrite=false;
-       
+        permissionToWrite = false;
+        permissionToEdit = true;
+        if(data.getStatus_cliente()==2)
+        {
+            permissionToWriteStatus=false;
+        }
+        else
+        {
+            permissionToWriteStatus=true;
+        }
+
     }
-    public void viewDetails()
-    {
+
+    public void viewDetails() {
         setTitle("Detalles de Cliente");
         setViewEstate("viewDetails");
-        permissionToWrite=true;
+        permissionToWrite = true;
+        permissionToEdit = false;
+    }
+
+    public void viewDelete() {
+        setTitle("Baja de Clientes");
+        setViewEstate("deleteCliente");
+        permissionToWrite = true;
+        permissionToEdit = false;
+        buscaMotivos();
+        bajaCliente.setId_baja_cliente(data.getId_cliente());
+        data.setStatus_cliente(2);
     }
 
     public void viewNew() {
@@ -264,7 +274,8 @@ public class BeanCatCliente implements BeanSimple {
         data = new Cliente();
         setTitle("Alta de Clientes");
         setViewEstate("new");
-        permissionToWrite=false;
+        permissionToWrite = false;
+        selectedCliente = null;
     }
 
     public void buscaMunicipios() {
@@ -275,11 +286,10 @@ public class BeanCatCliente implements BeanSimple {
     public void buscaMunicipios2() {
 
         lista_municipios_2 = ifaceCatMunicipio.getMunicipios(Integer.parseInt(data.getEstadoFiscal()));
-        buscaColonias2(); 
+        buscaColonias2();
     }
 
-    public void buscaColonias() 
-    {
+    public void buscaColonias() {
 
         lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalById(data.getCodigoPostal());
 
@@ -327,7 +337,6 @@ public class BeanCatCliente implements BeanSimple {
     }
 
     public void buscaColoniasMun() {
-        System.out.println("Aqui estoy: " + data.getMunicipio());
         lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalByIdMun(Integer.parseInt(data.getMunicipio()));
         data.setCodigoPostal(lista_codigos_postales.get(0).getNumeropostal());
     }
@@ -335,6 +344,10 @@ public class BeanCatCliente implements BeanSimple {
     public void buscaColoniasMun2() {
         lista_codigos_postales_2 = ifaceCatCodigosPostales.getCodigoPostalByIdMun(Integer.parseInt(data.getMunicipioFiscal()));
         data.setCodigoPostalFiscal(lista_codigos_postales_2.get(0).getCodigoPostalFiscal());
+    }
+
+    public void buscaMotivos() {
+        lista_motivos = ifaceCatMotivos.getMotivos();
     }
 
     public void ActualizaCodigoPostal() {
@@ -418,8 +431,7 @@ public class BeanCatCliente implements BeanSimple {
         this.lista_entidades_2 = lista_entidades_2;
     }
 
-    public ArrayList<Municipios> getLista_municipios_2() 
-    {
+    public ArrayList<Municipios> getLista_municipios_2() {
         return lista_municipios_2;
     }
 
@@ -506,6 +518,7 @@ public class BeanCatCliente implements BeanSimple {
     public void setLista_emails(List<Correos> lista_emails) {
         this.lista_emails = (ArrayList<Correos>) lista_emails;
     }
+
     public boolean isPermissionToWrite() {
         return permissionToWrite;
     }
@@ -514,4 +527,44 @@ public class BeanCatCliente implements BeanSimple {
         this.permissionToWrite = permissionToWrite;
     }
 
+    public boolean isPermissionToEdit() {
+        return permissionToEdit;
+    }
+
+    public void setPermissionToEdit(boolean permissionToEdit) {
+        this.permissionToEdit = permissionToEdit;
+    }
+
+    public ArrayList<Motivos> getLista_motivos() {
+        return lista_motivos;
+    }
+
+    public void setLista_motivos(ArrayList<Motivos> lista_motivos) {
+        this.lista_motivos = lista_motivos;
+    }
+
+    public IfaceBajaCliente getIfaceBajaCliente() {
+        return ifaceBajaCliente;
+    }
+
+    public void setIfaceBajaCliente(IfaceBajaCliente ifaceBajaCliente) {
+        this.ifaceBajaCliente = ifaceBajaCliente;
+    }
+
+    public BajaClientes getBajaCliente() {
+        return bajaCliente;
+    }
+
+    public void setBajaCliente(BajaClientes bajaCliente) {
+        this.bajaCliente = bajaCliente;
+    }
+    public boolean isPermissionToWriteStatus() {
+        return permissionToWriteStatus;
+    }
+
+    public void setPermissionToWriteStatus(boolean permissionToWriteStatus) {
+        this.permissionToWriteStatus = permissionToWriteStatus;
+    }
+
+    
 }

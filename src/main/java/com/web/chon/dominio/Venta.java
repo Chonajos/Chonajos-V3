@@ -21,14 +21,29 @@ public class Venta implements Serializable {
     private Date fechaVenta;
     private Date fechaPromesaPago;
     private BigDecimal idClienteFk;
+    private int idSucursal;
     private BigDecimal idVendedorFk;
     private String status;
     private Date fechaPago;
     private ArrayList<VentaProducto> lstVentaProducto;
 
-    public Venta() {
+    public Venta()
+    {
+        
     }
 
+    public int getIdSucursal() {
+        return idSucursal;
+    }
+
+    public void setIdSucursal(int idSucursal) {
+        this.idSucursal = idSucursal;
+    }
+
+   
+
+    
+    
     public Venta(BigDecimal idVentaPk) {
         this.idVentaPk = idVentaPk;
     }
@@ -96,13 +111,13 @@ public class Venta implements Serializable {
     public void setFechaPago(Date fechaPago) {
         this.fechaPago = fechaPago;
     }
-    
-  
+
     @Override
     public String toString() {
-        return "Venta{" + "idVentaPk=" + idVentaPk + ", fechaVenta=" + fechaVenta + ", fechaPromesaPago=" + fechaPromesaPago + ", idClienteFk=" + idClienteFk + ", idVendedorFk=" + idVendedorFk + ", lstVentaProducto=" + lstVentaProducto + '}';
+        return "Venta{" + "idVentaPk=" + idVentaPk + ", fechaVenta=" + fechaVenta + ", fechaPromesaPago=" + fechaPromesaPago + ", idClienteFk=" + idClienteFk + ", idSucursal=" + idSucursal + ", idVendedorFk=" + idVendedorFk + ", status=" + status + ", fechaPago=" + fechaPago + ", lstVentaProducto=" + lstVentaProducto + '}';
     }
-
+    
+  
     
     
 }

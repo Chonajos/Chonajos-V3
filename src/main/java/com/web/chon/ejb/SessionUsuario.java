@@ -38,11 +38,13 @@ public class SessionUsuario implements NegocioLogin {
 
             if (lista.size() > 0) {
 
-                for (Object[] object : lista) {
+                for (Object[] object : lista) 
+                {
                     usuario.setIdUsuarioPk(object[0] == null ? null: new BigDecimal(object[0].toString()));
                     usuario.setNombreUsuario(object[1] == null ? "" : object[1].toString());
                     usuario.setApaternoUsuario(object[2] == null ? "" : object[2].toString());
                     usuario.setAmaternoUsuario(object[3] == null ? "" : object[3].toString());
+                    usuario.setIdSucursal(object[26] == null ? null: Integer.parseInt(object[26].toString()));
                     usuario.setMensaje("Usuario encontrado");
                     usuario.setStatus(true);
 

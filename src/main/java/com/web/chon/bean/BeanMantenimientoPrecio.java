@@ -2,7 +2,9 @@ package com.web.chon.bean;
 
 import com.web.chon.dominio.MantenimientoPrecios;
 import com.web.chon.dominio.Subproducto;
+import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.TipoEmpaque;
+import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceEmpaque;
 import com.web.chon.service.IfaceMantenimientoPrecio;
 import com.web.chon.service.IfaceSubProducto;
@@ -33,6 +35,10 @@ public class BeanMantenimientoPrecio implements Serializable {
     private IfaceEmpaque ifaceEmpaque;
     @Autowired
     private IfaceMantenimientoPrecio ifaceMantenimientoPrecio;
+    @Autowired
+    private IfaceCatSucursales ifaceCatSucursales;
+    
+    private ArrayList<Sucursal> listaSucursales;
 
     private ArrayList<Subproducto> lstProducto;
     private ArrayList<TipoEmpaque> lstTipoEmpaque;
@@ -46,7 +52,9 @@ public class BeanMantenimientoPrecio implements Serializable {
 
     @PostConstruct
     public void init() {
-
+        
+        listaSucursales = new ArrayList<Sucursal>();
+        listaSucursales = ifaceCatSucursales.getSucursales();
         data = new MantenimientoPrecios();
         subproducto = new Subproducto();
         lstProducto = new ArrayList<Subproducto>();
@@ -59,7 +67,8 @@ public class BeanMantenimientoPrecio implements Serializable {
 
     public String updatePrecio() {
 
-        if (update) {
+        if (update) 
+        {
             if (ifaceMantenimientoPrecio.updateMantenimientoPrecio(data) == 1) {
 
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro modificado."));
@@ -92,6 +101,8 @@ public class BeanMantenimientoPrecio implements Serializable {
     public void searchById() {
         int idEmpaque = data.getIdTipoEmpaquePk() == null ? 0 : data.getIdTipoEmpaquePk().intValue();
         String idSubProducto = subproducto.getIdSubproductoPk() == null ? "" : subproducto.getIdSubproductoPk();
+        //int idSucursal = data.getIdSucursal()== null ? 0 : data.getIdSucursal();
+        
         data = ifaceMantenimientoPrecio.getMantenimientoPrecioById(idSubProducto, idEmpaque);
         
         if (data.getIdSubproducto() != null && (!data.getIdSubproducto().equals(""))) {
@@ -161,5 +172,13 @@ public class BeanMantenimientoPrecio implements Serializable {
     public void setLstTipoEmpaque(ArrayList<TipoEmpaque> lstTipoEmpaque) {
         this.lstTipoEmpaque = lstTipoEmpaque;
     }
+     public ArrayList<Sucursal> getListaSucursales() {
+        return listaSucursales;
+    }
+
+    public void setListaSucursales(ArrayList<Sucursal> listaSucursales) {
+        this.listaSucursales = listaSucursales;
+    }
+    
 
 }

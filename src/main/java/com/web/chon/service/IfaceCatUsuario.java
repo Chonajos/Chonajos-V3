@@ -25,5 +25,5 @@ public interface IfaceCatUsuario {
 
     public int insertarUsuarios(Usuario usuario);
 
-    public ArrayList<Usuario> getUsuarioByNombreCompleto(String nombre);
+    public ArrayList<Usuario> getUsuarioByNombreCompleto(String nombre,int idSucursal);
 }

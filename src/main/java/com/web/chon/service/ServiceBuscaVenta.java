@@ -42,7 +42,7 @@ public class ServiceBuscaVenta implements IfaceBuscaVenta {
                 busca_venta.setFechaPromesaPago((Date) obj[9]);
                 busca_venta.setNombreStatus(obj[10] == null ? "" : obj[10].toString());
                 busca_venta.setStatusFK(obj[11] == null ? 0 : Integer.parseInt(obj[11].toString())); //id status
-
+                System.out.println("ServiceBuscaVenta:  "+busca_venta.toString());
                 lstVentas.add(busca_venta);
             }
 

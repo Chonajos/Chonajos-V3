@@ -49,6 +49,7 @@ public class Usuario extends Generic {
     private List<Camion> camionList;
     private List<CuentaBancaria> cuentaBancariaList;
     private List<Sucursal> sucursalList;
+    private int idSucursal;
 
     public Usuario() {
     }
@@ -63,6 +64,16 @@ public class Usuario extends Generic {
         this.apaternoUsuario = apaternoUsuario;
     }
 
+    public int getIdSucursal() {
+        return idSucursal;
+    }
+
+    public void setIdSucursal(int idSucursal) {
+        this.idSucursal = idSucursal;
+    }
+
+    
+    
     public BigDecimal getIdUsuarioPk() {
         return idUsuarioPk;
     }

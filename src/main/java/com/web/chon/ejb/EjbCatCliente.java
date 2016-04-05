@@ -109,7 +109,6 @@ public class EjbCatCliente implements NegocioCatCliente {
                 //query.setParameter(15, clie.getColonia());
                 query.setParameter(13, clie.getClavecelular());
                 query.setParameter(14, clie.getLadacelular());
-                
                 query.setParameter(15, clie.getID_CP()== 0 ? 100000:clie.getID_CP());
                 query.setParameter(16, clie.getCalleFiscal());
                 query.setParameter(17, clie.getNum_int_fiscal());
@@ -124,6 +123,7 @@ public class EjbCatCliente implements NegocioCatCliente {
                 query.setParameter(25, clie.getNextelclave());
                 query.setParameter(26, clie.getStatus_cliente());//activo
                 query.setParameter(27, clie.getId_cliente());
+                
             return query.executeUpdate();
 
         } catch (Exception ex) {
@@ -140,8 +140,8 @@ public class EjbCatCliente implements NegocioCatCliente {
         System.out.println("EJB_INSERTA_CLIENTE");
         try {
                 System.out.println("insert : " + clie);
-                Query query = em.createNativeQuery("INSERT INTO CLIENTE (ID_CLIENTE,NOMBRE, APELLIDO_PATERNO, APELLIDO_MATERNO, EMPRESA, CALLE, SEXO, FECHA_NACIMIENTO,TELEFONO_MOVIL, TELEFONO_FIJO, EXTENSION,  NUM_INT, NUM_EXT,  CLAVECELULAR, LADACELULAR,ID_CP,CALLEFISCAL,NUMINTFIS,NUMEXTFIS,ID_CP_FISCAL,NEXTEL,RAZON,RFC,LADAOFICINA,CLAVEOFICINA,NEXTELCLAVE,STATUS) "
-                        + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                Query query = em.createNativeQuery("INSERT INTO CLIENTE (ID_CLIENTE,NOMBRE, APELLIDO_PATERNO, APELLIDO_MATERNO, EMPRESA, CALLE, SEXO, FECHA_NACIMIENTO,TELEFONO_MOVIL, TELEFONO_FIJO, EXTENSION,  NUM_INT, NUM_EXT,  CLAVECELULAR, LADACELULAR,ID_CP,CALLEFISCAL,NUMINTFIS,NUMEXTFIS,ID_CP_FISCAL,NEXTEL,RAZON,RFC,LADAOFICINA,CLAVEOFICINA,NEXTELCLAVE,STATUS,FECHA_ALTA) "
+                        + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,sysdate)");
                 query.setParameter(1, clie.getId_cliente());
                 query.setParameter(2, clie.getNombre());
                 query.setParameter(3, clie.getPaterno());
@@ -172,6 +172,7 @@ public class EjbCatCliente implements NegocioCatCliente {
                 query.setParameter(25, clie.getClaveoficina());
                 query.setParameter(26, clie.getNextelclave());
                 query.setParameter(27, 1);//activo
+
                 return query.executeUpdate();
 
         } catch (Exception ex) {

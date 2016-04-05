@@ -27,7 +27,8 @@ public class BeanUsuario {
     private Usuario usuario;
 
     @PostConstruct
-    public void BeanUsuario() {
+    public void BeanUsuario() 
+    {
         usuario = new Usuario();
     }
 
@@ -37,7 +38,8 @@ public class BeanUsuario {
             System.out.println("validar login :" + usuario.getClaveUsuario());
             usuario = ifaceUsuario.validarLogin(usuario);
 
-            if (usuario.getStatus()) {
+            if (usuario.getStatus()) 
+            {
                 ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
                 context.redirect(context.getRequestContextPath() + "/views/welcome.jr");
 
@@ -53,7 +55,8 @@ public class BeanUsuario {
 
     }
 
-    public String doLogout() throws IOException {
+    public String doLogout() throws IOException 
+    {
 
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
         if (session != null) {

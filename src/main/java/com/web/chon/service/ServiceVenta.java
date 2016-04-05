@@ -49,24 +49,24 @@ public class ServiceVenta implements IfaceVenta {
     }
 
     @Override
-    public ArrayList<RelacionOperaciones> getVentasByIntervalDate(Date fechaInicio, Date fechaFin) {
+    public ArrayList<RelacionOperaciones> getVentasByIntervalDate(Date fechaInicio, Date fechaFin,int idSucursal,int idStatusVenta) {
         getEjb();
         ArrayList<RelacionOperaciones> lstVenta = new ArrayList<RelacionOperaciones>();
-        List<Object[]> lstObject = ejb.getVentasByInterval(Utilerias.getFechaDDMMYYYY(fechaInicio),Utilerias.getFechaDDMMYYYY(fechaFin));
+        List<Object[]> lstObject = ejb.getVentasByInterval(Utilerias.getFechaDDMMYYYY(fechaInicio),Utilerias.getFechaDDMMYYYY(fechaFin),idSucursal,idStatusVenta);
         for(Object[] obj : lstObject){
-            
+           
             RelacionOperaciones venta = new RelacionOperaciones();
-            
             venta.setIdVentaPk(new BigDecimal(obj[0].toString()));
             venta.setIdClienteFk(new BigDecimal(obj[1].toString()));
             venta.setIdVendedorFk(new BigDecimal(obj[2].toString()));
             venta.setFechaVenta((Date)obj[3]);
             venta.setFechaPromesaPago(obj[4] == null ? null: (Date) obj[4]);
-            venta.setEstatus(obj[5].toString());
+            venta.setIdStatus(Integer.parseInt(obj[5]==null ? "0" :obj[5].toString()));
             venta.setFechaPago(obj[6] == null ? null: (Date) obj[6]);
-            venta.setNombreCliente(obj[7].toString());
-            venta.setNombreVendedor(obj[8].toString());
-            venta.setTotalVenta(new BigDecimal(obj[9].toString()));
+            venta.setIdSucursal(Integer.parseInt(obj[7]==null ? "0" :obj[7].toString()));
+            venta.setNombreCliente(obj[8].toString());
+            venta.setNombreVendedor(obj[9].toString());
+            venta.setTotalVenta(new BigDecimal(obj[10].toString()));
             
             lstVenta.add(venta);
         }

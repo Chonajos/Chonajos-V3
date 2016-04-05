@@ -75,16 +75,37 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
 
     @Override
     public void searchById() {
-
         statusButtonPagar = false;
+
         model = ifaceBuscaVenta.getVentaById(data.getIdVenta());
-        
-        idVentaTemporal = data.getIdVenta();
-        
-        calculatotalVenta();
-        if (data.getIdVenta() == 0) {
-            statusButtonPagar = true;
+        if (model.isEmpty()) 
+        {
+           data.setNombreCliente("");
+           data.setNombreVendedor("");
+           data.setIdVenta(0);
+           statusButtonPagar = true;
+
+        } else 
+        {
+            data.setNombreCliente(model.get(0).getNombreCliente());
+            data.setNombreVendedor(model.get(0).getNombreVendedor());
+            data.setStatusFK(model.get(0).getStatusFK());
+            data.setIdVenta(model.get(0).getIdVenta());
+            idVentaTemporal = data.getIdVenta();
+            calculatotalVenta();
+            if(data.getStatusFK()==2)
+            {
+                statusButtonPagar=true;
+            }
+            /*if (data.getIdVenta() == 0) 
+            {
+                statusButtonPagar = true;
+                calculatotalVenta();
+            }*/
+            
+
         }
+
     }
 
     public void calculatotalVenta() {
