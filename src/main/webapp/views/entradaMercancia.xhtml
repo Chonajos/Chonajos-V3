@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="./../templates/main.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content">
+        <div>
+            <h3>#{beanEntradaMercancia.title}</h3>
+        </div>
+        <h:form id="formContent">
+            <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
+            <p:growl id="messagess" showDetail="true" life="2000" />
+            <p:panel>
+                <div class="container-fluid">
+                    <p:commandButton value="Reportes" resetValues="true" update=":formContent" action="#{beanEntradaMercancia.search}"/>
+                    <p:commandButton rendered="#{beanEntradaMercancia.state =='INIT'}" value="Guardar" resetValues="true" update=":formContent" action="#{beanEntradaMercancia.save}"/>
+                    <div class="form-group">
+                       <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtToneladas" value ="Toneladas:" /> 
+                            <p:inputText id="txtToneladas" maxlength="30" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMercancia.data.cantidadToneladas}"/>
+                             <pe:keyFilter for="txtToneladas" regEx="/[0-9.]/i" />
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtPrecioPromedio" value ="Precio Promedio:" /> 
+                            <p:inputText id="txtPrecioPromedio" maxlength="30" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMercancia.data.precio}"/>
+                             <pe:keyFilter for="txtPrecioPromedio" regEx="/[0-9.]/i" />
+                        </div>
+                    </div>
+                </div>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>

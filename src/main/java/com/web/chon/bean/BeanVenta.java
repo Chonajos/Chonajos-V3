@@ -317,7 +317,8 @@ public class BeanVenta implements Serializable, BeanSimple {
         NumeroALetra numeroLetra = new NumeroALetra();
         for (VentaProducto venta : lstVenta) {
             String cantidad = venta.getCantidadEmpaque() + " " + venta.getNombreEmpaque();
-            productos.add(cantidad + " " + venta.getNombreProducto() + " " + nf.format(venta.getPrecioProducto()) + " " + nf.format(venta.getTotal()));
+            productos.add(venta.getNombreProducto().toUpperCase());
+            productos.add("       "+cantidad + "               " + nf.format(venta.getPrecioProducto()) + "    " + nf.format(venta.getTotal()));
         }
 
         String totalVentaStr = numeroLetra.Convertir(df.format(totalVenta), true);
@@ -406,14 +407,13 @@ public class BeanVenta implements Serializable, BeanSimple {
 
             rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf");
 
+            System.out.println("ruta de jasper :" + pathFileJasper);
+            System.out.println("ruta de jasper :" + rutaPDF);
+
         } catch (Exception exception) {
             System.out.println("Error >" + exception.getMessage());
-        } finally {
-            try {
-
-            } catch (Exception exception) {
-                System.out.println("Error >" + exception.getMessage());
-            }
+            System.out.println("ruta de jasper :" + pathFileJasper);
+            System.out.println("ruta de jasper :" + rutaPDF);
         }
 
     }
