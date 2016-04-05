@@ -28,7 +28,7 @@ id_subproducto_pk varchar(8) not null,
 nombre_subproducto varchar (120) not null,
 descripcion_subproducto varchar(255),
 url_imagen_subproducto varchar(255),
-id_producto_fk number ,
+id_producto_fk varchar(4),
 CONSTRAINT c_id_subproducto_pk PRIMARY KEY (id_subproducto_pk),
 CONSTRAINT c_id_producto_fk FOREIGN KEY(id_producto_fk) references producto(id_producto_pk)
 );
@@ -269,7 +269,7 @@ id_vendedor_fk number,
 fecha_venta date,
 fecha_promesa_pago date,
 status_fk number,
-CONSTRAINT c_id_cliente_fk FOREIGN KEY(id_cliente_fk) references usuario(id_usuario_pk),
+CONSTRAINT c_id_cliente_fk FOREIGN KEY(id_cliente_fk) references CLIENTE(id_cliente),
 CONSTRAINT c_id_vendedor_fk FOREIGN KEY(id_vendedor_fk) references usuario(id_usuario_pk),
 CONSTRAINT c_id_venta_pk PRIMARY KEY (id_venta_pk),
 CONSTRAINT c_status_fk FOREIGN KEY(STATUS_FK) references STATUS_VENTA(ID_STATUS_PK);
@@ -389,3 +389,7 @@ create table correos(
 
 
 
+limpiar lista de seleccionados.
+no agregar correos vacios.
+no inicializar lista de municipios.
+manejar integers en enteros de campos.
