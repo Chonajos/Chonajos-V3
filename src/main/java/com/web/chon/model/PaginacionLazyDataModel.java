@@ -17,7 +17,7 @@ public class PaginacionLazyDataModel<T, ID extends Serializable> extends LazyDat
 
     private PaginacionService<T, ID> service;
 
-    public PaginacionLazyDataModel(PaginacionService<T, ID> service) {
+    public PaginacionLazyDataModel(PaginacionService<T, ID> service, T filter) {
         this.service = service;
     }
 

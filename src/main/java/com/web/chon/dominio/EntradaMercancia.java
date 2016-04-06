@@ -8,10 +8,10 @@ import java.util.Date;
  *
  * @author Juan
  */
-public class EntradaMercancia extends ValueObject implements Serializable  
-{
+public class EntradaMercancia extends ValueObject implements Serializable {
+
     private static final long serialVersionUID = 1L;
-    
+
     private BigDecimal idEntrada;
     private Date fecha;
     private BigDecimal cantidadToneladas;
@@ -56,9 +56,11 @@ public class EntradaMercancia extends ValueObject implements Serializable
 
     @Override
     public void reset() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        idEntrada = null;
+        fecha = null;
+        cantidadToneladas = null;
+        precio = null;
+
     }
 
-   
-    
 }

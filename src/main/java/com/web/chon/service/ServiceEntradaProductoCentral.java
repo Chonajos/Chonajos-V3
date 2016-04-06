@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 /**
  *
- * @author freddy
+ * @author Juan
  */
 @Service
 public class ServiceEntradaProductoCentral implements IfaceEntradaProductoCentral {
@@ -69,6 +69,64 @@ public class ServiceEntradaProductoCentral implements IfaceEntradaProductoCentra
     @Override
     public void delete(BigDecimal id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Pagina<EntradaMercancia> findAllDominio(EntradaMercancia filters, int first, int pageSize) {
+        
+        System.out.println("service");
+//        
+//        if (filters.getProFechaDeInicio() != null) {
+//            
+//    		fechaIni = TiempoUtil.fechaTextoDiaMesAÃ±o(filters.getProFechaDeInicio());
+//    		
+//        } else {
+//            
+//        	fechaIni = ConstantSIHO.fechaInicial;
+//        }
+//        
+//    	filters.setProCcId(filters.getProCcId() == null || filters.getProCcId() == 0 ? -1 : filters.getProCcId());
+//        filters.setProId(filters.getProId() == null ? -1 : filters.getProId());
+//        filters.setProCtaNombreCorto(filters.getProCtaNombreCorto() == null || filters.getProCtaNombreCorto().equals("") ? Constantes.NO_SELECTED : filters.getProCtaNombreCorto());
+//        List<CatalogoProyectosDto> lstCatalogoProyectosDto = new ArrayList<CatalogoProyectosDto>();
+//        List<Object[]> lstProyectos = proyectosRepositoryWrapper.getFilters(filters, fechaIni, first, pageSize);
+//        long size = Long.valueOf((proyectosRepositoryWrapper.getCountFilters(filters, fechaIni)).toString());
+//        
+//        for (Object[] obj : lstProyectos) {
+//            
+//        	CatalogoProyectosDto catalogoProyectosDto = new CatalogoProyectosDto();
+//            
+//        	catalogoProyectosDto.setProId(Long.valueOf(obj[0].toString().trim()));
+//        	catalogoProyectosDto.setDescResponsables(obj[1].toString().trim());
+//        	catalogoProyectosDto.setProEstatus(obj[2].toString().trim());
+//        	catalogoProyectosDto.setProNombreCortoProy(obj[3].toString());
+//        	catalogoProyectosDto.setProNombreProy(obj[4].toString());
+//        	catalogoProyectosDto.setProNombreCuenta(obj[8].toString());
+//        	catalogoProyectosDto.setProTipoDeVenta(obj[10].toString());
+//        	catalogoProyectosDto.setProFechaInicio((Date) obj[5]);
+//        	catalogoProyectosDto.setProFechaFin((Date) obj[6]);
+//            lstCatalogoProyectosDto.add(catalogoProyectosDto);
+//        }
+
+        System.out.println("sertice entrada central");
+        ArrayList<EntradaMercancia> lstEntrada = new ArrayList<EntradaMercancia>();
+       EntradaMercancia e = new EntradaMercancia();
+       e.setCantidadToneladas(new BigDecimal(154));
+       e.setIdEntrada(new BigDecimal(1));
+       EntradaMercancia a = new EntradaMercancia();
+        a.setIdEntrada(new BigDecimal(2));
+       a.setCantidadToneladas(new BigDecimal(45));
+       a.setIdEntrada(new BigDecimal(452));
+       
+       
+       lstEntrada.add(e);
+       lstEntrada.add(a);
+       
+       for(EntradaMercancia entrada: lstEntrada){
+           System.out.println("service entrada:"+ entrada.getIdEntrada());
+       }
+       return new Pagina<EntradaMercancia>(lstEntrada, 2l);
+        
     }
 
 }
