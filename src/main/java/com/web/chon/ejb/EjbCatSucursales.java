@@ -58,8 +58,27 @@ public class EjbCatSucursales implements NegocioCatSucursales
     }
 
     @Override
-    public int insertSucursal(Sucursal sucu) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public int insertSucursal(Sucursal sucu) 
+    {
+          System.out.println("EJB_INSERTA_SUCURSAL");
+        try {
+                System.out.println("insert : " + sucu);
+                Query query = em.createNativeQuery("INSERT INTO SUCURSALES (ID_SUCURSAL_PK,NOMBRE_SUCURSAL,CALLE_SUCURSAL,CP_SUCURSAL,TELEFONO_SUCURSAL,NUM_INT,NUM_EXT,STATUS_SUCURSAL)"
+                        + "VALUES(S_SUCURSAL.NextVal,?,?,?,?,?,?,?)");
+                query.setParameter(1, sucu.getNombreSucursal());
+                query.setParameter(2, sucu.getCalleSucursal());
+                query.setParameter(3, sucu.getCpSucursal());
+                query.setParameter(4, sucu.getTelefonoSucursal());
+                query.setParameter(5, sucu.getNumInt());
+                query.setParameter(6, sucu.getNumExt());
+                query.setParameter(7, sucu.getStatusSucursal());
+                return query.executeUpdate();
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbCatSucursales.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        }
+    
     }
 
     @Override

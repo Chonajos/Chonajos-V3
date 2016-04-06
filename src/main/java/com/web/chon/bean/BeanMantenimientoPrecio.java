@@ -80,6 +80,14 @@ public class BeanMantenimientoPrecio implements Serializable {
         }
         return "mantenimientoPrecios";
     }
+    public void print()
+    {
+        subproducto = new Subproducto();
+        int temporal = data.getIdSucursal();
+        data = new MantenimientoPrecios();
+        data.setIdSucursal(temporal);
+        
+    }
 
     public String insertarPrecio() {
 
@@ -101,16 +109,17 @@ public class BeanMantenimientoPrecio implements Serializable {
     public void searchById() {
         int idEmpaque = data.getIdTipoEmpaquePk() == null ? 0 : data.getIdTipoEmpaquePk().intValue();
         String idSubProducto = subproducto.getIdSubproductoPk() == null ? "" : subproducto.getIdSubproductoPk();
-        //int idSucursal = data.getIdSucursal()== null ? 0 : data.getIdSucursal();
-        
-        data = ifaceMantenimientoPrecio.getMantenimientoPrecioById(idSubProducto, idEmpaque);
-        
+        int idSucursal = data.getIdSucursal();
+        System.out.println("BeanIdSucu : "+data.getIdSucursal());
+        data = ifaceMantenimientoPrecio.getMantenimientoPrecioById(idSubProducto, idEmpaque,idSucursal);
+   
         if (data.getIdSubproducto() != null && (!data.getIdSubproducto().equals(""))) {
             update = true;
-        } else {
+        } else 
+        {
             update = false;
         }
-        
+        data.setIdSucursal(idSucursal);
         data.setIdSubproducto(idSubProducto);
         data.setIdTipoEmpaquePk(new BigDecimal(idEmpaque));
        

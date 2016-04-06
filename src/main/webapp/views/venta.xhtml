@@ -73,13 +73,13 @@
                         <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="txtPrecioVenta" value ="Precio de venta:" /> 
                             <p:inputText id="txtPrecioVenta"  class=" col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanVenta.data.precioProducto}" required="true"
-                                         requiredMessage="Ingresa un valor para el campo Precio de venta." />
+                                         requiredMessage="Ingresa un valor para el campo Precio de venta." disabled="#{beanVenta.permisionToEdit}"/>
                         </div>
 
                         <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12" >
                             <p:outputLabel class="col-lg-8 col-md-4 col-sm-4 col-xs-12" id="labelEmpaque" for="txtCantidadEmpaque" value ="Cantidad de #{beanVenta.nombreEmpaque}"  /> 
                             <p:inputText id="txtCantidadEmpaque" maxlength="6" class=" col-lg-4 col-md-8 col-sm-8 col-xs-12" value="#{beanVenta.data.cantidadEmpaque}" required="true" 
-                                         requiredMessage="Ingresa un valor para el campo Cantidad de Empaques."/>
+                                         requiredMessage="Ingresa un valor para el campo Cantidad de Empaques." />
                             <pe:keyFilter regEx="/[\d.,\-]/" for="txtCantidadEmpaque"/>  
                         </div>
                     </div>

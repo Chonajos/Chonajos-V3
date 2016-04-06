@@ -17,7 +17,7 @@
             <p:panel>
                 <div class="container">
                     <div class="form-group">
-                        <p:commandButton value="Actualizar" update=":formContent" ajax="true" action="#{beanMantenimientoPrecio.updatePrecio}"/>
+                        <p:commandButton value="Actualizar" update=":formContent:txtPrecioMinimo formContent:txtPrecioVenta formContent:txtPrecioMaximo formContent:txtTipoEmpaque formContent:autocompletePoducto" ajax="true" action="#{beanMantenimientoPrecio.updatePrecio}"/>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
@@ -25,7 +25,7 @@
                         <h:selectOneMenu  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanMantenimientoPrecio.data.idSucursal}" >
                             <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="" />
                             <f:selectItems value="#{beanMantenimientoPrecio.listaSucursales}" var="sucursalita" itemLabel="#{sucursalita.nombreSucursal}" itemValue="#{sucursalita.idSucursalPk}"/>
-                            
+                            <p:ajax event="change" update=":formContent" listener="#{beanMantenimientoPrecio.print()}" />
                         </h:selectOneMenu>
                     </div>
                     </div>
@@ -37,8 +37,8 @@
                                              value="#{beanMantenimientoPrecio.subproducto}" completeMethod="#{beanMantenimientoPrecio.autoComplete}" forceSelection="true" var="producto"  inputStyle="width: 200px"
                                              itemLabel="#{producto.nombreSubproducto}"
                                              itemValue="#{producto.idSubproductoPk}" converter="#{productoConverter}">
-                                <p:ajax event="itemSelect" update=":formContent" listener="#{beanMantenimientoPrecio.searchById}" />
-                                <p:ajax event="change" update=":formContent" listener="#{beanMantenimientoPrecio.searchById}" />
+                                <p:ajax event="itemSelect" update=":formContent:txtTipoEmpaque" listener="#{beanMantenimientoPrecio.searchById}" />
+                                <p:ajax event="change" update=":formContent:txtTipoEmpaque" listener="#{beanMantenimientoPrecio.searchById}" />
                             </p:autoComplete>
                             <pe:keyFilter for="autocompletePoducto" regEx="/[a-z0-9-_Ã±\s]/i" />
                         </div>
@@ -47,7 +47,7 @@
                             <h:selectOneMenu  id="txtTipoEmpaque" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanMantenimientoPrecio.data.idTipoEmpaquePk}" requiredMessage="Ingresa un valor para el campo Tipo de Empaque.">
                                 <f:selectItem itemLabel="Seleccione un empaque" itemValue="-1" />
                                 <f:selectItems value="#{beanMantenimientoPrecio.lstTipoEmpaque}" var="empaque" itemLabel="#{empaque.nombreEmpaque}" itemValue="#{empaque.idTipoEmpaquePk}"/>
-                                <p:ajax event="change" update=":formContent" listener="#{beanMantenimientoPrecio.searchById()}" />
+                                <p:ajax event="change" update=":formContent:txtPrecioMinimo formContent:txtPrecioMaximo formContent:txtPrecioVenta" listener="#{beanMantenimientoPrecio.searchById()}" />
                             </h:selectOneMenu>
                         </div>
                     </div>

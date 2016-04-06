@@ -18,12 +18,66 @@ public class Sucursal implements Serializable {
     private static final long serialVersionUID = 1L;
     private int idSucursalPk;
     private String nombreSucursal;
-    /*private String calleSucursal;
-    private String coloniaSucursal;
+    private String calleSucursal;
+    private int cpSucursal;
     private Long telefonoSucursal;
-    private List<ExistenciaProducto> existenciaProductoList;
-    private Municipios idMunicipioFk;
-    private Usuario idUsuarioSucursalFk;*/
+    private BigDecimal numInt;
+    private BigDecimal numExt;
+    private int statusSucursal;
+
+    @Override
+    public String toString() {
+        return "Sucursal{" + "idSucursalPk=" + idSucursalPk + ", nombreSucursal=" + nombreSucursal + ", calleSucursal=" + calleSucursal + ", cpSucursal=" + cpSucursal + ", telefonoSucursal=" + telefonoSucursal + ", numInt=" + numInt + ", numExt=" + numExt + ", statusSucursal=" + statusSucursal + '}';
+    }
+    
+
+    public String getCalleSucursal() {
+        return calleSucursal;
+    }
+
+    public void setCalleSucursal(String calleSucursal) {
+        this.calleSucursal = calleSucursal;
+    }
+
+    public int getCpSucursal() {
+        return cpSucursal;
+    }
+
+    public void setCpSucursal(int cpSucursal) {
+        this.cpSucursal = cpSucursal;
+    }
+
+    public Long getTelefonoSucursal() {
+        return telefonoSucursal;
+    }
+
+    public void setTelefonoSucursal(Long telefonoSucursal) {
+        this.telefonoSucursal = telefonoSucursal;
+    }
+
+    public BigDecimal getNumInt() {
+        return numInt;
+    }
+
+    public void setNumInt(BigDecimal numInt) {
+        this.numInt = numInt;
+    }
+
+    public BigDecimal getNumExt() {
+        return numExt;
+    }
+
+    public void setNumExt(BigDecimal numExt) {
+        this.numExt = numExt;
+    }
+
+    public int getStatusSucursal() {
+        return statusSucursal;
+    }
+
+    public void setStatusSucursal(int statusSucursal) {
+        this.statusSucursal = statusSucursal;
+    }
 
     public int getIdSucursalPk() {
         return idSucursalPk;
@@ -41,10 +95,7 @@ public class Sucursal implements Serializable {
         this.nombreSucursal = nombreSucursal;
     }
 
-    @Override
-    public String toString() {
-        return "Sucursal{" + "idSucursalPk=" + idSucursalPk + ", nombreSucursal=" + nombreSucursal + '}';
-    }
+   
     
 
    

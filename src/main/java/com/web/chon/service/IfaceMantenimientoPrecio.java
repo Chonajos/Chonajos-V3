@@ -17,7 +17,7 @@ public interface IfaceMantenimientoPrecio {
     
     public ArrayList<MantenimientoPrecios> getMantenimientoPrecio();
     
-    public MantenimientoPrecios getMantenimientoPrecioById(String idSubProducto,int idEmpaque);
+    public MantenimientoPrecios getMantenimientoPrecioById(String idSubProducto,int idEmpaque,int idSucursal);
     
     public int deleteMantenimientoPrecio(String idSubProducto,int idEmpaque);
     

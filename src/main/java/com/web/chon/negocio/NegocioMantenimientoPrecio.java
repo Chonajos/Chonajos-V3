@@ -13,7 +13,7 @@ import javax.ejb.Remote;
 public interface NegocioMantenimientoPrecio {
     
    
-    public List<Object[]> getPrecioByIdEmpaqueAndIdProducto(String idProducto, int idEmpaque);
+    public List<Object[]> getPrecioByIdEmpaqueAndIdProducto(String idProducto, int idEmpaqueint,int idSucursal);
     public int insertarMantenimientoPrecio(MantenimientoPrecios mantenimientoPrecios);
     public int updateMantenimientoPrecio(MantenimientoPrecios mantenimientoPrecios);
     

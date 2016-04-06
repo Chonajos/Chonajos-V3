@@ -142,7 +142,7 @@ public class EjbCatUsuario implements NegocioCatUsuario {
     @Override
     public List<Object[]> getUsuarioByNombreCompleto(String nombreUsuario,int idSucursal)
     {
-        Query query = em.createNativeQuery("SELECT * FROM USUARIO WHERE UPPER(NOMBRE_USUARIO ||' '|| APATERNO_USUARIO ||' '|| AMATERNO_USUARIO )  LIKE UPPER('%" + nombreUsuario + "%') and id_sucursal_fk = ?");
+        Query query = em.createNativeQuery("SELECT * FROM USUARIO WHERE UPPER(NOMBRE_USUARIO ||' '|| APATERNO_USUARIO ||' '|| AMATERNO_USUARIO )  LIKE UPPER('%" + nombreUsuario + "%') and id_sucursal_fk = ? and ID_ROL_FK = 2");
         query.setParameter(1, idSucursal);
         return query.getResultList();
     }

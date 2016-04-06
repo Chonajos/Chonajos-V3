@@ -23,11 +23,11 @@ public class ServiceMantenimientoPrecio implements IfaceMantenimientoPrecio {
     NegocioMantenimientoPrecio ejb;
 
     @Override
-    public MantenimientoPrecios getMantenimientoPrecioById(String idSubProducto, int idEmpaque) {
+    public MantenimientoPrecios getMantenimientoPrecioById(String idSubProducto, int idEmpaque,int idSucursal) {
         try {
             MantenimientoPrecios mantenimientoPrecios = new MantenimientoPrecios();
             ejb = (NegocioMantenimientoPrecio) Utilidades.getEJBRemote("ejbMantenimientoPrecio", NegocioMantenimientoPrecio.class.getName());
-            List<Object[]> object = ejb.getPrecioByIdEmpaqueAndIdProducto(idSubProducto.trim(), idEmpaque);
+            List<Object[]> object = ejb.getPrecioByIdEmpaqueAndIdProducto(idSubProducto.trim(), idEmpaque,idSucursal);
             for (Object[] obj : object) {
 
                 mantenimientoPrecios.setIdSubproducto(obj[0] == null ? "" : obj[0].toString());

@@ -15,6 +15,7 @@ import com.web.chon.service.IfaceSubProducto;
 import com.web.chon.service.IfaceVenta;
 import com.web.chon.service.IfaceVentaProducto;
 import com.web.chon.util.JasperReportUtil;
+import com.web.chon.util.JsfUtil;
 import com.web.chon.util.NumeroALetra;
 import com.web.chon.util.UtilUpload;
 import com.web.chon.util.Utilerias;
@@ -113,12 +114,20 @@ public class BeanVenta implements Serializable, BeanSimple {
     private String number;
     private String pathFileJasper = "C:/Users/Juan/Documents/NetBeansProjects/Chonajos-V2/ticket.jasper";
     private int idSucu;
+    private boolean permisionToEdit;
+    private boolean variableInicial; //Para el mensaje de null 
+    
+    private BigDecimal max;
+    private BigDecimal min;
+    
     @PostConstruct
     public void init() 
     {
+        max = new BigDecimal(0);
+        min=new BigDecimal(0);
         usuario = beanUsuario.getUsuario();
         idSucu=usuario.getIdSucursal();
-        System.out.println("Freddy :"+usuario.getIdSucursal());
+        permisionToEdit=true;
         venta = new Venta();
         venta.setIdSucursal(usuario.getIdSucursal());
         data = new VentaProducto();
@@ -127,13 +136,16 @@ public class BeanVenta implements Serializable, BeanSimple {
         lstTipoEmpaque = ifaceEmpaque.getEmpaques();
         lstVenta = new ArrayList<VentaProducto>();
         selectedTipoEmpaque();
+        variableInicial= false;
         setTitle("Venta de Productos.");
         setViewEstate("init");
     }
 
-    public void selectedTipoEmpaque() {
+    public void selectedTipoEmpaque() 
+    {
 
-        for (TipoEmpaque empaque : lstTipoEmpaque) {
+        for (TipoEmpaque empaque : lstTipoEmpaque) 
+        {
 
             if ((empaque.getNombreEmpaque().equals("Kilos") && data.getIdTipoEmpaqueFk().equals(new BigDecimal(-1))) || data.getIdTipoEmpaqueFk().equals(empaque.getIdTipoEmpaquePk())) {
                 data.setIdTipoEmpaqueFk(empaque.getIdTipoEmpaquePk());
@@ -142,7 +154,8 @@ public class BeanVenta implements Serializable, BeanSimple {
             }
 
         }
-
+        variableInicial= true;
+        
         searchById();
 
     }
@@ -222,43 +235,90 @@ public class BeanVenta implements Serializable, BeanSimple {
     }
 
     @Override
-    public void searchById() {
+    public void searchById() 
+    {
+        
 
         MantenimientoPrecios mantenimentoPrecio = new MantenimientoPrecios();
+        BigDecimal pc = new BigDecimal(0);
+        mantenimentoPrecio.setPrecioVenta(pc);
         int idEmpaque = data.getIdTipoEmpaqueFk() == null ? 0 : data.getIdTipoEmpaqueFk().intValue();
         String idSubProducto = subProducto == null ? "" : (subProducto.getIdSubproductoPk() == null ? "" : subProducto.getIdSubproductoPk());
-        mantenimentoPrecio = ifaceMantenimientoPrecio.getMantenimientoPrecioById(idSubProducto.trim(), idEmpaque);
-
+        mantenimentoPrecio = ifaceMantenimientoPrecio.getMantenimientoPrecioById(idSubProducto.trim(), idEmpaque,idSucu);
+        
+        if(mantenimentoPrecio.getPrecioMinimo()==mantenimentoPrecio.getPrecioMaximo())
+        {
+            
+            permisionToEdit=true;
+        }
+        else if( mantenimentoPrecio.getPrecioMinimo().intValue()==mantenimentoPrecio.getPrecioMaximo().intValue())
+        {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "El precio de este producto no es Ajustable"));
+            
+            permisionToEdit=true;
+        }
+        else
+        {
+            max = mantenimentoPrecio.getPrecioMaximo();
+            min = mantenimentoPrecio.getPrecioMinimo();
+            permisionToEdit=false;
+        }
+        if(mantenimentoPrecio.getPrecioVenta()==null && variableInicial==false)
+        {
+            
+            JsfUtil.addErrorMessage("No se tiene el precio de este prodcuto, favor de contactar al gerente.");
+            permisionToEdit=true;
+        }
+        
+        /*if(mantenimentoPrecio.getPrecioVenta()==null || mantenimentoPrecio.getPrecioVenta().intValue()==0)
+        {
+            System.out.println("No se encontró precio de venta, favor de contactar al administrador");
+            permisionToEdit=true;
+        }
+        else
+        {
+            permisionToEdit=false;
+        }
+        */
         data.setIdProductoFk(idSubProducto);
         data.setIdTipoEmpaqueFk(new BigDecimal(idEmpaque));
         data.setPrecioProducto(mantenimentoPrecio.getPrecioVenta() == null ? null : mantenimentoPrecio.getPrecioVenta().toBigInteger());
     }
 
-    public void addProducto() {
+    public void addProducto() 
+    {
+        if(data.getPrecioProducto().intValue()<min.intValue() || data.getPrecioProducto().intValue()>max.intValue() )
+        {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "El precio de venta esta fuera de valores permitidos: Mínimo:" +min +" Máximo: "+ max));
+    
+            
+        } else 
+        
+        {
+            VentaProducto venta = new VentaProducto();
+            TipoEmpaque empaque = new TipoEmpaque();
+            DecimalFormat df = new DecimalFormat("#,###.##");
+            empaque = getEmpaque(data.getIdTipoEmpaqueFk());
+            venta.setCantidadEmpaque(data.getCantidadEmpaque());
+            venta.setIdTipoEmpaqueFk(data.getIdTipoEmpaqueFk());
+            venta.setIdVentaProductoPk(data.getIdVentaProductoPk());
+            venta.setKilosVenta(data.getKilosVenta());
+            venta.setPrecioProducto(data.getPrecioProducto());
+            venta.setNombreProducto(subProducto.getNombreSubproducto());
+            venta.setIdProductoFk(subProducto.getIdSubproductoPk());
+            venta.setNombreEmpaque(empaque.getNombreEmpaque());
+            venta.setTotal(new BigDecimal(venta.getPrecioProducto()).multiply(venta.getCantidadEmpaque()));
+            lstVenta.add(venta);
+            calcularTotalVenta();
+            data.reset();
+            subProducto = new Subproducto();
+            UtilUpload.deleteFile(rutaPDF);
+            selectedTipoEmpaque();
+            variableInicial=false;
+            
+        }
 
-        VentaProducto venta = new VentaProducto();
-        TipoEmpaque empaque = new TipoEmpaque();
-        DecimalFormat df = new DecimalFormat("#,###.##");
-        empaque = getEmpaque(data.getIdTipoEmpaqueFk());
-
-        venta.setCantidadEmpaque(data.getCantidadEmpaque());
-
-        venta.setIdTipoEmpaqueFk(data.getIdTipoEmpaqueFk());
-        venta.setIdVentaProductoPk(data.getIdVentaProductoPk());
-        venta.setKilosVenta(data.getKilosVenta());
-        venta.setPrecioProducto(data.getPrecioProducto());
-        venta.setNombreProducto(subProducto.getNombreSubproducto());
-        venta.setIdProductoFk(subProducto.getIdSubproductoPk());
-        venta.setNombreEmpaque(empaque.getNombreEmpaque());
-
-        venta.setTotal(new BigDecimal(venta.getPrecioProducto()).multiply(venta.getCantidadEmpaque()));
-        lstVenta.add(venta);
-        calcularTotalVenta();
-
-        data.reset();
-        subProducto = new Subproducto();
-        UtilUpload.deleteFile(rutaPDF);
-        selectedTipoEmpaque();
+       
 
     }
 
@@ -314,7 +374,8 @@ public class BeanVenta implements Serializable, BeanSimple {
         paramReport.put("productos", items);
         paramReport.put("ventaTotal", total);
         paramReport.put("totalLetra", totalVentaStr);
-        paramReport.put("estado", "POR ENTREGAR");
+        paramReport.put("estado", "PEDIDO MARCADO");
+        //paramReport.put("bodega", idSucu);
 
     }
 
@@ -604,6 +665,15 @@ public class BeanVenta implements Serializable, BeanSimple {
     public void setIdSucu(int idSucu) {
         this.idSucu = idSucu;
     }
+
+    public boolean isPermisionToEdit() {
+        return permisionToEdit;
+    }
+
+    public void setPermisionToEdit(boolean permisionToEdit) {
+        this.permisionToEdit = permisionToEdit;
+    }
+    
     
     
 

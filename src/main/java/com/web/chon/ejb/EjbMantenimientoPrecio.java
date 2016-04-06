@@ -24,10 +24,12 @@ public class EjbMantenimientoPrecio implements NegocioMantenimientoPrecio {
     EntityManager em;
 
     @Override
-    public List<Object[]> getPrecioByIdEmpaqueAndIdProducto(String idProducto, int idEmpaque) {
-        Query query = em.createNativeQuery("SELECT * FROM MANTENIMIENTO_PRECIO WHERE TRIM(ID_SUBPRODUCTO_FK) = ? AND ID_TIPO_EMPAQUE_FK = ?");
+    public List<Object[]> getPrecioByIdEmpaqueAndIdProducto(String idProducto, int idEmpaque,int idSucursal)
+    {
+        Query query = em.createNativeQuery("SELECT * FROM MANTENIMIENTO_PRECIO WHERE TRIM(ID_SUBPRODUCTO_FK) = ? AND ID_TIPO_EMPAQUE_FK = ? AND ID_SUCURSAL_FK = ? ");
         query.setParameter(1, idProducto);
         query.setParameter(2, idEmpaque);
+        query.setParameter(3, idSucursal);
 
         return query.getResultList();
     }
@@ -36,12 +38,13 @@ public class EjbMantenimientoPrecio implements NegocioMantenimientoPrecio {
     public int insertarMantenimientoPrecio(MantenimientoPrecios mantenimientoPrecios) {
         try {
             System.out.println("data ejb insert:"+mantenimientoPrecios.toString());
-            Query query = em.createNativeQuery("INSERT INTO MANTENIMIENTO_PRECIO (ID_SUBPRODUCTO_FK,ID_TIPO_EMPAQUE_FK,PRECIO_VENTA,PRECIO_MINIMO,PRECIO_MAXIMO) values(?,?,?,?,?)");
+            Query query = em.createNativeQuery("INSERT INTO MANTENIMIENTO_PRECIO (ID_SUBPRODUCTO_FK,ID_TIPO_EMPAQUE_FK,PRECIO_VENTA,PRECIO_MINIMO,PRECIO_MAXIMO,ID_SUCURSAL_FK) values(?,?,?,?,?,?)");
             query.setParameter(1, mantenimientoPrecios.getIdSubproducto());
             query.setParameter(2, mantenimientoPrecios.getIdTipoEmpaquePk());
             query.setParameter(3, mantenimientoPrecios.getPrecioVenta());
             query.setParameter(4, mantenimientoPrecios.getPrecioMinimo());
             query.setParameter(5, mantenimientoPrecios.getPrecioMaximo());
+            query.setParameter(6, mantenimientoPrecios.getIdSucursal());
 
             return query.executeUpdate();
 
