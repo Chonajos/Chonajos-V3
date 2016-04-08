@@ -47,7 +47,7 @@ public class BeanEntradaMercancia extends SimpleViewBean<EntradaMercancia> imple
     public void initModel() {
 
         data = new EntradaMercancia();
-//        model = new PaginationLazyDataModel<EntradaMercancia, BigDecimal>(ifaceEntradaProductoCentral,new EntradaMercancia());
+        model = new PaginationLazyDataModel<EntradaMercancia, BigDecimal>(ifaceEntradaProductoCentral,new EntradaMercancia());
 
         setTitle("Registro Entradas de Mercancias");
 

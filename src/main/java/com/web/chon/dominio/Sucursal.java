@@ -7,29 +7,81 @@ package com.web.chon.dominio;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.List;
 
 /**
  *
  * @author marcogante
  */
-public class Sucursal implements Serializable {
+public class Sucursal extends ValueObject implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    private int idSucursalPk;
+   private static final long serialVersionUID = 1L;
+    private BigDecimal idSucursalPk;
     private String nombreSucursal;
     private String calleSucursal;
-    private int cpSucursal;
-    private Long telefonoSucursal;
+    private BigDecimal cpSucursal;
+    private BigDecimal telefonoSucursal;
     private BigDecimal numInt;
     private BigDecimal numExt;
-    private int statusSucursal;
+    private BigDecimal idStatusSucursalfk;
+    private String nombreStatus;
+    private BigDecimal idEntidadFk;
+    private String nombreEntidad;
+    private BigDecimal idMunicipioFK;
+    private String nombreMunicipio;
+    private String nombreColonia;
+    private String codigoPostal;
+    private boolean statusSucursal;
+
 
     @Override
     public String toString() {
-        return "Sucursal{" + "idSucursalPk=" + idSucursalPk + ", nombreSucursal=" + nombreSucursal + ", calleSucursal=" + calleSucursal + ", cpSucursal=" + cpSucursal + ", telefonoSucursal=" + telefonoSucursal + ", numInt=" + numInt + ", numExt=" + numExt + ", statusSucursal=" + statusSucursal + '}';
+        return "Sucursa{" + "idSucursalPk=" + idSucursalPk + ", nombreSucursal=" + nombreSucursal + ", calleSucursal=" + calleSucursal + ", cpSucursal=" + cpSucursal + ", telefonoSucursal=" + telefonoSucursal + ", numInt=" + numInt + ", numExt=" + numExt + ", idStatusSucursalfk=" + idStatusSucursalfk + ", nombreStatus=" + nombreStatus + ", idEntidadFk=" + idEntidadFk + ", nombreEntidad=" + nombreEntidad + ", idMunicipioFK=" + idMunicipioFK + ", nombreMunicipio=" + nombreMunicipio + ", nombreColonia=" + nombreColonia + ", codigoPostal=" + codigoPostal + '}';
     }
+
+    @Override
+    public void reset() 
+    {
+        idSucursalPk=null;
+        nombreSucursal=null;
+        calleSucursal=null;
+        cpSucursal=null;
+        telefonoSucursal=null;
+        numInt=null;
+        numExt=null;
+        idStatusSucursalfk=null;
+        nombreStatus=null;
+        idEntidadFk=null;
+        nombreEntidad=null;
+        idMunicipioFK=null;
+        nombreMunicipio=null;
+        nombreColonia=null;
+        codigoPostal=null;
+    }
+
+    public boolean isStatusSucursal() {
+        return statusSucursal;
+    }
+
+    public void setStatusSucursal(boolean statusSucursal) {
+        this.statusSucursal = statusSucursal;
+    }
+
     
+    public BigDecimal getIdSucursalPk() {
+        return idSucursalPk;
+    }
+
+    public void setIdSucursalPk(BigDecimal idSucursalPk) {
+        this.idSucursalPk = idSucursalPk;
+    }
+
+    public String getNombreSucursal() {
+        return nombreSucursal;
+    }
+
+    public void setNombreSucursal(String nombreSucursal) {
+        this.nombreSucursal = nombreSucursal;
+    }
 
     public String getCalleSucursal() {
         return calleSucursal;
@@ -39,19 +91,19 @@ public class Sucursal implements Serializable {
         this.calleSucursal = calleSucursal;
     }
 
-    public int getCpSucursal() {
+    public BigDecimal getCpSucursal() {
         return cpSucursal;
     }
 
-    public void setCpSucursal(int cpSucursal) {
+    public void setCpSucursal(BigDecimal cpSucursal) {
         this.cpSucursal = cpSucursal;
     }
 
-    public Long getTelefonoSucursal() {
+    public BigDecimal getTelefonoSucursal() {
         return telefonoSucursal;
     }
 
-    public void setTelefonoSucursal(Long telefonoSucursal) {
+    public void setTelefonoSucursal(BigDecimal telefonoSucursal) {
         this.telefonoSucursal = telefonoSucursal;
     }
 
@@ -71,32 +123,71 @@ public class Sucursal implements Serializable {
         this.numExt = numExt;
     }
 
-    public int getStatusSucursal() {
-        return statusSucursal;
+    public BigDecimal getIdStatusSucursalfk() {
+        return idStatusSucursalfk;
     }
 
-    public void setStatusSucursal(int statusSucursal) {
-        this.statusSucursal = statusSucursal;
+    public void setIdStatusSucursalfk(BigDecimal idStatusSucursalfk) {
+        this.idStatusSucursalfk = idStatusSucursalfk;
     }
 
-    public int getIdSucursalPk() {
-        return idSucursalPk;
+    public String getNombreStatus() {
+        return nombreStatus;
     }
 
-    public void setIdSucursalPk(int idSucursalPk) {
-        this.idSucursalPk = idSucursalPk;
+    public void setNombreStatus(String nombreStatus) {
+        this.nombreStatus = nombreStatus;
     }
 
-    public String getNombreSucursal() {
-        return nombreSucursal;
+    public BigDecimal getIdEntidadFk() {
+        return idEntidadFk;
     }
 
-    public void setNombreSucursal(String nombreSucursal) {
-        this.nombreSucursal = nombreSucursal;
+    public void setIdEntidadFk(BigDecimal idEntidadFk) {
+        this.idEntidadFk = idEntidadFk;
     }
 
-   
+    public String getNombreEntidad() {
+        return nombreEntidad;
+    }
+
+    public void setNombreEntidad(String nombreEntidad) {
+        this.nombreEntidad = nombreEntidad;
+    }
+
+    public BigDecimal getIdMunicipioFK() {
+        return idMunicipioFK;
+    }
+
+    public void setIdMunicipioFK(BigDecimal idMunicipioFK) {
+        this.idMunicipioFK = idMunicipioFK;
+    }
+
+    public String getNombreMunicipio() {
+        return nombreMunicipio;
+    }
+
+    public void setNombreMunicipio(String nombreMunicipio) {
+        this.nombreMunicipio = nombreMunicipio;
+    }
+
+    public String getNombreColonia() {
+        return nombreColonia;
+    }
+
+    public void setNombreColonia(String nombreColonia) {
+        this.nombreColonia = nombreColonia;
+    }
+
+    public String getCodigoPostal() {
+        return codigoPostal;
+    }
+
+    public void setCodigoPostal(String codigoPostal) {
+        this.codigoPostal = codigoPostal;
+    }
+
+    
     
 
-   
 }

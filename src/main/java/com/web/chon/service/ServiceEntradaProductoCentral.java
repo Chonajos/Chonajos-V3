@@ -25,7 +25,8 @@ public class ServiceEntradaProductoCentral implements IfaceEntradaProductoCentra
     NegocioEntradaProductoCentral ejb;
 
     @Override
-    public int saveEntradaProductoCentral(EntradaMercancia entradaMercancia) {
+    public int saveEntradaProductoCentral(EntradaMercancia entradaMercancia) 
+    {
 
         getEjb();
         return ejb.saveEntradaProductoCentral(entradaMercancia);
@@ -85,11 +86,8 @@ public class ServiceEntradaProductoCentral implements IfaceEntradaProductoCentra
 //        	fechaIni = ConstantSIHO.fechaInicial;
 //        }
 //        
-//    	filters.setProCcId(filters.getProCcId() == null || filters.getProCcId() == 0 ? -1 : filters.getProCcId());
-//        filters.setProId(filters.getProId() == null ? -1 : filters.getProId());
-//        filters.setProCtaNombreCorto(filters.getProCtaNombreCorto() == null || filters.getProCtaNombreCorto().equals("") ? Constantes.NO_SELECTED : filters.getProCtaNombreCorto());
-//        List<CatalogoProyectosDto> lstCatalogoProyectosDto = new ArrayList<CatalogoProyectosDto>();
-//        List<Object[]> lstProyectos = proyectosRepositoryWrapper.getFilters(filters, fechaIni, first, pageSize);
+//    	
+//        List<Object[]> lstProyectos = ejb.getFilters(filters, fechaIni, first, pageSize);
 //        long size = Long.valueOf((proyectosRepositoryWrapper.getCountFilters(filters, fechaIni)).toString());
 //        
 //        for (Object[] obj : lstProyectos) {

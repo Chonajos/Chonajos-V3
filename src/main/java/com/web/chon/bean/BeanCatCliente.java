@@ -269,7 +269,8 @@ public class BeanCatCliente implements BeanSimple {
         data.setStatus_cliente(2);
     }
 
-    public void viewNew() {
+    public void viewNew() 
+    {
 
         data = new Cliente();
         setTitle("Alta de Clientes");
@@ -350,7 +351,8 @@ public class BeanCatCliente implements BeanSimple {
         lista_motivos = ifaceCatMotivos.getMotivos();
     }
 
-    public void ActualizaCodigoPostal() {
+    public void ActualizaCodigoPostal() 
+    {
         for (int i = 0; i < lista_codigos_postales.size(); i++) {
             if (lista_codigos_postales.get(i).getId_cp() == data.getID_CP()) {
                 data.setCodigoPostal(lista_codigos_postales.get(i).getNumeropostal());
