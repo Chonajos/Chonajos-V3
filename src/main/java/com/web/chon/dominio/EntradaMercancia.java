@@ -16,7 +16,8 @@ public class EntradaMercancia extends ValueObject implements Serializable {
     private Date fecha;
     private BigDecimal cantidadToneladas;
     private BigDecimal precio;
-
+    private String descripcionFiltro;
+    
     public BigDecimal getIdEntrada() {
         return idEntrada;
     }
@@ -49,10 +50,19 @@ public class EntradaMercancia extends ValueObject implements Serializable {
         this.precio = precio;
     }
 
+    public String getDescripcionFiltro() {
+        return descripcionFiltro;
+    }
+
+    public void setDescripcionFiltro(String descripcionFiltro) {
+        this.descripcionFiltro = descripcionFiltro;
+    }
+
     @Override
     public String toString() {
-        return "EntradaMercancia{" + "idEntrada=" + idEntrada + ", fecha=" + fecha + ", cantidadToneladas=" + cantidadToneladas + ", precio=" + precio + '}';
+        return "EntradaMercancia{" + "idEntrada=" + idEntrada + ", fecha=" + fecha + ", cantidadToneladas=" + cantidadToneladas + ", precio=" + precio + ", descripcionFiltro=" + descripcionFiltro + '}';
     }
+   
 
     @Override
     public void reset() {

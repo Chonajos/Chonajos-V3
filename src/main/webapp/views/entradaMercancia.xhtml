@@ -20,16 +20,18 @@
                         <p:commandButton value="Atras" resetValues="true" immediate="true" update=":formContent" action="#{beanEntradaMercancia.cancel}" rendered="#{beanEntradaMercancia.state =='SEARCH'}"/>
                         <p:commandButton rendered="#{beanEntradaMercancia.state =='INIT'}" value="Guardar" resetValues="true" update=":formContent" action="#{beanEntradaMercancia.save}"/>
                         <p:commandButton value="Reportes" resetValues="true" update=":formContent" immediate="true" actionListener="#{beanEntradaMercancia.search}" rendered="#{beanEntradaMercancia.state =='INIT'}"/>
+                        <p:commandButton value="Generar" resetValues="true" update=":formContent" immediate="true" actionListener="#{beanEntradaMercancia.generateChart}" rendered="#{beanEntradaMercancia.state =='SEARCH'}"/>
+
                     </div>
                     <div class="form-group">
                         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtToneladas" value ="Toneladas:" rendered="#{beanEntradaMercancia.state =='INIT'}"/> 
-                            <p:inputText id="txtToneladas" maxlength="10" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMercancia.data.cantidadToneladas}" required="true" requiredMessage="Ingresa un valor para el campo Toneladas." rendered="#{beanEntradaMercancia.state =='INIT'}"/>
+                            <p:inputText id="txtToneladas" maxlength="7" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMercancia.data.cantidadToneladas}" required="true" requiredMessage="Ingresa un valor para el campo Toneladas." rendered="#{beanEntradaMercancia.state =='INIT'}"/>
                             <pe:keyFilter for="txtToneladas" regEx="/[0-9.]/i" />
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtPrecioPromedio" value ="Precio Promedio:" rendered="#{beanEntradaMercancia.state =='INIT'}"/> 
-                            <p:inputText id="txtPrecioPromedio" maxlength="10" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMercancia.data.precio}" required="true" requiredMessage="Ingresa un valor para el campo Precio Promedio." rendered="#{beanEntradaMercancia.state =='INIT'}"/>
+                            <p:inputText id="txtPrecioPromedio" maxlength="6" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMercancia.data.precio}" required="true" requiredMessage="Ingresa un valor para el campo Precio Promedio." rendered="#{beanEntradaMercancia.state =='INIT'}"/>
                             <pe:keyFilter for="txtPrecioPromedio" regEx="/[0-9.]/i" />
                         </div>
                     </div>
@@ -41,6 +43,9 @@
                             <f:selectItem itemLabel="Semana" itemValue="2"/>
                             <f:selectItem itemLabel="Mes" itemValue="3"/>
                             <f:selectItem itemLabel="Año" itemValue="4"/>
+                            <p:ajax event="change"
+                                    listener="#{beanEntradaMercancia.setFechaInicioFin}"
+                                    />
                         </h:selectOneMenu>
                     </div>
 
@@ -49,10 +54,10 @@
                             <p:outputLabel class="col-lg-10 col-md-4 col-sm-4 col-xs-12"  for="calendarInicio" value ="Fecha de Inicio:" rendered="#{beanEntradaMercancia.state =='SEARCH'}"/> 
                             <p:calendar id="calendarInicio" class="col-lg-10 col-md-8 col-sm-8 col-xs-12 calendario" navigator="true" placeholder="dd/mm/yyyy"
                                         value="#{beanEntradaMercancia.filtroFechaInicio}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button" rendered="#{beanEntradaMercancia.state =='SEARCH'}">
-                                 <p:ajax event="dateSelect"
+                                <p:ajax event="dateSelect"
                                         listener="#{beanEntradaMercancia.setFechaInicioFin}"
-                                          />
-             
+                                        />
+
                             </p:calendar>
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
@@ -61,27 +66,28 @@
                                         value="#{beanEntradaMercancia.filtroFechaFin}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button" rendered="#{beanEntradaMercancia.state =='SEARCH'}">
                                 <p:ajax event="dateSelect"
                                         listener="#{beanEntradaMercancia.setFechaInicioFin}"
-                                          />
+                                        />
                             </p:calendar>
                         </div>
                     </div>
-
-
+                    <div class="form-group row col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <p:chart type="line" responsive="true" rendered ="#{beanEntradaMercancia.lineModel != null and beanEntradaMercancia.state =='SEARCH'}" model="#{beanEntradaMercancia.lineModel}" />
+                    </div>
                 </div>
 
-                <!--                <p:dataTable id="tableData" var="model" 
-                                             value="{beanEntradaMercancia.model}" 
-                                             rowKey="{model.idEntrada}" rows="1" paginator="true"
-                                             emptyMessage="No se encontraron Registros." lazy="true"
-                                             resizableColumns="false" scrollable="true" editable="true">
-                            
-                                    <p:column headerText="a" width="50px;">
-                                        <h:outputText value="{model.cantidadToneladas}"/>
-                                    </p:column>
-                                    <p:column headerText="b" width="180px;">
-                                        <h:outputText value="{model.precio}" />
-                                    </p:column>
-                                </p:dataTable>-->
+                <!--                                <p:dataTable id="tableData" var="model" 
+                                                             value="{beanEntradaMercancia.model}" 
+                                                             rowKey="{model.idEntrada}" rows="1" paginator="true"
+                                                             emptyMessage="No se encontraron Registros." lazy="true"
+                                                             resizableColumns="false" scrollable="true" editable="true">
+                                            
+                                                    <p:column headerText="a" width="50px;">
+                                                        <h:outputText value="{model.cantidadToneladas}"/>
+                                                    </p:column>
+                                                    <p:column headerText="b" width="180px;">
+                                                        <h:outputText value="{model.precio}" />
+                                                    </p:column>
+                                                </p:dataTable>-->
             </p:panel>
         </h:form>
     </ui:define>

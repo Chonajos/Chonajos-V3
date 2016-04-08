@@ -19,4 +19,15 @@ public interface NegocioEntradaProductoCentral
 {
     public int saveEntradaProductoCentral(EntradaMercancia entradaMercancia);
     
+    public List<Object[]> getEntradaProductoByFiltroDay(String fechaInicio,String fechaFin);
+    
+    public List<Object[]> getEntradaProductoByFiltroWeek(String fechaInicio,String fechaFin);
+    
+    public List<Object[]> getEntradaProductoByFiltroMonth(String fechaInicio,String fechaFin);
+    
+    public List<Object[]> getEntradaProductoByFiltroYear(String fechaInicio,String fechaFin);
+    
+    public int update(EntradaMercancia entradaMercancia);
+
+    
 }

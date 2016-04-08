@@ -165,12 +165,12 @@ public class ServiceCatSucursales implements IfaceCatSucursales {
     }
 
     @Override
-    public Sucursal create(Sucursal dto) {
+    public int create(Sucursal dto) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Sucursal update(Sucursal dto) {
+    public int update(Sucursal dto) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
