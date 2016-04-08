@@ -253,6 +253,8 @@ public class BeanCatCliente implements BeanSimple {
     }
 
     public void viewDetails() {
+        buscaMunicipios();
+        buscaMunicipios2();
         setTitle("Detalles de Cliente");
         setViewEstate("viewDetails");
         permissionToWrite = true;

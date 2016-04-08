@@ -3,6 +3,7 @@ package com.web.chon.service;
 import com.web.chon.dominio.BuscaVenta;
 import com.web.chon.negocio.NegocioBuscaVenta;
 import com.web.chon.util.Utilidades;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,10 +29,9 @@ public class ServiceBuscaVenta implements IfaceBuscaVenta {
             for (Object[] obj : lstObject) {
 
                 BuscaVenta busca_venta = new BuscaVenta();
-
                 busca_venta.setNombreCliente(obj[0] == null ? "" : obj[0].toString());
                 busca_venta.setNombreVendedor(obj[1] == null ? "" : obj[1].toString());
-                busca_venta.setIdVenta(obj[2] == null ? 0 : Integer.parseInt(obj[2].toString()));
+                busca_venta.setIdVenta(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
                 busca_venta.setNombreSubproducto(obj[3] == null ? "" : obj[3].toString());
                 busca_venta.setNombreEmpaque(obj[4] == null ? "" : obj[4].toString());
                 busca_venta.setCantidadEmpaque(obj[5] == null ? 0 : Integer.parseInt(obj[5].toString()));

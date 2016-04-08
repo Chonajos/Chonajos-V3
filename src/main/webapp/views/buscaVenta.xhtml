@@ -19,7 +19,7 @@
                 <div class="container-fluid">
                     <div class="form-group">
                         <p:commandButton value="Buscar" update=":formContent" ajax="true" action="#{beanBuscaVenta.searchById()}" />
-                        <p:commandButton value="Pagar" update=":formContent" ajax="true" action="#{beanBuscaVenta.updateVenta()}" rendered="#{beanBuscaVenta.viewEstate=='init'}" disabled="#{beanBuscaVenta.statusButtonPagar}"/>
+                        <p:commandButton value="Pagar" update=":formContent" ajax="true" action="#{beanBuscaVenta.updateVenta()}" rendered="#{beanBuscaVenta.viewEstate=='init'}" disabled="#{beanBuscaVenta.statusButtonPagar}" oncomplete="window.frames.miFrame.print();"/>
                         
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtid_venta" value ="Número de folio:" /> 
@@ -89,7 +89,7 @@
                                 </p:row>
                         </p:columnGroup>
                     </p:dataTable>
-                
+                <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanBuscaVenta.rutaPDF}"/>
             </p:panel>
         </h:form>
     </ui:define>

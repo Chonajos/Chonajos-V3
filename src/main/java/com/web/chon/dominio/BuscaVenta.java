@@ -6,6 +6,7 @@
 package com.web.chon.dominio;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import static javassist.CtMethod.ConstParameter.integer;
 
@@ -18,7 +19,7 @@ public class BuscaVenta implements Serializable
     private static final long serialVersionUID = 1L;
     private String nombreCliente;
     private String nombreVendedor;
-    private int idVenta;
+    private BigDecimal idVenta;
     private String nombreSubproducto;
     private String nombreEmpaque;
     private int cantidadEmpaque;
@@ -54,11 +55,11 @@ public class BuscaVenta implements Serializable
         this.nombreVendedor = nombreVendedor;
     }
 
-    public int getIdVenta() {
+    public BigDecimal getIdVenta() {
         return idVenta;
     }
 
-    public void setIdVenta(int idVenta) {
+    public void setIdVenta(BigDecimal idVenta) {
         this.idVenta = idVenta;
     }
 

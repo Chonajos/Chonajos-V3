@@ -147,7 +147,8 @@ public class BeanVenta implements Serializable, BeanSimple {
         for (TipoEmpaque empaque : lstTipoEmpaque) 
         {
 
-            if ((empaque.getNombreEmpaque().equals("Kilos") && data.getIdTipoEmpaqueFk().equals(new BigDecimal(-1))) || data.getIdTipoEmpaqueFk().equals(empaque.getIdTipoEmpaquePk())) {
+            if ((empaque.getNombreEmpaque().equals("Kilos") && data.getIdTipoEmpaqueFk().equals(new BigDecimal(-1))) || data.getIdTipoEmpaqueFk().equals(empaque.getIdTipoEmpaquePk()))
+            {
                 data.setIdTipoEmpaqueFk(empaque.getIdTipoEmpaquePk());
                 setNombreEmpaque(empaque.getNombreEmpaque());
                 break;
@@ -184,7 +185,8 @@ public class BeanVenta implements Serializable, BeanSimple {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public void inserts() {
+    public void inserts() 
+    {
         int idVenta = 0;
         Venta venta = new Venta();
         
@@ -248,13 +250,13 @@ public class BeanVenta implements Serializable, BeanSimple {
         
         if(mantenimentoPrecio.getPrecioMinimo()==mantenimentoPrecio.getPrecioMaximo())
         {
-            
             permisionToEdit=true;
         }
         else if( mantenimentoPrecio.getPrecioMinimo().intValue()==mantenimentoPrecio.getPrecioMaximo().intValue())
         {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "El precio de este producto no es Ajustable"));
-            
+            max = mantenimentoPrecio.getPrecioMaximo();
+            min = mantenimentoPrecio.getPrecioMinimo();
             permisionToEdit=true;
         }
         else
@@ -270,16 +272,6 @@ public class BeanVenta implements Serializable, BeanSimple {
             permisionToEdit=true;
         }
         
-        /*if(mantenimentoPrecio.getPrecioVenta()==null || mantenimentoPrecio.getPrecioVenta().intValue()==0)
-        {
-            System.out.println("No se encontró precio de venta, favor de contactar al administrador");
-            permisionToEdit=true;
-        }
-        else
-        {
-            permisionToEdit=false;
-        }
-        */
         data.setIdProductoFk(idSubProducto);
         data.setIdTipoEmpaqueFk(new BigDecimal(idEmpaque));
         data.setPrecioProducto(mantenimentoPrecio.getPrecioVenta() == null ? null : mantenimentoPrecio.getPrecioVenta().toBigInteger());

@@ -1,13 +1,36 @@
 package com.web.chon.bean;
 
 import com.web.chon.dominio.BuscaVenta;
+import com.web.chon.dominio.VentaProducto;
 import com.web.chon.service.IfaceBuscaVenta;
+import com.web.chon.util.JasperReportUtil;
+import com.web.chon.util.NumeroALetra;
+import com.web.chon.util.UtilUpload;
+import com.web.chon.util.Utilerias;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletResponse;
+import net.sf.jasperreports.engine.JREmptyDataSource;
+import net.sf.jasperreports.engine.JRExporter;
+import net.sf.jasperreports.engine.JRExporterParameter;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
+import org.primefaces.model.StreamedContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -24,9 +47,15 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
     private String viewEstate;
     private BigDecimal totalVenta;
     private BuscaVenta data;
+    private Map paramReport = new HashMap();
     private ArrayList<BuscaVenta> dataModel; //Modelo con un solo Objeto
     private boolean statusButtonPagar;
     private int idVentaTemporal; //utilizado para comprobacion de venta
+    private String rutaPDF;
+    private String number;
+    private String pathFileJasper = "C:/Users/Juan/Documents/NetBeansProjects/Chonajos-V2/ticket.jasper";
+   private ByteArrayOutputStream outputStream;
+   private StreamedContent media;
 
     private ArrayList<BuscaVenta> selectedVenta;
 
@@ -39,6 +68,98 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
         setTitle("Búsqueda de Ventas");
         setViewEstate("init");
         statusButtonPagar = true;
+    }
+    
+    
+    public void generateReport() 
+    {
+        JRExporter exporter = null;
+
+        try {
+            ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+            pathFileJasper = servletContext.getRealPath("") + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketVenta" + File.separatorChar + "ticket.jasper";
+            JasperPrint jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport, new JREmptyDataSource());
+            outputStream = JasperReportUtil.getOutputStreamFromReport(paramReport, getPathFileJasper());
+            exporter = new JRPdfExporter();
+            exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
+            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, outputStream);
+//          exporter.setParameter(JRPdfExporterParameter.PDF_JAVASCRIPT, "this.print();");
+            byte[] bytes = outputStream.toByteArray();
+            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf");
+            System.out.println("ruta de jasper :" + pathFileJasper);
+            System.out.println("ruta de jasper :" + rutaPDF);
+        } catch (Exception exception) {
+            System.out.println("Error >" + exception.getMessage());
+            System.out.println("ruta de jasper :" + pathFileJasper);
+            System.out.println("ruta de jasper :" + rutaPDF);
+        }
+
+    }
+    
+    private void setParameterTicket(int idVenta) 
+    {
+
+        NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
+        DecimalFormat df = new DecimalFormat("###.##");
+        Date date = new Date();
+        ArrayList<String> productos = new ArrayList<String>();
+        NumeroALetra numeroLetra = new NumeroALetra();
+        for (BuscaVenta venta : model) 
+        {
+            String cantidad = venta.getCantidadEmpaque() + " " + venta.getNombreEmpaque();
+            productos.add(venta.getNombreSubproducto().toUpperCase());
+            productos.add("       "+cantidad + "               " + nf.format(venta.getPrecioProducto()) + "    " + nf.format(venta.getTotal()));
+        }
+
+        String totalVentaStr = numeroLetra.Convertir(df.format(totalVenta), true);
+
+        putValues(Utilerias.getFechaDDMMYYYYHHMM(date), productos, nf.format(totalVenta), totalVentaStr, idVenta);
+
+    }
+
+    private void putValues(String dateTime, ArrayList<String> items, String total, String totalVentaStr, int idVenta) {
+
+        System.out.println(data.getFechaVenta());
+        //
+        //Utilerias.getFechaDDMMYYYYHHMM(model.get(0).getFechaVenta())
+        paramReport.put("fechaVenta", dateTime);
+        paramReport.put("noVenta", Integer.toString(idVenta));
+        paramReport.put("cliente", data.getNombreCliente());
+        paramReport.put("vendedor", data.getNombreVendedor());
+        paramReport.put("productos", items);
+        paramReport.put("ventaTotal", total);
+        paramReport.put("totalLetra", totalVentaStr);
+        paramReport.put("estado", "PEDIDO PAGADO");
+        //paramReport.put("bodega", idSucu);
+
+    }
+    
+    public String getPathFileJasper() {
+        return pathFileJasper;
+    }
+
+    public String getNameFilePdf() {
+        return "reporte_dummy.pdf";
+    }
+
+    public void downloadFile() {
+        try {
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+
+            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+            response.reset();
+
+            response.setContentType("application/pdf");
+            response.setHeader("Content-disposition", "attachment; filename=" + getNameFilePdf());
+
+            OutputStream output = response.getOutputStream();
+            output.write(outputStream.toByteArray());
+            output.close();
+
+            facesContext.responseComplete();
+        } catch (Exception e) {
+            System.out.println("Error >" + e.getMessage());
+        }
     }
 
     @Override
@@ -56,14 +177,19 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "La venta :" + data.getIdVenta() + " Ya se encuentra pagada."));
 
         }
-        if (data.getIdVenta() != idVentaTemporal) {
+        if (data.getIdVenta().intValue() != idVentaTemporal) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "No coincide el numero de venta  :" + data.getIdVenta() + " con la búsqueda."));
 
         } else {
             try {
-                ifaceBuscaVenta.updateCliente(data.getIdVenta());
+                ifaceBuscaVenta.updateCliente(data.getIdVenta().intValue());
                 searchById();
+                
+                
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Venta Pagada"));
+                setParameterTicket(data.getIdVenta().intValue());
+                
+                generateReport();
             } catch (Exception ex) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar pagar la venta con el folio:" + data.getIdVenta() + "."));
             }
@@ -77,12 +203,12 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
     public void searchById() {
         statusButtonPagar = false;
 
-        model = ifaceBuscaVenta.getVentaById(data.getIdVenta());
+        model = ifaceBuscaVenta.getVentaById(data.getIdVenta().intValue());
         if (model.isEmpty()) 
         {
            data.setNombreCliente("");
            data.setNombreVendedor("");
-           data.setIdVenta(0);
+           data.setIdVenta(new BigDecimal(0));
            statusButtonPagar = true;
 
         } else 
@@ -91,7 +217,7 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
             data.setNombreVendedor(model.get(0).getNombreVendedor());
             data.setStatusFK(model.get(0).getStatusFK());
             data.setIdVenta(model.get(0).getIdVenta());
-            idVentaTemporal = data.getIdVenta();
+            idVentaTemporal = data.getIdVenta().intValue();
             calculatotalVenta();
             if(data.getStatusFK()==2)
             {
@@ -191,5 +317,36 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
     @Override
     public String update() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+      public StreamedContent getMedia() {
+        return media;
+    }
+
+    public void setMedia(StreamedContent media) {
+        this.media = media;
+    }
+
+    public ByteArrayOutputStream getOutputStream() {
+        return outputStream;
+    }
+
+    public void setOutputStream(ByteArrayOutputStream outputStream) {
+        this.outputStream = outputStream;
+    }
+     public String getRutaPDF() {
+        return rutaPDF;
+    }
+
+    public void setRutaPDF(String rutaPDF) {
+        this.rutaPDF = rutaPDF;
+    }
+    
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
     }
 }
