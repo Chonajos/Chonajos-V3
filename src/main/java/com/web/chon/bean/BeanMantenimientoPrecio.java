@@ -8,6 +8,7 @@ import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceEmpaque;
 import com.web.chon.service.IfaceMantenimientoPrecio;
 import com.web.chon.service.IfaceSubProducto;
+import com.web.chon.util.JsfUtil;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class BeanMantenimientoPrecio implements Serializable {
     private IfaceMantenimientoPrecio ifaceMantenimientoPrecio;
     @Autowired
     private IfaceCatSucursales ifaceCatSucursales;
-    
+
     private ArrayList<Sucursal> listaSucursales;
 
     private ArrayList<Subproducto> lstProducto;
@@ -51,7 +52,7 @@ public class BeanMantenimientoPrecio implements Serializable {
 
     @PostConstruct
     public void init() {
-        
+
         listaSucursales = new ArrayList<Sucursal>();
         listaSucursales = ifaceCatSucursales.getSucursales();
         data = new MantenimientoPrecios();
@@ -66,26 +67,30 @@ public class BeanMantenimientoPrecio implements Serializable {
 
     public String updatePrecio() {
 
-        if (update) 
-        {
-            if (ifaceMantenimientoPrecio.updateMantenimientoPrecio(data) == 1) {
+        if (validateMaxMin()) {
+            if (update) {
+                if (ifaceMantenimientoPrecio.updateMantenimientoPrecio(data) == 1) {
 
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro modificado."));
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro modificado."));
+                } else {
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "No se puede Modificar el Registro."));
+                }
             } else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "No se puede Modificar el Registro."));
+                insertarPrecio();
             }
+            return "mantenimientoPrecios";
         } else {
-            insertarPrecio();
+            JsfUtil.addErrorMessage("Error en la Validación de Datos Minimo : " + data.getPrecioMinimo() + " Maximo: " + data.getPrecioMaximo());
         }
-        return "mantenimientoPrecios";
+        return null;
     }
-    public void print()
-    {
+
+    public void print() {
         subproducto = new Subproducto();
         int temporal = data.getIdSucursal();
         data = new MantenimientoPrecios();
         data.setIdSucursal(temporal);
-        
+
     }
 
     public String insertarPrecio() {
@@ -109,19 +114,29 @@ public class BeanMantenimientoPrecio implements Serializable {
         int idEmpaque = data.getIdTipoEmpaquePk() == null ? 0 : data.getIdTipoEmpaquePk().intValue();
         String idSubProducto = subproducto.getIdSubproductoPk() == null ? "" : subproducto.getIdSubproductoPk();
         int idSucursal = data.getIdSucursal();
-        System.out.println("BeanIdSucu : "+data.getIdSucursal());
-        data = ifaceMantenimientoPrecio.getMantenimientoPrecioById(idSubProducto, idEmpaque,idSucursal);
-   
+        System.out.println("BeanIdSucu : " + data.getIdSucursal());
+        data = ifaceMantenimientoPrecio.getMantenimientoPrecioById(idSubProducto, idEmpaque, idSucursal);
+
         if (data.getIdSubproducto() != null && (!data.getIdSubproducto().equals(""))) {
             update = true;
-        } else 
-        {
+        } else {
             update = false;
         }
         data.setIdSucursal(idSucursal);
         data.setIdSubproducto(idSubProducto);
         data.setIdTipoEmpaquePk(new BigDecimal(idEmpaque));
-       
+
+    }
+
+    private boolean validateMaxMin() {
+
+        if (data.getPrecioVenta().doubleValue() > (data.getPrecioMaximo().doubleValue())) {
+            return false;
+        } else if (data.getPrecioVenta().doubleValue() < data.getPrecioMinimo().doubleValue()) {
+            return false;
+        }
+
+        return true;
     }
 
     public String getTitle() {
@@ -180,13 +195,13 @@ public class BeanMantenimientoPrecio implements Serializable {
     public void setLstTipoEmpaque(ArrayList<TipoEmpaque> lstTipoEmpaque) {
         this.lstTipoEmpaque = lstTipoEmpaque;
     }
-     public ArrayList<Sucursal> getListaSucursales() {
+
+    public ArrayList<Sucursal> getListaSucursales() {
         return listaSucursales;
     }
 
     public void setListaSucursales(ArrayList<Sucursal> listaSucursales) {
         this.listaSucursales = listaSucursales;
     }
-    
 
 }

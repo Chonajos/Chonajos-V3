@@ -44,7 +44,7 @@
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="txtTipoEmpaque" value ="Tipo de Empaque:" /> 
-                            <h:selectOneMenu  id="txtTipoEmpaque" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanMantenimientoPrecio.data.idTipoEmpaquePk}" requiredMessage="Ingresa un valor para el campo Tipo de Empaque.">
+                            <h:selectOneMenu  id="txtTipoEmpaque" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanMantenimientoPrecio.data.idTipoEmpaquePk}" required="true" requiredMessage="Ingresa un valor para el campo Tipo de Empaque.">
                                 <f:selectItem itemLabel="Seleccione un empaque" itemValue="-1" />
                                 <f:selectItems value="#{beanMantenimientoPrecio.lstTipoEmpaque}" var="empaque" itemLabel="#{empaque.nombreEmpaque}" itemValue="#{empaque.idTipoEmpaquePk}"/>
                                 <p:ajax event="change" update=":formContent:txtPrecioMinimo formContent:txtPrecioMaximo formContent:txtPrecioVenta" listener="#{beanMantenimientoPrecio.searchById()}" />
