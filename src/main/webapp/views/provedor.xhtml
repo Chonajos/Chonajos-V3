@@ -18,7 +18,7 @@
             </div>
             <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:panel rendered="#{beanCatProvedor.viewEstate=='init'}" style="border: 0px;" >
-                <div class="form-group">
+                <div class="form-group" align="right">
                     <p:commandButton value="Nuevos" update=":formProvedor" resetValues="true" ajax="true" action="#{beanCatProvedor.viewNew}" icon="ui-icon-person" />
 
                 </div>
@@ -61,7 +61,7 @@
             <!--##########################  Panel para nuevo usuario ################-->
             <p:panel rendered="#{beanCatProvedor.viewEstate=='searchById' || beanCatProvedor.viewEstate=='new' || beanCatProvedor.viewEstate=='viewDetails'}">
                 <div class="container">
-                    <div class="form-group">
+                    <div class="form-group" align="right">
                         <p:commandButton value="Guardar" update=":formProvedor" resetValues="true" ajax="true" action="#{beanCatProvedor.save()}" rendered="#{beanCatProvedor.viewEstate=='new'}"/>
                         <p:commandButton value="Actualizar" update=":formProvedor" ajax="true" action="#{beanCatProvedor.update()}" rendered="#{beanCatProvedor.viewEstate=='searchById'}"/>
                         <p:commandButton value="Atras" immediate="true" resetValues="true" update=":formProvedor" ajax="true" action="#{beanCatProvedor.backView}" />

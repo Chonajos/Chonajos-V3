@@ -17,7 +17,7 @@
             <p:growl id="messagess" showDetail="true" life="2000" />
             <p:panel>
                 <div class="container-fluid">
-                    <div class="form-group">
+                    <div class="form-group" align="right">
                         <p:commandButton value="Buscar" update=":formContent" ajax="true" action="#{beanBuscaVenta.searchById()}" />
                         <p:commandButton value="Pagar" update=":formContent" ajax="true" action="#{beanBuscaVenta.updateVenta()}" rendered="#{beanBuscaVenta.viewEstate=='init'}" disabled="#{beanBuscaVenta.statusButtonPagar}" oncomplete="window.frames.miFrame.print();"/>
                         

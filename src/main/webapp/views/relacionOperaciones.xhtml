@@ -17,7 +17,7 @@
             <p:growl id="messagess" showDetail="true" life="2000" />
             <p:panel>
                 <div class="container-fluid">
-                    <div class="form-group">
+                    <div class="form-group" align="right">
                         <p:commandButton value="Atras" update=":formContent" ajax="true" action="#{beanRelacionOperaciones.cancel}" rendered="#{beanRelacionOperaciones.viewEstate =='searchById'}"/>
                     </div>
                     <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
@@ -114,8 +114,6 @@
                         </p:dataTable>
 
                         <p:dataTable rendered="#{beanRelacionOperaciones.viewEstate =='searchById'}" var="model" value="#{beanRelacionOperaciones.lstVenta}" styleClass="ui-datatable-hor-scroll"  emptyMessage="Productos.">
-
-
                             <p:column headerText="Productoss" width="150px;" style="text-align:center">
                                 <h:outputText value="#{model.nombreSubproducto}" />
                             </p:column>

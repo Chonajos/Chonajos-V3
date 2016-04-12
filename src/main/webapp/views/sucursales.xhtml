@@ -18,7 +18,7 @@
 
             <p:panel rendered="#{beanCatSucursal.viewEstate=='init'}" style="border: 0px;" >
 
-                <div class="form-group">
+                <div class="form-group" align="right">
                     <p:commandButton value="Nueva Sucursal" update=":formSucursal" resetValues="true" ajax="true" action="#{beanCatSucursal.viewNew}" icon="ui-icon-person" />
                 </div>
                 <p:dataTable id="tableData"  var="model" value="#{beanCatSucursal.model}" rowKey="#{model.idSucursalPk}" rows="10" paginator="true"
@@ -54,7 +54,7 @@
             <!--##########################  Panel para nueva sucursal ################-->
             <p:panel rendered="#{beanCatSucursal.viewEstate=='searchById' || beanCatSucursal.viewEstate=='new' || beanCatSucursal.viewEstate=='viewDetails'}">
                 <div class="container">
-                    <div class="form-group">
+                    <div class="form-group" align="right">
                         <p:commandButton value="Guardar" update=":formSucursal" resetValues="true" ajax="true" action="#{beanCatSucursal.save()}" rendered="#{beanCatSucursal.viewEstate=='new'}"/>
                         <p:commandButton value="Actualizar" update=":formSucursal" ajax="true" action="#{beanCatSucursal.update()}" rendered="#{beanCatSucursal.viewEstate=='searchById'}"/>
                         <p:commandButton value="Atras" immediate="true" resetValues="true" update=":formSucursal" ajax="true" action="#{beanCatSucursal.backView}" />

@@ -16,7 +16,7 @@
             </div>
             <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:panel rendered="#{beanCatUsuario.viewEstate=='init'}" style="border: 0px;" >
-                <div class="form-group">
+                <div class="form-group" align="right">
                     <p:commandButton value="Nuevo" update=":formUsuario" ajax="true" action="#{beanCatUsuario.viewNew}" icon="ui-icon-person" />
                     <p:commandButton value="Eliminar" update=":formUsuario" ajax="true" action="#{beanCatUsuario.delete()}" icon="ui-icon-trash" />
                 </div>
@@ -57,7 +57,7 @@
             </p:panel>
             <p:panel rendered="#{beanCatUsuario.viewEstate=='searchById' || beanCatUsuario.viewEstate=='new'}">
                 <div class="container">
-                    <div class="form-group">
+                    <div class="form-group" align="right">
                         <p:commandButton value="Guardar" update=":formUsuario" ajax="true" action="#{beanCatUsuario.insert}" rendered="#{beanCatUsuario.viewEstate=='new'}"/>
                         <p:commandButton value="Actualizar" update=":formUsuario" ajax="true" action="#{beanCatUsuario.update}" rendered="#{beanCatUsuario.viewEstate=='searchById'}"/>
                         <p:commandButton value="Atras" immediate="true" resetValues="true" update=":formUsuario" ajax="true" action="#{beanCatUsuario.backView}" />
