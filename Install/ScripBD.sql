@@ -1,4 +1,4 @@
---BASE DE DATOS : choni
+﻿--BASE DE DATOS : choni
 --USUARIO: choni
 --Contraseña: choni
 
@@ -393,16 +393,17 @@ create table correos(
 
 //tablas para llevar registro de las entradas de ajos a la central
 
-MINVALUE 0;
-Create table entrada_producto_central(
+Create table ANALISIS_MERCADO(
 id_entrada number(8),
+ID_SUBPRODUCTO varchar(8),
 precio_venta number(8,2),
 toneladas number(12,2),
 fecha  date,
-CONSTRAINT c_id_entrada_pk PRIMARY KEY (id_entrada)
+CONSTRAINT c_id_entrada_pk PRIMARY KEY (id_entrada),
+CONSTRAINT C_ID_SUBPRODUCTO_epc_FK FOREIGN KEY (ID_SUBPRODUCTO) references SUBPRODUCTO(ID_SUBPRODUCTO_PK)
 );
 
-CREATE SEQUENCE S_ENTRADA_PRODUCTO_CENTRAL 
+CREATE SEQUENCE S_ANALISIS_MERCADO 
 INCREMENT BY 1
 START WITH 1
 MINVALUE 0;

@@ -6,7 +6,7 @@ import com.web.chon.service.IfaceProducto;
 import com.web.chon.service.IfaceSubProducto;
 import com.web.chon.service.ServiceProducto;
 import com.web.chon.service.ServiceSubProducto;
-import com.web.chon.util.Utilerias;
+import com.web.chon.util.TiempoUtil;
 import java.io.Serializable;
 import java.util.ArrayList;
 import javax.annotation.PostConstruct;
@@ -77,7 +77,7 @@ public class BeanSubProducto implements Serializable, BeanSimple {
     @Override
     public String insert() {
         try {
-            data.setIdSubproductoPk(data.getIdProductoFk().concat(Utilerias.rellenaEspacios(ifaceSubProducto.getLastIdProducto(data.getIdProductoFk()))));
+            data.setIdSubproductoPk(data.getIdProductoFk().concat(TiempoUtil.rellenaEspacios(ifaceSubProducto.getLastIdProducto(data.getIdProductoFk()))));
             data.setNombreSubproducto(getDescripcionCategoria(data.getIdProductoFk()) + " " + data.getNombreSubproducto());
             ifaceSubProducto.insertarSubProducto(data);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro insertado."));

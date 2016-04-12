@@ -7,7 +7,7 @@
     </context-param>
 
 
-<!--    <context-param>
+    <!--    <context-param>
         <param-name>contextInitializerClasses</param-name>
         <param-value>com.praxis.siho.web.config.ContextProfileInitializer</param-value>
     </context-param>-->
@@ -38,6 +38,15 @@
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.jr</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>Push Servlet</servlet-name>
+        <servlet-class>org.primefaces.push.PushServlet</servlet-class>
+        <async-supported>true</async-supported>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Push Servlet</servlet-name>
+        <url-pattern>/primepush/*</url-pattern>
+    </servlet-mapping> 
     <session-config>
         <session-timeout>120</session-timeout>
     </session-config>

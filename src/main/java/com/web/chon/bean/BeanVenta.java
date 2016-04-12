@@ -18,8 +18,8 @@ import com.web.chon.util.Constantes;
 import com.web.chon.util.JasperReportUtil;
 import com.web.chon.util.JsfUtil;
 import com.web.chon.util.NumeroALetra;
-import com.web.chon.util.UtilUpload;
-import com.web.chon.util.Utilerias;
+import com.web.chon.util.FileUtil;
+import com.web.chon.util.TiempoUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -305,7 +305,7 @@ public class BeanVenta implements Serializable, BeanSimple {
             calcularTotalVenta();
             data.reset();
             subProducto = new Subproducto();
-            UtilUpload.deleteFile(rutaPDF);
+            FileUtil.deleteFile(rutaPDF);
             selectedTipoEmpaque();
             variableInicial=false;
             
@@ -354,7 +354,7 @@ public class BeanVenta implements Serializable, BeanSimple {
 
         String totalVentaStr = numeroLetra.Convertir(df.format(totalVenta), true);
 
-        putValues(Utilerias.getFechaDDMMYYYYHHMM(date), productos, nf.format(totalVenta), totalVentaStr, idVenta);
+        putValues(TiempoUtil.getFechaDDMMYYYYHHMM(date), productos, nf.format(totalVenta), totalVentaStr, idVenta);
 
     }
 
@@ -447,7 +447,7 @@ public class BeanVenta implements Serializable, BeanSimple {
 //            exporter.setParameter(JRPdfExporterParameter.PDF_JAVASCRIPT, "this.print();");
             byte[] bytes = outputStream.toByteArray();
 
-            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf");
+            rutaPDF = FileUtil.saveFileTemp(bytes, "ticketPdf");
 
             System.out.println("ruta de jasper :" + pathFileJasper);
             System.out.println("ruta de jasper :" + rutaPDF);

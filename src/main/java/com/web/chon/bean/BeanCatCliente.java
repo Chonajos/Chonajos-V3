@@ -19,6 +19,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.primefaces.event.RowEditEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -62,7 +63,6 @@ public class BeanCatCliente implements BeanSimple {
     private boolean permissionToWrite;
     private boolean permissionToWriteStatus;
 
-    
     private boolean permissionToEdit;
     private int estado;
     private int estado_fis;
@@ -121,17 +121,15 @@ public class BeanCatCliente implements BeanSimple {
     @Override
     public String delete() {
         try {
-            if(ifaceBajaCliente.insertCliente(bajaCliente)==0)
-            {
-                
+            if (ifaceBajaCliente.insertCliente(bajaCliente) == 0) {
+
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "El cliente :" + data.getNombre() + " ya está en baja."));
-            }
-            else{
+            } else {
                 data.setStatus_cliente(2);
                 ifaceCatCliente.updateCliente(data);
-             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "El cliente se ha dado de baja correctamente"));
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "El cliente se ha dado de baja correctamente"));
             }
-            } catch (Exception ex) {
+        } catch (Exception ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar eliminar el registro :" + data.getNombre() + "."));
         }
 
@@ -201,15 +199,12 @@ public class BeanCatCliente implements BeanSimple {
     }
 
     @Override
-    public String update() 
-    {
+    public String update() {
         try {
-            if (data.isStatusClienteBoolean()) 
-            {
+            if (data.isStatusClienteBoolean()) {
                 data.setStatus_cliente(1);
                 ifaceBajaCliente.deleteCliente(data.getId_cliente());
-            } else 
-            {
+            } else {
                 data.setStatus_cliente(2);
             }
             ifaceCatCliente.updateCliente(data);
@@ -226,6 +221,8 @@ public class BeanCatCliente implements BeanSimple {
 
         } catch (Exception ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar modificar el registro :" + data.getNombre() + "."));
+            System.out.println("ERROR >" );
+            ex.printStackTrace();
         }
         backView();
         return "clientes";
@@ -233,21 +230,17 @@ public class BeanCatCliente implements BeanSimple {
     }
 
     @Override
-    public void searchById() 
-    {
+    public void searchById() {
         buscaMunicipios();
         buscaMunicipios2();
         setTitle("Editar Cliente.");
         setViewEstate("searchById");
         permissionToWrite = false;
         permissionToEdit = true;
-        if(data.getStatus_cliente()==2)
-        {
-            permissionToWriteStatus=false;
-        }
-        else
-        {
-            permissionToWriteStatus=true;
+        if (data.getStatus_cliente() == 2) {
+            permissionToWriteStatus = false;
+        } else {
+            permissionToWriteStatus = true;
         }
 
     }
@@ -271,8 +264,7 @@ public class BeanCatCliente implements BeanSimple {
         data.setStatus_cliente(2);
     }
 
-    public void viewNew() 
-    {
+    public void viewNew() {
 
         data = new Cliente();
         setTitle("Alta de Clientes");
@@ -353,8 +345,7 @@ public class BeanCatCliente implements BeanSimple {
         lista_motivos = ifaceCatMotivos.getMotivos();
     }
 
-    public void ActualizaCodigoPostal() 
-    {
+    public void ActualizaCodigoPostal() {
         for (int i = 0; i < lista_codigos_postales.size(); i++) {
             if (lista_codigos_postales.get(i).getId_cp() == data.getID_CP()) {
                 data.setCodigoPostal(lista_codigos_postales.get(i).getNumeropostal());
@@ -362,7 +353,7 @@ public class BeanCatCliente implements BeanSimple {
         }
 
     }
-
+    
     public Cliente getCliente() {
         return data;
     }
@@ -562,6 +553,7 @@ public class BeanCatCliente implements BeanSimple {
     public void setBajaCliente(BajaClientes bajaCliente) {
         this.bajaCliente = bajaCliente;
     }
+
     public boolean isPermissionToWriteStatus() {
         return permissionToWriteStatus;
     }
@@ -570,5 +562,4 @@ public class BeanCatCliente implements BeanSimple {
         this.permissionToWriteStatus = permissionToWriteStatus;
     }
 
-    
 }

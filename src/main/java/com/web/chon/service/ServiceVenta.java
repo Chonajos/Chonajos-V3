@@ -4,7 +4,7 @@ import com.web.chon.dominio.RelacionOperaciones;
 import com.web.chon.dominio.Subproducto;
 import com.web.chon.dominio.Venta;
 import com.web.chon.negocio.NegocioVenta;
-import com.web.chon.util.Utilerias;
+import com.web.chon.util.TiempoUtil;
 import com.web.chon.util.Utilidades;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -52,7 +52,7 @@ public class ServiceVenta implements IfaceVenta {
     public ArrayList<RelacionOperaciones> getVentasByIntervalDate(Date fechaInicio, Date fechaFin,int idSucursal,int idStatusVenta) {
         getEjb();
         ArrayList<RelacionOperaciones> lstVenta = new ArrayList<RelacionOperaciones>();
-        List<Object[]> lstObject = ejb.getVentasByInterval(Utilerias.getFechaDDMMYYYY(fechaInicio),Utilerias.getFechaDDMMYYYY(fechaFin),idSucursal,idStatusVenta);
+        List<Object[]> lstObject = ejb.getVentasByInterval(TiempoUtil.getFechaDDMMYYYY(fechaInicio),TiempoUtil.getFechaDDMMYYYY(fechaFin),idSucursal,idStatusVenta);
         for(Object[] obj : lstObject){
            
             RelacionOperaciones venta = new RelacionOperaciones();

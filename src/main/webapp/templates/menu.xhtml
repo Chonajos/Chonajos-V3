@@ -5,10 +5,10 @@
     <h:body>        
         <h:form>
             <!-- comentario -->
-            <p:menubar model="#{beanInit.model}">
+            <p:menubar model="#{beanInit.model}" rendered="#{beanUsuario.usuario.nombreUsuario != null}">
 
                 <div style="z-index: 1020; background-color: red" id="ll">  
-                    <f:facet name="options" id="pp" >							
+                    <f:facet name="options" id="pp" rendered="#{beanUsuario.usuario.nombreUsuario != null}">							
                         <p:menuButton value="#{beanUsuario.usuario.nombreUsuario}" >			        
                             <p:separator />
                             <p:menuitem value="Finalizar Sesión"

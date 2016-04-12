@@ -11,7 +11,7 @@ import com.web.chon.service.IfaceEmpaque;
 import com.web.chon.service.IfaceSubProducto;
 import com.web.chon.service.IfaceVenta;
 import com.web.chon.service.IfaceVentaProducto;
-import com.web.chon.util.Utilerias;
+import com.web.chon.util.TiempoUtil;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -124,13 +124,13 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
                 break;
 
             case 2:
-                data.setFechaFiltroInicio(Utilerias.getDayOneOfMonth(new Date()));
-                data.setFechaFiltroFin(Utilerias.getDayEndOfMonth(new Date()));
+                data.setFechaFiltroInicio(TiempoUtil.getDayOneOfMonth(new Date()));
+                data.setFechaFiltroFin(TiempoUtil.getDayEndOfMonth(new Date()));
                 
                 break;
             case 3:
-                data.setFechaFiltroInicio(Utilerias.getDayOneYear(new Date()));
-                data.setFechaFiltroFin(Utilerias.getDayEndYear(new Date()));
+                data.setFechaFiltroInicio(TiempoUtil.getDayOneYear(new Date()));
+                data.setFechaFiltroFin(TiempoUtil.getDayEndYear(new Date()));
                 break;
             default:
                 data.setFechaFiltroInicio(null);

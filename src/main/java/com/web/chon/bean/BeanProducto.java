@@ -2,13 +2,17 @@ package com.web.chon.bean;
 
 import com.web.chon.dominio.Producto;
 import com.web.chon.service.IfaceProducto;
-import com.web.chon.util.Utilerias;
+import com.web.chon.util.TiempoUtil;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import org.apache.commons.lang.StringEscapeUtils;
+import org.primefaces.push.EventBus;
+import org.primefaces.push.EventBusFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -54,8 +58,11 @@ public class BeanProducto implements Serializable, BeanSimple {
             for (Producto producto : selectedProducto) {
                 try {
                     ifaceProducto.deleteProducto(producto.getIdProductoPk());
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro eliminado."));
+                    
+//                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro eliminado."));
+                    send();
                 } catch (Exception ex) {
+                    ex.printStackTrace();
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar eliminar el registro :" + data.getNombreProducto() + "."));
                 }
             }
@@ -69,7 +76,7 @@ public class BeanProducto implements Serializable, BeanSimple {
     @Override
     public String insert() {
         try {
-            data.setIdProductoPk(Utilerias.rellenaEspacios(ifaceProducto.getLastIdCategoria()));
+            data.setIdProductoPk(TiempoUtil.rellenaEspacios(ifaceProducto.getLastIdCategoria()));
             ifaceProducto.insertarProducto(data);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro insertado."));
         } catch (Exception ex) {
@@ -151,4 +158,42 @@ public class BeanProducto implements Serializable, BeanSimple {
     public void setSelectedProducto(ArrayList<Producto> selectedProducto) {
         this.selectedProducto = selectedProducto;
     }
+    
+   
+       private final static String CHANNEL = "/notify";
+     
+    private String summary;
+     
+    private String detail;
+     
+    public String getSummary() {
+        return "hola ";
+    }
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+     
+    public String getDetail() {
+        return "detail";
+    }
+    public void setDetail(String detail) {
+        this.detail = detail;
+    }
+     
+    public void send() {
+        try{
+        EventBus eventBus = EventBusFactory.getDefault().eventBus();
+        eventBus.publish(CHANNEL, new FacesMessage(StringEscapeUtils.escapeHtml(summary), StringEscapeUtils.escapeHtml(detail)));
+        System.out.println("terminado");
+        }catch(Exception e){
+            System.out.println("error"+e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    public void printer(){
+        System.out.println("Impreso");
+    }
+            
+
 }

@@ -14,7 +14,7 @@ import javax.servlet.ServletContext;
  *
  * @author Juan
  */
-public class UtilUpload {
+public class FileUtil {
 
     /**
      * Guarda un archivo pdf temporal para la impresion de tickets

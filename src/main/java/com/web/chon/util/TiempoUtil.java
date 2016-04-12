@@ -11,17 +11,19 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
  *
  * @author Juan
  */
-public class Utilerias {
+public class TiempoUtil {
 
     private static DateFormat formatoFechaDiaMesAnioHoraMinuto = new SimpleDateFormat("dd/MM/yyyy HH:mm");
     private static DateFormat formatoFechaDiaUnoMesAnio = new SimpleDateFormat("01/" + "MM/yyyy");
     private static DateFormat formatoFechaDiaMesAnio = new SimpleDateFormat("dd/MM/yyyy");
+    private static String[] diasEspanol = {"Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"};
 
     /**
      * Metodo para rellenar a 4 espacio
@@ -119,7 +121,6 @@ public class Utilerias {
         calendar.setTime(fecha);
 
 //        calendar.set(Calendar.DAY_OF_YEAR, 365); // for leap years
-
         return calendar.getTime();
 
     }
@@ -290,6 +291,28 @@ public class Utilerias {
         }
 
         return nameMonth;
+
+    }
+
+    /**
+     * Obtiene el nombre del dia
+     *
+     * @param fecha
+     * @return
+     */
+    public static String nombreDia(Date fecha) {
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(fecha);
+        int numeroDia = cal.get(Calendar.DAY_OF_WEEK);
+        return diasEspanol[numeroDia - 1];
+    }
+
+    public static Date getFechaDDMMYYYYDate(Date fecha) {
+        if (fecha == null) {
+            return new Date();
+        }
+        String convertido = formatoFechaDiaMesAnio.format(fecha);
+        return fechaTextoDiaMesAnio(convertido);
 
     }
 
