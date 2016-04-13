@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="./../templates/main.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content" id="content">
+        <div>
+            <h3>#{beanVenta.title}</h3>
+        </div>
+        <h:form id="formContent" >
+            <p:remoteCommand id="remoteComman" resetValues="true" onstart="alert('onstart')"></p:remoteCommand>
+            <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
+            <!--<p:growl id="messagess" showDetail="true" life="2000" />-->
+            <p:panel >
+                <div class="container-fluid">
+                    <div class="form-group">
+                        <p:commandButton value="Agregar" update=":formContent" ajax="true" action="#{beanEntradaMercancia2.addProducto}" rendered="#{beanEntradaMercancia2.viewEstate =='init'}"/>
+                        <p:commandButton value="Finalizar" id="vender" ajax="false" update=":formContent"   action="#{beanEntradaMercancia2.inserts}" immediate="true" resetValues="true" rendered="#{beanEntradaMercancia2.viewEstate =='init'}" />
+                    </div>
+
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-8 col-md-4 col-sm-4 col-xs-12"  for="comboSucursal" value ="Sucursal:"/> 
+                            <h:selectOneMenu  id="comboSucursal" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanEntradaMercancia2.data.idProvedorFK}" >
+                                <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="" />
+                                <f:selectItems value="#{beanEntradaMercancia2.listaSucursales}" var="sucursalita" itemLabel="#{sucursalita.nombreSucursal}" itemValue="#{sucursalita.idSucursalPk}"/>
+                                
+                            </h:selectOneMenu>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-8 col-md-4 col-sm-4 col-xs-12"  for="comboProvedor" value ="Provedor:"/> 
+                            <h:selectOneMenu  id="comboProvedor" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanEntradaMercancia2.data.idSucursal}" >
+                                <f:selectItem itemLabel="Selecciona un Provedor" itemValue="" />
+                                <f:selectItems value="#{beanEntradaMercancia2.listaProvedores}" var="provedorsito" itemLabel="#{provedorsito.nombreProvedor}" itemValue="#{provedorsito.idProvedorPK}"/>
+                            </h:selectOneMenu>
+                        </div>
+                        
+                    </div>
+                    
+                   
+                </div>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>

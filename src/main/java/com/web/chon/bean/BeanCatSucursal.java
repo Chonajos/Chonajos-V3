@@ -51,9 +51,12 @@ public class BeanCatSucursal extends SimpleViewBean<Sucursal> implements Seriali
     @Autowired
     private IfaceCatCodigosPostales ifaceCatCodigosPostales;
     private ArrayList<CodigoPostal> lista_codigos_postales;
+    
+    
 
     @Override
-    public void initModel() {
+    public void initModel() 
+    {
 
         data = new Sucursal();
         

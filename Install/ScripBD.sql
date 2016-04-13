@@ -1,4 +1,4 @@
-﻿--BASE DE DATOS : choni
+--BASE DE DATOS : choni
 --USUARIO: choni
 --Contraseña: choni
 
@@ -10,7 +10,6 @@ descripcion_rol varchar(255),
 CONSTRAINT c_id_rol_pk PRIMARY KEY (id_rol_pk)
 );
 
---select * from rol;
 CREATE SEQUENCE s_rol
 INCREMENT BY 1
 START WITH 1
@@ -123,9 +122,13 @@ create table usuario(
 	sitio_web varchar(120),
 	id_municipio_fk number,
 	id_rol_fk number,
+	razon_social_usuario varchar(100),
+	fecha_alta_usuario Date,
 	latitud_usuario varchar(30),
 	longitud_usuario varchar(30),
+	id_sucursal_fk number,
 	CONSTRAINT c_id_usuario_pk PRIMARY KEY (id_usuario_pk),
+	CONSTRAINT c_id_sucuclie_fk FOREIGN KEY(id_sucursal_fk) references sucursal(id_sucursal_pk),
 	CONSTRAINT c_id_municipio_fk FOREIGN KEY(id_municipio_fk) references municipios(id_municipio_pk),
 	CONSTRAINT c_id_rol_fk FOREIGN KEY(id_rol_fk) references rol(id_rol_pk)
 );
@@ -140,12 +143,13 @@ create table sucursal(
 id_sucursal_pk number not null,
 nombre_sucursal varchar(255),
 calle_sucursal varchar(255),
-colonia_sucursal varchar (255),
+CP_SUCURSAL number,
 telefono_sucursal number(15),
-id_usuario_sucursal_fk number,
-id_municipio_fk number,
-CONSTRAINT c_id_usuario_sucursal FOREIGN KEY(id_usuario_sucursal_fk) references usuario(id_usuario_pk),
-CONSTRAINT c_id_municipio_sucursal_fk FOREIGN KEY(id_municipio_fk) references municipios(id_municipio_pk),
+num_int number,
+num_ext number,
+status_sucursal number,
+CONSTRAINT c_id_codi_sucu_fk FOREIGN KEY(CP_SUCURSAL) references codigos_postales(id_pk),
+CONSTRAINT c_id_status_sucu_fk FOREIGN KEY(status_sucursal) references status(id_pk),
 CONSTRAINT c_id_sucursal_pk PRIMARY KEY (id_sucursal_pk)
 );
 
@@ -162,7 +166,6 @@ benificiario varchar(120),
 clave_interbancaria varchar(60),
 CONSTRAINT c_id_usuario_cuenta_fk FOREIGN KEY(id_usuario_fk) references usuario(id_usuario_pk),
 CONSTRAINT c_id_cuenta_bancaria_pk PRIMARY KEY (id_cuenta_bancaria_pk)
-
 );
 
 CREATE SEQUENCE s_cuenta_bancaria
@@ -269,6 +272,9 @@ id_vendedor_fk number,
 fecha_venta date,
 fecha_promesa_pago date,
 status_fk number,
+fecha_pago date,
+id_sucursal_fk number,
+CONSTRAINT c_id_sucu_venta_fk FOREIGN KEY(id_sucursal_fk) references sucursal(id_sucursal_pk),
 CONSTRAINT c_id_cliente_fk FOREIGN KEY(id_cliente_fk) references CLIENTE(id_cliente),
 CONSTRAINT c_id_vendedor_fk FOREIGN KEY(id_vendedor_fk) references usuario(id_usuario_pk),
 CONSTRAINT c_id_venta_pk PRIMARY KEY (id_venta_pk),
@@ -364,6 +370,8 @@ id_tipo_empaque_fk number,
 precio_venta number(8,2),
 precio_minimo number(8,2),
 precio_maximo number(8,2),
+id_sucursal_fk number,
+CONSTRAINT c_sucursa_id_id_sucursal_fk FOREIGN KEY(id_sucursal_fk) references sucursal(id_sucursal_pk),
 CONSTRAINT c_precio_id_subproducto_fk FOREIGN KEY(id_subproducto_fk) references subproducto(id_subproducto_pk),
 CONSTRAINT c_precio_id_empaque_fk FOREIGN KEY(id_tipo_empaque_fk) references tipo_empaque(id_tipo_empaque_pk)
 );
@@ -413,3 +421,83 @@ limpiar lista de seleccionados.
 no agregar correos vacios.
 no inicializar lista de municipios.
 manejar integers en enteros de campos.
+
+
+
+CREATE TABLE EntradaMercancia(
+	ID_EM_PK NUMBER,
+	ID_PROVEDOR_FK NUMBER,
+	MOVIMIENTO NUMBER,
+	FECHA DATE,
+	REMISION NUMBER,
+	ID_SUCURSAL_FK NUMBER,
+	CONSTRAINT c_EM_ID_EM_PK PRIMARY KEY (ID_EM_PK),
+	CONSTRAINT c_EM_ID_PROVEDOR_FK FOREIGN KEY(ID_PROVEDOR_FK) references PROVEDORES(ID_PROVEDOR_PK),
+	CONSTRAINT c_EM_ID_SUCURSAL_FK FOREIGN KEY(ID_SUCURSAL_FK) references SUCURSAL(ID_SUCURSAL_PK)
+);
+
+
+
+CREATE SEQUENCE S_EntradaMercancia
+INCREMENT BY 1
+START WITH 1
+MINVALUE 0;
+
+CREATE TABLE EntradaMercanciaProducto(
+	ID_EMP_PK NUMBER,
+	ID_EM_FK NUMBER,
+	ID_SUBPRODUCTO_FK NUMBER,
+	ID_TIPO_EMPAQUE_FK NUMBER,
+	KILOS_TOTALES NUMBER,
+	CANTIDAD_EMPACAQUE NUMBER,
+	COMENTARIOS VARCHAR(100),
+	CONSTRAINT c_ID_EMP_PK PRIMARY KEY (ID_EMP_PK),
+	CONSTRAINT c_ID_EM_FK FOREIGN KEY(ID_EM_FK) references EntradaMercancia(ID_EM_PK),
+	CONSTRAINT c_ID_SUBPRODUCTO_FK FOREIGN KEY(ID_SUBPRODUCTO_FK) references subproducto(ID_SUBPRODUCTO_PK),
+	CONSTRAINT c_ID_TIPO_EMPAQUE_FK FOREIGN KEY(ID_TIPO_EMPAQUE_FK) references tipo_empaque(ID_TIPO_EMPAQUE_PK)
+);
+
+CREATE SEQUENCE S_EntradaMercanciaProducto
+INCREMENT BY 1
+START WITH 1
+MINVALUE 0;
+
+
+CREATE TABLE PROVEDORES(
+	ID_PROVEDOR_PK  NUMBER, 
+	NOMBRE_PROVEDOR  VARCHAR(50), 
+	A_PATERNO_PROVE  VARCHAR(50), 
+	A_MATERNO_PROVE  VARCHAR(50), 
+	EMPRESA  VARCHAR(20), 
+	CALLE_PROVE  VARCHAR(60), 
+	SEXO_PROVE  CHAR(1), 
+	FECHA_NACIMIENTO_PROVE  DATE, 
+	TELEFONO_MOVIL_PROVE  NUMBER, 
+	TELEFONO_FIJO_PROVE  NUMBER, 
+	EXTENSION_PROVE  NUMBER, 
+	NUM_INT_PROVE  NUMBER, 
+	NUM_EXT_PROVE  NUMBER, 
+	CLAVECELULAR_PROVE  NUMBER, 
+	LADACELULAR_PROVE  NUMBER, 
+	ID_CP_PROVE_FK NUMBER, 
+	CALLEFISCAL_PROVE  VARCHAR(50), 
+	NUMINTFIS_PROVE  NUMBER, 
+	NUMEXTFIS_PROVE  NUMBER,  
+	ID_CP_FISCAL_PROVE_FK NUMBER, 
+	NEXTEL_PROVE  VARCHAR(20), 
+	RAZON_PROVE  VARCHAR(100), 
+	RFC_PROVE  VARCHAR(20),  
+	LADAOFICINA_PROVE  VARCHAR(20), 
+	CLAVEOFICINA_PROVE  VARCHAR(20), 
+	NEXTELCLAVE_PROVE  VARCHAR(20),
+	ID_STATUS_FK NUMBER,
+	CONSTRAINT c_id_provedor_pk PRIMARY KEY (ID_PROVEDOR_PK),
+	CONSTRAINT c_id_cod_p_fk FOREIGN KEY(ID_CP_PROVE_FK) references CODIGOS_POSTALES(ID_PK),
+	CONSTRAINT c_id_cod__FIS_p_fk FOREIGN KEY(ID_CP_FISCAL_PROVE_FK) references CODIGOS_POSTALES(ID_PK),
+	CONSTRAINT c_id_status_p_fk FOREIGN KEY(ID_STATUS_FK) references STATUS (ID_PK)
+	);
+
+CREATE SEQUENCE S_PROVEDOR
+INCREMENT BY 1
+START WITH 1
+MINVALUE 0;

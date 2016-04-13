@@ -28,7 +28,6 @@ import org.springframework.stereotype.Component;
 public class BeanMantenimientoPrecio implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
     @Autowired
     private IfaceSubProducto ifaceSubProducto;
     @Autowired

@@ -78,6 +78,13 @@ public class BeanInit implements Serializable {
         fourthSubmenu.addElement(firstItem);
         
         model.addElement(fourthSubmenu);
+        
+        DefaultSubMenu fifthSubmenu = new DefaultSubMenu("Provedores");
+        firstItem = new DefaultMenuItem("Provedor");
+        firstItem.setUrl("/views/provedor.jr");
+        fifthSubmenu.addElement(firstItem);
+        
+        model.addElement(fifthSubmenu);
     }
 
     public MenuModel getModel() {

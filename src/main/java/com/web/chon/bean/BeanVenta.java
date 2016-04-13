@@ -14,6 +14,7 @@ import com.web.chon.service.IfaceMantenimientoPrecio;
 import com.web.chon.service.IfaceSubProducto;
 import com.web.chon.service.IfaceVenta;
 import com.web.chon.service.IfaceVentaProducto;
+import com.web.chon.util.Constantes;
 import com.web.chon.util.JasperReportUtil;
 import com.web.chon.util.JsfUtil;
 import com.web.chon.util.NumeroALetra;
@@ -425,7 +426,17 @@ public class BeanVenta implements Serializable, BeanSimple {
 
         try {
             ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-            pathFileJasper = servletContext.getRealPath("") + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketVenta" + File.separatorChar + "ticket.jasper";
+            String temporal ="";
+            if(servletContext.getRealPath("")==null)
+            {
+                temporal = Constantes.PATHSERVER;
+            }
+            else
+            {
+                temporal = servletContext.getRealPath("");
+            }
+            
+            pathFileJasper = temporal+ File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketVenta" + File.separatorChar + "ticket.jasper";
 
             JasperPrint jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport, new JREmptyDataSource());
             outputStream = JasperReportUtil.getOutputStreamFromReport(paramReport, getPathFileJasper());
