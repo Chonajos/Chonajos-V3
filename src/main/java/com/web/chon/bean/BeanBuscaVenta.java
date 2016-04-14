@@ -6,7 +6,7 @@ import com.web.chon.service.IfaceBuscaVenta;
 import com.web.chon.util.Constantes;
 import com.web.chon.util.JasperReportUtil;
 import com.web.chon.util.NumeroALetra;
-import com.web.chon.util.FileUtil;
+import com.web.chon.util.UtilUpload;
 import com.web.chon.util.TiempoUtil;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -98,7 +98,7 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
             exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, outputStream);
 //          exporter.setParameter(JRPdfExporterParameter.PDF_JAVASCRIPT, "this.print();");
             byte[] bytes = outputStream.toByteArray();
-            rutaPDF = FileUtil.saveFileTemp(bytes, "ticketPdf");
+            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf");
             System.out.println("ruta de jasper :" + pathFileJasper);
             System.out.println("ruta de jasper :" + rutaPDF);
         } catch (Exception exception) {

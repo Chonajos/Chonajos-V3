@@ -15,7 +15,7 @@
     </properties>
 
     <dependencies>
-<!--        comentado funciona notificaciones
+        <!--        comentado funciona notificaciones
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
@@ -149,6 +149,23 @@
             <artifactId>spring-data-jpa</artifactId>
             <version>1.9.4.RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>3.2.0.RELEASE</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <version>3.2.0.RELEASE</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <version>3.2.0.RELEASE</version>
+        </dependency>
         
         <dependency>
             <groupId>cglib</groupId>
@@ -189,7 +206,7 @@
             <version>3.1.0</version>
         </dependency>
         
-<!--        <dependency>
+        <!--        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.4</version>
@@ -218,7 +235,7 @@
             <version>1.0.5</version>
         </dependency>
         
-<!--        funciona botificaciones
+        <!--        funciona botificaciones
         <dependency>
             <groupId>org.atmosphere</groupId>
             <artifactId>atmosphere-runtime</artifactId>
@@ -242,6 +259,7 @@
             <artifactId>slf4j-api</artifactId>
             <version>1.6.1</version>
         </dependency>
+    
 
 
 

@@ -7,7 +7,7 @@ import java.util.Map;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 
-import core.service.PaginacionService;
+import com.web.chon.core.service.PaginacionService;
 import java.io.Serializable;
 
 public class PaginationLazyDataModel<T, ID extends Serializable> extends LazyDataModel<T> {

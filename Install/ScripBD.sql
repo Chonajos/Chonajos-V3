@@ -502,3 +502,102 @@ CREATE SEQUENCE S_PROVEDOR
 INCREMENT BY 1
 START WITH 1
 MINVALUE 0;
+
+
+
+
+
+create table STATUS_ENTRADA_MERCANCIA(
+	ID_SEM_PK number,
+	DESCRIPCION_STATUS VARCHAR(80),
+	CONSTRAINT c_ID_SEM_PK_pk PRIMARY KEY(ID_SEM_PK) 
+	);
+
+CREATE SEQUENCE s_STATUS_ENTRADA_MERCANCIA
+INCREMENT BY 1
+START WITH 1
+MINVALUE 0;
+
+
+create table TIPO_ORDEN_COMPRA(
+	ID_TOC_PK number,
+	TIPO VARCHAR(30)
+	DESCRIPCION_TIPO VARCHAR(80),
+	CONSTRAINT c_ID_TOC_PK_pk PRIMARY KEY(ID_TOC_PK) 
+	);
+
+CREATE SEQUENCE s_TIPO_ORDEN_COMPRA
+INCREMENT BY 1
+START WITH 1
+MINVALUE 0;
+
+<---tabla para el control de roles y permisos-->
+create table menu(
+id_menu number(3) not null,
+descripcion varchar(120) not null,
+tipo number(1) not null,
+nivel varchar(6) not null,
+url_sistema varchar(120)not null,
+CONSTRAINT c_id_menu PRIMARY KEY (id_menu)
+);
+
+CREATE SEQUENCE s_menu
+INCREMENT BY 1
+START WITH 1
+MINVALUE 0;
+
+create table acces_menu(
+id_menu_fk number(3) not null,
+ID_ROL_FK  NUMBER(3,0) NOT NULL,
+CONSTRAINT c_acces_menu_ID_ROL_PK foreign KEY (ID_ROL_FK) REFERENCES ROL(ID_ROL_PK),
+CONSTRAINT c_acces_menu_id_menu_fk foreign KEY (id_menu_fk) REFERENCES menu(id_menu)
+);
+drop table acces_menu;
+
+CREATE SEQUENCE s_acces_menu
+INCREMENT BY 1
+START WITH 1
+MINVALUE 0;
+
+<--fin roles y permisos-->
+
+<---inserts para roles y permisos--->
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Catalogos', 1,'10','NULL');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Categoria', 0,'10.1','/views/categoria.xhtml');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Producto', 0,'10.2','/views/producto.xhtml');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Usuario', 0,'10.3','/views/usuario.xhtml');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Empaque', 0,'10.4','/views/empaque.xhtml');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Sucursales', 0,'10.5','/views/sucursales.xhtml');
+
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Productos', 1,'20','NULL');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Mantenimiento Precios', 0,'20.1','/views/mantenimientoPrecios.xhtml');
+
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Ventas', 1,'30','NULL');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Realizar Pedido', 0,'30.1','/views/venta.xhtml');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Pagar Pedido', 0,'30.2','/views/buscaVenta.xhtml');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Relación de Operaciónes', 0,'30.3','/views/relacionOperaciones.xhtml');
+
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Clientes', 1,'40','NULL');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Cliente', 0,'40.1','/views/clientes.xhtml');
+
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Provedores', 1,'50','NULL');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Provedor', 0,'50.1','/views/provedor.xhtml');
+
+INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(4,1);
+INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(5,1);
+INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(6,1);
+INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(7,1);
+INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(8,1);
+INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(9,1);
+
+INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(10,1);
+INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(11,1);
+
+INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(12,1);
+INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(13,1);
+INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(14,1);
+INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(15,1);
+
+INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(16,1);
+INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(17,1);
+<--- fin inserts para roles y permisos--->

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ui:composition template="./../templates/main.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content">
+
+        <h:body>
+            <div  align="center" >
+                <p:growl id="growl" showDetail="true" life="5000" />
+                <h:form	id="accesoDenegado" prependId="false">
+                    <p:layout fullPage="true">
+                        <p:layoutUnit position="center">
+                            <p:spacer height="60" />
+                            <p:panelGrid columns="1"  >
+                          <a class="nav navbar-nav" href="../views/welcome.xhtml"><img style="height:200px; width:200px;" src="../resources/img/accesodenegado.png" alt="accesoDenegado"></img></a>
+                            </p:panelGrid>
+                        </p:layoutUnit>
+                    </p:layout>
+                </h:form>
+            </div>
+        </h:body>
+    </ui:define>
+</ui:composition>

@@ -1,4 +1,4 @@
-package core.service;
+package com.web.chon.core.service;
 
 import java.io.Serializable;
 import java.util.List;

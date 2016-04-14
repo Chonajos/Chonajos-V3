@@ -7,7 +7,9 @@ package com.web.chon.dominio;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -50,6 +52,11 @@ public class Usuario extends Generic {
     private List<CuentaBancaria> cuentaBancariaList;
     private List<Sucursal> sucursalList;
     private int idSucursal;
+    
+    //Datos para el login y el menu
+    private String perDescripcion;
+    private Set<Menu> menu =  new HashSet<Menu>();
+    private Set<String> allowedUrl =  new HashSet<String>();
 
     public Usuario() {
     }
@@ -337,7 +344,30 @@ public class Usuario extends Generic {
     public void setNombreCompletoUsuario(String nombreCompletoUsuario) {
         this.nombreCompletoUsuario = nombreCompletoUsuario;
     }
-    
+
+    public Set<Menu> getMenu() {
+        return menu;
+    }
+
+    public void setMenu(Set<Menu> menu) {
+        this.menu = menu;
+    }
+
+    public Set<String> getAllowedUrl() {
+        return allowedUrl;
+    }
+
+    public void setAllowedUrl(Set<String> allowedUrl) {
+        this.allowedUrl = allowedUrl;
+    }
+
+    public String getPerDescripcion() {
+        return perDescripcion;
+    }
+
+    public void setPerDescripcion(String perDescripcion) {
+        this.perDescripcion = perDescripcion;
+    }
     
 
     @Override

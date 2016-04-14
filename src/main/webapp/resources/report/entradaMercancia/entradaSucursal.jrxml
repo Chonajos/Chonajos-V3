@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="entradaSucursal" pageWidth="595" pageHeight="842" whenNoDataType="BlankPage" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="69dc4393-52a8-40eb-8f36-ec0bafe37c4c">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<subDataset name="chartDataset" uuid="2c8db05c-8700-45da-aeb5-206fded4fc82">
+		<field name="cantidadToneladas" class="java.lang.String"/>
+		<field name="precio" class="java.math.BigDecimal"/>
+		<field name="descripcionFiltro" class="java.math.BigDecimal"/>
+	</subDataset>
+	<field name="lstEntradaMercancia" class="java.util.List"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<columnHeader>
+		<band height="265" splitType="Stretch">
+			<barChart>
+				<chart>
+					<reportElement x="65" y="33" width="416" height="162" uuid="75a8de3a-4430-4975-9faf-58be4e87b8b3"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<categoryDataset>
+					<dataset>
+						<datasetRun subDataset="chartDataset" uuid="6f8dba02-b4bc-4766-b195-bffb5d10cf56">
+							<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{lstEntradaMercancia})]]></dataSourceExpression>
+						</datasetRun>
+					</dataset>
+					<categorySeries>
+						<seriesExpression><![CDATA[$F{descripcionFiltro}]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{descripcionFiltro}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{cantidadToneladas}]]></valueExpression>
+					</categorySeries>
+				</categoryDataset>
+				<barPlot>
+					<plot/>
+					<itemLabel/>
+					<categoryAxisFormat>
+						<axisFormat/>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat/>
+					</valueAxisFormat>
+				</barPlot>
+			</barChart>
+		</band>
+	</columnHeader>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

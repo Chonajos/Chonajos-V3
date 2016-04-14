@@ -5,8 +5,10 @@ import com.web.chon.dominio.MantenimientoPrecios;
 import com.web.chon.dominio.Subproducto;
 import com.web.chon.dominio.TipoEmpaque;
 import com.web.chon.dominio.Usuario;
+import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.dominio.Venta;
 import com.web.chon.dominio.VentaProducto;
+import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceCatCliente;
 import com.web.chon.service.IfaceCatUsuario;
 import com.web.chon.service.IfaceEmpaque;
@@ -18,7 +20,7 @@ import com.web.chon.util.Constantes;
 import com.web.chon.util.JasperReportUtil;
 import com.web.chon.util.JsfUtil;
 import com.web.chon.util.NumeroALetra;
-import com.web.chon.util.FileUtil;
+import com.web.chon.util.UtilUpload;
 import com.web.chon.util.TiempoUtil;
 
 import java.io.ByteArrayOutputStream;
@@ -86,7 +88,7 @@ public class BeanVenta implements Serializable, BeanSimple {
     @Autowired
     IfaceMantenimientoPrecio ifaceMantenimientoPrecio;
     @Autowired
-    BeanUsuario beanUsuario;
+    private PlataformaSecurityContext context;
     private ArrayList<VentaProducto> lstVenta;
     private ArrayList<Subproducto> lstProducto;
     private ArrayList<TipoEmpaque> lstTipoEmpaque;
@@ -97,6 +99,7 @@ public class BeanVenta implements Serializable, BeanSimple {
     private Subproducto subProducto;
     private VentaProducto dataRemove;
     private VentaProducto dataEdit;
+    private UsuarioDominio usuarioDominio;
     private Usuario usuario;
     private Cliente cliente;
 
@@ -117,47 +120,49 @@ public class BeanVenta implements Serializable, BeanSimple {
     private int idSucu;
     private boolean permisionToEdit;
     private boolean variableInicial; //Para el mensaje de null 
-    
+
     private BigDecimal max;
     private BigDecimal min;
-    
+
     @PostConstruct
-    public void init() 
-    {
+    public void init() {
         max = new BigDecimal(0);
-        min=new BigDecimal(0);
-        usuario = beanUsuario.getUsuario();
-        idSucu=usuario.getIdSucursal();
-        permisionToEdit=true;
+        min = new BigDecimal(0);
+        context.getFechaSistema();
+        usuario = new Usuario();
+        usuarioDominio = context.getUsuarioAutenticado();
+        idSucu = usuarioDominio.getSucId();
+        usuario.setIdUsuarioPk(usuarioDominio.getIdUsuario());
+        usuario.setNombreUsuario(usuarioDominio.getUsuNombre());
+        usuario.setApaternoUsuario(usuarioDominio.getUsuPaterno());
+        usuario.setAmaternoUsuario(usuarioDominio.getUsuMaterno());
+        permisionToEdit = true;
         venta = new Venta();
-        venta.setIdSucursal(usuario.getIdSucursal());
+        venta.setIdSucursal(idSucu);
         data = new VentaProducto();
         data.setIdTipoEmpaqueFk(new BigDecimal(-1));
         lstProducto = new ArrayList<Subproducto>();
         lstTipoEmpaque = ifaceEmpaque.getEmpaques();
         lstVenta = new ArrayList<VentaProducto>();
         selectedTipoEmpaque();
-        variableInicial= false;
+        variableInicial = false;
         setTitle("Venta de Productos.");
         setViewEstate("init");
     }
 
-    public void selectedTipoEmpaque() 
-    {
+    public void selectedTipoEmpaque() {
 
-        for (TipoEmpaque empaque : lstTipoEmpaque) 
-        {
+        for (TipoEmpaque empaque : lstTipoEmpaque) {
 
-            if ((empaque.getNombreEmpaque().equals("Kilos") && data.getIdTipoEmpaqueFk().equals(new BigDecimal(-1))) || data.getIdTipoEmpaqueFk().equals(empaque.getIdTipoEmpaquePk()))
-            {
+            if ((empaque.getNombreEmpaque().equals("Kilos") && data.getIdTipoEmpaqueFk().equals(new BigDecimal(-1))) || data.getIdTipoEmpaqueFk().equals(empaque.getIdTipoEmpaquePk())) {
                 data.setIdTipoEmpaqueFk(empaque.getIdTipoEmpaquePk());
                 setNombreEmpaque(empaque.getNombreEmpaque());
                 break;
             }
 
         }
-        variableInicial= true;
-        
+        variableInicial = true;
+
         searchById();
 
     }
@@ -174,9 +179,8 @@ public class BeanVenta implements Serializable, BeanSimple {
 
     }
 
-    public ArrayList<Usuario> autoCompleteVendedor(String nombreUsuario)
-    {
-        lstUsuario = ifaceCatUsuario.getUsuarioByNombreCompleto(nombreUsuario.toUpperCase(),idSucu);
+    public ArrayList<Usuario> autoCompleteVendedor(String nombreUsuario) {
+        lstUsuario = ifaceCatUsuario.getUsuarioByNombreCompleto(nombreUsuario.toUpperCase(), idSucu);
         return lstUsuario;
 
     }
@@ -186,14 +190,12 @@ public class BeanVenta implements Serializable, BeanSimple {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public void inserts() 
-    {
+    public void inserts() {
         int idVenta = 0;
         Venta venta = new Venta();
-        
+
         try {
-            if (!lstVenta.isEmpty() && lstVenta.size() > 0) 
-            {
+            if (!lstVenta.isEmpty() && lstVenta.size() > 0) {
 
                 idVenta = ifaceVenta.getNextVal();
                 venta.setIdVentaPk(new BigDecimal(idVenta));
@@ -238,56 +240,43 @@ public class BeanVenta implements Serializable, BeanSimple {
     }
 
     @Override
-    public void searchById() 
-    {
-        
+    public void searchById() {
 
         MantenimientoPrecios mantenimentoPrecio = new MantenimientoPrecios();
         BigDecimal pc = new BigDecimal(0);
         mantenimentoPrecio.setPrecioVenta(pc);
         int idEmpaque = data.getIdTipoEmpaqueFk() == null ? 0 : data.getIdTipoEmpaqueFk().intValue();
         String idSubProducto = subProducto == null ? "" : (subProducto.getIdSubproductoPk() == null ? "" : subProducto.getIdSubproductoPk());
-        mantenimentoPrecio = ifaceMantenimientoPrecio.getMantenimientoPrecioById(idSubProducto.trim(), idEmpaque,idSucu);
-        
-        if(mantenimentoPrecio.getPrecioMinimo()==mantenimentoPrecio.getPrecioMaximo())
-        {
-            permisionToEdit=true;
-        }
-        else if( mantenimentoPrecio.getPrecioMinimo().intValue()==mantenimentoPrecio.getPrecioMaximo().intValue())
-        {
+        mantenimentoPrecio = ifaceMantenimientoPrecio.getMantenimientoPrecioById(idSubProducto.trim(), idEmpaque, idSucu);
+
+        if (mantenimentoPrecio.getPrecioMinimo() == mantenimentoPrecio.getPrecioMaximo()) {
+            permisionToEdit = true;
+        } else if (mantenimentoPrecio.getPrecioMinimo().intValue() == mantenimentoPrecio.getPrecioMaximo().intValue()) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "El precio de este producto no es Ajustable"));
             max = mantenimentoPrecio.getPrecioMaximo();
             min = mantenimentoPrecio.getPrecioMinimo();
-            permisionToEdit=true;
-        }
-        else
-        {
+            permisionToEdit = true;
+        } else {
             max = mantenimentoPrecio.getPrecioMaximo();
             min = mantenimentoPrecio.getPrecioMinimo();
-            permisionToEdit=false;
+            permisionToEdit = false;
         }
-        if(mantenimentoPrecio.getPrecioVenta()==null && variableInicial==false)
-        {
-            
+        if (mantenimentoPrecio.getPrecioVenta() == null && variableInicial == false) {
+
             JsfUtil.addErrorMessage("No se tiene el precio de este prodcuto, favor de contactar al gerente.");
-            permisionToEdit=true;
+            permisionToEdit = true;
         }
-        
+
         data.setIdProductoFk(idSubProducto);
         data.setIdTipoEmpaqueFk(new BigDecimal(idEmpaque));
         data.setPrecioProducto(mantenimentoPrecio.getPrecioVenta() == null ? null : mantenimentoPrecio.getPrecioVenta().toBigInteger());
     }
 
-    public void addProducto() 
-    {
-        if(data.getPrecioProducto().intValue()<min.intValue() || data.getPrecioProducto().intValue()>max.intValue() )
-        {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "El precio de venta esta fuera de valores permitidos: Mínimo:" +min +" Máximo: "+ max));
-    
-            
-        } else 
-        
-        {
+    public void addProducto() {
+        if (data.getPrecioProducto().intValue() < min.intValue() || data.getPrecioProducto().intValue() > max.intValue()) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "El precio de venta esta fuera de valores permitidos: Mínimo:" + min + " Máximo: " + max));
+
+        } else {
             VentaProducto venta = new VentaProducto();
             TipoEmpaque empaque = new TipoEmpaque();
             DecimalFormat df = new DecimalFormat("#,###.##");
@@ -305,13 +294,11 @@ public class BeanVenta implements Serializable, BeanSimple {
             calcularTotalVenta();
             data.reset();
             subProducto = new Subproducto();
-            FileUtil.deleteFile(rutaPDF);
+            UtilUpload.deleteFile(rutaPDF);
             selectedTipoEmpaque();
-            variableInicial=false;
-            
-        }
+            variableInicial = false;
 
-       
+        }
 
     }
 
@@ -349,7 +336,7 @@ public class BeanVenta implements Serializable, BeanSimple {
         for (VentaProducto venta : lstVenta) {
             String cantidad = venta.getCantidadEmpaque() + " " + venta.getNombreEmpaque();
             productos.add(venta.getNombreProducto().toUpperCase());
-            productos.add("       "+cantidad + "               " + nf.format(venta.getPrecioProducto()) + "    " + nf.format(venta.getTotal()));
+            productos.add("       " + cantidad + "               " + nf.format(venta.getPrecioProducto()) + "    " + nf.format(venta.getTotal()));
         }
 
         String totalVentaStr = numeroLetra.Convertir(df.format(totalVenta), true);
@@ -368,7 +355,7 @@ public class BeanVenta implements Serializable, BeanSimple {
         paramReport.put("ventaTotal", total);
         paramReport.put("totalLetra", totalVentaStr);
         paramReport.put("estado", "PEDIDO MARCADO");
-        //paramReport.put("bodega", idSucu);
+        paramReport.put("bodega", idSucu);
 
     }
 
@@ -426,17 +413,14 @@ public class BeanVenta implements Serializable, BeanSimple {
 
         try {
             ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-            String temporal ="";
-            if(servletContext.getRealPath("")==null)
-            {
+            String temporal = "";
+            if (servletContext.getRealPath("") == null) {
                 temporal = Constantes.PATHSERVER;
-            }
-            else
-            {
+            } else {
                 temporal = servletContext.getRealPath("");
             }
-            
-            pathFileJasper = temporal+ File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketVenta" + File.separatorChar + "ticket.jasper";
+
+            pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketVenta" + File.separatorChar + "ticket.jasper";
 
             JasperPrint jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport, new JREmptyDataSource());
             outputStream = JasperReportUtil.getOutputStreamFromReport(paramReport, getPathFileJasper());
@@ -447,7 +431,7 @@ public class BeanVenta implements Serializable, BeanSimple {
 //            exporter.setParameter(JRPdfExporterParameter.PDF_JAVASCRIPT, "this.print();");
             byte[] bytes = outputStream.toByteArray();
 
-            rutaPDF = FileUtil.saveFileTemp(bytes, "ticketPdf");
+            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf");
 
             System.out.println("ruta de jasper :" + pathFileJasper);
             System.out.println("ruta de jasper :" + rutaPDF);
@@ -608,14 +592,6 @@ public class BeanVenta implements Serializable, BeanSimple {
         this.lstCliente = lstCliente;
     }
 
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
-
     public Cliente getCliente() {
         return cliente;
     }
@@ -676,9 +652,13 @@ public class BeanVenta implements Serializable, BeanSimple {
     public void setPermisionToEdit(boolean permisionToEdit) {
         this.permisionToEdit = permisionToEdit;
     }
-    
-    
-    
 
-    
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
 }

@@ -5,7 +5,7 @@ import org.primefaces.model.SortOrder;
 import org.springframework.data.domain.Sort;
 import com.web.chon.dominio.Pagina;
 import static com.web.chon.model.PageableBuilder.constructPageSpecification;
-import core.service.PaginacionService;
+import com.web.chon.core.service.PaginacionService;
 
 import java.io.Serializable;
 import java.util.List;

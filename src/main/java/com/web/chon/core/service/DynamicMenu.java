@@ -1,10 +1,11 @@
-package core.service;
+package com.web.chon.core.service;
 
 /**
  *
  * @author Juan
  */
 import com.web.chon.dominio.Menu;
+import com.web.chon.dominio.UsuarioDominio;
 import java.util.ArrayList;
 import org.primefaces.model.menu.DefaultMenuItem;
 import org.primefaces.model.menu.DefaultMenuModel;
@@ -13,10 +14,10 @@ import org.primefaces.model.menu.MenuModel;
 
 public class DynamicMenu {
 
-    public static MenuModel getMenuModel(ArrayList<Menu> lstMenu) {
+    public static MenuModel getMenuModel(UsuarioDominio usuarioDTO) {
         MenuModel model = new DefaultMenuModel();
 
-        for (Menu menu : lstMenu) {
+        for (Menu menu : usuarioDTO.getMenu()) {
 
             addMenu(model, menu);
         }

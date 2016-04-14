@@ -7,7 +7,7 @@ package com.web.chon.service;
 
 import com.web.chon.dominio.Provedor;
 
-import core.service.PaginacionService;
+import com.web.chon.core.service.PaginacionService;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,7 +1,7 @@
 package com.web.chon.service;
 
 import com.web.chon.dominio.AnalisisMercado;
-import core.service.PaginacionService;
+import com.web.chon.core.service.PaginacionService;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;

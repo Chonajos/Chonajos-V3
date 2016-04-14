@@ -5,14 +5,14 @@
     <h:body>        
         <h:form>
             <!-- comentario -->
-            <p:menubar model="#{beanInit.model}" rendered="#{beanUsuario.usuario.nombreUsuario != null}">
+            <p:menubar model="#{beanUsuario.menuModel}" rendered="#{beanUsuario.usuario != null}">
 
                 <div style="z-index: 1020; background-color: red" id="ll">  
-                    <f:facet name="options" id="pp" rendered="#{beanUsuario.usuario.nombreUsuario != null}">							
-                        <p:menuButton value="#{beanUsuario.usuario.nombreUsuario}" >			        
+                    <f:facet name="options" id="pp" rendered="#{beanUsuario.usuario.username != null}">							
+                        <p:menuButton value="#{beanUsuario.usuario.nombreCompleto}" >			        
                             <p:separator />
                             <p:menuitem value="Finalizar Sesión"
-                                        ajax="false" action="#{beanUsuario.doLogout()}"/>
+                                        ajax="false" action="#{securityBean.logout}"/>
                         </p:menuButton>
                     </f:facet>	        
                 </div> 			                		 		     
