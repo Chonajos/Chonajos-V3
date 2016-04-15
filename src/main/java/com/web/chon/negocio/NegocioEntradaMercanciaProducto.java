@@ -4,7 +4,8 @@
  * and open the template in the editor.
  */
 package com.web.chon.negocio;
-import com.web.chon.dominio.EntradaMercancia2;
+
+import com.web.chon.dominio.EntradaMercanciaProducto;
 import javax.ejb.Remote;
 
 /**
@@ -12,12 +13,6 @@ import javax.ejb.Remote;
  * @author marcogante
  */
 @Remote
-public interface NegocioEntradaMercancia
-{
-
-    public int insertEntradaMercancia(EntradaMercancia2 entrada);
-    
-    public int getNextVal();
-    public int buscaMaxMovimiento(EntradaMercancia2 entrada);
-    
+public interface NegocioEntradaMercanciaProducto {
+    public int insertEntradaMercanciaProducto(EntradaMercanciaProducto producto);
 }

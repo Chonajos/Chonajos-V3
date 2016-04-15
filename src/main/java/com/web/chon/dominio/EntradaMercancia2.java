@@ -11,28 +11,105 @@ import java.util.Date;
 
 /**
  *
- * @author marcogante
+ * @author freddy
  */
 public class EntradaMercancia2 extends ValueObject implements Serializable {
 
     private BigDecimal idEmPK; 
     private BigDecimal idProvedorFK; 
-    private int movimiento;
+    private BigDecimal movimiento;
     private Date fecha;
     private String remision;
     private BigDecimal idSucursalFK;
-
+    private Date fechaFiltroInicio;
+    private Date fechaFiltroFin;
+    private String abreviacion;
+    private String folio; //identificacion
+    private BigDecimal idStatusFk;
     
+
     @Override
     public String toString() {
-        return "EntradaMercancia2{" + "idEmPK=" + idEmPK + ", idProvedorFK=" + idProvedorFK + ", movimiento=" + movimiento + ", fecha=" + fecha + ", remision=" + remision + ", idSucursalFK=" + idSucursalFK + '}';
-    }
-    
-    @Override
-    public void reset() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "EntradaMercancia2{" + "idEmPK=" + idEmPK + ", idProvedorFK=" + idProvedorFK + ", movimiento=" + movimiento + ", fecha=" + fecha + ", remision=" + remision + ", idSucursalFK=" + idSucursalFK + ", fechaFiltroInicio=" + fechaFiltroInicio + ", fechaFiltroFin=" + fechaFiltroFin + ", abreviacion=" + abreviacion + ", folio=" + folio + '}';
     }
 
+    public BigDecimal getIdStatusFk() {
+        return idStatusFk;
+    }
+
+    public void setIdStatusFk(BigDecimal idStatusFk) {
+        this.idStatusFk = idStatusFk;
+    }
+
+    @Override
+    public void reset() 
+    {
+        idEmPK = null;
+        idProvedorFK = null;
+        movimiento = null;
+        fecha = null;
+        remision = null;
+        idSucursalFK = null;
+        fechaFiltroFin=null;
+        fechaFiltroInicio = null;
+        abreviacion= null;
+        folio = null;
+ 
+    }
+
+
+    
+    public BigDecimal getMovimiento() {
+        return movimiento;
+    }
+
+    public void setMovimiento(BigDecimal movimiento) {
+        this.movimiento = movimiento;
+    }
+
+   
+
+   
+
+    public String getFolio() {
+        return folio;
+    }
+
+    public void setFolio(String folio) {
+        this.folio = folio;
+    }
+
+    
+    
+    
+    
+
+    public String getAbreviacion() {
+        return abreviacion;
+    }
+
+    public void setAbreviacion(String abreviacion) {
+        this.abreviacion = abreviacion;
+    }
+
+    
+    public Date getFechaFiltroInicio() {
+        return fechaFiltroInicio;
+    }
+
+    public void setFechaFiltroInicio(Date fechaFiltroInicio) {
+        this.fechaFiltroInicio = fechaFiltroInicio;
+    }
+
+    public Date getFechaFiltroFin() {
+        return fechaFiltroFin;
+    }
+
+    public void setFechaFiltroFin(Date fechaFiltroFin) {
+        this.fechaFiltroFin = fechaFiltroFin;
+    }
+
+    
     public BigDecimal getIdEmPK() {
         return idEmPK;
     }
@@ -49,13 +126,7 @@ public class EntradaMercancia2 extends ValueObject implements Serializable {
         this.idProvedorFK = idProvedorFK;
     }
 
-    public int getMovimiento() {
-        return movimiento;
-    }
-
-    public void setMovimiento(int movimiento) {
-        this.movimiento = movimiento;
-    }
+    
 
     public Date getFecha() {
         return fecha;

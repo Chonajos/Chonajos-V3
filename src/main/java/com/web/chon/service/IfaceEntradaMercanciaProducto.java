@@ -5,16 +5,13 @@
  */
 package com.web.chon.service;
 
-import com.web.chon.dominio.EntradaMercancia2;
+import com.web.chon.dominio.EntradaMercanciaProducto;
 
 /**
  *
  * @author marcogante
  */
-public interface IfaceEntradaMercancia 
-{
-     public int insertEntradaMercancia(EntradaMercancia2 entrada);
-     public int buscaMaxMovimiento(EntradaMercancia2 entrada);
-     public int getNextVal ();
+public interface IfaceEntradaMercanciaProducto {
+    public int insertEntradaMercancia(EntradaMercanciaProducto producto);
     
 }

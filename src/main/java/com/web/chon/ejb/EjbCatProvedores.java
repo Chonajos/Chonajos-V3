@@ -31,7 +31,7 @@ public class EjbCatProvedores implements NegocioCatProvedores {
        try {
 
             System.out.println("EJB_GET_Provedores");
-            Query query = em.createNativeQuery("select ID_PROVEDOR,NOMBRE_PROVEDOR,A_PATERNO_PROVE,A_MATERNO_PROVE,NICKNAME from provedores");
+            Query query = em.createNativeQuery("select ID_PROVEDOR_PK,NOMBRE_PROVEDOR,A_PATERNO_PROVE,A_MATERNO_PROVE,NICKNAME from provedores");
             List<Object[]> resultList = null;
             resultList = query.getResultList();
             return resultList;
@@ -118,6 +118,8 @@ public class EjbCatProvedores implements NegocioCatProvedores {
     public int deleteProvedor(BigDecimal idProvedor) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
+    
 
     @Override
     public int updateProvedor(Provedor prove) 
@@ -173,6 +175,15 @@ public class EjbCatProvedores implements NegocioCatProvedores {
     public int insertProvedor(Provedor prove) {
         System.out.println("EJB_INSERTA_PROVEDOR");
         try {
+            
+            Query querySel = em.createNativeQuery("SELECT * FROM PROVEDORES WHERE NICKNAME = '" + prove.getNickName() + "' ");
+
+            List<Object[]> resultList = null;
+            resultList = querySel.getResultList();
+
+            if (resultList.isEmpty()) 
+            {
+
             System.out.println("freddy : " + prove);
             Query query = em.createNativeQuery("INSERT INTO PROVEDORES (ID_PROVEDOR_PK,NOMBRE_PROVEDOR,A_PATERNO_PROVE,A_MATERNO_PROVE,EMPRESA,CALLE_PROVE,SEXO_PROVE,FECHA_NACIMIENTO_PROVE\n" +
 ",TELEFONO_MOVIL_PROVE,TELEFONO_FIJO_PROVE,EXTENSION_PROVE,NUM_INT_PROVE,NUM_EXT_PROVE,CLAVECELULAR_PROVE,\n" +
@@ -210,7 +221,11 @@ public class EjbCatProvedores implements NegocioCatProvedores {
             query.setParameter(27, prove.getNickName());
             query.setParameter(28, prove.getCorreo());
             return query.executeUpdate();
-
+            }
+            else
+            {
+                return 0;
+            }
         } catch (Exception ex) {
             Logger.getLogger(EjbCatSucursales.class.getName()).log(Level.SEVERE, null, ex);
             return 0;

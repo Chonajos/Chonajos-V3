@@ -1,0 +1,179 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="./../templates/main.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content" id="content">
+        <div>
+            <h3>#{beanEntradaMercancia2.title}</h3>
+        </div>
+        <h:form id="formContent" >
+            <p:remoteCommand id="remoteComman" resetValues="true" onstart="alert('onstart')"></p:remoteCommand>
+            <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
+            <!--<p:growl id="messagess" showDetail="true" life="2000" />-->
+            <p:panel >
+                <div class="container-fluid">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-8 col-md-4 col-sm-4 col-xs-12"  for="comboSucursal" value ="Sucursal:"/> 
+                            <h:selectOneMenu  id="comboSucursal" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanEntradaMercancia2.data.idSucursalFK}" >
+                                <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="" />
+                                <f:selectItems value="#{beanEntradaMercancia2.listaSucursales}" var="sucursalita" itemLabel="#{sucursalita.nombreSucursal}" itemValue="#{sucursalita.idSucursalPk}"/>
+                                <p:ajax event="change" update=" formContent:txtIdentificador formContent:agregar" listener="#{beanEntradaMercancia2.reset()}" />
+                            </h:selectOneMenu>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-8 col-md-4 col-sm-4 col-xs-12"  for="comboProvedor" value ="Provedor:"/> 
+                            <h:selectOneMenu  id="comboProvedor" class=" col-lg-12 col-md-8 col-sm-8 col-xs-12" value="#{beanEntradaMercancia2.data.idProvedorFK}" >
+                                <f:selectItem itemLabel="Selecciona un Provedor" itemValue="" />
+                                <f:selectItems value="#{beanEntradaMercancia2.listaProvedores}" var="provedorsito" itemLabel=" (#{provedorsito.nickName}) #{provedorsito.nombreProvedor} #{provedorsito.apaternoProve} #{provedorsito.amaternoProve}" itemValue="#{provedorsito.idProvedorPK}"/>
+                                <p:ajax event="change" update="@this  formContent:txtIdentificador formContent:agregar" listener="#{beanEntradaMercancia2.buscaMovimiento()}" />
+                            </h:selectOneMenu>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <!--<div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtRemision" value ="Remisión:" /> 
+                            <p:inputText id="txtRemision" maxlength="10" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="{beanEntradaMercancia2.data.remision}" required="true"
+                                         requiredMessage="Ingresa el número de remisión">
+                                <p:ajax event="blur" update="formContent:txtIdentificador formContent:agregar" listener ="{beanEntradaMercancia2.buscaMovimiento()}"/>
+                            </p:inputText>
+                        </div>-->
+
+                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-4 col-md-3 col-sm-4 col-xs-6"  for="txtIdentificador" value ="Identificador:" /> 
+                            <p:inputText id="txtIdentificador" maxlength="10" class=" col-lg-8 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMercancia2.data.folio}" disabled="true">
+                            </p:inputText>
+                        </div>
+                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 form-group">
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </p:panel>
+            <p:panel >
+                <div class="container-fluid">
+                    <div class="form-group" align="right">
+                        <p:commandButton id="agregar" value="Agregar" update=":formContent" ajax="true" action="#{beanEntradaMercancia2.addProducto}" rendered="#{beanEntradaMercancia2.viewEstate =='init'}" disabled="#{beanEntradaMercancia2.permisionToPush}"/>
+                        <p:commandButton value="Aceptar" update=":formContent" ajax="true" action="#{beanEntradaMercancia2.updateProducto}" rendered="#{beanEntradaMercancia2.viewEstate =='update'}"/>
+                        <p:commandButton value="Cancelar" update=":formContent" ajax="true" action="#{beanEntradaMercancia2.cancel}" immediate="true" resetValues="true" rendered="#{beanEntradaMercancia2.viewEstate =='update'}"/>
+                    </div>
+                    <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 form-group" >
+                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-8 col-sm-4 col-xs-12"  for="comboTipoOrden" value ="Tipo de Compra:"/> 
+                            <h:selectOneMenu  id="comboTipoOrden" class=" col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanEntradaMercancia2.dataProducto.idTipo}" >
+                                <f:selectItem itemLabel="Selecciona un Tipo de Compra" itemValue="-1" />
+                                <f:selectItems value="#{beanEntradaMercancia2.listaTiposOrden}" var="listitaorden" itemLabel="#{listitaorden.nombreTipoOrdenCompra}" itemValue="#{listitaorden.idTocPK}"/>
+                                <p:ajax event="change" update="@this formContent:labelprecio formContent:txtPrecio"  listener="#{beanEntradaMercancia2.permisions()}" />
+                            </h:selectOneMenu>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="autocompletePoducto" value ="Producto:" /> 
+                            <p:autoComplete  placeholder="Seleccione un Producto" id="autocompletePoducto"  required="true" requiredMessage="Ingresa un valor para el campo Producto." styleClass="autocomplete-input-text-media"
+                                             value="#{beanEntradaMercancia2.subProducto}" completeMethod="#{beanMantenimientoPrecio.autoComplete}" forceSelection="true" var="producto"  inputStyle="width: 200px"
+                                             itemLabel="#{producto.nombreSubproducto}"
+                                             itemValue="#{producto.idSubproductoPk}" converter="#{productoConverter}">
+
+                            </p:autoComplete>
+                            <pe:keyFilter for="autocompletePoducto" regEx="/[a-z0-9-_Ã±\s]/i" />
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="txtTipoEmpaque" value ="Empaque:" /> 
+                            <h:selectOneMenu  id="txtTipoEmpaque" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanEntradaMercancia2.dataProducto.idTipoEmpaqueFK}"  required="true"  requiredMessage="Ingresa un valor para el campo Tipo de Empaque.">
+                                <f:selectItem itemLabel="Seleccione un empaque" itemValue="-1" />
+                                <f:selectItems value="#{beanEntradaMercancia2.lstTipoEmpaque}" var="empaque" itemLabel="#{empaque.nombreEmpaque}" itemValue="#{empaque.idTipoEmpaquePk}"/>
+                            </h:selectOneMenu>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 form-group">
+                            <p:outputLabel  class="col-lg-4 col-md-3 col-sm-4 col-xs-6"  for="txtCantidad" value ="Cantidad:" /> 
+                            <p:inputText id="txtCantidad" maxlength="30" class=" col-lg-2 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMercancia2.dataProducto.cantidadPaquetes}" required ="true"
+                                         requiredMessage="Ingresa la Cantidad de Paquetes">
+                                <pe:keyFilter regEx="/[0-9 ]/i"/>
+                            </p:inputText>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 form-group">
+                            <p:outputLabel  class="col-lg-5 col-md-3 col-sm-4 col-xs-6"  for="txtPrecio" id="labelprecio" value ="#{beanEntradaMercancia2.labelCompra}:" /> 
+                            <p:inputText id="txtPrecio" maxlength="30" class=" col-lg-3 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMercancia2.dataProducto.precio}" disabled="#{beanEntradaMercancia2.permisionPrecio}">
+                                <pe:keyFilter regEx="/[0-9 ]/i"/>
+                            </p:inputText>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <p:outputLabel  class="col-lg-4 col-md-3 col-sm-4 col-xs-6"  for="txtComentarios" value ="Comentarios:" /> 
+                        <p:inputText id="txtComentarios" maxlength="30" class=" col-lg-6 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMercancia2.dataProducto.comentarios}" disabled="true"> 
+                        </p:inputText>
+                    </div>
+                </div>
+            </p:panel>
+            <p:panel >
+                <div class="container-fluid">
+                    <div class="form-group" align="right">
+                        <p:commandButton value="Generar Orden" id="vender" ajax="false" update=":formContent"   action="#{beanEntradaMercancia2.inserts}" immediate="true" resetValues="true" rendered="#{beanEntradaMercancia2.viewEstate =='init'}" disabled="#{beanEntradaMercancia2.permisionToGenerate}"/>
+                    </div>
+                    <p:dataTable var="model" value="#{beanEntradaMercancia2.listaMercanciaProducto}" styleClass="ui-datatable-hor-scroll"  emptyMessage="Productos.">
+
+                        <p:column headerText="Producto" width="150px;" style="text-align:center">
+                            <h:outputText value="#{model.nombreProducto}" />
+                        </p:column>
+                        <p:column headerText="Empaque" width="150px;" style="text-align:center">
+                            <h:outputText value="#{model.nombreEmpaque}" />
+                        </p:column>
+                        <p:column headerText="Cantidad" width="85px;" style="text-align:center">
+                            <h:outputText value="#{model.cantidadPaquetes}" />
+                        </p:column>
+                        <p:column headerText="Precio" width="60px;" style="text-align:center">
+                            <h:outputText value="#{model.precio}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Tipo Compra" width="90px;" style="text-align:center">
+                            <h:outputText value="#{model.nombreTipoOrdenCompra}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column headerText="Editar" width="60px;" style="text-align:center">
+                            <p:commandButton id="editar" ajax="true" process="@this" action="#{beanEntradaMercancia2.editProducto}" icon="ui-icon-pencil" styleClass="ui-priority-primary" update=":formContent">
+                                <f:setPropertyActionListener value="#{model}" target="#{beanEntradaMercancia2.dataEdit}"/>
+                            </p:commandButton>
+                        </p:column>
+                        <p:column headerText="Remover" width="80px;" style="text-align:center">
+                            <p:commandButton id="remover" ajax="true" immediate="true" action="#{beanEntradaMercancia2.remove}" icon="ui-icon-close" styleClass="ui-priority-primary" update=":formContent">
+                                <f:setPropertyActionListener value="#{model}" target="#{beanEntradaMercancia2.dataRemove}"/>
+                            </p:commandButton>
+                        </p:column>
+                        <p:columnGroup type="footer">
+                            <p:row>
+                                <p:column colspan="4" style="text-align:right" footerText="Total de Kilos:" />
+                                <p:column colspan="1">
+                                    <f:facet name="footer">
+                                        <h:outputText value="#{beanEntradaMercancia2.totalKilos}">
+
+                                        </h:outputText>
+                                    </f:facet>
+                                </p:column>
+                                <p:column colspan="2"/>
+                            </p:row>
+                        </p:columnGroup>
+
+                    </p:dataTable>
+
+                </div>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>

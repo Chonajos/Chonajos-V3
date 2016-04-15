@@ -21,7 +21,7 @@ public interface IfaceProducto {
     
     public int deleteProducto(String idProducto);
     
-    public int updateProducto(Producto producto );
+    public int updateProducto(Producto producto);
     
     /**
      * Obtiene el ultimo id de categoria y lo devuelve como entero

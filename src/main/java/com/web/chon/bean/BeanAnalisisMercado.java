@@ -122,7 +122,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
         chartLineByDias.setBreakOnNull(true);
         chartLineByDias.setDatatipFormat("%2$d");
         chartLineByDias.setLegendCols(6);
-        chartLineByDias.setResetAxesOnResize(true);
+//        chartLineByDias.setResetAxesOnResize(true);
         chartLineByDias.setStacked(true);
         chartLineByDias.getAxes().put(AxisType.X, new CategoryAxis("Fecha"));
         chartLineByDias.getAxis(AxisType.X).setTickAngle(90);
@@ -184,7 +184,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
         chartBarByDias.setShowPointLabels(true);
         chartBarByDias.setDatatipFormat("%2$d");
         chartBarByDias.setLegendCols(6);
-        chartLineByDias.setResetAxesOnResize(false);
+//        chartLineByDias.setResetAxesOnResize(false);
         chartLineByDias.setStacked(false);
         chartBarByDias.getAxes().put(AxisType.X, new CategoryAxis("Fecha"));
         chartBarByDias.getAxis(AxisType.X).setTickAngle(90);

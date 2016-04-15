@@ -4,20 +4,18 @@
  * and open the template in the editor.
  */
 package com.web.chon.negocio;
-import com.web.chon.dominio.EntradaMercancia2;
+
+import java.util.List;
 import javax.ejb.Remote;
 
 /**
  *
- * @author marcogante
+ * @author freddy
  */
 @Remote
-public interface NegocioEntradaMercancia
-{
+public interface NegocioTipoOrdenCompra {
 
-    public int insertEntradaMercancia(EntradaMercancia2 entrada);
+    public List<Object[]> getTipos();
     
-    public int getNextVal();
-    public int buscaMaxMovimiento(EntradaMercancia2 entrada);
     
 }
