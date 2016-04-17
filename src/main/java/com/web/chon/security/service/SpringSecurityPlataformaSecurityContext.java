@@ -44,7 +44,7 @@ public class SpringSecurityPlataformaSecurityContext implements PlataformaSecuri
     @Override
     public UsuarioDominio getUsuarioAutenticado() {
 
-        UsuarioDominio usuarioActual = null;
+        UsuarioDominio usuarioActual = new UsuarioDominio();
 
         final SecurityContext context = SecurityContextHolder.getContext();
         if (context != null) {

@@ -7,7 +7,7 @@
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
     </filter>
     <session-config>	
-        <session-timeout>480</session-timeout>
+        <session-timeout>3600</session-timeout>
     </session-config>
    
     <filter-mapping>
@@ -76,22 +76,8 @@
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <!--va antes del sesion time y despues de jr-->
-    <!--    <servlet>
+   
+    <servlet>
         <servlet-name>Push Servlet</servlet-name>
         <servlet-class>org.primefaces.push.PushServlet</servlet-class>
         <async-supported>true</async-supported>
@@ -99,14 +85,10 @@
     <servlet-mapping>
         <servlet-name>Push Servlet</servlet-name>
         <url-pattern>/primepush/*</url-pattern>
-    </servlet-mapping> -->
- 
-    
-    
-    
+    </servlet-mapping>
     
     <context-param>  
         <param-name>primefaces.THEME</param-name>  
-        <param-value>pepper-grinder</param-value>  
+        <param-value>casablanca</param-value>  
     </context-param>  
 </web-app>

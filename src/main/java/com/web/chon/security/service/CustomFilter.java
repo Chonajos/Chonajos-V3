@@ -37,8 +37,11 @@ public class CustomFilter extends OncePerRequestFilter {
             chain.doFilter(req, res);
             return;
         }
+        
 
         String url = req.getRequestURL().toString();
+        String urlPrimePush = url.substring(url.length() - 16, url.length());
+
         int i = url.lastIndexOf("/views/");
         int j = url.lastIndexOf("7001/");
 
@@ -57,9 +60,6 @@ public class CustomFilter extends OncePerRequestFilter {
         if (j > 0 && (url.substring(j)).equalsIgnoreCase("") || (url.substring(j)).equalsIgnoreCase("/views/")) {
             url = url.substring(j);
             logger.debug("Usuario loegado - Url: {}", url);
-            System.out.println("logeado"+url);
-
-            logger.debug("Usuario con permiso");
             res.sendRedirect("/views/welcome.xhtml");
             return;
 
@@ -67,7 +67,6 @@ public class CustomFilter extends OncePerRequestFilter {
 
         if (i > 0) {
             url = url.substring(i);
-            logger.trace("Url: {}", url);
             try {
                 hasPermission(url);
             } catch (SecurityAccessException e) {
@@ -77,7 +76,9 @@ public class CustomFilter extends OncePerRequestFilter {
 
         }
 
-        chain.doFilter(req, res);
+        if (!urlPrimePush.equals("primepush/notify")) {
+            chain.doFilter(req, res);
+        } 
     }
 
     private boolean isAjaxRequest(HttpServletRequest request) {
@@ -86,13 +87,13 @@ public class CustomFilter extends OncePerRequestFilter {
 
     private void hasPermission(String url) throws SecurityAccessException {
         usuario = context.getUsuarioAutenticado();
-        System.out.println("hasPermission"+url);
+        System.out.println("hasPermission" + url);
         if (url.equalsIgnoreCase("/views/welcome.xhtml")) {
             return;
         } else if (!usuario.getPerDescripcion().equals(Perfiles.ANALISTA_DE_PROYECTOS_SR.getPerfil())) {
-            System.out.println("validate permisos analista"+url);
+            System.out.println("validate permisos analista" + url);
             if (usuario.getAllowedUrl().contains(url)) {
-System.out.println("validate url");
+                System.out.println("validate url");
                 return;
             }
         } else {

@@ -1,22 +1,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" 
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://java.sun.com/jsf/core">
+      xmlns:p="http://primefaces.org/ui">
     <h:body>        
         <h:form>
-            <!-- comentario -->
-            <p:menubar model="#{beanUsuario.menuModel}" rendered="#{beanUsuario.usuario != null}">
-
-                <div style="z-index: 1020; background-color: red" id="ll">  
-                    <f:facet name="options" id="pp" rendered="#{beanUsuario.usuario.username != null}">							
-                        <p:menuButton value="#{beanUsuario.usuario.nombreCompleto}" >			        
-                            <p:separator />
-                            <p:menuitem value="Finalizar Sesión"
-                                        ajax="false" action="#{securityBean.logout}"/>
-                        </p:menuButton>
-                    </f:facet>	        
-                </div> 			                		 		     
-            </p:menubar>				
-        </h:form>			
+            <p:menubar model="#{beanUsuario.menuModel}" rendered="#{beanUsuario.usuario != null}" autoDisplay="false"/>			                		 		     			
+        </h:form>
     </h:body>
 </html>  

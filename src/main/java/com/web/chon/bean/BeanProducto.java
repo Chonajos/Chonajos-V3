@@ -59,7 +59,7 @@ public class BeanProducto implements Serializable, BeanSimple {
                 try {
                     ifaceProducto.deleteProducto(producto.getIdProductoPk());
                     
-//                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro eliminado."));
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro eliminado."));
                     send();
                 } catch (Exception ex) {
                     ex.printStackTrace();

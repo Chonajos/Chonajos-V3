@@ -61,7 +61,7 @@ public class SecurityBean implements PhaseListener, Serializable {
 
 	public String doLogin() throws IOException, ServletException {
 		ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-		
+		usuarioWeb = new UsuarioWeb();
 		RequestDispatcher dispatcher = ((ServletRequest) context.getRequest())
 				.getRequestDispatcher("/j_spring_security_check");
 		dispatcher.forward((ServletRequest) context.getRequest(),

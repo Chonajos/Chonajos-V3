@@ -6,6 +6,25 @@
 /*
  * CSS Choanajos
  */
+
+html{
+  height: 100%;
+}
+
+.menuChonajos {
+	float: right !important;
+	margin-top: 0px;
+	width: 400px;
+}
+
+.logoBanner{	 
+	 background-image:url("../resources/img/bannerChonajos.jpg");
+	 background-repeat: no-repeat;
+	 height: 70px; 
+	 width:30%;
+	 margin-right: 5px;
+}
+
 .calendario input 
 {
     width:105px;
@@ -30,4 +49,3 @@
 {
     color:deepskyblue;
 }
-
