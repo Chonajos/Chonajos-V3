@@ -26,7 +26,8 @@ public class EntradaMercancia2 extends ValueObject implements Serializable {
     private String abreviacion;
     private String folio; //identificacion
     private BigDecimal idStatusFk;
-    
+    private BigDecimal kilosTotales;
+    private BigDecimal kilosTotalesProvedor;
 
     @Override
     public String toString() {
@@ -57,6 +58,14 @@ public class EntradaMercancia2 extends ValueObject implements Serializable {
  
     }
 
+    public BigDecimal getKilosTotalesProvedor() {
+        return kilosTotalesProvedor;
+    }
+
+    public void setKilosTotalesProvedor(BigDecimal kilosTotalesProvedor) {
+        this.kilosTotalesProvedor = kilosTotalesProvedor;
+    }
+
 
     
     public BigDecimal getMovimiento() {
@@ -77,6 +86,14 @@ public class EntradaMercancia2 extends ValueObject implements Serializable {
 
     public void setFolio(String folio) {
         this.folio = folio;
+    }
+
+    public BigDecimal getKilosTotales() {
+        return kilosTotales;
+    }
+
+    public void setKilosTotales(BigDecimal kilosTotales) {
+        this.kilosTotales = kilosTotales;
     }
 
     

@@ -31,13 +31,15 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
         System.out.println("EJB_INSERTA_ENTRADAMERCANCIA");
         try {
             System.out.println("Entrada: " + entrada);
-            Query query = em.createNativeQuery("INSERT INTO ENTRADAMERCANCIA (ID_EM_PK,ID_PROVEDOR_FK,MOVIMIENTO,FECHA,REMISION,ID_SUCURSAL_FK,IDENTIFICADOR,ID_STATUS_FK)VALUES (?,?,?,sysdate,?,?,?,1)");
+            Query query = em.createNativeQuery("INSERT INTO ENTRADAMERCANCIA (ID_EM_PK,ID_PROVEDOR_FK,MOVIMIENTO,FECHA,REMISION,ID_SUCURSAL_FK,IDENTIFICADOR,ID_STATUS_FK,KILOSTOTALES,KILOSTOTALESPROVEDOR)VALUES (?,?,?,sysdate,?,?,?,1,?,?)");
             query.setParameter(1, entrada.getIdEmPK());
             query.setParameter(2, entrada.getIdProvedorFK());
             query.setParameter(3, entrada.getMovimiento());
             query.setParameter(4, entrada.getRemision());
             query.setParameter(5, entrada.getIdSucursalFK());
             query.setParameter(6, entrada.getFolio());
+            query.setParameter(7, entrada.getKilosTotales());
+            query.setParameter(8, entrada.getKilosTotalesProvedor());
             
             
             return query.executeUpdate();

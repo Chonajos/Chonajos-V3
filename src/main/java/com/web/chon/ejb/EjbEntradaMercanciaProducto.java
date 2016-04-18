@@ -29,14 +29,16 @@ public class EjbEntradaMercanciaProducto implements NegocioEntradaMercanciaProdu
         System.out.println("EJB_INSERTA_ENTRADAMERCANCIA Producto");
         try {
             System.out.println("Entrada_Porducto: " + producto);
-            Query query = em.createNativeQuery("INSERT INTO ENTRADAMERCANCIAPRODUCTO (ID_EMP_PK,ID_EM_FK,ID_SUBPRODUCTO_FK,ID_TIPO_EMPAQUE_FK,KILOS_TOTALES,CANTIDAD_EMPACAQUE,COMENTARIOS,ID_TIPO_COMPRA_FK)VALUES (S_EntradaMercanciaProducto.NextVal,?,?,?,?,?,?,?)");
+            Query query = em.createNativeQuery("INSERT INTO ENTRADAMERCANCIAPRODUCTO (ID_EMP_PK,ID_EM_FK,ID_SUBPRODUCTO_FK,ID_TIPO_EMPAQUE_FK,KILOS_TOTALES,CANTIDAD_EMPACAQUE,COMENTARIOS,ID_TIPO_COMPRA_FK,ID_BODEGA_FK)VALUES (S_EntradaMercanciaProducto.NextVal,?,?,?,?,?,?,?,?)");
             query.setParameter(1, producto.getIdEmFK());
             query.setParameter(2, producto.getIdSubProductoFK());
             query.setParameter(3, producto.getIdTipoEmpaqueFK());
-            query.setParameter(4, producto.getKilosTotales());
+            query.setParameter(4, producto.getKilosTotalesProducto());
             query.setParameter(5, producto.getCantidadPaquetes());
             query.setParameter(6, producto.getComentarios());
             query.setParameter(7, producto.getIdTipo());
+            query.setParameter(8, producto.getIdBodegaFK());
+            
  
             return query.executeUpdate();
 

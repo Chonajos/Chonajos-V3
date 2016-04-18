@@ -18,6 +18,9 @@
             <!--<p:growl id="messagess" showDetail="true" life="2000" />-->
             <p:panel >
                 <div class="container-fluid">
+                    <div class="form-group" align="right">
+                        <p:commandButton value="Finalizar" id="vender" ajax="false" update=":formContent"   action="#{beanEntradaMercancia2.inserts}" immediate="true" resetValues="true" rendered="#{beanEntradaMercancia2.viewEstate =='init'}" disabled="#{beanEntradaMercancia2.permisionToGenerate}"/>
+                    </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
 
                         <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
@@ -33,18 +36,18 @@
                             <h:selectOneMenu  id="comboProvedor" class=" col-lg-12 col-md-8 col-sm-8 col-xs-12" value="#{beanEntradaMercancia2.data.idProvedorFK}" >
                                 <f:selectItem itemLabel="Selecciona un Provedor" itemValue="" />
                                 <f:selectItems value="#{beanEntradaMercancia2.listaProvedores}" var="provedorsito" itemLabel=" (#{provedorsito.nickName}) #{provedorsito.nombreProvedor} #{provedorsito.apaternoProve} #{provedorsito.amaternoProve}" itemValue="#{provedorsito.idProvedorPK}"/>
-                                <p:ajax event="change" update="@this  formContent:txtIdentificador formContent:agregar" listener="#{beanEntradaMercancia2.buscaMovimiento()}" />
+                                <p:ajax event="change" update="@this " />
                             </h:selectOneMenu>
                         </div>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                        <!--<div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtRemision" value ="Remisión:" /> 
-                            <p:inputText id="txtRemision" maxlength="10" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="{beanEntradaMercancia2.data.remision}" required="true"
+                            <p:inputText id="txtRemision" maxlength="10" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMercancia2.data.remision}" required="true"
                                          requiredMessage="Ingresa el número de remisión">
-                                <p:ajax event="blur" update="formContent:txtIdentificador formContent:agregar" listener ="{beanEntradaMercancia2.buscaMovimiento()}"/>
+                                <p:ajax event="blur" update="formContent:txtIdentificador formContent:agregar" listener ="#{beanEntradaMercancia2.buscaMovimiento()}"/>
                             </p:inputText>
-                        </div>-->
+                        </div>
 
                         <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-4 col-md-3 col-sm-4 col-xs-6"  for="txtIdentificador" value ="Identificador:" /> 
@@ -53,9 +56,18 @@
                         </div>
                         <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 form-group">
 
-                        </div>
+                            <p:outputLabel class="col-lg-4 col-md-3 col-sm-4 col-xs-6"  for="txtkilosTotales" value ="Total de Kilos:" /> 
+                            <p:inputText id="txtkilosTotales" maxlength="10" class=" col-lg-4 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMercancia2.data.kilosTotalesProvedor}">
+                            </p:inputText>
 
+                        </div>
                     </div>
+                    
+                
+                    
+                       <!-- <p:fileUpload value="{fileUploadView.file}" mode="simple" skinSimple="true"/>
+                        <p:commandButton value="Submit" ajax="false" actionListener="{fileUploadView.upload}" />-->
+                    
                 </div>
 
             </p:panel>
@@ -68,9 +80,9 @@
                     </div>
                     <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 form-group" >
                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-8 col-sm-4 col-xs-12"  for="comboTipoOrden" value ="Tipo de Compra:"/> 
+                            <p:outputLabel class="col-lg-4 col-md-8 col-sm-4 col-xs-12"  for="comboTipoOrden" value ="Tipo de Convenido:"/> 
                             <h:selectOneMenu  id="comboTipoOrden" class=" col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanEntradaMercancia2.dataProducto.idTipo}" >
-                                <f:selectItem itemLabel="Selecciona un Tipo de Compra" itemValue="-1" />
+                                <f:selectItem itemLabel="Tipo de Convenido" itemValue="-1" />
                                 <f:selectItems value="#{beanEntradaMercancia2.listaTiposOrden}" var="listitaorden" itemLabel="#{listitaorden.nombreTipoOrdenCompra}" itemValue="#{listitaorden.idTocPK}"/>
                                 <p:ajax event="change" update="@this formContent:labelprecio formContent:txtPrecio"  listener="#{beanEntradaMercancia2.permisions()}" />
                             </h:selectOneMenu>
@@ -97,7 +109,7 @@
                         </div>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                        
+
                         <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel  class="col-lg-4 col-md-3 col-sm-4 col-xs-6"  for="txtCantidad" value ="Cantidad:" /> 
                             <p:inputText id="txtCantidad" maxlength="30" class=" col-lg-2 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMercancia2.dataProducto.cantidadPaquetes}" required ="true"
@@ -114,16 +126,27 @@
                     </div>
                     <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 form-group">
                         <p:outputLabel  class="col-lg-4 col-md-3 col-sm-4 col-xs-6"  for="txtComentarios" value ="Comentarios:" /> 
-                        <p:inputText id="txtComentarios" maxlength="30" class=" col-lg-6 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMercancia2.dataProducto.comentarios}" disabled="true"> 
-                        </p:inputText>
+                        <p:inputTextarea rows="5" cols="20" id="txtComentarios" class=" col-lg-6 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMercancia2.dataProducto.comentarios}"/>
+
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 form-group">
+                        <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="comboBodega" value ="Bodega:" /> 
+                        <h:selectOneMenu  id="comboBodega" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanEntradaMercancia2.dataProducto.idBodegaFK}"  required="true"  requiredMessage="Selecciona una opción">
+                            <f:selectItem itemLabel="Seleccione una bodega" itemValue="-1" />
+                            <f:selectItems value="#{beanEntradaMercancia2.listaBodegas}" var="bode" itemLabel="#{bode.nombreBodega}" itemValue="#{bode.idBodegaPK}"/>
+                        </h:selectOneMenu>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 form-group">
+                            <p:outputLabel  class="col-lg-5 col-md-3 col-sm-4 col-xs-6"  for="txtkilosProducto"  value ="Peso total en Kilos:" /> 
+                            <p:inputText id="txtkilosProducto" maxlength="30" class=" col-lg-3 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMercancia2.dataProducto.kilosTotalesProducto}">
+                                <pe:keyFilter regEx="/[0-9 ]/i"/>
+                            </p:inputText>
                     </div>
                 </div>
             </p:panel>
             <p:panel >
                 <div class="container-fluid">
-                    <div class="form-group" align="right">
-                        <p:commandButton value="Generar Orden" id="vender" ajax="false" update=":formContent"   action="#{beanEntradaMercancia2.inserts}" immediate="true" resetValues="true" rendered="#{beanEntradaMercancia2.viewEstate =='init'}" disabled="#{beanEntradaMercancia2.permisionToGenerate}"/>
-                    </div>
+                    
                     <p:dataTable var="model" value="#{beanEntradaMercancia2.listaMercanciaProducto}" styleClass="ui-datatable-hor-scroll"  emptyMessage="Productos.">
 
                         <p:column headerText="Producto" width="150px;" style="text-align:center">
@@ -135,13 +158,19 @@
                         <p:column headerText="Cantidad" width="85px;" style="text-align:center">
                             <h:outputText value="#{model.cantidadPaquetes}" />
                         </p:column>
-                        <p:column headerText="Precio" width="60px;" style="text-align:center">
+                        <p:column headerText="Tipo de Convenio" width="90px;" style="text-align:center">
+                            <h:outputText value="#{model.nombreTipoOrdenCompra}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column headerText="Convenio" width="60px;" style="text-align:center">
                             <h:outputText value="#{model.precio}">
                                 <f:convertNumber pattern="#,##0.00"/>
                             </h:outputText>
                         </p:column>
-                        <p:column headerText="Tipo Compra" width="90px;" style="text-align:center">
-                            <h:outputText value="#{model.nombreTipoOrdenCompra}">
+                        <p:column headerText="Bodega:" width="90px;" style="text-align:center">
+                            <h:outputText value="#{model.nombreBodega}">
                                 <f:convertNumber pattern="#,##0.00"/>
                             </h:outputText>
                         </p:column>
@@ -162,11 +191,10 @@
                                 <p:column colspan="1">
                                     <f:facet name="footer">
                                         <h:outputText value="#{beanEntradaMercancia2.totalKilos}">
-
                                         </h:outputText>
                                     </f:facet>
                                 </p:column>
-                                <p:column colspan="2"/>
+                                <p:column colspan="3"/>
                             </p:row>
                         </p:columnGroup>
 

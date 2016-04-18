@@ -5,6 +5,7 @@
  */
 package com.web.chon.bean;
 
+import com.web.chon.dominio.Bodega;
 import com.web.chon.dominio.EntradaMercancia2;
 import com.web.chon.dominio.EntradaMercanciaProducto;
 import com.web.chon.dominio.Provedor;
@@ -12,6 +13,7 @@ import com.web.chon.dominio.Subproducto;
 import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.TipoEmpaque;
 import com.web.chon.dominio.TipoOrdenCompra;
+import com.web.chon.service.IfaceCatBodegas;
 import com.web.chon.service.IfaceCatProvedores;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceEmpaque;
@@ -46,6 +48,10 @@ public class BeanEntradaMercancia2 implements Serializable {
     @Autowired
     private IfaceCatSucursales ifaceCatSucursales;
     private ArrayList<Sucursal> listaSucursales;
+    
+    @Autowired
+    private IfaceCatBodegas ifaceCatBodegas;
+    private ArrayList<Bodega> listaBodegas;
 
     @Autowired
     private IfaceCatProvedores ifaceCatProvedores;
@@ -100,24 +106,27 @@ public class BeanEntradaMercancia2 implements Serializable {
         listaProvedores = new ArrayList<Provedor>();
         listaProvedores = ifaceCatProvedores.getProvedores();
         listaMercanciaProducto = new ArrayList<EntradaMercanciaProducto>();
+        listaBodegas  = new ArrayList<Bodega>();
+        listaBodegas = ifaceCatBodegas.getBodegas();
         dataProducto = new EntradaMercanciaProducto();
         lstTipoEmpaque = ifaceEmpaque.getEmpaques();
         data = new EntradaMercancia2();
         listaTiposOrden = new ArrayList<TipoOrdenCompra>();
         listaTiposOrden = ifaceTipoOrdenCompra.getTipos();
-        setTitle("Orden de Compra");
+        setTitle("Entrada de Mercancia");
         setViewEstate("init");
         movimiento = 0;
         year = 0;
         permisionPacto = true;
         permisionComision = true;
-        permisionPrecio = true;
+        permisionPrecio = false;
         labelCompra = "Ingresa el Precio";
        permisionToGenerate=true;
 
     }
 
-    public void permisions() {
+    public void permisions() 
+    {
 
         labelCompra = labels.get(dataProducto.getIdTipo().intValue() - 1);
         permisionPrecio = false;
@@ -141,6 +150,8 @@ public class BeanEntradaMercancia2 implements Serializable {
                 entrada_mercancia.setFecha(data.getFecha());
                 entrada_mercancia.setIdSucursalFK(new BigDecimal(1));
                 entrada_mercancia.setFolio(data.getFolio());
+                entrada_mercancia.setKilosTotales(data.getKilosTotales());
+                entrada_mercancia.setKilosTotalesProvedor(data.getKilosTotalesProvedor());
 
                 int mercanciaOrdenada = ifaceEntradaMercancia.insertEntradaMercancia(entrada_mercancia);
                 if (mercanciaOrdenada != 0) {
@@ -208,19 +219,8 @@ public class BeanEntradaMercancia2 implements Serializable {
         dataProducto.setNombreEmpaque(dataEdit.getNombreEmpaque());
         dataProducto.setCantidadPaquetes(dataEdit.getCantidadPaquetes());
         dataProducto.setPrecio(dataEdit.getPrecio());
-        dataProducto.setKilosTotales(dataEdit.getKilosTotales());
+        dataProducto.setKilosTotalesProducto(dataEdit.getKilosTotalesProducto());
         dataProducto.setComentarios(dataEdit.getComentarios());
-        /* EntradaMercanciaProducto p = new EntradaMercanciaProducto();
-        TipoEmpaque empaque = new TipoEmpaque();
-        p.setIdSubProductoFK(subProducto.getIdSubproductoPk());
-        p.setNombreProducto(subProducto.getNombreSubproducto());
-        p.setIdTipoEmpaqueFK(dataProducto.getIdTipoEmpaqueFK());
-        empaque = getEmpaque(dataProducto.getIdTipoEmpaqueFK());
-        p.setNombreEmpaque(empaque.getNombreEmpaque());
-        p.setCantidadPaquetes(dataProducto.getCantidadPaquetes());
-        p.setPrecio(dataProducto.getPrecio());
-        p.setKilosTotales(dataProducto.getKilosTotales());
-        p.setComentarios(dataProducto.getComentarios());*/
         viewEstate = "update";
         System.out.println("datadataProducto :" + dataProducto.toString());
 
@@ -244,22 +244,8 @@ public class BeanEntradaMercancia2 implements Serializable {
         dataEdit.setNombreEmpaque(empaque.getNombreEmpaque());
         dataEdit.setCantidadPaquetes(dataProducto.getCantidadPaquetes());
         dataEdit.setPrecio(dataProducto.getPrecio());
-        dataEdit.setKilosTotales(dataProducto.getKilosTotales());
+        dataEdit.setKilosTotalesProducto(dataProducto.getKilosTotalesProducto());
         dataEdit.setComentarios(dataProducto.getComentarios());
-
-        /*TipoEmpaque empaque = new TipoEmpaque();
-        empaque = getEmpaque(data.getIdTipoEmpaqueFk());
-        dataEdit.setCantidadEmpaque(data.getCantidadEmpaque());
-        dataEdit.setIdProductoFk(data.getIdProductoFk());
-        dataEdit.setIdTipoEmpaqueFk(data.getIdTipoEmpaqueFk());
-        dataEdit.setIdVentaProductoPk(data.getIdVentaProductoPk());
-        dataEdit.setKilosVenta(data.getKilosVenta());
-        dataEdit.setPrecioProducto(data.getPrecioProducto());
-        dataEdit.setNombreProducto(data.getNombreProducto());
-        dataEdit.setIdProductoFk(data.getIdProductoFk());
-        dataEdit.setNombreEmpaque(empaque.getNombreEmpaque());
-        dataEdit.setTotal(new BigDecimal(dataEdit.getPrecioProducto()).multiply(dataEdit.getCantidadEmpaque()));
-        calcularTotalVenta();*/
         viewEstate = "init";
         subProducto = new Subproducto();
         dataProducto.reset();
@@ -283,7 +269,8 @@ public class BeanEntradaMercancia2 implements Serializable {
 
     }
 
-    public void addProducto() {
+    public void addProducto() 
+    {
 
         EntradaMercanciaProducto p = new EntradaMercanciaProducto();
         TipoEmpaque empaque = new TipoEmpaque();
@@ -295,18 +282,39 @@ public class BeanEntradaMercancia2 implements Serializable {
         p.setNombreEmpaque(empaque.getNombreEmpaque());
         p.setCantidadPaquetes(dataProducto.getCantidadPaquetes());
         p.setPrecio(dataProducto.getPrecio());
-        p.setKilosTotales(dataProducto.getKilosTotales());
+        p.setKilosTotalesProducto(dataProducto.getKilosTotalesProducto());
+        int kilos = data.getKilosTotalesProvedor().intValue();
+        kilos = kilos + p.getKilosTotalesProducto().intValue();
+        data.setKilosTotales(new BigDecimal(kilos));
         p.setComentarios(dataProducto.getComentarios());
         to = getTipoOrden(dataProducto.getIdTipo());
         p.setNombreTipoOrdenCompra(to.getNombreTipoOrdenCompra());
         p.setIdTipo(dataProducto.getIdTipo());
+        Bodega b = new Bodega();
+        b = getBodega(dataProducto.getIdBodegaFK());
+        p.setNombreBodega(b.getNombreBodega());
+        p.setIdBodegaFK(dataProducto.getIdBodegaFK());
         listaMercanciaProducto.add(p);
+        
+        
         permisionToGenerate=false;
         dataProducto.reset();
         subProducto = new Subproducto();
         listaTiposOrden = ifaceTipoOrdenCompra.getTipos();
+        listaBodegas=ifaceCatBodegas.getBodegas();
         
 
+    }
+    private Bodega getBodega(BigDecimal idBodega) {
+        Bodega b = new Bodega();
+
+        for (Bodega bodeguita : listaBodegas) {
+            if (bodeguita.getIdBodegaPK().equals(idBodega)) {
+                b= bodeguita;
+                break;
+            }
+        }
+        return b;
     }
 
     private TipoEmpaque getEmpaque(BigDecimal idEmpaque) {
@@ -577,6 +585,22 @@ public class BeanEntradaMercancia2 implements Serializable {
 
     public void setPermisionToGenerate(boolean permisionToGenerate) {
         this.permisionToGenerate = permisionToGenerate;
+    }
+
+    public IfaceCatBodegas getIfaceCatBodegas() {
+        return ifaceCatBodegas;
+    }
+
+    public void setIfaceCatBodegas(IfaceCatBodegas ifaceCatBodegas) {
+        this.ifaceCatBodegas = ifaceCatBodegas;
+    }
+
+    public ArrayList<Bodega> getListaBodegas() {
+        return listaBodegas;
+    }
+
+    public void setListaBodegas(ArrayList<Bodega> listaBodegas) {
+        this.listaBodegas = listaBodegas;
     }
 
     
