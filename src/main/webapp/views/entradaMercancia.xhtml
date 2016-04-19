@@ -28,7 +28,7 @@
                             <h:selectOneMenu  id="comboSucursal" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanEntradaMercancia2.data.idSucursalFK}" >
                                 <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="" />
                                 <f:selectItems value="#{beanEntradaMercancia2.listaSucursales}" var="sucursalita" itemLabel="#{sucursalita.nombreSucursal}" itemValue="#{sucursalita.idSucursalPk}"/>
-                                <p:ajax event="change" update=" formContent:txtIdentificador formContent:agregar" listener="#{beanEntradaMercancia2.reset()}" />
+                                <p:ajax event="change" update=" formContent:txtIdentificador formContent:agregar formContent:txtRemision" listener="#{beanEntradaMercancia2.reset()}" />
                             </h:selectOneMenu>
                         </div>
                         <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">

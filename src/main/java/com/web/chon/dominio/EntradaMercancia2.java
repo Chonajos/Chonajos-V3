@@ -15,8 +15,8 @@ import java.util.Date;
  */
 public class EntradaMercancia2 extends ValueObject implements Serializable {
 
-    private BigDecimal idEmPK; 
-    private BigDecimal idProvedorFK; 
+    private BigDecimal idEmPK;
+    private BigDecimal idProvedorFK;
     private BigDecimal movimiento;
     private Date fecha;
     private String remision;
@@ -43,19 +43,21 @@ public class EntradaMercancia2 extends ValueObject implements Serializable {
     }
 
     @Override
-    public void reset() 
-    {
+    public void reset() {
         idEmPK = null;
         idProvedorFK = null;
         movimiento = null;
         fecha = null;
         remision = null;
         idSucursalFK = null;
-        fechaFiltroFin=null;
+        fechaFiltroFin = null;
         fechaFiltroInicio = null;
-        abreviacion= null;
+        abreviacion = null;
         folio = null;
- 
+        idStatusFk = null;
+        kilosTotales = null;
+        kilosTotalesProvedor = null;
+
     }
 
     public BigDecimal getKilosTotalesProvedor() {
@@ -66,8 +68,6 @@ public class EntradaMercancia2 extends ValueObject implements Serializable {
         this.kilosTotalesProvedor = kilosTotalesProvedor;
     }
 
-
-    
     public BigDecimal getMovimiento() {
         return movimiento;
     }
@@ -75,10 +75,6 @@ public class EntradaMercancia2 extends ValueObject implements Serializable {
     public void setMovimiento(BigDecimal movimiento) {
         this.movimiento = movimiento;
     }
-
-   
-
-   
 
     public String getFolio() {
         return folio;
@@ -96,11 +92,6 @@ public class EntradaMercancia2 extends ValueObject implements Serializable {
         this.kilosTotales = kilosTotales;
     }
 
-    
-    
-    
-    
-
     public String getAbreviacion() {
         return abreviacion;
     }
@@ -109,7 +100,6 @@ public class EntradaMercancia2 extends ValueObject implements Serializable {
         this.abreviacion = abreviacion;
     }
 
-    
     public Date getFechaFiltroInicio() {
         return fechaFiltroInicio;
     }
@@ -126,7 +116,6 @@ public class EntradaMercancia2 extends ValueObject implements Serializable {
         this.fechaFiltroFin = fechaFiltroFin;
     }
 
-    
     public BigDecimal getIdEmPK() {
         return idEmPK;
     }
@@ -142,8 +131,6 @@ public class EntradaMercancia2 extends ValueObject implements Serializable {
     public void setIdProvedorFK(BigDecimal idProvedorFK) {
         this.idProvedorFK = idProvedorFK;
     }
-
-    
 
     public Date getFecha() {
         return fecha;
@@ -168,7 +155,5 @@ public class EntradaMercancia2 extends ValueObject implements Serializable {
     public void setIdSucursalFK(BigDecimal idSucursalFK) {
         this.idSucursalFK = idSucursalFK;
     }
-    
-    
-    
+
 }
