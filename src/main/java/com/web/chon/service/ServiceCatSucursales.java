@@ -183,4 +183,9 @@ public class ServiceCatSucursales implements IfaceCatSucursales {
     public void delete(BigDecimal id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public Sucursal getById(String dominio) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

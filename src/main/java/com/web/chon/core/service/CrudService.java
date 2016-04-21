@@ -21,6 +21,15 @@ public interface CrudService<T, ID extends Serializable> {
 	 * @throws IllegalArgumentException si {@code id} es {@literal null}
 	 */
 	T getById (ID dominio);
+        
+        /**
+	 * Obtiene un dominio por su Id
+	 * 
+	 * @param id llave de la entidad no debe ser {@literal null}.
+	 * @return dominio para el Id o {@literal null} si no fue encontrado
+	 * @throws IllegalArgumentException si {@code id} es {@literal null}
+	 */
+	T getById (String dominio);
 	
 	/**
 	 * Guarda la entidad.

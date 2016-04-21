@@ -1,16 +1,16 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.web.chon.service;
 
 import com.web.chon.dominio.EntradaMercancia2;
+import com.web.chon.dominio.Pagina;
 
 import com.web.chon.negocio.NegocioEntradaMercancia;
 import com.web.chon.util.Utilidades;
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -72,6 +72,46 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia{
             return 0;
         }
     
+    }
+
+    @Override
+    public Pagina<EntradaMercancia2> findAll(Pageable pageable) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Pagina<EntradaMercancia2> findAllDominio(EntradaMercancia2 filters, int first, int pageSize) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public EntradaMercancia2 getById(BigDecimal dominio) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public EntradaMercancia2 getById(String dominio) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public int create(EntradaMercancia2 dominio) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public int update(EntradaMercancia2 dominio) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<EntradaMercancia2> getAll() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void delete(BigDecimal id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

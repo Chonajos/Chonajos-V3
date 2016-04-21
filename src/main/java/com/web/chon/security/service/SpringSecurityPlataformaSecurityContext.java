@@ -58,7 +58,7 @@ public class SpringSecurityPlataformaSecurityContext implements PlataformaSecuri
             throw new UsuarioNoAutenticadoException();
         }
 
-        usuarioActual.setUsuId(usuarioActual.getUsuId().toUpperCase());
+        usuarioActual.setUsuId(usuarioActual.getUsuId());
 
         return usuarioActual;
     }

@@ -177,14 +177,13 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
 
         chartBarByDias = initChartBar();
         chartBarByDias.setSeriesColors("0404B4,088A08,81BEF7,D0F5A9");
-        chartBarByDias.setTitle("Análisis de Mercado");
+        chartBarByDias.setTitle("Análisis de Mercado por Semana");
         chartBarByDias.setLegendPosition("ne");
         chartBarByDias.setZoom(true);
         chartBarByDias.setAnimate(true);
         chartBarByDias.setShowPointLabels(true);
         chartBarByDias.setDatatipFormat("%2$d");
         chartBarByDias.setLegendCols(6);
-//        chartLineByDias.setResetAxesOnResize(false);
         chartLineByDias.setStacked(false);
         chartBarByDias.getAxes().put(AxisType.X, new CategoryAxis("Fecha"));
         chartBarByDias.getAxis(AxisType.X).setTickAngle(90);
@@ -232,7 +231,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
 
         chartLineBySemana = initChartLineSemana();
         chartLineBySemana.setSeriesColors("0404B4,088A08,81BEF7,D0F5A9");
-        chartLineBySemana.setTitle("Análisis de Mercado Semana");
+        chartLineBySemana.setTitle("Análisis de Mercado por Semana");
         chartLineBySemana.setLegendPosition("nw");
         chartLineBySemana.setZoom(true);
         chartLineBySemana.setAnimate(true);

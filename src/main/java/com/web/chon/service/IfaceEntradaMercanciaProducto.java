@@ -5,13 +5,15 @@
  */
 package com.web.chon.service;
 
+import com.web.chon.core.service.PaginacionService;
 import com.web.chon.dominio.EntradaMercanciaProducto;
+import java.math.BigDecimal;
 
 /**
  *
  * @author marcogante
  */
-public interface IfaceEntradaMercanciaProducto {
+public interface IfaceEntradaMercanciaProducto extends PaginacionService<EntradaMercanciaProducto, BigDecimal>{
     public int insertEntradaMercancia(EntradaMercanciaProducto producto);
     
 }

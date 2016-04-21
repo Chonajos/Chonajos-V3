@@ -1,16 +1,21 @@
 package com.web.chon.bean;
 
+import com.web.chon.bean.mvc.SimpleViewBean;
+import com.web.chon.dominio.Bodega;
 import com.web.chon.dominio.BuscaVenta;
+import com.web.chon.dominio.EntradaMercancia2;
+import com.web.chon.dominio.EntradaMercanciaProducto;
 import com.web.chon.dominio.RelacionOperaciones;
 import com.web.chon.dominio.StatusVenta;
 import com.web.chon.dominio.Sucursal;
+import com.web.chon.model.PaginationLazyDataModel;
 import com.web.chon.service.IfaceBuscaVenta;
 import com.web.chon.service.IfaceCatStatusVenta;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceEmpaque;
+import com.web.chon.service.IfaceEntradaMercancia;
+import com.web.chon.service.IfaceEntradaMercanciaProducto;
 import com.web.chon.service.IfaceSubProducto;
-import com.web.chon.service.IfaceVenta;
-import com.web.chon.service.IfaceVentaProducto;
 import com.web.chon.util.TiempoUtil;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -22,31 +27,30 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
- * Bean para la Relacion de Operaciones
+ * Bean para la Relacion de Operaciones para entrada de mercancias
  *
  * @author Juan de la Cruz
  */
 @Component
 @Scope("view")
-public class BeanRelacionOperaciones implements Serializable, BeanSimple {
+public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
     private static final long serialVersionUID = 1L;
 
     @Autowired
-    private IfaceVenta ifaceVenta;
+    private IfaceEntradaMercancia ifaceEntradaMercancia;
     @Autowired
     private IfaceEmpaque ifaceEmpaque;
     @Autowired
     private IfaceSubProducto ifaceSubProducto;
     @Autowired
-    private IfaceVentaProducto ifaceVentaProducto;
+    private IfaceEntradaMercanciaProducto ifaceEntradaMercanciaProducto;
     @Autowired
     private IfaceBuscaVenta ifaceBuscaVenta;
     @Autowired
     private IfaceCatSucursales ifaceCatSucursales;
     @Autowired
     private IfaceCatStatusVenta ifaceCatStatusVenta;
-    
 
     private BeanUsuario beanUsuario;
     private RelacionOperaciones data;
@@ -54,6 +58,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     private ArrayList<BuscaVenta> lstVenta;
     private ArrayList<Sucursal> listaSucursales;
     private ArrayList<StatusVenta> listaStatusVenta;
+
     private String title;
     private String viewEstate;
     private int filtro;
@@ -61,19 +66,24 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     private Date fechaFin;
     private BigDecimal totalVenta;
 
-    @PostConstruct
-    public void init() 
-    {
+    private PaginationLazyDataModel entradaMercancia;
 
+    private PaginationLazyDataModel entradaMercanciaProdcuto;
+
+    @PostConstruct
+    public void init() {
+
+        entradaMercancia = new PaginationLazyDataModel<EntradaMercancia2, BigDecimal>(ifaceEntradaMercancia, new EntradaMercancia2());
+        entradaMercancia = new PaginationLazyDataModel<EntradaMercanciaProducto, BigDecimal>(ifaceEntradaMercanciaProducto, new EntradaMercanciaProducto());
         model = new ArrayList<RelacionOperaciones>();
         data = new RelacionOperaciones();
         lstVenta = new ArrayList<BuscaVenta>();
         listaSucursales = new ArrayList<Sucursal>();
         listaSucursales = ifaceCatSucursales.getSucursales();
         
-         listaStatusVenta = new ArrayList<StatusVenta>();
-        listaStatusVenta  = ifaceCatStatusVenta.getStatusVentas();
-        setTitle("Relación de Operaciónes Entrada de Mercancia.");
+        listaStatusVenta = new ArrayList<StatusVenta>();
+        listaStatusVenta = ifaceCatStatusVenta.getStatusVentas();
+        setTitle("Relación de Operaciónes.");
         setViewEstate("init");
 
     }
@@ -86,7 +96,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     @Override
     public String insert() {
 
-        return null;
+        return "relacionOperaciones";
     }
 
     @Override
@@ -96,17 +106,16 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
 
     @Override
     public void searchById() {
-        viewEstate = "searchById";
+        setViewEstate("searchById");
 
     }
 
     public void setFechaInicioFin(int filter) {
 
-        switch (filter)
-        {
+        switch (filter) {
             case 4:
                 if (data.getFechaFiltroInicio() != null && data.getFechaFiltroFin() != null) {
-                    model = ifaceVenta.getVentasByIntervalDate(data.getFechaFiltroInicio(), data.getFechaFiltroFin(),data.getIdSucursal(),data.getIdStatus());
+//                    model = ifaceVenta.getVentasByIntervalDate(data.getFechaFiltroInicio(), data.getFechaFiltroFin(), data.getIdSucursal(), data.getIdStatus());
                     getTotalVentaByInterval();
                 } else {
                     model = new ArrayList<RelacionOperaciones>();
@@ -121,7 +130,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
             case 2:
                 data.setFechaFiltroInicio(TiempoUtil.getDayOneOfMonth(new Date()));
                 data.setFechaFiltroFin(TiempoUtil.getDayEndOfMonth(new Date()));
-                
+
                 break;
             case 3:
                 data.setFechaFiltroInicio(TiempoUtil.getDayOneYear(new Date()));
@@ -135,29 +144,21 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
 
     }
 
-    public void getVentasByIntervalDate() 
-    {
-        
+    public void getVentasByIntervalDate() {
+
         setFechaInicioFin(filtro);
-        if (data.getFechaFiltroInicio() != null && data.getFechaFiltroFin() != null) 
-        {
-           model = ifaceVenta.getVentasByIntervalDate(data.getFechaFiltroInicio(), data.getFechaFiltroFin(),data.getIdSucursal(),data.getIdStatus());
-           getTotalVentaByInterval();
-        } else 
-        {
+        if (data.getFechaFiltroInicio() != null && data.getFechaFiltroFin() != null) {
+//            model = ifaceVenta.getVentasByIntervalDate(data.getFechaFiltroInicio(), data.getFechaFiltroFin(), data.getIdSucursal(), data.getIdStatus());
+            getTotalVentaByInterval();
+        } else {
             model = new ArrayList<RelacionOperaciones>();
             getTotalVentaByInterval();
         }
 
     }
-    public void printStatus() 
-    {
-        getVentasByIntervalDate();
 
-    }
-    public void printSucu() 
-    {
-        //data.setIdSucursal(data.getIdSucursal());
+    public void printStatus() {
+        getVentasByIntervalDate();
 
     }
 
@@ -168,14 +169,13 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
         }
     }
 
-    public void cancel() 
-    {
-        viewEstate = "init";
+    public void cancel() {
+        setViewEstate("init");
         lstVenta.clear();
     }
 
     public void detallesVenta() {
-        viewEstate = "searchById";
+        setViewEstate("searchById");
         lstVenta = ifaceBuscaVenta.getVentaById(data.getIdVentaPk().intValue());
         calculatotalVentaDetalle();
 
@@ -260,8 +260,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     public void setLstVenta(ArrayList<BuscaVenta> lstVenta) {
         this.lstVenta = lstVenta;
     }
-    
-    
+
     public ArrayList<Sucursal> getListaSucursales() {
         return listaSucursales;
     }
@@ -269,7 +268,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     public void setListaSucursales(ArrayList<Sucursal> listaSucursales) {
         this.listaSucursales = listaSucursales;
     }
-    
+
     public ArrayList<StatusVenta> getListaStatusVenta() {
         return listaStatusVenta;
     }
@@ -278,4 +277,21 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
         this.listaStatusVenta = listaStatusVenta;
     }
 
+    public PaginationLazyDataModel getEntradaMercancia() {
+        return entradaMercancia;
+    }
+
+    public void setEntradaMercancia(PaginationLazyDataModel entradaMercancia) {
+        this.entradaMercancia = entradaMercancia;
+    }
+
+    public PaginationLazyDataModel getEntradaMercanciaProdcuto() {
+        return entradaMercanciaProdcuto;
+    }
+
+    public void setEntradaMercanciaProdcuto(PaginationLazyDataModel entradaMercanciaProdcuto) {
+        this.entradaMercanciaProdcuto = entradaMercanciaProdcuto;
+    }
+
+    
 }

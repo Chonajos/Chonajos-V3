@@ -118,7 +118,7 @@ public class ServiceAnalisisMercado implements IfaceAnalisisMercado {
                         entradaMercacncia.setPrecioAnterior(new BigDecimal(0));
                         entradaMercacncia.setCantidadToneladas(new BigDecimal(0));
                         entradaMercacncia.setCantidadToneladasAnterior(new BigDecimal(0));
-                        entradaMercacncia.setDescripcionFiltro(TiempoUtil.nombreDia(fechaInicioTemp) + " " + TiempoUtil.getFechaDDMMYYYY(fechaInicioTemp));
+                        entradaMercacncia.setDescripcionFiltro(TiempoUtil.nombreDia(fechaInicioTemp) + " " + TiempoUtil.getFechaDDMMYY(fechaInicioTemp));
                         lstEntradaMercanciaDate.add(entradaMercacncia);
 
                         fechaInicioTemp = TiempoUtil.sumarRestarDias(fechaInicioTemp, 1);
@@ -188,9 +188,10 @@ public class ServiceAnalisisMercado implements IfaceAnalisisMercado {
 
                             dominio.setPrecio(obj[0] != null ? new BigDecimal(obj[0].toString()) : new BigDecimal(0));
                             dominio.setCantidadToneladas(obj[1] != null ? new BigDecimal(obj[1].toString()) : new BigDecimal(0));
-                            dominio.setDescripcionFiltro(rangoFechaInicio.get(0) + "-" + rangoFechaInicio.get(6));
-
-                            //Objeto con los datos de la semana del año anterior
+//                            dominio.setDescripcionFiltro(rangoFechaInicio.get(0) + "-" + rangoFechaInicio.get(6));
+                            dominio.setDescripcionFiltro(TiempoUtil.getNumberMonthYear(fechaInicio) + "-" +TiempoUtil.getYear(fechaInicio));
+                            
+                             //Objeto con los datos de la semana del año anterior
                             for (Object[] objAnterior : lstObjectAnterior) {
                                 dominio.setPrecioAnterior(objAnterior[0] != null ? new BigDecimal(objAnterior[0].toString()) : new BigDecimal(0));
                                 dominio.setCantidadToneladasAnterior(objAnterior[1] != null ? new BigDecimal(objAnterior[1].toString()) : new BigDecimal(0));
@@ -237,6 +238,11 @@ public class ServiceAnalisisMercado implements IfaceAnalisisMercado {
         }
 
         return dominio;
+    }
+
+    @Override
+    public AnalisisMercado getById(String dominio) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

@@ -43,7 +43,7 @@ public class CustomFilter extends OncePerRequestFilter {
         String urlPrimePush = url.substring(url.length() - 16, url.length());
 
         int i = url.lastIndexOf("/views/");
-        int j = url.lastIndexOf("7001/");
+        int j = url.lastIndexOf("7001");
 
         if ((url.substring(j)).equalsIgnoreCase("/login.xhtml")) {
 

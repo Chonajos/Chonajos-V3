@@ -10,8 +10,10 @@
             <div> 
                 <div class="form-group" style="width:100%; padding-bottom: 40px;">
                     <div class="navbar-header" style="width:100%;" align="right">
-                        <div class="col-lg-9 col-md-8">
-                            <a class="nav navbar-nav hidden-xs hidden-sm"><img style="height:47px; width:100px;" src="../resources/img/logo.png" alt="logo"></img></a>
+                        <div class="col-lg-9 col-md-8" align="left">
+                            <a class="nav navbar-nav hidden-xs hidden-sm col-lg-5 col-md-5"><img style="height:47px; width:100px;" src="../resources/img/logo.png" alt="logo"></img></a>
+                            <div class="nav navbar-nav hidden-xs hidden-sm col-lg-offset-2" style="color: #039; font-size: 26px;">Sistema Integral de Ventas</div>
+
                         </div>
                         <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
                             <h:form style="align-content: center">
@@ -19,7 +21,7 @@
                                     #{usuarioWeb.usuario.nombreCompleto} - #{usuarioWeb.usuario.perDescripcion}
                                 </div>
                                 <div>
-                                    
+
                                     <p:commandLink  id="ajax" ajax="false"  actionListener="#{securityBean.logout}">
                                         <h:outputText value="Finalizar Sesión" />
                                     </p:commandLink>

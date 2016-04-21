@@ -11,10 +11,10 @@ html{
   height: 100%;
 }
 
-.menuChonajos {
+.menu {
 	float: right !important;
-	margin-top: 0px;
-	width: 400px;
+	margin-top: 15px;
+	width: 900px;
 }
 
 .logoBanner{	 

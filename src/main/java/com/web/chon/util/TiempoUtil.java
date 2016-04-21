@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.web.chon.util;
 
 import java.text.DateFormat;
@@ -23,7 +18,9 @@ public class TiempoUtil {
     private static DateFormat formatoFechaDiaMesAnioHoraMinuto = new SimpleDateFormat("dd/MM/yyyy HH:mm");
     private static DateFormat formatoFechaDiaUnoMesAnio = new SimpleDateFormat("01/" + "MM/yyyy");
     private static DateFormat formatoFechaDiaMesAnio = new SimpleDateFormat("dd/MM/yyyy");
-    private static String[] diasEspanol = {"Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"};
+    private static DateFormat formatoFechaDiaMesAnioDosDigitos = new SimpleDateFormat("dd/MM/yy");
+//    private static String[] diasEspanol = {"Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"};
+    private static String[] diasEspanol = {"Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"};
 
     /**
      * Metodo para rellenar a 4 espacio
@@ -211,7 +208,6 @@ public class TiempoUtil {
      * @return
      */
     public static int getYear(Date fecha) {
-        System.out.println("get year" + fecha);
         Calendar cal = Calendar.getInstance();
         cal.setTime(fecha);;
 
@@ -313,6 +309,54 @@ public class TiempoUtil {
         }
         String convertido = formatoFechaDiaMesAnio.format(fecha);
         return fechaTextoDiaMesAnio(convertido);
+
+    }
+
+    /**
+     * Obtiene solo el año de una fecha a dos digitos
+     *
+     * @param fecha
+     * @return
+     */
+    public static int getYearTwoDosDigitos(Date fecha) {
+        
+        Calendar cal = Calendar.getInstance();
+        
+        cal.setTime(fecha);;
+        String anioStr = Integer.toString(cal.get(Calendar.YEAR));
+        anioStr = anioStr.substring(2, anioStr.length());
+        int anio = Integer.parseInt(anioStr);
+        
+        return anio;
+    }
+    
+    /**
+     * Obtiene solo el numero de semana del año de la fecha ingresada
+     *
+     * @param fecha
+     * @return
+     */
+    public static int getNumberMonthYear(Date fecha) {
+        
+        Calendar cal = Calendar.getInstance();
+        
+        cal.setTime(fecha);;
+        
+        return cal.get(Calendar.WEEK_OF_YEAR);
+    }
+    
+      /**
+     * Combierte date a formato DD/MM/YY y lo retorna como String
+     *
+     * @param fecha
+     * @return String fecha en formato DD/MM/YY
+     */
+    public static String getFechaDDMMYY(Date fecha) {
+        if (fecha == null) {
+            return "";
+        }
+        String convertido = formatoFechaDiaMesAnioDosDigitos.format(fecha);
+        return convertido;
 
     }
 

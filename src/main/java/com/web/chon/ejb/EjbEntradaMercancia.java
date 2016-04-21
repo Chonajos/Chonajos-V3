@@ -75,4 +75,10 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
         Query query = em.createNativeQuery("SELECT S_ENTRADAMERCANCIA.nextVal FROM DUAL");
         return Integer.parseInt(query.getSingleResult().toString());
     }
+    
+//    SELECT COUNT(*) FROM ENTRADAMERCANCIA;
+//
+//SELECT EMA.*,PRO.NOMBRE_PROVEDOR ||' '|| PRO.A_PATERNO_PROVE ||' '|| PRO.A_MATERNO_PROVE AS NOMBRE_PROVEDOR, SUC.NOMBRE_SUCURSAL FROM ENTRADAMERCANCIA EMA
+//LEFT JOIN PROVEDORES PRO ON EMA.ID_PROVEDOR_FK = PRO.ID_PROVEDOR_PK
+//LEFT JOIN SUCURSAL SUC ON EMA.ID_SUCURSAL_FK = SUC.ID_SUCURSAL_PK;
 }

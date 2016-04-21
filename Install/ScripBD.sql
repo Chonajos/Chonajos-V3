@@ -586,6 +586,7 @@ INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Análisis', 1,'60','NULL');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Análisis de Mercado', 0,'60.1','/views/analisisMercado.xhtml');
 
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Bodegas', 0,'10.6','/views/bodega.xhtml');
 
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(1,1);
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(2,1);
@@ -609,4 +610,6 @@ INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(16,1);
 
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(17,1);
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(18,1);
+
+INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(19,1);
 <--- fin inserts para roles y permisos--->

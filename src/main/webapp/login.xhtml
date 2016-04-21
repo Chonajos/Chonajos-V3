@@ -14,8 +14,6 @@
         <div  align="center" style="zoom:100%">
             <p:growl id="growl" showDetail="true" life="6000" />
             <h:form id="loginFormId" prependId="false">
-
-
                 <p:spacer height="100" />
                 <p:panel class="col-lg-8 col-md-12 col-sm-12 col-xs-12 col-lg-offset-2">
                     <div align="left"><h3>Inicia Sesión</h3></div>
@@ -45,36 +43,9 @@
                             <div>Si recuerdas tu contraseña, utiliza esta opción para modificarla.</div>
                             <div class="col-lg-12 col-md-12"><h4><a style="color: #2ECCFA">Recuperar Contraseña </a></h4></div>
                             <div>Mediante esta opción podrás cambiar tu contraseña, será necesario que proporciones tu pregunta y respuesta de seguridad </div>
-
                         </div>
                     </div>
-
-
                 </p:panel>
-
-
-                <!--                <p:layout fullPage="true">
-                                    <p:layoutUnit position="center">
-                                        <p:spacer height="100" />
-                                        <p:panelGrid columns="2">
-                                            <f:facet name="header">Registro de Usuarios</f:facet>
-                                            <h:outputLabel for="j_username" value="user:"></h:outputLabel>
-                                            <p:inputText value="{securityBean.userName}"
-                                                         id="j_username" required="true" requiredMessage="Usuario Requerido" label="username" autocomplete="off"></p:inputText>
-                
-                                            <h:outputLabel for="j_password" value="paswword:"></h:outputLabel>
-                                            <p:password value="{securityBean.password}"
-                                                        id="j_password" required="true" requiredMessage="Password Requerido" label="password" autocomplete="off"></p:password>
-                
-                                            <f:facet name ="footer">
-                                                <div align="center">
-                                                    <p:commandButton id="btnLogin" value="iniciar" action="{securityBean.doLogin}" ajax="false"
-                                                                     styleClass="btnLoginPanel" update=":growl" icon="ui-icon-circle-check"></p:commandButton>
-                                                </div>
-                                            </f:facet>
-                                        </p:panelGrid>
-                                    </p:layoutUnit>
-                                </p:layout>-->
             </h:form>
         </div>
     </h:body>

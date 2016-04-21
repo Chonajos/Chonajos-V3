@@ -15,10 +15,10 @@ import javax.ejb.Remote;
  * @author marcogante
  */
 @Remote
-public interface NegocioCatBodega 
-{
+public interface NegocioCatBodega {
+
     public List<Object[]> getBodegas();
-    
+
     public List<Object[]> getBodegaById(int idBodega);
 
     public int deleteBodega(int idBodega);
@@ -26,7 +26,24 @@ public interface NegocioCatBodega
     public int updateBodega(Bodega bo);
 
     public int insertBodega(Bodega bo);
-    
-    public int getNextVal ();
-    
+
+    public int getNextVal();
+
+    /**
+     * Obtiene el numero de bodegas que existen en la base de datos
+     *
+     * @return
+     */
+    public Long countBodegas();
+
+    /**
+     * Obtiene una lista de objectos con las bodegas para utilizarse en la
+     * paginacion
+     *
+     * @param first
+     * @param pageSize
+     * @return
+     */
+    public List<Object[]> getBodepagasPagination(int first, int pageSize);
+
 }

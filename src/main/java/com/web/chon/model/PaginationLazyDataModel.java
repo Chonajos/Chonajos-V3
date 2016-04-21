@@ -25,17 +25,15 @@ public class PaginationLazyDataModel<T, ID extends Serializable> extends LazyDat
     @Override
     public List<T> load(int first, int pageSize, String sortField, SortOrder sortOrder,
             Map<String, Object> filters) {
-
         Pagina<T> page = null;
 
         if (filtros != null) {
 
             if (sortOrder == SortOrder.UNSORTED || (sortField == null || sortField.trim().equals(""))) {
 
-                
                 page = service.findAllDominio(filtros, first, pageSize);
             } else {
-                
+
                 page = service.findAllDominio(filtros, first, pageSize);
 
             }
@@ -48,12 +46,16 @@ public class PaginationLazyDataModel<T, ID extends Serializable> extends LazyDat
 
     @Override
     public void setRowIndex(int rowIndex) {
-
         if (rowIndex == -1 || getPageSize() == 0) {
             super.setRowIndex(-1);
         } else {
             super.setRowIndex(rowIndex % getPageSize());
         }
+    }
+
+    @Override
+    public T getRowData(String rowKey) {
+        return service.getById(rowKey);
     }
 
     public T getFiltros() {

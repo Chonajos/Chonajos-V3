@@ -64,9 +64,10 @@ public class PlataformaUserDetailsServiceImpl implements PlataformaUserDetailsSe
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException, DataAccessException {
         getEjb();
+        
         final List<Object[]> usuario = usuarioRepository.getUser(username);
-        if (usuario == null) {
-            System.out.println("Error if ");
+        if (usuario == null || usuario.isEmpty()) {
+            
             throw new UsernameNotFoundException(username + ": no encontrado");
         }
 

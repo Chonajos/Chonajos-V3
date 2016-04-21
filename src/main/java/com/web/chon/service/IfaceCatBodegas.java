@@ -5,24 +5,20 @@
  */
 package com.web.chon.service;
 
+import com.web.chon.core.service.PaginacionService;
 import com.web.chon.dominio.Bodega;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
- * @author marcogante
+ * @author Juan
  */
-public interface IfaceCatBodegas {
+public interface IfaceCatBodegas extends PaginacionService<Bodega, BigDecimal>{
      public ArrayList<Bodega> getBodegas();
     
     public List<Bodega[]> getBodegaById(int idBodega);
 
-    public int deleteBodega(int idBodega);
-
-    public int updateBodega(Bodega bo);
-
-    public int insertBodega(Bodega bo);
-    
     public int getNextVal ();
 }

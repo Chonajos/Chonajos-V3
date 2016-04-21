@@ -39,6 +39,7 @@ public class EjbEntradaMercanciaProducto implements NegocioEntradaMercanciaProdu
             query.setParameter(7, producto.getIdTipo());
             query.setParameter(8, producto.getIdBodegaFK());
             
+ 
             return query.executeUpdate();
 
         } catch (Exception ex) {
@@ -47,5 +48,12 @@ public class EjbEntradaMercanciaProducto implements NegocioEntradaMercanciaProdu
         }
 
     }
+    
+//    SELECT COUNT(*) FROM ENTRADAMERCANCIAPRODUCTO;
+//
+//SELECT EMP.*, SUB.NOMBRE_SUBPRODUCTO, TE.NOMBRE_EMPAQUE, BD.NOMBRE FROM ENTRADAMERCANCIAPRODUCTO EMP
+//LEFT JOIN SUBPRODUCTO SUB ON SUB.ID_SUBPRODUCTO_PK = EMP.ID_SUBPRODUCTO_FK
+//LEFT JOIN TIPO_EMPAQUE TE ON TE.ID_TIPO_EMPAQUE_PK = EMP.ID_TIPO_EMPAQUE_FK
+//LEFT JOIN BODEGA BD ON BD.ID_BD_PK = EMP.ID_BODEGA_FK;
     
 }

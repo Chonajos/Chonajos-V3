@@ -56,10 +56,8 @@ public class EjbUsuarioLogin implements NegocioUsuarioLogin {
                     + "                     WHERE CLAVE_USUARIO = ?");
 
             query.setParameter(1, idUser);
-
             return query.getResultList();
         } catch (Exception ex) {
-            System.out.println("error en la consulta");
             Logger.getLogger(EjbUsuarioLogin.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
