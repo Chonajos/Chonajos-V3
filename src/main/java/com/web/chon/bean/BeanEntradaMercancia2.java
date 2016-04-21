@@ -136,7 +136,6 @@ public class BeanEntradaMercancia2 implements Serializable {
     }
 
     public void inserts() {
-        System.out.println("Freddy0:" + data.getIdSucursalFK() + ":" + dataProducto.getIdSubProductoFK() + ":" + dataProducto.getIdTipoEmpaqueFK() + ":" + dataProducto.getIdBodegaFK());
 
         int idEntradaMercancia = 0;
         EntradaMercancia2 entrada_mercancia = new EntradaMercancia2();
@@ -144,8 +143,6 @@ public class BeanEntradaMercancia2 implements Serializable {
         try {
             if (!listaMercanciaProducto.isEmpty() && listaMercanciaProducto.size() > 0) {
                 idEntradaMercancia = ifaceEntradaMercancia.getNextVal();
-                System.out.println("nextVal:" + idEntradaMercancia);
-
                 entrada_mercancia.setIdEmPK(new BigDecimal(idEntradaMercancia));
                 entrada_mercancia.setIdProvedorFK(data.getIdProvedorFK());
                 entrada_mercancia.setIdSucursalFK(data.getIdSucursalFK());
@@ -157,13 +154,9 @@ public class BeanEntradaMercancia2 implements Serializable {
                 entrada_mercancia.setFolio(data.getFolio());
                 entrada_mercancia.setKilosTotales(data.getKilosTotales());
                 entrada_mercancia.setKilosTotalesProvedor(data.getKilosTotalesProvedor());
-
                 int mercanciaOrdenada = ifaceEntradaMercancia.insertEntradaMercancia(entrada_mercancia);
-                if (mercanciaOrdenada != 0) 
-                {
-                    System.out.println("Se guardo la entrada faltan los productos");
-                    for (int i =0 ; i<listaMercanciaProducto.size();i++)   
-                    {
+                if (mercanciaOrdenada != 0) {
+                    for (int i = 0; i < listaMercanciaProducto.size(); i++) {
                         EntradaMercanciaProducto producto = new EntradaMercanciaProducto();
                         producto = listaMercanciaProducto.get(i);
                         producto.setIdEmFK(new BigDecimal(idEntradaMercancia));
@@ -178,16 +171,15 @@ public class BeanEntradaMercancia2 implements Serializable {
                         ep.setCantidadEmpaque(producto.getCantidadPaquetes());
                         ep.setIdProvedorFk(data.getIdProvedorFK());
                         int resultado = ifaceNegocioExistencia.insertExistenciaProducto(ep);
-                        
-                        switch (resultado) 
-                        {
+
+                        switch (resultado) {
                             case 0:
                                 JsfUtil.addErrorMessage("Error!", "Ocurrio un error al actualizar existencias");
                                 break;
                             case 2:
                                 ArrayList<ExistenciaProducto> existente = new ArrayList<ExistenciaProducto>();
                                 System.out.println("Actualizando existencias....");
-                                existente = ifaceNegocioExistencia.getExistenciaProductoId(data.getIdSucursalFK(), producto.getIdSubProductoFK(), producto.getIdTipoEmpaqueFK(), producto.getIdBodegaFK());
+                                existente = ifaceNegocioExistencia.getExistenciaProductoId(data.getIdSucursalFK(), producto.getIdSubProductoFK(), producto.getIdTipoEmpaqueFK(), producto.getIdBodegaFK(),data.getIdProvedorFK());
 
                                 ExistenciaProducto expro = new ExistenciaProducto();
                                 expro = existente.get(0);
@@ -199,13 +191,11 @@ public class BeanEntradaMercancia2 implements Serializable {
                                 ep.setKilosEmpaque(new BigDecimal(ep.getKilosEmpaque().intValue() + kiltoproempaque));
                                 ep.setKilosExistencia(new BigDecimal(ep.getKilosExistencia().intValue() + kilosTotales));
                                 ep.setIdExistenciaProductoPk(expro.getIdExistenciaProductoPk());
-                                
-                                if(ifaceNegocioExistencia.updateExistenciaProducto(ep)==0)
-                                {
+
+                                if (ifaceNegocioExistencia.updateExistenciaProducto(ep) == 0) {
                                     JsfUtil.addErrorMessage("Error!", "Ocurrio un error al actualizar existencias ya registradas");
-                                }else
-                                {
-                                JsfUtil.addSuccessMessage("Actualización de existencias correcto!");
+                                } else {
+                                    JsfUtil.addSuccessMessage("Actualización de existencias correcto!");
                                 }
                                 break;
                             default:
@@ -213,10 +203,16 @@ public class BeanEntradaMercancia2 implements Serializable {
                                 break;
                         }
                     }
-                    listaMercanciaProducto.clear();
-                    setViewEstate("init");
-                    permisionToGenerate = true;
                     data.reset();
+                    
+                    listaMercanciaProducto.clear();
+                    dataProducto.reset();
+                    //dataEdit.reset();
+                    //dataRemove.reset();
+                    setViewEstate("init");
+                    permisionToPush = true;
+                    permisionToGenerate = true;
+                    reset();
 
                 } else {
                     JsfUtil.addErrorMessage("Error!", "Ocurrio un error al insertar la venta.");
@@ -266,6 +262,7 @@ public class BeanEntradaMercancia2 implements Serializable {
         dataProducto.setPrecio(dataEdit.getPrecio());
         dataProducto.setKilosTotalesProducto(dataEdit.getKilosTotalesProducto());
         dataProducto.setComentarios(dataEdit.getComentarios());
+        dataProducto.setIdBodegaFK(dataEdit.getIdBodegaFK());
         viewEstate = "update";
         System.out.println("datadataProducto :" + dataProducto.toString());
 

@@ -36,7 +36,6 @@ public class EntradaMercanciaProducto extends ValueObject implements Serializabl
     public String toString() {
         return "EntradaMercanciaProducto{" + "idEmpPK=" + idEmpPK + ", idEmFK=" + idEmFK + ", idSubProductoFK=" + idSubProductoFK + ", idTipoEmpaqueFK=" + idTipoEmpaqueFK + ", cantidadPaquetes=" + cantidadPaquetes + ", kilosTotalesProducto=" + kilosTotalesProducto + ", comentarios=" + comentarios + ", precio=" + precio + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + ", idTipo=" + idTipo + ", valorPorcentaje=" + valorPorcentaje + ", valorPacto=" + valorPacto + ", idBodegaFK=" + idBodegaFK + ", nombreTipoOrdenCompra=" + nombreTipoOrdenCompra + ", nombreBodega=" + nombreBodega + '}';
     }
-    
     @Override
     public void reset() {
        idEmFK = null;
@@ -49,8 +48,10 @@ public class EntradaMercanciaProducto extends ValueObject implements Serializabl
        nombreProducto = null;
        nombreEmpaque = null;
        idTipo = null;
-       
+       valorPorcentaje=null;
+       valorPacto=null;
        idBodegaFK = null;
+       nombreTipoOrdenCompra=null;
        nombreBodega  = null;
     }
 

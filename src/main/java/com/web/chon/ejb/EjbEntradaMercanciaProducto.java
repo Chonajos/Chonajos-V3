@@ -39,7 +39,6 @@ public class EjbEntradaMercanciaProducto implements NegocioEntradaMercanciaProdu
             query.setParameter(7, producto.getIdTipo());
             query.setParameter(8, producto.getIdBodegaFK());
             
- 
             return query.executeUpdate();
 
         } catch (Exception ex) {

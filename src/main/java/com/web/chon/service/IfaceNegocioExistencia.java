@@ -16,6 +16,6 @@ import java.util.List;
  */
 public interface IfaceNegocioExistencia {
     public int insertExistenciaProducto(ExistenciaProducto ep);
-    public ArrayList<ExistenciaProducto> getExistenciaProductoId(BigDecimal idSucursal,String idSubproductoFk,BigDecimal idTipoEmpaqueFk, BigDecimal idBodegaFk);
+    public ArrayList<ExistenciaProducto> getExistenciaProductoId(BigDecimal idSucursal,String idSubproductoFk,BigDecimal idTipoEmpaqueFk, BigDecimal idBodegaFk, BigDecimal idProvedorFk);
     public int updateExistenciaProducto(ExistenciaProducto ep);
-}
+    }

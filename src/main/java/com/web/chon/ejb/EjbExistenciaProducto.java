@@ -62,12 +62,15 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
     }
 
     @Override
-    public List<Object[]> getExistenciaProductoId(BigDecimal idSucursal, String idSubproductoFk, BigDecimal idTipoEmpaqueFk, BigDecimal idBodegaFk) 
+    public List<Object[]> getExistenciaProductoId(BigDecimal idSucursal,String idSubproductoFk,BigDecimal idTipoEmpaqueFk, BigDecimal idBodegaFk, BigDecimal idProvedorFk) 
     {
         try {
-             Query query = em.createNativeQuery("select * from existencia_producto where ID_SUCURSAL_FK = '"+idSucursal+"' and ID_SUBPRODUCTO_FK='"+idSubproductoFk+"' and  ID_TIPO_EMPAQUE='"+idTipoEmpaqueFk+"' and ID_BODEGA_FK='"+idBodegaFk+"'");
-            return query.getResultList();
+            
+             Query query = em.createNativeQuery("select * from existencia_producto where ID_SUCURSAL_FK = '"+idSucursal+"' and ID_SUBPRODUCTO_FK='"+idSubproductoFk+"' and  ID_TIPO_EMPAQUE='"+idTipoEmpaqueFk+"' and ID_BODEGA_FK='"+idBodegaFk+"'and ID_PROVEDOR_FK='"+idProvedorFk+"'" );
+            System.out.println(query);
+             return query.getResultList();
         } catch (Exception ex) {
+            System.out.println("Encontro null ejb");
             Logger.getLogger(EjbExistenciaProducto.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
@@ -83,8 +86,6 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
                 query.setParameter(2, e.getCantidadEmpaque());
                 query.setParameter(3, e.getKilosEmpaque());
                 query.setParameter(4, e.getKilosEmpaque());
-                
-                
                 return query.executeUpdate();
 
         } catch (Exception ex) {
