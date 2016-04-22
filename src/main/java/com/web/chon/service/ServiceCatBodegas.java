@@ -28,12 +28,11 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Juan
  */
 @Service
-@Transactional
+
 public class ServiceCatBodegas implements IfaceCatBodegas {
 
     NegocioCatBodega ejb;
-    @Autowired
-    UsuarioRepository usuarioRepository;
+   
 
     public void getEjb() {
         if (ejb == null) {
