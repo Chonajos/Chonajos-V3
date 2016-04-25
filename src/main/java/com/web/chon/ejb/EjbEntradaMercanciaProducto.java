@@ -29,21 +29,24 @@ public class EjbEntradaMercanciaProducto implements NegocioEntradaMercanciaProdu
         System.out.println("EJB_INSERTA_ENTRADAMERCANCIA Producto");
         try {
             System.out.println("Entrada_Porducto: " + producto);
-            Query query = em.createNativeQuery("INSERT INTO ENTRADAMERCANCIAPRODUCTO (ID_EMP_PK,ID_EM_FK,ID_SUBPRODUCTO_FK,ID_TIPO_EMPAQUE_FK,KILOS_TOTALES,CANTIDAD_EMPACAQUE,COMENTARIOS,ID_TIPO_COMPRA_FK,ID_BODEGA_FK)VALUES (S_EntradaMercanciaProducto.NextVal,?,?,?,?,?,?,?,?)");
+            Query query = em.createNativeQuery("INSERT INTO ENTRADAMERCANCIAPRODUCTO (ID_EM_FK,ID_SUBPRODUCTO_FK,ID_TIPO_EMPAQUE_FK,KILOS_TOTALES,CANTIDAD_EMPACAQUE,COMENTARIOS,ID_BODEGA_FK,ID_TIPO_CONVENIO_FK,CONVENIO,KILOSPROMPROD,ID_EMP_PK)VALUES (?,?,?,?,?,?,?,?,?,?,?)");
             query.setParameter(1, producto.getIdEmFK());
             query.setParameter(2, producto.getIdSubProductoFK());
             query.setParameter(3, producto.getIdTipoEmpaqueFK());
             query.setParameter(4, producto.getKilosTotalesProducto());
             query.setParameter(5, producto.getCantidadPaquetes());
             query.setParameter(6, producto.getComentarios());
-            query.setParameter(7, producto.getIdTipo());
-            query.setParameter(8, producto.getIdBodegaFK());
+            query.setParameter(7, producto.getIdBodegaFK());
+            query.setParameter(8, producto.getIdTipoConvenio());
+            query.setParameter(9, producto.getPrecio());
+            query.setParameter(10, producto.getKilospromprod());
+            query.setParameter(11, producto.getIdEmpPK());
             
  
             return query.executeUpdate();
 
         } catch (Exception ex) {
-            Logger.getLogger(EjbCatSucursales.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(EjbEntradaMercanciaProducto.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
 
@@ -55,5 +58,12 @@ public class EjbEntradaMercanciaProducto implements NegocioEntradaMercanciaProdu
 //LEFT JOIN SUBPRODUCTO SUB ON SUB.ID_SUBPRODUCTO_PK = EMP.ID_SUBPRODUCTO_FK
 //LEFT JOIN TIPO_EMPAQUE TE ON TE.ID_TIPO_EMPAQUE_PK = EMP.ID_TIPO_EMPAQUE_FK
 //LEFT JOIN BODEGA BD ON BD.ID_BD_PK = EMP.ID_BODEGA_FK;
+
+    @Override
+    public int getNextVal() {
+        
+        Query query = em.createNativeQuery("SELECT S_ENTRADAMERCANCIAPRODUCTO.nextVal FROM DUAL");
+        return Integer.parseInt(query.getSingleResult().toString());
+    }
     
 }

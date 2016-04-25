@@ -17,32 +17,22 @@ public class ExistenciaProducto implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private BigDecimal idExistenciaProductoPk;
-    private BigDecimal idSucursalFk;
+    
     private String idSubProductoFk;
-    private BigDecimal kilosExistencia;
+    private BigDecimal idExistenciaPk;
+    private BigDecimal idEmpFk;
     private BigDecimal cantidadEmpaque;
-    private BigDecimal idTipoEmpaque;
-    private BigDecimal kilosEmpaque;
+    private BigDecimal kilosExistencia;
+    
+    private BigDecimal pesokiloproducto;
+    private BigDecimal idSucursalFk;
     private BigDecimal idBodegaFk;
-    private BigDecimal idProvedorFk;
 
     @Override
     public String toString() {
-        return "ExistenciaProducto{" + "idExistenciaProductoPk=" + idExistenciaProductoPk + ", idSucursalFk=" + idSucursalFk + ", idSubProductoFk=" + idSubProductoFk + ", kilosExistencia=" + kilosExistencia + ", cantidadEmpaque=" + cantidadEmpaque + ", idTipoEmpaque=" + idTipoEmpaque + ", kilosEmpaque=" + kilosEmpaque + ", idBodegaFk=" + idBodegaFk + ", idProvedorFk=" + idProvedorFk + '}';
-    }
-    
-    
-
-    public BigDecimal getIdProvedorFk() {
-        return idProvedorFk;
+        return "ExistenciaProducto{" + "idExistenciaProductoPk=" + idExistenciaProductoPk + ", idSubProductoFk=" + idSubProductoFk + ", idExistenciaPk=" + idExistenciaPk + ", idEmpFk=" + idEmpFk + ", cantidadEmpaque=" + cantidadEmpaque + ", kilosExistencia=" + kilosExistencia + ", pesokiloproducto=" + pesokiloproducto + ", idSucursalFk=" + idSucursalFk + ", idBodegaFk=" + idBodegaFk + '}';
     }
 
-    public void setIdProvedorFk(BigDecimal idProvedorFk) {
-        this.idProvedorFk = idProvedorFk;
-    }
-
-    
-    
     
     public BigDecimal getIdExistenciaProductoPk() {
         return idExistenciaProductoPk;
@@ -50,14 +40,6 @@ public class ExistenciaProducto implements Serializable {
 
     public void setIdExistenciaProductoPk(BigDecimal idExistenciaProductoPk) {
         this.idExistenciaProductoPk = idExistenciaProductoPk;
-    }
-
-    public BigDecimal getIdSucursalFk() {
-        return idSucursalFk;
-    }
-
-    public void setIdSucursalFk(BigDecimal idSucursalFk) {
-        this.idSucursalFk = idSucursalFk;
     }
 
     public String getIdSubProductoFk() {
@@ -68,14 +50,20 @@ public class ExistenciaProducto implements Serializable {
         this.idSubProductoFk = idSubProductoFk;
     }
 
-   
-
-    public BigDecimal getKilosExistencia() {
-        return kilosExistencia;
+    public BigDecimal getIdExistenciaPk() {
+        return idExistenciaPk;
     }
 
-    public void setKilosExistencia(BigDecimal kilosExistencia) {
-        this.kilosExistencia = kilosExistencia;
+    public void setIdExistenciaPk(BigDecimal idExistenciaPk) {
+        this.idExistenciaPk = idExistenciaPk;
+    }
+
+    public BigDecimal getIdEmpFk() {
+        return idEmpFk;
+    }
+
+    public void setIdEmpFk(BigDecimal idEmpFk) {
+        this.idEmpFk = idEmpFk;
     }
 
     public BigDecimal getCantidadEmpaque() {
@@ -86,20 +74,28 @@ public class ExistenciaProducto implements Serializable {
         this.cantidadEmpaque = cantidadEmpaque;
     }
 
-    public BigDecimal getIdTipoEmpaque() {
-        return idTipoEmpaque;
+    public BigDecimal getKilosExistencia() {
+        return kilosExistencia;
     }
 
-    public void setIdTipoEmpaque(BigDecimal idTipoEmpaque) {
-        this.idTipoEmpaque = idTipoEmpaque;
+    public void setKilosExistencia(BigDecimal kilosExistencia) {
+        this.kilosExistencia = kilosExistencia;
     }
 
-    public BigDecimal getKilosEmpaque() {
-        return kilosEmpaque;
+    public BigDecimal getPesokiloproducto() {
+        return pesokiloproducto;
     }
 
-    public void setKilosEmpaque(BigDecimal kilosEmpaque) {
-        this.kilosEmpaque = kilosEmpaque;
+    public void setPesokiloproducto(BigDecimal pesokiloproducto) {
+        this.pesokiloproducto = pesokiloproducto;
+    }
+
+    public BigDecimal getIdSucursalFk() {
+        return idSucursalFk;
+    }
+
+    public void setIdSucursalFk(BigDecimal idSucursalFk) {
+        this.idSucursalFk = idSucursalFk;
     }
 
     public BigDecimal getIdBodegaFk() {
@@ -109,6 +105,9 @@ public class ExistenciaProducto implements Serializable {
     public void setIdBodegaFk(BigDecimal idBodegaFk) {
         this.idBodegaFk = idBodegaFk;
     }
+
+
+    
 
     
 }

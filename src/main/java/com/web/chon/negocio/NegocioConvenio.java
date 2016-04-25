@@ -3,18 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.web.chon.service;
+package com.web.chon.negocio;
 
-import com.web.chon.dominio.TipoOrdenCompra;
-import java.util.ArrayList;
-
+import java.util.List;
+import javax.ejb.Remote;
 
 /**
  *
  * @author freddy
  */
-public interface IfaceTipoOrdenCompra 
-{
-    public ArrayList<TipoOrdenCompra> getTipos();
+@Remote
+public interface NegocioConvenio {
+
+    public List<Object[]> getTipos();
+    
     
 }

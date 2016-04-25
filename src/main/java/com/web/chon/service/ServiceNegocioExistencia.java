@@ -66,10 +66,10 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
                 expro.setIdSubProductoFk(obj[2] == null ? "" : obj[2].toString());
                 expro.setKilosExistencia(obj[3] == null ? null : new BigDecimal(obj[3].toString()));
                 expro.setCantidadEmpaque(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
-                expro.setIdTipoEmpaque(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
-                expro.setKilosEmpaque(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
+                //expro.setIdTipoEmpaque(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
+                //expro.setKilosEmpaque(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
                 expro.setIdBodegaFk(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
-                expro.setIdProvedorFk(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
+                //expro.setIdProvedorFk(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
                 lista.add(expro);
                 System.out.println("Service: "+expro);
                 System.out.println("Encontro algo");

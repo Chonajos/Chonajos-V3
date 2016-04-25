@@ -25,17 +25,16 @@ public class EntradaMercanciaProducto extends ValueObject implements Serializabl
     private BigDecimal precio;
     private String nombreProducto;
     private String nombreEmpaque;
-    private BigDecimal idTipo;
+    private BigDecimal idTipoConvenio;
     private BigDecimal valorPorcentaje;
     private BigDecimal valorPacto;
     private BigDecimal idBodegaFK;
-    private String nombreTipoOrdenCompra;
+    private String nombreTipoConvenio;
     private String nombreBodega;
+    private BigDecimal kilospromprod;
+    
 
-    @Override
-    public String toString() {
-        return "EntradaMercanciaProducto{" + "idEmpPK=" + idEmpPK + ", idEmFK=" + idEmFK + ", idSubProductoFK=" + idSubProductoFK + ", idTipoEmpaqueFK=" + idTipoEmpaqueFK + ", cantidadPaquetes=" + cantidadPaquetes + ", kilosTotalesProducto=" + kilosTotalesProducto + ", comentarios=" + comentarios + ", precio=" + precio + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + ", idTipo=" + idTipo + ", valorPorcentaje=" + valorPorcentaje + ", valorPacto=" + valorPacto + ", idBodegaFK=" + idBodegaFK + ", nombreTipoOrdenCompra=" + nombreTipoOrdenCompra + ", nombreBodega=" + nombreBodega + '}';
-    }
+    
     @Override
     public void reset() {
        idEmFK = null;
@@ -47,22 +46,50 @@ public class EntradaMercanciaProducto extends ValueObject implements Serializabl
        precio = null;
        nombreProducto = null;
        nombreEmpaque = null;
-       idTipo = null;
+       idTipoConvenio = null;
        valorPorcentaje=null;
        valorPacto=null;
        idBodegaFK = null;
-       nombreTipoOrdenCompra=null;
+       nombreTipoConvenio=null;
        nombreBodega  = null;
     }
 
-    
-    public BigDecimal getIdTipo() {
-        return idTipo;
+    @Override
+    public String toString() {
+        return "EntradaMercanciaProducto{" + "idEmpPK=" + idEmpPK + ", idEmFK=" + idEmFK + ", idSubProductoFK=" + idSubProductoFK + ", idTipoEmpaqueFK=" + idTipoEmpaqueFK + ", cantidadPaquetes=" + cantidadPaquetes + ", kilosTotalesProducto=" + kilosTotalesProducto + ", comentarios=" + comentarios + ", precio=" + precio + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + ", idTipoConvenio=" + idTipoConvenio + ", valorPorcentaje=" + valorPorcentaje + ", valorPacto=" + valorPacto + ", idBodegaFK=" + idBodegaFK + ", nombreTipoConvenio=" + nombreTipoConvenio + ", nombreBodega=" + nombreBodega + '}';
     }
 
-    public void setIdTipo(BigDecimal idTipo) {
-        this.idTipo = idTipo;
+    public BigDecimal getKilospromprod() {
+        return kilospromprod;
     }
+
+    public void setKilospromprod(BigDecimal kilospromprod) {
+        this.kilospromprod = kilospromprod;
+    }
+    
+    
+    
+
+    public BigDecimal getIdTipoConvenio() {
+        return idTipoConvenio;
+    }
+
+    public void setIdTipoConvenio(BigDecimal idTipoConvenio) {
+        this.idTipoConvenio = idTipoConvenio;
+    }
+
+    public String getNombreTipoConvenio() {
+        return nombreTipoConvenio;
+    }
+
+    public void setNombreTipoConvenio(String nombreTipoConvenio) {
+        this.nombreTipoConvenio = nombreTipoConvenio;
+    }
+
+  
+    
+    
+    
 
     public BigDecimal getKilosTotalesProducto() {
         return kilosTotalesProducto;
@@ -74,13 +101,7 @@ public class EntradaMercanciaProducto extends ValueObject implements Serializabl
 
  
 
-    public String getNombreTipoOrdenCompra() {
-        return nombreTipoOrdenCompra;
-    }
-
-    public void setNombreTipoOrdenCompra(String nombreTipoOrdenCompra) {
-        this.nombreTipoOrdenCompra = nombreTipoOrdenCompra;
-    }
+    
     
     public String getNombreProducto() {
         return nombreProducto;

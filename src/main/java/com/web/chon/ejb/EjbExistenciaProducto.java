@@ -32,28 +32,27 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
         System.out.println("EJB-INSERTA-EXISTENCIA-NUEVA");
 
         try {
+            //and  ID_TIPO_EMPAQUE='"+e.getIdTipoEmpaque()+"'
 
-            Query querySel = em.createNativeQuery("select * from existencia_producto where ID_SUCURSAL_FK = '"+e.getIdSucursalFk()+"' and ID_SUBPRODUCTO_FK='"+e.getIdSubProductoFk()+"' and  ID_TIPO_EMPAQUE='"+e.getIdTipoEmpaque()+"' and ID_BODEGA_FK='"+e.getIdBodegaFk()+"'");
+            /*Query querySel = em.createNativeQuery("select * from existencia_producto where ID_SUCURSAL_FK = '"+e.getIdSucursalFk()+"' and ID_SUBPRODUCTO_FK='"+e.getIdSubProductoFk()+"'  and ID_BODEGA_FK='"+e.getIdBodegaFk()+"'");
             List<Object[]> resultList = null;
             resultList = querySel.getResultList();
 
             if (resultList.isEmpty()) 
-            {
-                System.out.println("Entrada_Porducto: " + e);
-                Query query = em.createNativeQuery("INSERT INTO EXISTENCIA_PRODUCTO (ID_EXISTENCIA_PRODUCTO_PK,ID_SUCURSAL_FK,ID_SUBPRODUCTO_FK,KILOS_EXISTENCIA,CANTIDAD_EMPAQUE,ID_TIPO_EMPAQUE,KILOS_EMPAQUE,ID_BODEGA_FK,ID_PROVEDOR_FK)VALUES (S_EXISTENCIA_PRODUCTO.NextVal,?,?,?,?,?,?,?,?)");
+            {*/
+                System.out.println("Entrada_Porducto Existencia: " + e);
+                Query query = em.createNativeQuery("INSERT INTO EXISTENCIA_PRODUCTO (ID_EXISTENCIA_PRODUCTO_PK,ID_SUCURSAL_FK,KILOS_EXISTENCIA,CANTIDAD_EMPAQUE,KILOS_PRODUCTO,ID_BODEGA_FK,ID_EMP_FK)VALUES (S_EXISTENCIA_PRODUCTO.NextVal,?,?,?,?,?,?)");
                 query.setParameter(1, e.getIdSucursalFk());
-                query.setParameter(2, e.getIdSubProductoFk());
-                query.setParameter(3, e.getKilosExistencia());
-                query.setParameter(4, e.getCantidadEmpaque());
-                query.setParameter(5, e.getIdTipoEmpaque());
-                query.setParameter(6, e.getKilosEmpaque());
-                query.setParameter(7, e.getIdBodegaFk());
-                query.setParameter(8, e.getIdProvedorFk());
+                query.setParameter(2, e.getKilosExistencia());
+                query.setParameter(3, e.getCantidadEmpaque());
+                query.setParameter(4, e.getPesokiloproducto());
+                query.setParameter(5, e.getIdBodegaFk());
+                query.setParameter(6, e.getIdEmpFk());
                 return query.executeUpdate();
-            } else {
+            /*} else {
                 System.out.println("Ya encontro ese registro siguiente paso aumentar cantidad");
                 return 2;
-            }
+            }*/
 
         } catch (Exception ex) {
             Logger.getLogger(EjbExistenciaProducto.class.getName()).log(Level.SEVERE, null, ex);
@@ -76,21 +75,27 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
         }
     }
 
-    @Override
+   /* @Override
     public int updateExistenciaProducto(ExistenciaProducto e) {
+        thr
        
         try {
                 System.out.println("Entrada_Porducto_update: " + e);
                 Query query = em.createNativeQuery("UPDATE EXISTENCIA_PRODUCTO SET KILOS_EXISTENCIA='"+e.getKilosExistencia()+"',CANTIDAD_EMPAQUE='"+e.getCantidadEmpaque()+"',KILOS_EMPAQUE='"+e.getKilosEmpaque()+"' where ID_EXISTENCIA_PRODUCTO_PK='"+e.getIdExistenciaProductoPk()+"'");
                 query.setParameter(1, e.getKilosExistencia());
                 query.setParameter(2, e.getCantidadEmpaque());
-                query.setParameter(3, e.getKilosEmpaque());
-                query.setParameter(4, e.getKilosEmpaque());
+                //query.setParameter(3, e.getKilosEmpaque());
+                //query.setParameter(4, e.getKilosEmpaque());
                 return query.executeUpdate();
 
         } catch (Exception ex) {
             Logger.getLogger(EjbExistenciaProducto.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
+    }*/
+
+    @Override
+    public int updateExistenciaProducto(ExistenciaProducto e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

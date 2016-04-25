@@ -15,5 +15,6 @@ import java.math.BigDecimal;
  */
 public interface IfaceEntradaMercanciaProducto extends PaginacionService<EntradaMercanciaProducto, BigDecimal>{
     public int insertEntradaMercancia(EntradaMercanciaProducto producto);
+    public int getNextVal ();
     
 }

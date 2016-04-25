@@ -5,8 +5,7 @@
  */
 package com.web.chon.service;
 
-import com.web.chon.dominio.TipoOrdenCompra;
-import com.web.chon.negocio.NegocioTipoOrdenCompra;
+import com.web.chon.dominio.TipoConvenio;
 import com.web.chon.util.Utilidades;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -14,20 +13,21 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.stereotype.Service;
+import com.web.chon.negocio.NegocioConvenio;
 
 /**
  *
  * @author marcogante
  */
 @Service
-public class ServiceTipoOrdenCompra implements IfaceTipoOrdenCompra {
+public class ServiceTipoConvenio implements IfaceTipoCovenio {
 
-    NegocioTipoOrdenCompra ejb;
+    NegocioConvenio ejb;
 
     public void getEjb() {
         if (ejb == null) {
             try {
-                ejb = (NegocioTipoOrdenCompra) Utilidades.getEJBRemote("ejbTipoOrdenCompra", NegocioTipoOrdenCompra.class.getName());
+                ejb = (NegocioConvenio) Utilidades.getEJBRemote("ejbConvenio", NegocioConvenio.class.getName());
             } catch (Exception ex) {
                 Logger.getLogger(ServiceCatSucursales.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -35,24 +35,24 @@ public class ServiceTipoOrdenCompra implements IfaceTipoOrdenCompra {
     }
 
     @Override
-    public ArrayList<TipoOrdenCompra> getTipos() {
+    public ArrayList<TipoConvenio> getTipos() {
         try {
-            ArrayList<TipoOrdenCompra> lstTipoOrden = new ArrayList<TipoOrdenCompra>();
+            ArrayList<TipoConvenio> lstTipoOrden = new ArrayList<TipoConvenio>();
             getEjb();
 
             List<Object[]> lstObject = ejb.getTipos();
 
             for (Object[] obj : lstObject) 
             {
-                TipoOrdenCompra tipoOrden = new TipoOrdenCompra();
-                tipoOrden.setIdTocPK(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
-                tipoOrden.setNombreTipoOrdenCompra(obj[1] == null ? "" : obj[1].toString());
-                tipoOrden.setDescripcionTipoOrden(obj[2] == null ? "" : obj[2].toString());
+                TipoConvenio tipoOrden = new TipoConvenio();
+                tipoOrden.setIdTcPK(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+                tipoOrden.setNombreTipoConvenio(obj[1] == null ? "" : obj[1].toString());
+                tipoOrden.setDescripcionTipoConvenio(obj[2] == null ? "" : obj[2].toString());
                 lstTipoOrden.add(tipoOrden);
             }
             return lstTipoOrden;
         } catch (Exception ex) {
-            Logger.getLogger(TipoOrdenCompra.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TipoConvenio.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
 

@@ -24,7 +24,7 @@
                             <h:selectOneMenu  id="comboSucursal" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanTransferenciaMerca.idSucursalFK}" >
                                 <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="" />
                                 <f:selectItems value="#{beanTransferenciaMerca.listaSucursales}" var="sucursalita" itemLabel="#{sucursalita.nombreSucursal}" itemValue="#{sucursalita.idSucursalPk}"/>
-                                <p:ajax event="change" update=":formContent:btnBuscar" listener="#{beanTransferenciaMerca.permision()}"/>
+                                <p:ajax event="change" update=":formContent:btnBuscar formContent:txtCantidad formContent:txtkilosTotales" listener="#{beanTransferenciaMerca.permision()}"/>
                             </h:selectOneMenu>
                         </div>
                         <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 form-group">
@@ -32,7 +32,7 @@
                             <h:selectOneMenu  id="comboProvedor" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanTransferenciaMerca.idProvedorFK}" required="true"  requiredMessage="Selecciona un Provedor">
                                 <f:selectItem itemLabel="Selecciona un Provedor" itemValue="" />
                                 <f:selectItems value="#{beanTransferenciaMerca.listaProvedores}" var="provedorsito" itemLabel=" (#{provedorsito.nickName}) #{provedorsito.nombreProvedor} #{provedorsito.apaternoProve} #{provedorsito.amaternoProve}" itemValue="#{provedorsito.idProvedorPK}"/>
-                                <p:ajax event="change" update=":formContent:btnBuscar" listener="#{beanTransferenciaMerca.permision()}"/>
+                                <p:ajax event="change" update=":formContent:btnBuscar formContent:txtCantidad formContent:txtkilosTotales" listener="#{beanTransferenciaMerca.permision()}"/>
                             </h:selectOneMenu>
                         </div>
 
@@ -42,7 +42,7 @@
                                              value="#{beanTransferenciaMerca.subProducto}" completeMethod="#{beanMantenimientoPrecio.autoComplete}" forceSelection="true" var="producto"  inputStyle="width: 200px"
                                              itemLabel="#{producto.nombreSubproducto}"
                                              itemValue="#{producto.idSubproductoPk}" converter="#{productoConverter}">
-                                <p:ajax event="blur" update=":formContent:btnBuscar" listener="#{beanTransferenciaMerca.permision()}"/>
+                                <p:ajax event="blur" update=":formContent:btnBuscar formContent:txtCantidad formContent:txtkilosTotales" listener="#{beanTransferenciaMerca.permision()}"/>
                             </p:autoComplete>
                             <pe:keyFilter for="autocompletePoducto" regEx="/[a-z0-9-_Ã±\s]/i" />
                         </div>
@@ -51,7 +51,7 @@
                             <h:selectOneMenu  id="txtTipoEmpaque" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanTransferenciaMerca.idTipoEmpaque}"  required="true"  requiredMessage="Selecciona el  Tipo de Empaque.">
                                 <f:selectItem itemLabel="Seleccione un empaque" itemValue="" />
                                 <f:selectItems value="#{beanTransferenciaMerca.lstTipoEmpaque}" var="empaque" itemLabel="#{empaque.nombreEmpaque}" itemValue="#{empaque.idTipoEmpaquePk}"/>
-                                <p:ajax event="change" update=":formContent:btnBuscar" listener="#{beanTransferenciaMerca.permision()}"/>
+                                <p:ajax event="change" update=":formContent:btnBuscar formContent:txtCantidad formContent:txtkilosTotales" listener="#{beanTransferenciaMerca.permision()}"/>
                             </h:selectOneMenu>
                         </div>
 
@@ -60,13 +60,13 @@
                             <h:selectOneMenu  id="comboBodega" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanTransferenciaMerca.idBodegaFK}"    requiredMessage="Selecciona una opción" required="true">
                                 <f:selectItem itemLabel="Seleccione una bodega" itemValue="" />
                                 <f:selectItems value="#{beanTransferenciaMerca.listaBodegas}" var="bode" itemLabel="#{bode.nombreBodega}" itemValue="#{bode.idBodegaPK}"/>
-                                <p:ajax event="change" update=":formContent:btnBuscar" listener="#{beanTransferenciaMerca.permision()}"/>
+                                <p:ajax event="change" update=":formContent:btnBuscar formContent:txtCantidad formContent:txtkilosTotales" listener="#{beanTransferenciaMerca.permision()}"/>
                             </h:selectOneMenu>
                         </div>
                         <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 form-group">
                             <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 form-group"></div>
                             <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 form-group">
-                                <p:commandButton id="btnBuscar" value="Buscar" update="formContent:txtCantidad formContent:txtkilosTotales" ajax="true" action="#{beanTransferenciaMerca.buscar()}" disabled="#{beanTransferenciaMerca.permisionToPush}"/>
+                                <p:commandButton  id="btnBuscar" value="Buscar" update="formContent:txtCantidad formContent:txtkilosTotales" ajax="true" action="#{beanTransferenciaMerca.buscar()}" disabled="#{beanTransferenciaMerca.permisionToPush}"/>
                             </div>
                             <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 form-group"></div>
                         </div>

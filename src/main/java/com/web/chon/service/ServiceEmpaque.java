@@ -55,7 +55,25 @@ public class ServiceEmpaque implements IfaceEmpaque {
 
     @Override
     public TipoEmpaque getEmpaqueById(int idEmpaque) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+       try {
+            if (ejb == null) 
+            {
+                construcEjb();
+            }
+            System.out.println("service Empaque get by id");
+            TipoEmpaque te  = new TipoEmpaque();
+            Object[] obj =  (Object[]) ejb.getEmpaqueByIdEmpaque(idEmpaque);
+            te.setIdTipoEmpaquePk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+            te.setNombreEmpaque(obj[1] == null ? "" : obj[1].toString());
+            te.setEstatus(obj[2] == null ?  false: obj[2].toString().equals("1")? true:false);
+            te.setPesoKiloEmpaque(obj[3] == null ? null : new BigDecimal(obj[3].toString()));
+
+            return te;
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceEmpaque.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 
     @Override

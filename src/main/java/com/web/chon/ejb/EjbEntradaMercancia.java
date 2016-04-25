@@ -55,11 +55,11 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
         System.out.println("EJB_BUSCA_MAX_MOVIMIENTO");
         try {
             System.out.println("Entrada: "+entrada.toString());
-            Query query = em.createNativeQuery("select max(movimiento) from ENTRADAMERCANCIA where ID_PROVEDOR_FK = ? and ID_SUCURSAL_FK = ? AND FECHA BETWEEN ? AND ?");
+            Query query = em.createNativeQuery("select max(movimiento) from ENTRADAMERCANCIA where ID_PROVEDOR_FK = ? AND FECHA BETWEEN ? AND ?");
             query.setParameter(1, entrada.getIdProvedorFK());
-            query.setParameter(2, entrada.getIdSucursalFK());
-            query.setParameter(3, entrada.getFechaFiltroInicio());
-            query.setParameter(4, entrada.getFechaFiltroFin());
+            //query.setParameter(2, entrada.getIdSucursalFK());
+            query.setParameter(2, entrada.getFechaFiltroInicio());
+            query.setParameter(3, entrada.getFechaFiltroFin());
             return Integer.parseInt(query.getSingleResult().toString());
         } catch (Exception ex) 
         {

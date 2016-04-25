@@ -15,4 +15,5 @@ import javax.ejb.Remote;
 @Remote
 public interface NegocioEntradaMercanciaProducto {
     public int insertEntradaMercanciaProducto(EntradaMercanciaProducto producto);
+    public int getNextVal();
 }

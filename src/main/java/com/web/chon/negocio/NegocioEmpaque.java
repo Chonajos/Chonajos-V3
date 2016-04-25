@@ -43,7 +43,7 @@ public interface NegocioEmpaque {
      * @param idEmpaque
      * @return objeto con los datos de empaque
      */
-    public Object[] getEmpaqueByIdEmpaque(int idEmpaque);
+    public Object getEmpaqueByIdEmpaque(int idEmpaque);
    
     
 

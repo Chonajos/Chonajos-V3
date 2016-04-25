@@ -92,8 +92,21 @@ public class EjbEmpaque implements NegocioEmpaque {
     }
 
     @Override
-    public Object[] getEmpaqueByIdEmpaque(int idEmpaque) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Object getEmpaqueByIdEmpaque(int idEmpaque) {
+        System.out.println("ejb get empaque by id"+ idEmpaque);
+        try {
+           
+            Query query = em.createNativeQuery("SELECT * FROM TIPO_EMPAQUE WHERE ID_TIPO_EMPAQUE_PK = ?");
+            query.setParameter(1, idEmpaque);
+            return query.getSingleResult();
+            
+
+        } catch (Exception ex) 
+        {
+            
+            Logger.getLogger(EjbEmpaque.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 
   

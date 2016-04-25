@@ -21,10 +21,17 @@ public class TipoEmpaque implements Serializable {
     private boolean estatus;
     private List<VentaProducto> ventaProductoList;
     private List<ExistenciaProducto> existenciaProductoList;
+    private BigDecimal pesoKiloEmpaque;
 
     public TipoEmpaque() {
     }
 
+    @Override
+    public String toString() {
+        return "TipoEmpaque{" + "idTipoEmpaquePk=" + idTipoEmpaquePk + ", nombreEmpaque=" + nombreEmpaque + ", estatus=" + estatus + ", ventaProductoList=" + ventaProductoList + ", existenciaProductoList=" + existenciaProductoList + ", pesoKiloEmpaque=" + pesoKiloEmpaque + '}';
+    }
+
+    
     public TipoEmpaque(BigDecimal idTipoEmpaquePk) {
         this.idTipoEmpaquePk = idTipoEmpaquePk;
     }
@@ -89,9 +96,14 @@ public class TipoEmpaque implements Serializable {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "com.web.chon.entities.TipoEmpaque[ idTipoEmpaquePk=" + idTipoEmpaquePk + " ]";
+    public BigDecimal getPesoKiloEmpaque() {
+        return pesoKiloEmpaque;
     }
+
+    public void setPesoKiloEmpaque(BigDecimal pesoKiloEmpaque) {
+        this.pesoKiloEmpaque = pesoKiloEmpaque;
+    }
+
+    
     
 }
