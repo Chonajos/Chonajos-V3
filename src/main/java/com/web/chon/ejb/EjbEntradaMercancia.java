@@ -7,8 +7,10 @@ package com.web.chon.ejb;
 
 import com.web.chon.dominio.EntradaMercancia2;
 import com.web.chon.negocio.NegocioEntradaMercancia;
+import com.web.chon.util.TiempoUtil;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
@@ -40,8 +42,7 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
             query.setParameter(6, entrada.getFolio());
             query.setParameter(7, entrada.getKilosTotales());
             query.setParameter(8, entrada.getKilosTotalesProvedor());
-            
-            
+
             return query.executeUpdate();
 
         } catch (Exception ex) {
@@ -54,15 +55,14 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
     public int buscaMaxMovimiento(EntradaMercancia2 entrada) {
         System.out.println("EJB_BUSCA_MAX_MOVIMIENTO");
         try {
-            System.out.println("Entrada: "+entrada.toString());
+            System.out.println("Entrada: " + entrada.toString());
             Query query = em.createNativeQuery("select max(movimiento) from ENTRADAMERCANCIA where ID_PROVEDOR_FK = ? AND FECHA BETWEEN ? AND ?");
             query.setParameter(1, entrada.getIdProvedorFK());
             //query.setParameter(2, entrada.getIdSucursalFK());
             query.setParameter(2, entrada.getFechaFiltroInicio());
             query.setParameter(3, entrada.getFechaFiltroFin());
             return Integer.parseInt(query.getSingleResult().toString());
-        } catch (Exception ex) 
-        {
+        } catch (Exception ex) {
             //Logger.getLogger(EjbCatSucursales.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
@@ -70,15 +70,28 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
     }
 
     @Override
-    public int getNextVal() 
-    {
+    public int getNextVal() {
         Query query = em.createNativeQuery("SELECT S_ENTRADAMERCANCIA.nextVal FROM DUAL");
         return Integer.parseInt(query.getSingleResult().toString());
     }
-    
-//    SELECT COUNT(*) FROM ENTRADAMERCANCIA;
-//
-//SELECT EMA.*,PRO.NOMBRE_PROVEDOR ||' '|| PRO.A_PATERNO_PROVE ||' '|| PRO.A_MATERNO_PROVE AS NOMBRE_PROVEDOR, SUC.NOMBRE_SUCURSAL FROM ENTRADAMERCANCIA EMA
-//LEFT JOIN PROVEDORES PRO ON EMA.ID_PROVEDOR_FK = PRO.ID_PROVEDOR_PK
-//LEFT JOIN SUCURSAL SUC ON EMA.ID_SUCURSAL_FK = SUC.ID_SUCURSAL_PK;
+
+    @Override
+    public List<Object[]> getEntradaProductoByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idProvedor) {
+        StringBuffer query = new StringBuffer("SELECT EMA.*,PRO.NOMBRE_PROVEDOR ||' '|| PRO.A_PATERNO_PROVE ||' '|| PRO.A_MATERNO_PROVE AS NOMBRE_PROVEDOR, SUC.NOMBRE_SUCURSAL FROM ENTRADAMERCANCIA EMA ");
+        query.append("LEFT JOIN PROVEDORES PRO ON EMA.ID_PROVEDOR_FK = PRO.ID_PROVEDOR_PK ");
+        query.append("LEFT JOIN SUCURSAL SUC ON EMA.ID_SUCURSAL_FK = SUC.ID_SUCURSAL_PK WHERE TO_DATE(TO_CHAR(EMA.FECHA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + TiempoUtil.getFechaDDMMYY(fechaInicio) + "' AND '" + TiempoUtil.getFechaDDMMYY(fechaFin) + "' ");
+
+        if (idSucursal != null && idSucursal != new BigDecimal(-1)) {
+            query.append(" AND EMA.ID_SUCURSAL_FK =" + idSucursal);
+        }
+
+        if (idProvedor != null && idProvedor != new BigDecimal(-1)) {
+            query.append(" AND EMA.ID_PROVEDOR_FK =" + idProvedor);
+        }
+
+        query.append("ORDER BY EMA.ID_EM_PK");
+
+        return em.createNativeQuery(query.toString()).getResultList();
+
+    }
 }

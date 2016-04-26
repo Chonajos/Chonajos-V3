@@ -7,6 +7,8 @@ package com.web.chon.ejb;
 
 import com.web.chon.dominio.EntradaMercanciaProducto;
 import com.web.chon.negocio.NegocioEntradaMercanciaProducto;
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
@@ -20,12 +22,12 @@ import javax.persistence.Query;
  */
 @Stateless(mappedName = "ejbEntradaMercanciaProducto")
 public class EjbEntradaMercanciaProducto implements NegocioEntradaMercanciaProducto {
+
     @PersistenceContext(unitName = "persistenceJR")
     EntityManager em;
 
     @Override
-    public int insertEntradaMercanciaProducto(EntradaMercanciaProducto producto) 
-    {
+    public int insertEntradaMercanciaProducto(EntradaMercanciaProducto producto) {
         System.out.println("EJB_INSERTA_ENTRADAMERCANCIA Producto");
         try {
             System.out.println("Entrada_Porducto: " + producto);
@@ -41,8 +43,7 @@ public class EjbEntradaMercanciaProducto implements NegocioEntradaMercanciaProdu
             query.setParameter(9, producto.getPrecio());
             query.setParameter(10, producto.getKilospromprod());
             query.setParameter(11, producto.getIdEmpPK());
-            
- 
+
             return query.executeUpdate();
 
         } catch (Exception ex) {
@@ -51,19 +52,28 @@ public class EjbEntradaMercanciaProducto implements NegocioEntradaMercanciaProdu
         }
 
     }
-    
-//    SELECT COUNT(*) FROM ENTRADAMERCANCIAPRODUCTO;
-//
-//SELECT EMP.*, SUB.NOMBRE_SUBPRODUCTO, TE.NOMBRE_EMPAQUE, BD.NOMBRE FROM ENTRADAMERCANCIAPRODUCTO EMP
-//LEFT JOIN SUBPRODUCTO SUB ON SUB.ID_SUBPRODUCTO_PK = EMP.ID_SUBPRODUCTO_FK
-//LEFT JOIN TIPO_EMPAQUE TE ON TE.ID_TIPO_EMPAQUE_PK = EMP.ID_TIPO_EMPAQUE_FK
-//LEFT JOIN BODEGA BD ON BD.ID_BD_PK = EMP.ID_BODEGA_FK;
+
+    @Override
+    public List<Object[]> getEntradaProductoByIdEM(BigDecimal idEntradaProducto) {
+
+        Query query = em.createNativeQuery("SELECT EMP.*, SUB.NOMBRE_SUBPRODUCTO, TE.NOMBRE_EMPAQUE, BD.NOMBRE,TC.TIPO FROM ENTRADAMERCANCIAPRODUCTO EMP "
+                + "LEFT JOIN SUBPRODUCTO SUB ON SUB.ID_SUBPRODUCTO_PK = EMP.ID_SUBPRODUCTO_FK "
+                + "LEFT JOIN TIPO_EMPAQUE TE ON TE.ID_TIPO_EMPAQUE_PK = EMP.ID_TIPO_EMPAQUE_FK "
+                + "LEFT JOIN BODEGA BD ON BD.ID_BD_PK = EMP.ID_BODEGA_FK "
+                + "LEFT JOIN TIPO_CONVENIO TC ON TC.ID_TC_PK = EMP.ID_TIPO_CONVENIO_FK "
+                + "WHERE ID_EM_FK = ?");
+
+        query.setParameter(1, idEntradaProducto);
+
+        return query.getResultList();
+
+    }
 
     @Override
     public int getNextVal() {
-        
+
         Query query = em.createNativeQuery("SELECT S_ENTRADAMERCANCIAPRODUCTO.nextVal FROM DUAL");
         return Integer.parseInt(query.getSingleResult().toString());
     }
-    
+
 }

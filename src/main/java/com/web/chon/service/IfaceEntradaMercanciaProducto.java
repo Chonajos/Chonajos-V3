@@ -8,13 +8,25 @@ package com.web.chon.service;
 import com.web.chon.core.service.PaginacionService;
 import com.web.chon.dominio.EntradaMercanciaProducto;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 /**
  *
  * @author marcogante
  */
-public interface IfaceEntradaMercanciaProducto extends PaginacionService<EntradaMercanciaProducto, BigDecimal>{
+public interface IfaceEntradaMercanciaProducto extends PaginacionService<EntradaMercanciaProducto, BigDecimal> {
+
     public int insertEntradaMercancia(EntradaMercanciaProducto producto);
-    public int getNextVal ();
-    
+
+    public int getNextVal();
+
+    /**
+     * Obtiene una lista de entrada mercancia de productos por medio del id de
+     * entrada de producto
+     *
+     * @param idEntradaMercancia
+     * @return
+     */
+    public ArrayList<EntradaMercanciaProducto> getEntradaProductoByIdEM(BigDecimal idEntradaMercancia);
+
 }

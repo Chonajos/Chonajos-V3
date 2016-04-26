@@ -29,6 +29,9 @@ public class EntradaMercancia2 extends ValueObject implements Serializable {
     private BigDecimal kilosTotales;
     private BigDecimal kilosTotalesProvedor;
 
+    private String nombreSucursal;
+    private String nombreProvedor;
+
     @Override
     public String toString() {
         return "EntradaMercancia2{" + "idEmPK=" + idEmPK + ", idProvedorFK=" + idProvedorFK + ", movimiento=" + movimiento + ", fecha=" + fecha + ", remision=" + remision + ", idSucursalFK=" + idSucursalFK + ", fechaFiltroInicio=" + fechaFiltroInicio + ", fechaFiltroFin=" + fechaFiltroFin + ", abreviacion=" + abreviacion + ", folio=" + folio + '}';
@@ -57,6 +60,8 @@ public class EntradaMercancia2 extends ValueObject implements Serializable {
         idStatusFk = null;
         kilosTotales = null;
         kilosTotalesProvedor = null;
+        nombreSucursal = null;
+        nombreProvedor = null;
 
     }
 
@@ -155,5 +160,23 @@ public class EntradaMercancia2 extends ValueObject implements Serializable {
     public void setIdSucursalFK(BigDecimal idSucursalFK) {
         this.idSucursalFK = idSucursalFK;
     }
+
+    public String getNombreSucursal() {
+        return nombreSucursal;
+    }
+
+    public void setNombreSucursal(String nombreSucursal) {
+        this.nombreSucursal = nombreSucursal;
+    }
+
+    public String getNombreProvedor() {
+        return nombreProvedor;
+    }
+
+    public void setNombreProvedor(String nombreProvedor) {
+        this.nombreProvedor = nombreProvedor;
+    }
+    
+    
 
 }
