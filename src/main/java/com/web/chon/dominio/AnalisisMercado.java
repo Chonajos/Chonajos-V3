@@ -100,6 +100,7 @@ public class AnalisisMercado extends ValueObject implements Serializable {
         precio = null;
         cantidadToneladasAnterior = null;
         precioAnterior = null;
+        idProductoFk = null;
 
     }
 

@@ -5,7 +5,6 @@
  */
 package com.web.chon.service;
 
-import com.web.chon.dominio.Producto;
 import com.web.chon.dominio.Usuario;
 import java.util.ArrayList;
 

@@ -31,4 +31,11 @@ public interface IfaceCatProvedores extends PaginacionService<Provedor,BigDecima
     
     public int getNextVal ();
     
+    /**
+     * Obtiene una lista de los provedores que concidan con la variable nombre completo
+     * @param nombreCompleto
+     * @return 
+     */
+    public ArrayList<Provedor> getProvedorByNombreCompleto(String nombreCompleto);
+    
 }

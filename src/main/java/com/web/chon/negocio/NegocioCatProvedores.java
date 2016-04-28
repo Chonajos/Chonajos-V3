@@ -7,6 +7,7 @@ package com.web.chon.negocio;
 
 import com.web.chon.dominio.Provedor;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Remote;
 
@@ -33,5 +34,9 @@ public List<Object[]> getProvedores();
     public int insertProvedor(Provedor prove);
     
     public int getNextVal ();
+    
+    public List<Object[]> getProvedorByNombreCompleto(String nombreCompleto);
+    
+    public List<Object[]> getById(BigDecimal idProvedor);
     
 }
