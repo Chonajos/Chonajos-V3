@@ -13,6 +13,7 @@ import com.web.chon.service.IfaceProducto;
 import com.web.chon.util.TiempoUtil;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.annotation.PostConstruct;
@@ -51,6 +52,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     private int filtro;
     private Date fechaInicio;
     private Date fechaFin;
+    private BigDecimal totalKilos;
 
     private Provedor provedor;
 
@@ -145,6 +147,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         lstEntradaMercanciaProdcuto = new ArrayList<EntradaMercanciaProducto>();
         lstEntradaMercancia = new ArrayList<EntradaMercancia2>();
         data.reset();
+        provedor.reset();
         filtro = -1;
 
     }
@@ -153,6 +156,14 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         setViewEstate("searchById");
 
         lstEntradaMercanciaProdcuto = ifaceEntradaMercanciaProducto.getEntradaProductoByIdEM(data.getIdEmPK());
+        getTotalKilosProducto();
+    }
+
+    public void getTotalKilosProducto() {
+        totalKilos = new BigDecimal(0);
+        for (EntradaMercanciaProducto dominio : lstEntradaMercanciaProdcuto) {
+            totalKilos = totalKilos.add(dominio.getKilosTotalesProducto());
+        }
 
     }
 
@@ -248,6 +259,14 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
     public void setLstProvedor(ArrayList<Provedor> lstProvedor) {
         this.lstProvedor = lstProvedor;
+    }
+
+    public BigDecimal getTotalKilos() {
+        return totalKilos;
+    }
+
+    public void setTotalKilos(BigDecimal totalKilos) {
+        this.totalKilos = totalKilos;
     }
 
 }

@@ -421,7 +421,7 @@ public class Provedor extends ValueObject implements Serializable {
     }
 
     public String getNombreCompleto() {
-        return (nombreProvedor == null ? "" : nombreProvedor )+ " " + (apaternoProve == null ? "" : apaternoProve) + " " + (amaternoProve == null ? "" : amaternoProve);
+        return (nombreProvedor == null ? "" : nombreProvedor) + " " + (apaternoProve == null ? "" : apaternoProve) + " " + (amaternoProve == null ? "" : amaternoProve);
     }
 
     public void setNombreCompleto(String nombreCompleto) {
@@ -431,7 +431,10 @@ public class Provedor extends ValueObject implements Serializable {
     @Override
     public void reset() {
 
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        idProvedorPK = null;
+        nombreProvedor = null;
+        apaternoProve = null;
+        amaternoProve = null;
 
     }
 

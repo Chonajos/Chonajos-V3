@@ -16,6 +16,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.web.chon.core.exception.SecurityAccessException;
 import com.web.chon.dominio.UsuarioDominio;
+import com.web.chon.util.JsfUtil;
 
 @Service(value = "customFilter")
 public class CustomFilter extends OncePerRequestFilter {
@@ -66,6 +67,8 @@ public class CustomFilter extends OncePerRequestFilter {
             try {
                 hasPermission(url);
             } catch (SecurityAccessException e) {
+                System.out.println("error security");
+                JsfUtil.addErrorMessage("No tiene permisos para ver esta Pagina.");
                 res.sendRedirect("/error/error.xhtml");
                 return;
             }

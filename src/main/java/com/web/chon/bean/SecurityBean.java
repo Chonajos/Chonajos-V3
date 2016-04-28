@@ -1,6 +1,6 @@
-
 package com.web.chon.bean;
 
+import com.web.chon.util.JsfUtil;
 import java.io.IOException;
 import java.io.Serializable;
 
@@ -22,90 +22,96 @@ import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Component;
 
 @Component
-@Scope("request")
+@Scope("view")
 public class SecurityBean implements PhaseListener, Serializable {
 
-	private static final long serialVersionUID = -7388960716549948523L;
-	
-	private String userName;
-	private String password;
-	
-	@Autowired
-	UsuarioWeb usuarioWeb;
-	
-	@Override
-	public void afterPhase(PhaseEvent event) {
-	}
+    private static final long serialVersionUID = -7388960716549948523L;
 
-	@Override
-	public void beforePhase(PhaseEvent event) {
-		Exception e = (Exception) FacesContext.getCurrentInstance().getExternalContext()
-				.getSessionMap().get(WebAttributes.AUTHENTICATION_EXCEPTION);
+    private String userName;
+    private String password;
 
-		
-		if (e instanceof BadCredentialsException) {
-			FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-					.put(WebAttributes.AUTHENTICATION_EXCEPTION, null);
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Credenciales incorrectas!",
-							"Verificar valores de entrada."));
-		}
-		
-	}
+    @Autowired
+    UsuarioWeb usuarioWeb;
 
-	@Override
-	public PhaseId getPhaseId() {
-		return PhaseId.RENDER_RESPONSE;
-	}
+    @Override
+    public void afterPhase(PhaseEvent event) {
+    }
 
-	public String doLogin() throws IOException, ServletException {
-		ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+    @Override
+    public void beforePhase(PhaseEvent event) {
+        Exception e = (Exception) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get(WebAttributes.AUTHENTICATION_EXCEPTION);
 
-		RequestDispatcher dispatcher = ((ServletRequest) context.getRequest())
-				.getRequestDispatcher("/j_spring_security_check");
-		dispatcher.forward((ServletRequest) context.getRequest(),
-				(ServletResponse) context.getResponse());
-		FacesContext.getCurrentInstance().responseComplete();
-		try {
-			usuarioWeb.getUsuario().setUsuPassword(password);
-			
-		} catch (Exception e) {
-                    e.printStackTrace();
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put(WebAttributes.AUTHENTICATION_EXCEPTION, null);
+        FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR, "Credenciales incorrectas!","Verificar valores de entrada."));
+        JsfUtil.addErrorMessage("error beforePhase");
+        
+        
+        if (e instanceof BadCredentialsException) {
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
+                    .put(WebAttributes.AUTHENTICATION_EXCEPTION, null);
+            FacesContext.getCurrentInstance().addMessage(
+                    null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Credenciales incorrectas!",
+                            "Verificar valores de entrada."));
+        }
 
-		}
-		
-		
+    }
+
+    @Override
+    public PhaseId getPhaseId() {
+        return PhaseId.RENDER_RESPONSE;
+    }
+
+    public String doLogin() throws IOException, ServletException {
+        ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+
+        RequestDispatcher dispatcher = ((ServletRequest) context.getRequest())
+                .getRequestDispatcher("/j_spring_security_check");
+        dispatcher.forward((ServletRequest) context.getRequest(),
+                (ServletResponse) context.getResponse());
+        FacesContext.getCurrentInstance().responseComplete();
+        try {
+            usuarioWeb.getUsuario().setUsuPassword(password);
+userName ="no name";
+        } catch (Exception e) {
+            userName ="error";
+            System.out.println("error logueo");
+            JsfUtil.addErrorMessage("Usuario o Contraseña Incorrecta.");
+            e.printStackTrace();
+
+        }
+
         return null;
-	}
+    }
 
-	public String logout() throws IOException, ServletException {
-		ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-		RequestDispatcher dispatcher = ((ServletRequest) context.getRequest())
-				.getRequestDispatcher("/j_spring_security_logout");
-		dispatcher.forward((ServletRequest) context.getRequest(),
-				(ServletResponse) context.getResponse());
-		FacesContext.getCurrentInstance().responseComplete();		
-		return null;
-	}
+    public String logout() throws IOException, ServletException {
+        ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+        RequestDispatcher dispatcher = ((ServletRequest) context.getRequest())
+                .getRequestDispatcher("/j_spring_security_logout");
+        dispatcher.forward((ServletRequest) context.getRequest(),
+                (ServletResponse) context.getResponse());
+        FacesContext.getCurrentInstance().responseComplete();
+        return null;
+    }
 
-	public String cancel() {
-		return null;
-	}
+    public String cancel() {
+        return null;
+    }
 
-	public String getUserName() {
-		return userName;
-	}
+    public String getUserName() {
+        return userName;
+    }
 
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }
