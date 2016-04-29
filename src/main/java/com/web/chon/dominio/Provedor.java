@@ -421,7 +421,7 @@ public class Provedor extends ValueObject implements Serializable {
     }
 
     public String getNombreCompleto() {
-        return (nombreProvedor == null ? "" : nombreProvedor) + " " + (apaternoProve == null ? "" : apaternoProve) + " " + (amaternoProve == null ? "" : amaternoProve);
+        return (nombreProvedor == null ? "" : nombreProvedor+ " ")  + (apaternoProve == null ? "" : apaternoProve+ " ")  + (amaternoProve == null ? "" : amaternoProve);
     }
 
     public void setNombreCompleto(String nombreCompleto) {

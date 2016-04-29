@@ -80,7 +80,7 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
 
             EntradaMercancia2 dominio = new EntradaMercancia2();
             dominio.setIdEmPK(new BigDecimal(obj[0].toString()));
-            dominio.setIdProvedorFK(new BigDecimal(obj[1].toString()));
+            dominio.setIdProvedorFK(obj[1] == null ? null:new BigDecimal(obj[1].toString()));
             dominio.setMovimiento(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
             dominio.setFecha(obj[3] == null ? null : (Date) obj[3]);
             dominio.setRemision(obj[4] == null ? null : obj[4].toString());
