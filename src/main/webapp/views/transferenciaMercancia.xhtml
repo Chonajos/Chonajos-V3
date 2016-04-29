@@ -20,59 +20,56 @@
                 <div class="container-fluid">
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 form-group">
                         <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 form-group">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="comboSucursal" value ="Sucursal:"/> 
-                            <h:selectOneMenu  id="comboSucursal" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanTransferenciaMerca.idSucursalFK}" >
-                                <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="" />
-                                <f:selectItems value="#{beanTransferenciaMerca.listaSucursales}" var="sucursalita" itemLabel="#{sucursalita.nombreSucursal}" itemValue="#{sucursalita.idSucursalPk}"/>
-                                <p:ajax event="change" update=":formContent:btnBuscar formContent:txtCantidad formContent:txtkilosTotales" listener="#{beanTransferenciaMerca.permision()}"/>
-                            </h:selectOneMenu>
-                        </div>
-                        <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 form-group">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="comboProvedor" value ="Provedor:"/> 
-                            <h:selectOneMenu  id="comboProvedor" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanTransferenciaMerca.idProvedorFK}" required="true"  requiredMessage="Selecciona un Provedor">
-                                <f:selectItem itemLabel="Selecciona un Provedor" itemValue="" />
-                                <f:selectItems value="#{beanTransferenciaMerca.listaProvedores}" var="provedorsito" itemLabel=" (#{provedorsito.nickName}) #{provedorsito.nombreProvedor} #{provedorsito.apaternoProve} #{provedorsito.amaternoProve}" itemValue="#{provedorsito.idProvedorPK}"/>
-                                <p:ajax event="change" update=":formContent:btnBuscar formContent:txtCantidad formContent:txtkilosTotales" listener="#{beanTransferenciaMerca.permision()}"/>
-                            </h:selectOneMenu>
-                        </div>
-
-                        <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="autocompletePoducto" value ="Producto:" /> 
                             <p:autoComplete  placeholder="Seleccione un Producto" id="autocompletePoducto"  required="true" requiredMessage="Ingresa un valor para el campo Producto." styleClass="autocomplete-input-text-media"
-                                             value="#{beanTransferenciaMerca.subProducto}" completeMethod="#{beanMantenimientoPrecio.autoComplete}" forceSelection="true" var="producto"  inputStyle="width: 200px"
+                                             value="#{beanTransferenciaMerca.subProducto}" completeMethod="#{beanTransferenciaMerca.autoComplete}" forceSelection="true" var="producto"  inputStyle="width: 200px"
                                              itemLabel="#{producto.nombreSubproducto}"
                                              itemValue="#{producto.idSubproductoPk}" converter="#{productoConverter}">
-                                <p:ajax event="blur" update=":formContent:btnBuscar formContent:txtCantidad formContent:txtkilosTotales" listener="#{beanTransferenciaMerca.permision()}"/>
+                                <p:ajax event="blur" update=":formContent" listener="#{beanTransferenciaMerca.buscar()}"/>
                             </p:autoComplete>
                             <pe:keyFilter for="autocompletePoducto" regEx="/[a-z0-9-_Ã±\s]/i" />
                         </div>
-                        <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 form-group">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="txtTipoEmpaque" value ="Empaque:" /> 
-                            <h:selectOneMenu  id="txtTipoEmpaque" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanTransferenciaMerca.idTipoEmpaque}"  required="true"  requiredMessage="Selecciona el  Tipo de Empaque.">
-                                <f:selectItem itemLabel="Seleccione un empaque" itemValue="" />
-                                <f:selectItems value="#{beanTransferenciaMerca.lstTipoEmpaque}" var="empaque" itemLabel="#{empaque.nombreEmpaque}" itemValue="#{empaque.idTipoEmpaquePk}"/>
-                                <p:ajax event="change" update=":formContent:btnBuscar formContent:txtCantidad formContent:txtkilosTotales" listener="#{beanTransferenciaMerca.permision()}"/>
-                            </h:selectOneMenu>
-                        </div>
-
-                        <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 form-group">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="comboBodega" value ="Bodega:" /> 
-                            <h:selectOneMenu  id="comboBodega" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanTransferenciaMerca.idBodegaFK}"    requiredMessage="Selecciona una opción" required="true">
-                                <f:selectItem itemLabel="Seleccione una bodega" itemValue="" />
-                                <f:selectItems value="#{beanTransferenciaMerca.listaBodegas}" var="bode" itemLabel="#{bode.nombreBodega}" itemValue="#{bode.idBodegaPK}"/>
-                                <p:ajax event="change" update=":formContent:btnBuscar formContent:txtCantidad formContent:txtkilosTotales" listener="#{beanTransferenciaMerca.permision()}"/>
-                            </h:selectOneMenu>
-                        </div>
-                        <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 form-group">
-                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 form-group"></div>
-                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 form-group">
-                                <p:commandButton  id="btnBuscar" value="Buscar" update="formContent:txtCantidad formContent:txtkilosTotales" ajax="true" action="#{beanTransferenciaMerca.buscar()}" disabled="#{beanTransferenciaMerca.permisionToPush}"/>
-                            </div>
-                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 form-group"></div>
-                        </div>
                     </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <p:dataTable id="table" var="model" value="#{beanTransferenciaMerca.model}" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." rendered="#{beanTransferenciaMerca.viewEstate =='init'}">
 
-                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 form-group">
+                            <p:column headerText="Número de Carro" filterBy="#{model.idEmFk}"   filterMatchMode="contains"  width="120px;" style="text-align:center">
+                                <h:outputText value="#{model.idEmFk}">
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="Clave:"  filterBy="#{model.identificador}"   filterMatchMode="contains"   width="120px;" style="text-align:center">
+                                <h:outputText value="#{model.identificador}" >
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Producto:" width="250px;" style="text-align:center">
+                                <h:outputText value="#{model.nombreSubproducto}" />
+                            </p:column>
+                            <p:column headerText="Empaque:" width="200px;" style="text-align:center">
+                                <h:outputText value="#{model.nombreEmpaque}" />
+                            </p:column>
+                            <p:column headerText="Cantidad:" width="80px;" style="text-align:center">
+                                <h:outputText value="#{model.cantidadEmpaque}">
+
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Kilos:" width="70px;" style="text-align:center">
+                                <h:outputText value="#{model.kilosExistencia}">
+                                    <f:convertNumber pattern="#,##0.00" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Bodega Área"  width="100px;" style="text-align:center">
+                                <h:outputText value="#{model.nombreBodega}" />
+                            </p:column>
+                            <p:column headerText="Seleccionar" style="width:70px;text-align:center">
+                                <p:commandButton id="ajax" ajax="true"  action="#{beanTransferenciaMerca.datosAmover()}" icon="ui-icon-circle-arrow-e" styleClass="ui-priority-primary" update=":formContent">
+                                    <f:setPropertyActionListener value="#{model}" target="#{beanTransferenciaMerca.data}"/>
+                                </p:commandButton>
+                            </p:column>
+
+                        </p:dataTable>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 form-group">
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel  class="col-lg-4 col-md-3 col-sm-4 col-xs-6"  for="txtCantidad" value ="Cantidad:" /> 
                             <p:inputText id="txtCantidad" maxlength="6" class=" col-lg-2 col-md-4 col-sm-8 col-xs-6" value="#{beanTransferenciaMerca.data.cantidad}" required ="true" disabled="true">
@@ -109,44 +106,11 @@
                         <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 form-group">
                             <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 form-group"></div>
                             <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 form-group">
-                                 <p:commandButton id="btnTrans" value="Transferir" update="formContent" ajax="true" action="#{beanTransferenciaMerca.transferir()}" disabled="#{beanTransferenciaMerca.permisionToTrans}"/>
-                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 form-group"></div>
+                                <p:commandButton id="btnTrans" value="Transferir" update="formContent" ajax="true" action="#{beanTransferenciaMerca.transferir()}" disabled="#{beanTransferenciaMerca.permisionToTrans}"/>
+                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 form-group"></div>
+                            </div>
                         </div>
                     </div>
-                        </div>
-                    <!--<div class="col-lg-12 col-md-6 col-sm-6 col-xs-6 form-group">
-                        <p:dataTable id="trans" var="transferencias" value="{beanTransferenciaMerca.listaTransferencias}" style="margin-bottom:20px">
-                            <f:facet name="header">
-                                Ingresa los movimientos de Mercancia a Realizar
-                            </f:facet>
-                            <p:ajax event="rowEdit" listener="{beanTransferenciaMerca.onRowEdit}" update=":formContent:trans" />
-                            <p:ajax event="rowEditCancel" listener="{beanTransferenciaMerca.onRowCancel}" update=":formContent:trans" />
-
-                            <p:column headerText="Sucursal:">
-                                <p:cellEditor>
-                                    <f:facet name="output"><h:outputText value="{lista.idSucursalFK}" /></f:facet>
-                                    <f:facet name="input">
-                                        <h:selectOneMenu value="{transferencias.idSucursalFK}" style="width:100%">
-                                            <f:selectItems value="{transferencias.listaSucursales}" var="lista" itemLabel="{lista.nombreSucursal}" itemValue="{lista.idSucursalPk}" />
-                                        </h:selectOneMenu>
-                                    </f:facet>
-                                </p:cellEditor>
-                            </p:column>
-                            <p:column headerText="Cantidad:">
-                                <p:cellEditor>
-                                    <f:facet name="output"><h:outputText value="{transferencias.cantidadMovida}" /></f:facet>
-                                    <f:facet name="input">
-                                        <p:inputText id="modelInput3" value="{transferencias.cantidadMovida}" style="width:100%" />
-                                    </f:facet>
-                                </p:cellEditor>
-                            </p:column>
-
-                            <p:column style="width:32px">
-                                <p:rowEditor />
-                            </p:column>
-                        </p:dataTable>
-                    </div>-->
-
                 </div>
             </p:panel>
         </h:form>

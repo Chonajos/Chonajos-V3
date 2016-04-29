@@ -26,13 +26,17 @@ public class EntradaMercanciaProducto extends ValueObject implements Serializabl
     private String nombreProducto;
     private String nombreEmpaque;
     private BigDecimal idTipoConvenio;
-    private BigDecimal valorPorcentaje;
-    private BigDecimal valorPacto;
     private BigDecimal idBodegaFK;
     private String nombreTipoConvenio;
     private String nombreBodega;
     private BigDecimal kilospromprod;
     private int numeroMovimiento;
+    private BigDecimal pesoTara;
+
+    @Override
+    public String toString() {
+        return "EntradaMercanciaProducto{" + "idEmpPK=" + idEmpPK + ", idEmFK=" + idEmFK + ", idSubProductoFK=" + idSubProductoFK + ", idTipoEmpaqueFK=" + idTipoEmpaqueFK + ", cantidadPaquetes=" + cantidadPaquetes + ", kilosTotalesProducto=" + kilosTotalesProducto + ", comentarios=" + comentarios + ", precio=" + precio + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + ", idTipoConvenio=" + idTipoConvenio + ", idBodegaFK=" + idBodegaFK + ", nombreTipoConvenio=" + nombreTipoConvenio + ", nombreBodega=" + nombreBodega + ", kilospromprod=" + kilospromprod + ", numeroMovimiento=" + numeroMovimiento + ", pesoTara=" + pesoTara + '}';
+    }
     
 
     
@@ -48,17 +52,22 @@ public class EntradaMercanciaProducto extends ValueObject implements Serializabl
        nombreProducto = null;
        nombreEmpaque = null;
        idTipoConvenio = null;
-       valorPorcentaje=null;
-       valorPacto=null;
        idBodegaFK = null;
        nombreTipoConvenio=null;
        nombreBodega  = null;
+       pesoTara=null;
     }
 
-    @Override
-    public String toString() {
-        return "EntradaMercanciaProducto{" + "idEmpPK=" + idEmpPK + ", idEmFK=" + idEmFK + ", idSubProductoFK=" + idSubProductoFK + ", idTipoEmpaqueFK=" + idTipoEmpaqueFK + ", cantidadPaquetes=" + cantidadPaquetes + ", kilosTotalesProducto=" + kilosTotalesProducto + ", comentarios=" + comentarios + ", precio=" + precio + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + ", idTipoConvenio=" + idTipoConvenio + ", valorPorcentaje=" + valorPorcentaje + ", valorPacto=" + valorPacto + ", idBodegaFK=" + idBodegaFK + ", nombreTipoConvenio=" + nombreTipoConvenio + ", nombreBodega=" + nombreBodega + '}';
+    public BigDecimal getPesoTara() {
+        return pesoTara;
     }
+
+    public void setPesoTara(BigDecimal pesoTara) {
+        this.pesoTara = pesoTara;
+    }
+
+    
+    
 
     public BigDecimal getKilospromprod() {
         return kilospromprod;

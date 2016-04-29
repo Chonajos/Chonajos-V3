@@ -61,6 +61,7 @@ public class beanTransferenciaMerca implements Serializable {
     private ArrayList<Provedor> listaProvedores;
     private ArrayList<TipoEmpaque> lstTipoEmpaque;
     private ArrayList<TransferenciaMercancia> listaTransferencias;
+    private ArrayList<Subproducto> lstProducto;
     
     private TransferenciaMercancia data;
     private Subproducto subProducto;
@@ -78,6 +79,8 @@ public class beanTransferenciaMerca implements Serializable {
     
     private boolean permisionToPush;
     private boolean permisionToTrans;
+    private ArrayList<ExistenciaProducto> model;
+    
     
     
 
@@ -95,6 +98,8 @@ public class beanTransferenciaMerca implements Serializable {
         permisionToPush = true;
         permisionToTrans = true;
         expro = new ExistenciaProducto();
+        model = ifaceNegocioExistencia.getExistenciasbyIdSubProducto("00000000");
+        
 
         listaTransferencias = new ArrayList<TransferenciaMercancia>();
 
@@ -112,6 +117,11 @@ public class beanTransferenciaMerca implements Serializable {
         setTitle("Transferencia de Mercancia");
         setViewEstate("init");
 
+    }
+    
+    public void datosAmover()
+    {
+        
     }
 
     public void transferir() {
@@ -212,23 +222,26 @@ public class beanTransferenciaMerca implements Serializable {
         permisionToPush = true;
 
     }
+    
+    public ArrayList<Subproducto> autoComplete(String nombreProducto) {
+        lstProducto = ifaceSubProducto.getSubProductoByNombre(nombreProducto.toUpperCase());
+        return lstProducto;
+
+    }
+    
 
     public void buscar() {
         ArrayList<ExistenciaProducto> existente = new ArrayList<ExistenciaProducto>();
         
-        existente = ifaceNegocioExistencia.getExistenciaProductoId(idSucursalFK, idSubProductoFK, idTipoEmpaque, idBodegaFK, idProvedorFK);
+        existente = ifaceNegocioExistencia.getExistenciasbyIdSubProducto(subProducto.getIdSubproductoPk());
         
-        if (existente == null || existente.isEmpty()) {
+        if (existente == null || existente.isEmpty()) 
+        {
             JsfUtil.addErrorMessage("Error!", "No se encontraron existencias");
 
         } else {
             
-            expro = existente.get(0);
-            
-            data.setCantidad(expro.getCantidadEmpaque());
-            data.setKilos(expro.getKilosExistencia());
-            
-            idExistenciaFK = expro.getIdExistenciaProductoPk();
+            model = existente;
 
         }
 
@@ -467,6 +480,15 @@ public class beanTransferenciaMerca implements Serializable {
     public void setIdExistenciaFK(BigDecimal idExistenciaFK) {
         this.idExistenciaFK = idExistenciaFK;
     }
+
+    public ArrayList<ExistenciaProducto> getModel() {
+        return model;
+    }
+
+    public void setModel(ArrayList<ExistenciaProducto> model) {
+        this.model = model;
+    }
+    
 
     
 }

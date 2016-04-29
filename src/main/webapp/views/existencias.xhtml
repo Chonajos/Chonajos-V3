@@ -39,13 +39,13 @@
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <p:dataTable id="table" var="model" value="#{beanExistencias.model}" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." rendered="#{beanExistencias.viewEstate =='init'}">
 
-                            <p:column headerText="Número de Carro" filterBy="#{model.idEmFk}"  footerText="contains" filterMatchMode="contains"  width="120px;" style="text-align:center">
+                            <p:column headerText="Número de Carro" filterBy="#{model.idEmFk}"   filterMatchMode="contains"  width="120px;" style="text-align:center">
                                 <h:outputText value="#{model.idEmFk}">
 
                                 </h:outputText>
                             </p:column>
                             
-                            <p:column headerText="Clave:"  filterBy="#{model.identificador}"  footerText="contains" filterMatchMode="contains"   width="120px;" style="text-align:center">
+                            <p:column headerText="Clave:"  filterBy="#{model.identificador}"   filterMatchMode="contains"   width="120px;" style="text-align:center">
                                 <h:outputText value="#{model.identificador}" >
                                 </h:outputText>
                             </p:column>

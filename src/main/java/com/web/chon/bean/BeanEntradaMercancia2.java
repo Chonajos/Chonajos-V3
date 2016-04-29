@@ -27,7 +27,7 @@ import com.web.chon.util.TiempoUtil;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,6 +36,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import com.web.chon.service.IfaceTipoCovenio;
+import java.math.MathContext;
+import java.math.RoundingMode;
 
 /**
  *
@@ -46,18 +48,10 @@ import com.web.chon.service.IfaceTipoCovenio;
 public class BeanEntradaMercancia2 implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    
 
     @Autowired
     private IfaceCatSucursales ifaceCatSucursales;
-    private ArrayList<Sucursal> listaSucursales;
-
-    @Autowired
-    private IfaceCatBodegas ifaceCatBodegas;
-    private ArrayList<Bodega> listaBodegas;
-
-    @Autowired
-    private IfaceCatProvedores ifaceCatProvedores;
-    private ArrayList<Provedor> listaProvedores;
     @Autowired
     private IfaceEntradaMercancia ifaceEntradaMercancia;
     @Autowired
@@ -66,42 +60,52 @@ public class BeanEntradaMercancia2 implements Serializable {
     private IfaceSubProducto ifaceSubProducto;
     @Autowired
     private IfaceTipoCovenio ifaceCovenio;
-    private ArrayList<TipoConvenio> listaTiposConvenio;
-
+    @Autowired
+    private IfaceCatBodegas ifaceCatBodegas;
+    @Autowired
+    private IfaceCatProvedores ifaceCatProvedores;
     @Autowired
     private IfaceNegocioExistencia ifaceNegocioExistencia;
+    @Autowired
+    private IfaceEmpaque ifaceEmpaque;
+    
+    private ArrayList<Bodega> listaBodegas;
+    private ArrayList<Provedor> listaProvedores;
+    private ArrayList<Sucursal> listaSucursales;
+    private ArrayList<TipoConvenio> listaTiposConvenio;
+    private ArrayList<String> labels;
+    private ArrayList<EntradaMercanciaProducto> listaMercanciaProducto;
+    private ArrayList<TipoEmpaque> lstTipoEmpaque;
 
     private EntradaMercancia2 data;
     private EntradaMercanciaProducto dataProducto;
     private EntradaMercanciaProducto dataRemove;
     private EntradaMercanciaProducto dataEdit;
     private Subproducto subProducto;
-    private ArrayList<EntradaMercanciaProducto> listaMercanciaProducto;
-
-    private ArrayList<TipoEmpaque> lstTipoEmpaque;
 
     private String title = "";
     private String viewEstate = "";
+    private String labelCompra;
 
     private int movimiento;
     private int year;
-    @Autowired
-    private IfaceEmpaque ifaceEmpaque;
-
-    private boolean permisionToPush;
+    
+    
     private BigDecimal totalKilos;
+    private BigDecimal kilos;
 
     private boolean permisionPacto;
     private boolean permisionComision;
     private boolean permisionPrecio;
     private boolean permisionToGenerate;
-    private ArrayList<String> labels;
-
-    private String labelCompra;
-    private int kilos;
+    private boolean permisionToPush;
+    private boolean permisionToEditProducto;
+    
+    
 
     @PostConstruct
     public void init() {
+        permisionToEditProducto=false;
         labels = new ArrayList<String>();
         labels.add("Precio");
         labels.add("Ingresa el % de comisión");
@@ -128,7 +132,7 @@ public class BeanEntradaMercancia2 implements Serializable {
         permisionPrecio = false;
         labelCompra = "Ingresa el Precio";
         permisionToGenerate = true;
-        kilos = 0;
+        kilos = new BigDecimal(0);
     }
 
     public void permisions() {
@@ -166,7 +170,7 @@ public class BeanEntradaMercancia2 implements Serializable {
                         int idEnTMerPro = ifaceEntradaMercanciaProducto.getNextVal();
                         producto.setIdEmpPK(new BigDecimal(idEnTMerPro));
                         producto.setIdEmFK(new BigDecimal(idEntradaMercancia));
-                        producto.setKilospromprod(producto.getKilosTotalesProducto().divide(producto.getCantidadPaquetes()));
+                        producto.setKilospromprod(producto.getKilosTotalesProducto().divide(producto.getCantidadPaquetes(),2, RoundingMode.HALF_EVEN));
                         if (ifaceEntradaMercanciaProducto.insertEntradaMercancia(producto) != 0) {
 
                             ExistenciaProducto ep = new ExistenciaProducto();
@@ -194,7 +198,7 @@ public class BeanEntradaMercancia2 implements Serializable {
                     data.reset();
                     listaMercanciaProducto.clear();
                     dataProducto.reset();
-                    kilos = 0;
+                    kilos = new BigDecimal(0);
                     setViewEstate("init");
                     permisionToPush = true;
                     permisionToGenerate = true;
@@ -230,12 +234,15 @@ public class BeanEntradaMercancia2 implements Serializable {
     }
 
     public void remove() {
-
+        
+        kilos = kilos.subtract(dataRemove.getKilosTotalesProducto(), MathContext.UNLIMITED);
         listaMercanciaProducto.remove(dataRemove);
+        
         
     }
 
     public void editProducto() {
+        permisionToEditProducto = true;
 
         subProducto = ifaceSubProducto.getSubProductoById(dataEdit.getIdSubProductoFK());
         dataProducto.setIdSubProductoFK(dataEdit.getIdSubProductoFK());
@@ -244,9 +251,10 @@ public class BeanEntradaMercancia2 implements Serializable {
         dataProducto.setNombreEmpaque(dataEdit.getNombreEmpaque());
         dataProducto.setCantidadPaquetes(dataEdit.getCantidadPaquetes());
         dataProducto.setPrecio(dataEdit.getPrecio());
-        dataProducto.setKilosTotalesProducto(dataEdit.getKilosTotalesProducto());
+        dataProducto.setKilosTotalesProducto(dataEdit.getKilosTotalesProducto().add(dataEdit.getPesoTara(), MathContext.UNLIMITED));
         dataProducto.setComentarios(dataEdit.getComentarios());
         dataProducto.setIdBodegaFK(dataEdit.getIdBodegaFK());
+        dataProducto.setPesoTara(dataEdit.getPesoTara());
         viewEstate = "update";
     }
 
@@ -257,6 +265,7 @@ public class BeanEntradaMercancia2 implements Serializable {
     }
 
     public void updateProducto() {
+        permisionToEditProducto = false;
         EntradaMercanciaProducto p = new EntradaMercanciaProducto();
         TipoEmpaque empaque = new TipoEmpaque();
         dataEdit.setIdSubProductoFK(subProducto.getIdSubproductoPk());
@@ -266,8 +275,10 @@ public class BeanEntradaMercancia2 implements Serializable {
         dataEdit.setNombreEmpaque(empaque.getNombreEmpaque());
         dataEdit.setCantidadPaquetes(dataProducto.getCantidadPaquetes());
         dataEdit.setPrecio(dataProducto.getPrecio());
-        dataEdit.setKilosTotalesProducto(dataProducto.getKilosTotalesProducto());
+        //dataEdit.setKilosTotalesProducto(dataProducto.getKilosTotalesProducto());
+        p.setKilosTotalesProducto(dataProducto.getKilosTotalesProducto().subtract((dataProducto.getPesoTara() == null ? new BigDecimal(0):dataProducto.getPesoTara()), MathContext.UNLIMITED));
         dataEdit.setComentarios(dataProducto.getComentarios());
+        dataEdit.setPesoTara(dataProducto.getPesoTara());
         viewEstate = "init";
         subProducto = new Subproducto();
         dataProducto.reset();
@@ -300,11 +311,11 @@ public class BeanEntradaMercancia2 implements Serializable {
         p.setNombreEmpaque(empaque.getNombreEmpaque());
         p.setCantidadPaquetes(dataProducto.getCantidadPaquetes());
         p.setPrecio(dataProducto.getPrecio());
-        p.setKilosTotalesProducto(dataProducto.getKilosTotalesProducto());
+        p.setKilosTotalesProducto(dataProducto.getKilosTotalesProducto().subtract((dataProducto.getPesoTara() == null ? new BigDecimal(0):dataProducto.getPesoTara()), MathContext.UNLIMITED));
 
-        kilos = kilos + p.getKilosTotalesProducto().intValue();
+        kilos = kilos.add(p.getKilosTotalesProducto(), MathContext.UNLIMITED);
 
-        data.setKilosTotales(new BigDecimal(kilos));
+        data.setKilosTotales(kilos);
         p.setComentarios(dataProducto.getComentarios());
         to = getTipoConvenio(dataProducto.getIdTipoConvenio());
         p.setNombreTipoConvenio(to.getNombreTipoConvenio());
@@ -313,6 +324,7 @@ public class BeanEntradaMercancia2 implements Serializable {
         b = getBodega(dataProducto.getIdBodegaFK());
         p.setNombreBodega(b.getNombreBodega());
         p.setIdBodegaFK(dataProducto.getIdBodegaFK());
+        p.setPesoTara(dataProducto.getPesoTara());
         listaMercanciaProducto.add(p);
 
         permisionToGenerate = false;
@@ -320,7 +332,6 @@ public class BeanEntradaMercancia2 implements Serializable {
         subProducto = new Subproducto();
         listaTiposConvenio = ifaceCovenio.getTipos();
         listaBodegas = ifaceCatBodegas.getBodegas();
-
     }
 
     private Bodega getBodega(BigDecimal idBodega) {
@@ -509,7 +520,8 @@ public class BeanEntradaMercancia2 implements Serializable {
         this.dataRemove = dataRemove;
     }
 
-    public EntradaMercanciaProducto getDataEdit() {
+    public EntradaMercanciaProducto getDataEdit() 
+    {
         return dataEdit;
     }
 
@@ -621,13 +633,16 @@ public class BeanEntradaMercancia2 implements Serializable {
         this.ifaceNegocioExistencia = ifaceNegocioExistencia;
     }
 
-    public int getKilos() {
+    public BigDecimal getKilos() {
         return kilos;
     }
 
-    public void setKilos(int kilos) {
+    public void setKilos(BigDecimal kilos) {
         this.kilos = kilos;
     }
+
+    
+    
 
     public ArrayList<TipoConvenio> getListaTiposConvenio() {
         return listaTiposConvenio;
@@ -637,4 +652,13 @@ public class BeanEntradaMercancia2 implements Serializable {
         this.listaTiposConvenio = listaTiposConvenio;
     }
 
+    public boolean isPermisionToEditProducto() {
+        return permisionToEditProducto;
+    }
+
+    public void setPermisionToEditProducto(boolean permisionToEditProducto) {
+        this.permisionToEditProducto = permisionToEditProducto;
+    }
+
+    
 }

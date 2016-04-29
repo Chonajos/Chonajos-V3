@@ -48,6 +48,7 @@ public class beanExistencias implements Serializable {
         listaProvedores = new ArrayList<Provedor>();
         listaProvedores = ifaceCatProvedores.getProvedores();
         model = ifaceNegocioExistencia.getExistencias(new BigDecimal(0), new BigDecimal(0));
+        
         data = new ExistenciaProducto();
         setTitle("Existencias");
         setViewEstate("init");
