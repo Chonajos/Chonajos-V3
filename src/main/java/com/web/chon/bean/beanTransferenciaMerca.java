@@ -41,46 +41,56 @@ public class beanTransferenciaMerca implements Serializable {
     private static final long serialVersionUID = 1L;
     @Autowired
     private IfaceCatSucursales ifaceCatSucursales;
-    private ArrayList<Sucursal> listaSucursalesNueva;
-    private ArrayList<Sucursal> listaSucursales;
-    @Autowired
-    private IfaceCatBodegas ifaceCatBodegas;
-    private ArrayList<Bodega> listaBodegas;
-    private ArrayList<Bodega> listaBodegasNueva;
-    @Autowired
-    private IfaceCatProvedores ifaceCatProvedores;
-    private ArrayList<Provedor> listaProvedores;
-    @Autowired
+     @Autowired
     private IfaceSubProducto ifaceSubProducto;
     @Autowired
     private IfaceEmpaque ifaceEmpaque;
-    private ArrayList<TipoEmpaque> lstTipoEmpaque;
-    private String title = "";
-    private String viewEstate = "";
-    private TransferenciaMercancia data;
-    private BigDecimal idSucursalFK;
-    private String idSubProductoFK;
-    private BigDecimal idTipoEmpaque;
-    private BigDecimal idProvedorFK;
-    private BigDecimal idBodegaFK;
-    private BigDecimal idExistenciaFK;
-    private Subproducto subProducto;
-    private ArrayList<TransferenciaMercancia> listaTransferencias;
-    private boolean permisionToPush;
-    private boolean permisionToTrans;
+    @Autowired
+    private IfaceCatProvedores ifaceCatProvedores;
+    @Autowired
+    private IfaceCatBodegas ifaceCatBodegas;
     @Autowired
     private IfaceNegocioExistencia ifaceNegocioExistencia;
     @Autowired
     private IfaceTransferenciaMercancia ifaceNegocioTransferenciaMercancia;
+    
+    private ArrayList<Sucursal> listaSucursalesNueva;
+    private ArrayList<Sucursal> listaSucursales;
+    private ArrayList<Bodega> listaBodegas;
+    private ArrayList<Bodega> listaBodegasNueva;
+    private ArrayList<Provedor> listaProvedores;
+    private ArrayList<TipoEmpaque> lstTipoEmpaque;
+    private ArrayList<TransferenciaMercancia> listaTransferencias;
+    
+    private TransferenciaMercancia data;
+    private Subproducto subProducto;
     private ExistenciaProducto expro;
+    
+    private String title = "";
+    private String viewEstate = "";
+    private String idSubProductoFK;
+    
+    private BigDecimal idSucursalFK;
+    private BigDecimal idTipoEmpaque;
+    private BigDecimal idProvedorFK;
+    private BigDecimal idBodegaFK;
+    private BigDecimal idExistenciaFK;
+    
+    private boolean permisionToPush;
+    private boolean permisionToTrans;
+    
+    
 
     @PostConstruct
     public void init() {
+        
         listaSucursales = new ArrayList<Sucursal>();
         listaSucursalesNueva = new ArrayList<Sucursal>();
+        listaProvedores = new ArrayList<Provedor>();
+        
         listaSucursales = ifaceCatSucursales.getSucursales();
         listaSucursalesNueva = ifaceCatSucursales.getSucursales();
-        listaProvedores = new ArrayList<Provedor>();
+        
         listaProvedores = ifaceCatProvedores.getProvedores();
         permisionToPush = true;
         permisionToTrans = true;
@@ -118,9 +128,13 @@ public class beanTransferenciaMerca implements Serializable {
                 int cantidad_a_restar = expro.getCantidadEmpaque().intValue();
                 int restador = data.getCantidadMovida().intValue();
                 int cantidad_a_restar_kilos = expro.getKilosExistencia().intValue();
+                
                 TipoEmpaque pesoEmpaque = ifaceEmpaque.getEmpaqueById(idTipoEmpaque.intValue());
+                
                 data.setKilosMovios(new BigDecimal(pesoEmpaque.getPesoKiloEmpaque().intValue() * restador));
+                
                 int restador_kilos = data.getKilosMovios().intValue();
+                
                 expro.setCantidadEmpaque(new BigDecimal(cantidad_a_restar - restador));
                 expro.setKilosExistencia(new BigDecimal(cantidad_a_restar_kilos - restador_kilos));
 
@@ -132,6 +146,7 @@ public class beanTransferenciaMerca implements Serializable {
                     //System.out.println("se Resto del original");
 
                     ExistenciaProducto ep = new ExistenciaProducto();
+                    
                     ep.setCantidadEmpaque(new BigDecimal(restador));
                     ep.setIdBodegaFk(data.getIdBodegaNueva());
                     //ep.setIdProvedorFk(idProvedorFK);
@@ -150,9 +165,11 @@ public class beanTransferenciaMerca implements Serializable {
                             JsfUtil.addErrorMessage("Error!", "Ocurrio un error al actualizar existencias");
                             break;
                         case 2:
+                            
                             ArrayList<ExistenciaProducto> existente = new ArrayList<ExistenciaProducto>();
 
                             existente = ifaceNegocioExistencia.getExistenciaProductoId(data.getIdSucursalNuevaFK(), idSubProductoFK, idTipoEmpaque, data.getIdBodegaNueva(), idProvedorFK);
+                            
                             ExistenciaProducto expro = new ExistenciaProducto();
                             expro = existente.get(0);
 
@@ -182,7 +199,9 @@ public class beanTransferenciaMerca implements Serializable {
     }
 
     public void clean() {
+        
         data.reset();
+        
         idSucursalFK = null;
         idSubProductoFK = null;
         idTipoEmpaque = null;
@@ -196,14 +215,19 @@ public class beanTransferenciaMerca implements Serializable {
 
     public void buscar() {
         ArrayList<ExistenciaProducto> existente = new ArrayList<ExistenciaProducto>();
+        
         existente = ifaceNegocioExistencia.getExistenciaProductoId(idSucursalFK, idSubProductoFK, idTipoEmpaque, idBodegaFK, idProvedorFK);
-        if (existente.size() == 0) {
+        
+        if (existente == null || existente.isEmpty()) {
             JsfUtil.addErrorMessage("Error!", "No se encontraron existencias");
 
         } else {
+            
             expro = existente.get(0);
+            
             data.setCantidad(expro.getCantidadEmpaque());
             data.setKilos(expro.getKilosExistencia());
+            
             idExistenciaFK = expro.getIdExistenciaProductoPk();
 
         }
@@ -219,11 +243,14 @@ public class beanTransferenciaMerca implements Serializable {
     }
 
     public void permision() {
+        
         idSubProductoFK = subProducto.getIdSubproductoPk();
         data.setCantidad(null);
         data.setKilos(null);
+        
         if (idSucursalFK == null || idProvedorFK == null || idBodegaFK == null || idSubProductoFK == null || idTipoEmpaque == null) {
             data.reset();
+            
             System.out.println(idBodegaFK + ":" + idProvedorFK + ":" + idSubProductoFK + ":" + idSucursalFK + "" + idTipoEmpaque + "");
             permisionToPush = true;
 

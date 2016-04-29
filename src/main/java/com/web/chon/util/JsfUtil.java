@@ -37,6 +37,11 @@ public class JsfUtil {
         FacesContext.getCurrentInstance().addMessage("msgs", facesMsg);
         RequestContext.getCurrentInstance().addCallbackParam("errorDetected", true);
     }
+    public static void addSuccessMessageClean(String msg) {
+        removeContextMessage();
+        FacesMessage facesMsg = new FacesMessage(FacesMessage.SEVERITY_INFO, "¡Éxito!", msg);
+        FacesContext.getCurrentInstance().addMessage("msgs", facesMsg);
+    }
 
     public static void addErrorMessageClean(String msg) {
 

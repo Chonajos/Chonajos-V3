@@ -12,10 +12,11 @@ import java.util.List;
 
 /**
  *
- * @author f
+ * @author freddy
  */
 public interface IfaceNegocioExistencia {
     public int insertExistenciaProducto(ExistenciaProducto ep);
+    public ArrayList<ExistenciaProducto> getExistencias(BigDecimal idSucursal, BigDecimal idProvedorFk);
     public ArrayList<ExistenciaProducto> getExistenciaProductoId(BigDecimal idSucursal,String idSubproductoFk,BigDecimal idTipoEmpaqueFk, BigDecimal idBodegaFk, BigDecimal idProvedorFk);
     public int updateExistenciaProducto(ExistenciaProducto ep);
     }

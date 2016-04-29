@@ -34,8 +34,10 @@ public class EntradaMercancia2 extends ValueObject implements Serializable {
 
     @Override
     public String toString() {
-        return "EntradaMercancia2{" + "idEmPK=" + idEmPK + ", idProvedorFK=" + idProvedorFK + ", movimiento=" + movimiento + ", fecha=" + fecha + ", remision=" + remision + ", idSucursalFK=" + idSucursalFK + ", fechaFiltroInicio=" + fechaFiltroInicio + ", fechaFiltroFin=" + fechaFiltroFin + ", abreviacion=" + abreviacion + ", folio=" + folio + '}';
+        return "EntradaMercancia2{" + "idEmPK=" + idEmPK + ", idProvedorFK=" + idProvedorFK + ", movimiento=" + movimiento + ", fecha=" + fecha + ", remision=" + remision + ", idSucursalFK=" + idSucursalFK + ", fechaFiltroInicio=" + fechaFiltroInicio + ", fechaFiltroFin=" + fechaFiltroFin + ", abreviacion=" + abreviacion + ", folio=" + folio + ", idStatusFk=" + idStatusFk + ", kilosTotales=" + kilosTotales + ", kilosTotalesProvedor=" + kilosTotalesProvedor + ", nombreSucursal=" + nombreSucursal + ", nombreProvedor=" + nombreProvedor + '}';
     }
+
+  
 
     public BigDecimal getIdStatusFk() {
         return idStatusFk;
@@ -52,7 +54,7 @@ public class EntradaMercancia2 extends ValueObject implements Serializable {
         movimiento = null;
         fecha = null;
         remision = null;
-        idSucursalFK = null;
+        idSucursalFK = new BigDecimal(-1);
         fechaFiltroFin = null;
         fechaFiltroInicio = null;
         abreviacion = null;

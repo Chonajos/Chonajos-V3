@@ -155,98 +155,50 @@ public class BeanEntradaMercancia2 implements Serializable {
                 entrada_mercancia.setFolio(data.getFolio());
                 entrada_mercancia.setKilosTotales(data.getKilosTotales());
                 entrada_mercancia.setKilosTotalesProvedor(data.getKilosTotalesProvedor());
-             
+
                 int mercanciaOrdenada = ifaceEntradaMercancia.insertEntradaMercancia(entrada_mercancia);
                 if (mercanciaOrdenada != 0) {
-                    for (int i = 0; i < listaMercanciaProducto.size(); i++) 
-                    {
-                        
-                        
+                    for (int i = 0; i < listaMercanciaProducto.size(); i++) {
+
                         EntradaMercanciaProducto producto = new EntradaMercanciaProducto();
-                        
+
                         producto = listaMercanciaProducto.get(i);
                         int idEnTMerPro = ifaceEntradaMercanciaProducto.getNextVal();
                         producto.setIdEmpPK(new BigDecimal(idEnTMerPro));
                         producto.setIdEmFK(new BigDecimal(idEntradaMercancia));
-                        producto.setKilospromprod(new BigDecimal(producto.getKilosTotalesProducto().intValue()/producto.getCantidadPaquetes().intValue()));
+                        producto.setKilospromprod(producto.getKilosTotalesProducto().divide(producto.getCantidadPaquetes()));
                         if (ifaceEntradaMercanciaProducto.insertEntradaMercancia(producto) != 0) {
-                            
+
                             ExistenciaProducto ep = new ExistenciaProducto();
                             ep.setIdEmpFk(new BigDecimal(idEnTMerPro));
                             ep.setIdSubProductoFk(producto.getIdSubProductoFK());
                             ep.setIdSucursalFk(data.getIdSucursalFK());
                             ep.setPesokiloproducto(producto.getKilospromprod());
-                            ep.setKilosExistencia(new BigDecimal(producto.getKilospromprod().intValue() *producto.getCantidadPaquetes().intValue()));
+                            ep.setKilosExistencia(producto.getKilospromprod().multiply(producto.getCantidadPaquetes()));
                             ep.setIdBodegaFk(producto.getIdBodegaFK());
                             ep.setCantidadEmpaque(producto.getCantidadPaquetes());
-                           
-                            if(ifaceNegocioExistencia.insertExistenciaProducto(ep)!=0)
-                            {
-                                JsfUtil.addSuccessMessage("Registro de Mercancias correcto !");
-                            }
-                            else{
+
+                            if (ifaceNegocioExistencia.insertExistenciaProducto(ep) != 0) {
+                                JsfUtil.addSuccessMessageClean("Registro de Mercancias correcto !");
+
+                            } else {
                                 JsfUtil.addErrorMessage("Error!", "Ocurrio un error al registrar la mercancia en existencias");
                             }
 
-                           /* switch (resultado) {
-                                case 0:
-                                    JsfUtil.addErrorMessage("Error!", "Ocurrio un error al actualizar existencias");
-                                    break;
-                                case 2:
-                                    ArrayList<ExistenciaProducto> existente = new ArrayList<ExistenciaProducto>();
-
-                                    existente = ifaceNegocioExistencia.getExistenciaProductoId(data.getIdSucursalFK(), producto.getIdSubProductoFK(), producto.getIdTipoEmpaqueFK(), producto.getIdBodegaFK(), data.getIdProvedorFK());
-                                    ExistenciaProducto expro = new ExistenciaProducto();
-                                    expro = existente.get(0);
-                                    int cantidadEmpaque = expro.getCantidadEmpaque().intValue();
-                                    ep.setCantidadEmpaque(new BigDecimal(ep.getCantidadEmpaque().intValue() + cantidadEmpaque));
-
-                                    //int kiltoproempaque = expro.getKilosEmpaque().intValue();
-                                    int kilosTotales = expro.getKilosExistencia().intValue();
-                                    //ep.setKilosEmpaque(new BigDecimal(ep.getKilosEmpaque().intValue() + kiltoproempaque));
-                                    ep.setKilosExistencia(new BigDecimal(ep.getKilosExistencia().intValue() + kilosTotales));
-                                    ep.setIdExistenciaProductoPk(expro.getIdExistenciaProductoPk());
-
-                                    if (ifaceNegocioExistencia.updateExistenciaProducto(ep) == 0) {
-                                        JsfUtil.addErrorMessage("Error!", "Ocurrio un error al actualizar existencias ya registradas");
-                                    } else {
-                                        data.reset();
-                                        data = new EntradaMercancia2();
-
-                                        listaMercanciaProducto.clear();
-                                        dataProducto.reset();
-                                        kilos = 0;
-                                        //dataEdit.reset();
-                                        //dataRemove.reset();
-                                        setViewEstate("init");
-                                        permisionToPush = true;
-                                        permisionToGenerate = true;
-                                        reset();
-                                        JsfUtil.addSuccessMessage("Actualización de existencias correcto!");
-                                    }
-                                    break;
-                                default:
-                                    data.reset();
-                                    data = new EntradaMercancia2();
-
-                                    listaMercanciaProducto.clear();
-                                    dataProducto.reset();
-                                    kilos = 0;
-                                    //dataEdit.reset();
-                                    //dataRemove.reset();
-                                    setViewEstate("init");
-                                    permisionToPush = true;
-                                    permisionToGenerate = true;
-                                    reset();
-                                    JsfUtil.addSuccessMessage("Actualización de existencias correcto!");
-                                    break;
-                            }*/
-                            
                         } else {
                             JsfUtil.addErrorMessage("Error!", "Ocurrio un error al registrar un producto de la entrada de Mercancia");
                         }
 
                     } //fin for
+                    
+                    data.reset();
+                    listaMercanciaProducto.clear();
+                    dataProducto.reset();
+                    kilos = 0;
+                    setViewEstate("init");
+                    permisionToPush = true;
+                    permisionToGenerate = true;
+                    reset();
 
                 } else {
                     JsfUtil.addErrorMessage("Error!", "Ocurrio un error al registrar la mercancia");
@@ -264,22 +216,23 @@ public class BeanEntradaMercancia2 implements Serializable {
         } catch (Exception e) {
             JsfUtil.addErrorMessage("Error!", "Ocurrio un error ");
             e.printStackTrace();
-            //FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", e.toString()));
-
+           
         }
     }
 
-    public void reset() {
+    public void reset() 
+    {
         data.setRemision(null);
         data.setFolio(null);
         data.setAbreviacion(null);
         permisionToPush = true;
+        
     }
 
     public void remove() {
 
         listaMercanciaProducto.remove(dataRemove);
-        System.out.println("Eliminado");
+        
     }
 
     public void editProducto() {

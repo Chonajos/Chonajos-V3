@@ -66,8 +66,6 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
                 expro.setIdSubProductoFk(obj[2] == null ? "" : obj[2].toString());
                 expro.setKilosExistencia(obj[3] == null ? null : new BigDecimal(obj[3].toString()));
                 expro.setCantidadEmpaque(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
-                //expro.setIdTipoEmpaque(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
-                //expro.setKilosEmpaque(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
                 expro.setIdBodegaFk(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
                 //expro.setIdProvedorFk(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
                 lista.add(expro);
@@ -82,5 +80,35 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
 
         }
 
+    }
+
+    @Override
+    public ArrayList<ExistenciaProducto> getExistencias(BigDecimal idSucursal, BigDecimal idProvedorFk) {
+        getEjb();
+        
+        try{
+        ArrayList<ExistenciaProducto> lista = new ArrayList<ExistenciaProducto>();
+            System.out.println("SerivceNegocioExistencia: getExistencias : "+idSucursal+ " idProvedorFk: "+idProvedorFk);
+         List<Object[]> lstObject = ejb.getExistencias(idSucursal, idProvedorFk);
+         for(Object[] obj: lstObject )
+            {
+                ExistenciaProducto expro = new ExistenciaProducto();
+                expro.setIdExistenciaProductoPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+                expro.setIdEmFk(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
+                expro.setIdentificador(obj[2] == null ? "" : obj[2].toString());
+                expro.setNombreSubproducto(obj[3] == null ? "" : obj[3].toString());
+                expro.setNombreEmpaque(obj[4] == null ? "" : obj[4].toString());
+                expro.setNombreBodega(obj[5] == null ? "" : obj[5].toString());
+                expro.setCantidadEmpaque(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
+                expro.setKilosExistencia(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
+                lista.add(expro);
+            }
+         return lista;
+        }catch (Exception ex) {
+            Logger.getLogger(ServiceNegocioExistencia.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+
+        }
+    
     }
 }

@@ -13,15 +13,14 @@
             <h3>#{beanEntradaMercancia2.title}</h3>
         </div>
         <h:form id="formContent" >
-            <p:remoteCommand id="remoteComman" resetValues="true" onstart="alert('onstart')"></p:remoteCommand>
+            
             <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
-            <!--<p:growl id="messagess" showDetail="true" life="2000" />-->
             <p:panel>
                 <div class="container-fluid">
-                    <div class="form-group" align="right">
-                        <p:commandButton value="Finalizar" id="vender" ajax="false" update=":formContent"   action="#{beanEntradaMercancia2.inserts}" immediate="true" resetValues="true" rendered="#{beanEntradaMercancia2.viewEstate =='init'}" disabled="#{beanEntradaMercancia2.permisionToGenerate}"/>
+                    <div align="right">
+                        <p:commandButton value="Finalizar" id="vender" ajax="true" immediate="true" resetValues="true" action="#{beanEntradaMercancia2.inserts}" update=":formContent" disabled="#{beanEntradaMercancia2.permisionToGenerate}"/>
                     </div>
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
 
                         <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-8 col-md-4 col-sm-4 col-xs-12"  for="comboSucursal" value ="Sucursal:"/> 
@@ -31,15 +30,15 @@
                                 <p:ajax event="change" update=" formContent:txtIdentificador formContent:agregar formContent:txtRemision" listener="#{beanEntradaMercancia2.reset()}" />
                             </h:selectOneMenu>
                         </div>
-                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-8 col-md-4 col-sm-4 col-xs-12"  for="comboProvedor" value ="Provedor:"/> 
                             <h:selectOneMenu  id="comboProvedor" class=" col-lg-12 col-md-8 col-sm-8 col-xs-12" value="#{beanEntradaMercancia2.data.idProvedorFK}" >
                                 <f:selectItem itemLabel="Selecciona un Provedor" itemValue="" />
                                 <f:selectItems value="#{beanEntradaMercancia2.listaProvedores}" var="provedorsito" itemLabel=" (#{provedorsito.nickName}) #{provedorsito.nombreProvedor} #{provedorsito.apaternoProve} #{provedorsito.amaternoProve}" itemValue="#{provedorsito.idProvedorPK}"/>
-                                <p:ajax event="change" update="@this " />
+                                <p:ajax event="change" update=" formContent:txtIdentificador formContent:agregar formContent:txtRemision" listener="#{beanEntradaMercancia2.reset()}" />
                             </h:selectOneMenu>
                         </div>
-                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 ">
                             <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtRemision" value ="Remisión:" /> 
                             <p:inputText id="txtRemision" maxlength="10" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMercancia2.data.remision}" required="true"
                                          requiredMessage="Ingresa el número de remisión">
@@ -74,7 +73,7 @@
                         <p:commandButton value="Aceptar" update=":formContent" ajax="true" action="#{beanEntradaMercancia2.updateProducto}" rendered="#{beanEntradaMercancia2.viewEstate =='update'}"/>
                         <p:commandButton value="Cancelar" update=":formContent" ajax="true" action="#{beanEntradaMercancia2.cancel}" immediate="true" resetValues="true" rendered="#{beanEntradaMercancia2.viewEstate =='update'}"/>
                     </div>
-                    <h5>Detalle de Mercancia de Remisión</h5>
+                    <h5><b>Detalle de Mercancia de Remisión</b></h5>
                     <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 form-group" >
                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-8 col-sm-4 col-xs-12"  for="comboTipoOrden" value ="Tipo de Convenido:"/> 
@@ -105,7 +104,7 @@
                         <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-12 col-md-4 col-sm-4 col-xs-12"  for="txtTipoEmpaque" value ="Empaque:" /> 
                             <h:selectOneMenu  id="txtTipoEmpaque" class=" col-lg-12 col-md-8 col-sm-8 col-xs-12" value="#{beanEntradaMercancia2.dataProducto.idTipoEmpaqueFK}"  required="true"  requiredMessage="Ingresa un valor para el campo Tipo de Empaque.">
-                                <f:selectItem itemLabel="Seleccione un empaque" itemValue="" />
+                                <f:selectItem itemLabel="Seleccione empaque" itemValue="" />
                                 <f:selectItems value="#{beanEntradaMercancia2.lstTipoEmpaque}" var="empaque" itemLabel="#{empaque.nombreEmpaque}" itemValue="#{empaque.idTipoEmpaquePk}"/>
                             </h:selectOneMenu>
                         </div>
@@ -119,11 +118,11 @@
                         <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-12 col-md-4 col-sm-4 col-xs-12"  for="comboBodega" value ="Bodega de Ingreso:" /> 
                             <h:selectOneMenu  id="comboBodega" class=" col-lg-12 col-md-8 col-sm-8 col-xs-12" value="#{beanEntradaMercancia2.dataProducto.idBodegaFK}"  required="true"  requiredMessage="Selecciona una opción">
-                                <f:selectItem itemLabel="Seleccione una bodega" itemValue="" />
+                                <f:selectItem itemLabel="Seleccione área" itemValue="" />
                                 <f:selectItems value="#{beanEntradaMercancia2.listaBodegas}" var="bode" itemLabel="#{bode.nombreBodega}" itemValue="#{bode.idBodegaPK}"/>
                             </h:selectOneMenu>
                         </div>
-                        
+
                         <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel  class="col-lg-12 col-md-3 col-sm-4 col-xs-6"  for="txtkilosProducto"  value ="Kilos:" /> 
                             <p:inputText id="txtkilosProducto" maxlength="30" class=" col-lg-12 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMercancia2.dataProducto.kilosTotalesProducto}">
@@ -135,10 +134,10 @@
                             <p:inputTextarea rows="2" cols="20" id="txtComentarios" class=" col-lg-12 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMercancia2.dataProducto.comentarios}"/>
 
                         </div>
-                        
-                        
+
+
                     </div>
-                    
+
                 </div>
             </p:panel>
             <p:panel >
@@ -161,18 +160,18 @@
                             <h:outputText value="#{model.cantidadPaquetes}" />
                         </p:column>
                         <p:column headerText="Kilos" width="60px;" style="text-align:center">
-                            <h:outputText value="#{model.kilosTotalesProducto}">
-                                <f:convertNumber pattern="#,##0.00"/>
+                            <h:outputText value="#{model.kilosTotalesProducto} Kg">
+                               
                             </h:outputText>
                         </p:column>
                         <p:column headerText="Convenio" width="60px;" style="text-align:center">
-                            <h:outputText value="#{model.precio}">
-                                <f:convertNumber pattern="#,##0.00"/>
+                            <h:outputText  value="#{model.idTipoConvenio eq 1 ?'$':''}#{model.precio}#{model.idTipoConvenio eq 1 ?'.00':'%'}">
+                                
                             </h:outputText>
                         </p:column>
                         <p:column headerText="Bodega:" width="90px;" style="text-align:center">
                             <h:outputText value="#{model.nombreBodega}">
-                                <f:convertNumber pattern="#,##0.00"/>
+                                
                             </h:outputText>
                         </p:column>
 
@@ -191,12 +190,12 @@
                                 <p:column colspan="4" style="text-align:right" footerText="Total de Kilos:" />
                                 <p:column colspan="1">
                                     <f:facet name="footer">
-                                        <h:outputText value="#{beanEntradaMercancia2.kilos}">
+                                        <h:outputText value="#{beanEntradaMercancia2.kilos} Kg">
                                         </h:outputText>
                                     </f:facet>
                                 </p:column>
                                 <p:column colspan="4">
-                                    
+
                                 </p:column>
 
                             </p:row>

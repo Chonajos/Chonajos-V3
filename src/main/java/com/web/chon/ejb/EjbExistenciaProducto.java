@@ -98,4 +98,32 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
     public int updateExistenciaProducto(ExistenciaProducto e) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public List<Object[]> getExistencias(BigDecimal idSucursal, BigDecimal idProvedorFk) 
+    {
+        try 
+        {
+            Query query = em.createNativeQuery("select ex.ID_EXISTENCIA_PRODUCTO_PK,em.ID_EM_PK,em.IDENTIFICADOR,subp.NOMBRE_SUBPRODUCTO, te.NOMBRE_EMPAQUE,\n" +
+" bod.NOMBRE,ex.CANTIDAD_EMPAQUE,ex.KILOS_EXISTENCIA\n" +
+"from EXISTENCIA_PRODUCTO ex\n" +
+"join ENTRADAMERCANCIAPRODUCTO emp\n" +
+"on emp.ID_EMP_PK =  ex.ID_EMP_FK\n" +
+"join ENTRADAMERCANCIA em\n" +
+"on em.ID_EM_PK = emp.ID_EM_FK\n" +
+"join SUBPRODUCTO subp\n" +
+"on subp.ID_SUBPRODUCTO_PK = emp.ID_SUBPRODUCTO_FK\n" +
+"join TIPO_EMPAQUE te\n" +
+"on te.ID_TIPO_EMPAQUE_PK = emp.ID_TIPO_EMPAQUE_FK\n" +
+"join bodega bod\n" +
+"on bod.ID_BD_PK = ex.ID_BODEGA_FK\n" +
+"where ex.ID_SUCURSAL_FK = '"+idSucursal+"' and em.ID_PROVEDOR_FK='"+idProvedorFk+"'" +"order by em.ID_EM_PK");
+            System.out.println(query);
+             return query.getResultList();
+        } catch (Exception ex) {
+            System.out.println("Encontro null ejb");
+            Logger.getLogger(EjbExistenciaProducto.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
 }
