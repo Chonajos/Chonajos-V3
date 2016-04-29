@@ -13,12 +13,13 @@ import java.util.Date;
  *
  * @author freddy
  */
-public class Provedor extends ValueObject implements Serializable{
+public class Provedor extends ValueObject implements Serializable {
+
     private static final long serialVersionUID = 1L;
-    private BigDecimal idProvedorPK;  
-    private String nombreProvedor;   
-    private String apaternoProve;  
-    private String amaternoProve;  
+    private BigDecimal idProvedorPK;
+    private String nombreProvedor;
+    private String apaternoProve;
+    private String amaternoProve;
     private String empresa;
     private String calleProve;
     private Character sexoProve;
@@ -60,12 +61,12 @@ public class Provedor extends ValueObject implements Serializable{
     private boolean statusProvedorBoolean;
     private String correo;
 
+    private String nombreCompleto;
+
     @Override
     public String toString() {
         return "Provedor{" + "idProvedorPK=" + idProvedorPK + ", nombreProvedor=" + nombreProvedor + ", apaternoProve=" + apaternoProve + ", amaternoProve=" + amaternoProve + ", empresa=" + empresa + ", calleProve=" + calleProve + ", sexoProve=" + sexoProve + ", fechaNacimientoProve=" + fechaNacimientoProve + ", telefonoMovilProve=" + telefonoMovilProve + ", telefonoFijoMovil=" + telefonoFijoMovil + ", extensionProve=" + extensionProve + ", numIntProve=" + numIntProve + ", numExtProve=" + numExtProve + ", claveCelularProve=" + claveCelularProve + ", ladaCelularProve=" + ladaCelularProve + ", idCPProveFK=" + idCPProveFK + ", calleFiscalProve=" + calleFiscalProve + ", numIntFiscalProve=" + numIntFiscalProve + ", numExtFiscalProve=" + numExtFiscalProve + ", idCPFiscalProveFK=" + idCPFiscalProveFK + ", nextelProve=" + nextelProve + ", razonProve=" + razonProve + ", rfcProve=" + rfcProve + ", ladaOficinaProve=" + ladaOficinaProve + ", claveOficinaProve=" + claveOficinaProve + ", nextelClaveProve=" + nextelClaveProve + ", idStatusFK=" + idStatusFK + ", fechaAlta=" + fechaAlta + ", nickName=" + nickName + ", idEntidadFK=" + idEntidadFK + ", nombreEntidad=" + nombreEntidad + ", idMunicipioFK=" + idMunicipioFK + ", nombreMunicipio=" + nombreMunicipio + ", nombreColonia=" + nombreColonia + ", codigoPostal=" + codigoPostal + ", idEntidadFiscalFK=" + idEntidadFiscalFK + ", nombreEntidadFiscal=" + nombreEntidadFiscal + ", idMunicipioFiscalFK=" + idMunicipioFiscalFK + ", nombreMunicipioFiscal=" + nombreMunicipioFiscal + ", nombreColoniaFiscal=" + nombreColoniaFiscal + ", codigoPostalFiscal=" + codigoPostalFiscal + ", nombreStatus=" + nombreStatus + ", statusProvedorBoolean=" + statusProvedorBoolean + ", correo=" + correo + '}';
     }
-
-   
 
     public String getCorreo() {
         return correo;
@@ -74,8 +75,6 @@ public class Provedor extends ValueObject implements Serializable{
     public void setCorreo(String correo) {
         this.correo = correo;
     }
-    
-    
 
     public boolean isStatusProvedorBoolean() {
         return statusProvedorBoolean;
@@ -84,8 +83,6 @@ public class Provedor extends ValueObject implements Serializable{
     public void setStatusProvedorBoolean(boolean statusProvedorBoolean) {
         this.statusProvedorBoolean = statusProvedorBoolean;
     }
-    
-    
 
     public BigDecimal getIdProvedorPK() {
         return idProvedorPK;
@@ -423,15 +420,22 @@ public class Provedor extends ValueObject implements Serializable{
         this.nombreStatus = nombreStatus;
     }
 
-   
-   
+    public String getNombreCompleto() {
+        return (nombreProvedor == null ? "" : nombreProvedor+ " ")  + (apaternoProve == null ? "" : apaternoProve+ " ")  + (amaternoProve == null ? "" : amaternoProve);
+    }
+
+    public void setNombreCompleto(String nombreCompleto) {
+        this.nombreCompleto = nombreCompleto;
+    }
 
     @Override
     public void reset() {
-       
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    
+
+        idProvedorPK = null;
+        nombreProvedor = null;
+        apaternoProve = null;
+        amaternoProve = null;
+
     }
-   
-    
+
 }

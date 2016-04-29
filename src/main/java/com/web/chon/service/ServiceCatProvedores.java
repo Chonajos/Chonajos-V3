@@ -149,7 +149,17 @@ public class ServiceCatProvedores implements IfaceCatProvedores {
 
     @Override
     public Provedor getById(BigDecimal dominio) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        getEjb();
+        List<Object[]> lstObject = ejb.getById(dominio);
+        Provedor provedor = new Provedor();
+        for (Object[] obj : lstObject) {
+            provedor.setIdProvedorPK(new BigDecimal(obj[0].toString()));
+            provedor.setNombreProvedor(obj[1].toString());
+            provedor.setApaternoProve(obj[2] == null ? "" : obj[2].toString());
+            provedor.setAmaternoProve(obj[3] == null ? "" : obj[3].toString());
+        }
+
+        return provedor;
     }
 
     @Override
@@ -202,8 +212,7 @@ public class ServiceCatProvedores implements IfaceCatProvedores {
     }
 
     @Override
-    public List<Object[]> getProvedorlId(BigDecimal idProvedor
-    ) {
+    public List<Object[]> getProvedorlId(BigDecimal idProvedor) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -212,4 +221,26 @@ public class ServiceCatProvedores implements IfaceCatProvedores {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public ArrayList<Provedor> getProvedorByNombreCompleto(String nombreCompleto) {
+        getEjb();
+
+        ArrayList<Provedor> lstProvedor = new ArrayList<Provedor>();
+        List<Object[]> lstObject = ejb.getProvedorByNombreCompleto(nombreCompleto);
+
+        for (Object[] obj : lstObject) {
+
+            Provedor dominio = new Provedor();
+            dominio.setIdProvedorPK(new BigDecimal(obj[0].toString()));
+            dominio.setNombreProvedor(obj[1].toString());
+            dominio.setApaternoProve(obj[2] == null ? "" : obj[2].toString());
+            dominio.setAmaternoProve(obj[3] == null ? "" : obj[3].toString());
+
+            lstProvedor.add(dominio);
+
+        }
+
+        return lstProvedor;
+
+    }
 }

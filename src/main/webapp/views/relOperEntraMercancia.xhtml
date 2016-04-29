@@ -28,10 +28,23 @@
                             <p:ajax event="change" listener="#{beanRelOperEntradaMercancia.getEntradaProductoByIntervalDate}" process="@this" update=":formContent:table"/>
                         </h:selectOneMenu>
                     </div>
+
                     <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                        <p:outputLabel class="col-lg-8 col-md-4 col-sm-4 col-xs-12"  for="selectFiltro" value ="Seleccione un filtro:" rendered="#{beanRelOperEntradaMercancia.viewEstate =='init'}"/> 
+                        <p:outputLabel class="col-lg-8 col-md-4 col-sm-4 col-xs-12"  for="autocompleteProvedor" value ="Provedor:" rendered="#{beanRelOperEntradaMercancia.viewEstate =='init'}"/> 
+                        <p:autoComplete  placeholder="Seleccione un Provedor" id="autocompleteProvedor" styleClass="autocomplete-input-text-media" rendered="#{beanRelOperEntradaMercancia.viewEstate =='init'}"
+                                         value="#{beanRelOperEntradaMercancia.provedor}" completeMethod="#{beanRelOperEntradaMercancia.autoCompleteProvedor}" forceSelection="true" var="provedor"  inputStyle="width: 200px"
+                                         itemLabel="#{provedor.nombreCompleto}"
+                                         itemValue="#{provedor.idProvedorPK}" converter="#{provedorConverter}">
+                            <p:ajax event="itemSelect" update=":formContent:table" listener="#{beanRelOperEntradaMercancia.getEntradaProductoByIntervalDate}" />
+                            <p:ajax event="change" update=":formContent:table" listener="#{beanRelOperEntradaMercancia.getEntradaProductoByIntervalDate}" />
+                        </p:autoComplete>
+                        <pe:keyFilter for="autocompleteProvedor" regEx="/[a-z0-9-_Ã±\s]/i" />
+                    </div>
+
+                    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                        <p:outputLabel class="col-lg-8 col-md-4 col-sm-4 col-xs-12"  for="selectFiltro" value ="Consulta por Fecha:" rendered="#{beanRelOperEntradaMercancia.viewEstate =='init'}"/> 
                         <h:selectOneMenu  id="selectFiltro" class="col-lg-10 col-md-8 col-sm-8 col-xs-12" value="#{beanRelOperEntradaMercancia.filtro}" rendered="#{beanRelOperEntradaMercancia.viewEstate =='init'}">
-                            <f:selectItem itemLabel="Seleccione un Filtro" itemValue="-1" />
+                            <f:selectItem itemLabel="Consulta por Fecha" itemValue="-1" />
                             <f:selectItem itemLabel="Día" itemValue="1"/>
                             <f:selectItem itemLabel="Mes" itemValue="2"/>
                             <f:selectItem itemLabel="Año" itemValue="3"/>
@@ -39,8 +52,8 @@
                         </h:selectOneMenu>
                     </div>
 
-                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 form-group">
-                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
                             <p:outputLabel class="col-lg-10 col-md-4 col-sm-4 col-xs-12"  for="calendarInicio" value ="Fecha de Inicio:" rendered="#{beanRelOperEntradaMercancia.viewEstate =='init'}"/> 
                             <p:calendar id="calendarInicio" class="col-lg-10 col-md-8 col-sm-8 col-xs-12 calendario" navigator="true" placeholder="dd/mm/yyyy"
                                         value="#{beanRelOperEntradaMercancia.data.fechaFiltroInicio}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button" rendered="#{beanRelOperEntradaMercancia.viewEstate =='init'}">
@@ -49,7 +62,7 @@
                                           update=":formContent:table" />
                             </p:calendar>
                         </div>
-                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
                             <p:outputLabel class="col-lg-10 col-md-4 col-sm-4 col-xs-12"  for="calendarFin" value ="Fecha de Fin:" rendered="#{beanRelOperEntradaMercancia.viewEstate =='init'}"/> 
                             <p:calendar id="calendarFin" class="col-lg-10 col-md-8 col-sm-8 col-xs-12 calendario" navigator="true" placeholder="dd/mm/yyyy"
                                         value="#{beanRelOperEntradaMercancia.data.fechaFiltroFin}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button" rendered="#{beanRelOperEntradaMercancia.viewEstate =='init'}">
@@ -61,27 +74,52 @@
                     </div>
 
                     <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                        <!--<p:outputLabel class="col-lg-12 col-md-4 col-sm-4 col-xs-12"  for="statusFiltro" value ="Status de Venta:" rendered="{beanRelOperEntradaMercancia.viewEstate =='init'}" />--> 
-<!--                        <h:selectOneMenu  id="statusFiltro" class=" col-lg-12 col-md-8 col-sm-8 col-xs-12" value="{beanRelOperEntradaMercancia.data.idStatus}" rendered="{beanRelOperEntradaMercancia.viewEstate =='init'}" >
-                            <f:selectItem itemLabel="Selecciona una status de venta" itemValue="" />
-                            <f:selectItems value="{beanRelOperEntradaMercancia.listaStatusVenta}" var="staditosVenta" itemLabel="{staditosVenta.status}" itemValue="{staditosVenta.id_status_pk}"/>
-                            <p:ajax event="change" listener="{beanRelOperEntradaMercancia.printStatus()}" update=":formContent:table" />
-                        </h:selectOneMenu>-->
+
                     </div>
+                    <p:panel class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group" rendered="#{beanRelOperEntradaMercancia.viewEstate =='searchById'}">
+
+                        <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-12 col-md-4 col-sm-6 col-xs-12"   value ="Sucursal:"/> 
+                            <p:outputLabel class="col-lg-12 col-md-8 col-sm-6 col-xs-12"   value ="#{beanRelOperEntradaMercancia.data.nombreSucursal}" rendered="#{beanRelOperEntradaMercancia.viewEstate =='searchById'}"/> 
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-12 col-md-4 col-sm-6 col-xs-12"   value ="Provedor:" rendered="#{beanRelOperEntradaMercancia.viewEstate =='searchById'}"/> 
+                            <p:outputLabel class="col-lg-12 col-md-8 col-sm-6 col-xs-12"   value ="#{beanRelOperEntradaMercancia.data.nombreProvedor}" rendered="#{beanRelOperEntradaMercancia.viewEstate =='searchById'}"/> 
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-12 col-md-4 col-sm-6 col-xs-12"   value ="Remisión:" rendered="#{beanRelOperEntradaMercancia.viewEstate =='searchById'}"/> 
+                            <p:outputLabel class="col-lg-12 col-md-8 col-sm-6 col-xs-12"   value ="#{beanRelOperEntradaMercancia.data.remision}" rendered="#{beanRelOperEntradaMercancia.viewEstate =='searchById'}"/> 
+                        </div>
+
+                        <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-12 col-md-4 col-sm-6 col-xs-12"   value ="Número de Movimiento:" rendered="#{beanRelOperEntradaMercancia.viewEstate =='searchById'}"/> 
+                            <p:outputLabel class="col-lg-12 col-md-8 col-sm-6 col-xs-12"   value ="#{beanRelOperEntradaMercancia.data.folio}" rendered="#{beanRelOperEntradaMercancia.viewEstate =='searchById'}"/> 
+                        </div>
+
+                        <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-12 col-md-4 col-sm-6 col-xs-12"   value ="Kilos Provedor:" rendered="#{beanRelOperEntradaMercancia.viewEstate =='searchById'}"/> 
+                            <p:outputLabel class="col-lg-12 col-md-8 col-sm-6 col-xs-12"   value ="#{beanRelOperEntradaMercancia.data.kilosTotalesProvedor}" rendered="#{beanRelOperEntradaMercancia.viewEstate =='searchById'}"/> 
+                        </div>
+
+                        <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-12 col-md-4 col-sm-6 col-xs-12"   value ="Fecha:" rendered="#{beanRelOperEntradaMercancia.viewEstate =='searchById'}"/> 
+                            <p:outputLabel class="col-lg-12 col-md-8 col-sm-6 col-xs-12"   value ="#{beanRelOperEntradaMercancia.data.fecha}" rendered="#{beanRelOperEntradaMercancia.viewEstate =='searchById'}"/> 
+                        </div> 
+
+                    </p:panel>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <p:dataTable id="table" var="model" value="#{beanRelOperEntradaMercancia.lstEntradaMercancia}" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." rendered="#{beanRelOperEntradaMercancia.viewEstate =='init'}">
 
-                            <p:column headerText="Folio" width="60px;" style="text-align:center">
+                            <p:column headerText="Número de Movimiento" width="90px;" style="text-align:center">
                                 <h:outputText value="#{model.idEmPK}" />
                             </p:column>
-                            
+                            <p:column headerText="Folio de Remisión" width="150px;" style="text-align:center">
+                                <h:outputText value="#{model.folio}"/>
+                            </p:column>
                             <p:column headerText="Fecha" width="90px;" style="text-align:center">
                                 <h:outputText value="#{model.fecha}">
                                     <f:convertDateTime pattern="dd/MM/yyyy"/>
                                 </h:outputText>
-                            </p:column>
-                            <p:column headerText="Remision" width="150px;" style="text-align:center">
-                                <h:outputText value="#{model.folio}"/>
                             </p:column>
                             <p:column headerText="Sucursal" width="300px;" style="text-align:center">
                                 <h:outputText value="#{model.nombreSucursal}"/>
@@ -102,7 +140,11 @@
                             </p:column>
                         </p:dataTable>
 
+
                         <p:dataTable rendered="#{beanRelOperEntradaMercancia.viewEstate =='searchById'}" var="model" value="#{beanRelOperEntradaMercancia.lstEntradaMercanciaProdcuto}" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros.">
+                            <p:column headerText="Número de Movimiento" width="130px;" style="text-align:center">
+                                <h:outputText value="#{model.numeroMovimiento}" />
+                            </p:column>
                             <p:column headerText="Productos" width="150px;" style="text-align:center">
                                 <h:outputText value="#{model.nombreProducto}" />
                             </p:column>
@@ -123,9 +165,23 @@
                             <p:column headerText="Tipo de Compra" width="85px;" style="text-align:center">
                                 <h:outputText value="#{model.nombreTipoConvenio}" />
                             </p:column>
-                            <p:column headerText="Comentarios" width="85px;" style="text-align:center">
+                            <p:column headerText="Comentarios" width="120px;" style="text-align:center">
                                 <h:outputText value="#{model.comentarios}" />
                             </p:column>
+                            <p:columnGroup type="footer">
+                                <p:row>
+                                    <p:column colspan="4" style="text-align:right" footerText="Total de Kilos:" />
+                                    <p:column colspan="1">
+                                        <f:facet name="footer">
+                                            <h:outputText value="#{beanRelOperEntradaMercancia.totalKilos}">
+                                                <f:convertNumber for="totalVenta" pattern="#,##0.00"/>
+                                            </h:outputText>
+                                        </f:facet>
+                                    </p:column>
+                                    <p:column colspan="3" />
+
+                                </p:row>
+                            </p:columnGroup>
                         </p:dataTable>
                     </div>
                 </div>

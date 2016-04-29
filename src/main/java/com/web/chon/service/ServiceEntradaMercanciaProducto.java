@@ -100,11 +100,13 @@ public class ServiceEntradaMercanciaProducto implements IfaceEntradaMercanciaPro
         List<Object[]> lstObject = new ArrayList<Object[]>();
 
         lstObject = ejb.getEntradaProductoByIdEM(idEntradaMercancia);
-
+        int numeroMovimiento = 0;
         for (Object[] obj : lstObject) {
 
             EntradaMercanciaProducto dominio = new EntradaMercanciaProducto();
 
+            numeroMovimiento++;
+            
             dominio.setIdEmpPK(new BigDecimal(obj[0].toString()));
             dominio.setIdEmFK(new BigDecimal(obj[1].toString()));
             dominio.setIdSubProductoFK(obj[2] == null ? null : obj[2].toString());
@@ -112,12 +114,14 @@ public class ServiceEntradaMercanciaProducto implements IfaceEntradaMercanciaPro
             dominio.setKilosTotalesProducto(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
             dominio.setCantidadPaquetes(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
             dominio.setComentarios(obj[6] == null ? "" : obj[6].toString());
-            dominio.setIdTipoConvenio(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
-            dominio.setIdBodegaFK(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
-            dominio.setNombreProducto(obj[9] == null ? "" : obj[9].toString());
-            dominio.setNombreEmpaque(obj[10] == null ? "" : obj[10].toString());
-            dominio.setNombreBodega(obj[11] == null ? "" : obj[11].toString());
-            dominio.setNombreTipoConvenio(obj[12] == null ? "" : obj[12].toString());
+
+            dominio.setIdBodegaFK(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
+//            dominio.setIdTipoConvenio(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
+            dominio.setNombreProducto(obj[11] == null ? "" : obj[11].toString());
+            dominio.setNombreEmpaque(obj[12] == null ? "" : obj[12].toString());
+            dominio.setNombreBodega(obj[13] == null ? "" : obj[13].toString());
+            dominio.setNombreTipoConvenio(obj[14] == null ? "" : obj[14].toString());
+            dominio.setNumeroMovimiento(numeroMovimiento);
 
             lstEntradaMercanciaProducto.add(dominio);
 

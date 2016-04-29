@@ -3,8 +3,10 @@ package com.web.chon.bean;
 import com.web.chon.bean.mvc.SimpleViewBean;
 import com.web.chon.dominio.AnalisisMercado;
 import com.web.chon.dominio.Subproducto;
+import com.web.chon.dominio.UsuarioDominio;
 
 import com.web.chon.model.PaginationLazyDataModel;
+import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.util.JsfUtil;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -23,6 +25,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import com.web.chon.service.IfaceAnalisisMercado;
 import com.web.chon.service.IfaceSubProducto;
+import com.web.chon.util.TiempoUtil;
 
 @Component
 @Scope("view")
@@ -35,6 +38,10 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
     private IfaceAnalisisMercado ifaceEntradaProductoCentral;
     @Autowired
     private IfaceSubProducto ifaceProducto;
+    @Autowired
+    private PlataformaSecurityContext context;
+    
+    private UsuarioDominio usuario;
 
     private ArrayList<AnalisisMercado> lstEntradaMercancia;
     private ArrayList<AnalisisMercado> lstEntradaMercanciaSemana;
@@ -62,7 +69,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
 
     @Override
     public void initModel() {
-
+        usuario = context.getUsuarioAutenticado();
         data = new AnalisisMercado();
         model = new PaginationLazyDataModel<AnalisisMercado, BigDecimal>(ifaceEntradaProductoCentral, new AnalisisMercado());
 
@@ -74,13 +81,22 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
         lstEntradaMercancia = new ArrayList<AnalisisMercado>();
         setTitle("Análisis de Mercado");
 
+        /*Pantalla principal welcome.xhtml*/
+        lstEntradaMercancia = ifaceEntradaProductoCentral.getEntradaMercanciaByFiltro(28, 1, TiempoUtil.sumarRestarDias(context.getFechaSistema(), -14), "00000005");
+        generateChartLine();
+        generateChartBar();
+        /*Pantalla principal welcome.xhtml*/
+
     }
 
-   
     @Override
     public String search() {
         setTitle("Análisis de Mercado");
         actionSearching();
+
+        chartLineByDias = null;
+        chartBarByDias = null;
+
         data.reset();
 
         return "analisisMercado";
@@ -109,8 +125,8 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
     public String delete() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
-     public void generateChartLine() {
+
+    public void generateChartLine() {
 
         chartLineByDias = initChartLine();
         chartLineByDias.setSeriesColors("0404B4,088A08,81BEF7,D0F5A9");
@@ -126,7 +142,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
         chartLineByDias.setStacked(true);
         chartLineByDias.getAxes().put(AxisType.X, new CategoryAxis("Fecha"));
         chartLineByDias.getAxis(AxisType.X).setTickAngle(90);
-        
+
         Axis yAxis = chartLineByDias.getAxis(AxisType.Y);
         yAxis.setLabel("Toneladas");
         yAxis.setMin(0);
@@ -370,8 +386,8 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
             logger.error("Error > " + e.getMessage());
         }
     }
-    
-     public void cancel() {
+
+    public void cancel() {
 
         actionBack();
         initModel();
@@ -389,7 +405,6 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
 
         return "entradaMercancia";
     }
-
 
     public String getTitle() {
         return title;
@@ -483,5 +498,14 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
     public void setCharExpander(boolean charExpander) {
         this.charExpander = charExpander;
     }
+
+    public UsuarioDominio getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(UsuarioDominio usuario) {
+        this.usuario = usuario;
+    }
+    
 
 }

@@ -1,7 +1,8 @@
 package com.web.chon.util;
 
-import com.web.chon.dominio.Usuario;
-import com.web.chon.service.IfaceCatUsuario;
+import com.web.chon.dominio.Provedor;
+import com.web.chon.service.IfaceCatProvedores;
+import java.math.BigDecimal;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -11,10 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UsuarioConverter implements Converter {
+public class ProvedorConverter implements Converter {
 
     @Autowired
-    IfaceCatUsuario ifaceCatUsuario;
+    IfaceCatProvedores ifaceCatProvedores;
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
@@ -22,13 +23,18 @@ public class UsuarioConverter implements Converter {
         if (value != null && !value.equals("null") && value.trim().length() > 0) {
 
             try {
-                Object object = ifaceCatUsuario.getUsuariosById(Integer.parseInt(value));
-
-                return object;
+                if((value.matches("[+-]?\\d*(\\.\\d+)?") && value.equals("") == false)){
+                    Object object = ifaceCatProvedores.getById(new BigDecimal(value));
+                    return object;
+                }else{
+                    return null;
+                }
+                
+                
 
             } catch (Exception e) {
 
-                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error" + e.getStackTrace(), "******ss****" + e.getStackTrace()));
+                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error >" + e.getStackTrace(), " - " + e.getStackTrace()));
             }
         } else {
 
@@ -43,9 +49,9 @@ public class UsuarioConverter implements Converter {
 
         if (value != null) {
 
-            if (value instanceof Usuario) {
+            if (value instanceof Provedor) {
 
-                return String.valueOf(((Usuario) value).getIdUsuarioPk());
+                return String.valueOf(((Provedor) value).getIdProvedorPK());
 
             } else {
 

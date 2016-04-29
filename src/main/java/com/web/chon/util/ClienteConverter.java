@@ -29,7 +29,7 @@ public class ClienteConverter implements Converter {
 
             } catch (Exception e) {
 
-                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error" + e.getStackTrace(), "******ss****" + e.getStackTrace()));
+                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error >" + e.getStackTrace(), " - " + e.getStackTrace()));
             }
         } else {
 

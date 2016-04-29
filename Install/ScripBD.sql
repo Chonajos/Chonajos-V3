@@ -559,6 +559,37 @@ INCREMENT BY 1
 START WITH 1
 MINVALUE 0;
 
+CREATE TABLE CATEGORIA_COSTOS(
+ID_CATEGORIA_COSTOS NUMBER(3) NOT NULL,
+DESCRIPCION VARCHAR(128),
+CONSTRAINT C_CATEGORIA_COSTOS_PK PRIMARY KEY (ID_CATEGORIA_COSTOS) 
+);
+
+CREATE SEQUENCE s_CATEGORIA_COSTOS
+INCREMENT BY 1
+START WITH 1
+MINVALUE 0;
+
+<--Tabla tipo de costos-->
+CREATE TABLE TIPO_COSTO (
+ID_TIPO_COSTO NUMBER(3) NOT NULL,
+ID_CATEGORIA_COSTO NUMBER(3) NOT NULL,
+DESCRIPCION VARCHAR(128),
+CONSTRAINT C_TIPO_COSTO_FK FOREIGN KEY (ID_CATEGORIA_COSTO) REFERENCES CATEGORIA_COSTOS(ID_CATEGORIA_COSTOS),
+CONSTRAINT C_TIPO_COSTO_PK PRIMARY KEY (ID_TIPO_COSTO) 
+);
+
+CREATE SEQUENCE s_TIPO_COSTO
+INCREMENT BY 1
+START WITH 1
+MINVALUE 0;
+
+<--Inserts para categoria de costos-->
+INSERT INTO CATEGORIA_COSTOS (ID_CATEGORIA_COSTOS, DESCRIPCION) VALUES(s_CATEGORIA_COSTOS.NextVal,'Sueldos y Salarios');
+INSERT INTO CATEGORIA_COSTOS (ID_CATEGORIA_COSTOS, DESCRIPCION) VALUES(s_CATEGORIA_COSTOS.NextVal,'Mantenimiento de Equipo de Transporte');
+INSERT INTO CATEGORIA_COSTOS (ID_CATEGORIA_COSTOS, DESCRIPCION) VALUES(s_CATEGORIA_COSTOS.NextVal,'Mantenimiento de Bodega');
+INSERT INTO CATEGORIA_COSTOS (ID_CATEGORIA_COSTOS, DESCRIPCION) VALUES(s_CATEGORIA_COSTOS.NextVal,'Viáticos de Ruta');
+
 <--fin roles y permisos-->
 
 <---inserts para roles y permisos--->
@@ -588,6 +619,12 @@ INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.
 
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Bodegas', 0,'10.6','/views/bodega.xhtml');
 
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Mercancia', 1,'70','NULL');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Entrada de Mercancia', 0,'70.1','/views/entradaMercancia.xhtml');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Transferencia de Mercancia', 0,'70.2','/views/transferenciaMercancia.xhtml');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Relación de Operaciones', 0,'70.3','/views/relOperEntraMercancia.xhtml');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Existencias', 0,'70.4','/views/existencias.xhtml');
+
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(1,1);
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(2,1);
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(3,1);
@@ -612,4 +649,10 @@ INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(17,1);
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(18,1);
 
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(19,1);
+
+INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(20,1);
+INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(21,1);
+INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(22,1);
+INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(23,1);
+INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(24,1);
 <--- fin inserts para roles y permisos--->

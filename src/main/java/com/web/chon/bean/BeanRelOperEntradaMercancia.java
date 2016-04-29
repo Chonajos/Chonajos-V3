@@ -2,7 +2,9 @@ package com.web.chon.bean;
 
 import com.web.chon.dominio.EntradaMercancia2;
 import com.web.chon.dominio.EntradaMercanciaProducto;
+import com.web.chon.dominio.Provedor;
 import com.web.chon.dominio.Sucursal;
+import com.web.chon.service.IfaceCatProvedores;
 import com.web.chon.service.IfaceCatStatusVenta;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceEntradaMercancia;
@@ -11,6 +13,7 @@ import com.web.chon.service.IfaceProducto;
 import com.web.chon.util.TiempoUtil;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.annotation.PostConstruct;
@@ -39,6 +42,8 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     private IfaceCatSucursales ifaceCatSucursales;
     @Autowired
     private IfaceCatStatusVenta ifaceCatStatusVenta;
+    @Autowired
+    private IfaceCatProvedores ifaceCatProvedores;
     private EntradaMercancia2 data;
     private ArrayList<Sucursal> listaSucursales;
 
@@ -47,9 +52,13 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     private int filtro;
     private Date fechaInicio;
     private Date fechaFin;
+    private BigDecimal totalKilos;
+
+    private Provedor provedor;
 
     private ArrayList<EntradaMercancia2> lstEntradaMercancia;
     private ArrayList<EntradaMercanciaProducto> lstEntradaMercanciaProdcuto;
+    private ArrayList<Provedor> lstProvedor;
 
     @PostConstruct
     public void init() {
@@ -58,6 +67,8 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         listaSucursales = ifaceCatSucursales.getSucursales();
 
         data = new EntradaMercancia2();
+
+        provedor = new Provedor();
 
         setTitle("Relación de Operaciónes.");
         setViewEstate("init");
@@ -121,11 +132,13 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
     public void getEntradaProductoByIntervalDate() {
         setFechaInicioFin(filtro);
-        if (data.getFechaFiltroInicio() != null && data.getFechaFiltroFin() != null) {
-            lstEntradaMercancia = ifaceEntradaMercancia.getEntradaProductoByIntervalDate(data.getFechaFiltroInicio(), data.getFechaFiltroFin(), data.getIdSucursalFK(), data.getIdProvedorFK());
-        } else {
-            lstEntradaMercancia = new ArrayList<EntradaMercancia2>();
-        }
+        BigDecimal idProvedor = provedor == null ? null : provedor.getIdProvedorPK();
+
+//        if (data.getFechaFiltroInicio() != null && data.getFechaFiltroFin() != null) {
+        lstEntradaMercancia = ifaceEntradaMercancia.getEntradaProductoByIntervalDate(data.getFechaFiltroInicio(), data.getFechaFiltroFin(), data.getIdSucursalFK(), idProvedor);
+//        } else {
+//            lstEntradaMercancia = new ArrayList<EntradaMercancia2>();
+//        }
 
     }
 
@@ -134,14 +147,29 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         lstEntradaMercanciaProdcuto = new ArrayList<EntradaMercanciaProducto>();
         lstEntradaMercancia = new ArrayList<EntradaMercancia2>();
         data.reset();
+        provedor.reset();
         filtro = -1;
-        
 
     }
 
     public void detallesEntradaProducto() {
         setViewEstate("searchById");
+
         lstEntradaMercanciaProdcuto = ifaceEntradaMercanciaProducto.getEntradaProductoByIdEM(data.getIdEmPK());
+        getTotalKilosProducto();
+    }
+
+    public void getTotalKilosProducto() {
+        totalKilos = new BigDecimal(0);
+        for (EntradaMercanciaProducto dominio : lstEntradaMercanciaProdcuto) {
+            totalKilos = totalKilos.add(dominio.getKilosTotalesProducto());
+        }
+
+    }
+
+    public ArrayList<Provedor> autoCompleteProvedor(String nombreProvedor) {
+        lstProvedor = ifaceCatProvedores.getProvedorByNombreCompleto(nombreProvedor.toUpperCase());
+        return lstProvedor;
 
     }
 
@@ -215,6 +243,30 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
     public void setLstEntradaMercancia(ArrayList<EntradaMercancia2> lstEntradaMercancia) {
         this.lstEntradaMercancia = lstEntradaMercancia;
+    }
+
+    public Provedor getProvedor() {
+        return provedor;
+    }
+
+    public void setProvedor(Provedor provedor) {
+        this.provedor = provedor;
+    }
+
+    public ArrayList<Provedor> getLstProvedor() {
+        return lstProvedor;
+    }
+
+    public void setLstProvedor(ArrayList<Provedor> lstProvedor) {
+        this.lstProvedor = lstProvedor;
+    }
+
+    public BigDecimal getTotalKilos() {
+        return totalKilos;
+    }
+
+    public void setTotalKilos(BigDecimal totalKilos) {
+        this.totalKilos = totalKilos;
     }
 
 }

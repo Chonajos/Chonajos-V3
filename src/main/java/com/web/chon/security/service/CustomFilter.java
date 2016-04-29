@@ -16,7 +16,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.web.chon.core.exception.SecurityAccessException;
 import com.web.chon.dominio.UsuarioDominio;
-import com.web.chon.util.Perfiles;
+import com.web.chon.util.JsfUtil;
 
 @Service(value = "customFilter")
 public class CustomFilter extends OncePerRequestFilter {
@@ -33,11 +33,9 @@ public class CustomFilter extends OncePerRequestFilter {
             HttpServletResponse res, FilterChain chain)
             throws ServletException, IOException {
         if (isAjaxRequest(req)) {
-            logger.debug("Peticion AJAX");
             chain.doFilter(req, res);
             return;
         }
-        
 
         String url = req.getRequestURL().toString();
         String urlPrimePush = url.substring(url.length() - 16, url.length());
@@ -59,7 +57,6 @@ public class CustomFilter extends OncePerRequestFilter {
 
         if (j > 0 && (url.substring(j)).equalsIgnoreCase("") || (url.substring(j)).equalsIgnoreCase("/views/")) {
             url = url.substring(j);
-            logger.debug("Usuario loegado - Url: {}", url);
             res.sendRedirect("/views/welcome.xhtml");
             return;
 
@@ -70,6 +67,8 @@ public class CustomFilter extends OncePerRequestFilter {
             try {
                 hasPermission(url);
             } catch (SecurityAccessException e) {
+                System.out.println("error security");
+                JsfUtil.addErrorMessage("No tiene permisos para ver esta Pagina.");
                 res.sendRedirect("/error/error.xhtml");
                 return;
             }
@@ -78,7 +77,7 @@ public class CustomFilter extends OncePerRequestFilter {
 
         if (!urlPrimePush.equals("primepush/notify")) {
             chain.doFilter(req, res);
-        } 
+        }
     }
 
     private boolean isAjaxRequest(HttpServletRequest request) {
@@ -87,17 +86,13 @@ public class CustomFilter extends OncePerRequestFilter {
 
     private void hasPermission(String url) throws SecurityAccessException {
         usuario = context.getUsuarioAutenticado();
-        System.out.println("hasPermission" + url);
+        
         if (url.equalsIgnoreCase("/views/welcome.xhtml")) {
             return;
-        } else if (!usuario.getPerDescripcion().equals(Perfiles.ANALISTA_DE_PROYECTOS_SR.getPerfil())) {
-            System.out.println("validate permisos analista" + url);
-            if (usuario.getAllowedUrl().contains(url)) {
-                System.out.println("validate url");
-                return;
-            }
-        } else {
+        }
+        if (usuario.getAllowedUrl().contains(url)) {
             return;
+
         }
 
         throw new SecurityAccessException(

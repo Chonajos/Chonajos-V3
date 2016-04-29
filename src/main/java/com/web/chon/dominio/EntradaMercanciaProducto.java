@@ -32,6 +32,7 @@ public class EntradaMercanciaProducto extends ValueObject implements Serializabl
     private String nombreTipoConvenio;
     private String nombreBodega;
     private BigDecimal kilospromprod;
+    private int numeroMovimiento;
     
 
     
@@ -196,6 +197,14 @@ public class EntradaMercanciaProducto extends ValueObject implements Serializabl
 
     public void setNombreBodega(String nombreBodega) {
         this.nombreBodega = nombreBodega;
+    }
+
+    public int getNumeroMovimiento() {
+        return numeroMovimiento;
+    }
+
+    public void setNumeroMovimiento(int numeroMovimiento) {
+        this.numeroMovimiento = numeroMovimiento;
     }
 
     

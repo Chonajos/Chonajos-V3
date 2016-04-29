@@ -77,19 +77,36 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
 
     @Override
     public List<Object[]> getEntradaProductoByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idProvedor) {
+        int cont = 0;
         StringBuffer query = new StringBuffer("SELECT EMA.*,PRO.NOMBRE_PROVEDOR ||' '|| PRO.A_PATERNO_PROVE ||' '|| PRO.A_MATERNO_PROVE AS NOMBRE_PROVEDOR, SUC.NOMBRE_SUCURSAL FROM ENTRADAMERCANCIA EMA ");
-        query.append("LEFT JOIN PROVEDORES PRO ON EMA.ID_PROVEDOR_FK = PRO.ID_PROVEDOR_PK ");
-        query.append("LEFT JOIN SUCURSAL SUC ON EMA.ID_SUCURSAL_FK = SUC.ID_SUCURSAL_PK WHERE TO_DATE(TO_CHAR(EMA.FECHA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + TiempoUtil.getFechaDDMMYY(fechaInicio) + "' AND '" + TiempoUtil.getFechaDDMMYY(fechaFin) + "' ");
+        query.append(" LEFT JOIN PROVEDORES PRO ON EMA.ID_PROVEDOR_FK = PRO.ID_PROVEDOR_PK ");
+        query.append(" LEFT JOIN SUCURSAL SUC ON EMA.ID_SUCURSAL_FK = SUC.ID_SUCURSAL_PK ");
+
+        if (fechaInicio != null) {
+            cont++;
+            query.append(" WHERE TO_DATE(TO_CHAR(EMA.FECHA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + TiempoUtil.getFechaDDMMYY(fechaInicio) + "' AND '" + TiempoUtil.getFechaDDMMYY(fechaFin) + "' ");
+        }
 
         if (idSucursal != null && idSucursal != new BigDecimal(-1)) {
-            query.append(" AND EMA.ID_SUCURSAL_FK =" + idSucursal);
+            if (cont == 0) {
+                cont++;
+                query.append(" WHERE ");
+            }else{
+                query.append(" AND ");
+            }
+            query.append(" EMA.ID_SUCURSAL_FK =" + idSucursal);
         }
 
         if (idProvedor != null && idProvedor != new BigDecimal(-1)) {
-            query.append(" AND EMA.ID_PROVEDOR_FK =" + idProvedor);
+            if (cont == 0) {
+                query.append(" WHERE ");
+            }else{
+                query.append(" AND ");
+            }
+            query.append(" EMA.ID_PROVEDOR_FK =" + idProvedor);
         }
 
-        query.append("ORDER BY EMA.ID_EM_PK");
+        query.append(" ORDER BY EMA.ID_EM_PK");
 
         return em.createNativeQuery(query.toString()).getResultList();
 

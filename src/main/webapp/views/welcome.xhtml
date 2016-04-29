@@ -7,18 +7,19 @@
                 xmlns:p="http://primefaces.org/ui">
 
     <ui:define name="content">
-        <div><h1>Bienvenido #{beanUsuario.usuario.nombreCompleto}</h1></div>
-        <h:form>
-          
-
-           <p:gmap center="19.726241, -99.332605" zoom="4" type="ROADMAP" style="width:100%;height:400px" />
+        <h:form id="formContent" rendered="#{beanAnalisisMercado.usuario.perId =='1'}">
+       
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+                <h:outputText value="Grafica Lineal:" class="col-lg-6 col-md-5 col-sm-6 col-xs-6"/>
+                <p:selectBooleanCheckbox value="#{beanAnalisisMercado.charLine}">
+                    <p:ajax event="change" update=":formContent"/>
+                </p:selectBooleanCheckbox>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <p:chart id="charId" style="height:450px;"   type="line" responsive="true" rendered ="#{beanAnalisisMercado.chartLineByDias != null and beanAnalisisMercado.charLine == true}" model="#{beanAnalisisMercado.chartLineByDias}"/>
+                <p:chart style="height:450px;" type="bar" responsive="true" rendered ="#{beanAnalisisMercado.chartBarByDias != null  and beanAnalisisMercado.charLine == false}" model="#{beanAnalisisMercado.chartBarByDias}" />
+            </div>
         </h:form>
-<!--             <p:messages id="messages" showDetail="false" autoUpdate="true" closable="true" />
-        
-                <p:galleria value="#{beanImages.images}" var="image" panelWidth="500" panelHeight="313" showCaption="true">
-                    <p:graphicImage name="resources/img/nature/#{image}" alt="Image Description for #{image}" title="#{image}"/>
-                </p:galleria>-->
-
     </ui:define>
 
 </ui:composition>

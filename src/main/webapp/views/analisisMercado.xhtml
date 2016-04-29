@@ -19,7 +19,7 @@
                     <div class="form-group" align="right">
                         <p:commandButton value="Atras" resetValues="true" immediate="true" update=":formContent" action="#{beanAnalisisMercado.cancel}" rendered="#{beanAnalisisMercado.state =='SEARCH'}"/>
                         <p:commandButton rendered="#{beanAnalisisMercado.state =='INIT'}" value="Guardar" resetValues="true" update=":formContent" action="#{beanAnalisisMercado.save}"/>
-                        <p:commandButton value="Reportes" resetValues="true" update=":formContent" immediate="true" actionListener="#{beanAnalisisMercado.search}" rendered="#{beanAnalisisMercado.state =='INIT'}"/>
+                        <p:commandButton value="Reportes" resetValues="true" update=":formContent" immediate="true" actionListener="#{beanAnalisisMercado.search}" rendered="#{beanAnalisisMercado.state =='INIT' and beanAnalisisMercado.usuario.perId =='1' }"/>
                     </div>
                     <div class="form-group">
                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
