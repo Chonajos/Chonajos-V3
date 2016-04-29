@@ -29,7 +29,7 @@
                         </h:selectOneMenu>
                     </div>
                     <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                        <p:outputLabel class="col-lg-8 col-md-4 col-sm-4 col-xs-12"  for="selectFiltro" value ="Seleccione un filtro:" rendered="#{beanRelacionOperaciones.viewEstate =='init'}"/> 
+                        <p:outputLabel class="col-lg-8 col-md-4 col-sm-4 col-xs-12"  for="selectFiltro" value ="Consulta por Fecha:" rendered="#{beanRelacionOperaciones.viewEstate =='init'}"/> 
                         <h:selectOneMenu  id="selectFiltro" class="col-lg-10 col-md-8 col-sm-8 col-xs-12" value="#{beanRelacionOperaciones.filtro}" rendered="#{beanRelacionOperaciones.viewEstate =='init'}">
                             <f:selectItem itemLabel="Seleccione un Filtro" itemValue="-1" />
                             <f:selectItem itemLabel="Día" itemValue="1"/>

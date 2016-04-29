@@ -50,9 +50,11 @@ public class EjbUsuarioLogin implements NegocioUsuarioLogin {
                     + "                     USU.ID_ROL_FK, "
                     + "                     USU.ID_SUCURSAL_FK, "
                     + "                     ROL.NOMBRE_ROL, "
-                    + "                     USU.ID_USUARIO_PK "
+                    + "                     USU.ID_USUARIO_PK, "
+                    + "                     SUC.NOMBRE_SUCURSAL "
                     + "                     FROM USUARIO USU "
                     + "                     INNER JOIN ROL ROL ON USU.ID_ROL_FK =ROL.ID_ROL_PK "
+                    + "                     INNER JOIN SUCURSAL SUC ON USU.ID_SUCURSAL_FK = SUC.ID_SUCURSAL_PK"
                     + "                     WHERE CLAVE_USUARIO = ?");
 
             query.setParameter(1, idUser);

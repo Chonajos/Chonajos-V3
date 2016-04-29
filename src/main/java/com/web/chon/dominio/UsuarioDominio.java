@@ -28,6 +28,7 @@ public class UsuarioDominio extends ValueObject implements PlataformaUsuario {
     private String usuPaterno;
     private String usuMaterno;
     private String usuPassword;
+    private String nombreSucursal;
     private Date usuFecAlta;
     private int perId;
     private String perDescripcion;
@@ -200,8 +201,12 @@ public class UsuarioDominio extends ValueObject implements PlataformaUsuario {
         this.menu = menu;
     }
 
-    public boolean tienePermisoParaReporte(String reportName) {
-        return true;
+    public String getNombreSucursal() {
+        return nombreSucursal;
     }
 
+    public void setNombreSucursal(String nombreSucursal) {
+        this.nombreSucursal = nombreSucursal;
+    }
+    
 }

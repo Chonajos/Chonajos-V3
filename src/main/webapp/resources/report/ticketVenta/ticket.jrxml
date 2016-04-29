@@ -18,6 +18,9 @@
 	<parameter name="ventaTotal" class="java.lang.String"/>
 	<parameter name="totalLetra" class="java.lang.String"/>
 	<parameter name="estado" class="java.lang.String"/>
+	<parameter name="labelFecha" class="java.lang.String"/>
+	<parameter name="labelFolio" class="java.lang.String"/>
+	<parameter name="labelSucursal" class="java.lang.String"/>
 	<variable name="fechaVenta" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
@@ -30,22 +33,12 @@
 				<text><![CDATA[COMERCIALIZADORA Y EXPORTADORA CHONAJOS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="66" y="17" width="140" height="18" uuid="edba9a9e-5224-4f6c-bf53-21aff6c666ec"/>
+				<reportElement x="2" y="17" width="257" height="18" uuid="edba9a9e-5224-4f6c-bf53-21aff6c666ec"/>
 				<textElement textAlignment="Center"/>
 				<text><![CDATA[S DE RL DE CV]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="0" y="32" width="260" height="18" uuid="d5517d3f-c577-4ae5-a162-9a154404b274"/>
-				<textElement textAlignment="Center"/>
-				<text><![CDATA[BODEGA.  Q85.]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="84" width="91" height="18" uuid="e3b6959d-e5ae-488c-bdcc-9b6d390dd152"/>
-				<textElement textAlignment="Left"/>
-				<text><![CDATA[Fecha de Venta:]]></text>
-			</staticText>
 			<textField>
-				<reportElement x="91" y="84" width="89" height="18" uuid="6e57c4b1-dfa7-4eba-a047-8b089afdeb7c"/>
+				<reportElement x="96" y="84" width="110" height="18" uuid="6e57c4b1-dfa7-4eba-a047-8b089afdeb7c"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA[$P{fechaVenta}]]></textFieldExpression>
 			</textField>
@@ -61,6 +54,15 @@
 				<textElement textAlignment="Center"/>
 				<text><![CDATA[Telefonos: 55-56-40-58-46, 55-56-40-87-72]]></text>
 			</staticText>
+			<textField>
+				<reportElement x="1" y="84" width="95" height="18" uuid="c2180276-be42-419b-bbd2-140cc6030216"/>
+				<textFieldExpression><![CDATA[$P{labelFecha}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="2" y="31" width="257" height="17" uuid="aaea60dc-87cb-4ea6-b2cb-40ae00112a02"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$P{labelSucursal}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>
@@ -74,13 +76,8 @@
 				<textElement textAlignment="Left"/>
 				<text><![CDATA[Cliente:]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="0" y="0" width="80" height="20" uuid="1191ee33-0c50-441d-a200-2c7e32d85b3d"/>
-				<textElement textAlignment="Left"/>
-				<text><![CDATA[Folio de Venta:]]></text>
-			</staticText>
 			<textField>
-				<reportElement x="80" y="0" width="100" height="20" uuid="f1054343-5398-4da7-bbbd-d49445d7b31b"/>
+				<reportElement x="85" y="0" width="121" height="20" uuid="f1054343-5398-4da7-bbbd-d49445d7b31b"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA[$P{noVenta}]]></textFieldExpression>
 			</textField>
@@ -92,6 +89,10 @@
 			<textField>
 				<reportElement x="53" y="40" width="186" height="20" uuid="3bd7f144-80fc-4206-9455-03272186d135"/>
 				<textFieldExpression><![CDATA[$P{vendedor}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1" y="1" width="84" height="19" uuid="6a2ab568-f51e-4c1f-911d-13ce7bdcc253"/>
+				<textFieldExpression><![CDATA[$P{labelFolio}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>

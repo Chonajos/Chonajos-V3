@@ -7,10 +7,7 @@ import com.web.chon.dominio.Sucursal;
 import com.web.chon.service.IfaceBuscaVenta;
 import com.web.chon.service.IfaceCatStatusVenta;
 import com.web.chon.service.IfaceCatSucursales;
-import com.web.chon.service.IfaceEmpaque;
-import com.web.chon.service.IfaceSubProducto;
 import com.web.chon.service.IfaceVenta;
-import com.web.chon.service.IfaceVentaProducto;
 import com.web.chon.util.TiempoUtil;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -35,20 +32,12 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     @Autowired
     private IfaceVenta ifaceVenta;
     @Autowired
-    private IfaceEmpaque ifaceEmpaque;
-    @Autowired
-    private IfaceSubProducto ifaceSubProducto;
-    @Autowired
-    private IfaceVentaProducto ifaceVentaProducto;
-    @Autowired
     private IfaceBuscaVenta ifaceBuscaVenta;
     @Autowired
     private IfaceCatSucursales ifaceCatSucursales;
     @Autowired
     private IfaceCatStatusVenta ifaceCatStatusVenta;
-    
 
-    private BeanUsuario beanUsuario;
     private RelacionOperaciones data;
     private ArrayList<RelacionOperaciones> model;
     private ArrayList<BuscaVenta> lstVenta;
@@ -62,36 +51,21 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     private BigDecimal totalVenta;
 
     @PostConstruct
-    public void init() 
-    {
+    public void init() {
 
         model = new ArrayList<RelacionOperaciones>();
         data = new RelacionOperaciones();
+
         lstVenta = new ArrayList<BuscaVenta>();
         listaSucursales = new ArrayList<Sucursal>();
+        listaStatusVenta = new ArrayList<StatusVenta>();
+
         listaSucursales = ifaceCatSucursales.getSucursales();
-        
-         listaStatusVenta = new ArrayList<StatusVenta>();
-        listaStatusVenta  = ifaceCatStatusVenta.getStatusVentas();
+        listaStatusVenta = ifaceCatStatusVenta.getStatusVentas();
+
         setTitle("Relación de Operaciónes Entrada de Mercancia.");
         setViewEstate("init");
 
-    }
-
-    @Override
-    public String delete() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public String insert() {
-
-        return null;
-    }
-
-    @Override
-    public String update() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -102,11 +76,10 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
 
     public void setFechaInicioFin(int filter) {
 
-        switch (filter)
-        {
+        switch (filter) {
             case 4:
                 if (data.getFechaFiltroInicio() != null && data.getFechaFiltroFin() != null) {
-                    model = ifaceVenta.getVentasByIntervalDate(data.getFechaFiltroInicio(), data.getFechaFiltroFin(),data.getIdSucursal(),data.getIdStatus());
+                    model = ifaceVenta.getVentasByIntervalDate(data.getFechaFiltroInicio(), data.getFechaFiltroFin(), data.getIdSucursal(), data.getIdStatus());
                     getTotalVentaByInterval();
                 } else {
                     model = new ArrayList<RelacionOperaciones>();
@@ -121,7 +94,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
             case 2:
                 data.setFechaFiltroInicio(TiempoUtil.getDayOneOfMonth(new Date()));
                 data.setFechaFiltroFin(TiempoUtil.getDayEndOfMonth(new Date()));
-                
+
                 break;
             case 3:
                 data.setFechaFiltroInicio(TiempoUtil.getDayOneYear(new Date()));
@@ -135,29 +108,16 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
 
     }
 
-    public void getVentasByIntervalDate() 
-    {
-        
+    public void getVentasByIntervalDate() {
+
         setFechaInicioFin(filtro);
-        if (data.getFechaFiltroInicio() != null && data.getFechaFiltroFin() != null) 
-        {
-           model = ifaceVenta.getVentasByIntervalDate(data.getFechaFiltroInicio(), data.getFechaFiltroFin(),data.getIdSucursal(),data.getIdStatus());
-           getTotalVentaByInterval();
-        } else 
-        {
-            model = new ArrayList<RelacionOperaciones>();
-            getTotalVentaByInterval();
-        }
 
+        model = ifaceVenta.getVentasByIntervalDate(data.getFechaFiltroInicio(), data.getFechaFiltroFin(), data.getIdSucursal(), data.getIdStatus());
+        getTotalVentaByInterval();
     }
-    public void printStatus() 
-    {
+
+    public void printStatus() {
         getVentasByIntervalDate();
-
-    }
-    public void printSucu() 
-    {
-        //data.setIdSucursal(data.getIdSucursal());
 
     }
 
@@ -168,8 +128,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
         }
     }
 
-    public void cancel() 
-    {
+    public void cancel() {
         viewEstate = "init";
         lstVenta.clear();
     }
@@ -187,6 +146,22 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
         for (BuscaVenta venta : lstVenta) {
             totalVenta = totalVenta.add(new BigDecimal(venta.getTotal()));
         }
+    }
+
+    @Override
+    public String delete() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String insert() {
+
+        return null;
+    }
+
+    @Override
+    public String update() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public String getTitle() {
@@ -260,8 +235,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     public void setLstVenta(ArrayList<BuscaVenta> lstVenta) {
         this.lstVenta = lstVenta;
     }
-    
-    
+
     public ArrayList<Sucursal> getListaSucursales() {
         return listaSucursales;
     }
@@ -269,7 +243,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     public void setListaSucursales(ArrayList<Sucursal> listaSucursales) {
         this.listaSucursales = listaSucursales;
     }
-    
+
     public ArrayList<StatusVenta> getListaStatusVenta() {
         return listaStatusVenta;
     }

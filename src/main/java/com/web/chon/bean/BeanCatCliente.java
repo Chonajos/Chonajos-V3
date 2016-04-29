@@ -261,7 +261,6 @@ public class BeanCatCliente implements BeanSimple {
         permissionToEdit = false;
         buscaMotivos();
         bajaCliente.setId_baja_cliente(data.getId_cliente());
-        data.setStatus_cliente(2);
     }
 
     public void viewNew() {

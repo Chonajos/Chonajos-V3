@@ -91,6 +91,7 @@ public class PlataformaUserDetailsServiceImpl implements PlataformaUserDetailsSe
             dominio.setSucId(Integer.parseInt(obj[7].toString()));
             dominio.setPerDescripcion(obj[8].toString());
             dominio.setIdUsuario(new BigDecimal(obj[9].toString()));
+            dominio.setNombreSucursal(obj[10] == null ? "":obj[10].toString());
             
             menu = new TreeMap<Menu, Set<Menu>>();
             allowedUrl = new HashSet<String>();

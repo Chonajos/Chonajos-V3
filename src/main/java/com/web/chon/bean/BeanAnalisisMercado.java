@@ -40,7 +40,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
     private IfaceSubProducto ifaceProducto;
     @Autowired
     private PlataformaSecurityContext context;
-    
+
     private UsuarioDominio usuario;
 
     private ArrayList<AnalisisMercado> lstEntradaMercancia;
@@ -96,7 +96,9 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
 
         chartLineByDias = null;
         chartBarByDias = null;
-
+        chartLineBySemana = null;
+        chartBarBySemana = null;
+        
         data.reset();
 
         return "analisisMercado";
@@ -506,6 +508,5 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
     public void setUsuario(UsuarioDominio usuario) {
         this.usuario = usuario;
     }
-    
 
 }

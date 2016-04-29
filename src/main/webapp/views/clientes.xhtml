@@ -14,12 +14,12 @@
 
         <h:form id="formCliente">
             <div>
-                <h1>#{beanCatCliente.title}</h1>
+                <h3>#{beanCatCliente.title}</h3>
             </div>
             <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:panel rendered="#{beanCatCliente.viewEstate=='init'}" style="border: 0px;" >
                 <div class="form-group" align="right">
-                    <p:commandButton value="Nuevos" update=":formCliente" resetValues="true" ajax="true" action="#{beanCatCliente.viewNew}" icon="ui-icon-person" />
+                    <p:commandButton value="Nuevo" update=":formCliente" resetValues="true" ajax="true" action="#{beanCatCliente.viewNew}" icon="ui-icon-person" />
 
                 </div>
                 <p:dataTable var="model" value="#{beanCatCliente.model}" rows="10" scrollable="true"
@@ -74,7 +74,7 @@
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtNombredel" value ="Nombre:" /> 
-                        <p:inputText id="txtNombredel" maxlength="30" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.nombre} #{beanCatCliente.data.paterno} #{beanCatCliente.data.materno}" required="true" disabled="#{beanCatCliente.permissionToWrite}"
+                        <p:inputText id="txtNombredel" maxlength="50" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.nombre} #{beanCatCliente.data.paterno} #{beanCatCliente.data.materno}" required="true" disabled="#{beanCatCliente.permissionToWrite}"
                                      requiredMessage="Ingresa un valor para el campo Nombre del cliente.">
                             <pe:keyFilter regEx="/[a-z_ ]/i"/>
                         </p:inputText>
@@ -89,7 +89,7 @@
                         </h:selectOneMenu>
                     </div>
                     <p:outputLabel class="col-lg-3 col-md-4 col-sm-4 col-xs-12"  for="txtcomentarios" value ="Comentarios:" /> 
-                    <p:inputTextarea id ="txtcomentarios" rows="3" cols="25" value="#{beanCatCliente.bajaCliente.comentarios}" required="true"/>
+                    <p:inputTextarea id ="txtcomentarios" rows="3" cols="25" maxlength="200" value="#{beanCatCliente.bajaCliente.comentarios}" required="true"/>
 
                 </div>
 
@@ -99,7 +99,7 @@
             <p:panel rendered="#{beanCatCliente.viewEstate=='searchById' || beanCatCliente.viewEstate=='new' || beanCatCliente.viewEstate=='viewDetails'}">
                 <div class="container">
                     <div class="form-group">
-                        <p:commandButton value="Guardar" update=":formCliente" resetValues="true" ajax="true" action="#{beanCatCliente.insert()}" rendered="#{beanCatCliente.viewEstate=='new'}"/>
+                        <p:commandButton value="Guardar" update=":formCliente" ajax="true" action="#{beanCatCliente.insert()}" rendered="#{beanCatCliente.viewEstate=='new'}"/>
                         <p:commandButton value="Actualizar" update=":formCliente" ajax="true" action="#{beanCatCliente.update()}" rendered="#{beanCatCliente.viewEstate=='searchById'}"/>
                         <p:commandButton value="Atras" immediate="true" resetValues="true" update=":formCliente" ajax="true" action="#{beanCatCliente.backView}" />
                     </div>
@@ -110,21 +110,21 @@
 
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtNombre" value ="Nombre:" /> 
-                        <p:inputText id="txtNombre" maxlength="30" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.nombre}" required="true" disabled="#{beanCatCliente.permissionToWrite}"
+                        <p:inputText id="txtNombre" maxlength="50" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.nombre}" required="true" disabled="#{beanCatCliente.permissionToWrite}"
                                      requiredMessage="Ingresa un valor para el campo Nombre del cliente.">
                             <pe:keyFilter regEx="/[a-z_ ]/i"/>
                         </p:inputText>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtPaterno" value ="Apellido Paterno:" /> 
-                        <p:inputText id="txtPaterno" maxlength="30" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.paterno}" required="true" disabled="#{beanCatCliente.permissionToWrite}"
+                        <p:inputText id="txtPaterno" maxlength="50" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.paterno}" required="true" disabled="#{beanCatCliente.permissionToWrite}"
                                      requiredMessage="Ingresa un valor para el campo Apellido Paterno del usuario.">
                             <pe:keyFilter regEx="/[a-z_ ]/i"/>
                         </p:inputText>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtMaterno" value ="Apellido Materno:" /> 
-                        <p:inputText id="txtMaterno" maxlength="30" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.materno}" required="false" disabled="#{beanCatCliente.permissionToWrite}"
+                        <p:inputText id="txtMaterno" maxlength="50" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.materno}" required="false" disabled="#{beanCatCliente.permissionToWrite}"
                                      requiredMessage="Ingresa un valor para el campo Apellido Materno del usuario.">
                             <pe:keyFilter regEx="/[a-z_ ]/i"/>
                         </p:inputText>
@@ -154,7 +154,7 @@
                                 <p:cellEditor>
                                     <f:facet name="output"><h:outputText value="#{correos.correo}" /></f:facet>
                                     <f:facet name="input" >
-                                        <p:inputText id="modelInput" value="#{correos.correo}" style="width:100%" required="true" disabled="#{beanCatCliente.permissionToWrite}">
+                                        <p:inputText id="modelInput" value="#{correos.correo}" style="width:100%" maxlength="50" required="true" disabled="#{beanCatCliente.permissionToWrite}">
                                             <f:validator validatorId="custom.emailValidator" />
                                         </p:inputText>
                                     </f:facet>
@@ -193,7 +193,7 @@
 
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtCalle" value ="Calle:" /> 
-                        <p:inputText id="txtCalle" maxlength="30" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.calle}" disabled="#{beanCatCliente.permissionToWrite}">
+                        <p:inputText id="txtCalle" maxlength="60" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.calle}" disabled="#{beanCatCliente.permissionToWrite}">
                             <pe:keyFilter regEx="/[a-z-0-9_ ]/i"/>
 
                         </p:inputText>
@@ -320,7 +320,7 @@
 
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtRazon" value ="Nombre o Razón Social:" /> 
-                        <p:inputText id="txtRazon" maxlength="50" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.razon_social}" disabled="#{beanCatCliente.permissionToWrite}">
+                        <p:inputText id="txtRazon" maxlength="80" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.razon_social}" disabled="#{beanCatCliente.permissionToWrite}">
 
                         </p:inputText>
                     </div>
@@ -334,7 +334,7 @@
 
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtCalleFiscal" value ="Calle" /> 
-                        <p:inputText id="txtCalleFiscal" maxlength="20" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.calleFiscal}" disabled="#{beanCatCliente.permissionToWrite}" >
+                        <p:inputText id="txtCalleFiscal" maxlength="50" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatCliente.data.calleFiscal}" disabled="#{beanCatCliente.permissionToWrite}" >
 
                         </p:inputText>
                     </div>
