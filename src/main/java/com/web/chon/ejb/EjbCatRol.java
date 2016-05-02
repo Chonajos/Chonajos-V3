@@ -25,7 +25,7 @@ public class EjbCatRol implements NegocioCatRol {
 
         try {
 
-            Query query = em.createNativeQuery("SELECT * FROM ROL");
+            Query query = em.createNativeQuery("SELECT * FROM ROL ORDER BY ID_ROL_PK ");
             List<Object[]> resultList = null;
             resultList = query.getResultList();
             return resultList;

@@ -114,7 +114,7 @@ public class BeanBodega extends SimpleViewBean<Bodega> implements Serializable {
     }
 
     public void backView() {
-        setTitle("Catalogo de Bodegas.");
+        initModel();
         actionBack();
     }
 

@@ -28,7 +28,7 @@ public class BeanRol extends SimpleViewBean<Rol> implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Autowired
-    private IfaceCatRol ifaceCatrol;
+    private IfaceCatRol ifaceCatRol;
 
     private ArrayList<Rol> selectedRol;
     private List<Rol> lstRol;
@@ -44,8 +44,7 @@ public class BeanRol extends SimpleViewBean<Rol> implements Serializable {
         lstRol = new ArrayList<Rol>();
         selectedRol = new ArrayList<Rol>();
 
-        lstRol = ifaceCatrol.getAll();
-//        model = new PaginationLazyDataModel<Rol, BigDecimal>(ifaceCatBodega, new Bodega());
+        lstRol = ifaceCatRol.getAll();
 
         setTitle("Catalogo de Roles.");
 
@@ -56,7 +55,7 @@ public class BeanRol extends SimpleViewBean<Rol> implements Serializable {
         if (!selectedRol.isEmpty()) {
             for (Rol rol : selectedRol) {
                 try {
-                    if (ifaceCatrol.delete(rol.getIdRolPk()) == 1) {
+                    if (ifaceCatRol.delete(rol.getIdRolPk()) == 1) {
 
                         JsfUtil.addSuccessMessage("Registro eliminado.");
                     } else {
@@ -73,13 +72,13 @@ public class BeanRol extends SimpleViewBean<Rol> implements Serializable {
 
         }
 
-        return "rol";
+        return "roles";
     }
 
     @Override
     public String save() {
         try {
-            if (ifaceCatrol.create(data) == 1) {
+            if (ifaceCatRol.create(data) == 1) {
                 JsfUtil.addSuccessMessage("Registro insertado.");
 
             } else {
@@ -90,12 +89,12 @@ public class BeanRol extends SimpleViewBean<Rol> implements Serializable {
 
         }
         backView();
-        return "rol";
+        return "roles";
     }
 
     public String update() {
         try {
-            if (ifaceCatrol.update(data) == 1) {
+            if (ifaceCatRol.update(data) == 1) {
                 JsfUtil.addSuccessMessage("Registro modificado.");
             } else {
                 JsfUtil.addErrorMessage("Ocurrio un error al intentar modificar el registro :" + data.getNombreRol() + ".");
@@ -104,7 +103,7 @@ public class BeanRol extends SimpleViewBean<Rol> implements Serializable {
             JsfUtil.addErrorMessage("Ocurrio un error al intentar modificar el registro :" + data.getNombreRol() + ".");
         }
 
-        return "rol";
+        return "roles";
     }
 
     public void searchById() {
@@ -122,6 +121,7 @@ public class BeanRol extends SimpleViewBean<Rol> implements Serializable {
 
     public void backView() {
         setTitle("Catalogo de Bodegas.");
+        selectedRol = new ArrayList<Rol>();
         actionBack();
     }
 

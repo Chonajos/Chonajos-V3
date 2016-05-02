@@ -79,9 +79,9 @@ public class Rol extends ValueObject implements Serializable {
     @Override
     public void reset() {
 
-        idRolPk = null;
-        nombreRol = null;
-        descripcionRol = null;
+        idRolPk = new BigDecimal(0);
+        nombreRol = "";
+        descripcionRol = "";
     }
 
 }
