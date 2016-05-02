@@ -137,4 +137,30 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public ArrayList<EntradaMercancia2> getSubEntradaByNombre(String nombre) {
+        System.out.println("Entro a Servicio, clave: "+nombre);
+        try {
+            ArrayList<EntradaMercancia2> lstEntradas = new ArrayList<EntradaMercancia2>();
+          
+            getEjb();
+           List<Object[]> object = ejb.getSubEntradaByNombre(nombre);
+
+            for (Object[] obj : object) {
+
+                EntradaMercancia2 entrada = new EntradaMercancia2();
+                entrada.setIdEmPK(obj[0] == null ? null:new BigDecimal(obj[0].toString()));
+                entrada.setFolio(obj[1] == null ? "" : obj[1].toString());
+
+                lstEntradas.add(entrada);
+            }
+
+            return lstEntradas;
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceEntradaMercancia.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    
+    }
+
 }

@@ -185,7 +185,7 @@
 
                         <p:column headerText="Editar" width="60px;" style="text-align:center">
                             <p:commandButton id="editar" ajax="true" process="@this" action="#{beanEntradaMercancia2.editProducto}"  icon="ui-icon-pencil" styleClass="ui-priority-primary" update=":formContent">
-                                <f:setPropertyActionListener value="#{model}" target="#{beanEntradaMercancia2.dataEdit} "/>
+                                <f:setPropertyActionListener value="#{model}" target="#{beanEntradaMercancia2.dataEdit}"/>
                             </p:commandButton>
                         </p:column>
                         <p:column headerText="Remover" width="80px;" style="text-align:center">

@@ -76,6 +76,7 @@ public class BeanEntradaMercancia2 implements Serializable {
     private ArrayList<String> labels;
     private ArrayList<EntradaMercanciaProducto> listaMercanciaProducto;
     private ArrayList<TipoEmpaque> lstTipoEmpaque;
+    private ArrayList<ExistenciaProducto> existencia_repetida;
 
     private EntradaMercancia2 data;
     private EntradaMercanciaProducto dataProducto;
@@ -133,6 +134,7 @@ public class BeanEntradaMercancia2 implements Serializable {
         labelCompra = "Ingresa el Precio";
         permisionToGenerate = true;
         kilos = new BigDecimal(0);
+        existencia_repetida = new ArrayList<ExistenciaProducto>();
     }
 
     public void permisions() {
@@ -171,18 +173,43 @@ public class BeanEntradaMercancia2 implements Serializable {
                         producto.setIdEmpPK(new BigDecimal(idEnTMerPro));
                         producto.setIdEmFK(new BigDecimal(idEntradaMercancia));
                         producto.setKilospromprod(producto.getKilosTotalesProducto().divide(producto.getCantidadPaquetes(),2, RoundingMode.HALF_EVEN));
-                        if (ifaceEntradaMercanciaProducto.insertEntradaMercancia(producto) != 0) {
-
+                        if (ifaceEntradaMercanciaProducto.insertEntradaMercancia(producto) != 0) 
+                        {
+                            //BUSCAR SI YA EXISTE EN LA TABLA EXISTENCIA PRODUCTO.
                             ExistenciaProducto ep = new ExistenciaProducto();
-                            ep.setIdEmpFk(new BigDecimal(idEnTMerPro));
-                            ep.setIdSubProductoFk(producto.getIdSubProductoFK());
-                            ep.setIdSucursalFk(data.getIdSucursalFK());
-                            ep.setPesokiloproducto(producto.getKilospromprod());
-                            ep.setKilosExistencia(producto.getKilospromprod().multiply(producto.getCantidadPaquetes()));
-                            ep.setIdBodegaFk(producto.getIdBodegaFK());
-                            ep.setCantidadEmpaque(producto.getCantidadPaquetes());
-
-                            if (ifaceNegocioExistencia.insertExistenciaProducto(ep) != 0) {
+                            ep.setIdEmFK(producto.getIdEmFK());
+                            ep.setIdSubProductoFK(producto.getIdSubProductoFK());
+                            ep.setIdTipoEmpaqueFK(producto.getIdTipoEmpaqueFK());
+                            ep.setKilosTotalesProducto(producto.getKilosTotalesProducto());
+                            ep.setCantidadPaquetes(producto.getCantidadPaquetes());
+                            //ep.setComentarios(producto.getComentarios());
+                            ep.setIdBodegaFK(producto.getIdBodegaFK());
+                            ep.setIdTipoConvenio(producto.getIdTipoConvenio());
+                            ep.setPrecio(producto.getPrecio());
+                            ep.setKilospromprod(producto.getKilospromprod());
+                            ep.setIdSucursal(entrada_mercancia.getIdSucursalFK());
+                            ep.setIdProvedor(entrada_mercancia.getIdProvedorFK());
+                            
+                            existencia_repetida=ifaceNegocioExistencia.getExistenciaProductoRepetidos(entrada_mercancia.getIdSucursalFK(),producto.getIdSubProductoFK(),producto.getIdTipoEmpaqueFK(), producto.getIdBodegaFK(), entrada_mercancia.getIdProvedorFK(),entrada_mercancia.getIdEmPK(),producto.getIdTipoConvenio());
+                            int bandera = 0;
+                            if(existencia_repetida == null || existencia_repetida.isEmpty())
+                            {
+                                
+                                System.out.println("No existe ese registro y se agrega uno  nuevo.");
+                                bandera = ifaceNegocioExistencia.insertExistenciaProducto(ep);
+                            }
+                            else
+                            {
+                                System.out.println("Ya existe y sumamos cantidades y kilos");
+                                ExistenciaProducto existencia_temporal = new ExistenciaProducto();
+                                existencia_temporal = existencia_repetida.get(0);
+                                ep.setIdExistenciaProductoPk(existencia_temporal.getIdExistenciaProductoPk());
+                                ep.setCantidadPaquetes(ep.getCantidadPaquetes().add(existencia_temporal.getCantidadPaquetes(), MathContext.UNLIMITED));
+                                ep.setKilosTotalesProducto(ep.getKilosTotalesProducto().add(existencia_temporal.getKilosTotalesProducto(), MathContext.UNLIMITED));
+                                bandera = ifaceNegocioExistencia.updateExistenciaProducto(ep);
+                            }
+          
+                            if (bandera!= 0) {
                                 JsfUtil.addSuccessMessageClean("Registro de Mercancias correcto !");
 
                             } else {
@@ -243,7 +270,6 @@ public class BeanEntradaMercancia2 implements Serializable {
 
     public void editProducto() {
         permisionToEditProducto = true;
-
         subProducto = ifaceSubProducto.getSubProductoById(dataEdit.getIdSubProductoFK());
         dataProducto.setIdSubProductoFK(dataEdit.getIdSubProductoFK());
         dataProducto.setNombreProducto(dataEdit.getNombreProducto());
@@ -658,6 +684,14 @@ public class BeanEntradaMercancia2 implements Serializable {
 
     public void setPermisionToEditProducto(boolean permisionToEditProducto) {
         this.permisionToEditProducto = permisionToEditProducto;
+    }
+
+    public ArrayList<ExistenciaProducto> getExistencia_repetida() {
+        return existencia_repetida;
+    }
+
+    public void setExistencia_repetida(ArrayList<ExistenciaProducto> existencia_repetida) {
+        this.existencia_repetida = existencia_repetida;
     }
 
     

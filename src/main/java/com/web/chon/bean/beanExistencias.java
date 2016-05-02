@@ -5,12 +5,22 @@
  */
 package com.web.chon.bean;
 
+import com.web.chon.dominio.Bodega;
+import com.web.chon.dominio.EntradaMercancia2;
 import com.web.chon.dominio.ExistenciaProducto;
 import com.web.chon.dominio.Provedor;
+import com.web.chon.dominio.Subproducto;
 import com.web.chon.dominio.Sucursal;
+import com.web.chon.dominio.TipoConvenio;
+import com.web.chon.dominio.TipoEmpaque;
+import com.web.chon.service.IfaceCatBodegas;
 import com.web.chon.service.IfaceCatProvedores;
 import com.web.chon.service.IfaceCatSucursales;
+import com.web.chon.service.IfaceEmpaque;
+import com.web.chon.service.IfaceEntradaMercancia;
 import com.web.chon.service.IfaceNegocioExistencia;
+import com.web.chon.service.IfaceSubProducto;
+import com.web.chon.service.IfaceTipoCovenio;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -29,37 +39,126 @@ public class beanExistencias implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Autowired
+    private IfaceEntradaMercancia ifaceEntradaMercancia;
+    @Autowired
+    private IfaceTipoCovenio ifaceCovenio;
+    @Autowired
+    private IfaceEmpaque ifaceEmpaque;
+    @Autowired
     private IfaceCatProvedores ifaceCatProvedores;
     private ArrayList<Provedor> listaProvedores;
     @Autowired
     private IfaceCatSucursales ifaceCatSucursales;
+    @Autowired
+    private IfaceCatBodegas ifaceCatBodegas;
     private ArrayList<Sucursal> listaSucursales;
+    private ArrayList<Bodega> listaBodegas;
     private String title = "";
     private String viewEstate = "";
     private ArrayList<ExistenciaProducto> model;
     private ExistenciaProducto data;
     @Autowired
     private IfaceNegocioExistencia ifaceNegocioExistencia;
+    private Subproducto subProducto;
+    private EntradaMercancia2 entradaMercancia;
+    private ArrayList<Subproducto> lstProducto;
+    private ArrayList<EntradaMercancia2> lstEntradaMercancia;
+    @Autowired
+    private IfaceSubProducto ifaceSubProducto;
+    private ArrayList<TipoEmpaque> lstTipoEmpaque;
+    private ArrayList<TipoConvenio> listaTiposConvenio;
 
     @PostConstruct
     public void init() {
+        
         listaSucursales = new ArrayList<Sucursal>();
         listaSucursales = ifaceCatSucursales.getSucursales();
         listaProvedores = new ArrayList<Provedor>();
         listaProvedores = ifaceCatProvedores.getProvedores();
-        model = ifaceNegocioExistencia.getExistencias(new BigDecimal(0), new BigDecimal(0));
-        
+        //model = ifaceNegocioExistencia.getExistencias(new BigDecimal(0), new BigDecimal(0));
+        listaBodegas = new ArrayList<Bodega>();
+        listaBodegas = ifaceCatBodegas.getBodegas();
         data = new ExistenciaProducto();
         setTitle("Existencias");
         setViewEstate("init");
+        subProducto = new Subproducto();
+        entradaMercancia = new EntradaMercancia2();
+        lstTipoEmpaque = ifaceEmpaque.getEmpaques();
+        listaTiposConvenio = new ArrayList<TipoConvenio>();
+        listaTiposConvenio = ifaceCovenio.getTipos();
     }
 
     public void buscaExistencias() {
-        if (data.getIdSucursalFk() != null && data.getIdProvedorFk() != null) {
-            model = ifaceNegocioExistencia.getExistencias(data.getIdSucursalFk(), data.getIdProvedorFk());
+        if (data.getIdSucursal()!= null && data.getIdProvedor()!= null) {
+            //model = ifaceNegocioExistencia.getExistencias(data.getIdSucursalFk(), data.getIdProvedorFk());
         }
 
     }
+
+    public ArrayList<TipoEmpaque> getLstTipoEmpaque() {
+        return lstTipoEmpaque;
+    }
+
+    public ArrayList<TipoConvenio> getListaTiposConvenio() {
+        return listaTiposConvenio;
+    }
+
+    public void setListaTiposConvenio(ArrayList<TipoConvenio> listaTiposConvenio) {
+        this.listaTiposConvenio = listaTiposConvenio;
+    }
+
+    public ArrayList<EntradaMercancia2> getLstEntradaMercancia() {
+        return lstEntradaMercancia;
+    }
+
+    public void setLstEntradaMercancia(ArrayList<EntradaMercancia2> lstEntradaMercancia) {
+        this.lstEntradaMercancia = lstEntradaMercancia;
+    }
+    
+
+    public void setLstTipoEmpaque(ArrayList<TipoEmpaque> lstTipoEmpaque) {
+        this.lstTipoEmpaque = lstTipoEmpaque;
+    }
+    
+    public ArrayList<EntradaMercancia2> autoCompleteMercancia(String clave) {
+        System.out.println("Letra: "+clave);
+        lstEntradaMercancia = ifaceEntradaMercancia.getSubEntradaByNombre(clave.toUpperCase());
+        return lstEntradaMercancia;
+
+    }
+    
+    public ArrayList<Subproducto> autoComplete(String nombreProducto) {
+        lstProducto = ifaceSubProducto.getSubProductoByNombre(nombreProducto.toUpperCase());
+        return lstProducto;
+
+    }
+
+    public EntradaMercancia2 getEntradaMercancia() {
+        return entradaMercancia;
+    }
+
+    public void setEntradaMercancia(EntradaMercancia2 entradaMercancia) {
+        this.entradaMercancia = entradaMercancia;
+    }
+
+    
+    public ArrayList<Subproducto> getLstProducto() {
+        return lstProducto;
+    }
+
+    public void setLstProducto(ArrayList<Subproducto> lstProducto) {
+        this.lstProducto = lstProducto;
+    }
+
+    
+    public Subproducto getSubProducto() {
+        return subProducto;
+    }
+
+    public void setSubProducto(Subproducto subProducto) {
+        this.subProducto = subProducto;
+    }
+    
 
     public IfaceCatProvedores getIfaceCatProvedores() {
         return ifaceCatProvedores;
@@ -131,6 +230,14 @@ public class beanExistencias implements Serializable {
 
     public void setIfaceNegocioExistencia(IfaceNegocioExistencia ifaceNegocioExistencia) {
         this.ifaceNegocioExistencia = ifaceNegocioExistencia;
+    }
+
+    public ArrayList<Bodega> getListaBodegas() {
+        return listaBodegas;
+    }
+
+    public void setListaBodegas(ArrayList<Bodega> listaBodegas) {
+        this.listaBodegas = listaBodegas;
     }
 
 }

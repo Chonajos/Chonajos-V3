@@ -22,7 +22,7 @@ public interface NegocioExistenciaProducto
 {
     public int insertaExistencia(ExistenciaProducto e);
     public int updateExistenciaProducto(ExistenciaProducto e);
-    public List<Object[]> getExistenciaProductoId(BigDecimal idSucursal,String idSubproductoFk,BigDecimal idTipoEmpaqueFk, BigDecimal idBodegaFk, BigDecimal idProvedorFk);
     public List<Object[]> getExistencias(BigDecimal idSucursal,BigDecimal idProvedorFk);
-    public List<Object[]> getExistenciasByIdSubProducto(String idSubproductoFk);
+    public List<Object[]> getExistenciaProductoId(BigDecimal idSucursal,String idSubproductoFk,BigDecimal idTipoEmpaqueFk, BigDecimal idBodegaFk, BigDecimal idProvedorFk);
+    public List<Object[]> getExistenciasRepetidas(BigDecimal idSucursal, String idSubproductoFk, BigDecimal idTipoEmpaqueFk, BigDecimal idBodegaFk, BigDecimal idProvedorFk, BigDecimal idEMFK,BigDecimal idTipoConvenio);
 }

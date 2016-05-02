@@ -7,7 +7,6 @@ package com.web.chon.dominio;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
 /**
  *
@@ -17,56 +16,41 @@ public class ExistenciaProducto implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private BigDecimal idExistenciaProductoPk;
-    
-    private String idSubProductoFk;
-    private BigDecimal idExistenciaPk;
-    private BigDecimal idEmpFk;
-    private BigDecimal cantidadEmpaque;
-    private BigDecimal kilosExistencia;
-    private BigDecimal pesokiloproducto;
-    private BigDecimal idSucursalFk;
-    private BigDecimal idBodegaFk;
-    
-    
-    //datos para consulta de existencias.
-    //idExistenciasProducto ya lo tengo.
-    private BigDecimal idEmFk;
-    private String identificador;
-    private String nombreSubproducto;
+    private BigDecimal idEmFK;
+    private String idSubProductoFK;
+    private BigDecimal idTipoEmpaqueFK;
+    private BigDecimal cantidadPaquetes;
+    private BigDecimal kilosTotalesProducto;
+    private String comentarios;
+    private BigDecimal precio;
+    private String nombreProducto;
     private String nombreEmpaque;
+    private BigDecimal idTipoConvenio;
+    private BigDecimal idBodegaFK;
+    private String nombreTipoConvenio;
     private String nombreBodega;
-    private BigDecimal idProductoFK;
-    private BigDecimal idProvedorFk;
-    //i
+    private BigDecimal kilospromprod;
+    private int numeroMovimiento;
+    private BigDecimal pesoTara;
+    private BigDecimal idSucursal;
+    private BigDecimal idProvedor;
+   
+    private String identificador;
 
     @Override
     public String toString() {
-        return "ExistenciaProducto{" + "idExistenciaProductoPk=" + idExistenciaProductoPk + ", idSubProductoFk=" + idSubProductoFk + ", idExistenciaPk=" + idExistenciaPk + ", idEmpFk=" + idEmpFk + ", cantidadEmpaque=" + cantidadEmpaque + ", kilosExistencia=" + kilosExistencia + ", pesokiloproducto=" + pesokiloproducto + ", idSucursalFk=" + idSucursalFk + ", idBodegaFk=" + idBodegaFk + '}';
+        return "ExistenciaProducto{" + "idExistenciaProductoPk=" + idExistenciaProductoPk + ", idEmFK=" + idEmFK + ", idSubProductoFK=" + idSubProductoFK + ", idTipoEmpaqueFK=" + idTipoEmpaqueFK + ", cantidadPaquetes=" + cantidadPaquetes + ", kilosTotalesProducto=" + kilosTotalesProducto + ", comentarios=" + comentarios + ", precio=" + precio + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + ", idTipoConvenio=" + idTipoConvenio + ", idBodegaFK=" + idBodegaFK + ", nombreTipoConvenio=" + nombreTipoConvenio + ", nombreBodega=" + nombreBodega + ", kilospromprod=" + kilospromprod + ", numeroMovimiento=" + numeroMovimiento + ", pesoTara=" + pesoTara + ", idSucursal=" + idSucursal + ", idProvedor=" + idProvedor + ", identificador=" + identificador + '}';
     }
-
-    public BigDecimal getIdProductoFK() {
-        return idProductoFK;
-    }
-
-    public void setIdProductoFK(BigDecimal idProductoFK) {
-        this.idProductoFK = idProductoFK;
-    }
-
-    public BigDecimal getIdProvedorFk() {
-        return idProvedorFk;
-    }
-
-    public void setIdProvedorFk(BigDecimal idProvedorFk) {
-        this.idProvedorFk = idProvedorFk;
-    }
+    
 
     
-    public BigDecimal getIdEmFk() {
-        return idEmFk;
+
+    public BigDecimal getIdProvedor() {
+        return idProvedor;
     }
 
-    public void setIdEmFk(BigDecimal idEmFk) {
-        this.idEmFk = idEmFk;
+    public void setIdProvedor(BigDecimal idProvedor) {
+        this.idProvedor = idProvedor;
     }
 
     public String getIdentificador() {
@@ -76,29 +60,23 @@ public class ExistenciaProducto implements Serializable {
     public void setIdentificador(String identificador) {
         this.identificador = identificador;
     }
+    
 
-    public String getNombreSubproducto() {
-        return nombreSubproducto;
+    
+    public BigDecimal getPesoTara() {
+        return pesoTara;
     }
 
-    public void setNombreSubproducto(String nombreSubproducto) {
-        this.nombreSubproducto = nombreSubproducto;
+    public void setPesoTara(BigDecimal pesoTara) {
+        this.pesoTara = pesoTara;
     }
 
-    public String getNombreEmpaque() {
-        return nombreEmpaque;
+    public BigDecimal getIdSucursal() {
+        return idSucursal;
     }
 
-    public void setNombreEmpaque(String nombreEmpaque) {
-        this.nombreEmpaque = nombreEmpaque;
-    }
-
-    public String getNombreBodega() {
-        return nombreBodega;
-    }
-
-    public void setNombreBodega(String nombreBodega) {
-        this.nombreBodega = nombreBodega;
+    public void setIdSucursal(BigDecimal idSucursal) {
+        this.idSucursal = idSucursal;
     }
 
     
@@ -110,70 +88,127 @@ public class ExistenciaProducto implements Serializable {
         this.idExistenciaProductoPk = idExistenciaProductoPk;
     }
 
-    public String getIdSubProductoFk() {
-        return idSubProductoFk;
+    public BigDecimal getIdEmFK() {
+        return idEmFK;
     }
 
-    public void setIdSubProductoFk(String idSubProductoFk) {
-        this.idSubProductoFk = idSubProductoFk;
+    public void setIdEmFK(BigDecimal idEmFK) {
+        this.idEmFK = idEmFK;
     }
 
-    public BigDecimal getIdExistenciaPk() {
-        return idExistenciaPk;
+    public String getIdSubProductoFK() {
+        return idSubProductoFK;
     }
 
-    public void setIdExistenciaPk(BigDecimal idExistenciaPk) {
-        this.idExistenciaPk = idExistenciaPk;
+    public void setIdSubProductoFK(String idSubProductoFK) {
+        this.idSubProductoFK = idSubProductoFK;
     }
 
-    public BigDecimal getIdEmpFk() {
-        return idEmpFk;
+    public BigDecimal getIdTipoEmpaqueFK() {
+        return idTipoEmpaqueFK;
     }
 
-    public void setIdEmpFk(BigDecimal idEmpFk) {
-        this.idEmpFk = idEmpFk;
+    public void setIdTipoEmpaqueFK(BigDecimal idTipoEmpaqueFK) {
+        this.idTipoEmpaqueFK = idTipoEmpaqueFK;
     }
 
-    public BigDecimal getCantidadEmpaque() {
-        return cantidadEmpaque;
+    public BigDecimal getCantidadPaquetes() {
+        return cantidadPaquetes;
     }
 
-    public void setCantidadEmpaque(BigDecimal cantidadEmpaque) {
-        this.cantidadEmpaque = cantidadEmpaque;
+    public void setCantidadPaquetes(BigDecimal cantidadPaquetes) {
+        this.cantidadPaquetes = cantidadPaquetes;
     }
 
-    public BigDecimal getKilosExistencia() {
-        return kilosExistencia;
+    public BigDecimal getKilosTotalesProducto() {
+        return kilosTotalesProducto;
     }
 
-    public void setKilosExistencia(BigDecimal kilosExistencia) {
-        this.kilosExistencia = kilosExistencia;
+    public void setKilosTotalesProducto(BigDecimal kilosTotalesProducto) {
+        this.kilosTotalesProducto = kilosTotalesProducto;
     }
 
-    public BigDecimal getPesokiloproducto() {
-        return pesokiloproducto;
+    public String getComentarios() {
+        return comentarios;
     }
 
-    public void setPesokiloproducto(BigDecimal pesokiloproducto) {
-        this.pesokiloproducto = pesokiloproducto;
+    public void setComentarios(String comentarios) {
+        this.comentarios = comentarios;
     }
 
-    public BigDecimal getIdSucursalFk() {
-        return idSucursalFk;
+    public BigDecimal getPrecio() {
+        return precio;
     }
 
-    public void setIdSucursalFk(BigDecimal idSucursalFk) {
-        this.idSucursalFk = idSucursalFk;
+    public void setPrecio(BigDecimal precio) {
+        this.precio = precio;
     }
 
-    public BigDecimal getIdBodegaFk() {
-        return idBodegaFk;
+    public String getNombreProducto() {
+        return nombreProducto;
     }
 
-    public void setIdBodegaFk(BigDecimal idBodegaFk) {
-        this.idBodegaFk = idBodegaFk;
+    public void setNombreProducto(String nombreProducto) {
+        this.nombreProducto = nombreProducto;
     }
 
+    public String getNombreEmpaque() {
+        return nombreEmpaque;
+    }
+
+    public void setNombreEmpaque(String nombreEmpaque) {
+        this.nombreEmpaque = nombreEmpaque;
+    }
+
+    public BigDecimal getIdTipoConvenio() {
+        return idTipoConvenio;
+    }
+
+    public void setIdTipoConvenio(BigDecimal idTipoConvenio) {
+        this.idTipoConvenio = idTipoConvenio;
+    }
+
+    public BigDecimal getIdBodegaFK() {
+        return idBodegaFK;
+    }
+
+    public void setIdBodegaFK(BigDecimal idBodegaFK) {
+        this.idBodegaFK = idBodegaFK;
+    }
+
+    public String getNombreTipoConvenio() {
+        return nombreTipoConvenio;
+    }
+
+    public void setNombreTipoConvenio(String nombreTipoConvenio) {
+        this.nombreTipoConvenio = nombreTipoConvenio;
+    }
+
+    public String getNombreBodega() {
+        return nombreBodega;
+    }
+
+    public void setNombreBodega(String nombreBodega) {
+        this.nombreBodega = nombreBodega;
+    }
+
+    public BigDecimal getKilospromprod() {
+        return kilospromprod;
+    }
+
+    public void setKilospromprod(BigDecimal kilospromprod) {
+        this.kilospromprod = kilospromprod;
+    }
+
+    public int getNumeroMovimiento() {
+        return numeroMovimiento;
+    }
+
+    public void setNumeroMovimiento(int numeroMovimiento) {
+        this.numeroMovimiento = numeroMovimiento;
+    }
+
+    
 
     
 

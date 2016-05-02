@@ -16,7 +16,7 @@
             <p:remoteCommand id="remoteComman" resetValues="true" onstart="alert('onstart')"></p:remoteCommand>
             <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <!--<p:growl id="messagess" showDetail="true" life="2000" />-->
-            <p:panel>
+            <p:panel rendered="#{beanCatCliente.viewEstate=='init'}">
                 <div class="container-fluid">
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 form-group">
                         <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 form-group">
@@ -69,6 +69,14 @@
 
                         </p:dataTable>
                     </div>
+            </p:panel>
+
+            <p:panel rendered="#{beanTransferenciaMerca.viewEstate=='transferir'}">
+                <div class="container">
+                    <div class="form-group">
+                        <p:commandButton value="Transferir" update=":formContent" ajax="true" action="#{beanTransferenciaMerca.transferir()}" rendered="#{beanTransferenciaMerca.viewEstate=='init'}"/>
+                        <p:commandButton value="Atras" immediate="true" resetValues="true" update=":formContent" ajax="true" action="#{beanTransferenciaMerca.backView}" />
+                    </div>
                     <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 form-group">
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel  class="col-lg-4 col-md-3 col-sm-4 col-xs-6"  for="txtCantidad" value ="Cantidad:" /> 
@@ -94,6 +102,14 @@
                             <h:selectOneMenu  id="comboBodegaNueva" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanTransferenciaMerca.data.idBodegaNueva}"   required="true"  requiredMessage="Selecciona una bodega Nueva">
                                 <f:selectItem itemLabel="Seleccione una bodega" itemValue="" />
                                 <f:selectItems value="#{beanTransferenciaMerca.listaBodegasNueva}" var="bode" itemLabel="#{bode.nombreBodega}" itemValue="#{bode.idBodegaPK}" />
+                            </h:selectOneMenu>
+                        </div>
+                        <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="comboBodega" value ="Bodega:" /> 
+                            <h:selectOneMenu  id="comboBodega" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanTransferenciaMerca.idBodegaFK}"    requiredMessage="Selecciona una opción" required="true">
+                                <f:selectItem itemLabel="Seleccione una bodega" itemValue="" />
+                                <f:selectItems value="#{beanTransferenciaMerca.listaBodegas}" var="bode" itemLabel="#{bode.nombreBodega}" itemValue="#{bode.idBodegaPK}"/>
+                                <p:ajax event="change" update=":formContent" listener="#{beanTransferenciaMerca.permision()}"/>
                             </h:selectOneMenu>
                         </div>
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">

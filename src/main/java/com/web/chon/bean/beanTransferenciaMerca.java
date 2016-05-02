@@ -125,87 +125,87 @@ public class beanTransferenciaMerca implements Serializable {
     }
 
     public void transferir() {
-        if (data.getCantidadMovida() == null || data.getCantidadMovida().intValue()<1 || data.getCantidadMovida().intValue() > data.getCantidad().intValue()) {
-            JsfUtil.addErrorMessage("Error!", "Cantidad a transferir insuficiente");
-        } else {
-            data.setIdExistenciaProductoFK(idExistenciaFK);
-            if (ifaceNegocioTransferenciaMercancia.insertTransferenciaMercancia(data) == 0) {
-                JsfUtil.addErrorMessage("Error!", "Ocurrio un error al insertar la Transferencia");
-
-            } else 
-            {
-
-                int cantidad_a_restar = expro.getCantidadEmpaque().intValue();
-                int restador = data.getCantidadMovida().intValue();
-                int cantidad_a_restar_kilos = expro.getKilosExistencia().intValue();
-                
-                TipoEmpaque pesoEmpaque = ifaceEmpaque.getEmpaqueById(idTipoEmpaque.intValue());
-                
-                data.setKilosMovios(new BigDecimal(pesoEmpaque.getPesoKiloEmpaque().intValue() * restador));
-                
-                int restador_kilos = data.getKilosMovios().intValue();
-                
-                expro.setCantidadEmpaque(new BigDecimal(cantidad_a_restar - restador));
-                expro.setKilosExistencia(new BigDecimal(cantidad_a_restar_kilos - restador_kilos));
-
-                if (ifaceNegocioExistencia.updateExistenciaProducto(expro) == 0) 
-                {
-                    //System.out.println("Ocurrio un error al restar");
-                    JsfUtil.addErrorMessage("Error!", "Cantidad a transferir insuficiente");
-                } else {
-                    //System.out.println("se Resto del original");
-
-                    ExistenciaProducto ep = new ExistenciaProducto();
-                    
-                    ep.setCantidadEmpaque(new BigDecimal(restador));
-                    ep.setIdBodegaFk(data.getIdBodegaNueva());
-                    //ep.setIdProvedorFk(idProvedorFK);
-                    ep.setIdSubProductoFk(idSubProductoFK);
-                    ep.setIdSucursalFk(data.getIdSucursalNuevaFK());
-                    //ep.setIdTipoEmpaque(idTipoEmpaque);
-                    //ep.setKilosEmpaque(new BigDecimal(restador_kilos));
-                    ep.setKilosExistencia(new BigDecimal(restador_kilos));
-
-                    //System.out.println("Fredddy: "+ep.toString());
-                    //siguiente paso insertar o actualizar el registro en donde se paso la mercancia.
-                    int resultado = ifaceNegocioExistencia.insertExistenciaProducto(ep);
-
-                    switch (resultado) {
-                        case 0:
-                            JsfUtil.addErrorMessage("Error!", "Ocurrio un error al actualizar existencias");
-                            break;
-                        case 2:
-                            
-                            ArrayList<ExistenciaProducto> existente = new ArrayList<ExistenciaProducto>();
-
-                            existente = ifaceNegocioExistencia.getExistenciaProductoId(data.getIdSucursalNuevaFK(), idSubProductoFK, idTipoEmpaque, data.getIdBodegaNueva(), idProvedorFK);
-                            
-                            ExistenciaProducto expro = new ExistenciaProducto();
-                            expro = existente.get(0);
-
-                            int cantidadEmpaque = expro.getCantidadEmpaque().intValue();
-                           // int kiltoproempaque = expro.getKilosEmpaque().intValue();
-                            int kilosTotales = expro.getKilosExistencia().intValue();
-                            ep.setCantidadEmpaque(new BigDecimal(ep.getCantidadEmpaque().intValue() + cantidadEmpaque));
-                           // ep.setKilosEmpaque(new BigDecimal(ep.getKilosEmpaque().intValue() + kiltoproempaque));
-                            ep.setKilosExistencia(new BigDecimal(ep.getKilosExistencia().intValue() + kilosTotales));
-                            ep.setIdExistenciaProductoPk(expro.getIdExistenciaProductoPk());
-
-                            if (ifaceNegocioExistencia.updateExistenciaProducto(ep) == 0) {
-                                JsfUtil.addErrorMessage("Error!", "Ocurrio un error al actualizar existencias ya registradas");
-                            } else {
-                                clean();
-                                JsfUtil.addSuccessMessage("Transferencia Correcta!");
-                            }
-                            break;
-                        default:
-                            clean();
-                            JsfUtil.addSuccessMessage("Transferencia Correcta!");
-                            break;
-                    }
-                }
-            }
-        }
+//        if (data.getCantidadMovida() == null || data.getCantidadMovida().intValue()<1 || data.getCantidadMovida().intValue() > data.getCantidad().intValue()) {
+//            JsfUtil.addErrorMessage("Error!", "Cantidad a transferir insuficiente");
+//        } else {
+//            data.setIdExistenciaProductoFK(idExistenciaFK);
+//            if (ifaceNegocioTransferenciaMercancia.insertTransferenciaMercancia(data) == 0) {
+//                JsfUtil.addErrorMessage("Error!", "Ocurrio un error al insertar la Transferencia");
+//
+//            } else 
+//            {
+//
+//                int cantidad_a_restar = expro.getCantidadEmpaque().intValue();
+//                int restador = data.getCantidadMovida().intValue();
+//                int cantidad_a_restar_kilos = expro.getKilosExistencia().intValue();
+//                
+//                TipoEmpaque pesoEmpaque = ifaceEmpaque.getEmpaqueById(idTipoEmpaque.intValue());
+//                
+//                data.setKilosMovios(new BigDecimal(pesoEmpaque.getPesoKiloEmpaque().intValue() * restador));
+//                
+//                int restador_kilos = data.getKilosMovios().intValue();
+//                
+//                expro.setCantidadEmpaque(new BigDecimal(cantidad_a_restar - restador));
+//                expro.setKilosExistencia(new BigDecimal(cantidad_a_restar_kilos - restador_kilos));
+//
+//                if (ifaceNegocioExistencia.updateExistenciaProducto(expro) == 0) 
+//                {
+//                    //System.out.println("Ocurrio un error al restar");
+//                    JsfUtil.addErrorMessage("Error!", "Cantidad a transferir insuficiente");
+//                } else {
+//                    //System.out.println("se Resto del original");
+//
+//                    ExistenciaProducto ep = new ExistenciaProducto();
+//                    
+//                    ep.setCantidadEmpaque(new BigDecimal(restador));
+//                    ep.setIdBodegaFk(data.getIdBodegaNueva());
+//                    //ep.setIdProvedorFk(idProvedorFK);
+//                    ep.setIdSubProductoFk(idSubProductoFK);
+//                    ep.setIdSucursalFk(data.getIdSucursalNuevaFK());
+//                    //ep.setIdTipoEmpaque(idTipoEmpaque);
+//                    //ep.setKilosEmpaque(new BigDecimal(restador_kilos));
+//                    ep.setKilosExistencia(new BigDecimal(restador_kilos));
+//
+//                    //System.out.println("Fredddy: "+ep.toString());
+//                    //siguiente paso insertar o actualizar el registro en donde se paso la mercancia.
+//                    int resultado = ifaceNegocioExistencia.insertExistenciaProducto(ep);
+//
+//                    switch (resultado) {
+//                        case 0:
+//                            JsfUtil.addErrorMessage("Error!", "Ocurrio un error al actualizar existencias");
+//                            break;
+//                        case 2:
+//                            
+//                            ArrayList<ExistenciaProducto> existente = new ArrayList<ExistenciaProducto>();
+//
+//                            existente = ifaceNegocioExistencia.getExistenciaProductoId(data.getIdSucursalNuevaFK(), idSubProductoFK, idTipoEmpaque, data.getIdBodegaNueva(), idProvedorFK);
+//                            
+//                            ExistenciaProducto expro = new ExistenciaProducto();
+//                            expro = existente.get(0);
+//
+//                            int cantidadEmpaque = expro.getCantidadEmpaque().intValue();
+//                           // int kiltoproempaque = expro.getKilosEmpaque().intValue();
+//                            int kilosTotales = expro.getKilosExistencia().intValue();
+//                            ep.setCantidadEmpaque(new BigDecimal(ep.getCantidadEmpaque().intValue() + cantidadEmpaque));
+//                           // ep.setKilosEmpaque(new BigDecimal(ep.getKilosEmpaque().intValue() + kiltoproempaque));
+//                            ep.setKilosExistencia(new BigDecimal(ep.getKilosExistencia().intValue() + kilosTotales));
+//                            ep.setIdExistenciaProductoPk(expro.getIdExistenciaProductoPk());
+//
+//                            if (ifaceNegocioExistencia.updateExistenciaProducto(ep) == 0) {
+//                                JsfUtil.addErrorMessage("Error!", "Ocurrio un error al actualizar existencias ya registradas");
+//                            } else {
+//                                clean();
+//                                JsfUtil.addSuccessMessage("Transferencia Correcta!");
+//                            }
+//                            break;
+//                        default:
+//                            clean();
+//                            JsfUtil.addSuccessMessage("Transferencia Correcta!");
+//                            break;
+//                    }
+//                }
+//            }
+//        }
     }
 
     public void clean() {

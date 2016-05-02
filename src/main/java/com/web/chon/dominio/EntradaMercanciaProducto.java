@@ -15,7 +15,6 @@ import java.math.BigDecimal;
 public class EntradaMercanciaProducto extends ValueObject implements Serializable
 {
     private BigDecimal idEmpPK;
-    
     private BigDecimal idEmFK;
     private String idSubProductoFK;
     private BigDecimal idTipoEmpaqueFK;

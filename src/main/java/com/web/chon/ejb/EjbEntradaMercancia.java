@@ -111,4 +111,12 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
         return em.createNativeQuery(query.toString()).getResultList();
 
     }
+
+    @Override
+    public List<Object[]> getSubEntradaByNombre(String clave) {
+        System.out.println("Ejb: "+clave);
+       Query query = em.createNativeQuery("SELECT ID_EM_PK,IDENTIFICADOR FROM ENTRADAMERCANCIA WHERE UPPER(IDENTIFICADOR) LIKE '%"+clave+"%'");
+        
+       return query.getResultList();
+    }
 }

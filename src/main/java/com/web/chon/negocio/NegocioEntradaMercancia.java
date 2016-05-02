@@ -26,4 +26,7 @@ public interface NegocioEntradaMercancia {
 
     public List<Object[]> getEntradaProductoByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idProvedor);
 
+    public List<Object[]> getSubEntradaByNombre(String clave);
+    
+    
 }
