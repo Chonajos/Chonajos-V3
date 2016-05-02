@@ -60,5 +60,5 @@ public interface CrudService<T, ID extends Serializable> {
 	 * @param id no debe ser {@literal null}.
 	 * @throws IllegalArgumentException en caso de que el {@code id} sea {@literal null}
 	 */
-	void delete(ID id);
+	int delete(ID id);
 }

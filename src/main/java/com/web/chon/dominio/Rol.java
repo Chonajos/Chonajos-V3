@@ -1,42 +1,36 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.web.chon.dominio;
 
 import java.io.Serializable;
-import java.util.List;
+import java.math.BigDecimal;
 
 /**
  *
- * @author marcogante
+ * @author Juan de la Cruz
  */
-public class Rol implements Serializable {
+public class Rol extends ValueObject implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private Short idRolPk;
+    private BigDecimal idRolPk;
     private String nombreRol;
     private String descripcionRol;
-    private List<Usuario> usuarioList;
 
     public Rol() {
     }
 
-    public Rol(Short idRolPk) {
+    public Rol(BigDecimal idRolPk) {
         this.idRolPk = idRolPk;
     }
 
-    public Rol(Short idRolPk, String nombreRol) {
+    public Rol(BigDecimal idRolPk, String nombreRol) {
         this.idRolPk = idRolPk;
         this.nombreRol = nombreRol;
     }
 
-    public Short getIdRolPk() {
+    public BigDecimal getIdRolPk() {
         return idRolPk;
     }
 
-    public void setIdRolPk(Short idRolPk) {
+    public void setIdRolPk(BigDecimal idRolPk) {
         this.idRolPk = idRolPk;
     }
 
@@ -54,14 +48,6 @@ public class Rol implements Serializable {
 
     public void setDescripcionRol(String descripcionRol) {
         this.descripcionRol = descripcionRol;
-    }
-
-    public List<Usuario> getUsuarioList() {
-        return usuarioList;
-    }
-
-    public void setUsuarioList(List<Usuario> usuarioList) {
-        this.usuarioList = usuarioList;
     }
 
     @Override
@@ -86,7 +72,16 @@ public class Rol implements Serializable {
 
     @Override
     public String toString() {
-        return "com.web.chon.entities.Rol[ idRolPk=" + idRolPk + " ]";
+        return "Rol{" + "idRolPk=" + idRolPk + ", nombreRol=" + nombreRol + ", descripcionRol=" + descripcionRol + '}';
     }
-    
+
+
+    @Override
+    public void reset() {
+
+        idRolPk = null;
+        nombreRol = null;
+        descripcionRol = null;
+    }
+
 }

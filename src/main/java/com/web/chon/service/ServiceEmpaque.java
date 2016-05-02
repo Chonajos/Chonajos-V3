@@ -82,7 +82,7 @@ public class ServiceEmpaque implements IfaceEmpaque {
             if (ejb == null) {
                 construcEjb();
             }
-            System.out.println("service string delete");
+        
             return ejb.deleteEmpaque(idEmpaque);
         } catch (Exception ex) {
             Logger.getLogger(ServiceEmpaque.class.getName()).log(Level.SEVERE, null, ex);

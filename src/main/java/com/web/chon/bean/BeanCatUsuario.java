@@ -1,8 +1,13 @@
 package com.web.chon.bean;
 
+import com.web.chon.dominio.Rol;
+import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.Usuario;
+import com.web.chon.service.IfaceCatRol;
+import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceCatUsuario;
 import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -12,7 +17,7 @@ import org.springframework.stereotype.Component;
 
 /**
  *
- * @author marcogante
+ * @author Juan de la Cruz
  */
 @Component
 @Scope("view")
@@ -22,9 +27,16 @@ public class BeanCatUsuario implements BeanSimple {
 
     @Autowired
     private IfaceCatUsuario ifaceCatUsuario;
+    @Autowired
+    private IfaceCatSucursales ifaceCatSucursales;
+
+    @Autowired
+    private IfaceCatRol ifaceCatRol;
 
     private ArrayList<Usuario> model;
     private ArrayList<Usuario> selectedUsuario;
+    private List<Rol> lstRol;
+    private List<Sucursal> lstSucursal;
     private String title;
     private String viewEstate;
     private Usuario data;
@@ -34,9 +46,13 @@ public class BeanCatUsuario implements BeanSimple {
 
         data = new Usuario();
         model = new ArrayList<Usuario>();
+        lstRol = new ArrayList<Rol>();
         selectedUsuario = new ArrayList<Usuario>();
-        model = ifaceCatUsuario.getUsuarios();
+        lstSucursal = new ArrayList<Sucursal>();
 
+        model = ifaceCatUsuario.getUsuarios();
+        lstRol = ifaceCatRol.getAll();
+        lstSucursal = ifaceCatSucursales.getSucursales();
         setTitle("Catalogo de Usuarios.");
         setViewEstate("init");
 
@@ -63,9 +79,9 @@ public class BeanCatUsuario implements BeanSimple {
     @Override
     public String insert() {
         try {
-            System.out.println("data" + data.toString());
             if (ifaceCatUsuario.insertarUsuarios(data) == 0) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "La clave del usuario " + data.getClaveUsuario() + " ya existe. Intenta con otra clave diferente"));
+                return null;
             } else {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro insertado."));
             }
@@ -148,4 +164,21 @@ public class BeanCatUsuario implements BeanSimple {
         this.viewEstate = viewEstate;
     }
 
+    public List<Rol> getLstRol() {
+        return lstRol;
+    }
+
+    public void setLstRol(List<Rol> lstRol) {
+        this.lstRol = lstRol;
+    }
+
+    public List<Sucursal> getLstSucursal() {
+        return lstSucursal;
+    }
+
+    public void setLstSucursal(List<Sucursal> lstSucursal) {
+        this.lstSucursal = lstSucursal;
+    }
+
+    
 }

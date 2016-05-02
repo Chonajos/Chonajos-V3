@@ -57,13 +57,16 @@ public class BeanProducto implements Serializable, BeanSimple {
         if (!selectedProducto.isEmpty()) {
             for (Producto producto : selectedProducto) {
                 try {
-                    ifaceProducto.deleteProducto(producto.getIdProductoPk());
+                    if(ifaceProducto.deleteProducto(producto.getIdProductoPk()) == 1){
                     
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro eliminado."));
                     send();
+                    }else{
+                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar eliminar el registro :" + producto.getNombreProducto() + "."));
+                    }
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar eliminar el registro :" + data.getNombreProducto() + "."));
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar eliminar el registro :" + producto.getNombreProducto() + "."));
                 }
             }
         } else {
@@ -181,14 +184,14 @@ public class BeanProducto implements Serializable, BeanSimple {
     }
      
     public void send() {
-        try{
-        EventBus eventBus = EventBusFactory.getDefault().eventBus();
-        eventBus.publish(CHANNEL, new FacesMessage(StringEscapeUtils.escapeHtml(summary), StringEscapeUtils.escapeHtml(detail)));
-        System.out.println("terminado");
-        }catch(Exception e){
-            System.out.println("error"+e.getMessage());
-            e.printStackTrace();
-        }
+//        try{
+//        EventBus eventBus = EventBusFactory.getDefault().eventBus();
+//        eventBus.publish(CHANNEL, new FacesMessage(StringEscapeUtils.escapeHtml(summary), StringEscapeUtils.escapeHtml(detail)));
+//        System.out.println("terminado");
+//        }catch(Exception e){
+//            System.out.println("error"+e.getMessage());
+//            e.printStackTrace();
+//        }
     }
     
     public void printer(){

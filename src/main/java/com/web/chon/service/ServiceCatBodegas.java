@@ -141,9 +141,9 @@ public class ServiceCatBodegas implements IfaceCatBodegas {
     }
 
     @Override
-    public void delete(BigDecimal id) {
+    public int delete(BigDecimal id) {
         getEjb();
-        ejb.deleteBodega(id.intValue());
+        return ejb.deleteBodega(id.intValue());
     }
 
     @Override

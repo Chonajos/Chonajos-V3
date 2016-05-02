@@ -43,7 +43,7 @@ public class EjbEmpaque implements NegocioEmpaque {
     @Override
     public int deleteEmpaque(int idEmpaque) {
         try {
-            System.out.println("ejb delete");
+
             Query query = em.createNativeQuery("DELETE TIPO_EMPAQUE WHERE ID_TIPO_EMPAQUE_PK = ?");
             query.setParameter(1, idEmpaque);
 

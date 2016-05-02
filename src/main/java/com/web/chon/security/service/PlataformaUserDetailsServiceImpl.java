@@ -87,8 +87,8 @@ public class PlataformaUserDetailsServiceImpl implements PlataformaUserDetailsSe
             dominio.setUsuMaterno(obj[3] == null ? "":obj[3].toString());
             dominio.setUsuPassword(obj[4].toString());
             dominio.setUsuFecAlta((Date) obj[5]);
-            dominio.setPerId(Integer.parseInt(obj[6].toString()));
-            dominio.setSucId(Integer.parseInt(obj[7].toString()));
+            dominio.setPerId(obj[6] == null ? null: Integer.parseInt(obj[6].toString()));
+            dominio.setSucId(obj[7] == null ? null: Integer.parseInt(obj[7].toString()));
             dominio.setPerDescripcion(obj[8].toString());
             dominio.setIdUsuario(new BigDecimal(obj[9].toString()));
             dominio.setNombreSucursal(obj[10] == null ? "":obj[10].toString());

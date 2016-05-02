@@ -210,6 +210,10 @@ cantidad_empaque number,
 id_tipo_empaque number,
 kilos_empaque number,
 id_camion_fk number,
+PRECIO_MINIMO NUMBER(5,0), 
+PRECIO_VENTA NUMBER(5,0), 
+PRECIO_MAXIMO NUMBER(5,0), 
+ESTATUS_BLOQUEO CHAR(1 BYTE),
 CONSTRAINT c_id_camion_existencia_fk FOREIGN KEY(id_camion_fk) references camion(id_camion_pk),
 CONSTRAINT c_id_tipo_empaque_fk FOREIGN KEY(id_tipo_empaque) references tipo_empaque(id_tipo_empaque_pk),
 CONSTRAINT c_id_producto_existencia_fk FOREIGN KEY(id_producto_fk) references producto(id_producto_pk),
@@ -599,6 +603,7 @@ INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Usuario', 0,'10.3','/views/usuario.xhtml');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Empaque', 0,'10.4','/views/empaque.xhtml');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Sucursales', 0,'10.5','/views/sucursales.xhtml');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Sucursales', 0,'10.6','/views/roles.xhtml');
 
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Productos', 1,'20','NULL');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Mantenimiento Precios', 0,'20.1','/views/mantenimientoPrecios.xhtml');
@@ -655,4 +660,5 @@ INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(21,1);
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(22,1);
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(23,1);
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(24,1);
+INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(25,1);
 <--- fin inserts para roles y permisos--->

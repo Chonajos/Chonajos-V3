@@ -65,10 +65,16 @@ html{
 .ui-datatable-selectable{
     font-size: 12px!important;
 } 
+.ui-datatable-selectable thead th{
+    font-size: 14px!important;
+}
 
 /*Se cambio el tamaño del contenido de las tablas*/
 .ui-datatable tbody td
 {font-size: 12px!important;
+}
+.ui-datatable thead th
+{font-size: 14px!important;
 }
 
 /*Se cambio el tamaño del componente h4*/

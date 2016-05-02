@@ -44,7 +44,7 @@ public class Usuario extends Generic {
     private String latitudUsuario;
     private String longitudUsuario;
     private Municipios idMunicipioFk;
-    private Rol idRolFk;
+    private BigDecimal idRolFk;
     private String nombreCompletoUsuario;
     private List<Venta> ventaList;
     private List<Venta> ventaList1;
@@ -289,11 +289,11 @@ public class Usuario extends Generic {
         this.idMunicipioFk = idMunicipioFk;
     }
 
-    public Rol getIdRolFk() {
+    public BigDecimal getIdRolFk() {
         return idRolFk;
     }
 
-    public void setIdRolFk(Rol idRolFk) {
+    public void setIdRolFk(BigDecimal idRolFk) {
         this.idRolFk = idRolFk;
     }
 

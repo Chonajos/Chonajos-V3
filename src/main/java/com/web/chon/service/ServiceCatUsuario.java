@@ -44,6 +44,8 @@ public class ServiceCatUsuario implements IfaceCatUsuario {
                 usuario.setClaveUsuario(obj[18] == null ? "" : obj[18].toString());
                 usuario.setContrasenaUsuario(obj[4] == null ? "" : obj[4].toString());
                 usuario.setRfcUsuario(obj[16] == null ? "" : obj[16].toString());
+                usuario.setIdRolFk(obj[21] == null ? null : new BigDecimal(obj[21].toString()));
+                usuario.setIdSucursal(obj[26] == null ? -1 : Integer.parseInt(obj[26].toString()));
 
                 lstUsuario.add(usuario);
 
@@ -75,6 +77,8 @@ public class ServiceCatUsuario implements IfaceCatUsuario {
                 usuario.setClaveUsuario(obj[18] == null ? "" : obj[18].toString());
                 usuario.setContrasenaUsuario(obj[4] == null ? "" : obj[4].toString());
                 usuario.setRfcUsuario(obj[16] == null ? "" : obj[16].toString());
+                usuario.setIdRolFk(obj[21] == null ? null : new BigDecimal(obj[21].toString()));
+                usuario.setIdSucursal(obj[26] == null ? -1 : Integer.parseInt(obj[26].toString()));
 
 
             }
@@ -90,19 +94,16 @@ public class ServiceCatUsuario implements IfaceCatUsuario {
 
     @Override
     public int deleteUsuarios(int idUsuario) {
-        System.out.println("service");
         return ejb.deleteUsuario(idUsuario);
     }
 
     @Override
     public int updateUsuario(Usuario usuario) {
-        System.out.println("service" + usuario.toString());
         return ejb.updateUsuario(usuario);
     }
 
     @Override
     public int insertarUsuarios(Usuario usuario) {
-        System.out.println("usuario" + usuario.toString());
         return ejb.insertUsuario(usuario);
 
     }

@@ -2,13 +2,10 @@ package com.web.chon.bean;
 
 import com.web.chon.dominio.TipoEmpaque;
 import com.web.chon.service.IfaceEmpaque;
-import com.web.chon.service.ServiceEmpaque;
-import com.web.chon.util.Utilidades;
 import java.io.Serializable;
 import java.util.ArrayList;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -54,10 +51,13 @@ public class BeanEmpaque implements Serializable, BeanSimple {
         if (!selectedEmpaque.isEmpty()) {
             for (TipoEmpaque tipoEmpaque : selectedEmpaque) {
                 try {
-                    ifaceEmpaque.deleteEmpaque(tipoEmpaque.getIdTipoEmpaquePk().intValue());
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro eliminado."));
+                    if (ifaceEmpaque.deleteEmpaque(tipoEmpaque.getIdTipoEmpaquePk().intValue()) == 1) {
+                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro eliminado."));
+                    } else {
+                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar eliminar el registro :" + tipoEmpaque.getNombreEmpaque() + "."));
+                    }
                 } catch (Exception ex) {
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar eliminar el registro :" + data.getNombreEmpaque() + "."));
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar eliminar el registro :" + tipoEmpaque.getNombreEmpaque() + "."));
                 }
             }
         } else {

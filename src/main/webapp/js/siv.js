@@ -33,6 +33,7 @@ var DOM = {
             week: 'Semana',
             day: 'Día',
             allDayText: 'Todo el día'
+            
         };
    },
     menu: function () {

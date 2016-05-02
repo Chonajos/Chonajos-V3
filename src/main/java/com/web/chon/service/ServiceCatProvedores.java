@@ -178,7 +178,7 @@ public class ServiceCatProvedores implements IfaceCatProvedores {
     }
 
     @Override
-    public void delete(BigDecimal id) {
+    public int delete(BigDecimal id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
