@@ -49,6 +49,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
 
     private Date filtroFechaInicio;
     private Date filtroFechaFin;
+    private Date fechaRemanente;
 
     private String title;
 
@@ -248,7 +249,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
     public void generateChartLineSemana() {
 
         chartLineBySemana = initChartLineSemana();
-        chartLineBySemana.setSeriesColors("0404B4,088A08,81BEF7,D0F5A9");
+        chartLineBySemana.setSeriesColors("0404B4,088A08,81BEF7,D0F5A9,FF0040");
         chartLineBySemana.setTitle("Análisis de Mercado por Semana");
         chartLineBySemana.setLegendPosition("nw");
         chartLineBySemana.setZoom(true);
@@ -276,6 +277,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
 
         ChartSeries toneladasAnt = new ChartSeries();
         ChartSeries precioAnt = new ChartSeries();
+        ChartSeries remanente = new ChartSeries();
 
         toneladas.setLabel("Toneladas");
 
@@ -283,6 +285,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
 
         toneladasAnt.setLabel("Toneladas Año Anterior");
         precioAnt.setLabel("Precio Año Anterior");
+        remanente.setLabel("Remanente");
 
         for (AnalisisMercado dominio : lstEntradaMercanciaSemana) {
 
@@ -290,12 +293,15 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
             precio.set(dominio.getDescripcionFiltro(), dominio.getPrecio());
             toneladasAnt.set(dominio.getDescripcionFiltro(), dominio.getCantidadToneladasAnterior());
             precioAnt.set(dominio.getDescripcionFiltro(), dominio.getPrecioAnterior());
+            remanente.set(dominio.getDescripcionFiltro(), dominio.getRemantePorSemana());
+            
         }
 
         model.addSeries(toneladas);
         model.addSeries(precio);
         model.addSeries(toneladasAnt);
         model.addSeries(precioAnt);
+        model.addSeries(remanente);
 
         return model;
     }
@@ -303,7 +309,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
     public void generateChartBarSemana() {
 
         chartBarBySemana = initChartBarSemana();
-        chartBarBySemana.setSeriesColors("0404B4,088A08,81BEF7,D0F5A9");
+        chartBarBySemana.setSeriesColors("0404B4,088A08,81BEF7,D0F5A9,FF0040");
         chartBarBySemana.setTitle("Análisis de Mercado");
         chartBarBySemana.setLegendPosition("nw");
         chartBarBySemana.setZoom(true);
@@ -331,6 +337,8 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
 
         ChartSeries toneladasAnt = new ChartSeries();
         ChartSeries precioAnt = new ChartSeries();
+        ChartSeries remanente = new ChartSeries();
+        
 
         toneladas.setLabel("Toneladas");
 
@@ -338,6 +346,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
 
         toneladasAnt.setLabel("Toneladas Año Anterior");
         precioAnt.setLabel("Precio Año Anterior");
+        remanente.setLabel("Remanente");
         maxChartValue = 100;
         for (AnalisisMercado dominio : lstEntradaMercanciaSemana) {
 
@@ -352,6 +361,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
             precio.set(dominio.getDescripcionFiltro(), dominio.getPrecio());
             toneladasAnt.set(dominio.getDescripcionFiltro(), dominio.getCantidadToneladasAnterior());
             precioAnt.set(dominio.getDescripcionFiltro(), dominio.getPrecioAnterior());
+            remanente.set(dominio.getDescripcionFiltro(), dominio.getRemantePorSemana());
         }
 
         maxChartValue += 100;
@@ -406,6 +416,10 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
         filtroPorProducto();
 
         return "entradaMercancia";
+    }
+    
+    public void searchRemanente(){
+        data.setRemantePorSemana(ifaceEntradaProductoCentral.getRemanente(fechaRemanente,data.getIdProductoFk()));
     }
 
     public String getTitle() {
@@ -509,4 +523,13 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
         this.usuario = usuario;
     }
 
+    public Date getFechaRemanente() {
+        return fechaRemanente;
+    }
+
+    public void setFechaRemanente(Date fechaRemanente) {
+        this.fechaRemanente = fechaRemanente;
+    }
+
+    
 }

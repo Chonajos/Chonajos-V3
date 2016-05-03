@@ -189,9 +189,10 @@ public class ServiceAnalisisMercado implements IfaceAnalisisMercado {
                             dominio.setPrecio(obj[0] != null ? new BigDecimal(obj[0].toString()) : new BigDecimal(0));
                             dominio.setCantidadToneladas(obj[1] != null ? new BigDecimal(obj[1].toString()) : new BigDecimal(0));
 //                            dominio.setDescripcionFiltro(rangoFechaInicio.get(0) + "-" + rangoFechaInicio.get(6));
-                            dominio.setDescripcionFiltro(TiempoUtil.getNumberMonthYear(fechaInicio) + "-" +TiempoUtil.getYear(fechaInicio));
-                            
-                             //Objeto con los datos de la semana del año anterior
+                            dominio.setDescripcionFiltro(TiempoUtil.getNumberMonthYear(fechaInicio) + "-" + TiempoUtil.getYear(fechaInicio));
+                            dominio.setRemantePorSemana(obj[2] != null ? new BigDecimal(obj[2].toString()) : new BigDecimal(0));
+
+                            //Objeto con los datos de la semana del año anterior
                             for (Object[] objAnterior : lstObjectAnterior) {
                                 dominio.setPrecioAnterior(objAnterior[0] != null ? new BigDecimal(objAnterior[0].toString()) : new BigDecimal(0));
                                 dominio.setCantidadToneladasAnterior(objAnterior[1] != null ? new BigDecimal(objAnterior[1].toString()) : new BigDecimal(0));
@@ -243,6 +244,30 @@ public class ServiceAnalisisMercado implements IfaceAnalisisMercado {
     @Override
     public AnalisisMercado getById(String dominio) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public BigDecimal getRemanente(Date fechaRemanente, String idProducto) {
+
+//        List<Object[]> lstObject = null;
+        BigDecimal remanete = new BigDecimal(0);
+
+        List<String> lstFecha = TiempoUtil.getintervalWeekDDMMYYYYbyDay(fechaRemanente);
+
+        getEjb();
+        System.out.println("com.web.chon.service.ServiceAnalisisMercado.getRemanente()");
+        remanete = ejb.getRemanente(lstFecha.get(0), lstFecha.get(6), idProducto);
+        System.out.println("com.web.chon.service.ServiceAnalisisMercado.getRemanente() 1");
+
+        getEjb();
+//        for (Object[] obj : lstObject) {
+//
+//            dominio.setFecha((Date) obj[4]);
+//
+//        }
+
+        return remanete;
+
     }
 
 }

@@ -6,6 +6,7 @@
 package com.web.chon.negocio;
 
 import com.web.chon.dominio.AnalisisMercado;
+import java.math.BigDecimal;
 import java.util.List;
 import javax.ejb.Remote;
 
@@ -29,6 +30,8 @@ public interface NegocioAnalisisMercado
     public int update(AnalisisMercado entradaMercancia);
     
     public List<Object[]> getEntradaProductoByIdProducto(String idProducto);
+    
+    public BigDecimal getRemanente(String fechaInicio, String fechaFin,String idProducto);
 
     
 }

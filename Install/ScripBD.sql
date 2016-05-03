@@ -403,6 +403,7 @@ ID_SUBPRODUCTO varchar(8),
 precio_venta number(8,2),
 toneladas number(12,2),
 fecha  date,
+REMANENTE number(12,2),
 CONSTRAINT c_id_entrada_pk PRIMARY KEY (id_entrada),
 CONSTRAINT C_ID_SUBPRODUCTO_epc_FK FOREIGN KEY (ID_SUBPRODUCTO) references SUBPRODUCTO(ID_SUBPRODUCTO_PK)
 );

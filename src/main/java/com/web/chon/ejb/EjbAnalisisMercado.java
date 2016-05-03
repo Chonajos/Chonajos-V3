@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import com.web.chon.negocio.NegocioAnalisisMercado;
+import java.math.BigDecimal;
 
 /**
  *
@@ -38,14 +39,14 @@ public class EjbAnalisisMercado implements NegocioAnalisisMercado {
     }
 
     @Override
-    public List<Object[]> getEntradaProductoByFiltroDay(String fechaInicio, String fechaFin,String idProducto) {
+    public List<Object[]> getEntradaProductoByFiltroDay(String fechaInicio, String fechaFin, String idProducto) {
         try {
-            System.out.println("dates : " + fechaInicio + " " + fechaFin+" "+idProducto);
+
             Query query = em.createNativeQuery("SELECT * FROM ANALISIS_MERCADO WHERE TO_DATE(TO_CHAR(FECHA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN ? AND ? AND ID_SUBPRODUCTO = ? ORDER BY FECHA ");
 
             query.setParameter(1, fechaInicio);
             query.setParameter(2, fechaFin);
-            query.setParameter(3,idProducto.trim());
+            query.setParameter(3, idProducto.trim());
 
             return query.getResultList();
         } catch (Exception ex) {
@@ -55,9 +56,9 @@ public class EjbAnalisisMercado implements NegocioAnalisisMercado {
     }
 
     @Override
-    public List<Object[]> getEntradaProductoByFiltroWeek(String fechaInicio, String fechaFin,String idProducto) {
+    public List<Object[]> getEntradaProductoByFiltroWeek(String fechaInicio, String fechaFin, String idProducto) {
         try {
-            Query query = em.createNativeQuery("SELECT AVG(PRECIO_VENTA) PRECIO_VENTA, SUM(TONELADAS)TONELADAS FROM ANALISIS_MERCADO WHERE TO_DATE(TO_CHAR(FECHA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN ? AND ? AND ID_SUBPRODUCTO = ? ORDER BY FECHA ");
+            Query query = em.createNativeQuery("SELECT AVG(PRECIO_VENTA) PRECIO_VENTA, SUM(TONELADAS)TONELADAS,SUM(REMANENTE) REMANENTE FROM ANALISIS_MERCADO WHERE TO_DATE(TO_CHAR(FECHA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN ? AND ? AND ID_SUBPRODUCTO = ? ORDER BY FECHA ");
 
             query.setParameter(1, fechaInicio);
             query.setParameter(2, fechaFin);
@@ -105,7 +106,7 @@ public class EjbAnalisisMercado implements NegocioAnalisisMercado {
 
         try {
             Query query = em.createNativeQuery("UPDATE ANALISIS_MERCADO SET TONELADAS = ?,PRECIO_VENTA = ? WHERE ID_ENTRADA = ?");
-          
+
             query.setParameter(1, entradaMercancia.getCantidadToneladas().toString());
             query.setParameter(2, entradaMercancia.getPrecio().toString());
             query.setParameter(3, entradaMercancia.getIdEntrada());
@@ -125,11 +126,27 @@ public class EjbAnalisisMercado implements NegocioAnalisisMercado {
 
             query.setParameter(1, idProducto.trim());
 
-
             return query.getResultList();
         } catch (Exception ex) {
             Logger.getLogger(EjbAnalisisMercado.class.getName()).log(Level.SEVERE, null, ex);
             return null;
+        }
+    }
+
+    @Override
+    public BigDecimal getRemanente(String fechaInicio, String fechaFin,String idProducto) {
+        try {
+
+            Query query = em.createNativeQuery("SELECT NVL(SUM(REMANENTE),0) FROM ANALISIS_MERCADO WHERE TO_DATE(TO_CHAR(FECHA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN ? AND ? AND ID_SUBPRODUCTO = ? ORDER BY FECHA ");
+
+            query.setParameter(1, fechaInicio);
+            query.setParameter(2, fechaFin);
+            query.setParameter(3, idProducto.trim());
+
+            return new BigDecimal(query.getSingleResult().toString());
+        } catch (Exception ex) {
+            Logger.getLogger(EjbAnalisisMercado.class.getName()).log(Level.SEVERE, null, ex);
+            return new BigDecimal(0);
         }
     }
 

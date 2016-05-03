@@ -20,6 +20,7 @@ public class AnalisisMercado extends ValueObject implements Serializable {
     private String idProductoFk;
     private BigDecimal cantidadToneladasAnterior;
     private BigDecimal precioAnterior;
+    private BigDecimal remantePorSemana;
 
     public BigDecimal getIdEntrada() {
         return idEntrada;
@@ -88,6 +89,14 @@ public class AnalisisMercado extends ValueObject implements Serializable {
     @Override
     public String toString() {
         return "EntradaMercancia{" + "idEntrada=" + idEntrada + ", fecha=" + fecha + ", cantidadToneladas=" + cantidadToneladas + ", precio=" + precio + ", descripcionFiltro=" + descripcionFiltro + ", idProductoFk=" + idProductoFk + ", cantidadToneladasAnterior=" + cantidadToneladasAnterior + ", precioAnterior=" + precioAnterior + '}';
+    }
+
+    public BigDecimal getRemantePorSemana() {
+        return remantePorSemana;
+    }
+
+    public void setRemantePorSemana(BigDecimal remantePorSemana) {
+        this.remantePorSemana = remantePorSemana;
     }
 
   
