@@ -6,7 +6,9 @@
 package com.web.chon.util;
 
 import com.web.chon.dominio.EntradaMercancia2;
-import com.web.chon.service.ServiceEntradaMercancia;
+import com.web.chon.service.IfaceEntradaMercancia;
+import java.math.BigDecimal;
+
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -20,21 +22,23 @@ import org.springframework.stereotype.Component;
  * @author freddy
  */
 @Component
-public class EntradaMercanciaCoverter implements Converter{
+public class EntradaMercanciaCoverter implements Converter {
+
     @Autowired
-    ServiceEntradaMercancia serviceEntrada;
+    IfaceEntradaMercancia serviceEntrada;
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
-      
-         if (value != null && !value.equals("null") && value.trim().length() > 0) {
+
+        if (value != null && !value.equals("null") && value.trim().length() > 0) {
 
             try {
-
-                Object object = serviceEntrada.getSubEntradaByNombre(value);
-
-                return object;
-
+                if ((value.matches("[+-]?\\d*(\\.\\d+)?") && value.equals("") == false)) {
+                    Object object = serviceEntrada.getById(new BigDecimal(value));
+                    return object;
+                } else {
+                    return null;
+                }
             } catch (Exception e) {
 
                 throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error >" + e.getStackTrace(), " - " + e.getStackTrace()));
@@ -44,13 +48,13 @@ public class EntradaMercanciaCoverter implements Converter{
             return null;
 
         }
-    
+
     }
 
     @Override
     public String getAsString(FacesContext context, UIComponent component, Object value) {
-      
-         if (value != null) {
+
+        if (value != null) {
 
             if (value instanceof EntradaMercancia2) {
 
@@ -66,7 +70,7 @@ public class EntradaMercanciaCoverter implements Converter{
             return null;
 
         }
-    
+
     }
-    
+
 }

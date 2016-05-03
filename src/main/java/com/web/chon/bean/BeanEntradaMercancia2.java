@@ -161,6 +161,8 @@ public class BeanEntradaMercancia2 implements Serializable {
                 entrada_mercancia.setFolio(data.getFolio());
                 entrada_mercancia.setKilosTotales(data.getKilosTotales());
                 entrada_mercancia.setKilosTotalesProvedor(data.getKilosTotalesProvedor());
+                entrada_mercancia.setComentariosGenerales(data.getComentariosGenerales());
+                entrada_mercancia.setFechaRemision(data.getFechaRemision());
 
                 int mercanciaOrdenada = ifaceEntradaMercancia.insertEntradaMercancia(entrada_mercancia);
                 if (mercanciaOrdenada != 0) {

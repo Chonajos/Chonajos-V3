@@ -28,5 +28,7 @@ public interface NegocioEntradaMercancia {
 
     public List<Object[]> getSubEntradaByNombre(String clave);
     
+    public List<Object[]>  getEntradaById(BigDecimal id);
+    
     
 }

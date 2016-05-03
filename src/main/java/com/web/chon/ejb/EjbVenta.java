@@ -53,7 +53,8 @@ public class EjbVenta implements NegocioVenta {
                 + "INNER JOIN CLIENTE CLI ON CLI.ID_CLIENTE = ven.ID_CLIENTE_FK "
                 + "INNER JOIN USUARIO USU ON USU.ID_USUARIO_PK = ven.ID_VENDEDOR_FK ");
 
-        if (!fechaInicio.equals("")) {
+        if (!fechaInicio.equals("")) 
+        {
             cont++;
             cadena.append("WHERE TO_DATE(TO_CHAR(ven.FECHA_VENTA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "' ");
         }

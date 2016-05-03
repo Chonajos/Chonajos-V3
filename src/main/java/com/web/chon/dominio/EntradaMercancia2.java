@@ -23,6 +23,8 @@ public class EntradaMercancia2 extends ValueObject implements Serializable {
     private BigDecimal idSucursalFK;
     private Date fechaFiltroInicio;
     private Date fechaFiltroFin;
+    private Date fechaRemision;
+    private String comentariosGenerales;
     private String abreviacion;
     private String folio; //identificacion
     private BigDecimal idStatusFk;
@@ -34,17 +36,7 @@ public class EntradaMercancia2 extends ValueObject implements Serializable {
 
     @Override
     public String toString() {
-        return "EntradaMercancia2{" + "idEmPK=" + idEmPK + ", idProvedorFK=" + idProvedorFK + ", movimiento=" + movimiento + ", fecha=" + fecha + ", remision=" + remision + ", idSucursalFK=" + idSucursalFK + ", fechaFiltroInicio=" + fechaFiltroInicio + ", fechaFiltroFin=" + fechaFiltroFin + ", abreviacion=" + abreviacion + ", folio=" + folio + ", idStatusFk=" + idStatusFk + ", kilosTotales=" + kilosTotales + ", kilosTotalesProvedor=" + kilosTotalesProvedor + ", nombreSucursal=" + nombreSucursal + ", nombreProvedor=" + nombreProvedor + '}';
-    }
-
-  
-
-    public BigDecimal getIdStatusFk() {
-        return idStatusFk;
-    }
-
-    public void setIdStatusFk(BigDecimal idStatusFk) {
-        this.idStatusFk = idStatusFk;
+        return "EntradaMercancia2{" + "idEmPK=" + idEmPK + ", idProvedorFK=" + idProvedorFK + ", movimiento=" + movimiento + ", fecha=" + fecha + ", remision=" + remision + ", idSucursalFK=" + idSucursalFK + ", fechaFiltroInicio=" + fechaFiltroInicio + ", fechaFiltroFin=" + fechaFiltroFin + ", fechaRemision=" + fechaRemision + ", comentariosGenerales=" + comentariosGenerales + ", abreviacion=" + abreviacion + ", folio=" + folio + ", idStatusFk=" + idStatusFk + ", kilosTotales=" + kilosTotales + ", kilosTotalesProvedor=" + kilosTotalesProvedor + ", nombreSucursal=" + nombreSucursal + ", nombreProvedor=" + nombreProvedor + '}';
     }
 
     @Override
@@ -64,8 +56,38 @@ public class EntradaMercancia2 extends ValueObject implements Serializable {
         kilosTotalesProvedor = null;
         nombreSucursal = null;
         nombreProvedor = null;
+        fechaRemision=null;
+    comentariosGenerales=null;
 
     }
+    
+    
+    
+    public Date getFechaRemision() {
+        return fechaRemision;
+    }
+
+    public void setFechaRemision(Date fechaRemision) {
+        this.fechaRemision = fechaRemision;
+    }
+
+    public String getComentariosGenerales() {
+        return comentariosGenerales;
+    }
+
+    public void setComentariosGenerales(String comentariosGenerales) {
+        this.comentariosGenerales = comentariosGenerales;
+    }
+
+    public BigDecimal getIdStatusFk() {
+        return idStatusFk;
+    }
+
+    public void setIdStatusFk(BigDecimal idStatusFk) {
+        this.idStatusFk = idStatusFk;
+    }
+
+    
 
     public BigDecimal getKilosTotalesProvedor() {
         return kilosTotalesProvedor;

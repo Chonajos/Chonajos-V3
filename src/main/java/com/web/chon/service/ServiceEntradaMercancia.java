@@ -80,7 +80,7 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
 
             EntradaMercancia2 dominio = new EntradaMercancia2();
             dominio.setIdEmPK(new BigDecimal(obj[0].toString()));
-            dominio.setIdProvedorFK(obj[1] == null ? null:new BigDecimal(obj[1].toString()));
+            dominio.setIdProvedorFK(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
             dominio.setMovimiento(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
             dominio.setFecha(obj[3] == null ? null : (Date) obj[3]);
             dominio.setRemision(obj[4] == null ? null : obj[4].toString());
@@ -109,36 +109,44 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
 
     @Override
     public EntradaMercancia2 getById(BigDecimal dominio) {
+        getEjb();
+        List<Object[]> object = ejb.getEntradaById(dominio);
+        EntradaMercancia2 entra = new EntradaMercancia2();
+        for (Object[] obj : object) {
+            entra.setIdEmPK(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+            entra.setFolio(obj[1] == null ? "" : obj[1].toString());
+        }
+    
+    return entra ;
+}
+
+@Override
+        public EntradaMercancia2 getById(String dominio) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public EntradaMercancia2 getById(String dominio) {
+        public int create(EntradaMercancia2 dominio) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public int create(EntradaMercancia2 dominio) {
+        public int update(EntradaMercancia2 dominio) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public int update(EntradaMercancia2 dominio) {
+        public List<EntradaMercancia2> getAll() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<EntradaMercancia2> getAll() {
+        public int delete(BigDecimal id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public int delete(BigDecimal id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public ArrayList<EntradaMercancia2> getSubEntradaByNombre(String nombre) {
+        public ArrayList<EntradaMercancia2> getSubEntradaByNombre(String nombre) {
         System.out.println("Entro a Servicio, clave: "+nombre);
         try {
             ArrayList<EntradaMercancia2> lstEntradas = new ArrayList<EntradaMercancia2>();
@@ -156,8 +164,11 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
             }
 
             return lstEntradas;
-        } catch (Exception ex) {
-            Logger.getLogger(ServiceEntradaMercancia.class.getName()).log(Level.SEVERE, null, ex);
+        
+
+} catch (Exception ex) {
+            Logger.getLogger(ServiceEntradaMercancia.class
+.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
     

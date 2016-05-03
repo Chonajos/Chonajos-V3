@@ -13,7 +13,7 @@
             <h3>#{beanEntradaMercancia2.title}</h3>
         </div>
         <h:form id="formContent" >
-            
+
             <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:panel>
                 <div class="container-fluid">
@@ -45,22 +45,32 @@
                                 <p:ajax event="blur" update="formContent:txtIdentificador formContent:agregar" listener ="#{beanEntradaMercancia2.buscaMovimiento()}"/>
                             </p:inputText>
                         </div>
+                        
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-4 col-md-3 col-sm-4 col-xs-6"  for="txtIdentificador" value ="Identificador:" /> 
                             <p:inputText id="txtIdentificador" maxlength="10" class=" col-lg-8 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMercancia2.data.folio}" disabled="true">
-                            
+
                             </p:inputText>
                         </div>
                         <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-8 col-md-3 col-sm-4 col-xs-6"  for="txtkilosTotales" value ="Total de Kilos:"  /> 
                             <p:inputText id="txtkilosTotales" maxlength="10" class=" col-lg-4 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMercancia2.data.kilosTotalesProvedor}" required="true">
-                             <pe:keyFilter regEx="/[0-9_ .]/i"/>
+                                <pe:keyFilter regEx="/[0-9_ .]/i"/>
                             </p:inputText>
 
                         </div>
                     </div>
+                    <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-6 col-md-3 col-sm-4 col-xs-6" for="popup" value="Fecha de Remisión:"  />
+                            <p:calendar id="popup" value="#{beanEntradaMercancia2.data.fechaRemision}" />
+                        </div>
+                    <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12 form-group">
+                            <p:outputLabel  class="col-lg-2 col-md-3 col-sm-4 col-xs-6"  for="txtComentariosGenerales" value ="Comentarios:" /> 
+                            <p:inputTextarea rows="2" cols="15" id="txtComentariosGenerales" maxlength="50" class=" col-lg-8 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMercancia2.data.comentariosGenerales}"/>
+
+                        </div>
 
                     <!-- <p:fileUpload value="{fileUploadView.file}" mode="simple" skinSimple="true"/>
                      <p:commandButton value="Submit" ajax="false" actionListener="{fileUploadView.upload}" />-->
@@ -169,17 +179,17 @@
                         </p:column>
                         <p:column headerText="Kilos" width="60px;" style="text-align:center">
                             <h:outputText value="#{model.kilosTotalesProducto} Kg">
-                               
+
                             </h:outputText>
                         </p:column>
                         <p:column headerText="Convenio" width="60px;" style="text-align:center">
                             <h:outputText  value="#{model.idTipoConvenio eq 1 ?'$':''}#{model.precio}#{model.idTipoConvenio eq 1 ?'':'%'}">
-                                
+
                             </h:outputText>
                         </p:column>
                         <p:column headerText="Bodega:" width="90px;" style="text-align:center">
                             <h:outputText value="#{model.nombreBodega}">
-                                
+
                             </h:outputText>
                         </p:column>
 

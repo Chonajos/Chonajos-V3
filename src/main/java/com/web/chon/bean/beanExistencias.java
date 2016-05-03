@@ -75,7 +75,7 @@ public class beanExistencias implements Serializable {
         listaSucursales = ifaceCatSucursales.getSucursales();
         listaProvedores = new ArrayList<Provedor>();
         listaProvedores = ifaceCatProvedores.getProvedores();
-        //model = ifaceNegocioExistencia.getExistencias(new BigDecimal(0), new BigDecimal(0));
+        model = ifaceNegocioExistencia.getExistencias(null,null,null,null,null,null,null);
         listaBodegas = new ArrayList<Bodega>();
         listaBodegas = ifaceCatBodegas.getBodegas();
         data = new ExistenciaProducto();
@@ -88,11 +88,22 @@ public class beanExistencias implements Serializable {
         listaTiposConvenio = ifaceCovenio.getTipos();
     }
 
-    public void buscaExistencias() {
-        if (data.getIdSucursal()!= null && data.getIdProvedor()!= null) {
-            //model = ifaceNegocioExistencia.getExistencias(data.getIdSucursalFk(), data.getIdProvedorFk());
+    public void buscaExistencias() 
+    {
+        BigDecimal idEntrada;
+        if(entradaMercancia == null)
+        {
+            idEntrada =  null;
         }
-
+        else
+        {
+            idEntrada = entradaMercancia.getIdEmPK();
+            //data.reset();
+        }
+        
+        String idproductito = subProducto == null ? null : subProducto.getIdSubproductoPk();
+        model = ifaceNegocioExistencia.getExistencias(data.getIdSucursal(),data.getIdBodegaFK(),data.getIdProvedor(),idproductito,data.getIdTipoEmpaqueFK(),data.getIdTipoConvenio(),idEntrada);
+        
     }
 
     public ArrayList<TipoEmpaque> getLstTipoEmpaque() {

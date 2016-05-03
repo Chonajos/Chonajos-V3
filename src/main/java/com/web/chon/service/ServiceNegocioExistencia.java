@@ -51,13 +51,15 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
     }
 
     @Override
-    public ArrayList<ExistenciaProducto> getExistencias(BigDecimal idSucursal, BigDecimal idProvedorFk) {
+    public ArrayList<ExistenciaProducto> getExistencias(BigDecimal idSucursal, BigDecimal idBodega, BigDecimal idProvedor,String idProducto, BigDecimal idEmpaque, BigDecimal idConvenio,BigDecimal idEmPK) {
+        System.out.println("Freddy: idEmPK:"+idEmPK);
         getEjb();
+        
         
         try{
         ArrayList<ExistenciaProducto> lista = new ArrayList<ExistenciaProducto>();
-            System.out.println("SerivceNegocioExistencia: getExistencias : "+idSucursal+ " idProvedorFk: "+idProvedorFk);
-         List<Object[]> lstObject = ejb.getExistencias(idSucursal, idProvedorFk);
+            //System.out.println("SerivceNegocioExistencia: getExistencias : "+idSucursal+ " idProvedorFk: "+idProvedorFk);
+         List<Object[]> lstObject = ejb.getExistencias(idSucursal, idBodega,idProvedor,idProducto,idEmpaque,idConvenio,idEmPK);
          for(Object[] obj: lstObject )
             {
                 ExistenciaProducto expro = new ExistenciaProducto();
@@ -66,9 +68,13 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
                 expro.setIdentificador(obj[2] == null ? "" : obj[2].toString());
                 expro.setNombreProducto(obj[3] == null ? "" : obj[3].toString());
                 expro.setNombreEmpaque(obj[4] == null ? "" : obj[4].toString());
-                expro.setNombreBodega(obj[5] == null ? "" : obj[5].toString());
-                expro.setCantidadPaquetes(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
-                expro.setKilosTotalesProducto(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
+                expro.setCantidadPaquetes(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
+                expro.setKilosTotalesProducto(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
+                expro.setNombreTipoConvenio(obj[7] == null ? "" : obj[7].toString());
+                expro.setNombreProvedorCompleto(obj[8] == null ? "" : obj[8].toString());
+                expro.setNombreSucursal(obj[9] == null ? "" : obj[9].toString());
+                expro.setNombreBodega(obj[10] == null ? "" : obj[10].toString());
+                
                 lista.add(expro);
             }
          return lista;
