@@ -631,6 +631,9 @@ INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Relación de Operaciones', 0,'70.3','/views/relOperEntraMercancia.xhtml');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Existencias', 0,'70.4','/views/existencias.xhtml');
 
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Permisos', 1,'80','NULL');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Asignar permiso a Rol', 0,'80.1','/views/permisoRol.xhtml');
+
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(1,1);
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(2,1);
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(3,1);
@@ -662,4 +665,6 @@ INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(22,1);
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(23,1);
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(24,1);
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(25,1);
+INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(26,1);
+INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(27,1);
 <--- fin inserts para roles y permisos--->
