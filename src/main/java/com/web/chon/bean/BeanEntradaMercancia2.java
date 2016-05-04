@@ -212,7 +212,7 @@ public class BeanEntradaMercancia2 implements Serializable {
                             }
           
                             if (bandera!= 0) {
-                                JsfUtil.addSuccessMessageClean("Registro de Mercancias correcto !");
+                                JsfUtil.addSuccessMessageClean("¡Registro de Mercancias correcto !");
 
                             } else {
                                 JsfUtil.addErrorMessage("Error!", "Ocurrio un error al registrar la mercancia en existencias");
