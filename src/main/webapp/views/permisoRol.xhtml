@@ -37,7 +37,7 @@
                                  emptyMessage="No se encontraron Registros." editable="true">
 
 
-                        <p:column headerText="Pantalla" width="200px;" >
+                        <p:column headerText="Pantalla" class="#{model.tipo eq 1 ? 'statusActivo':''}" width="200px;" >
                             <h:outputText value="#{model.descripcion}" />
                         </p:column>
                         <p:column headerText="Acceso" width="80px;" style="text-align:center">

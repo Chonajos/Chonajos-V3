@@ -8,12 +8,9 @@
                 xmlns:p="http://primefaces.org/ui">
 
     <ui:define name="content">
-
-
         <h:form id="formContent">
             <div>
                 <h3>#{beanEmpaque.title}</h3>
-
             </div>
             <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:panel rendered="#{beanEmpaque.viewEstate=='init'}"  style="border: 0px;" >
@@ -21,10 +18,7 @@
                     <p:commandButton value="Nuevo" update=":formContent" ajax="true" action="#{beanEmpaque.viewNew}" icon="ui-icon-person" />
                     <p:commandButton value="Eliminar" update=":formContent" ajax="true" action="#{beanEmpaque.delete}" icon="ui-icon-trash" />
                 </div>
-                <p:dataTable var="model" value="#{beanEmpaque.model}" rows="10" scrollable="true"
-                             paginator="true" selection="#{beanEmpaque.selectedEmpaque}" rowKey="#{model.idTipoEmpaquePk}"
-                             emptyMessage="No se encontraron Registros.">
-
+                <p:dataTable var="model" value="#{beanEmpaque.model}" rows="10" scrollable="true" paginator="true" selection="#{beanEmpaque.selectedEmpaque}" rowKey="#{model.idTipoEmpaquePk}" emptyMessage="No se encontraron Registros.">
                     <p:column selectionMode="multiple" width="32px;" style="text-align:center"/>
                     <p:column headerText="Id" width="40px;" style="text-align:center">
                         <h:outputText value="#{model.idTipoEmpaquePk}" />
@@ -48,13 +42,11 @@
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-12"  for="txtNombre" value ="Nombre:" /> 
-                        <h:inputText id="txtNombre" maxlength="60" class=" col-lg-5 col-md-5 col-sm-8 col-xs-12" value="#{beanEmpaque.data.nombreEmpaque}" required="true"
-                                     requiredMessage="Ingresa un valor para el campo Nombre." title="Este campo se llena con el nombre del empaque y la marca del empaque."/>
+                        <h:inputText id="txtNombre" maxlength="60" class=" col-lg-5 col-md-5 col-sm-8 col-xs-12" value="#{beanEmpaque.data.nombreEmpaque}" required="true" requiredMessage="Ingresa un valor para el campo Nombre." title="Este campo se llena con el nombre del empaque y la marca del empaque."/>
                         <p:tooltip id="toltip" for="txtNombre" showEffect="clip" hideEffect="explode" />
                     </div>
                 </div>
             </p:panel>
         </h:form>
     </ui:define>
-
 </ui:composition>

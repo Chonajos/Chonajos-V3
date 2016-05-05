@@ -88,8 +88,8 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
             dominio.setFolio(obj[6] == null ? null : obj[6].toString());
             dominio.setKilosTotales(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
             dominio.setKilosTotalesProvedor(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
-            dominio.setNombreProvedor(obj[10] == null ? "" : obj[10].toString());
-            dominio.setNombreSucursal(obj[11] == null ? "" : obj[11].toString());
+            dominio.setNombreProvedor(obj[12] == null ? "" : obj[12].toString());
+            dominio.setNombreSucursal(obj[13] == null ? "" : obj[13].toString());
 
             lstEntradaMercancia2.add(dominio);
         }

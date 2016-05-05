@@ -9,13 +9,13 @@
                 xmlns:pe="http://primefaces.org/ui/extensions">
 
     <ui:define name="content">
-        <div>
-            <h3>#{beanExistencias.title}</h3>
-        </div>
+
         <h:form id="formContent">
+            <div>
+                <h3>#{beanExistencias.title}</h3>
+            </div>
             <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
-            <p:growl id="messagess" showDetail="true" life="2000" />
-            <p:panel>
+            <p:panel rendered="#{beanExistencias.viewEstate =='init'}">
                 <div class="container-fluid">
                     <div class="form-group" align="right">
 
@@ -91,7 +91,7 @@
                     </div>
 
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <p:dataTable id="table" var="model" value="#{beanExistencias.model}" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." rendered="#{beanExistencias.viewEstate =='init'}">
+                        <p:dataTable id="table" var="model" value="#{beanExistencias.model}" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." >
                             <p:column headerText="Carro"   width="50px;" style="text-align:center">
                                 <h:outputText value="#{model.idEmFK}">
                                 </h:outputText>
@@ -135,9 +135,83 @@
                             <p:column headerText="Área"  width="100px;" style="text-align:center">
                                 <h:outputText value="#{model.nombreBodega}" />
                             </p:column>
+                            <p:column headerText="Editar Precios" width="90px;" style="text-align:center">
+                                <p:commandButton id="buttonEditar" ajax="true" action="#{beanExistencias.searchById}" icon="ui-icon-pencil" styleClass="ui-priority-primary" update=":formContent">
+                                    <f:setPropertyActionListener value="#{model}" target="#{beanExistencias.data}" />
+                                </p:commandButton>
+                            </p:column>
                         </p:dataTable>
                     </div>
 
+                </div>
+            </p:panel>
+            <p:panel class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group" rendered="#{beanExistencias.viewEstate =='search'}">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group" align="right">
+                    <p:commandButton value="Guardar" update=":formContent" ajax="true" action="#{beanExistencias.updatePrecio}"/>
+                    <p:commandButton value="Atras" immediate="true" resetValues="true" update=":formContent" ajax="true" action="#{beanExistencias.cancel}" />
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group container-fluid">
+                    <p:panel>
+                        <div class="container-fluid">
+                            <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 form-group">
+                                <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <p:outputLabel class="col-lg-12 col-md-12 col-sm-12 col-xs-12" value ="Sucursal:" /> 
+                                    <p:outputLabel class="col-lg-12 col-md-12 col-sm-12 col-xs-12" value ="#{beanExistencias.data.nombreSucursal}" /> 
+                                </div>
+                                <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 form-group">
+                                    <p:outputLabel class="col-lg-12 col-md-12 col-sm-12 col-xs-12" value ="Bodega:" /> 
+                                    <p:outputLabel class="col-lg-12 col-md-12 col-sm-12 col-xs-12" value ="#{beanExistencias.data.nombreBodega}" /> 
+                                </div>
+                                <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 form-group">
+                                    <p:outputLabel class="col-lg-12 col-md-12 col-sm-12 col-xs-12" value ="Provedor:"/> 
+                                    <p:outputLabel class="col-lg-12 col-md-12 col-sm-12 col-xs-12" value ="#{beanExistencias.data.nombreProvedorCompleto}" /> 
+                                </div>
+                                <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 form-group">
+                                    <p:outputLabel class="col-lg-12 col-md-12 col-sm-12 col-xs-12" value ="Producto:" /> 
+                                    <p:outputLabel class="col-lg-12 col-md-12 col-sm-12 col-xs-12" value ="#{beanExistencias.data.nombreProducto}" /> 
+                                </div>
+                                <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 form-group">
+                                    <p:outputLabel class="col-lg-12 col-md-12 col-sm-12 col-xs-12" value ="Empaque:" /> 
+                                    <p:outputLabel class="col-lg-12 col-md-12 col-sm-12 col-xs-12" value ="#{beanExistencias.data.nombreEmpaque}" /> 
+                                </div>
+                                <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <p:outputLabel class="col-lg-12 col-md-12 col-sm-12 col-xs-12" value ="Tipo de Convenido:"/> 
+                                    <p:outputLabel class="col-lg-12 col-md-12 col-sm-12 col-xs-12" value ="#{beanExistencias.data.nombreTipoConvenio}" /> 
+                                </div>
+                                <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 form-group">
+                                    <p:outputLabel class="col-lg-12 col-md-12 col-sm-12 col-xs-12" value ="Clave:" /> 
+                                    <p:outputLabel class="col-lg-12 col-md-12 col-sm-12 col-xs-12" value ="#{beanExistencias.data.identificador}" /> 
+                                </div>
+                            </div>
+                        </div>
+                    </p:panel>
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                        <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="txtPrecioVenta" value ="Precio de venta:" /> 
+                        <p:inputText id="txtPrecioVenta" maxlength="10" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanExistencias.data.precioVenta}" required="true"
+                                     requiredMessage="Ingresa un valor para el campo Precio de venta." />
+                        <pe:keyFilter regEx="/[\d\-\.]/" for="txtPrecioVenta"/>    
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                        <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="txtPrecioMinimo" value ="Precio minimo:" /> 
+                        <p:inputText id="txtPrecioMinimo" maxlength="10" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanExistencias.data.precioMinimo}" required="true"
+                                     requiredMessage="Ingresa un valor para el campo Precio minimo."/>
+                        <pe:keyFilter regEx="/[\d\-\.]/" for="txtPrecioMinimo"/> 
+                    </div>
+
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                        <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="txtPrecioMaximo" value ="Precio maximo:" /> 
+                        <p:inputText id="txtPrecioMaximo" maxlength="10" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanExistencias.data.precioMaximo}" required="true"
+                                     requiredMessage="Ingresa un valor para el campo Precio maximo."/>
+                        <pe:keyFilter regEx="/[\d\-\.]/" for="txtPrecioMaximo"/>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                        <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12" value ="Bloquear Venta de Producto:"/>
+                        <p:selectBooleanCheckbox value="#{beanExistencias.data.estatusBloqueo}" />
+                    </div>
                 </div>
             </p:panel>
         </h:form>

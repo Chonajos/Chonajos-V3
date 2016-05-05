@@ -80,20 +80,20 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
     @Override
     public List<Object[]> getEntradaProductoByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idProvedor) {
         int cont = 0;
-        StringBuffer query = new StringBuffer("SELECT EMA.*,PRO.NOMBRE_PROVEDOR ||' '|| PRO.A_PATERNO_PROVE ||' '|| PRO.A_MATERNO_PROVE AS NOMBRE_PROVEDOR, SUC.NOMBRE_SUCURSAL FROM ENTRADAMERCANCIA EMA ");
+        StringBuffer query = new StringBuffer("SELECT EMA.ID_EM_PK,EMA.ID_PROVEDOR_FK,EMA.MOVIMIENTO,EMA.FECHA,EMA.REMISION,EMA.ID_SUCURSAL_FK,EMA.IDENTIFICADOR, "
+                + "EMA.ID_STATUS_FK,EMA.KILOSTOTALES,EMA.KILOSTOTALESPROVEDOR,EMA.COMENTARIOS,EMA.FECHAREMISION,PRO.NOMBRE_PROVEDOR ||' '|| PRO.A_PATERNO_PROVE ||' '|| PRO.A_MATERNO_PROVE AS NOMBRE_PROVEDOR, SUC.NOMBRE_SUCURSAL FROM ENTRADAMERCANCIA EMA ");
         query.append(" LEFT JOIN PROVEDORES PRO ON EMA.ID_PROVEDOR_FK = PRO.ID_PROVEDOR_PK ");
         query.append(" LEFT JOIN SUCURSAL SUC ON EMA.ID_SUCURSAL_FK = SUC.ID_SUCURSAL_PK ");
-
         if (fechaInicio != null) {
             cont++;
             query.append(" WHERE TO_DATE(TO_CHAR(EMA.FECHA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + TiempoUtil.getFechaDDMMYY(fechaInicio) + "' AND '" + TiempoUtil.getFechaDDMMYY(fechaFin) + "' ");
         }
 
-        if (idSucursal != null && idSucursal != new BigDecimal(-1)) {
+        if (idSucursal != null && !idSucursal.equals(new BigDecimal(-1))) {
             if (cont == 0) {
                 cont++;
                 query.append(" WHERE ");
-            }else{
+            } else {
                 query.append(" AND ");
             }
             query.append(" EMA.ID_SUCURSAL_FK =" + idSucursal);
@@ -102,7 +102,7 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
         if (idProvedor != null && idProvedor != new BigDecimal(-1)) {
             if (cont == 0) {
                 query.append(" WHERE ");
-            }else{
+            } else {
                 query.append(" AND ");
             }
             query.append(" EMA.ID_PROVEDOR_FK =" + idProvedor);
@@ -116,17 +116,17 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
 
     @Override
     public List<Object[]> getSubEntradaByNombre(String clave) {
-        System.out.println("Ejb: "+clave);
-       Query query = em.createNativeQuery("SELECT ID_EM_PK,IDENTIFICADOR FROM ENTRADAMERCANCIA WHERE UPPER(IDENTIFICADOR) LIKE '%"+clave+"%'");
-        
-       return query.getResultList();
+        System.out.println("Ejb: " + clave);
+        Query query = em.createNativeQuery("SELECT ID_EM_PK,IDENTIFICADOR FROM ENTRADAMERCANCIA WHERE UPPER(IDENTIFICADOR) LIKE '%" + clave + "%'");
+
+        return query.getResultList();
     }
 
     @Override
-    public List<Object[]>  getEntradaById(BigDecimal id) {
+    public List<Object[]> getEntradaById(BigDecimal id) {
         Query query = em.createNativeQuery("SELECT ID_EM_PK,IDENTIFICADOR FROM ENTRADAMERCANCIA WHERE ID_EM_PK = ?");
         query.setParameter(1, id);
-        
+
         return query.getResultList();
     }
 }

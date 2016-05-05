@@ -37,24 +37,29 @@ public class ExistenciaProducto implements Serializable {
     private String nombreProvedorCompleto;
     private String identificador;
     private String nombreSucursal;
+    private BigDecimal precioMinimo;
+    private BigDecimal precioVenta;
+    private BigDecimal precioMaximo;
+    private boolean estatusBloqueo;
 
-    
-    public void reset()
-    {
-        idSucursal=null;
-        idBodegaFK=null;
-        idProvedor=null;
-        idTipoEmpaqueFK=null;
-        idTipoConvenio=null;
+    public void reset() {
+        idSucursal = null;
+        idBodegaFK = null;
+        idProvedor = null;
+        idTipoEmpaqueFK = null;
+        idTipoConvenio = null;
+
+        precioMinimo = null;
+        precioVenta = null;
+        precioMaximo = null;
+        estatusBloqueo = true;
     }
-    
-    
+
     @Override
     public String toString() {
-        return "ExistenciaProducto{" + "idExistenciaProductoPk=" + idExistenciaProductoPk + ", idEmFK=" + idEmFK + ", idSubProductoFK=" + idSubProductoFK + ", idTipoEmpaqueFK=" + idTipoEmpaqueFK + ", cantidadPaquetes=" + cantidadPaquetes + ", kilosTotalesProducto=" + kilosTotalesProducto + ", comentarios=" + comentarios + ", precio=" + precio + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + ", idTipoConvenio=" + idTipoConvenio + ", idBodegaFK=" + idBodegaFK + ", nombreTipoConvenio=" + nombreTipoConvenio + ", nombreBodega=" + nombreBodega + ", kilospromprod=" + kilospromprod + ", numeroMovimiento=" + numeroMovimiento + ", pesoTara=" + pesoTara + ", idSucursal=" + idSucursal + ", idProvedor=" + idProvedor + ", nombreProvedorCompleto=" + nombreProvedorCompleto + ", identificador=" + identificador + ", nombreSucursal=" + nombreSucursal + '}';
+        return "ExistenciaProducto{" + "idExistenciaProductoPk=" + idExistenciaProductoPk + ", idEmFK=" + idEmFK + ", idSubProductoFK=" + idSubProductoFK + ", idTipoEmpaqueFK=" + idTipoEmpaqueFK + ", cantidadPaquetes=" + cantidadPaquetes + ", kilosTotalesProducto=" + kilosTotalesProducto + ", comentarios=" + comentarios + ", precio=" + precio + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + ", idTipoConvenio=" + idTipoConvenio + ", idBodegaFK=" + idBodegaFK + ", nombreTipoConvenio=" + nombreTipoConvenio + ", nombreBodega=" + nombreBodega + ", kilospromprod=" + kilospromprod + ", numeroMovimiento=" + numeroMovimiento + ", pesoTara=" + pesoTara + ", idSucursal=" + idSucursal + ", idProvedor=" + idProvedor + ", nombreProvedorCompleto=" + nombreProvedorCompleto + ", identificador=" + identificador + ", nombreSucursal=" + nombreSucursal + ", precioMinimo=" + precioMinimo + ", precioVenta=" + precioVenta + ", precioMaximo=" + precioMaximo + ", estatusBloqueo=" + estatusBloqueo + '}';
     }
 
-    
     public String getNombreSucursal() {
         return nombreSucursal;
     }
@@ -63,8 +68,6 @@ public class ExistenciaProducto implements Serializable {
         this.nombreSucursal = nombreSucursal;
     }
 
-    
-
     public String getNombreProvedorCompleto() {
         return nombreProvedorCompleto;
     }
@@ -72,9 +75,6 @@ public class ExistenciaProducto implements Serializable {
     public void setNombreProvedorCompleto(String nombreProvedorCompleto) {
         this.nombreProvedorCompleto = nombreProvedorCompleto;
     }
-    
-
-    
 
     public BigDecimal getIdProvedor() {
         return idProvedor;
@@ -91,9 +91,7 @@ public class ExistenciaProducto implements Serializable {
     public void setIdentificador(String identificador) {
         this.identificador = identificador;
     }
-    
 
-    
     public BigDecimal getPesoTara() {
         return pesoTara;
     }
@@ -110,7 +108,6 @@ public class ExistenciaProducto implements Serializable {
         this.idSucursal = idSucursal;
     }
 
-    
     public BigDecimal getIdExistenciaProductoPk() {
         return idExistenciaProductoPk;
     }
@@ -239,9 +236,36 @@ public class ExistenciaProducto implements Serializable {
         this.numeroMovimiento = numeroMovimiento;
     }
 
-    
+    public BigDecimal getPrecioMinimo() {
+        return precioMinimo;
+    }
 
-    
+    public void setPrecioMinimo(BigDecimal precioMinimo) {
+        this.precioMinimo = precioMinimo;
+    }
 
-    
+    public BigDecimal getPrecioVenta() {
+        return precioVenta;
+    }
+
+    public void setPrecioVenta(BigDecimal precioVenta) {
+        this.precioVenta = precioVenta;
+    }
+
+    public BigDecimal getPrecioMaximo() {
+        return precioMaximo;
+    }
+
+    public void setPrecioMaximo(BigDecimal precioMaximo) {
+        this.precioMaximo = precioMaximo;
+    }
+
+    public boolean isEstatusBloqueo() {
+        return estatusBloqueo;
+    }
+
+    public void setEstatusBloqueo(boolean estatusBloqueo) {
+        this.estatusBloqueo = estatusBloqueo;
+    }
+
 }

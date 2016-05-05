@@ -108,8 +108,7 @@
                         </p:password>
                         <h:message for="txtConfirmar" />
 
-                        <o:validateEqual id="equal" components="txtContrasena txtConfirmar"
-                                         message="Las contraseñas escritas no coinciden. Verificar campos." showMessageFor="txtConfirmar" />
+                        <o:validateEqual id="equal" components="txtContrasena txtConfirmar" message="Las contraseñas escritas no coinciden. Verificar campos." showMessageFor="txtConfirmar" />
 
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
@@ -127,7 +126,7 @@
                         </h:selectOneMenu>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                        <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-12"  for="selectSucursal" value ="Rol:"/> 
+                        <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-12"  for="selectSucursal" value ="Sucursal:"/> 
                         <h:selectOneMenu  id="selectSucursal" class="col-lg-5 col-md-4 col-sm-8 col-xs-12" value="#{beanCatUsuario.data.idSucursal}" >
                             <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="-1" />
                             <f:selectItems value="#{beanCatUsuario.lstSucursal}" var="sucursal" itemLabel="#{sucursal.nombreSucursal}" itemValue="#{sucursal.idSucursalPk}"/>
@@ -137,5 +136,4 @@
             </p:panel>
         </h:form>
     </ui:define>
-
 </ui:composition>

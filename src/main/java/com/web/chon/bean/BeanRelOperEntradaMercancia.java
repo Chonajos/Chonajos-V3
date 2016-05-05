@@ -32,34 +32,29 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
     private static final long serialVersionUID = 1L;
 
-    @Autowired
-    private IfaceEntradaMercancia ifaceEntradaMercancia;
-    @Autowired
-    private IfaceEntradaMercanciaProducto ifaceEntradaMercanciaProducto;
-    @Autowired
-    private IfaceProducto ifaceProducto;
-    @Autowired
-    private IfaceCatSucursales ifaceCatSucursales;
-    @Autowired
-    private IfaceCatStatusVenta ifaceCatStatusVenta;
-    @Autowired
-    private IfaceCatProvedores ifaceCatProvedores;
-    private EntradaMercancia2 data;
+    @Autowired private IfaceEntradaMercancia ifaceEntradaMercancia;
+    @Autowired private IfaceEntradaMercanciaProducto ifaceEntradaMercanciaProducto;
+    @Autowired private IfaceCatSucursales ifaceCatSucursales;
+    @Autowired private IfaceCatProvedores ifaceCatProvedores;
+    
+    private ArrayList<Provedor> lstProvedor;
     private ArrayList<Sucursal> listaSucursales;
+    private ArrayList<EntradaMercancia2> lstEntradaMercancia;
+    private ArrayList<EntradaMercanciaProducto> lstEntradaMercanciaProdcuto;
+    
+    private Provedor provedor;
+    private EntradaMercancia2 data;
 
     private String title;
     private String viewEstate;
-    private int filtro;
-    private Date fechaInicio;
-    private Date fechaFin;
+    
     private BigDecimal totalKilos;
-
-    private Provedor provedor;
-
-    private ArrayList<EntradaMercancia2> lstEntradaMercancia;
-    private ArrayList<EntradaMercanciaProducto> lstEntradaMercanciaProdcuto;
-    private ArrayList<Provedor> lstProvedor;
-
+    
+    private Date fechaFin;
+    private Date fechaInicio;
+    
+    private int filtro;
+    
     @PostConstruct
     public void init() {
 
@@ -70,30 +65,10 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
         provedor = new Provedor();
 
+        getEntradaProductoByIntervalDate();
+
         setTitle("Relación de Operaciónes.");
         setViewEstate("init");
-
-    }
-
-    @Override
-    public String delete() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public String insert() {
-
-        return "relacionOperaciones";
-    }
-
-    @Override
-    public String update() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void searchById() {
-        setViewEstate("searchById");
 
     }
 
@@ -134,11 +109,8 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         setFechaInicioFin(filtro);
         BigDecimal idProvedor = provedor == null ? null : provedor.getIdProvedorPK();
 
-//        if (data.getFechaFiltroInicio() != null && data.getFechaFiltroFin() != null) {
         lstEntradaMercancia = ifaceEntradaMercancia.getEntradaProductoByIntervalDate(data.getFechaFiltroInicio(), data.getFechaFiltroFin(), data.getIdSucursalFK(), idProvedor);
-//        } else {
-//            lstEntradaMercancia = new ArrayList<EntradaMercancia2>();
-//        }
+
 
     }
 
@@ -147,8 +119,11 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         lstEntradaMercanciaProdcuto = new ArrayList<EntradaMercanciaProducto>();
         lstEntradaMercancia = new ArrayList<EntradaMercancia2>();
         data.reset();
-        provedor.reset();
+        provedor = null;
         filtro = -1;
+        fechaInicio = null;
+        fechaFin = null;
+        getEntradaProductoByIntervalDate();
 
     }
 
@@ -170,6 +145,28 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     public ArrayList<Provedor> autoCompleteProvedor(String nombreProvedor) {
         lstProvedor = ifaceCatProvedores.getProvedorByNombreCompleto(nombreProvedor.toUpperCase());
         return lstProvedor;
+
+    }
+
+    @Override
+    public String delete() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public String insert() {
+
+        return "relacionOperaciones";
+    }
+
+    @Override
+    public String update() {
+        throw new UnsupportedOperationException("Not supported yet."); 
+    }
+
+    @Override
+    public void searchById() {
+        setViewEstate("searchById");
 
     }
 
