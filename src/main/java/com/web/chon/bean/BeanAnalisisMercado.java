@@ -34,34 +34,32 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
     private static final long serialVersionUID = 1L;
     private final static Logger logger = LoggerFactory.getLogger(AnalisisMercado.class);
 
-    @Autowired
-    private IfaceAnalisisMercado ifaceEntradaProductoCentral;
-    @Autowired
-    private IfaceSubProducto ifaceProducto;
-    @Autowired
-    private PlataformaSecurityContext context;
-
-    private UsuarioDominio usuario;
+    @Autowired private IfaceAnalisisMercado ifaceEntradaProductoCentral;
+    @Autowired private IfaceSubProducto ifaceProducto;
+    @Autowired private PlataformaSecurityContext context;
 
     private ArrayList<AnalisisMercado> lstEntradaMercancia;
     private ArrayList<AnalisisMercado> lstEntradaMercanciaSemana;
     private ArrayList<Subproducto> lstProducto;
+    
+    private UsuarioDominio usuario;
+    
+    private LineChartModel chartLineByDias;
+    private BarChartModel chartBarByDias;
+    private LineChartModel chartLineBySemana;
+    private BarChartModel chartBarBySemana;
 
     private Date filtroFechaInicio;
     private Date filtroFechaFin;
     private Date fechaRemanente;
 
     private String title;
+    private String insertar;
 
     int maxChartValue;
 
     private boolean charLine = true;
     private boolean charExpander = false;
-
-    private LineChartModel chartLineByDias;
-    private BarChartModel chartBarByDias;
-    private LineChartModel chartLineBySemana;
-    private BarChartModel chartBarBySemana;
 
     @Override
     protected Logger getLogger() {
@@ -81,6 +79,8 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
 
         lstEntradaMercancia = new ArrayList<AnalisisMercado>();
         setTitle("Análisis de Mercado");
+        setInsertar("precioPromedio");
+        
 
         /*Pantalla principal welcome.xhtml*/
         lstEntradaMercancia = ifaceEntradaProductoCentral.getEntradaMercanciaByFiltro(28, 1, TiempoUtil.sumarRestarDias(context.getFechaSistema(), -14), "00000005");
@@ -529,6 +529,14 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
 
     public void setFechaRemanente(Date fechaRemanente) {
         this.fechaRemanente = fechaRemanente;
+    }
+
+    public String getInsertar() {
+        return insertar;
+    }
+
+    public void setInsertar(String insertar) {
+        this.insertar = insertar;
     }
 
     

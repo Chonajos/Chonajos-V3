@@ -16,10 +16,14 @@
             <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:panel>
                 <div class="container-fluid">
-                    <div class="form-group" align="right">
-                        <p:commandButton value="Atras" resetValues="true" immediate="true" update=":formContent" action="#{beanAnalisisMercado.cancel}" rendered="#{beanAnalisisMercado.state =='SEARCH'}"/>
-                        <p:commandButton rendered="#{beanAnalisisMercado.state =='INIT'}" value="Guardar" resetValues="true" update=":formContent" action="#{beanAnalisisMercado.save}"/>
-                        <p:commandButton value="Reportes" resetValues="true" update=":formContent" immediate="true" actionListener="#{beanAnalisisMercado.search}" rendered="#{beanAnalisisMercado.state =='INIT' and beanAnalisisMercado.usuario.perId =='1' }"/>
+                    <div class="form-group">
+                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12" value ="Ingresar:"/> 
+                            <p:selectOneRadio value="#{beanAnalisisMercado.insertar}" class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                                <f:selectItem itemLabel="Remanente" itemValue="remanente" />
+                                <f:selectItem itemLabel="Precio Promedio" itemValue="precioPromedio" />
+                            </p:selectOneRadio>
+                        </div>
                     </div>
                     <div class="form-group" align="right">
                         <p:commandButton value="Atras" resetValues="true" immediate="true" update=":formContent" action="#{beanAnalisisMercado.cancel}" rendered="#{beanAnalisisMercado.state =='SEARCH'}"/>
@@ -27,18 +31,13 @@
                         <p:commandButton value="Reportes" resetValues="true" update=":formContent" immediate="true" actionListener="#{beanAnalisisMercado.search}" rendered="#{beanAnalisisMercado.state =='INIT' and beanAnalisisMercado.usuario.perId =='1' }"/>
                     </div>
                     <div class="form-group">
-                        <p:selectOneRadio id="" value="#{radioView.console}">
-                            <f:selectItem itemLabel="Xbox One" itemValue="Xbox One" />
-                            <f:selectItem itemLabel="PS4" itemValue="PS4" />
-                            <f:selectItem itemLabel="Wii U" itemValue="Wii U" />
-                        </p:selectOneRadio>
                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="selectProductos" value ="Categoría:"/> 
-                            <h:selectOneMenu id="selectProductos" value="#{beanAnalisisMercado.data.idProductoFk}" required="true" class="col-lg-8 col-md-8 col-sm-8 col-xs-12" requiredMessage="Ingresa un valor para el campo Producto." rendered="#{beanAnalisisMercado.state =='SEARCH'}">
+                            <p:selectOneMenu  id="selectProductos" value="#{beanAnalisisMercado.data.idProductoFk}" required="true" class="col-lg-8 col-md-8 col-sm-8 col-xs-12" requiredMessage="Ingresa un valor para el campo Producto." rendered="#{beanAnalisisMercado.state =='SEARCH'}">
                                 <f:selectItem itemLabel="Seleccione la opción" itemValue="-1" noSelectionOption="true" />
                                 <f:selectItems value="#{beanAnalisisMercado.lstProducto}" var="producto" itemLabel="#{producto.nombreSubproducto}" itemValue="#{producto.idSubproductoPk}" />
                                 <p:ajax event="change" update=":formContent" listener="#{beanAnalisisMercado.filtroPorProducto}"/>
-                            </h:selectOneMenu>
+                            </p:selectOneMenu>
                             <h:selectOneMenu id="selectProductosA" value="#{beanAnalisisMercado.data.idProductoFk}" required="true" class="col-lg-8 col-md-8 col-sm-8 col-xs-12" requiredMessage="Ingresa un valor para el campo Producto." rendered="#{beanAnalisisMercado.state =='INIT'}">
                                 <f:selectItem itemLabel="Seleccione la opción" itemValue="-1" noSelectionOption="true" />
                                 <f:selectItems value="#{beanAnalisisMercado.lstProducto}" var="producto" itemLabel="#{producto.nombreSubproducto}" itemValue="#{producto.idSubproductoPk}" />
