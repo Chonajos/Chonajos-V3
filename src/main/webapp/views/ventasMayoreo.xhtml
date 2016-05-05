@@ -1,0 +1,188 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="./../templates/main.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="content" id="content">
+        <div>
+            <h3>#{beanVentaMayoreo.title}</h3>
+        </div>
+        <script>
+            var hiddenCode = "#{beanVentaMayoreo.viewEstate}";
+        </script>
+        <h:form id="formContent" >
+            <p:remoteCommand id="remoteComman" resetValues="true" onstart="alert('onstart')"></p:remoteCommand>
+            <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
+            <!--<p:growl id="messagess" showDetail="true" life="2000" />-->
+            <p:panel>
+                <div class="container-fluid">
+                    
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 "  for="autocompleteCliente" value ="Cliente:" /> 
+                            <p:autoComplete  placeholder="Seleccione un Cliente" id="autocompleteCliente"  required="true" requiredMessage="Ingresa un valor para el campo Cliente." styleClass="autocomplete-input-text-media"
+                                             value="#{beanVentaMayoreo.cliente}" completeMethod="#{beanVentaMayoreo.autoCompleteCliente}" forceSelection="true" var="cliente"  inputStyle="width: 200px"
+                                             itemLabel="#{cliente.nombreCombleto}"
+                                             itemValue="#{cliente.id_cliente}" converter="#{clienteConverter}">
+                            </p:autoComplete>
+                            <pe:keyFilter for="autocompleteCliente" regEx="/[a-z0-9-_Ã±\s]/i" />
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="autocompleteVendedor" value ="Vendedor:" /> 
+                            <p:autoComplete  placeholder="Seleccione un Vendedor" id="autocompleteVendedor"  required="true" requiredMessage="Ingresa un valor para el campo Vendedor." styleClass="autocomplete-input-text-media"
+                                             value="#{beanVentaMayoreo.usuario}" completeMethod="#{beanVentaMayoreo.autoCompleteVendedor}" forceSelection="true" var="usuario"  inputStyle="width: 200px"
+                                             itemLabel="#{usuario.nombreCompletoUsuario}"
+                                             itemValue="#{usuario.idUsuarioPk}" converter="#{usuarioConverter}">
+                            </p:autoComplete>
+                            <pe:keyFilter for="autocompleteVendedor" regEx="/[a-z0-9-_Ã±\s]/i" />
+                        </div>
+                    </div>
+                </div>
+            </p:panel>
+            <p:panel rendered="#{beanVentaMayoreo.viewEstate=='viewAddProducto'}">
+                <div class="container-fluid">
+                    <div class="form-group" align="right">
+                        <p:commandButton value="Agregar" update=":formContent" ajax="true" action="#{beanVentaMayoreo.addProducto}" rendered="#{beanVentaMayoreo.viewEstate =='viewAddProducto'}"/>
+                        <p:commandButton value="Ver Pedido" id="verCarrito" ajax="false" update=":formContent"   immediate="true" resetValues="true" rendered="#{beanVentaMayoreo.viewEstate =='viewCarrito'}"/>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-12 col-md-4 col-sm-4 col-xs-12"  for="autocompleteProducto" value ="Producto:" /> 
+                            <p:autoComplete  placeholder="Seleccione un Producto" id="autocompleteProducto"  required="true" requiredMessage="Ingresa un valor para el campo Producto." styleClass="autocomplete-input-text-media"
+                                             value="#{beanVentaMayoreo.subProducto}" completeMethod="#{beanVentaMayoreo.autoComplete}" forceSelection="true" var="producto"  inputStyle="width: 200px"
+                                             itemLabel="#{producto.nombreSubproducto}"
+                                             itemValue="#{producto.idSubproductoPk}" converter="#{productoConverter}">
+                                <p:ajax event="itemSelect" update=":formContent:txtPrecioVenta" listener="#{beanVentaMayoreo.searchById()}" />
+                                <p:ajax event="change" update=":formContent:txtPrecioVenta" listener="#{beanVentaMayoreo.searchById}" />
+                            </p:autoComplete>
+                            <pe:keyFilter for="autocompleteProducto" regEx="/[a-z0-9-_Ã±\s]/i" />
+                        </div>
+
+
+                        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" >
+                            <p:outputLabel class="col-lg-8 col-md-4 col-sm-4 col-xs-12" id="labelEmpaque" for="txtCantidadEmpaque" value ="Cantidad"  /> 
+                            <p:inputText id="txtCantidadEmpaque" maxlength="6" class=" col-lg-4 col-md-8 col-sm-8 col-xs-12" value="#{beanVentaMayoreo.data.cantidadEmpaque}" required="true" 
+                                         requiredMessage="Ingresa un valor para el campo Cantidad de Empaques." />
+                            <pe:keyFilter regEx="/[\d.,\-]/" for="txtCantidadEmpaque"/>  
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="txtKilos" value ="Precio de venta:" /> 
+                            <p:inputText id="txtKilos"  class=" col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanVentaMayoreo.data.precioProducto}" required="true"
+                                         requiredMessage="Ingresa un valor para el campo Precio de venta." />
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="txtPrecioVenta" value ="Precio de venta:" /> 
+                            <p:inputText id="txtPrecioVenta"  class=" col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanVentaMayoreo.data.precioProducto}" required="true"
+                                         requiredMessage="Ingresa un valor para el campo Precio de venta."/>
+                        </div>
+                    </div>
+                    
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <p:dataTable var="modeloExistencias" value="#{beanVentaMayoreo.lstExistencias}" styleClass="ui-datatable-hor-scroll"  emptyMessage="Productos.">
+
+                                <p:column headerText="Sel." width="30px;" style="text-align:center">
+                                    <h:outputText value="#{modeloExistencias.nombreProducto}" />
+                                </p:column>
+                                <p:column headerText="Carro" width="40px;" style="text-align:center">
+                                    <h:outputText value="#{modeloExistencias.nombreProducto}" />
+                                </p:column>
+                                <p:column headerText="Clave" width="100px;" style="text-align:center">
+                                    <h:outputText value="#{modeloExistencias.nombreProducto}" />
+                                </p:column>
+                                <p:column headerText="Producto" width="120px;" style="text-align:center">
+                                    <h:outputText value="#{modeloExistencias.nombreProducto}" />
+                                </p:column>
+                                <p:column headerText="Empaque" width="120px;" style="text-align:center">
+                                    <h:outputText value="#{modeloExistencias.nombreEmpaque}" />
+                                </p:column>
+                                <p:column headerText="Area" width="90px;" style="text-align:center">
+                                    <h:outputText value="#{modeloExistencias.nombreProducto}">
+                                        <f:convertNumber pattern="#,##0.00"/>
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="Cantidad" width="85px;" style="text-align:center">
+                                    <h:outputText value="#{modeloExistencias.cantidadPaquetes}" />
+                                </p:column>
+                                <p:column headerText="Precio de venta" width="60px;" style="text-align:center">
+                                    <h:outputText value="#{model.precioProducto}">
+                                        <f:convertNumber pattern="#,##0.00"/>
+                                    </h:outputText>
+                                </p:column>
+
+
+                            </p:dataTable>
+                           <!-- <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="{beanVentaMayoreo.rutaPDF}"/>-->
+                        </div>
+                    </div>
+                   
+            </p:panel>
+            <p:panel rendered="#{beanVentaMayoreo.viewEstate=='viewCarrito'}">
+                <div class="container-fluid">
+                    <div class="form-group" align="right">
+                        <p:commandButton value="Finalizar" update=":formContent" ajax="true" action="#{beanVentaMayoreo.addProducto}" />
+                          <p:commandButton value="Agregar" update=":formContent" ajax="true" action="#{beanVentaMayoreo.addProducto}" />   
+                        <p:commandButton value="Cancelar" id="cancelarVenta" ajax="false" update=":formContent"   action="#{beanVentaMayoreo.inserts}" immediate="true" resetValues="true" />
+                       </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <p:dataTable var="model" value="#{beanVentaMayoreo.lstVenta}" styleClass="ui-datatable-hor-scroll"  emptyMessage="Productos.">
+                            <p:column headerText="Carro" width="40px;" style="text-align:center">
+                                <h:outputText value="#{model.cantidadEmpaque}" />
+                            </p:column>
+                            <p:column headerText="Clave" width="100px;" style="text-align:center">
+                                <h:outputText value="#{model.cantidadEmpaque}" />
+                            </p:column>
+                            <p:column headerText="Producto" width="120px;" style="text-align:center">
+                                <h:outputText value="#{model.cantidadEmpaque}" />
+                            </p:column>
+                            <p:column headerText="Empaque" width="120px;" style="text-align:center">
+                                <h:outputText value="#{model.cantidadEmpaque}" />
+                            </p:column>
+                            <p:column headerText="Cantidad" width="85px;" style="text-align:center">
+                                <h:outputText value="#{model.cantidadEmpaque}" />
+                            </p:column>
+                            <p:column headerText="Precio de venta" width="60px;" style="text-align:center">
+                                <h:outputText value="#{model.precioProducto}">
+                                    <f:convertNumber pattern="#,##0.00"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Total" width="90px;" style="text-align:center">
+                                <h:outputText value="#{model.totalVenta}">
+                                    <f:convertNumber pattern="#,##0.00"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Editar" width="60px;" style="text-align:center">
+                                <p:commandButton id="editar" ajax="true" process="@this" action="#{beanVentaMayoreo.editProducto}" icon="ui-icon-pencil" styleClass="ui-priority-primary" update=":formContent">
+                                    <f:setPropertyActionListener value="#{model}" target="#{beanVentaMayoreo.dataEdit}"/>
+                                </p:commandButton>
+                            </p:column>
+                            <p:column headerText="Remover" width="80px;" style="text-align:center">
+                                <p:commandButton id="remover" ajax="true" immediate="true" action="#{beanVentaMayoreo.remove}" icon="ui-icon-close" styleClass="ui-priority-primary" update=":formContent">
+                                    <f:setPropertyActionListener value="#{model}" target="#{beanVentaMayoreo.dataRemove}"/>
+                                </p:commandButton>
+                            </p:column>
+                            <p:columnGroup type="footer">
+                                <p:row>
+                                    <p:column colspan="6" style="text-align:right" footerText="Total de Venta:" />
+                                    <p:column colspan="1">
+                                        <f:facet name="footer">
+                                            <h:outputText value="#{beanVentaMayoreo.totalVenta}">
+                                                <f:convertNumber for="totalVenta" pattern="#,##0.00"/>
+                                            </h:outputText>
+                                        </f:facet>
+                                    </p:column>
+                                    <p:column colspan="2" />
+                                </p:row>
+                            </p:columnGroup>
+                        </p:dataTable>
+                      
+                    </div>
+                </div>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>
