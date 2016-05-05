@@ -20,7 +20,7 @@
             <!--<p:growl id="messagess" showDetail="true" life="2000" />-->
             <p:panel>
                 <div class="container-fluid">
-                    
+
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
 
                         <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
@@ -44,11 +44,11 @@
                     </div>
                 </div>
             </p:panel>
-            <p:panel rendered="#{beanVentaMayoreo.viewEstate=='viewAddProducto'}">
+            <p:panel id="panel2" rendered="#{beanVentaMayoreo.viewEstate=='viewAddProducto'}">
                 <div class="container-fluid">
                     <div class="form-group" align="right">
-                        <p:commandButton value="Agregar" update=":formContent" ajax="true" action="#{beanVentaMayoreo.addProducto}" rendered="#{beanVentaMayoreo.viewEstate =='viewAddProducto'}"/>
-                        <p:commandButton value="Ver Pedido" id="verCarrito" ajax="false" update=":formContent"   immediate="true" resetValues="true" rendered="#{beanVentaMayoreo.viewEstate =='viewCarrito'}"/>
+                        <p:commandButton value="Agregar" update=":formContent:panel2 formContent:panel3" ajax="true" action="#{beanVentaMayoreo.addProducto}" rendered="#{beanVentaMayoreo.viewEstate =='viewAddProducto'}"/>
+                        <p:commandButton value="Ver Pedido" update=":formContent" id="verCarrito" ajax="true" action="#{beanVentaMayoreo.changeView()}"    immediate="true" resetValues="true" rendered="#{beanVentaMayoreo.viewEstate =='viewAddProducto'}"/>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
@@ -57,8 +57,8 @@
                                              value="#{beanVentaMayoreo.subProducto}" completeMethod="#{beanVentaMayoreo.autoComplete}" forceSelection="true" var="producto"  inputStyle="width: 200px"
                                              itemLabel="#{producto.nombreSubproducto}"
                                              itemValue="#{producto.idSubproductoPk}" converter="#{productoConverter}">
-                                <p:ajax event="itemSelect" update=":formContent:txtPrecioVenta" listener="#{beanVentaMayoreo.searchById()}" />
-                                <p:ajax event="change" update=":formContent:txtPrecioVenta" listener="#{beanVentaMayoreo.searchById}" />
+                                <p:ajax event="itemSelect" update=":formContent:modelo2" listener="#{beanVentaMayoreo.buscaExistencias()}"/>
+                                <p:ajax event="change" update=":formContent:modelo2" listener="#{beanVentaMayoreo.buscaExistencias()}"/>
                             </p:autoComplete>
                             <pe:keyFilter for="autocompleteProducto" regEx="/[a-z0-9-_Ã±\s]/i" />
                         </div>
@@ -81,53 +81,52 @@
                                          requiredMessage="Ingresa un valor para el campo Precio de venta."/>
                         </div>
                     </div>
-                    
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <p:dataTable var="modeloExistencias" value="#{beanVentaMayoreo.lstExistencias}" styleClass="ui-datatable-hor-scroll"  emptyMessage="Productos.">
 
-                                <p:column headerText="Sel." width="30px;" style="text-align:center">
-                                    <h:outputText value="#{modeloExistencias.nombreProducto}" />
-                                </p:column>
-                                <p:column headerText="Carro" width="40px;" style="text-align:center">
-                                    <h:outputText value="#{modeloExistencias.nombreProducto}" />
-                                </p:column>
-                                <p:column headerText="Clave" width="100px;" style="text-align:center">
-                                    <h:outputText value="#{modeloExistencias.nombreProducto}" />
-                                </p:column>
-                                <p:column headerText="Producto" width="120px;" style="text-align:center">
-                                    <h:outputText value="#{modeloExistencias.nombreProducto}" />
-                                </p:column>
-                                <p:column headerText="Empaque" width="120px;" style="text-align:center">
-                                    <h:outputText value="#{modeloExistencias.nombreEmpaque}" />
-                                </p:column>
-                                <p:column headerText="Area" width="90px;" style="text-align:center">
-                                    <h:outputText value="#{modeloExistencias.nombreProducto}">
-                                        <f:convertNumber pattern="#,##0.00"/>
-                                    </h:outputText>
-                                </p:column>
-                                <p:column headerText="Cantidad" width="85px;" style="text-align:center">
-                                    <h:outputText value="#{modeloExistencias.cantidadPaquetes}" />
-                                </p:column>
-                                <p:column headerText="Precio de venta" width="60px;" style="text-align:center">
-                                    <h:outputText value="#{model.precioProducto}">
-                                        <f:convertNumber pattern="#,##0.00"/>
-                                    </h:outputText>
-                                </p:column>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+
+                        <p:dataTable id="modelo2" var="modeloExistencias" value="#{beanVentaMayoreo.lstExistencias}" selection="#{beanVentaMayoreo.selectedExistencia}"  rowKey="#{modeloExistencias.idExistenciaProductoPk}" emptyMessage="Productos.">
+                            <p:column selectionMode="single" style="width:16px;text-align:center"/>
+                            
+                            <p:column headerText="Carro" width="40px;" style="text-align:center">
+                                <h:outputText value="#{modeloExistencias.idEmFK}" />
+                            </p:column>
+                            <p:column headerText="Clave" width="100px;" style="text-align:center">
+                                <h:outputText value="#{modeloExistencias.identificador}" />
+                            </p:column>
+                            <p:column headerText="Producto" width="120px;" style="text-align:center">
+                                <h:outputText value="#{modeloExistencias.nombreProducto}" />
+                            </p:column>
+                            <p:column headerText="Empaque" width="120px;" style="text-align:center">
+                                <h:outputText value="#{modeloExistencias.nombreEmpaque}" />
+                            </p:column>
+                            <p:column headerText="Area" width="90px;" style="text-align:center">
+                                <h:outputText value="#{modeloExistencias.nombreBodega}">
+                                    <f:convertNumber pattern="#,##0.00"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Cantidad" width="85px;" style="text-align:center">
+                                <h:outputText value="#{modeloExistencias.cantidadPaquetes}" />
+                            </p:column>
+                            <p:column headerText="Precio de venta" width="60px;" style="text-align:center">
+                                <h:outputText value="#{modeloExistencias.precioVenta}">
+                                    <f:convertNumber pattern="#,##0.00"/>
+                                </h:outputText>
+                            </p:column>
 
 
-                            </p:dataTable>
-                           <!-- <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="{beanVentaMayoreo.rutaPDF}"/>-->
-                        </div>
+                        </p:dataTable>
+                        <!-- <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="{beanVentaMayoreo.rutaPDF}"/>-->
                     </div>
-                   
+                </div>
+
             </p:panel>
-            <p:panel rendered="#{beanVentaMayoreo.viewEstate=='viewCarrito'}">
+            <p:panel id="panel3" rendered="#{beanVentaMayoreo.viewEstate=='viewCarrito'}">
                 <div class="container-fluid">
                     <div class="form-group" align="right">
                         <p:commandButton value="Finalizar" update=":formContent" ajax="true" action="#{beanVentaMayoreo.addProducto}" />
-                          <p:commandButton value="Agregar" update=":formContent" ajax="true" action="#{beanVentaMayoreo.addProducto}" />   
+                        <p:commandButton value="Más Productos" id="regresar" ajax="true" action="#{beanVentaMayoreo.addProducto()}" update=":formContent"  immediate="true" resetValues="true" rendered="#{beanVentaMayoreo.viewEstate =='viewCarrito'}"/>  
                         <p:commandButton value="Cancelar" id="cancelarVenta" ajax="false" update=":formContent"   action="#{beanVentaMayoreo.inserts}" immediate="true" resetValues="true" />
-                       </div>
+                    </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <p:dataTable var="model" value="#{beanVentaMayoreo.lstVenta}" styleClass="ui-datatable-hor-scroll"  emptyMessage="Productos.">
                             <p:column headerText="Carro" width="40px;" style="text-align:center">
@@ -179,7 +178,7 @@
                                 </p:row>
                             </p:columnGroup>
                         </p:dataTable>
-                      
+
                     </div>
                 </div>
             </p:panel>

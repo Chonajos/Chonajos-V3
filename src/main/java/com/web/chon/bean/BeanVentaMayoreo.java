@@ -6,6 +6,7 @@
 package com.web.chon.bean;
 
 import com.web.chon.dominio.Cliente;
+import com.web.chon.dominio.EntradaMercancia2;
 import com.web.chon.dominio.ExistenciaProducto;
 import com.web.chon.dominio.Subproducto;
 import com.web.chon.dominio.Usuario;
@@ -48,6 +49,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     private ArrayList<Subproducto> lstProducto;
     private ArrayList<ExistenciaProducto> lstExistencias;
     private ArrayList<VentaProductoMayoreo> lstVenta;
+    private ArrayList<ExistenciaProducto> selectedExistencia;
     
     
     private UsuarioDominio usuarioDominio;
@@ -56,6 +58,8 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     private Usuario usuario;
     private Subproducto subProducto;
     private VentaProductoMayoreo data;
+    private EntradaMercancia2 entradaMercancia;
+    private ExistenciaProducto ep;
     
     private VentaProductoMayoreo dataRemove;
     private VentaProductoMayoreo dataEdit;
@@ -63,13 +67,14 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     
     private BigDecimal totalVenta;
     private int idSucu;
+    private BigDecimal idExistencia;
     
     private String title = "";
     private String viewEstate = "";
     
     @PostConstruct
     public void init() {
-        idSucu = usuarioDominio.getSucId();
+        //idSucu = usuarioDominio.getSucId();
         data = new VentaProductoMayoreo();
         setTitle("Venta Mayoreo");
         setViewEstate("viewAddProducto");
@@ -78,8 +83,27 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     {
         
     }
+    public void changeView()
+    {
+        setViewEstate("viewCarrito");
+    }
+    public void buscaExistencias() 
+    {
+        BigDecimal idEntrada;
+        if (entradaMercancia == null) {
+            idEntrada = null;
+        } else {
+            idEntrada = entradaMercancia.getIdEmPK();
+        }
+
+        System.out.println("Bandera");
+        String idproductito = subProducto == null ? null : subProducto.getIdSubproductoPk();
+        lstExistencias = ifaceNegocioExistencia.getExistencias(null, null,null, idproductito,null, null, null);
+
+    }
     public void addProducto()
     {
+        setViewEstate("viewAddProducto");
         
     }
     public void editProducto() {
@@ -103,6 +127,14 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
     public void setDataEdit(VentaProductoMayoreo dataEdit) {
         this.dataEdit = dataEdit;
+    }
+
+    public ExistenciaProducto getEp() {
+        return ep;
+    }
+
+    public void setEp(ExistenciaProducto ep) {
+        this.ep = ep;
     }
     
     
@@ -254,6 +286,30 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
     public void setTotalVenta(BigDecimal totalVenta) {
         this.totalVenta = totalVenta;
+    }
+
+    public EntradaMercancia2 getEntradaMercancia() {
+        return entradaMercancia;
+    }
+
+    public void setEntradaMercancia(EntradaMercancia2 entradaMercancia) {
+        this.entradaMercancia = entradaMercancia;
+    }
+
+    public BigDecimal getIdExistencia() {
+        return idExistencia;
+    }
+
+    public void setIdExistencia(BigDecimal idExistencia) {
+        this.idExistencia = idExistencia;
+    }
+
+    public ArrayList<ExistenciaProducto> getSelectedExistencia() {
+        return selectedExistencia;
+    }
+
+    public void setSelectedExistencia(ArrayList<ExistenciaProducto> selectedExistencia) {
+        this.selectedExistencia = selectedExistencia;
     }
     
     
