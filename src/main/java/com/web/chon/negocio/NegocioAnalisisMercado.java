@@ -32,6 +32,8 @@ public interface NegocioAnalisisMercado
     public List<Object[]> getEntradaProductoByIdProducto(String idProducto);
     
     public BigDecimal getRemanente(String fechaInicio, String fechaFin,String idProducto);
+    
+    public int updateByIdProductoAndFecha(AnalisisMercado entradaMercancia) ;
 
     
 }

@@ -35,22 +35,14 @@ public class BeanExistencias implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Autowired
-    private IfaceEmpaque ifaceEmpaque;
-    @Autowired
-    private IfaceTipoCovenio ifaceCovenio;
-    @Autowired
-    private IfaceCatBodegas ifaceCatBodegas;
-    @Autowired
-    private IfaceSubProducto ifaceSubProducto;
-    @Autowired
-    private IfaceCatProvedores ifaceCatProvedores;
-    @Autowired
-    private IfaceCatSucursales ifaceCatSucursales;
-    @Autowired
-    private IfaceEntradaMercancia ifaceEntradaMercancia;
-    @Autowired
-    private IfaceNegocioExistencia ifaceNegocioExistencia;
+    @Autowired private IfaceEmpaque ifaceEmpaque;
+    @Autowired private IfaceTipoCovenio ifaceCovenio;
+    @Autowired private IfaceCatBodegas ifaceCatBodegas;
+    @Autowired private IfaceSubProducto ifaceSubProducto;
+    @Autowired private IfaceCatProvedores ifaceCatProvedores;
+    @Autowired private IfaceCatSucursales ifaceCatSucursales;
+    @Autowired private IfaceEntradaMercancia ifaceEntradaMercancia;
+    @Autowired private IfaceNegocioExistencia ifaceNegocioExistencia;
 
     private ArrayList<Bodega> listaBodegas;
     private ArrayList<Subproducto> lstProducto;
@@ -107,13 +99,30 @@ public class BeanExistencias implements Serializable {
     }
 
     public String updatePrecio() {
-        if(ifaceNegocioExistencia.updatePrecio(data) == 1){
-            JsfUtil.addSuccessMessage("Actualización Exitosa.");
-        }else{
-            JsfUtil.addSuccessMessage("Error al Realizar la Operaión.");
+        if (validateMaxMin()) {
+            if (ifaceNegocioExistencia.updatePrecio(data) == 1) {
+                JsfUtil.addSuccessMessage("Actualización Exitosa.");
+                return "existencias";
+            } else {
+                JsfUtil.addSuccessMessage("Error al Realizar la Operaión.");
+                return null;
+            }
+        } else {
+            JsfUtil.addErrorMessage("Error en la Validación de Datos Minimo : " + data.getPrecioMinimo() + " Maximo: " + data.getPrecioMaximo());
             return null;
         }
-        return "existencias";
+
+    }
+
+     private boolean validateMaxMin() {
+
+        if (data.getPrecioVenta().doubleValue() > (data.getPrecioMaximo().doubleValue())) {
+            return false;
+        } else if (data.getPrecioVenta().doubleValue() < data.getPrecioMinimo().doubleValue()) {
+            return false;
+        }
+
+        return true;
     }
 
     public ArrayList<EntradaMercancia2> autoCompleteMercancia(String clave) {

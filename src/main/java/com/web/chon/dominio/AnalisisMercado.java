@@ -88,8 +88,9 @@ public class AnalisisMercado extends ValueObject implements Serializable {
 
     @Override
     public String toString() {
-        return "EntradaMercancia{" + "idEntrada=" + idEntrada + ", fecha=" + fecha + ", cantidadToneladas=" + cantidadToneladas + ", precio=" + precio + ", descripcionFiltro=" + descripcionFiltro + ", idProductoFk=" + idProductoFk + ", cantidadToneladasAnterior=" + cantidadToneladasAnterior + ", precioAnterior=" + precioAnterior + '}';
+        return "AnalisisMercado{" + "idEntrada=" + idEntrada + ", fecha=" + fecha + ", cantidadToneladas=" + cantidadToneladas + ", precio=" + precio + ", descripcionFiltro=" + descripcionFiltro + ", idProductoFk=" + idProductoFk + ", cantidadToneladasAnterior=" + cantidadToneladasAnterior + ", precioAnterior=" + precioAnterior + ", remantePorSemana=" + remantePorSemana + '}';
     }
+
 
     public BigDecimal getRemantePorSemana() {
         return remantePorSemana;

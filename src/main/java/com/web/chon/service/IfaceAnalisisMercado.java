@@ -44,4 +44,11 @@ public interface IfaceAnalisisMercado extends PaginacionService<AnalisisMercado,
      * @return 
      */
     public BigDecimal getRemanente(Date fechaRemanente,String idProducto);
+    
+    /**
+     * Ingresa el remanente por semana del dia selecionado
+     * @param analisiMercado
+     * @return 
+     */
+    public int updateByIdProductoAndFecha(AnalisisMercado analisiMercado);
 }

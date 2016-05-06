@@ -111,14 +111,20 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
     @Override
     public String save() {
         try {
-            if (data.getIdEntrada() != null) {
-                ifaceEntradaProductoCentral.update(data);
-                JsfUtil.addSuccessMessage("Registro actualizado Correctamente.");
+            if (insertar.equals("precioPromedio")) {
+                if (data.getIdEntrada() != null) {
+                    ifaceEntradaProductoCentral.update(data);
+                    JsfUtil.addSuccessMessage("Registro actualizado Correctamente.");
 
+                } else {
+
+                    ifaceEntradaProductoCentral.saveEntradaProductoCentral(data);
+                    JsfUtil.addSuccessMessage("Registro insertado Correctamente.");
+                }
             } else {
-
-                ifaceEntradaProductoCentral.saveEntradaProductoCentral(data);
-                JsfUtil.addSuccessMessage("Registro insertado Correctamente.");
+                data.setFecha(fechaRemanente);
+                ifaceEntradaProductoCentral.updateByIdProductoAndFecha(data);
+                JsfUtil.addSuccessMessage("Registro actualizado Correctamente.");
             }
         } catch (Exception e) {
             logger.error("Erros al insertar", "Error", e.getMessage());

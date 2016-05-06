@@ -121,7 +121,7 @@ public class EjbCatProvedores implements NegocioCatProvedores {
                     + "NEXTEL_PROVE = ?,RAZON_PROVE = ?,RFC_PROVE = ?,LADAOFICINA_PROVE = ?,CLAVEOFICINA_PROVE = ?,NEXTELCLAVE_PROVE = ?,ID_STATUS_FK=?,NICKNAME=?,CORREO=? where ID_PROVEDOR_PK = ?");
 
             query.setParameter(1, prove.getNombreProvedor());
-            query.setParameter(2, prove.getAmaternoProve());
+            query.setParameter(2, prove.getApaternoProve());
             query.setParameter(3, prove.getAmaternoProve());
             query.setParameter(4, prove.getEmpresa());
             query.setParameter(5, prove.getCalleProve());

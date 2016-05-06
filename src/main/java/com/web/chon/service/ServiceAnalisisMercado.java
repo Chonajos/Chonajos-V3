@@ -1,9 +1,7 @@
 package com.web.chon.service;
 
-import com.web.chon.dominio.BuscaVenta;
 import com.web.chon.dominio.AnalisisMercado;
 import com.web.chon.dominio.Pagina;
-import com.web.chon.negocio.NegocioCatCliente;
 import com.web.chon.util.TiempoUtil;
 import com.web.chon.util.Utilidades;
 import java.math.BigDecimal;
@@ -255,19 +253,17 @@ public class ServiceAnalisisMercado implements IfaceAnalisisMercado {
         List<String> lstFecha = TiempoUtil.getintervalWeekDDMMYYYYbyDay(fechaRemanente);
 
         getEjb();
-        System.out.println("com.web.chon.service.ServiceAnalisisMercado.getRemanente()");
         remanete = ejb.getRemanente(lstFecha.get(0), lstFecha.get(6), idProducto);
-        System.out.println("com.web.chon.service.ServiceAnalisisMercado.getRemanente() 1");
 
         getEjb();
-//        for (Object[] obj : lstObject) {
-//
-//            dominio.setFecha((Date) obj[4]);
-//
-//        }
 
         return remanete;
 
+    }
+
+    @Override
+    public int updateByIdProductoAndFecha(AnalisisMercado analisiMercado) {
+        return ejb.updateByIdProductoAndFecha(analisiMercado);
     }
 
 }

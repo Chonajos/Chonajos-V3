@@ -50,8 +50,8 @@ html{
     color:deepskyblue;
 }
 
-.ui-widget-content a{
-    color: #039 !important;
+.menuPrincipal{
+    font-weight: bold;
 }
 
 .ui-widget .ui-widget {
@@ -86,9 +86,9 @@ html{
     margin-left: 30px !important;
 }
 
-.ui-priority-primary:hover{
+.ui-priority-primary{
     color:white;
-    background-color:#00acd6  !important;  
+    background-color:#0088cc  !important;  
 }
 
 .ui-selectonemenu{
@@ -98,10 +98,25 @@ html{
     background-image:linear-gradient(to bottom, #DCDCDC, rgb(208, 209, 212)) !important;
     background-color:#0081c2;
 }
+
 .ui-state{
     background-color:#00acd6  !important;  
 }
-
+/*Color azul a los botones*/
+.ui-button-text{
+    background-image:-webkit-linear-gradient(top, #0088cc, #0077b3);
+    color: white;
+    border-radius: 5px;
+    border: 1px solid #0016b0 !important;
+}
+.ui-state-error{
+    color: black !important;
+}
+button span:hover{
+    font-weight: bold;
+    color:#0088cc;
+    background-image:-webkit-linear-gradient(top, #FFFFFF, #FFFFFF);
+}
 @media ( max-width : 767px) {
     .navbar {
         border-radius: 4px;

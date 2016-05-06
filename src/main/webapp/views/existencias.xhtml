@@ -20,7 +20,7 @@
                     <div class="form-group">
 
                     </div>
-                    <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 form-group">
+                    <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12">
                         <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-8 col-md-4 col-sm-4 col-xs-12"  for="sucursalFiltro" value ="Sucursal:" rendered="#{beanExistencias.viewEstate =='init'}"/> 
                             <h:selectOneMenu  id="sucursalFiltro" class=" col-lg-10 col-md-8 col-sm-8 col-xs-12" value="#{beanExistencias.data.idSucursal}" rendered="#{beanExistencias.viewEstate =='init'}">
@@ -46,7 +46,7 @@
                             </h:selectOneMenu>
                         </div>
                     </div>
-                    <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 form-group">
+                    <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12">
                         <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-8 col-md-4 col-sm-4 col-xs-12"  for="autocompletePoducto" value ="Producto:" /> 
                             <p:autoComplete  placeholder="Seleccione un Producto" id="autocompletePoducto"   styleClass="autocomplete-input-text-media"
@@ -60,15 +60,15 @@
                         </div>
                         <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="txtTipoEmpaque" value ="Empaque:" /> 
-                            <h:selectOneMenu  id="txtTipoEmpaque" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanExistencias.data.idTipoEmpaqueFK}"  >
+                            <h:selectOneMenu  id="txtTipoEmpaque" class=" col-lg-12 col-md-8 col-sm-8 col-xs-12" value="#{beanExistencias.data.idTipoEmpaqueFK}"  >
                                 <f:selectItem itemLabel="Seleccione un empaque" itemValue="" />
                                 <f:selectItems value="#{beanExistencias.lstTipoEmpaque}" var="empaque" itemLabel="#{empaque.nombreEmpaque}" itemValue="#{empaque.idTipoEmpaquePk}"/>
                                 <p:ajax event="change" update=":formContent:table" listener="#{beanExistencias.buscaExistencias()}"/>
                             </h:selectOneMenu>
                         </div>
                         <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-8 col-sm-4 col-xs-12"  for="comboTipoOrden" value ="Tipo de Convenido:"/> 
-                            <h:selectOneMenu  id="comboTipoOrden" class=" col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanExistencias.data.idTipoConvenio}" >
+                            <p:outputLabel class="col-lg-12 col-md-8 col-sm-4 col-xs-12"  for="comboTipoOrden" value ="Tipo de Convenido:"/> 
+                            <h:selectOneMenu  id="comboTipoOrden" class=" col-lg-12 col-md-8 col-sm-8 col-xs-12" value="#{beanExistencias.data.idTipoConvenio}" >
                                 <f:selectItem itemLabel="Tipo de Convenio" itemValue="" />
                                 <f:selectItems value="#{beanExistencias.listaTiposConvenio}" var="listitaconvenio" itemLabel="#{listitaconvenio.nombreTipoConvenio}" itemValue="#{listitaconvenio.idTcPK}"/>
                                 <p:ajax event="change" update=":formContent:table"  listener="#{beanExistencias.buscaExistencias()}" />
@@ -76,7 +76,7 @@
                         </div>
                     </div>
                     <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 form-group">
-                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 form-group">
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-8 col-md-4 col-sm-4 col-xs-12"  for="autocompleteClave" value ="Clave:" /> 
                             <p:autoComplete  placeholder="Busca una clave" id="autocompleteClave"   styleClass="autocomplete-input-text-media"
                                              value="#{beanExistencias.entradaMercancia}" completeMethod="#{beanExistencias.autoCompleteMercancia}" forceSelection="true" var="entradita"  inputStyle="width: 200px"
@@ -92,42 +92,42 @@
 
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <p:dataTable id="table" var="model" value="#{beanExistencias.model}" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." >
-                            <p:column headerText="Carro"   width="50px;" style="text-align:center">
+                            <p:column headerText="Carro"   width="45px;" style="text-align:center">
                                 <h:outputText value="#{model.idEmFK}">
                                 </h:outputText>
                             </p:column>
 
-                            <p:column headerText="Clave:"    width="120px;" style="text-align:center">
+                            <p:column headerText="Clave" width="120px;" style="text-align:center">
                                 <h:outputText value="#{model.identificador}" >
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Producto:" width="200px;" style="text-align:center">
+                            <p:column headerText="Producto" width="120px;" style="text-align:center">
                                 <h:outputText value="#{model.nombreProducto}" />
                             </p:column>
-                            <p:column headerText="Empaque:" width="100px;" style="text-align:center">
+                            <p:column headerText="Empaque" width="80px;" style="text-align:center">
                                 <h:outputText value="#{model.nombreEmpaque}" />
                             </p:column>
-                            <p:column headerText="Cant:" width="50px;" style="text-align:center">
+                            <p:column headerText="Cantidad" width="70px;" style="text-align:center">
                                 <h:outputText value="#{model.cantidadPaquetes}">
 
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Kilos:" width="100px;" style="text-align:center">
+                            <p:column headerText="Kilos" width="80px;" style="text-align:center">
                                 <h:outputText value="#{model.kilosTotalesProducto}">
                                     <f:convertNumber pattern="#,##0.00" />
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Convenio:" width="120px;" style="text-align:center">
+                            <p:column headerText="Convenio" width="120px;" style="text-align:center">
                                 <h:outputText value="#{model.nombreTipoConvenio}">
                                     <f:convertNumber pattern="#,##0.00" />
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Provedor:" width="120px;" style="text-align:center">
+                            <p:column headerText="Provedor" width="120px;" style="text-align:center">
                                 <h:outputText value="#{model.nombreProvedorCompleto}">
                                     <f:convertNumber pattern="#,##0.00" />
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Sucursal:" width="120px;" style="text-align:center">
+                            <p:column headerText="Sucursal" width="120px;" style="text-align:center">
                                 <h:outputText value="#{model.nombreSucursal}">
                                     <f:convertNumber pattern="#,##0.00" />
                                 </h:outputText>
@@ -135,7 +135,7 @@
                             <p:column headerText="Área"  width="100px;" style="text-align:center">
                                 <h:outputText value="#{model.nombreBodega}" />
                             </p:column>
-                            <p:column headerText="Editar Precios" width="90px;" style="text-align:center">
+                            <p:column headerText="Editar Precios" width="60px;" style="text-align:center">
                                 <p:commandButton id="buttonEditar" ajax="true" action="#{beanExistencias.searchById}" icon="ui-icon-pencil" styleClass="ui-priority-primary" update=":formContent">
                                     <f:setPropertyActionListener value="#{model}" target="#{beanExistencias.data}" />
                                 </p:commandButton>
@@ -150,10 +150,10 @@
                     <p:commandButton value="Guardar" update=":formContent" ajax="true" action="#{beanExistencias.updatePrecio}"/>
                     <p:commandButton value="Atras" immediate="true" resetValues="true" update=":formContent" ajax="true" action="#{beanExistencias.cancel}" />
                 </div>
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group container-fluid">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid">
                     <p:panel>
                         <div class="container-fluid">
-                            <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 form-group">
+                            <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12">
                                 <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <p:outputLabel class="col-lg-12 col-md-12 col-sm-12 col-xs-12" value ="Sucursal:" /> 
                                     <p:outputLabel class="col-lg-12 col-md-12 col-sm-12 col-xs-12" value ="#{beanExistencias.data.nombreSucursal}" /> 

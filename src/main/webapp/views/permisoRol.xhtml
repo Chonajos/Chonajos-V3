@@ -26,24 +26,18 @@
                         <h:selectOneMenu id="selectRol" value="#{beanPermisoRol.data.idRol}" required="true" class="col-lg-8 col-md-8 col-sm-8 col-xs-12" requiredMessage="Ingresa un valor para el campo Producto.">
                             <f:selectItem itemLabel="Seleccione la opción" itemValue="-1" noSelectionOption="true" />
                             <f:selectItems value="#{beanPermisoRol.lstRol}" var="acces" itemLabel="#{acces.nombreRol}" itemValue="#{acces.idRolPk}" />
-
                             <p:ajax event="change" listener="#{beanPermisoRol.searchById}" process="@this" update=":formContent:tableData"/>
                         </h:selectOneMenu>
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 col-lg-offset-3 col-md-offset-2">
-                    <p:dataTable id="tableData" var="model" value="#{beanPermisoRol.lstAccesMenu}"   scrollable="true"
-
-                                 emptyMessage="No se encontraron Registros." editable="true">
-
-
-                        <p:column headerText="Pantalla" class="#{model.tipo eq 1 ? 'statusActivo':''}" width="200px;" >
+                    <p:dataTable id="tableData" var="model" value="#{beanPermisoRol.lstAccesMenu}"   scrollable="true" emptyMessage="No se encontraron Registros." editable="true">
+                        <p:column headerText="Pantalla" class="#{model.tipo eq 1 ? 'menuPrincipal':''}" width="200px;" >
                             <h:outputText value="#{model.descripcion}" />
                         </p:column>
                         <p:column headerText="Acceso" width="80px;" style="text-align:center">
                             <p:selectBooleanCheckbox value="#{model.estatus}" />
                         </p:column>
-
                     </p:dataTable>
                 </div>
             </p:panel>
