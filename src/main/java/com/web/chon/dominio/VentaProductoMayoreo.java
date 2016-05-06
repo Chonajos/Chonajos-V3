@@ -28,7 +28,7 @@ public class VentaProductoMayoreo implements Serializable {
     private String nombreProducto;
     private String nombreEmpaque;
     private BigDecimal idExistenciaFk;
-    private BigDecimal idTipoVentaFk;
+
 
     public VentaProductoMayoreo()
     {
@@ -51,23 +51,16 @@ public class VentaProductoMayoreo implements Serializable {
         nombreProducto = null;
         nombreEmpaque = null;
         idExistenciaFk=null;
-        idTipoVentaFk=null;
+
 
     }
 
     @Override
     public String toString() {
-        return "VentaProductoMayoreo{" + "idVentaMayProdPk=" + idVentaMayProdPk + ", idVentaMayoreoFk=" + idVentaMayoreoFk + ", idSubProductofk=" + idSubProductofk + ", precioProducto=" + precioProducto + ", kilosVendidos=" + kilosVendidos + ", cantidadEmpaque=" + cantidadEmpaque + ", totalVenta=" + totalVenta + ", idTipoEmpaqueFk=" + idTipoEmpaqueFk + ", idEntradaMercanciaFk=" + idEntradaMercanciaFk + ", clave=" + clave + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + ", idExistenciaFk=" + idExistenciaFk + ", idTipoVentaFk=" + idTipoVentaFk + '}';
+        return "VentaProductoMayoreo{" + "idVentaMayProdPk=" + idVentaMayProdPk + ", idVentaMayoreoFk=" + idVentaMayoreoFk + ", idSubProductofk=" + idSubProductofk + ", precioProducto=" + precioProducto + ", kilosVendidos=" + kilosVendidos + ", cantidadEmpaque=" + cantidadEmpaque + ", totalVenta=" + totalVenta + ", idTipoEmpaqueFk=" + idTipoEmpaqueFk + ", idEntradaMercanciaFk=" + idEntradaMercanciaFk + ", clave=" + clave + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + ", idExistenciaFk=" + idExistenciaFk + '}';
     }
 
-
-    public BigDecimal getIdTipoVentaFk() {
-        return idTipoVentaFk;
-    }
-
-    public void setIdTipoVentaFk(BigDecimal idTipoVentaFk) {
-        this.idTipoVentaFk = idTipoVentaFk;
-    }
+    
 
    
     

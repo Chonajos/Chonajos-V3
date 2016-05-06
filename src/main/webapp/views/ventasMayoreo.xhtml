@@ -94,7 +94,7 @@
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 
                         <p:dataTable id="modelo2" var="modeloExistencias" value="#{beanVentaMayoreo.lstExistencias}" selection="#{beanVentaMayoreo.selectedExistencia}"  rowKey="#{modeloExistencias.idExistenciaProductoPk}" emptyMessage="Productos.">
-                            <p:column selectionMode="single" style="width:16px;text-align:center"/>
+                            <p:column selectionMode="single" rendered="#{true}" disabledSelection="#{true}" style="width:16px;text-align:center"/>
 
                             <p:column headerText="Carro" width="40px;" style="text-align:center">
                                 <h:outputText value="#{modeloExistencias.idEmFK}" />

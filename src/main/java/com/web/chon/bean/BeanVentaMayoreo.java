@@ -21,6 +21,7 @@ import com.web.chon.service.IfaceCatUsuario;
 import com.web.chon.service.IfaceNegocioExistencia;
 import com.web.chon.service.IfaceSubProducto;
 import com.web.chon.service.IfaceTipoVenta;
+import com.web.chon.service.IfaceVentaMayoreo;
 import com.web.chon.util.JsfUtil;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -41,6 +42,8 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
     private static final long serialVersionUID = 1L;
 
+    @Autowired
+    private IfaceVentaMayoreo ifaceVentaMayoreo;
     @Autowired
     private IfaceSubProducto ifaceSubProducto;
     @Autowired
@@ -70,7 +73,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     private VentaProductoMayoreo data;
     private EntradaMercancia2 entradaMercancia;
     private ExistenciaProducto ep;
-    private VentaMayoreo ventaGeneral; 
+    private VentaMayoreo ventaGeneral;
     private VentaProductoMayoreo dataRemove;
     private VentaProductoMayoreo dataEdit;
 
@@ -81,12 +84,12 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
     private String title = "";
     private String viewEstate = "";
-    
+
     private BigDecimal TotalVentaGeneral;
 
     @PostConstruct
     public void init() {
-        
+
         ventaGeneral = new VentaMayoreo();
         usuario = new Usuario();
         usuarioDominio = context.getUsuarioAutenticado();
@@ -95,7 +98,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         usuario.setNombreUsuario(usuarioDominio.getUsuNombre());
         usuario.setApaternoUsuario(usuarioDominio.getUsuPaterno());
         usuario.setAmaternoUsuario(usuarioDominio.getUsuMaterno());
-        TotalVentaGeneral=new BigDecimal(0);
+        TotalVentaGeneral = new BigDecimal(0);
         data = new VentaProductoMayoreo();
         setTitle("Venta Mayoreo");
         setViewEstate("viewAddProducto");
@@ -103,14 +106,19 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         lstVenta = new ArrayList<VentaProductoMayoreo>();
     }
 
-    public void inserts() 
-    {
+    public void inserts() {
+        ventaGeneral.setIdVentaMayoreoPk(new BigDecimal(ifaceVentaMayoreo.getNextVal()));
         ventaGeneral.setIdtipoVentaFk(idTipoVenta);
-        ventaGeneral.setIdClienteFk(totalVenta);
-        ventaGeneral.setIdSucursalFk(idExistencia);
-        ventaGeneral.setIdVendedorFK(idExistencia);
-        
-        System.out.println("Venta General: "+ventaGeneral.toString());
+        ventaGeneral.setIdClienteFk(new BigDecimal(cliente.getId_cliente()));
+        ventaGeneral.setIdSucursalFk(new BigDecimal(idSucu));
+        ventaGeneral.setIdVendedorFK(usuario.getIdUsuarioPk());
+
+        System.out.println("Venta General: " + ventaGeneral.toString());
+
+        if (ifaceVentaMayoreo.insertarVenta(ventaGeneral) != 0) {
+            //si la venta se ingreso el siguiente paso es ingresar los productos.
+
+        }
     }
 
     public void changeViewToAddProducto() {
@@ -133,78 +141,73 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         lstExistencias = ifaceNegocioExistencia.getExistencias(null, null, null, idproductito, null, null, null);
 
     }
-    
-    
 
     public void addProducto() {
         if (selectedExistencia == null || data.getCantidadEmpaque().intValue() == 0 || data.getKilosVendidos().intValue() == 0) {
             JsfUtil.addErrorMessage("Seleccione un Producto de la tabla, o agrego una cantidad o peso en 0 Kg.");
 
-        } else {
-
-//            System.out.println("idSubProducto:" + selectedExistencia.getIdSubProductoFK());
-
-            if (selectedExistencia.getPrecioVenta() == null) {
-                JsfUtil.addErrorMessage("No se tiene precio de venta para este producto. Contactar al administrador.");
-            } else if (data.getPrecioProducto().intValue() < selectedExistencia.getPrecioMinimo().intValue() || data.getPrecioProducto().intValue() > selectedExistencia.getPrecioMaximo().intValue()) {
-                JsfUtil.addErrorMessage("Precio de Venta fuera de Rango \n Precio Maximo =" + selectedExistencia.getPrecioMaximo() + " Precio minimo =" + selectedExistencia.getPrecioMinimo());
-            } else if (data.getCantidadEmpaque().intValue() > selectedExistencia.getCantidadPaquetes().intValue()) {
-                JsfUtil.addErrorMessage("Cantidad de Empaque insuficiente");
-            } else if (data.getKilosVendidos().intValue() > selectedExistencia.getKilosTotalesProducto().intValue()) {
-                JsfUtil.addErrorMessage("Cantidad de Kilos insuficiente");
-            } else if (lstVenta.isEmpty()) {
+        } else //            System.out.println("idSubProducto:" + selectedExistencia.getIdSubProductoFK());
+        if (selectedExistencia.getPrecioVenta() == null) {
+            JsfUtil.addErrorMessage("No se tiene precio de venta para este producto. Contactar al administrador.");
+        } else if (data.getPrecioProducto().intValue() < selectedExistencia.getPrecioMinimo().intValue() || data.getPrecioProducto().intValue() > selectedExistencia.getPrecioMaximo().intValue()) {
+            JsfUtil.addErrorMessage("Precio de Venta fuera de Rango \n Precio Maximo =" + selectedExistencia.getPrecioMaximo() + " Precio minimo =" + selectedExistencia.getPrecioMinimo());
+        } else if (data.getCantidadEmpaque().intValue() > selectedExistencia.getCantidadPaquetes().intValue()) {
+            JsfUtil.addErrorMessage("Cantidad de Empaque insuficiente");
+        } else if (data.getKilosVendidos().intValue() > selectedExistencia.getKilosTotalesProducto().intValue()) {
+            JsfUtil.addErrorMessage("Cantidad de Kilos insuficiente");
+        } else if (selectedExistencia.isEstatusBloqueo()) {
+            JsfUtil.addErrorMessage("Producto Bloqueado, contactar al administrador");
+        } else if (lstVenta.isEmpty()) {
 //                System.out.println("Lista vacia agregando producto");
-                add();
-                limpia();
-            } else {
-                for (int i = 0; i < lstVenta.size(); i++) {
-                    VentaProductoMayoreo productoRepetido = lstVenta.get(i);
+            add();
+            limpia();
+        } else {
+            for (int i = 0; i < lstVenta.size(); i++) {
+                VentaProductoMayoreo productoRepetido = lstVenta.get(i);
 //                    System.out.println("Recorriendo lista Venta");
 //                    System.out.println("repetido id: " + productoRepetido.getIdExistenciaFk() + " nuevo: " + selectedExistencia.getIdExistenciaProductoPk());
-                    if (productoRepetido.getIdExistenciaFk().equals(selectedExistencia.getIdExistenciaProductoPk())) {
+                if (productoRepetido.getIdExistenciaFk().equals(selectedExistencia.getIdExistenciaProductoPk())) {
 //                        System.out.println("Encontro producto repetido verificando existencias");
-                        BigDecimal enlista = productoRepetido.getCantidadEmpaque();
-                        BigDecimal totalexistencia = selectedExistencia.getCantidadPaquetes();
-                        BigDecimal suma = enlista.add(data.getCantidadEmpaque(), MathContext.UNLIMITED);
+                    BigDecimal enlista = productoRepetido.getCantidadEmpaque();
+                    BigDecimal totalexistencia = selectedExistencia.getCantidadPaquetes();
+                    BigDecimal suma = enlista.add(data.getCantidadEmpaque(), MathContext.UNLIMITED);
 
 //                        System.out.println("Total Existencia: " + totalexistencia);
 //                        System.out.println("Total en Lista: " + enlista);
 //                        System.out.println("Total Suma: " + suma);
 //                        System.out.println("Total nuevo: " + data.getCantidadEmpaque());
+                    BigDecimal kilosnelista = productoRepetido.getKilosVendidos();
+                    BigDecimal kilostotalexistencia = selectedExistencia.getKilosTotalesProducto();
+                    BigDecimal kilossuma = kilosnelista.add(data.getKilosVendidos(), MathContext.UNLIMITED);
 
-                        BigDecimal kilosnelista = productoRepetido.getKilosVendidos();
-                        BigDecimal kilostotalexistencia = selectedExistencia.getKilosTotalesProducto();
-                        BigDecimal kilossuma = kilosnelista.add(data.getKilosVendidos(), MathContext.UNLIMITED);
-
-                        if (suma.intValue() > totalexistencia.intValue() || kilossuma.intValue() > kilostotalexistencia.intValue()) {
-                            //System.out.println("No alcanzan existencias");
-                            JsfUtil.addErrorMessage("Producto repetido, no alcanzan las existencias.\n Cantidad: " + selectedExistencia.getCantidadPaquetes() + "\nKilos: " + selectedExistencia.getKilosTotalesProducto());
-                        } else {
-                            lstVenta.remove(i);
-                            TotalVentaGeneral = TotalVentaGeneral.subtract(productoRepetido.getTotalVenta(), MathContext.UNLIMITED);
-
-                            productoRepetido.setCantidadEmpaque(suma);
-                            productoRepetido.setKilosVendidos(kilossuma);
-                            productoRepetido.setTotalVenta(productoRepetido.getPrecioProducto().multiply(productoRepetido.getKilosVendidos(), MathContext.UNLIMITED));
-                            TotalVentaGeneral = TotalVentaGeneral.add(productoRepetido.getTotalVenta(), MathContext.UNLIMITED);
-                            lstVenta.add(productoRepetido);
-                            limpia();
-                            //System.out.println("Existencias suficientes, producto actualizado");
-                            JsfUtil.addSuccessMessage("Producto Actualizado");
-
-                        }
+                    if (suma.intValue() > totalexistencia.intValue() || kilossuma.intValue() > kilostotalexistencia.intValue()) {
+                        //System.out.println("No alcanzan existencias");
+                        JsfUtil.addErrorMessage("Producto repetido, no alcanzan las existencias.\n Cantidad: " + selectedExistencia.getCantidadPaquetes() + "\nKilos: " + selectedExistencia.getKilosTotalesProducto());
                     } else {
-                        System.out.println("No encontro repetidos");
-                        if (selectedExistencia.getIdExistenciaProductoPk() != null) {
-                            //System.out.println("producto Agregado");
-                            add();
-                            limpia();
-                        }
+                        lstVenta.remove(i);
+                        TotalVentaGeneral = TotalVentaGeneral.subtract(productoRepetido.getTotalVenta(), MathContext.UNLIMITED);
 
-///
+                        productoRepetido.setCantidadEmpaque(suma);
+                        productoRepetido.setKilosVendidos(kilossuma);
+                        productoRepetido.setTotalVenta(productoRepetido.getPrecioProducto().multiply(productoRepetido.getKilosVendidos(), MathContext.UNLIMITED));
+                        TotalVentaGeneral = TotalVentaGeneral.add(productoRepetido.getTotalVenta(), MathContext.UNLIMITED);
+                        lstVenta.add(productoRepetido);
+                        limpia();
+                        //System.out.println("Existencias suficientes, producto actualizado");
+                        JsfUtil.addSuccessMessage("Producto Actualizado");
+
+                    }
+                } else {
+                    System.out.println("No encontro repetidos");
+                    if (selectedExistencia.getIdExistenciaProductoPk() != null) {
+                        //System.out.println("producto Agregado");
+                        add();
+                        limpia();
                     }
 
+///
                 }
+
             }
         }
 
@@ -254,7 +257,6 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         this.lstTipoVenta = lstTipoVenta;
     }
 
-    
     public void editProducto() {
 
     }
@@ -313,7 +315,6 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         this.TotalVentaGeneral = TotalVentaGeneral;
     }
 
-    
     public ArrayList<ExistenciaProducto> getLstExistencias() {
         return lstExistencias;
     }
@@ -410,7 +411,6 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         this.idTipoVenta = idTipoVenta;
     }
 
-    
     public void setUsuarioDominio(UsuarioDominio usuarioDominio) {
         this.usuarioDominio = usuarioDominio;
     }
@@ -487,6 +487,4 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         this.ventaGeneral = ventaGeneral;
     }
 
-    
-    
 }
