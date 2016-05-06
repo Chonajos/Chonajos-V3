@@ -12,8 +12,8 @@ import java.math.BigDecimal;
  *
  * @author freddy
  */
-public class VentaProductoMayoreo implements Serializable
-{
+public class VentaProductoMayoreo implements Serializable {
+
     private static final long serialVersionUID = 1L;
     private BigDecimal idVentaMayProdPk;
     private BigDecimal idVentaMayoreoFk;
@@ -23,15 +23,88 @@ public class VentaProductoMayoreo implements Serializable
     private BigDecimal cantidadEmpaque;
     private BigDecimal totalVenta;
     private BigDecimal idTipoEmpaqueFk;
-    private BigDecimal idTipoVentaFk;
     private BigDecimal idEntradaMercanciaFk;
+    private String clave;
+    private String nombreProducto;
+    private String nombreEmpaque;
+    private BigDecimal idExistenciaFk;
+    private BigDecimal idTipoVentaFk;
+
+    public VentaProductoMayoreo()
+    {
+        
+    }
+    
+
+    
+    public void reset() {
+        idVentaMayProdPk = null;
+        idVentaMayoreoFk = null;
+        idSubProductofk = null;
+        precioProducto = null;
+        kilosVendidos = null;
+        cantidadEmpaque = null;
+        totalVenta = null;
+        idTipoEmpaqueFk = null;
+        idEntradaMercanciaFk = null;
+        clave = null;
+        nombreProducto = null;
+        nombreEmpaque = null;
+        idExistenciaFk=null;
+        idTipoVentaFk=null;
+
+    }
 
     @Override
     public String toString() {
-        return "VentaProductoMayoreo{" + "idVentaMayProdPk=" + idVentaMayProdPk + ", idVentaMayoreoFk=" + idVentaMayoreoFk + ", idSubProductofk=" + idSubProductofk + ", precioProducto=" + precioProducto + ", kilosVendidos=" + kilosVendidos + ", cantidadEmpaque=" + cantidadEmpaque + ", totalVenta=" + totalVenta + ", idTipoEmpaqueFk=" + idTipoEmpaqueFk + ", idTipoVentaFk=" + idTipoVentaFk + ", idEntradaMercanciaFk=" + idEntradaMercanciaFk + '}';
+        return "VentaProductoMayoreo{" + "idVentaMayProdPk=" + idVentaMayProdPk + ", idVentaMayoreoFk=" + idVentaMayoreoFk + ", idSubProductofk=" + idSubProductofk + ", precioProducto=" + precioProducto + ", kilosVendidos=" + kilosVendidos + ", cantidadEmpaque=" + cantidadEmpaque + ", totalVenta=" + totalVenta + ", idTipoEmpaqueFk=" + idTipoEmpaqueFk + ", idEntradaMercanciaFk=" + idEntradaMercanciaFk + ", clave=" + clave + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + ", idExistenciaFk=" + idExistenciaFk + ", idTipoVentaFk=" + idTipoVentaFk + '}';
+    }
+
+
+    public BigDecimal getIdTipoVentaFk() {
+        return idTipoVentaFk;
+    }
+
+    public void setIdTipoVentaFk(BigDecimal idTipoVentaFk) {
+        this.idTipoVentaFk = idTipoVentaFk;
     }
 
    
+    
+    public BigDecimal getIdExistenciaFk() {
+        return idExistenciaFk;
+    }
+
+    public void setIdExistenciaFk(BigDecimal idExistenciaFk) {
+        this.idExistenciaFk = idExistenciaFk;
+    }
+
+    
+    
+    public String getClave() {
+        return clave;
+    }
+
+    public void setClave(String clave) {
+        this.clave = clave;
+    }
+
+    public String getNombreProducto() {
+        return nombreProducto;
+    }
+
+    public void setNombreProducto(String nombreProducto) {
+        this.nombreProducto = nombreProducto;
+    }
+
+    public String getNombreEmpaque() {
+        return nombreEmpaque;
+    }
+
+    public void setNombreEmpaque(String nombreEmpaque) {
+        this.nombreEmpaque = nombreEmpaque;
+    }
+
     public BigDecimal getIdVentaMayProdPk() {
         return idVentaMayProdPk;
     }
@@ -96,14 +169,6 @@ public class VentaProductoMayoreo implements Serializable
         this.idTipoEmpaqueFk = idTipoEmpaqueFk;
     }
 
-    public BigDecimal getIdTipoVentaFk() {
-        return idTipoVentaFk;
-    }
-
-    public void setIdTipoVentaFk(BigDecimal idTipoVentaFk) {
-        this.idTipoVentaFk = idTipoVentaFk;
-    }
-
     public BigDecimal getIdEntradaMercanciaFk() {
         return idEntradaMercanciaFk;
     }
@@ -111,6 +176,5 @@ public class VentaProductoMayoreo implements Serializable
     public void setIdEntradaMercanciaFk(BigDecimal idEntradaMercanciaFk) {
         this.idEntradaMercanciaFk = idEntradaMercanciaFk;
     }
-    
-    
+
 }

@@ -95,7 +95,7 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
             Query query;
             int cont = 0;
             StringBuffer cadena = new StringBuffer("select ex.ID_EXP_PK,em.ID_EM_PK,em.IDENTIFICADOR,subp.NOMBRE_SUBPRODUCTO, te.NOMBRE_EMPAQUE, ex.CANTIDAD_EMPACAQUE,ex.KILOS_TOTALES,tc.DESCRIPCION_TIPO\n"
-                    + ",prove.nombre_provedor ||' '|| prove.A_PATERNO_PROVE || ' ' || prove.A_MATERNO_PROVE as nombreProvedor, sucu.NOMBRE_SUCURSAL,bod.NOMBRE, ex.PRECIO_MINIMO, ex.PRECIO_VENTA, ex.PRECIO_MAXIMO, ex.ESTATUS_BLOQUEO\n"
+                    + ",prove.nombre_provedor ||' '|| prove.A_PATERNO_PROVE || ' ' || prove.A_MATERNO_PROVE as nombreProvedor, sucu.NOMBRE_SUCURSAL,bod.NOMBRE, ex.PRECIO_MINIMO, ex.PRECIO_VENTA, ex.PRECIO_MAXIMO, ex.ESTATUS_BLOQUEO,ex.ID_SUBPRODUCTO_FK\n"
                     + "from EXISTENCIA_PRODUCTO ex\n"
                     + "join ENTRADAMERCANCIA em\n"
                     + "on em.ID_EM_PK = ex.ID_EM_FK\n"

@@ -73,7 +73,7 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
                 expro.setPrecioVenta(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
                 expro.setPrecioMaximo(obj[13] == null ? null : new BigDecimal(obj[13].toString()));
                 expro.setEstatusBloqueo(obj[14] == null ? false : (obj[14].toString().equals("1") ? true:false));
-
+                expro.setIdSubProductoFK(obj[15] == null ? "" : obj[15].toString());
                 lista.add(expro);
             }
             return lista;
