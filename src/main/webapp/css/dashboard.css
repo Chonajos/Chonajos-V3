@@ -86,55 +86,20 @@ html{
     margin-left: 30px !important;
 }
 
-/*menu*/
-.ui-menu .ui-menu-parent .ui-menu-child {
-    width: 13.5em !important;
+.ui-priority-primary:hover{
+    color:white;
+    background-color:#00acd6  !important;  
 }
 
-
-.ui-selectonemenu {
-    width: 100% !important;
+.ui-selectonemenu{
+    width: inherit !important;
 }
-
-.ui-selectonemenu .ui-selectonemenu-trigger {
-    width: 12px !important;
+.ui-priority-primary, .ui-widget-content .ui-priority-primary, .ui-widget-header .ui-priority-primary{
+    background-image:linear-gradient(to bottom, #DCDCDC, rgb(208, 209, 212)) !important;
+    background-color:#0081c2;
 }
-
-.ui-selectonemenu .ui-selectonemenu-label {
-    width: 100% !important;
-}
-
-.ui-selectonemenu-label .ui-inputfield .ui-corner-all {
-    width: 100%;
-
-}
-
-.selects .ui-selectonemenu-list-item {
-    width: 99px !important;
-    font-size: 10px !important;
-    font-family: Verdana, sans-serif;
-}
-
-.ui-helper-hidden-accessible label{
-    width: 99px !important;
-    font-size: 10px !important;
-    font-family: Verdana, sans-serif;
-}
-
-.selects .ui-state-highlight, .ui-widget-content .ui-state-highlight,
-.ui-widget-header .ui-state-highlight {
-    color: #761c19;
-    width: auto !important;
-    /*background-image: linear-gradient(to bottom, #4cae4c, #00a3d8);*/
-}
-
-.selects .ui-widget-content .ui-state-hover {
-    color: #761c19;
-    width: auto !important;
-    /*background-image: linear-gradient(to bottom, #4cae4c, #00a3d8);*/
-}
-.ui-inputfield, .ui-widget-content .ui-inputfield, .ui-widget-header .ui-inputfield{
-    background: none rgba(197, 31, 31, 0) !important;
+.ui-state{
+    background-color:#00acd6  !important;  
 }
 
 @media ( max-width : 767px) {

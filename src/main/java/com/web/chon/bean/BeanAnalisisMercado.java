@@ -34,16 +34,19 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
     private static final long serialVersionUID = 1L;
     private final static Logger logger = LoggerFactory.getLogger(AnalisisMercado.class);
 
-    @Autowired private IfaceAnalisisMercado ifaceEntradaProductoCentral;
-    @Autowired private IfaceSubProducto ifaceProducto;
-    @Autowired private PlataformaSecurityContext context;
+    @Autowired
+    private IfaceSubProducto ifaceProducto;
+    @Autowired
+    private PlataformaSecurityContext context;
+    @Autowired
+    private IfaceAnalisisMercado ifaceEntradaProductoCentral;
 
     private ArrayList<AnalisisMercado> lstEntradaMercancia;
     private ArrayList<AnalisisMercado> lstEntradaMercanciaSemana;
     private ArrayList<Subproducto> lstProducto;
-    
+
     private UsuarioDominio usuario;
-    
+
     private LineChartModel chartLineByDias;
     private BarChartModel chartBarByDias;
     private LineChartModel chartLineBySemana;
@@ -80,7 +83,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
         lstEntradaMercancia = new ArrayList<AnalisisMercado>();
         setTitle("Análisis de Mercado");
         setInsertar("precioPromedio");
-        
+
 
         /*Pantalla principal welcome.xhtml*/
         lstEntradaMercancia = ifaceEntradaProductoCentral.getEntradaMercanciaByFiltro(28, 1, TiempoUtil.sumarRestarDias(context.getFechaSistema(), -14), "00000005");
@@ -99,7 +102,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
         chartBarByDias = null;
         chartLineBySemana = null;
         chartBarBySemana = null;
-        
+
         data.reset();
 
         return "analisisMercado";
@@ -258,7 +261,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
         chartLineBySemana.setBreakOnNull(true);
         chartLineBySemana.setDatatipFormat("%2$d");
         chartLineBySemana.setLegendCols(6);
-        chartLineBySemana.getAxes().put(AxisType.X, new CategoryAxis("Fecha"));
+        chartLineBySemana.getAxes().put(AxisType.X, new CategoryAxis("Semana"));
         chartLineBySemana.getAxis(AxisType.X).setTickAngle(90);
 
         Axis yAxis = chartLineBySemana.getAxis(AxisType.Y);
@@ -294,7 +297,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
             toneladasAnt.set(dominio.getDescripcionFiltro(), dominio.getCantidadToneladasAnterior());
             precioAnt.set(dominio.getDescripcionFiltro(), dominio.getPrecioAnterior());
             remanente.set(dominio.getDescripcionFiltro(), dominio.getRemantePorSemana());
-            
+
         }
 
         model.addSeries(toneladas);
@@ -318,7 +321,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
 
         chartBarBySemana.setDatatipFormat("%2$d");
         chartBarBySemana.setLegendCols(6);
-        chartBarBySemana.getAxes().put(AxisType.X, new CategoryAxis("Fecha"));
+        chartBarBySemana.getAxes().put(AxisType.X, new CategoryAxis("Semana"));
         chartBarBySemana.getAxis(AxisType.X).setTickAngle(90);
 
         Axis yAxis = chartBarBySemana.getAxis(AxisType.Y);
@@ -338,7 +341,6 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
         ChartSeries toneladasAnt = new ChartSeries();
         ChartSeries precioAnt = new ChartSeries();
         ChartSeries remanente = new ChartSeries();
-        
 
         toneladas.setLabel("Toneladas");
 
@@ -392,6 +394,15 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
                 generateChartBar();
                 generateChartBarSemana();
                 generateChartLineSemana();
+            } else {
+                lstEntradaMercancia.clear();
+                lstEntradaMercanciaSemana.clear();
+
+                chartLineByDias = null;
+                chartBarByDias = null;
+                chartLineBySemana = null;
+                chartBarBySemana = null;
+
             }
 
         } catch (Exception e) {
@@ -417,9 +428,9 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
 
         return "entradaMercancia";
     }
-    
-    public void searchRemanente(){
-        data.setRemantePorSemana(ifaceEntradaProductoCentral.getRemanente(fechaRemanente,data.getIdProductoFk()));
+
+    public void searchRemanente() {
+        data.setRemantePorSemana(ifaceEntradaProductoCentral.getRemanente(fechaRemanente, data.getIdProductoFk()));
     }
 
     public String getTitle() {
@@ -539,5 +550,4 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
         this.insertar = insertar;
     }
 
-    
 }
