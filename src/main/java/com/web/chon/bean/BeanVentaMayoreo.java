@@ -49,7 +49,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     private ArrayList<Subproducto> lstProducto;
     private ArrayList<ExistenciaProducto> lstExistencias;
     private ArrayList<VentaProductoMayoreo> lstVenta;
-    private ArrayList<ExistenciaProducto> selectedExistencia;
+    private ExistenciaProducto selectedExistencia;
     
     
     private UsuarioDominio usuarioDominio;
@@ -103,6 +103,8 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     }
     public void addProducto()
     {
+        System.out.println("data: "+data.toString());
+        System.out.println("Selected:"+selectedExistencia.toString());
         setViewEstate("viewAddProducto");
         
     }
@@ -304,13 +306,14 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         this.idExistencia = idExistencia;
     }
 
-    public ArrayList<ExistenciaProducto> getSelectedExistencia() {
+    public ExistenciaProducto getSelectedExistencia() {
         return selectedExistencia;
     }
 
-    public void setSelectedExistencia(ArrayList<ExistenciaProducto> selectedExistencia) {
+    public void setSelectedExistencia(ExistenciaProducto selectedExistencia) {
         this.selectedExistencia = selectedExistencia;
     }
+
     
     
     
