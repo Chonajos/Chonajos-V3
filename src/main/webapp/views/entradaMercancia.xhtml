@@ -90,7 +90,7 @@
                         <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-8 col-sm-4 col-xs-12"  for="comboTipoOrden" value ="Tipo de Convenido:"/> 
                             <h:selectOneMenu  id="comboTipoOrden" class=" col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanEntradaMercancia2.dataProducto.idTipoConvenio}" required="true" >
-                                <f:selectItem itemLabel="Tipo de Convenio" itemValue="-1" />
+                                <f:selectItem itemLabel="Tipo de Convenio" itemValue="" />
                                 <f:selectItems value="#{beanEntradaMercancia2.listaTiposConvenio}" var="listitaconvenio" itemLabel="#{listitaconvenio.nombreTipoConvenio}" itemValue="#{listitaconvenio.idTcPK}"/>
                                 <p:ajax event="change" update="@this formContent:labelprecio formContent:txtPrecio"  listener="#{beanEntradaMercancia2.permisions()}" />
                             </h:selectOneMenu>
