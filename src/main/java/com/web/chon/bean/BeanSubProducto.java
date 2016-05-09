@@ -62,10 +62,14 @@ public class BeanSubProducto implements Serializable, BeanSimple {
         if (!selectedSubProducto.isEmpty()) {
             for (Subproducto producto : selectedSubProducto) {
                 try {
-                    ifaceSubProducto.deleteSubProducto(producto.getIdSubproductoPk());
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro eliminado."));
+                    if (ifaceSubProducto.deleteSubProducto(producto.getIdSubproductoPk()) == 1) {
+                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro eliminado."));
+                    }else{
+                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar eliminar el registro :" + producto.getNombreSubproducto() + "."));
+                    }
+
                 } catch (Exception ex) {
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar eliminar el registro :" + data.getNombreSubproducto() + "."));
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar eliminar el registro :" + producto.getNombreSubproducto() + "."));
                 }
             }
         } else {

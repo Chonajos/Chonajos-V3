@@ -35,16 +35,16 @@
                     <div class="form-group">
                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="selectProductosA" value ="Categoría:" /> 
-                            <p:selectOneMenu  id="selectProductos"  value="#{beanAnalisisMercado.data.idProductoFk}" class="col-lg-8 col-md-8 col-sm-8 col-xs-12" requiredMessage="Ingresa un valor para el campo Producto." rendered="#{beanAnalisisMercado.state =='SEARCH'}">
+                            <h:selectOneMenu  id="selectProductos"  value="#{beanAnalisisMercado.data.idProductoFk}" class="col-lg-8 col-md-8 col-sm-8 col-xs-12" requiredMessage="Ingresa un valor para el campo Producto." rendered="#{beanAnalisisMercado.state =='SEARCH'}">
                                 <f:selectItem itemLabel="Seleccione la opción" itemValue="#{null}" noSelectionOption="true" />
                                 <f:selectItems value="#{beanAnalisisMercado.lstProducto}" var="producto" itemLabel="#{producto.nombreSubproducto}" itemValue="#{producto.idSubproductoPk}" />
                                 <p:ajax event="change" update=":formContent" listener="#{beanAnalisisMercado.filtroPorProducto}"/>
-                            </p:selectOneMenu>
-                            <p:selectOneMenu id="selectProductosA" required="true" value="#{beanAnalisisMercado.data.idProductoFk}"  class="col-lg-8 col-md-8 col-sm-8 col-xs-12" requiredMessage="Ingresa un valor para el campo Producto." rendered="#{beanAnalisisMercado.state =='INIT'}">
+                            </h:selectOneMenu>
+                            <h:selectOneMenu id="selectProductosA" required="true" value="#{beanAnalisisMercado.data.idProductoFk}"  class="col-lg-8 col-md-8 col-sm-8 col-xs-12" requiredMessage="Ingresa un valor para el campo Producto." rendered="#{beanAnalisisMercado.state =='INIT'}">
                                 <f:selectItem itemLabel="Seleccione la opción" itemValue="#{null}" noSelectionOption="true" />
                                 <f:selectItems value="#{beanAnalisisMercado.lstProducto}" var="producto" itemLabel="#{producto.nombreSubproducto}" itemValue="#{producto.idSubproductoPk}" />
                                 <p:ajax event="change" update=":formContent" listener="#{beanAnalisisMercado.searchDatabyIdProducto}"/>
-                            </p:selectOneMenu>
+                            </h:selectOneMenu>
                         </div>
 
                         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 form-group">

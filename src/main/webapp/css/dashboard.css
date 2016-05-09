@@ -3,7 +3,7 @@
     Created on : 22/03/2016, 10:04:50 AM
     Author     : Juan
 */
-/*
+/*#4285F4
  * CSS SIV
  */
 
@@ -66,6 +66,7 @@ html{
     font-size: 12px!important;
 } 
 .ui-datatable-selectable thead th{
+
     font-size: 14px!important;
 }
 
@@ -74,12 +75,15 @@ html{
 {font-size: 12px!important;
 }
 .ui-datatable thead th
-{font-size: 14px!important;
+{
+    font-weight: normal ;    
+    font-size: 14px!important;
 }
 
 /*Se cambio el tamaño del componente h4*/
 .h3, h3 {
-    font-size: 18px;
+    font-weight: bold;
+    font-size: 17px;
 }
 
 .menuTercerNivel {
@@ -95,7 +99,7 @@ html{
     width: inherit !important;
 }
 .ui-priority-primary, .ui-widget-content .ui-priority-primary, .ui-widget-header .ui-priority-primary{
-    background-image:linear-gradient(to bottom, #DCDCDC, rgb(208, 209, 212)) !important;
+    /*background-image:linear-gradient(to bottom, #DCDCDC, rgb(208, 209, 212)) !important;*/
     background-color:#0081c2;
 }
 
@@ -111,12 +115,58 @@ html{
 }
 .ui-state-error{
     color: black !important;
+    background:none !important;
 }
+/*Label a la derecha*/
+div label{
+    text-align: right !important;
+}
+
+/*quitar bordes de paneles*/
+.ui-panel .ui-panel-content{
+    padding: 0.0em 0em !important;
+}
+.container-fluid{
+    padding-right: 0px;
+    padding-left: 0px;
+    
+}
+/*quitar bordes de paneles*/
+/*Letra mas chica en combos*/
+select{
+    font-size: 0.9em !important;
+}
+/*cortar label */
+/*div label { 
+    overflow:hidden; 
+    white-space:nowrap; 
+    text-overflow:ellipsis; 
+    width:100px;
+}
+div label:hover{
+    overflow:visible;
+    white-space:initial;
+}*/
+/*cortar label*/
+/*Letra mas chica en combos*/
 button span:hover{
     font-weight: bold;
     color:#0088cc;
     background-image:-webkit-linear-gradient(top, #FFFFFF, #FFFFFF);
 }
+
+/*alinght left*/
+.alignLeft{
+    text-align: left;
+}
+.alignRight{
+    text-align: right;
+}
+.alignCenter{
+    text-align:center;
+}
+
+
 @media ( max-width : 767px) {
     .navbar {
         border-radius: 4px;

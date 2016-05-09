@@ -25,21 +25,19 @@ public class BeanCatUsuario implements BeanSimple {
 
     private static final long serialVersionUID = 1L;
 
-    @Autowired
-    private IfaceCatUsuario ifaceCatUsuario;
-    @Autowired
-    private IfaceCatSucursales ifaceCatSucursales;
+    @Autowired private IfaceCatRol ifaceCatRol;
+    @Autowired private IfaceCatUsuario ifaceCatUsuario;
+    @Autowired private IfaceCatSucursales ifaceCatSucursales;
 
-    @Autowired
-    private IfaceCatRol ifaceCatRol;
-
-    private ArrayList<Usuario> model;
-    private ArrayList<Usuario> selectedUsuario;
     private List<Rol> lstRol;
+    private ArrayList<Usuario> model;
     private List<Sucursal> lstSucursal;
+    private ArrayList<Usuario> selectedUsuario;
+   
+    private Usuario data;
     private String title;
     private String viewEstate;
-    private Usuario data;
+    
 
     @PostConstruct
     public void init() {
@@ -79,13 +77,14 @@ public class BeanCatUsuario implements BeanSimple {
     @Override
     public String insert() {
         try {
+            data.setContrasenaUsuario(data.getClaveUsuario());
             if (ifaceCatUsuario.insertarUsuarios(data) == 0) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "La clave del usuario " + data.getClaveUsuario() + " ya existe. Intenta con otra clave diferente"));
                 return null;
             } else {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro insertado."));
             }
-
+            
         } catch (Exception ex) {
             System.out.println("error" + ex.getMessage());
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar insertar el registro :" + data.getNombreUsuario() + "."));
@@ -97,8 +96,12 @@ public class BeanCatUsuario implements BeanSimple {
     @Override
     public String update() {
         try {
-            ifaceCatUsuario.updateUsuario(data);
+            data.setContrasenaUsuario(data.getClaveUsuario());
+            if (ifaceCatUsuario.updateUsuario(data) == 0){
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro modificado."));
+            }else{
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar modificar el registro :" + data.getNombreUsuario() + "."));
+            }
         } catch (Exception ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar modificar el registro :" + data.getNombreUsuario() + "."));
         }
@@ -179,6 +182,4 @@ public class BeanCatUsuario implements BeanSimple {
     public void setLstSucursal(List<Sucursal> lstSucursal) {
         this.lstSucursal = lstSucursal;
     }
-
-    
 }

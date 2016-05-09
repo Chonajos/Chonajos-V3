@@ -2,6 +2,7 @@ package com.web.chon.bean;
 
 import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.security.service.PlataformaSecurityContext;
+import com.web.chon.util.TiempoUtil;
 import java.io.Serializable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -21,6 +22,8 @@ public class UsuarioWeb implements Serializable {
 
     @Autowired
     PlataformaSecurityContext plataformaSecurityContext;
+    
+    private String fechaActual ;
 
     public UsuarioDominio getUsuario() {
         return plataformaSecurityContext.getUsuarioAutenticado();
@@ -29,5 +32,15 @@ public class UsuarioWeb implements Serializable {
     public String getTimeZone() {
         return TIME_ZONE_DF;
     }
+
+    public String getFechaActual() {
+        return fechaActual = TiempoUtil.getFechaDDMMYYYY(plataformaSecurityContext.getFechaSistema());
+    }
+
+    public void setFechaActual(String fechaActual) {
+        this.fechaActual = fechaActual;
+    }
+    
+    
 
 }

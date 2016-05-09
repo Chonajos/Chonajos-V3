@@ -12,26 +12,28 @@
             <div>
                 <h3>#{beanEmpaque.title}</h3>
             </div>
-            <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
+            <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:panel rendered="#{beanEmpaque.viewEstate=='init'}"  style="border: 0px;" >
                 <div class="form-group" align="right">
                     <p:commandButton value="Nuevo" update=":formContent" ajax="true" action="#{beanEmpaque.viewNew}" icon="ui-icon-person" />
                     <p:commandButton value="Eliminar" update=":formContent" ajax="true" action="#{beanEmpaque.delete}" icon="ui-icon-trash" />
                 </div>
-                <p:dataTable var="model" value="#{beanEmpaque.model}" rows="10" scrollable="true" paginator="true" selection="#{beanEmpaque.selectedEmpaque}" rowKey="#{model.idTipoEmpaquePk}" emptyMessage="No se encontraron Registros.">
-                    <p:column selectionMode="multiple" width="32px;" style="text-align:center"/>
-                    <p:column headerText="Id" width="40px;" style="text-align:center">
-                        <h:outputText value="#{model.idTipoEmpaquePk}" />
-                    </p:column>
-                    <p:column headerText="Nombre de Empaque" width="550px;" style="text-align:center">
-                        <h:outputText value="#{model.nombreEmpaque}" />
-                    </p:column>
-                    <p:column headerText="Editar" width="60px;" style="text-align:center">
-                        <p:commandButton id="ajax" ajax="true"  action="#{beanEmpaque.searchById}" icon="ui-icon-pencil" styleClass="ui-priority-primary" update=":formContent">
-                            <f:setPropertyActionListener value="#{model}" target="#{beanEmpaque.data}"/>
-                        </p:commandButton>
-                    </p:column>
-                </p:dataTable>
+                <div class="col-lg-6 col-md-8 col-sm-12 col-xs-12 col-lg-offset-3 col-sm-offset-2">
+                    <p:dataTable var="model" value="#{beanEmpaque.model}" rows="10" scrollable="true" paginator="true" selection="#{beanEmpaque.selectedEmpaque}" rowKey="#{model.idTipoEmpaquePk}" emptyMessage="No se encontraron Registros.">
+                        <p:column selectionMode="multiple" width="40px;" class="alignCenter"/>
+                        <p:column headerText="Id" width="60px;" class="alignCenter">
+                            <h:outputText value="#{model.idTipoEmpaquePk}" />
+                        </p:column>
+                        <p:column headerText="Nombre de Empaque" width="420px;" class="alignLeft">
+                            <h:outputText value="#{model.nombreEmpaque}" />
+                        </p:column>
+                        <p:column headerText="Editar" width="60px;" class="alignCenter">
+                            <p:commandButton id="ajax" ajax="true"  action="#{beanEmpaque.searchById}" icon="ui-icon-pencil" styleClass="ui-priority-primary" update=":formContent">
+                                <f:setPropertyActionListener value="#{model}" target="#{beanEmpaque.data}"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </div>
             </p:panel>
             <p:panel rendered="#{beanEmpaque.viewEstate=='searchById' || beanEmpaque.viewEstate=='new'}">
                 <div class="container">
