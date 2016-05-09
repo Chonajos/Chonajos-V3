@@ -8,6 +8,7 @@ package com.web.chon.service;
 import com.web.chon.dominio.ExistenciaProducto;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -20,4 +21,6 @@ public interface IfaceNegocioExistencia {
     public ArrayList<ExistenciaProducto> getExistenciaProductoRepetidos(BigDecimal idSucursal,String idSubproductoFk,BigDecimal idTipoEmpaqueFk, BigDecimal idBodegaFk, BigDecimal idProvedorFk,BigDecimal idEMFK,BigDecimal idTipoConvenio);
     public int updateExistenciaProducto(ExistenciaProducto ep);
     public int updatePrecio(ExistenciaProducto ep);
+    public List<ExistenciaProducto> getExistenciaById(BigDecimal idExistencia);
+    
     }

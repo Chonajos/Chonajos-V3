@@ -74,6 +74,7 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
                 expro.setPrecioMaximo(obj[13] == null ? null : new BigDecimal(obj[13].toString()));
                 expro.setEstatusBloqueo(obj[14] == null ? false : (obj[14].toString().equals("1") ? true:false));
                 expro.setIdSubProductoFK(obj[15] == null ? "" : obj[15].toString());
+                expro.setIdTipoEmpaqueFK(obj[16] == null ? null : new BigDecimal(obj[16].toString()));
                 lista.add(expro);
             }
             return lista;
@@ -160,5 +161,30 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
     public int updatePrecio(ExistenciaProducto ep) {
         getEjb();
         return ejb.updatePrecio(ep);
+    }
+
+    @Override
+    public List<ExistenciaProducto> getExistenciaById(BigDecimal idExistencia) {
+         getEjb();
+
+        try {
+            ArrayList<ExistenciaProducto> lista = new ArrayList<ExistenciaProducto>();
+            List<Object[]> lstObject = ejb.getExistenciaById(idExistencia);
+            for (Object[] obj : lstObject) 
+            {
+                ExistenciaProducto expro = new ExistenciaProducto();
+                expro.setIdExistenciaProductoPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+                expro.setKilosTotalesProducto(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
+                expro.setCantidadPaquetes(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
+
+                lista.add(expro);
+            }
+            return lista;
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceNegocioExistencia.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+
+        }
+    
     }
 }

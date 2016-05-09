@@ -1,4 +1,4 @@
-﻿--BASE DE DATOS : choni
+--BASE DE DATOS : choni
 --USUARIO: choni
 --Contraseña: choni
 
@@ -491,6 +491,40 @@ START WITH 1
 MINVALUE 0;
 
 
+CREATE TABLE EXISTENCIA_PRODUCTO 
+   (  ID_EXP_PK NUMBER, 
+  ID_EM_FK NUMBER, 
+  ID_SUBPRODUCTO_FK VARCHAR2(8 BYTE), 
+  ID_TIPO_EMPAQUE_FK NUMBER, 
+  KILOS_TOTALES NUMBER, 
+  CANTIDAD_EMPACAQUE NUMBER, 
+  COMENTARIOS VARCHAR2(100 BYTE), 
+  ID_BODEGA_FK NUMBER, 
+  ID_TIPO_CONVENIO_FK NUMBER, 
+  CONVENIO NUMBER, 
+  KILOSPROMPROD NUMBER, 
+  PRECIO_MINIMO NUMBER(5,0), 
+  PRECIO_VENTA NUMBER(5,0), 
+  PRECIO_MAXIMO NUMBER(5,0), 
+  ESTATUS_BLOQUEO CHAR(1 BYTE), 
+  ID_SUCURSAL_FK NUMBER
+   );--
+
+  ALTER TABLE EXISTENCIA_PRODUCTO MODIFY (ID_SUCURSAL_FK NOT NULL ENABLE);
+  ALTER TABLE EXISTENCIA_PRODUCTO ADD CONSTRAINT C_EP_ID_EMP_PK PRIMARY KEY (ID_EXP_PK);
+  ALTER TABLE EXISTENCIA_PRODUCTO ADD CONSTRAINT C_EP_ID_BODEGA_FK FOREIGN KEY (ID_BODEGA_FK)
+    REFERENCES BODEGA (ID_BD_PK) ENABLE;
+  ALTER TABLE EXISTENCIA_PRODUCTO ADD CONSTRAINT C_EP_ID_EM_FK FOREIGN KEY (ID_EM_FK)
+    REFERENCES ENTRADAMERCANCIA (ID_EM_PK) ENABLE;
+  ALTER TABLE EXISTENCIA_PRODUCTO ADD CONSTRAINT C_EP_ID_SUBPRODUCTO_FK FOREIGN KEY (ID_SUBPRODUCTO_FK)
+    REFERENCES SUBPRODUCTO (ID_SUBPRODUCTO_PK) ENABLE;
+  ALTER TABLE EXISTENCIA_PRODUCTO ADD CONSTRAINT C_EP_ID_TIPO_CONVENIO_FK FOREIGN KEY (ID_TIPO_CONVENIO_FK)
+    REFERENCES TIPO_CONVENIO (ID_TC_PK) ENABLE;
+  ALTER TABLE EXISTENCIA_PRODUCTO ADD CONSTRAINT C_EP_ID_TIPO_EMPAQUE_FK FOREIGN KEY (ID_TIPO_EMPAQUE_FK)
+    REFERENCES TIPO_EMPAQUE (ID_TIPO_EMPAQUE_PK) ENABLE;
+  ALTER TABLE EXISTENCIA_PRODUCTO ADD CONSTRAINT EXISTENCIA_PRODUCTO_FK1 FOREIGN KEY (ID_SUCURSAL_FK)
+    REFERENCES SUCURSAL (ID_SUCURSAL_PK) ENABLE;
+
 CREATE TABLE PROVEDORES(
 	ID_PROVEDOR_PK  NUMBER, 
 	NOMBRE_PROVEDOR  VARCHAR(50), 
@@ -635,6 +669,7 @@ INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Realizar Pedido', 0,'30.1','/views/venta.xhtml');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Pagar Pedido', 0,'30.2','/views/buscaVenta.xhtml');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Relación de Operaciónes', 0,'30.3','/views/relacionOperaciones.xhtml');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Ventas al Mayoreo', 0,'30.4','/views/ventasMayoreo.xhtml');
 
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Clientes', 1,'40','NULL');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Cliente', 0,'40.1','/views/clientes.xhtml');
@@ -690,3 +725,57 @@ INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(25,1);
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(26,1);
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(27,1);
 <--- fin inserts para roles y permisos--->
+
+--Tablas de Ventas Mayoreo.
+
+create table venta_Mayoreo(
+id_venta_mayoreo_pk number not null,
+id_cliente_fk number,
+id_vendedor_fk number,
+fecha_venta date,
+fecha_promesa_pago date,
+id_status_fk number,
+fecha_pago date,
+id_sucursal_fk number,
+total_venta number,
+id_tipo_venta_fk number,
+
+CONSTRAINT c_vm_id_venta_mayoreo_pk PRIMARY KEY (id_venta_mayoreo_pk),
+CONSTRAINT c_vm_id_sucu_venta_fk FOREIGN KEY(id_sucursal_fk) references sucursal(id_sucursal_pk),
+CONSTRAINT c_vm_id_cliente_fk FOREIGN KEY(id_cliente_fk) references CLIENTE(id_cliente),
+CONSTRAINT c_vm_id_vendedor_fk FOREIGN KEY(id_vendedor_fk) references usuario(id_usuario_pk),
+CONSTRAINT c_vm_id_status_fk FOREIGN KEY(id_status_fk) references STATUS_VENTA(ID_STATUS_PK),
+CONSTRAINT c_vmp_id_tipo_venta_fk FOREIGN KEY(id_tipo_venta_fk) references tipo_venta(id_tipo_venta_pk)
+);
+
+
+CREATE SEQUENCE s_venta_Mayoreo
+INCREMENT BY 1
+START WITH 1
+MINVALUE 0;
+
+
+
+create table ventaMayoreoProducto(
+id_v_m_p_pk number not null,
+id_venta_mayoreo_fk number NOT NULL ENABLE,
+id_subproducto_fk varchar(8),
+precio_producto number(10,2),
+kilos_vendidos number(15,3),
+cantidad_empaque number(6),
+total_venta number(15,4),
+id_tipo_empaque_fk number,
+id_entrada_mercancia_fk number,
+
+CONSTRAINT c_vmp_id_v_m_p_pk PRIMARY KEY (id_v_m_p_pk),
+CONSTRAINT c_vmp_id_venta_mayoreo_fk FOREIGN KEY(id_venta_mayoreo_fk) references venta_Mayoreo(id_venta_mayoreo_pk),
+CONSTRAINT c_vmp_id_subproducto_fk FOREIGN KEY(id_subproducto_fk) references subproducto(ID_SUBPRODUCTO_PK),
+CONSTRAINT c_vmp_id_tipo_empaque_venta_fk FOREIGN KEY(id_tipo_empaque_fk) references tipo_empaque(id_tipo_empaque_pk),
+CONSTRAINT c_vmp_id_entrada_mercancia_fk FOREIGN KEY(id_entrada_mercancia_fk) references ENTRADAMERCANCIA(ID_EM_PK)
+);
+
+
+CREATE SEQUENCE venta_Mayoreo_Producto
+INCREMENT BY 1
+START WITH 1
+MINVALUE 0;

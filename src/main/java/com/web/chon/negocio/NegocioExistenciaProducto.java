@@ -26,4 +26,5 @@ public interface NegocioExistenciaProducto
     public List<Object[]> getExistenciaProductoId(BigDecimal idSucursal,String idSubproductoFk,BigDecimal idTipoEmpaqueFk, BigDecimal idBodegaFk, BigDecimal idProvedorFk);
     public List<Object[]> getExistenciasRepetidas(BigDecimal idSucursal, String idSubproductoFk, BigDecimal idTipoEmpaqueFk, BigDecimal idBodegaFk, BigDecimal idProvedorFk, BigDecimal idEMFK,BigDecimal idTipoConvenio);
     public int updatePrecio(ExistenciaProducto ep);
+    public List<Object[]> getExistenciaById(BigDecimal idExistencia);
 }
