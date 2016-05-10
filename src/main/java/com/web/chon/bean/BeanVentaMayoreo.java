@@ -23,16 +23,34 @@ import com.web.chon.service.IfaceSubProducto;
 import com.web.chon.service.IfaceTipoVenta;
 import com.web.chon.service.IfaceVentaMayoreo;
 import com.web.chon.service.IfaceVentaMayoreoProducto;
+import com.web.chon.util.Constantes;
+import com.web.chon.util.JasperReportUtil;
 import com.web.chon.util.JsfUtil;
+import com.web.chon.util.NumeroALetra;
+import com.web.chon.util.TiempoUtil;
+import com.web.chon.util.UtilUpload;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
+import net.sf.jasperreports.engine.JREmptyDataSource;
+import net.sf.jasperreports.engine.JRExporter;
+import net.sf.jasperreports.engine.JRExporterParameter;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -93,14 +111,15 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     private String viewEstate = "";
 
     private BigDecimal TotalVentaGeneral;
-    
-    
+
     //Variables para Generar el pdf
     private String rutaPDF;
     private Map paramReport = new HashMap();
     private String number;
     private String pathFileJasper = "C:/Users/Juan/Documents/NetBeansProjects/Chonajos-V2/ticket.jasper";
     private ByteArrayOutputStream outputStream;
+
+    private boolean permisionToWrite;
 
     @PostConstruct
     public void init() {
@@ -119,6 +138,28 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         setViewEstate("viewAddProducto");
         lstTipoVenta = ifaceTipoVenta.getAll();
         lstVenta = new ArrayList<VentaProductoMayoreo>();
+        permisionToWrite = true;
+    }
+
+    public void habilitarBotones() 
+    {
+       
+        permisionToWrite = false;
+        data.setPrecioProducto(selectedExistencia.getPrecioVenta());
+    }
+    public void cancelarPedido(){
+        
+        selectedExistencia = new ExistenciaProducto();
+            lstExistencias = new ArrayList<ExistenciaProducto>();
+            lstVenta = new ArrayList<VentaProductoMayoreo>();
+            data.reset();
+            subProducto = new Subproducto();
+            setViewEstate("viewAddProducto");
+            idTipoVenta = null;
+            JsfUtil.addWarnMessage("Venta Cancelada");
+            permisionToWrite = true;
+            cliente = new Cliente();
+            
     }
 
     public void inserts() {
@@ -159,17 +200,17 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                 }
 
             }
+            setParameterTicket(idVentaInsert.intValue());
+            generateReport();
             selectedExistencia = new ExistenciaProducto();
             lstExistencias = new ArrayList<ExistenciaProducto>();
             lstVenta = new ArrayList<VentaProductoMayoreo>();
             data.reset();
             subProducto = new Subproducto();
             setViewEstate("viewAddProducto");
-            idTipoVenta=null;
-            //setParameterTicket(data.getIdVenta().intValue());
-            //generateReport();
+            idTipoVenta = null;
+
             //cliente=new Cliente();
-            
         }
     }
 
@@ -182,16 +223,30 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     }
 
     public void buscaExistencias() {
+        //lstExistencias.clear();
         BigDecimal idEntrada;
         if (entradaMercancia == null) {
+            //lstExistencias.clear();
             idEntrada = null;
         } else {
             idEntrada = entradaMercancia.getIdEmPK();
         }
 
         String idproductito = subProducto == null ? null : subProducto.getIdSubproductoPk();
-        lstExistencias = ifaceNegocioExistencia.getExistencias(null, null, null, idproductito, null, null, null);
-
+        if (idproductito != null) 
+        {
+            
+            lstExistencias = ifaceNegocioExistencia.getExistencias(null, null, null, idproductito, null, null, null);
+        }else
+        {
+            data.setCantidadEmpaque(null);
+            data.setPrecioProducto(null);
+            data.setKilosVendidos(null);
+            selectedExistencia = new ExistenciaProducto();
+            permisionToWrite=true;
+            lstExistencias.clear();
+        }
+        
     }
 
     public void addProducto() {
@@ -199,7 +254,8 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
             JsfUtil.addErrorMessage("Seleccione un Producto de la tabla, o agrego una cantidad o peso en 0 Kg.");
 
         } else //            System.out.println("idSubProducto:" + selectedExistencia.getIdSubProductoFK());
-         if (selectedExistencia.getPrecioVenta() == null) {
+        {
+            if (selectedExistencia.getPrecioVenta() == null) {
                 JsfUtil.addErrorMessage("No se tiene precio de venta para este producto. Contactar al administrador.");
             } else if (data.getPrecioProducto().intValue() < selectedExistencia.getPrecioMinimo().intValue() || data.getPrecioProducto().intValue() > selectedExistencia.getPrecioMaximo().intValue()) {
                 JsfUtil.addErrorMessage("Precio de Venta fuera de Rango \n Precio Maximo =" + selectedExistencia.getPrecioMaximo() + " Precio minimo =" + selectedExistencia.getPrecioMinimo());
@@ -263,6 +319,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
                 }
             }
+        }
 
     }
 
@@ -303,6 +360,73 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
     }
 
+    public void generateReport() {
+        JRExporter exporter = null;
+
+        try {
+            ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+
+            String temporal = "";
+            if (servletContext.getRealPath("") == null) {
+                temporal = Constantes.PATHSERVER;
+            } else {
+                temporal = servletContext.getRealPath("");
+            }
+
+            pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketVenta" + File.separatorChar + "ticket.jasper";
+            JasperPrint jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport, new JREmptyDataSource());
+
+            outputStream = JasperReportUtil.getOutputStreamFromReport(paramReport, getPathFileJasper());
+            exporter = new JRPdfExporter();
+            exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
+            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, outputStream);
+
+            byte[] bytes = outputStream.toByteArray();
+            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf");
+
+        } catch (Exception exception) {
+            System.out.println("Error >" + exception.getMessage());
+
+        }
+
+    }
+
+    private void setParameterTicket(int idVenta) {
+
+        NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
+        DecimalFormat df = new DecimalFormat("###.##");
+        Date date = new Date();
+        ArrayList<String> productos = new ArrayList<String>();
+        NumeroALetra numeroLetra = new NumeroALetra();
+        for (VentaProductoMayoreo venta : lstVenta) {
+            String cantidad = venta.getCantidadEmpaque() + " " + venta.getNombreEmpaque();
+            productos.add(venta.getNombreProducto().toUpperCase());
+            productos.add("       " + cantidad + "               " + nf.format(venta.getPrecioProducto()) + "    " + nf.format(venta.getTotalVenta()));
+        }
+
+        System.out.println("Total Venta Error: " + TotalVentaGeneral);
+        String totalVentaStr = numeroLetra.Convertir(df.format(TotalVentaGeneral), true);
+
+        putValues(TiempoUtil.getFechaDDMMYYYYHHMM(date), productos, nf.format(TotalVentaGeneral), totalVentaStr, idVenta);
+
+    }
+
+    private void putValues(String dateTime, ArrayList<String> items, String total, String totalVentaStr, int idVenta) {
+
+        paramReport.put("fechaVenta", dateTime);
+        paramReport.put("noVenta", Integer.toString(idVenta));
+        paramReport.put("cliente", cliente.getNombreCombleto());
+        paramReport.put("vendedor", usuario.getNombreCompletoUsuario());
+        paramReport.put("productos", items);
+        paramReport.put("ventaTotal", total);
+        paramReport.put("totalLetra", totalVentaStr);
+        paramReport.put("estado", "PEDIDO MARCADO");
+        paramReport.put("labelFecha", "Fecha de Venta:");
+        paramReport.put("labelFolio", "Folio de Venta:");
+        paramReport.put("labelSucursal", usuarioDominio.getNombreSucursal());
+
+    }
+
     public ArrayList<TipoVenta> getLstTipoVenta() {
         return lstTipoVenta;
     }
@@ -312,10 +436,28 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     }
 
     public void editProducto() {
-
+        subProducto = ifaceSubProducto.getSubProductoById(dataEdit.getIdSubProductofk());
+        data.setCantidadEmpaque(dataEdit.getCantidadEmpaque());
+        data.setKilosVendidos(dataEdit.getKilosVendidos());
+        data.setPrecioProducto(dataEdit.getPrecioProducto());
+        
+        selectedExistencia.setIdExistenciaProductoPk(dataEdit.getIdExistenciaFk());
+        
+        String idproductitoedit = subProducto == null ? null : subProducto.getIdSubproductoPk();
+        lstExistencias = ifaceNegocioExistencia.getExistencias(null, null, null, idproductitoedit, null, null, null);
+             
+                
+        setViewEstate("update");
+    }
+    public void updateProducto(){
+        dataEdit.setCantidadEmpaque(data.getCantidadEmpaque());
+        dataEdit.setKilosVendidos(data.getKilosVendidos());
+        dataEdit.setTotalVenta(data.getTotalVenta());
     }
 
     public void remove() {
+        TotalVentaGeneral=TotalVentaGeneral.subtract(dataRemove.getTotalVenta(), MathContext.UNLIMITED);
+        lstVenta.remove(dataRemove);
 
     }
 
@@ -539,6 +681,54 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
     public void setVentaGeneral(VentaMayoreo ventaGeneral) {
         this.ventaGeneral = ventaGeneral;
+    }
+
+    public String getRutaPDF() {
+        return rutaPDF;
+    }
+
+    public void setRutaPDF(String rutaPDF) {
+        this.rutaPDF = rutaPDF;
+    }
+
+    public Map getParamReport() {
+        return paramReport;
+    }
+
+    public void setParamReport(Map paramReport) {
+        this.paramReport = paramReport;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getPathFileJasper() {
+        return pathFileJasper;
+    }
+
+    public void setPathFileJasper(String pathFileJasper) {
+        this.pathFileJasper = pathFileJasper;
+    }
+
+    public ByteArrayOutputStream getOutputStream() {
+        return outputStream;
+    }
+
+    public void setOutputStream(ByteArrayOutputStream outputStream) {
+        this.outputStream = outputStream;
+    }
+
+    public boolean isPermisionToWrite() {
+        return permisionToWrite;
+    }
+
+    public void setPermisionToWrite(boolean permisionToWrite) {
+        this.permisionToWrite = permisionToWrite;
     }
 
 }
