@@ -44,7 +44,7 @@
                         </p:column>
                         <p:column headerText="Ver Datos"  class="alignCenter" style="width:100px;">
 
-                            <p:commandButton  update=":formSucursal" action="#{beanCatSucursal.viewDetails()}" icon="ui-icon-search" styleClass="ui-priority-primary">
+                            <p:commandButton  update=":formSucursal" oncomplete="PF('documentDialog').show()" action="#{beanCatSucursal.viewDetails()}" icon="ui-icon-search" styleClass="ui-priority-primary">
                                 <f:setPropertyActionListener value="#{model}" target="#{beanCatSucursal.data}"/>
                             </p:commandButton>
                         </p:column>
@@ -137,11 +137,48 @@
                             <p:ajax event="change" update=":formSucursal:txtCP" listener="#{beanCatSucursal.ActualizaCodigoPostal()}"/> 
                         </h:selectOneMenu>
                     </div>  
-
-
                 </div>
+            </p:panel>      
 
-            </p:panel>           
+            <!--Codigo de Prueba Vista Detalle -->
+            <p:dialog id="dialog" header="Detalles de la Sucursal" showEffect="fade" widgetVar="documentDialog" modal="true" resizable="false">
+                <p:outputPanel id="documentPanel">
+                    <!--Datos de LA SUCURSAL-->
+                    <h5 class="first">Datos de la Sucursal</h5>  
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <h:outputLabel class="col-lg-2 col-md-2 col-sm-12 col-xs-12" for="nombre" value="Nombre: "/>    
+                        <h:outputText class="col-lg-2 col-md-2 col-sm-12 col-xs-12" id="nombre" value="#{beanCatSucursal.data.nombreSucursal}" />                     
+                        <h:outputLabel class="col-lg-2 col-md-2 col-sm-12 col-xs-12" for="estado" value="Estado: " />
+                        <h:outputText class="col-lg-2 col-md-2 col-sm-12 col-xs-12" id="estado" value="#{beanCatSucursal.data.statusSucursal == false ? 'Inactivo':'Activo'}"/>
+                    </div>
+
+                    <!--Dirección-->
+                    <h5 class="first">Dirección</h5>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <h:outputLabel class="col-lg-2 col-md-2 col-sm-12 col-xs-12" for="telefono" value="Teléfono:" />
+                        <h:outputText class="col-lg-2 col-md-2 col-sm-12 col-xs-12" id="telefono" value="#{beanCatSucursal.data.telefonoSucursal}"  />
+                        <h:outputLabel class="col-lg-2 col-md-2 col-sm-12 col-xs-12" for="calle" value="Calle: " />
+                        <h:outputText class="col-lg-6 col-md-6 col-sm-12 col-xs-12" id="calle" value="#{beanCatSucursal.data.calleSucursal}"/>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <h:outputLabel class="col-lg-2 col-md-2 col-sm-12 col-xs-12" for="numInterior" value="Número Interior:" />
+                        <h:outputText class="col-lg-2 col-md-2 col-sm-12 col-xs-12" id="numInterior" value="#{beanCatSucursal.data.numInt}"  />
+                        <h:outputLabel class="col-lg-2 col-md-2 col-sm-12 col-xs-12" for="numExterior" value="Número Exterior:" />
+                        <h:outputText class="col-lg-2 col-md-2 col-sm-12 col-xs-12" id="numExterior" value="#{beanCatSucursal.data.numExt}"/>
+                        <h:outputLabel class="col-lg-2 col-md-2 col-sm-12 col-xs-12" for="codigoPostal" value="Código Postal:" />
+                        <h:outputText class="col-lg-2 col-md-2 col-sm-12 col-xs-12" id="codigoPostal" value="#{beanCatSucursal.data.cpSucursal}"/>
+                    </div>
+                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <h:outputLabel class="col-lg-2 col-md-2 col-sm-12 col-xs-12" for="estadoL" value="Estado:" />
+                        <h:outputText class="col-lg-2 col-md-2 col-sm-12 col-xs-12" id="estadoL" value="#{beanCatSucursal.data.nombreEntidad}"  />
+                        <h:outputLabel class="col-lg-2 col-md-2 col-sm-12 col-xs-12" for="entidad" value="Municipio:" />
+                        <h:outputText class="col-lg-2 col-md-2 col-sm-12 col-xs-12" id="entidad" value="#{beanCatSucursal.data.nombreMunicipio}"/>
+                        <h:outputLabel class="col-lg-2 col-md-2 col-sm-12 col-xs-12" for="colonia" value="Colonia:" />
+                        <h:outputText class="col-lg-2 col-md-2 col-sm-12 col-xs-12" id="colonia" value="#{beanCatSucursal.data.nombreColonia}"/>
+                    </div>
+                    
+                </p:outputPanel>
+            </p:dialog>
         </h:form>
     </ui:define>
 </ui:composition>

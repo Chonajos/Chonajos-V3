@@ -7,33 +7,33 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions">
-    
+
     <ui:define name="content">
         <div>
             <h3>#{beanBuscaVenta.title}</h3>
         </div>
         <h:form id="formContent">
-            <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
+            <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:growl id="messagess" showDetail="true" life="2000" />
             <p:panel>
                 <div class="container-fluid">
                     <div class="form-group" align="right">
                         <p:commandButton value="Buscar" update=":formContent" ajax="true" action="#{beanBuscaVenta.searchById()}" />
                         <p:commandButton value="Pagar" update=":formContent" ajax="true" action="#{beanBuscaVenta.updateVenta()}" rendered="#{beanBuscaVenta.viewEstate=='init'}" disabled="#{beanBuscaVenta.statusButtonPagar}" oncomplete="window.frames.miFrame.print();"/>
-                        
+
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtid_venta" value ="Número de folio:" /> 
                             <p:inputText id="txtid_venta" maxlength="10" class=" col-lg-1 col-md-4 col-sm-8 col-xs-6" value="#{beanBuscaVenta.data.idVenta}"  required="true"
-                                          requiredMessage="Ingresa un número de folio.">
-                                          <pe:keyFilter regEx="/[0-9_]/i"/>
-                             </p:inputText>
-                         </div>
+                                         requiredMessage="Ingresa un número de folio.">
+                                <pe:keyFilter regEx="/[0-9_]/i"/>
+                            </p:inputText>
+                        </div>
                     </div>
                 </div>
             </p:panel>
             <p:panel> 
                 <div class="container-fluid">
-                <!--Datos de Vendedor y Cliente -->
+                    <!--Datos de Vendedor y Cliente -->
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtNombreCliente" value ="Nombre de Cliente:" /> 
@@ -47,48 +47,48 @@
                         </div>
                     </div>
                 </div>
-             
-            
-                    <p:dataTable var="model" value="#{beanBuscaVenta.model}" styleClass="ui-datatable-hor-scroll"  emptyMessage="Productos.">
 
-                            <p:column headerText="Producto" width="150px;" style="text-align:center">
-                                <h:outputText value="#{model.nombreSubproducto}" />
+
+                <p:dataTable var="model" value="#{beanBuscaVenta.model}" styleClass="ui-datatable-hor-scroll"  emptyMessage="Productos.">
+
+                    <p:column headerText="Producto" width="150px;" class="alignLeft">
+                        <h:outputText value="#{model.nombreSubproducto}" />
+                    </p:column>
+                    <p:column headerText="Empaque" width="150px;" class="alignLeft">
+                        <h:outputText value="#{model.nombreEmpaque}" />
+                    </p:column>
+                    <p:column headerText="Cantidad" width="85px;" class="alignCenter">
+                        <h:outputText value="#{model.cantidadEmpaque}" />
+                    </p:column>
+                    <p:column headerText="Precio de venta" width="60px;" class="alignCenter">
+                        <h:outputText value="#{model.precioProducto}">
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Total" width="90px;" class="alignCenter">
+                        <h:outputText value="#{model.total}">
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Status" width="90px;" class="alignLeft">
+                        <h:outputText value="#{model.nombreStatus}"> 
+                        </h:outputText>
+                    </p:column>
+                    <p:columnGroup type="footer">
+                        <p:row>
+                            <p:column colspan="4" style="text-align:right" footerText="Total de Venta:" />
+                            <p:column colspan="1">
+                                <f:facet name="footer">
+                                    <h:outputText value="#{beanBuscaVenta.totalVenta}">
+                                        <f:convertNumber for="totalVenta" pattern="#,##0.00"/>
+                                    </h:outputText>
+                                </f:facet>
                             </p:column>
-                            <p:column headerText="Empaque" width="150px;" style="text-align:center">
-                                <h:outputText value="#{model.nombreEmpaque}" />
-                            </p:column>
-                            <p:column headerText="Cantidad" width="85px;" style="text-align:center">
-                                <h:outputText value="#{model.cantidadEmpaque}" />
-                            </p:column>
-                            <p:column headerText="Precio de venta" width="60px;" style="text-align:center">
-                                <h:outputText value="#{model.precioProducto}">
-                                    <f:convertNumber pattern="#,##0.00"/>
-                                </h:outputText>
-                            </p:column>
-                            <p:column headerText="Total" width="90px;" style="text-align:center">
-                                <h:outputText value="#{model.total}">
-                                    <f:convertNumber pattern="#,##0.00"/>
-                                </h:outputText>
-                            </p:column>
-                            <p:column headerText="Status" width="90px;" style="text-align:center">
-                                <h:outputText value="#{model.nombreStatus}"> 
-                                </h:outputText>
-                             </p:column>
-                        <p:columnGroup type="footer">
-                                <p:row>
-                                    <p:column colspan="4" style="text-align:right" footerText="Total de Venta:" />
-                                    <p:column colspan="1">
-                                        <f:facet name="footer">
-                                            <h:outputText value="#{beanBuscaVenta.totalVenta}">
-                                                <f:convertNumber for="totalVenta" pattern="#,##0.00"/>
-                                            </h:outputText>
-                                        </f:facet>
-                                    </p:column>
-                                    <p:column colspan="1" />
-                                    
-                                </p:row>
-                        </p:columnGroup>
-                    </p:dataTable>
+                            <p:column colspan="1" />
+
+                        </p:row>
+                    </p:columnGroup>
+                </p:dataTable>
                 <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanBuscaVenta.rutaPDF}"/>
             </p:panel>
         </h:form>

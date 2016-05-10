@@ -129,7 +129,7 @@ div label{
 .container-fluid{
     padding-right: 0px;
     padding-left: 0px;
-    
+
 }
 /*quitar bordes de paneles*/
 /*Letra mas chica en combos*/
@@ -180,6 +180,9 @@ button span:hover{
         padding-top: 50px; 
         background-image:none !important;  		
         height: 100%; 
+    }
+    div label{
+        text-align: left !important;
     }
 }
 @media (max-width : 767px){
