@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import javax.annotation.PostConstruct;
+import org.primefaces.event.RowEditEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -60,6 +61,8 @@ public class BeanExistencias implements Serializable {
     private String title = "";
     private String viewEstate = "";
 
+    private int filtro;
+
     @PostConstruct
     public void init() {
 
@@ -83,6 +86,7 @@ public class BeanExistencias implements Serializable {
 
         setViewEstate("init");
         setTitle("Existencias");
+        filtro = 1;
     }
 
     public void buscaExistencias() {
@@ -91,6 +95,7 @@ public class BeanExistencias implements Serializable {
             idEntrada = null;
         } else {
             idEntrada = entradaMercancia.getIdEmPK();
+            if(idEntrada != null){subProducto = null;}
         }
 
         String idproductito = subProducto == null ? null : subProducto.getIdSubproductoPk();
@@ -114,7 +119,7 @@ public class BeanExistencias implements Serializable {
 
     }
 
-     private boolean validateMaxMin() {
+    private boolean validateMaxMin() {
 
         if (data.getPrecioVenta().doubleValue() > (data.getPrecioMaximo().doubleValue())) {
             return false;
@@ -139,13 +144,37 @@ public class BeanExistencias implements Serializable {
     public void searchById() {
         setViewEstate("search");
         setTitle("Mantenimiento de Precio");
-        System.out.println("-*-*-*-*-*-*-*-*-**-*-*-*-*-*-*-*-*-*--**-*-*-*--**-*-*-*-*-*-*-*-*-*-*-**--**-*-*-*-*--**--**-*-*-*-" + data.toString());
     }
 
     public void cancel() {
         init();
     }
 
+    public void onRowEdit(RowEditEvent event) {
+
+        data = (ExistenciaProducto) event.getObject();
+
+        System.out.println("editado " + data.toString());
+        updatePrecio();
+
+    }
+
+    public void onRowCancel(RowEditEvent event) {
+        System.out.println("cancel");
+
+    }
+
+    public void resetValuesFilter(){
+        data.setIdSucursal(null);
+        data.setIdBodegaFK(null);
+        data.setIdProvedor(null);
+        data.setIdTipoEmpaqueFK(null);
+        data.setIdTipoConvenio(null);
+        entradaMercancia = new EntradaMercancia2();
+        buscaExistencias();
+
+    }
+    
     public ArrayList<Bodega> getListaBodegas() {
         return listaBodegas;
     }
@@ -250,4 +279,13 @@ public class BeanExistencias implements Serializable {
         this.viewEstate = viewEstate;
     }
 
+    public int getFiltro() {
+        return filtro;
+    }
+
+    public void setFiltro(int filtro) {
+        this.filtro = filtro;
+    }
+
+    
 }

@@ -1,4 +1,4 @@
---BASE DE DATOS : choni
+﻿--BASE DE DATOS : choni
 --USUARIO: choni
 --Contraseña: choni
 
@@ -663,7 +663,8 @@ INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Sucursales', 0,'10.6','/views/roles.xhtml');
 
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Productos', 1,'20','NULL');
-INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Mantenimiento Precios', 0,'20.1','/views/mantenimientoPrecios.xhtml');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Mantenimiento Precios Menudeo', 0,'20.1','/views/mantenimientoPrecios.xhtml');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Mantenimiento Precios Mayoreo', 0,'20.2','/views/mantenimientoMayoreo.xhtml');
 
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Ventas', 1,'30','NULL');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Realizar Pedido', 0,'30.1','/views/venta.xhtml');
@@ -724,6 +725,7 @@ INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(24,1);
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(25,1);
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(26,1);
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(27,1);
+INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(28,1);
 <--- fin inserts para roles y permisos--->
 
 --Tablas de Ventas Mayoreo.
