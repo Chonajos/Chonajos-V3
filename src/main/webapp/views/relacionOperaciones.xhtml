@@ -21,8 +21,8 @@
                         <p:commandButton value="Atras" update=":formContent" ajax="true" action="#{beanRelacionOperaciones.cancel}" rendered="#{beanRelacionOperaciones.viewEstate =='searchById'}"/>
                     </div>
                     <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
-                        <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="sucursalFiltro" value ="Sucursal:" rendered="#{beanRelacionOperaciones.viewEstate =='init'}"/> 
-                        <h:selectOneMenu  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanRelacionOperaciones.data.idSucursal}" rendered="#{beanRelacionOperaciones.viewEstate =='init'}">
+                        <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="sucursalFiltro" value ="Sucursals:" rendered="#{beanRelacionOperaciones.viewEstate =='init'}" /> 
+                        <h:selectOneMenu  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanRelacionOperaciones.data.idSucursal}" rendered="#{beanRelacionOperaciones.viewEstate =='init'}" disabled="#{beanRelacionOperaciones.usuario.perId != 1}">
                             <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="" />
                             <f:selectItems value="#{beanRelacionOperaciones.listaSucursales}" var="sucursalita" itemLabel="#{sucursalita.nombreSucursal}" itemValue="#{sucursalita.idSucursalPk}"/>
                             <p:ajax event="change" listener="#{beanRelacionOperaciones.printStatus()}" update=":formContent:table"/>

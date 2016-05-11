@@ -97,9 +97,9 @@ public class BeanCatUsuario implements BeanSimple {
     public String update() {
         try {
             data.setContrasenaUsuario(data.getClaveUsuario());
-            if (ifaceCatUsuario.updateUsuario(data) == 0){
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro modificado."));
-            }else{
+            if (ifaceCatUsuario.updateUsuario(data) == 1) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro modificado."));
+            } else {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar modificar el registro :" + data.getNombreUsuario() + "."));
             }
         } catch (Exception ex) {

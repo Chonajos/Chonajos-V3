@@ -19,7 +19,7 @@ public class ContextProfileInitializer implements ApplicationContextInitializer<
     private static Logger log = LoggerFactory.getLogger(ContextProfileInitializer.class);
 
     /**
-     * MÃ©todo inicializa el contexto.
+     * Metodo inicializa el contexto.
      */
     @Override
     public void initialize(ConfigurableWebApplicationContext ctx) {

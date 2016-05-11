@@ -15,7 +15,7 @@
                 <h3>#{beanPermisoRol.title}</h3>
 
             </div>
-            <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
+            <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:panel   style="border: 0px;" >
                 <div class="form-group" align="right">
                     <p:commandButton value="Guardar" update=":formContent" ajax="true" action="#{beanPermisoRol.save}" />
@@ -24,7 +24,7 @@
                     <div class="col-lg-4 col-md-5 col-sm-6 col-xs-12">
                         <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="selectRol" value ="Categoría:"/> 
                         <h:selectOneMenu id="selectRol" value="#{beanPermisoRol.data.idRol}" required="true" class="col-lg-8 col-md-8 col-sm-8 col-xs-12" requiredMessage="Ingresa un valor para el campo Producto.">
-                            <f:selectItem itemLabel="Seleccione la opción" itemValue="-1" noSelectionOption="true" />
+                            <f:selectItem itemLabel="Seleccione la opción" itemValue="#{null}" noSelectionOption="true" />
                             <f:selectItems value="#{beanPermisoRol.lstRol}" var="acces" itemLabel="#{acces.nombreRol}" itemValue="#{acces.idRolPk}" />
                             <p:ajax event="change" listener="#{beanPermisoRol.searchById}" process="@this" update=":formContent:tableData"/>
                         </h:selectOneMenu>

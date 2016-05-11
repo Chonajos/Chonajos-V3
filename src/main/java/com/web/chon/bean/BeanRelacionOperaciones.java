@@ -4,6 +4,8 @@ import com.web.chon.dominio.BuscaVenta;
 import com.web.chon.dominio.RelacionOperaciones;
 import com.web.chon.dominio.StatusVenta;
 import com.web.chon.dominio.Sucursal;
+import com.web.chon.dominio.UsuarioDominio;
+import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceBuscaVenta;
 import com.web.chon.service.IfaceCatStatusVenta;
 import com.web.chon.service.IfaceCatSucursales;
@@ -29,32 +31,42 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
 
     private static final long serialVersionUID = 1L;
 
-    @Autowired
-    private IfaceVenta ifaceVenta;
-    @Autowired
-    private IfaceBuscaVenta ifaceBuscaVenta;
-    @Autowired
-    private IfaceCatSucursales ifaceCatSucursales;
-    @Autowired
-    private IfaceCatStatusVenta ifaceCatStatusVenta;
-
-    private RelacionOperaciones data;
-    private ArrayList<RelacionOperaciones> model;
+    @Autowired private IfaceVenta ifaceVenta;
+    @Autowired private IfaceBuscaVenta ifaceBuscaVenta;
+    @Autowired private PlataformaSecurityContext context;
+    @Autowired private IfaceCatSucursales ifaceCatSucursales;
+    @Autowired private IfaceCatStatusVenta ifaceCatStatusVenta;
+    
     private ArrayList<BuscaVenta> lstVenta;
     private ArrayList<Sucursal> listaSucursales;
+    private ArrayList<RelacionOperaciones> model;
     private ArrayList<StatusVenta> listaStatusVenta;
+    
+    private UsuarioDominio usuario;
+    private RelacionOperaciones data;
+    
     private String title;
     private String viewEstate;
+    
     private int filtro;
-    private Date fechaInicio;
+    
     private Date fechaFin;
+    private Date fechaInicio;
     private BigDecimal totalVenta;
 
     @PostConstruct
     public void init() {
 
-        model = new ArrayList<RelacionOperaciones>();
+       
         data = new RelacionOperaciones();
+        model = new ArrayList<RelacionOperaciones>();
+        
+        usuario = context.getUsuarioAutenticado();
+        
+        /*Validacion de perfil administrador*/
+        if(usuario.getPerId() != 1) {
+            data.setIdSucursal(usuario.getSucId());
+        }
 
         lstVenta = new ArrayList<BuscaVenta>();
         listaSucursales = new ArrayList<Sucursal>();
@@ -251,5 +263,15 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     public void setListaStatusVenta(ArrayList<StatusVenta> listaStatusVenta) {
         this.listaStatusVenta = listaStatusVenta;
     }
+
+    public UsuarioDominio getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(UsuarioDominio usuario) {
+        this.usuario = usuario;
+    }
+    
+    
 
 }

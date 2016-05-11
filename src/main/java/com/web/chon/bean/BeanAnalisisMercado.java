@@ -65,11 +65,6 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
     private boolean charExpander = false;
 
     @Override
-    protected Logger getLogger() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public void initModel() {
         usuario = context.getUsuarioAutenticado();
         data = new AnalisisMercado();
@@ -437,6 +432,12 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
 
     public void searchRemanente() {
         data.setRemantePorSemana(ifaceEntradaProductoCentral.getRemanente(fechaRemanente, data.getIdProductoFk()));
+    }
+
+    @Override
+    protected Logger getLogger() {
+
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public String getTitle() {

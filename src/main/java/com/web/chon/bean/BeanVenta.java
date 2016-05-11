@@ -73,22 +73,15 @@ public class BeanVenta implements Serializable, BeanSimple {
 
     private static final long serialVersionUID = 1L;
 
-    @Autowired
-    private IfaceVenta ifaceVenta;
-    @Autowired
-    private IfaceEmpaque ifaceEmpaque;
-    @Autowired
-    private IfaceSubProducto ifaceSubProducto;
-    @Autowired
-    private IfaceVentaProducto ifaceVentaProducto;
-    @Autowired
-    IfaceCatCliente ifaceCatCliente;
-    @Autowired
-    IfaceCatUsuario ifaceCatUsuario;
-    @Autowired
-    IfaceMantenimientoPrecio ifaceMantenimientoPrecio;
-    @Autowired
-    private PlataformaSecurityContext context;
+    @Autowired private IfaceVenta ifaceVenta;
+    @Autowired private IfaceEmpaque ifaceEmpaque;
+    @Autowired private IfaceSubProducto ifaceSubProducto;
+    @Autowired private IfaceVentaProducto ifaceVentaProducto;
+    @Autowired IfaceCatCliente ifaceCatCliente;
+    @Autowired IfaceCatUsuario ifaceCatUsuario;
+    @Autowired IfaceMantenimientoPrecio ifaceMantenimientoPrecio;
+    @Autowired private PlataformaSecurityContext context;
+    
     private ArrayList<VentaProducto> lstVenta;
     private ArrayList<Subproducto> lstProducto;
     private ArrayList<TipoEmpaque> lstTipoEmpaque;

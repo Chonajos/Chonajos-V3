@@ -4,6 +4,8 @@ import com.web.chon.dominio.MantenimientoPrecios;
 import com.web.chon.dominio.Subproducto;
 import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.TipoEmpaque;
+import com.web.chon.dominio.UsuarioDominio;
+import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceEmpaque;
 import com.web.chon.service.IfaceMantenimientoPrecio;
@@ -29,14 +31,17 @@ import org.springframework.stereotype.Component;
 public class BeanMantenimientoPrecio implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @Autowired
-    private IfaceSubProducto ifaceSubProducto;
+
     @Autowired
     private IfaceEmpaque ifaceEmpaque;
     @Autowired
-    private IfaceMantenimientoPrecio ifaceMantenimientoPrecio;
+    private PlataformaSecurityContext context;
+    @Autowired
+    private IfaceSubProducto ifaceSubProducto;
     @Autowired
     private IfaceCatSucursales ifaceCatSucursales;
+    @Autowired
+    private IfaceMantenimientoPrecio ifaceMantenimientoPrecio;
 
     private ArrayList<Sucursal> listaSucursales;
 
@@ -47,8 +52,10 @@ public class BeanMantenimientoPrecio implements Serializable {
     private String viewEstate = "";
     private String idProductoSelecionado = "";
     private boolean update;
+
     private MantenimientoPrecios data;
     private Subproducto subproducto;
+    private UsuarioDominio usuarioDominio;
 
     @PostConstruct
     public void init() {
@@ -59,7 +66,13 @@ public class BeanMantenimientoPrecio implements Serializable {
         subproducto = new Subproducto();
         lstProducto = new ArrayList<Subproducto>();
         lstTipoEmpaque = ifaceEmpaque.getEmpaques();
-
+        usuarioDominio = context.getUsuarioAutenticado();
+        
+        /*Validacion de perfil para bloquear la sucursal*/
+        if (usuarioDominio.getPerId() != 1) {
+            data.setIdSucursal(usuarioDominio.getSucId());
+        }
+        
         setTitle("Mantenimiento de Precios.");
         setViewEstate("init");
 
@@ -203,5 +216,15 @@ public class BeanMantenimientoPrecio implements Serializable {
     public void setListaSucursales(ArrayList<Sucursal> listaSucursales) {
         this.listaSucursales = listaSucursales;
     }
+
+    public UsuarioDominio getUsuarioDominio() {
+        return usuarioDominio;
+    }
+
+    public void setUsuarioDominio(UsuarioDominio usuarioDominio) {
+        this.usuarioDominio = usuarioDominio;
+    }
+    
+    
 
 }

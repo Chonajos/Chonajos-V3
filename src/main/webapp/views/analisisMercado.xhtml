@@ -23,47 +23,47 @@
                         <p:commandButton value="Reportes" resetValues="true" update=":formContent" immediate="true" actionListener="#{beanAnalisisMercado.search}" rendered="#{beanAnalisisMercado.state =='INIT' and beanAnalisisMercado.usuario.perId =='1' }"/>
                     </div>
                     <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 alignLeftRadioButton">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12" value ="Ingresar:" rendered="#{beanAnalisisMercado.state =='INIT'}"/> 
-                            <p:selectOneRadio value="#{beanAnalisisMercado.insertar}" class="col-lg-8 col-md-8 col-sm-8 col-xs-12" rendered="#{beanAnalisisMercado.state =='INIT'}">
-                                <f:selectItem itemLabel="Remanente" itemValue="remanente" />
+                            <p:selectOneRadio value="#{beanAnalisisMercado.insertar}" class="col-lg-8 col-md-8 col-sm-8 col-xs-12 alignLeftRadioButton" rendered="#{beanAnalisisMercado.state =='INIT'}">
+                                <f:selectItem itemLabel="Remanente" itemValue="remanente" class="alignLeftRadioButton"/>
                                 <f:selectItem itemLabel="Precio Promedio" itemValue="precioPromedio" />
                                 <p:ajax event="change" update=":formContent" resetValues="true"/>
                             </p:selectOneRadio>
                         </div>
                     </div>
                     <div class="form-group">
-                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="selectProductosA" value ="Categoría:" /> 
-                            <h:selectOneMenu  id="selectProductos"  value="#{beanAnalisisMercado.data.idProductoFk}" class="col-lg-8 col-md-8 col-sm-8 col-xs-12" requiredMessage="Ingresa un valor para el campo Producto." rendered="#{beanAnalisisMercado.state =='SEARCH'}">
+                            <h:selectOneMenu  id="selectProductos"  value="#{beanAnalisisMercado.data.idProductoFk}" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" requiredMessage="Ingresa un valor para el campo Producto." rendered="#{beanAnalisisMercado.state =='SEARCH'}">
                                 <f:selectItem itemLabel="Seleccione la opción" itemValue="#{null}" noSelectionOption="true" />
                                 <f:selectItems value="#{beanAnalisisMercado.lstProducto}" var="producto" itemLabel="#{producto.nombreSubproducto}" itemValue="#{producto.idSubproductoPk}" />
                                 <p:ajax event="change" update=":formContent" listener="#{beanAnalisisMercado.filtroPorProducto}"/>
                             </h:selectOneMenu>
-                            <h:selectOneMenu id="selectProductosA" required="true" value="#{beanAnalisisMercado.data.idProductoFk}"  class="col-lg-8 col-md-8 col-sm-8 col-xs-12" requiredMessage="Ingresa un valor para el campo Producto." rendered="#{beanAnalisisMercado.state =='INIT'}">
+                            <h:selectOneMenu id="selectProductosA" required="true" value="#{beanAnalisisMercado.data.idProductoFk}"  class="col-lg-6 col-md-8 col-sm-8 col-xs-12" requiredMessage="Ingresa un valor para el campo Producto." rendered="#{beanAnalisisMercado.state =='INIT'}">
                                 <f:selectItem itemLabel="Seleccione la opción" itemValue="#{null}" noSelectionOption="true" />
                                 <f:selectItems value="#{beanAnalisisMercado.lstProducto}" var="producto" itemLabel="#{producto.nombreSubproducto}" itemValue="#{producto.idSubproductoPk}" />
                                 <p:ajax event="change" update=":formContent" listener="#{beanAnalisisMercado.searchDatabyIdProducto}"/>
                             </h:selectOneMenu>
                         </div>
 
-                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 form-group">
-                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtToneladas" value ="Toneladas:" rendered="#{beanAnalisisMercado.state =='INIT' and beanAnalisisMercado.insertar =='precioPromedio'}"/> 
-                            <p:inputText id="txtToneladas" maxlength="7" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanAnalisisMercado.data.cantidadToneladas}" required="true" requiredMessage="Ingresa un valor para el campo Toneladas." rendered="#{beanAnalisisMercado.state =='INIT' and beanAnalisisMercado.insertar =='precioPromedio'}"/>
+                        <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-4 col-md-3 col-sm-4 col-xs-6"  for="txtToneladas" value ="Toneladas:" rendered="#{beanAnalisisMercado.state =='INIT' and beanAnalisisMercado.insertar =='precioPromedio'}"/> 
+                            <p:inputText id="txtToneladas" maxlength="7" class=" col-lg-3 col-md-4 col-sm-8 col-xs-6" value="#{beanAnalisisMercado.data.cantidadToneladas}" required="true" requiredMessage="Ingresa un valor para el campo Toneladas." rendered="#{beanAnalisisMercado.state =='INIT' and beanAnalisisMercado.insertar =='precioPromedio'}"/>
                             <pe:keyFilter for="txtToneladas" regEx="/[0-9.]/i" />
                         </div>
-                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 form-group">
-                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtPrecioPromedio" value ="Precio Promedio:" rendered="#{beanAnalisisMercado.state =='INIT' and beanAnalisisMercado.insertar =='precioPromedio'}"/> 
-                            <p:inputText id="txtPrecioPromedio" maxlength="6" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanAnalisisMercado.data.precio}" required="true" requiredMessage="Ingresa un valor para el campo Precio Promedio." rendered="#{beanAnalisisMercado.state =='INIT' and beanAnalisisMercado.insertar =='precioPromedio'}"/>
+                        <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-5 col-md-3 col-sm-4 col-xs-6"  for="txtPrecioPromedio" value ="Precio Promedio:" rendered="#{beanAnalisisMercado.state =='INIT' and beanAnalisisMercado.insertar =='precioPromedio'}"/> 
+                            <p:inputText id="txtPrecioPromedio" maxlength="6" class=" col-lg-3 col-md-4 col-sm-8 col-xs-6" value="#{beanAnalisisMercado.data.precio}" required="true" requiredMessage="Ingresa un valor para el campo Precio Promedio." rendered="#{beanAnalisisMercado.state =='INIT' and beanAnalisisMercado.insertar =='precioPromedio'}"/>
                             <pe:keyFilter for="txtPrecioPromedio" regEx="/[0-9.]/i" />
                         </div>
 
                     </div>
 
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="calendarInicio" value ="Fecha de Inicio:" rendered="#{beanAnalisisMercado.state =='INIT' and beanAnalisisMercado.insertar !='precioPromedio'}"/> 
-                            <p:calendar id="calendarRemanente" class="col-lg-5 col-md-4 col-sm-8 col-xs-6" navigator="true" placeholder="dd/mm/yyyy"
+                        <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-3 col-sm-4 col-xs-6"  for="calendarInicio" value ="Fecha de Inicio:" rendered="#{beanAnalisisMercado.state =='INIT' and beanAnalisisMercado.insertar !='precioPromedio'}"/> 
+                            <p:calendar id="calendarRemanente" class="col-lg-6 col-md-4 col-sm-8 col-xs-6 calendario" navigator="true" placeholder="dd/mm/yyyy"
                                         value="#{beanAnalisisMercado.fechaRemanente}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button" rendered="#{beanAnalisisMercado.state =='INIT' and beanAnalisisMercado.insertar !='precioPromedio'}">
                                 <p:ajax event="dateSelect" update=":formContent:txtRemanente"
                                         listener="#{beanAnalisisMercado.searchRemanente}"/>
@@ -71,9 +71,9 @@
                             </p:calendar>
                         </div>
 
-                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 form-group">
-                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtRemanente" value ="Remanente:" rendered="#{beanAnalisisMercado.state =='INIT' and beanAnalisisMercado.insertar !='precioPromedio'}"/> 
-                            <p:inputText id="txtRemanente" maxlength="6" disabled="#{beanAnalisisMercado.data.remantePorSemana != 0}" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanAnalisisMercado.data.remantePorSemana}" required="true" requiredMessage="Ingresa un valor para el campo Remanete." rendered="#{beanAnalisisMercado.state =='INIT' and beanAnalisisMercado.insertar !='precioPromedio'}" />
+                        <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-4 col-md-3 col-sm-4 col-xs-6"  for="txtRemanente" value ="Remanente:" rendered="#{beanAnalisisMercado.state =='INIT' and beanAnalisisMercado.insertar !='precioPromedio'}"/> 
+                            <p:inputText id="txtRemanente" maxlength="6" disabled="#{beanAnalisisMercado.data.remantePorSemana != 0}" class=" col-lg-3 col-md-4 col-sm-8 col-xs-6" value="#{beanAnalisisMercado.data.remantePorSemana}" required="true" requiredMessage="Ingresa un valor para el campo Remanete." rendered="#{beanAnalisisMercado.state =='INIT' and beanAnalisisMercado.insertar !='precioPromedio'}" />
                         </div>
                     </div>
 

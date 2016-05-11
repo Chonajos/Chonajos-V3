@@ -22,7 +22,7 @@
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="sucursalFiltro" value ="Sucursal:"/> 
-                            <h:selectOneMenu  id="sucursalFiltro" class="col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanMantenimientoPrecio.data.idSucursal}" >
+                            <h:selectOneMenu  id="sucursalFiltro" class="col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanMantenimientoPrecio.data.idSucursal}" disabled="#{beanMantenimientoPrecio.usuarioDominio.getPerId() != 1}">
                                 <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="" />
                                 <f:selectItems value="#{beanMantenimientoPrecio.listaSucursales}" var="sucursalita" itemLabel="#{sucursalita.nombreSucursal}" itemValue="#{sucursalita.idSucursalPk}"/>
                                 <p:ajax event="change" update=":formContent" listener="#{beanMantenimientoPrecio.print()}" />

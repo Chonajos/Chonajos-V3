@@ -122,6 +122,12 @@ div label{
     text-align: right !important;
 }
 
+.alignLeftRadioButton table  label{
+    text-align: left !important;
+}
+
+
+
 /*quitar bordes de paneles*/
 .ui-panel .ui-panel-content{
     padding: 0.0em 0em !important;
@@ -157,15 +163,18 @@ button span:hover{
 
 /*alinght left*/
 .alignLeft{
-    text-align: left;
+    text-align: left !important;
 }
 .alignRight{
-    text-align: right;
+    text-align: right !important;
 }
 .alignCenter{
-    text-align:center;
+    text-align:center !important;
 }
 
+.alignLeftRadioButton table tbody tr td label{
+    text-align: left !important;
+} 
 
 @media ( max-width : 767px) {
     .navbar {

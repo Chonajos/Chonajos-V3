@@ -4,6 +4,8 @@ import com.web.chon.dominio.EntradaMercancia2;
 import com.web.chon.dominio.EntradaMercanciaProducto;
 import com.web.chon.dominio.Provedor;
 import com.web.chon.dominio.Sucursal;
+import com.web.chon.dominio.UsuarioDominio;
+import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceCatProvedores;
 import com.web.chon.service.IfaceCatStatusVenta;
 import com.web.chon.service.IfaceCatSucursales;
@@ -32,10 +34,11 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
     private static final long serialVersionUID = 1L;
 
-    @Autowired private IfaceEntradaMercancia ifaceEntradaMercancia;
-    @Autowired private IfaceEntradaMercanciaProducto ifaceEntradaMercanciaProducto;
+    @Autowired private PlataformaSecurityContext context;
     @Autowired private IfaceCatSucursales ifaceCatSucursales;
     @Autowired private IfaceCatProvedores ifaceCatProvedores;
+    @Autowired private IfaceEntradaMercancia ifaceEntradaMercancia;
+    @Autowired private IfaceEntradaMercanciaProducto ifaceEntradaMercanciaProducto;
     
     private ArrayList<Provedor> lstProvedor;
     private ArrayList<Sucursal> listaSucursales;
@@ -44,6 +47,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     
     private Provedor provedor;
     private EntradaMercancia2 data;
+    private UsuarioDominio usuario;
 
     private String title;
     private String viewEstate;
@@ -58,6 +62,8 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     @PostConstruct
     public void init() {
 
+        usuario = context.getUsuarioAutenticado();
+        
         listaSucursales = new ArrayList<Sucursal>();
         listaSucursales = ifaceCatSucursales.getSucursales();
 
@@ -67,6 +73,11 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
         getEntradaProductoByIntervalDate();
 
+         /*Validacion de perfil administrador*/
+        if (usuario.getPerId() != 1) {
+            data.setIdSucursalFK(new BigDecimal(usuario.getSucId()));
+        }
+        
         setTitle("Relación de Operaciónes.");
         setViewEstate("init");
 
@@ -264,6 +275,14 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
     public void setTotalKilos(BigDecimal totalKilos) {
         this.totalKilos = totalKilos;
+    }
+
+    public UsuarioDominio getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(UsuarioDominio usuario) {
+        this.usuario = usuario;
     }
 
 }
