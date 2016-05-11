@@ -12,6 +12,8 @@ import com.web.chon.dominio.RelacionOperacionesMayoreo;
 import com.web.chon.dominio.StatusVenta;
 import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.TipoVenta;
+import com.web.chon.dominio.UsuarioDominio;
+import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceBuscaVenta;
 import com.web.chon.service.IfaceCatStatusVenta;
 import com.web.chon.service.IfaceCatSucursales;
@@ -46,6 +48,8 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple{
     private IfaceBuscaVenta ifaceBuscaVenta;
     @Autowired
     private IfaceTipoVenta ifaceTipoVenta;
+    @Autowired private PlataformaSecurityContext context;
+    private UsuarioDominio usuario;
     private ArrayList<BuscaVenta> lstVenta;
     private ArrayList<TipoVenta> lstTipoVenta;
     private RelacionOperacionesMayoreo data;
@@ -60,8 +64,16 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple{
     private BigDecimal totalVenta;
     @PostConstruct
     public void init() {
+         data = new RelacionOperacionesMayoreo();
+        usuario = context.getUsuarioAutenticado();
+       
+        /*Validacion de perfil administrador*/
+        if(usuario.getPerId() != 1) {
+            
+            data.setIdSucursal(new BigDecimal(usuario.getSucId()));
+        }
         model = new ArrayList<RelacionOperacionesMayoreo>();
-        data = new RelacionOperacionesMayoreo();
+       
 
         listaSucursales = new ArrayList<Sucursal>();
         listaStatusVenta = new ArrayList<StatusVenta>();
@@ -262,6 +274,14 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple{
 
     public void setLstTipoVenta(ArrayList<TipoVenta> lstTipoVenta) {
         this.lstTipoVenta = lstTipoVenta;
+    }
+
+    public UsuarioDominio getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(UsuarioDominio usuario) {
+        this.usuario = usuario;
     }
     
     

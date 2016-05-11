@@ -51,22 +51,22 @@ public class EjbVentaMayoreo implements NegocioVentaMayoreo {
 "FROM VENTAMAYOREOPRODUCTO VTP WHERE VTP.ID_VENTA_MAYOREO_FK=ven.ID_VENTA_MAYOREO_PK) AS TOTAL_VENTA, TV.NOMBRE_TIPO_VENTA FROM VENTA_MAYOREO ven\n" +
 "INNER JOIN CLIENTE CLI ON CLI.ID_CLIENTE = ven.ID_CLIENTE_FK\n" +
 "INNER JOIN USUARIO USU ON USU.ID_USUARIO_PK = ven.ID_VENDEDOR_FK\n" +
-"INNER JOIN TIPO_VENTA TV ON TV.ID_TIPO_VENTA_PK = ven.ID_TIPO_VENTA_FK");
+"INNER JOIN TIPO_VENTA TV ON TV.ID_TIPO_VENTA_PK = ven.ID_TIPO_VENTA_FK ");
 
         if (!fechaInicio.equals("")) 
         {
             cont++;
-            cadena.append("WHERE TO_DATE(TO_CHAR(ven.FECHA_VENTA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "' ");
+            cadena.append(" WHERE TO_DATE(TO_CHAR(ven.FECHA_VENTA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "' ");
         }
 
-        if (idSucursal.intValue() != 0) {
+        if (idSucursal!=null && idSucursal.intValue() != 0) {
             if (cont == 0) {
                 cadena.append(" WHERE ");
             } else {
                 cadena.append(" AND ");
             }
             
-            cadena.append("ven.ID_SUCURSAL_FK = '" + idSucursal + "' ");
+            cadena.append(" ven.ID_SUCURSAL_FK = '" + idSucursal + "' ");
             cont++;
 
         }
