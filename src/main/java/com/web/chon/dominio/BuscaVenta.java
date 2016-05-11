@@ -17,18 +17,100 @@ public class BuscaVenta implements Serializable
     private BigDecimal idVenta;
     private String nombreSubproducto;
     private String nombreEmpaque;
-    private int cantidadEmpaque;
-    private int precioProducto;
-    private int total;
-    private int totalVenta;
+    private BigDecimal cantidadEmpaque;
+    private BigDecimal precioProducto;
+    private BigDecimal total;
+    private BigDecimal totalVenta;
     private Date fechaVenta;
     private Date fechaPromesaPago;
     private String nombreStatus;
     private int statusFK;
+    private BigDecimal idSucursalFk;
+    private String clave;
+    private BigDecimal carro;
+    private BigDecimal kilosVendidos;
 
+    @Override
+    public String toString() {
+        return "BuscaVenta{" + "nombreCliente=" + nombreCliente + ", nombreVendedor=" + nombreVendedor + ", idVenta=" + idVenta + ", nombreSubproducto=" + nombreSubproducto + ", nombreEmpaque=" + nombreEmpaque + ", cantidadEmpaque=" + cantidadEmpaque + ", precioProducto=" + precioProducto + ", total=" + total + ", totalVenta=" + totalVenta + ", fechaVenta=" + fechaVenta + ", fechaPromesaPago=" + fechaPromesaPago + ", nombreStatus=" + nombreStatus + ", statusFK=" + statusFK + ", idSucursalFk=" + idSucursalFk + ", clave=" + clave + ", carro=" + carro + ", kilosVendidos=" + kilosVendidos + '}';
+    }
+
+    
+    
+    
+    
+    
     public int getStatusFK() {
         return statusFK;
     }
+
+    public BigDecimal getCantidadEmpaque() {
+        return cantidadEmpaque;
+    }
+
+    public void setCantidadEmpaque(BigDecimal cantidadEmpaque) {
+        this.cantidadEmpaque = cantidadEmpaque;
+    }
+
+    public BigDecimal getPrecioProducto() {
+        return precioProducto;
+    }
+
+    public void setPrecioProducto(BigDecimal precioProducto) {
+        this.precioProducto = precioProducto;
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
+    }
+
+    public BigDecimal getTotalVenta() {
+        return totalVenta;
+    }
+
+    public void setTotalVenta(BigDecimal totalVenta) {
+        this.totalVenta = totalVenta;
+    }
+
+    
+    
+    public String getClave() {
+        return clave;
+    }
+
+    public void setClave(String clave) {
+        this.clave = clave;
+    }
+
+    public BigDecimal getCarro() {
+        return carro;
+    }
+
+    public void setCarro(BigDecimal carro) {
+        this.carro = carro;
+    }
+
+    public BigDecimal getKilosVendidos() {
+        return kilosVendidos;
+    }
+
+    public void setKilosVendidos(BigDecimal kilosVendidos) {
+        this.kilosVendidos = kilosVendidos;
+    }
+
+    
+    public BigDecimal getIdSucursalFk() {
+        return idSucursalFk;
+    }
+
+    public void setIdSucursalFk(BigDecimal idSucursalFk) {
+        this.idSucursalFk = idSucursalFk;
+    }
+    
 
     public void setStatusFK(int statusFK) {
         this.statusFK = statusFK;
@@ -74,37 +156,7 @@ public class BuscaVenta implements Serializable
         this.nombreEmpaque = nombreEmpaque;
     }
 
-    public int getCantidadEmpaque() {
-        return cantidadEmpaque;
-    }
-
-    public void setCantidadEmpaque(int cantidadEmpaque) {
-        this.cantidadEmpaque = cantidadEmpaque;
-    }
-
-    public int getPrecioProducto() {
-        return precioProducto;
-    }
-
-    public void setPrecioProducto(int precioProducto) {
-        this.precioProducto = precioProducto;
-    }
-
-    public int getTotal() {
-        return total;
-    }
-
-    public void setTotal(int total) {
-        this.total = total;
-    }
-
-    public int getTotalVenta() {
-        return totalVenta;
-    }
-
-    public void setTotalVenta(int totalVenta) {
-        this.totalVenta = totalVenta;
-    }
+   
 
     public Date getFechaVenta() {
         return fechaVenta;
@@ -130,13 +182,6 @@ public class BuscaVenta implements Serializable
         this.nombreStatus = nombreStatus;
     }
 
-    @Override
-    public String toString() {
-        return "BuscaVenta{" + "nombreCliente=" + nombreCliente + ", nombreVendedor=" + nombreVendedor + ", idVenta=" + idVenta + ", nombreSubproducto=" + nombreSubproducto + ", nombreEmpaque=" + nombreEmpaque + ", cantidadEmpaque=" + cantidadEmpaque + ", precioProducto=" + precioProducto + ", total=" + total + ", totalVenta=" + totalVenta + ", fechaVenta=" + fechaVenta + ", fechaPromesaPago=" + fechaPromesaPago + ", nombreStatus=" + nombreStatus + ", statusFK=" + statusFK + '}';
-    }
-   
-   
     
-
     
 }

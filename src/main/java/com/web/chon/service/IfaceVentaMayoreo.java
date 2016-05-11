@@ -5,7 +5,12 @@
  */
 package com.web.chon.service;
 
+
+import com.web.chon.dominio.RelacionOperacionesMayoreo;
 import com.web.chon.dominio.VentaMayoreo;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
 
 /**
  *
@@ -15,5 +20,6 @@ public interface IfaceVentaMayoreo {
     
     public int insertarVenta(VentaMayoreo venta);
     public int getNextVal();
+    public ArrayList<RelacionOperacionesMayoreo> getVentasByIntervalDate(Date fechaInicio, Date fechaFin,BigDecimal idSucursal,BigDecimal idStatusVenta,BigDecimal idTipoVenta);
     
 }

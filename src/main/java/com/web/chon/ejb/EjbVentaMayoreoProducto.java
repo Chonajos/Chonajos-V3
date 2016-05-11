@@ -7,6 +7,7 @@ package com.web.chon.ejb;
 
 import com.web.chon.dominio.VentaProductoMayoreo;
 import com.web.chon.negocio.NegocioVentaMayoreoProducto;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -42,7 +43,6 @@ public class EjbVentaMayoreoProducto implements NegocioVentaMayoreoProducto{
     public int getNextVal() {
        Query query = em.createNativeQuery("SELECT S_VENTA_MAYOREO_PRODUCTO.nextVal FROM DUAL");
         return Integer.parseInt(query.getSingleResult().toString());
-    
-    
     }
+    
 }

@@ -10,5 +10,6 @@ import java.util.ArrayList;
 public interface IfaceBuscaVenta 
 {
     public ArrayList<BuscaVenta> getVentaById(int idVenta);
+    public ArrayList<BuscaVenta> getVentaMayoreoById(int idVenta);
     public int updateCliente(int idVenta);
 }

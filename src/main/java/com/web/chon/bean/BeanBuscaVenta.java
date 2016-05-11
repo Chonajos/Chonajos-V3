@@ -1,10 +1,12 @@
 package com.web.chon.bean;
 
 import com.web.chon.dominio.BuscaVenta;
+import com.web.chon.dominio.Usuario;
 import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.dominio.VentaProducto;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceBuscaVenta;
+import com.web.chon.service.IfaceCatUsuario;
 import com.web.chon.util.Constantes;
 import com.web.chon.util.JasperReportUtil;
 import com.web.chon.util.JsfUtil;
@@ -48,7 +50,11 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
     private IfaceBuscaVenta ifaceBuscaVenta;
     @Autowired
     private PlataformaSecurityContext context;
+    @Autowired
+    IfaceCatUsuario ifaceCatUsuario;
     private ArrayList<BuscaVenta> model;
+    private Usuario usuario;
+    
     private String title;
     private String viewEstate;
     private BigDecimal totalVenta;
@@ -70,7 +76,13 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
         data = new BuscaVenta();
         model = new ArrayList<BuscaVenta>(); 
         
+        usuario = new Usuario();
         usuarioDominio = context.getUsuarioAutenticado();
+        usuario.setIdUsuarioPk(usuarioDominio.getIdUsuario());
+        usuario.setIdSucursal(usuarioDominio.getSucId());
+        usuario.setNombreUsuario(usuarioDominio.getUsuNombre());
+        usuario.setApaternoUsuario(usuarioDominio.getUsuPaterno());
+        usuario.setAmaternoUsuario(usuarioDominio.getUsuMaterno());
 
         setTitle("Búsqueda de Ventas");
         setViewEstate("init");
@@ -214,7 +226,8 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
         statusButtonPagar = false;
         
         model = ifaceBuscaVenta.getVentaById(data.getIdVenta().intValue());
-        if (model.isEmpty()) {
+        if (model.isEmpty()) 
+        {
             data.setNombreCliente("");
             data.setNombreVendedor("");
             data.setIdVenta(new BigDecimal(0));
@@ -222,21 +235,31 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
             
             JsfUtil.addWarnMessage("No se encontraron Registros.");
             
-        } else {
+        } else 
+        {
             data.setNombreCliente(model.get(0).getNombreCliente());
             data.setNombreVendedor(model.get(0).getNombreVendedor());
             data.setStatusFK(model.get(0).getStatusFK());
             data.setIdVenta(model.get(0).getIdVenta());
+            data.setIdSucursalFk(model.get(0).getIdSucursalFk());
             idVentaTemporal = data.getIdVenta().intValue();
             calculatotalVenta();
-            if (data.getStatusFK() == 2) {
-                statusButtonPagar = true;
-            }
-            /*if (data.getIdVenta() == 0) 
+            if (data.getStatusFK() == 2) 
             {
                 statusButtonPagar = true;
-                calculatotalVenta();
-            }*/
+            }
+            System.out.println("data:"+data.getIdSucursalFk());
+            System.out.println("usuario: "+usuario.getIdSucursal());
+            if(data.getIdSucursalFk().equals(new BigDecimal(usuario.getIdSucursal())))
+            {
+               
+                statusButtonPagar = false;
+            }
+            else{
+                 JsfUtil.addWarnMessage("No puedes cobrar el folio de otra sucursal.");
+                statusButtonPagar = true;
+            }
+          
             
         }
         
@@ -246,7 +269,7 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
         totalVenta = new BigDecimal(0);
         
         for (BuscaVenta venta : model) {
-            totalVenta = totalVenta.add(new BigDecimal(venta.getTotal()));
+            totalVenta = totalVenta.add(venta.getTotal());
         }
     }
     

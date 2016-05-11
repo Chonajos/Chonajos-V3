@@ -1,0 +1,178 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="./../templates/main.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content">
+        <div>
+            <h3>#{beanRelOperMayoreo.title}</h3>
+        </div>
+        <h:form id="formContent">
+            <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
+            <p:growl id="messagess" showDetail="true" life="2000" />
+            <p:panel>
+                <div class="container-fluid">
+                    <div class="form-group" align="right">
+                        <p:commandButton value="Atras" update=":formContent" ajax="true" action="#{beanRelOperMayoreo.cancel}" rendered="#{beanRelOperMayoreo.viewEstate =='searchById'}"/>
+                    </div>
+                    <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12">
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="sucursalFiltro" value ="Sucursal:" rendered="#{beanRelOperMayoreo.viewEstate =='init'}"/> 
+                            <h:selectOneMenu  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanRelOperMayoreo.data.idSucursal}" rendered="#{beanRelOperMayoreo.viewEstate =='init'}">
+                                <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="" />
+                                <f:selectItems value="#{beanRelOperMayoreo.listaSucursales}" var="sucursalita" itemLabel="#{sucursalita.nombreSucursal}" itemValue="#{sucursalita.idSucursalPk}"/>
+                                <p:ajax event="change" listener="#{beanRelOperMayoreo.printStatus()}" update=":formContent:table"/>
+                            </h:selectOneMenu>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="selectFiltro" value ="Consulta por Fecha:" rendered="#{beanRelOperMayoreo.viewEstate =='init'}"/> 
+                            <h:selectOneMenu  id="selectFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanRelOperMayoreo.filtro}" rendered="#{beanRelOperMayoreo.viewEstate =='init'}">
+                                <f:selectItem itemLabel="Seleccione un Filtro" itemValue="-1" />
+                                <f:selectItem itemLabel="Día" itemValue="1"/>
+                                <f:selectItem itemLabel="Mes" itemValue="2"/>
+                                <f:selectItem itemLabel="Año" itemValue="3"/>
+                                <p:ajax event="change" update=":formContent:table formContent:calendarInicio formContent:calendarFin" listener="#{beanRelOperMayoreo.getVentasByIntervalDate()}"/>
+                            </h:selectOneMenu>
+                        </div>
+
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="calendarInicio" value ="Fecha de Inicio:" rendered="#{beanRelOperMayoreo.viewEstate =='init'}"/> 
+                            <p:calendar id="calendarInicio" class="col-lg-6 col-md-8 col-sm-8 col-xs-12 calendario" navigator="true" placeholder="dd/mm/yyyy"
+                                        value="#{beanRelOperMayoreo.data.fechaFiltroInicio}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button" rendered="#{beanRelOperMayoreo.viewEstate =='init'}">
+                                <p:ajax   event="dateSelect"
+                                          listener="#{beanRelOperMayoreo.setFechaInicioFin(4)}"
+                                          update=":formContent:table" />
+                            </p:calendar>
+                        </div>
+                    </div> 
+                    <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12">
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="comboTipoVenta" value ="Tipo de Venta:"  rendered="#{beanRelOperMayoreo.viewEstate =='init'}"/> 
+                            <h:selectOneMenu  id="comboTipoVenta" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanRelOperMayoreo.data.idTipoVenta}" rendered="#{beanRelOperMayoreo.viewEstate =='init'}">
+                                <f:selectItem itemLabel="Selecciona un tipo venta" itemValue=""/>
+                                <f:selectItems value="#{beanRelOperMayoreo.lstTipoVenta}" var="tventa" itemLabel="#{tventa.nombreTipoVenta}" itemValue="#{tventa.idTipoVentaPk}"/>
+                            <p:ajax event="change" listener="#{beanRelOperMayoreo.printStatus()}" update=":formContent:table"/>
+                            </h:selectOneMenu>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="statusFiltro" value ="Status de Venta:" rendered="#{beanRelOperMayoreo.viewEstate =='init'}" /> 
+                            <h:selectOneMenu  id="statusFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanRelOperMayoreo.data.idStatus}" rendered="#{beanRelOperMayoreo.viewEstate =='init'}" >
+                                <f:selectItem itemLabel="Selecciona un status" itemValue="" />
+                                <f:selectItems value="#{beanRelOperMayoreo.listaStatusVenta}" var="staditosVenta" itemLabel="#{staditosVenta.status}" itemValue="#{staditosVenta.id_status_pk}"/>
+                                <p:ajax event="change" listener="#{beanRelOperMayoreo.printStatus()}" update=":formContent:table" />
+                            </h:selectOneMenu>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="calendarFin" value ="Fecha de Fin:" rendered="#{beanRelOperMayoreo.viewEstate =='init'}"/> 
+                            <p:calendar id="calendarFin" class="col-lg-6 col-md-8 col-sm-8 col-xs-12 calendario" navigator="true" placeholder="dd/mm/yyyy"
+                                        value="#{beanRelOperMayoreo.data.fechaFiltroFin}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button" rendered="#{beanRelOperMayoreo.viewEstate =='init'}">
+                                <p:ajax event="dateSelect"
+                                        listener="#{beanRelOperMayoreo.setFechaInicioFin(4)}"
+                                        update=":formContent:table"  />
+                            </p:calendar>
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <p:dataTable id="table" var="model" value="#{beanRelOperMayoreo.model}" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." rendered="#{beanRelOperMayoreo.viewEstate =='init'}">
+
+                            <p:column headerText="Folio" class="#{model.idStatus eq 1 ? 'statusPedido':'statusPagado'} alignCenter"  width="90px;" >
+                                <h:outputText value="#{model.idVentaPk}" />
+                            </p:column>
+
+                            <p:column headerText="Fecha de venta" width="120px;" class="alignCenter">
+                                <h:outputText value="#{model.fechaVenta}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Hora de venta" width="120px;" class="alignCenter">
+                                <h:outputText value="#{model.fechaVenta}">
+                                    <f:convertDateTime pattern="HH:mm" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Tipo de Venta" width="120px;" class="alignCenter">
+                                <h:outputText value="#{model.nombreTipoVenta}">
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Cliente" width="300px;" class="alignLeft">
+                                <h:outputText value="#{model.nombreCliente}" />
+                            </p:column>
+                            <p:column headerText="Vendedor" width="300px;" class="alignLeft">
+                                <h:outputText value="#{model.nombreVendedor}" />
+                            </p:column>
+                            <p:column headerText="Total de Venta" width="120px;" class="alignCenter">
+                                <h:outputText value="#{model.totalVenta}">
+                                    <f:convertNumber pattern="#,##0.00" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Ver" width="60px;" class="alignCenter">
+                                <p:commandButton id="editar" ajax="true" process="@this" action="#{beanRelOperMayoreo.detallesVenta}" icon="ui-icon-search" styleClass="ui-priority-primary" update=":formContent">
+                                    <f:setPropertyActionListener value="#{model}" target="#{beanRelOperMayoreo.data}"/>
+                                </p:commandButton>
+                            </p:column>
+                            <p:columnGroup type="footer">
+                                <p:column colspan="6" footerText="Total: " style="text-align:right"/>
+                                <p:column colspan="2" >
+                                    <f:facet name="footer">
+                                        <h:outputText value="#{beanRelOperMayoreo.totalVenta}">
+                                            <f:convertNumber pattern="#,###.000"/>
+                                        </h:outputText>
+                                    </f:facet>
+                                </p:column>
+                                
+                            </p:columnGroup>
+                        </p:dataTable>
+
+                        <p:dataTable rendered="#{beanRelOperMayoreo.viewEstate =='searchById'}" var="model" value="#{beanRelOperMayoreo.lstVenta}" styleClass="ui-datatable-hor-scroll"  emptyMessage="Productos.">
+                            <p:column headerText="Carro" width="35px;" class="alignLeft">
+                                <h:outputText value="#{model.carro}" />
+                            </p:column>
+                            <p:column headerText="Clave" width="60px;" class="alignLeft">
+                                <h:outputText value="#{model.clave}" />
+                            </p:column>
+                            <p:column headerText="Empaque" width="150px;" class="alignLeft">
+                                <h:outputText value="#{model.nombreEmpaque}" />
+                            </p:column>
+                            <p:column headerText="Cantidad" width="85px;" class="alignCenter">
+                                <h:outputText value="#{model.cantidadEmpaque}" />
+                            </p:column>
+                            <p:column headerText="Kilos" width="85px;" class="alignCenter">
+                                <h:outputText value="#{model.kilosVendidos}" />
+                            </p:column>
+                            <p:column headerText="Precio de venta" width="60px;" class="alignCenter">
+                                <h:outputText value="#{model.precioProducto}">
+                                    <f:convertNumber pattern="#,##0.00"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Total" width="90px;" class="alignCenter">
+                                <h:outputText value="#{model.totalVenta}">
+                                    <f:convertNumber pattern="#,##0.00"/>
+                                </h:outputText>
+                            </p:column>
+                            
+                            <p:columnGroup type="footer">
+                                <p:row>
+                                    <p:column colspan="5" style="text-align:right" footerText="Total de Venta:" />
+                                    <p:column colspan="1">
+                                        <f:facet name="footer">
+                                            <h:outputText value="#{beanRelOperMayoreo.totalVenta}">
+                                                <f:convertNumber for="totalVenta" pattern="#,##0.00"/>
+                                            </h:outputText>
+                                        </f:facet>
+                                    </p:column>
+                                    <p:column colspan="1" />
+                                </p:row>
+                            </p:columnGroup>
+                        </p:dataTable>
+                    </div>
+                </div>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>

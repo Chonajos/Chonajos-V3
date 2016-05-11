@@ -17,6 +17,7 @@ import javax.ejb.Remote;
 public interface NegocioBuscaVenta 
 {
     public List<Object[]> getVentaById(int idVenta);
+    public List<Object[]> getVentaMayoreoById(int idVenta);
     public int updateCliente(int idVenta);
     
 }

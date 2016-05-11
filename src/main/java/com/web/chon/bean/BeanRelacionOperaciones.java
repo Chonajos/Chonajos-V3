@@ -156,7 +156,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
         totalVenta = new BigDecimal(0);
 
         for (BuscaVenta venta : lstVenta) {
-            totalVenta = totalVenta.add(new BigDecimal(venta.getTotal()));
+            totalVenta = totalVenta.add(venta.getTotal());
         }
     }
 

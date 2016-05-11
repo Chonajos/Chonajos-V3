@@ -103,9 +103,10 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     private VentaProductoMayoreo dataEdit;
 
     private BigDecimal totalVenta;
-    private int idSucu;
+    private BigDecimal idSucu;
     private BigDecimal idExistencia;
     private BigDecimal idTipoVenta;
+    private BigDecimal totalProductoTemporal;
 
     private String title = "";
     private String viewEstate = "";
@@ -127,8 +128,9 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         ventaGeneral = new VentaMayoreo();
         usuario = new Usuario();
         usuarioDominio = context.getUsuarioAutenticado();
-        idSucu = usuarioDominio.getSucId();
+        idSucu = new BigDecimal(usuarioDominio.getSucId());
         usuario.setIdUsuarioPk(usuarioDominio.getIdUsuario());
+        usuario.setIdSucursal(idSucu.intValue());
         usuario.setNombreUsuario(usuarioDominio.getUsuNombre());
         usuario.setApaternoUsuario(usuarioDominio.getUsuPaterno());
         usuario.setAmaternoUsuario(usuarioDominio.getUsuMaterno());
@@ -139,6 +141,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         lstTipoVenta = ifaceTipoVenta.getAll();
         lstVenta = new ArrayList<VentaProductoMayoreo>();
         permisionToWrite = true;
+        totalProductoTemporal=null;
     }
 
     public void habilitarBotones() 
@@ -146,6 +149,10 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
        
         permisionToWrite = false;
         data.setPrecioProducto(selectedExistencia.getPrecioVenta());
+    }
+    public void calculaTotalTemporal()
+    {
+        totalProductoTemporal= data.getKilosVendidos().multiply(data.getPrecioProducto(), MathContext.UNLIMITED);
     }
     public void cancelarPedido(){
         
@@ -159,6 +166,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
             JsfUtil.addWarnMessage("Venta Cancelada");
             permisionToWrite = true;
             cliente = new Cliente();
+            totalProductoTemporal=null;
             
     }
 
@@ -167,7 +175,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         ventaGeneral.setIdVentaMayoreoPk(idVentaInsert);
         ventaGeneral.setIdtipoVentaFk(idTipoVenta);
         ventaGeneral.setIdClienteFk(new BigDecimal(cliente.getId_cliente()));
-        ventaGeneral.setIdSucursalFk(new BigDecimal(idSucu));
+        ventaGeneral.setIdSucursalFk(idSucu);
         ventaGeneral.setIdVendedorFK(usuario.getIdUsuarioPk());
 
         //System.out.println("Venta General: " + ventaGeneral.toString());
@@ -209,6 +217,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
             subProducto = new Subproducto();
             setViewEstate("viewAddProducto");
             idTipoVenta = null;
+            totalProductoTemporal=null;
 
             //cliente=new Cliente();
         }
@@ -235,16 +244,21 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         String idproductito = subProducto == null ? null : subProducto.getIdSubproductoPk();
         if (idproductito != null) 
         {
-            
-            lstExistencias = ifaceNegocioExistencia.getExistencias(null, null, null, idproductito, null, null, null);
+            lstExistencias = ifaceNegocioExistencia.getExistencias(idSucu, null, null, idproductito, null, null, null);
+            if(lstExistencias.isEmpty())
+            {
+                JsfUtil.addWarnMessage("No se encontraron existencias de este producto");
+            }
         }else
         {
+            
             data.setCantidadEmpaque(null);
             data.setPrecioProducto(null);
             data.setKilosVendidos(null);
             selectedExistencia = new ExistenciaProducto();
             permisionToWrite=true;
             lstExistencias.clear();
+            
         }
         
     }
@@ -354,9 +368,11 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         selectedExistencia = new ExistenciaProducto();
         lstExistencias = new ArrayList<ExistenciaProducto>();
         data.reset();
+        
         JsfUtil.addSuccessMessageClean("Producto Agregado al Pedido Correctamente");
         subProducto = new Subproducto();
         setViewEstate("viewAddProducto");
+        totalProductoTemporal=null;
 
     }
 
@@ -440,19 +456,21 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         data.setCantidadEmpaque(dataEdit.getCantidadEmpaque());
         data.setKilosVendidos(dataEdit.getKilosVendidos());
         data.setPrecioProducto(dataEdit.getPrecioProducto());
-        
+        data.setTotalVenta(data.getKilosVendidos().multiply(data.getPrecioProducto(), MathContext.UNLIMITED));
         selectedExistencia.setIdExistenciaProductoPk(dataEdit.getIdExistenciaFk());
-        
         String idproductitoedit = subProducto == null ? null : subProducto.getIdSubproductoPk();
-        lstExistencias = ifaceNegocioExistencia.getExistencias(null, null, null, idproductitoedit, null, null, null);
-             
+        lstExistencias = ifaceNegocioExistencia.getExistencias(idSucu, null, null, idproductitoedit, null, null, null);
+           
                 
         setViewEstate("update");
     }
     public void updateProducto(){
         dataEdit.setCantidadEmpaque(data.getCantidadEmpaque());
         dataEdit.setKilosVendidos(data.getKilosVendidos());
-        dataEdit.setTotalVenta(data.getTotalVenta());
+        dataEdit.setTotalVenta(data.getKilosVendidos().multiply(data.getPrecioProducto(), MathContext.UNLIMITED));
+        dataEdit.setPrecioProducto(data.getPrecioProducto());
+        setViewEstate("viewCarrito");
+        JsfUtil.addSuccessMessage("Producto Modificado Correctamente");
     }
 
     public void remove() {
@@ -492,7 +510,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     }
 
     public ArrayList<Usuario> autoCompleteVendedor(String nombreUsuario) {
-        lstUsuario = ifaceCatUsuario.getUsuarioByNombreCompleto(nombreUsuario.toUpperCase(), idSucu);
+        lstUsuario = ifaceCatUsuario.getUsuarioByNombreCompleto(nombreUsuario.toUpperCase(), idSucu.intValue());
         return lstUsuario;
 
     }
@@ -619,13 +637,15 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         this.subProducto = subProducto;
     }
 
-    public int getIdSucu() {
+    public BigDecimal getIdSucu() {
         return idSucu;
     }
 
-    public void setIdSucu(int idSucu) {
+    public void setIdSucu(BigDecimal idSucu) {
         this.idSucu = idSucu;
     }
+
+    
 
     public ArrayList<Subproducto> getLstProducto() {
         return lstProducto;
@@ -731,4 +751,13 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         this.permisionToWrite = permisionToWrite;
     }
 
+    public BigDecimal getTotalProductoTemporal() {
+        return totalProductoTemporal;
+    }
+
+    public void setTotalProductoTemporal(BigDecimal totalProductoTemporal) {
+        this.totalProductoTemporal = totalProductoTemporal;
+    }
+
+    
 }
