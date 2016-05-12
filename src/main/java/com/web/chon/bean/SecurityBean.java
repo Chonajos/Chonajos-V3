@@ -44,7 +44,7 @@ public class SecurityBean implements PhaseListener, Serializable {
 
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put(WebAttributes.AUTHENTICATION_EXCEPTION, null);
         FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR, "Credenciales incorrectas!","Verificar valores de entrada."));
-        JsfUtil.addErrorMessage("error beforePhase");
+        
         
         
         if (e instanceof BadCredentialsException) {
@@ -52,8 +52,7 @@ public class SecurityBean implements PhaseListener, Serializable {
                     .put(WebAttributes.AUTHENTICATION_EXCEPTION, null);
             FacesContext.getCurrentInstance().addMessage(
                     null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Credenciales incorrectas!",
-                            "Verificar valores de entrada."));
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Credenciales incorrectas!","Usuario o contraseña no son validos.."));
         }
 
     }
@@ -64,24 +63,16 @@ public class SecurityBean implements PhaseListener, Serializable {
     }
 
     public String doLogin() throws IOException, ServletException {
-        ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
 
+        FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true); 
+        ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+     
         RequestDispatcher dispatcher = ((ServletRequest) context.getRequest())
                 .getRequestDispatcher("/j_spring_security_check");
         dispatcher.forward((ServletRequest) context.getRequest(),
                 (ServletResponse) context.getResponse());
         FacesContext.getCurrentInstance().responseComplete();
-        try {
-            usuarioWeb.getUsuario().setUsuPassword(password);
-userName ="no name";
-        } catch (Exception e) {
-            userName ="error";
-            System.out.println("error logueo");
-            JsfUtil.addErrorMessage("Usuario o Contraseña Incorrecta.");
-            e.printStackTrace();
-
-        }
-
+                            
         return null;
     }
 
