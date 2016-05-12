@@ -14,6 +14,8 @@ import com.web.chon.dominio.Subproducto;
 import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.TipoEmpaque;
 import com.web.chon.dominio.TipoConvenio;
+import com.web.chon.dominio.UsuarioDominio;
+import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceCatBodegas;
 import com.web.chon.service.IfaceCatProvedores;
 import com.web.chon.service.IfaceCatSucursales;
@@ -68,6 +70,8 @@ public class BeanEntradaMercancia2 implements Serializable {
     private IfaceNegocioExistencia ifaceNegocioExistencia;
     @Autowired
     private IfaceEmpaque ifaceEmpaque;
+    @Autowired private PlataformaSecurityContext context;
+    private UsuarioDominio usuario;
     
     private ArrayList<Bodega> listaBodegas;
     private ArrayList<Provedor> listaProvedores;
@@ -122,6 +126,11 @@ public class BeanEntradaMercancia2 implements Serializable {
         dataProducto = new EntradaMercanciaProducto();
         lstTipoEmpaque = ifaceEmpaque.getEmpaques();
         data = new EntradaMercancia2();
+        usuario = context.getUsuarioAutenticado();
+        if(usuario.getPerId() != 1) {
+            
+            data.setIdSucursalFK(new BigDecimal(usuario.getSucId()));
+        }
         listaTiposConvenio = new ArrayList<TipoConvenio>();
         listaTiposConvenio = ifaceCovenio.getTipos();
         setTitle("Registro Entrada de Mercancia");
@@ -131,7 +140,7 @@ public class BeanEntradaMercancia2 implements Serializable {
         permisionPacto = true;
         permisionComision = true;
         permisionPrecio = false;
-        labelCompra = "Ingresa el Precio";
+        labelCompra = "Precio";
         permisionToGenerate = true;
         kilos = new BigDecimal(0);
         existencia_repetida = new ArrayList<ExistenciaProducto>();
@@ -142,6 +151,12 @@ public class BeanEntradaMercancia2 implements Serializable {
         labelCompra = labels.get(dataProducto.getIdTipoConvenio().intValue() - 1);
         permisionPrecio = false;
     }
+    public void calculaPesoNeto()
+    {
+        if(dataProducto.getKilosTotalesProducto()!=null && dataProducto.getPesoTara()!=null )
+        {dataProducto.setPesoTaraTemporal(dataProducto.getKilosTotalesProducto().subtract(dataProducto.getPesoTara(), MathContext.UNLIMITED));
+        }
+        }
 
     public void inserts() {
 
@@ -694,6 +709,14 @@ public class BeanEntradaMercancia2 implements Serializable {
 
     public void setExistencia_repetida(ArrayList<ExistenciaProducto> existencia_repetida) {
         this.existencia_repetida = existencia_repetida;
+    }
+
+    public UsuarioDominio getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(UsuarioDominio usuario) {
+        this.usuario = usuario;
     }
 
     

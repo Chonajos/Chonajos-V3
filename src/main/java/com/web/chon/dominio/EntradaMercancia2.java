@@ -30,6 +30,7 @@ public class EntradaMercancia2 extends ValueObject implements Serializable {
     private BigDecimal idStatusFk;
     private BigDecimal kilosTotales;
     private BigDecimal kilosTotalesProvedor;
+    
 
     private String nombreSucursal;
     private String nombreProvedor;
@@ -60,6 +61,7 @@ public class EntradaMercancia2 extends ValueObject implements Serializable {
     comentariosGenerales=null;
 
     }
+
     
     
     

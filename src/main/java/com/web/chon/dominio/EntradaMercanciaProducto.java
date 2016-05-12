@@ -31,10 +31,19 @@ public class EntradaMercanciaProducto extends ValueObject implements Serializabl
     private BigDecimal kilospromprod;
     private int numeroMovimiento;
     private BigDecimal pesoTara;
+    private BigDecimal pesoTaraTemporal;
 
     @Override
     public String toString() {
         return "EntradaMercanciaProducto{" + "idEmpPK=" + idEmpPK + ", idEmFK=" + idEmFK + ", idSubProductoFK=" + idSubProductoFK + ", idTipoEmpaqueFK=" + idTipoEmpaqueFK + ", cantidadPaquetes=" + cantidadPaquetes + ", kilosTotalesProducto=" + kilosTotalesProducto + ", comentarios=" + comentarios + ", precio=" + precio + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + ", idTipoConvenio=" + idTipoConvenio + ", idBodegaFK=" + idBodegaFK + ", nombreTipoConvenio=" + nombreTipoConvenio + ", nombreBodega=" + nombreBodega + ", kilospromprod=" + kilospromprod + ", numeroMovimiento=" + numeroMovimiento + ", pesoTara=" + pesoTara + '}';
+    }
+
+    public BigDecimal getPesoTaraTemporal() {
+        return pesoTaraTemporal;
+    }
+
+    public void setPesoTaraTemporal(BigDecimal pesoTaraTemporal) {
+        this.pesoTaraTemporal = pesoTaraTemporal;
     }
     
 

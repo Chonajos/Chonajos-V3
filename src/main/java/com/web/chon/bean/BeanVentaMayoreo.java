@@ -289,7 +289,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                     VentaProductoMayoreo productoRepetido = lstVenta.get(i);
 //                    System.out.println("Recorriendo lista Venta");
 //                    System.out.println("repetido id: " + productoRepetido.getIdExistenciaFk() + " nuevo: " + selectedExistencia.getIdExistenciaProductoPk());
-                    if (productoRepetido.getIdExistenciaFk().equals(selectedExistencia.getIdExistenciaProductoPk())) {
+                    if (productoRepetido.getIdExistenciaFk().equals(selectedExistencia.getIdExistenciaProductoPk())&&productoRepetido.getPrecioProducto().equals(data.getPrecioProducto())) {
 //                        System.out.println("Encontro producto repetido verificando existencias");
                         BigDecimal enlista = productoRepetido.getCantidadEmpaque();
                         BigDecimal totalexistencia = selectedExistencia.getCantidadPaquetes();
