@@ -33,7 +33,7 @@
                             <h:selectOneMenu  id="comboSucursal" class="col-lg-12 col-md-8 col-sm-8 col-xs-12 " value="#{beanEntradaMercancia2.data.idSucursalFK}" disabled="#{beanEntradaMercancia2.usuario.perId != 1}">
                                 <f:selectItem itemLabel="Selecciona" itemValue="" />
                                 <f:selectItems value="#{beanEntradaMercancia2.listaSucursales}" var="sucursalita" itemLabel="#{sucursalita.nombreSucursal}" itemValue="#{sucursalita.idSucursalPk}"/>
-                                <p:ajax event="change" update=" formContent:txtIdentificador formContent:agregar formContent:txtRemision" listener="#{beanEntradaMercancia2.reset()}" />
+                                <p:ajax event="change" update="formContent:comboBodega formContent:txtIdentificador formContent:agregar formContent:txtRemision" listener="#{beanEntradaMercancia2.reset()}" />
                             </h:selectOneMenu>
                         </div>
                         <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12 ">
@@ -41,7 +41,7 @@
                             <h:selectOneMenu  id="comboProvedor" class=" col-lg-12 col-md-8 col-sm-8 col-xs-12" value="#{beanEntradaMercancia2.data.idProvedorFK}" >
                                 <f:selectItem itemLabel="Selecciona" itemValue="" />
                                 <f:selectItems value="#{beanEntradaMercancia2.listaProvedores}" var="provedorsito" itemLabel=" (#{provedorsito.nickName}) #{provedorsito.nombreProvedor} #{provedorsito.apaternoProve} #{provedorsito.amaternoProve}" itemValue="#{provedorsito.idProvedorPK}"/>
-                                <p:ajax event="change" update=" formContent:txtIdentificador formContent:agregar formContent:txtRemision" listener="#{beanEntradaMercancia2.reset()}" />
+                                <p:ajax event="change" update="formContent:txtIdentificador formContent:agregar formContent:txtRemision" listener="#{beanEntradaMercancia2.reset()}" />
                             </h:selectOneMenu>
                         </div>
                         <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">

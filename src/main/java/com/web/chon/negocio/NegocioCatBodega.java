@@ -6,6 +6,7 @@
 package com.web.chon.negocio;
 
 import com.web.chon.dominio.Bodega;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Remote;
@@ -20,12 +21,15 @@ public interface NegocioCatBodega {
     public List<Object[]> getBodegas();
 
     public List<Object[]> getBodegaById(int idBodega);
-
+    
+    public List<Object[]> getBodegaByIdSucursal(BigDecimal idSurcusal);
+    
     public int deleteBodega(int idBodega);
 
     public int updateBodega(Bodega bo);
 
     public int insertBodega(Bodega bo);
+    
 
     public int getNextVal();
 

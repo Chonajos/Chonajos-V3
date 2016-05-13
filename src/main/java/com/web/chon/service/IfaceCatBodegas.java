@@ -19,6 +19,7 @@ public interface IfaceCatBodegas extends PaginacionService<Bodega, BigDecimal>{
      public ArrayList<Bodega> getBodegas();
     
     public List<Bodega[]> getBodegaById(int idBodega);
+    public ArrayList<Bodega> getBodegaByIdSucursal(BigDecimal idSucursal);
 
     public int getNextVal ();
 }

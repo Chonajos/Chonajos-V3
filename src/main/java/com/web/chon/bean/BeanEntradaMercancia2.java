@@ -121,8 +121,7 @@ public class BeanEntradaMercancia2 implements Serializable {
         listaProvedores = new ArrayList<Provedor>();
         listaProvedores = ifaceCatProvedores.getProvedores();
         listaMercanciaProducto = new ArrayList<EntradaMercanciaProducto>();
-        listaBodegas = new ArrayList<Bodega>();
-        listaBodegas = ifaceCatBodegas.getBodegas();
+        
         dataProducto = new EntradaMercanciaProducto();
         lstTipoEmpaque = ifaceEmpaque.getEmpaques();
         data = new EntradaMercancia2();
@@ -144,6 +143,8 @@ public class BeanEntradaMercancia2 implements Serializable {
         permisionToGenerate = true;
         kilos = new BigDecimal(0);
         existencia_repetida = new ArrayList<ExistenciaProducto>();
+        listaBodegas = new ArrayList<Bodega>();
+        listaBodegas = ifaceCatBodegas.getBodegaByIdSucursal(data.getIdSucursalFK());
     }
 
     public void permisions() {
@@ -270,6 +271,7 @@ public class BeanEntradaMercancia2 implements Serializable {
 
     public void reset() 
     {
+       listaBodegas = ifaceCatBodegas.getBodegaByIdSucursal(data.getIdSucursalFK());
         data.setRemision(null);
         data.setFolio(null);
         data.setAbreviacion(null);

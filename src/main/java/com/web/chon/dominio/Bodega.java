@@ -20,12 +20,23 @@ public class Bodega extends ValueObject implements Serializable {
     private BigDecimal idBodegaPK;
     private String nombreBodega;
     private String descripcionBodega;
+    private BigDecimal idSucursalFk;
 
     @Override
     public String toString() {
-        return "Bodega{" + "idBodegaPK=" + idBodegaPK + ", nombreBodega=" + nombreBodega + ", descripcionBodega=" + descripcionBodega + '}';
+        return "Bodega{" + "idBodegaPK=" + idBodegaPK + ", nombreBodega=" + nombreBodega + ", descripcionBodega=" + descripcionBodega + ", idSucursalFk=" + idSucursalFk + '}';
     }
 
+
+    public BigDecimal getIdSucursalFk() {
+        return idSucursalFk;
+    }
+
+    public void setIdSucursalFk(BigDecimal idSucursalFk) {
+        this.idSucursalFk = idSucursalFk;
+    }
+
+    
     public BigDecimal getIdBodegaPK() {
         return idBodegaPK;
     }

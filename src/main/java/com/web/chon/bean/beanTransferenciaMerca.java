@@ -155,14 +155,22 @@ public class beanTransferenciaMerca implements Serializable {
         }
        else
        {
-           System.out.println("IDSelect: "+selectedExistencia.getIdBodegaFK());
-           System.out.println("idNueva: "+data.getIdBodegaNueva());
+
           if (data.getCantidadMovida().intValue() > selectedExistencia.getCantidadPaquetes().intValue()) {
              JsfUtil.addErrorMessage("Cantidad de Empaque insuficiente");
           }else if(selectedExistencia.getIdBodegaFK().equals(data.getIdBodegaNueva())){
              JsfUtil.addErrorMessage("No se puede transferir a la misma bodega");
           }else
           {
+              TransferenciaMercancia tm = new TransferenciaMercancia();
+              ExistenciaProducto ep = new ExistenciaProducto();
+              ep.setIdEmFK(idSucu);
+              //ep.setIdSubProductoFK();
+              ep.setIdTipoEmpaqueFK(idTipoEmpaque);
+              ep.setKilosTotalesProducto(idTipoEmpaque);
+              ep.setCantidadPaquetes(idTipoEmpaque);
+              //ep.
+              
               JsfUtil.addSuccessMessage("todo ok se procede a modificar existencias");
           }
        }

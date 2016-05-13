@@ -165,4 +165,32 @@ public class ServiceCatBodegas implements IfaceCatBodegas {
         return bodega;
 
     }
+
+    @Override
+    public ArrayList<Bodega> getBodegaByIdSucursal(BigDecimal idSucursal) {
+        try {
+            ArrayList<Bodega> lista_bodegas = new ArrayList<Bodega>();
+
+            getEjb();
+            List<Object[]> lstObject = ejb.getBodegaByIdSucursal(idSucursal);
+
+            for (Object[] obj : lstObject) {
+                Bodega s = new Bodega();
+                s.setIdBodegaPK(new BigDecimal(obj[0].toString()));
+                s.setNombreBodega((obj[1] == null ? "" : obj[1].toString()));
+                s.setDescripcionBodega((obj[2] == null ? "" : obj[2].toString()));
+                s.setIdSucursalFk(new BigDecimal(obj[3].toString()));
+                lista_bodegas.add(s);
+
+            }
+            return lista_bodegas;
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceCatBodegas.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+
+        }
+        
+        
+        
+    }
 }

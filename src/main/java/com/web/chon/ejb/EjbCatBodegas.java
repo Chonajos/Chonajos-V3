@@ -119,4 +119,17 @@ public class EjbCatBodegas implements NegocioCatBodega {
 
     }
 
+    @Override
+    public List<Object[]> getBodegaByIdSucursal(BigDecimal idSurcusal) {
+       try {
+            Query query = em.createNativeQuery("SELECT * FROM BODEGA WHERE  ID_SUCURSAL_FK = ?");
+            query.setParameter(1, idSurcusal);
+
+            return query.getResultList();
+        } catch (Exception ex) {
+            return null;
+        }
+        
+    }
+
 }
