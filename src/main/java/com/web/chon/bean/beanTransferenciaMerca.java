@@ -12,6 +12,9 @@ import com.web.chon.dominio.Subproducto;
 import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.TipoEmpaque;
 import com.web.chon.dominio.TransferenciaMercancia;
+import com.web.chon.dominio.Usuario;
+import com.web.chon.dominio.UsuarioDominio;
+import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceCatBodegas;
 import com.web.chon.service.IfaceCatProvedores;
 import com.web.chon.service.IfaceCatSucursales;
@@ -62,6 +65,7 @@ public class beanTransferenciaMerca implements Serializable {
     private ArrayList<TipoEmpaque> lstTipoEmpaque;
     private ArrayList<TransferenciaMercancia> listaTransferencias;
     private ArrayList<Subproducto> lstProducto;
+    private ExistenciaProducto selectedExistencia;
     
     private TransferenciaMercancia data;
     private Subproducto subProducto;
@@ -79,13 +83,28 @@ public class beanTransferenciaMerca implements Serializable {
     
     private boolean permisionToPush;
     private boolean permisionToTrans;
-    private ArrayList<ExistenciaProducto> model;
+    private ArrayList<ExistenciaProducto> lstExistencias;
+    private Usuario usuario;
+    
+    private UsuarioDominio usuarioDominio;
+    private BigDecimal idSucu;
+    @Autowired
+    private PlataformaSecurityContext context;
+    private boolean permisionToWrite;
     
     
     
 
     @PostConstruct
     public void init() {
+        usuario = new Usuario();
+        usuarioDominio = context.getUsuarioAutenticado();
+        idSucu = new BigDecimal(usuarioDominio.getSucId());
+        usuario.setIdUsuarioPk(usuarioDominio.getIdUsuario());
+        usuario.setIdSucursal(idSucu.intValue());
+        usuario.setNombreUsuario(usuarioDominio.getUsuNombre());
+        usuario.setApaternoUsuario(usuarioDominio.getUsuPaterno());
+        usuario.setAmaternoUsuario(usuarioDominio.getUsuMaterno());
         
         listaSucursales = new ArrayList<Sucursal>();
         listaSucursalesNueva = new ArrayList<Sucursal>();
@@ -98,10 +117,8 @@ public class beanTransferenciaMerca implements Serializable {
         permisionToPush = true;
         permisionToTrans = true;
         expro = new ExistenciaProducto();
-        model = ifaceNegocioExistencia.getExistenciasbyIdSubProducto("00000000");
+        //lstExistencias = ifaceNegocioExistencia.getExistenciasbyIdSubProducto("00000000");
         
-
-        listaTransferencias = new ArrayList<TransferenciaMercancia>();
 
         listaBodegas = new ArrayList<Bodega>();
         listaBodegas = ifaceCatBodegas.getBodegas();
@@ -109,13 +126,19 @@ public class beanTransferenciaMerca implements Serializable {
         listaBodegasNueva = new ArrayList<Bodega>();
         listaBodegasNueva = ifaceCatBodegas.getBodegas();
 
-        lstTipoEmpaque = ifaceEmpaque.getEmpaques();
+        
         data = new TransferenciaMercancia();
+        
+        if(usuarioDominio.getPerId() != 1) {
+            
+            data.setIdSucursalNuevaFK(new BigDecimal(usuarioDominio.getSucId()));
+        }
 
         subProducto = new Subproducto();
 
         setTitle("Transferencia de Mercancia");
         setViewEstate("init");
+        permisionToWrite=true;
 
     }
     
@@ -124,88 +147,25 @@ public class beanTransferenciaMerca implements Serializable {
         
     }
 
-    public void transferir() {
-//        if (data.getCantidadMovida() == null || data.getCantidadMovida().intValue()<1 || data.getCantidadMovida().intValue() > data.getCantidad().intValue()) {
-//            JsfUtil.addErrorMessage("Error!", "Cantidad a transferir insuficiente");
-//        } else {
-//            data.setIdExistenciaProductoFK(idExistenciaFK);
-//            if (ifaceNegocioTransferenciaMercancia.insertTransferenciaMercancia(data) == 0) {
-//                JsfUtil.addErrorMessage("Error!", "Ocurrio un error al insertar la Transferencia");
-//
-//            } else 
-//            {
-//
-//                int cantidad_a_restar = expro.getCantidadEmpaque().intValue();
-//                int restador = data.getCantidadMovida().intValue();
-//                int cantidad_a_restar_kilos = expro.getKilosExistencia().intValue();
-//                
-//                TipoEmpaque pesoEmpaque = ifaceEmpaque.getEmpaqueById(idTipoEmpaque.intValue());
-//                
-//                data.setKilosMovios(new BigDecimal(pesoEmpaque.getPesoKiloEmpaque().intValue() * restador));
-//                
-//                int restador_kilos = data.getKilosMovios().intValue();
-//                
-//                expro.setCantidadEmpaque(new BigDecimal(cantidad_a_restar - restador));
-//                expro.setKilosExistencia(new BigDecimal(cantidad_a_restar_kilos - restador_kilos));
-//
-//                if (ifaceNegocioExistencia.updateExistenciaProducto(expro) == 0) 
-//                {
-//                    //System.out.println("Ocurrio un error al restar");
-//                    JsfUtil.addErrorMessage("Error!", "Cantidad a transferir insuficiente");
-//                } else {
-//                    //System.out.println("se Resto del original");
-//
-//                    ExistenciaProducto ep = new ExistenciaProducto();
-//                    
-//                    ep.setCantidadEmpaque(new BigDecimal(restador));
-//                    ep.setIdBodegaFk(data.getIdBodegaNueva());
-//                    //ep.setIdProvedorFk(idProvedorFK);
-//                    ep.setIdSubProductoFk(idSubProductoFK);
-//                    ep.setIdSucursalFk(data.getIdSucursalNuevaFK());
-//                    //ep.setIdTipoEmpaque(idTipoEmpaque);
-//                    //ep.setKilosEmpaque(new BigDecimal(restador_kilos));
-//                    ep.setKilosExistencia(new BigDecimal(restador_kilos));
-//
-//                    //System.out.println("Fredddy: "+ep.toString());
-//                    //siguiente paso insertar o actualizar el registro en donde se paso la mercancia.
-//                    int resultado = ifaceNegocioExistencia.insertExistenciaProducto(ep);
-//
-//                    switch (resultado) {
-//                        case 0:
-//                            JsfUtil.addErrorMessage("Error!", "Ocurrio un error al actualizar existencias");
-//                            break;
-//                        case 2:
-//                            
-//                            ArrayList<ExistenciaProducto> existente = new ArrayList<ExistenciaProducto>();
-//
-//                            existente = ifaceNegocioExistencia.getExistenciaProductoId(data.getIdSucursalNuevaFK(), idSubProductoFK, idTipoEmpaque, data.getIdBodegaNueva(), idProvedorFK);
-//                            
-//                            ExistenciaProducto expro = new ExistenciaProducto();
-//                            expro = existente.get(0);
-//
-//                            int cantidadEmpaque = expro.getCantidadEmpaque().intValue();
-//                           // int kiltoproempaque = expro.getKilosEmpaque().intValue();
-//                            int kilosTotales = expro.getKilosExistencia().intValue();
-//                            ep.setCantidadEmpaque(new BigDecimal(ep.getCantidadEmpaque().intValue() + cantidadEmpaque));
-//                           // ep.setKilosEmpaque(new BigDecimal(ep.getKilosEmpaque().intValue() + kiltoproempaque));
-//                            ep.setKilosExistencia(new BigDecimal(ep.getKilosExistencia().intValue() + kilosTotales));
-//                            ep.setIdExistenciaProductoPk(expro.getIdExistenciaProductoPk());
-//
-//                            if (ifaceNegocioExistencia.updateExistenciaProducto(ep) == 0) {
-//                                JsfUtil.addErrorMessage("Error!", "Ocurrio un error al actualizar existencias ya registradas");
-//                            } else {
-//                                clean();
-//                                JsfUtil.addSuccessMessage("Transferencia Correcta!");
-//                            }
-//                            break;
-//                        default:
-//                            clean();
-//                            JsfUtil.addSuccessMessage("Transferencia Correcta!");
-//                            break;
-//                    }
-//                }
-//            }
-//        }
+    public void transferir() 
+    {
+       if (selectedExistencia == null || data.getCantidadMovida().intValue() == 0) {
+            JsfUtil.addErrorMessage("Seleccione un Producto de la tabla, o agrego una cantidad a mover");
+
+        }
+       else
+       {
+           System.out.println("IDSelect: "+selectedExistencia.getIdBodegaFK());
+           System.out.println("idNueva: "+data.getIdBodegaNueva());
+          if (data.getCantidadMovida().intValue() > selectedExistencia.getCantidadPaquetes().intValue()) {
+             JsfUtil.addErrorMessage("Cantidad de Empaque insuficiente");
+          }else if(selectedExistencia.getIdBodegaFK().equals(data.getIdBodegaNueva())){
+             JsfUtil.addErrorMessage("No se puede transferir a la misma bodega");
+          }else
+          {
+              JsfUtil.addSuccessMessage("todo ok se procede a modificar existencias");
+          }
+       }
     }
 
     public void clean() {
@@ -230,21 +190,34 @@ public class beanTransferenciaMerca implements Serializable {
     }
     
 
-    public void buscar() {
-        ArrayList<ExistenciaProducto> existente = new ArrayList<ExistenciaProducto>();
-        
-        existente = ifaceNegocioExistencia.getExistenciasbyIdSubProducto(subProducto.getIdSubproductoPk());
-        
-        if (existente == null || existente.isEmpty()) 
+    public void buscaExistencias() {
+
+        String idproductito = subProducto == null ? null : subProducto.getIdSubproductoPk();
+        if (idproductito != null) 
         {
-            JsfUtil.addErrorMessage("Error!", "No se encontraron existencias");
-
-        } else {
+            lstExistencias = ifaceNegocioExistencia.getExistencias(idSucu, null, null, idproductito, null, null, null);
+            if(lstExistencias.isEmpty())
+            {
+                JsfUtil.addWarnMessage("No se encontraron existencias de este producto");
+            }
+        }else
+        {
             
-            model = existente;
-
+            //data.setCantidadEmpaque(null);
+            //data.setPrecioProducto(null);
+            //data.setKilosVendidos(null);
+            permisionToWrite=false;
+            selectedExistencia = new ExistenciaProducto();
+            
+            lstExistencias.clear();
+            
         }
-
+        
+    }
+    public void habilitarBotones()
+    {
+        permisionToTrans=false;
+        permisionToWrite=false;
     }
 
     public void changePermision() {
@@ -481,13 +454,70 @@ public class beanTransferenciaMerca implements Serializable {
         this.idExistenciaFK = idExistenciaFK;
     }
 
-    public ArrayList<ExistenciaProducto> getModel() {
-        return model;
+    public ArrayList<Subproducto> getLstProducto() {
+        return lstProducto;
     }
 
-    public void setModel(ArrayList<ExistenciaProducto> model) {
-        this.model = model;
+    public void setLstProducto(ArrayList<Subproducto> lstProducto) {
+        this.lstProducto = lstProducto;
     }
+
+    public ExistenciaProducto getExpro() {
+        return expro;
+    }
+
+    public void setExpro(ExistenciaProducto expro) {
+        this.expro = expro;
+    }
+
+    public ArrayList<ExistenciaProducto> getLstExistencias() {
+        return lstExistencias;
+    }
+
+    public void setLstExistencias(ArrayList<ExistenciaProducto> lstExistencias) {
+        this.lstExistencias = lstExistencias;
+    }
+
+    public ExistenciaProducto getSelectedExistencia() {
+        return selectedExistencia;
+    }
+
+    public void setSelectedExistencia(ExistenciaProducto selectedExistencia) {
+        this.selectedExistencia = selectedExistencia;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public UsuarioDominio getUsuarioDominio() {
+        return usuarioDominio;
+    }
+
+    public void setUsuarioDominio(UsuarioDominio usuarioDominio) {
+        this.usuarioDominio = usuarioDominio;
+    }
+
+    public BigDecimal getIdSucu() {
+        return idSucu;
+    }
+
+    public void setIdSucu(BigDecimal idSucu) {
+        this.idSucu = idSucu;
+    }
+
+    public boolean isPermisionToWrite() {
+        return permisionToWrite;
+    }
+
+    public void setPermisionToWrite(boolean permisionToWrite) {
+        this.permisionToWrite = permisionToWrite;
+    }
+
     
 
     

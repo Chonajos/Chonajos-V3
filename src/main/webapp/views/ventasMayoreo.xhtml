@@ -114,7 +114,6 @@
 
                         <p:dataTable id="modelo2" var="modeloExistencias" value="#{beanVentaMayoreo.lstExistencias}" selection="#{beanVentaMayoreo.selectedExistencia}"   rowKey="#{modeloExistencias.idExistenciaProductoPk}" emptyMessage="Productos.">
                             <p:ajax event="rowSelectRadio" update=":formContent:txtCantidadEmpaque :formContent:txtKilos :formContent:txtPrecioVenta" listener="#{beanVentaMayoreo.habilitarBotones()}"/>
-                            <!--<p:ajax event="click" update=":formContent:txtCantidadEmpaque :formContent:txtKilos :formContent:txtPrecioVenta" listener="{beanVentaMayoreo.habilitarBotones()}"/>-->
                             <p:column selectionMode="single"   style="width:16px;text-align:center" />
 
                             <p:column headerText="Carro" width="40px;" style="text-align:center">
@@ -129,7 +128,7 @@
                             <p:column headerText="Empaque" width="100px;" style="text-align:center">
                                 <h:outputText value="#{modeloExistencias.nombreEmpaque}" />
                             </p:column>
-                            <p:column headerText="Area" width="90px;" style="text-align:center">
+                            <p:column headerText="Bodega" width="90px;" style="text-align:center">
                                 <h:outputText value="#{modeloExistencias.nombreBodega}">
 
                                 </h:outputText>

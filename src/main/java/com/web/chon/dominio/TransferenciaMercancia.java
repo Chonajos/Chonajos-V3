@@ -28,6 +28,7 @@ public class TransferenciaMercancia extends ValueObject implements Serializable 
     private BigDecimal idUsuarioFK;
     private String nombreSucursalNueva;
     private String nombreBodegaNueva;
+    private BigDecimal idCarro;
 
     @Override
     public void reset() {
@@ -50,6 +51,14 @@ public class TransferenciaMercancia extends ValueObject implements Serializable 
     @Override
     public String toString() {
         return "TransferenciaMercancia{" + "idTransferenciaPK=" + idTransferenciaPK + ", idExistenciaProductoFK=" + idExistenciaProductoFK + ", cantidad=" + cantidad + ", kilos=" + kilos + ", cantidadMovida=" + cantidadMovida + ", kilosMovios=" + kilosMovios + ", idBodegaNueva=" + idBodegaNueva + ", idSucursalNuevaFK=" + idSucursalNuevaFK + ", fechaTransferencia=" + fechaTransferencia + ", idUsuarioFK=" + idUsuarioFK + ", nombreSucursalNueva=" + nombreSucursalNueva + ", nombreBodegaNueva=" + nombreBodegaNueva + '}';
+    }
+
+    public BigDecimal getIdCarro() {
+        return idCarro;
+    }
+
+    public void setIdCarro(BigDecimal idCarro) {
+        this.idCarro = idCarro;
     }
     
 

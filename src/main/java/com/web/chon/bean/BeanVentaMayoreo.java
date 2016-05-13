@@ -233,6 +233,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
     public void buscaExistencias() {
         //lstExistencias.clear();
+        System.out.println("Buscaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         BigDecimal idEntrada;
         if (entradaMercancia == null) {
             //lstExistencias.clear();
