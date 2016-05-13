@@ -81,7 +81,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
 
 
         /*Pantalla principal welcome.xhtml*/
-        lstEntradaMercancia = ifaceEntradaProductoCentral.getEntradaMercanciaByFiltro(28, 1, TiempoUtil.sumarRestarDias(context.getFechaSistema(), -14), "00000005");
+        lstEntradaMercancia = ifaceEntradaProductoCentral.getEntradaMercanciaByFiltro(28, 1, TiempoUtil.sumarRestarDias(context.getFechaSistema(), -14), "00000001");
         generateChartLine();
         generateChartBar();
         /*Pantalla principal welcome.xhtml*/

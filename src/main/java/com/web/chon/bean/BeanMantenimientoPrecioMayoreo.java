@@ -64,6 +64,9 @@ public class BeanMantenimientoPrecioMayoreo implements Serializable {
 
     private String title = "";
     private String viewEstate = "";
+    
+    private BigDecimal totalKilos;
+    private BigDecimal totalCajas;
 
     private int filtro;
 
@@ -85,6 +88,7 @@ public class BeanMantenimientoPrecioMayoreo implements Serializable {
         listaProvedores = ifaceCatProvedores.getProvedores();
 
         model = ifaceNegocioExistencia.getExistencias(null, null, null, null, null, null, null);
+        getTotalCajasKilos();
 
         listaBodegas = ifaceCatBodegas.getBodegas();
         lstTipoEmpaque = ifaceEmpaque.getEmpaques();
@@ -107,6 +111,7 @@ public class BeanMantenimientoPrecioMayoreo implements Serializable {
 
         String idproductito = subProducto == null ? null : subProducto.getIdSubproductoPk();
         model = ifaceNegocioExistencia.getExistencias(data.getIdSucursal(), data.getIdBodegaFK(), data.getIdProvedor(), idproductito, data.getIdTipoEmpaqueFK(), data.getIdTipoConvenio(), idEntrada);
+        getTotalCajasKilos();
 
     }
 
@@ -184,6 +189,19 @@ public class BeanMantenimientoPrecioMayoreo implements Serializable {
         entradaMercancia = new EntradaMercancia2();
         buscaExistencias();
 
+    }
+    
+     public void getTotalCajasKilos(){
+        
+        totalCajas = new BigDecimal(0);
+        totalKilos = new BigDecimal(0);
+        
+        for(ExistenciaProducto dominio: model){
+            
+            totalCajas = totalCajas.add(dominio.getCantidadPaquetes());
+            totalKilos = totalKilos.add(dominio.getKilosTotalesProducto());
+            
+        }
     }
     
     public ArrayList<Bodega> getListaBodegas() {
@@ -304,6 +322,22 @@ public class BeanMantenimientoPrecioMayoreo implements Serializable {
 
     public void setUsuario(UsuarioDominio usuario) {
         this.usuario = usuario;
+    }
+
+    public BigDecimal getTotalKilos() {
+        return totalKilos;
+    }
+
+    public void setTotalKilos(BigDecimal totalKilos) {
+        this.totalKilos = totalKilos;
+    }
+
+    public BigDecimal getTotalCajas() {
+        return totalCajas;
+    }
+
+    public void setTotalCajas(BigDecimal totalCajas) {
+        this.totalCajas = totalCajas;
     }
 
     

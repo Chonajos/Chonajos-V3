@@ -41,6 +41,7 @@ public class ExistenciaProducto implements Serializable {
     private BigDecimal precioVenta;
     private BigDecimal precioMaximo;
     private boolean estatusBloqueo;
+    private BigDecimal convenio;
 
     public void reset() {
         idSucursal = null;
@@ -269,5 +270,15 @@ public class ExistenciaProducto implements Serializable {
     public void setEstatusBloqueo(boolean estatusBloqueo) {
         this.estatusBloqueo = estatusBloqueo;
     }
+
+    public BigDecimal getConvenio() {
+        return convenio;
+    }
+
+    public void setConvenio(BigDecimal convenio) {
+        this.convenio = convenio;
+    }
+    
+    
 
 }

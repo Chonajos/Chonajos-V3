@@ -114,17 +114,22 @@
                             <p:column headerText="Empaque" width="80px;" style="text-align:center">
                                 <h:outputText value="#{model.nombreEmpaque}" />
                             </p:column>
-                            <p:column headerText="Cant." width="55px;" style="text-align:center">
+                            <p:column headerText="Cant." width="70px;" style="text-align:center">
                                 <h:outputText value="#{model.cantidadPaquetes}">
 
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Kg." width="60px;" style="text-align:center">
+                            <p:column headerText="Kg." width="70px;" style="text-align:center">
                                 <h:outputText value="#{model.kilosTotalesProducto}">
                                     <f:convertNumber pattern="#,##0" />
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Convenio" width="120px;" style="text-align:center">
+                            <p:column headerText="Costo" width="48px;" style="text-align:center">
+                                <h:outputText value="#{model.convenio}">
+                                    <f:convertNumber pattern="#,##0" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Convenio" width="90px;" style="text-align:center">
                                 <h:outputText value="#{model.nombreTipoConvenio}">
                                     <f:convertNumber pattern="#,##0.00" />
                                 </h:outputText>
@@ -142,19 +147,19 @@
                             <p:column headerText="Área"  width="100px;" style="text-align:center">
                                 <h:outputText value="#{model.nombreBodega}" />
                             </p:column>
-                            <p:column headerText="Minimo" width="60px;" style="text-align:center">
+                            <p:column headerText="Mín." width="45px;" style="text-align:center">
                                 <p:cellEditor>
                                     <f:facet name="output"><h:outputText value="#{model.precioMinimo}" /></f:facet>
                                     <f:facet name="input"><p:inputText id="minimoInput" value="#{model.precioMinimo}" maxlength="5" style="width:100%"/></f:facet>
                                 </p:cellEditor>
                             </p:column>
-                            <p:column headerText="Venta" width="60px;" style="text-align:center">
+                            <p:column headerText="Vent." width="45px;" style="text-align:center">
                                 <p:cellEditor>
                                     <f:facet name="output"><h:outputText value="#{model.precioVenta}" /></f:facet>
                                     <f:facet name="input"><p:inputText id="ventaInput" value="#{model.precioVenta}" maxlength="5" style="width:100%"/></f:facet>
                                 </p:cellEditor>
                             </p:column>
-                            <p:column headerText="Maximo" width="60px;" style="text-align:center">
+                            <p:column headerText="Máx." width="45px;" style="text-align:center">
                                 <p:cellEditor>
                                     <f:facet name="output"><h:outputText value="#{model.precioMaximo}" /></f:facet>
                                     <f:facet name="input"><p:inputText id="maximoInput" value="#{model.precioMaximo}" maxlength="5" style="width:100%"/></f:facet>
@@ -163,6 +168,26 @@
                             <p:column style="width:32px">
                                 <p:rowEditor/>
                             </p:column>
+                            <p:columnGroup type="footer">
+                                <p:row>
+                                    <p:column colspan="4" style="text-align:right" footerText="Totales:" />
+                                    <p:column colspan="1">
+                                        <f:facet name="footer">
+                                            <h:outputText value="#{beanExistencias.totalCajas}">
+                                                <f:convertNumber for="totalVenta" pattern="#,##0.00"/>
+                                            </h:outputText>
+                                        </f:facet>
+                                    </p:column>
+                                    <p:column colspan="1">
+                                        <f:facet name="footer">
+                                            <h:outputText value="#{beanExistencias.totalKilos}">
+                                                <f:convertNumber for="totalVenta" pattern="#,##0.00"/>
+                                            </h:outputText>
+                                        </f:facet>
+                                    </p:column>
+                                    <p:column colspan="9" />
+                                </p:row>
+                            </p:columnGroup>
                         </p:dataTable>
                     </div>
                 </div>
