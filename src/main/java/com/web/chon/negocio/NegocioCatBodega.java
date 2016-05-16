@@ -46,8 +46,9 @@ public interface NegocioCatBodega {
      *
      * @param first
      * @param pageSize
+     * @param idSucursal
      * @return
      */
-    public List<Object[]> getBodepagasPagination(int first, int pageSize);
+    public List<Object[]> getBodepagasPagination(int first, int pageSize, BigDecimal idSucursal);
 
 }

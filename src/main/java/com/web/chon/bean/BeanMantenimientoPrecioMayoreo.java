@@ -21,6 +21,7 @@ import com.web.chon.service.IfaceTipoCovenio;
 import com.web.chon.util.JsfUtil;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import javax.annotation.PostConstruct;
 import org.primefaces.event.RowEditEvent;
@@ -87,16 +88,18 @@ public class BeanMantenimientoPrecioMayoreo implements Serializable {
         listaSucursales = ifaceCatSucursales.getSucursales();
         listaProvedores = ifaceCatProvedores.getProvedores();
 
-        model = ifaceNegocioExistencia.getExistencias(null, null, null, null, null, null, null);
+        model = ifaceNegocioExistencia.getExistencias(new BigDecimal(usuario.getSucId()), null, null, null, null, null, null);
         getTotalCajasKilos();
+        
+        data.setIdSucursal( new BigDecimal(usuario.getSucId()));
 
-        listaBodegas = ifaceCatBodegas.getBodegas();
+        listaBodegas = ifaceCatBodegas.getBodegaByIdSucursal( data.getIdSucursal());
         lstTipoEmpaque = ifaceEmpaque.getEmpaques();
         listaTiposConvenio = ifaceCovenio.getTipos();
 
         setViewEstate("init");
         setTitle("Existencias");
-        data.setIdSucursal( new BigDecimal(usuario.getSucId()));
+        
         filtro = 1;
     }
 
@@ -181,11 +184,15 @@ public class BeanMantenimientoPrecioMayoreo implements Serializable {
         if (usuario.getPerId() == 1) {
             data.setIdSucursal(null);
         }
+        if(data.getIdSucursal() != null){
+            listaBodegas = ifaceCatBodegas.getBodegaByIdSucursal(data.getIdSucursal());
+        }
         
         data.setIdBodegaFK(null);
         data.setIdProvedor(null);
         data.setIdTipoEmpaqueFK(null);
         data.setIdTipoConvenio(null);
+        
         entradaMercancia = new EntradaMercancia2();
         buscaExistencias();
 

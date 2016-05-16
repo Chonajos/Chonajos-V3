@@ -21,6 +21,7 @@ public class Bodega extends ValueObject implements Serializable {
     private String nombreBodega;
     private String descripcionBodega;
     private BigDecimal idSucursalFk;
+    private String nombreSucursal;
 
     @Override
     public String toString() {
@@ -60,6 +61,16 @@ public class Bodega extends ValueObject implements Serializable {
     public void setDescripcionBodega(String descripcionBodega) {
         this.descripcionBodega = descripcionBodega;
     }
+
+    public String getNombreSucursal() {
+        return nombreSucursal;
+    }
+
+    public void setNombreSucursal(String nombreSucursal) {
+        this.nombreSucursal = nombreSucursal;
+    }
+    
+    
 
     @Override
     public void reset() {

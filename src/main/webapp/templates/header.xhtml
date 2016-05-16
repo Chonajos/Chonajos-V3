@@ -12,21 +12,24 @@
                 <div class="form-group" style="width:100%;" >
                     <div class="navbar-header" style="width:100%;" align="right">
                         <div class="col-lg-9 col-md-8 col-sm-2" align="left" style="padding-right:0px; padding-left:15px; ">
-                            <div class="col-lg-1 col-md-5" style="padding-right:0px; padding-left:0px; ">
+                            <div class="col-lg-1 col-md-1" style="padding-right:0px; padding-left:0px; ">
                                 <a class="nav navbar-nav hidden-xs col-lg-12 col-md-12 col-sm-12" style="padding-right:0px;"><img style="height:60px; width:100px;" src="../resources/img/logo.png" alt="logo"></img></a>
                             </div>
                             <div class="col-lg-10 col-md-7" align="left" style="padding-right:0px; padding-left:15px; ">
                                 <div class="nav navbar-nav hidden-xs hidden-sm col-lg-offset-1" style="color: #039; font-size: 22px; padding-left:30px;">Sistema Integral de Ventas</div>
-                                <div class="col-lg-12 navbar-nav hidden-xs hidden-sm col-lg-offset-1" style="color: #039; font-size: 12px; padding-left:30px;">#{usuarioWeb.fechaActual}</div>
+                                <h:form id="formHeader">
+                                    <div class="col-lg-12 navbar-nav hidden-xs hidden-sm col-lg-offset-1" style="color: #039; font-size: 12px; padding-left:30px;"><p:outputLabel id="fechaSystemasi" value="#{usuarioWeb.fechaActual}"/></div>
+                                    <p:poll interval="60" listener="#{usuarioWeb.getFechaActual}" update="fechaSystemasi"/>
+                                </h:form>
                             </div>
 
                         </div>
                         <div class="col-lg-3 col-md-4 col-sm-10 col-xs-12 ">
                             <h:form style="align-content: center">
                                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-10 " style="padding-right:5px;">
-                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >#{usuarioWeb.usuario.nombreCompleto} </div>
-                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >#{usuarioWeb.usuario.perDescripcion}</div>
-                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-xs">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-11" >#{usuarioWeb.usuario.nombreCompleto} </div>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-11" >#{usuarioWeb.usuario.perDescripcion}</div>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-11 hidden-xs">
                                         <p:commandLink  id="ajax" ajax="false"  actionListener="#{securityBean.logout}">
                                             <h:outputText value="Cerrar Sesión" />
                                         </p:commandLink>

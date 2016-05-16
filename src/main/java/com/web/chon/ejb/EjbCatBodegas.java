@@ -57,7 +57,7 @@ public class EjbCatBodegas implements NegocioCatBodega {
     public int deleteBodega(int idBodega) {
         Query query = em.createNativeQuery("DELETE BODEGA WHERE ID_BD_PK = ?");
         query.setParameter(1, idBodega);
-        
+
         return query.executeUpdate();
     }
 
@@ -65,11 +65,12 @@ public class EjbCatBodegas implements NegocioCatBodega {
     public int updateBodega(Bodega bo) {
         try {
 
-            Query query = em.createNativeQuery("UPDATE BODEGA SET NOMBRE = ? , DESCRIPCION = ? WHERE ID_BD_PK = ?");
+            Query query = em.createNativeQuery("UPDATE BODEGA SET NOMBRE = ? , DESCRIPCION = ?, ID_SUCURSAL_FK = ? WHERE ID_BD_PK = ?");
 
             query.setParameter(1, bo.getNombreBodega());
             query.setParameter(2, bo.getDescripcionBodega());
-            query.setParameter(3, bo.getIdBodegaPK());
+            query.setParameter(3, bo.getIdSucursalFk());
+            query.setParameter(4, bo.getIdBodegaPK());
 
             return query.executeUpdate();
 
@@ -81,10 +82,11 @@ public class EjbCatBodegas implements NegocioCatBodega {
     @Override
     public int insertBodega(Bodega bo) {
         try {
-            Query query = em.createNativeQuery("INSERT INTO BODEGA (ID_BD_PK,NOMBRE,DESCRIPCION) VALUES(S_BODEGA.NextVal,?,?)");
+            Query query = em.createNativeQuery("INSERT INTO BODEGA (ID_BD_PK,NOMBRE,DESCRIPCION,ID_SUCURSAL_FK) VALUES(S_BODEGA.NextVal,?,?,?)");
 
             query.setParameter(1, bo.getNombreBodega());
             query.setParameter(2, bo.getDescripcionBodega());
+            query.setParameter(3, bo.getIdSucursalFk());
 
             return query.executeUpdate();
 
@@ -107,13 +109,18 @@ public class EjbCatBodegas implements NegocioCatBodega {
     }
 
     @Override
-    public List<Object[]> getBodepagasPagination(int first, int pageSize) {
+    public List<Object[]> getBodepagasPagination(int first, int pageSize, BigDecimal idSucursal) {
 
-        Query query = em.createNativeQuery("SELECT * FROM(SELECT BOD.*,row_number() over (order by BOD.ID_BD_PK ASC) rn  FROM BODEGA BOD) where rn between ? and ? + ?");
+        StringBuffer strQuery = new StringBuffer("SELECT * FROM(SELECT BOD.*,SUC.NOMBRE_SUCURSAL,row_number() over (order by BOD.ID_BD_PK ASC) rn  FROM BODEGA BOD LEFT JOIN SUCURSAL SUC ON  SUC.ID_SUCURSAL_PK = BOD.ID_SUCURSAL_FK  ");
 
-        query.setParameter(1, first);
-        query.setParameter(2, first);
-        query.setParameter(1, pageSize);
+        if (idSucursal != null) {
+            strQuery.append(" WHERE ID_SUCURSAL_FK =" + idSucursal);
+        }
+        
+        strQuery.append(" ) where rn between "+first+" and "+first+" + "+pageSize+"");
+
+        System.out.println("query "+strQuery);        
+        Query query = em.createNativeQuery(strQuery.toString());
 
         return query.getResultList();
 
@@ -121,7 +128,7 @@ public class EjbCatBodegas implements NegocioCatBodega {
 
     @Override
     public List<Object[]> getBodegaByIdSucursal(BigDecimal idSurcusal) {
-       try {
+        try {
             Query query = em.createNativeQuery("SELECT * FROM BODEGA WHERE  ID_SUCURSAL_FK = ?");
             query.setParameter(1, idSurcusal);
 
@@ -129,7 +136,7 @@ public class EjbCatBodegas implements NegocioCatBodega {
         } catch (Exception ex) {
             return null;
         }
-        
+
     }
 
 }
