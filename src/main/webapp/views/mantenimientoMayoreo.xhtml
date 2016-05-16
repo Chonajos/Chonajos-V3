@@ -165,7 +165,7 @@
                                     <f:facet name="input"><p:inputText id="maximoInput" value="#{model.precioMaximo}" maxlength="5" style="width:100%"/></f:facet>
                                 </p:cellEditor>
                             </p:column>
-                            <p:column style="width:32px">
+                            <p:column style="width:32px" rendered="#{beanMantenimientoPrecioMayoreo.usuario.perId == 1}">
                                 <p:rowEditor/>
                             </p:column>
                             <p:columnGroup type="footer">
@@ -173,19 +173,20 @@
                                     <p:column colspan="4" style="text-align:right" footerText="Totales:" />
                                     <p:column colspan="1">
                                         <f:facet name="footer">
-                                            <h:outputText value="#{beanExistencias.totalCajas}">
+                                            <h:outputText value="#{beanMantenimientoPrecioMayoreo.totalCajas}">
                                                 <f:convertNumber for="totalVenta" pattern="#,##0.00"/>
                                             </h:outputText>
                                         </f:facet>
                                     </p:column>
                                     <p:column colspan="1">
                                         <f:facet name="footer">
-                                            <h:outputText value="#{beanExistencias.totalKilos}">
+                                            <h:outputText value="#{beanMantenimientoPrecioMayoreo.totalKilos}">
                                                 <f:convertNumber for="totalVenta" pattern="#,##0.00"/>
                                             </h:outputText>
                                         </f:facet>
                                     </p:column>
-                                    <p:column colspan="9" />
+                                    <p:column colspan="8" rendered="#{beanMantenimientoPrecioMayoreo.usuario.perId != 1}"/>
+                                    <p:column colspan="9" rendered="#{beanMantenimientoPrecioMayoreo.usuario.perId == 1}"/>
                                 </p:row>
                             </p:columnGroup>
                         </p:dataTable>

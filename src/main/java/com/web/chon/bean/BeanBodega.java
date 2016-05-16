@@ -2,8 +2,12 @@ package com.web.chon.bean;
 
 import com.web.chon.bean.mvc.SimpleViewBean;
 import com.web.chon.dominio.Bodega;
+import com.web.chon.dominio.Sucursal;
+import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.model.PaginationLazyDataModel;
+import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceCatBodegas;
+import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.util.JsfUtil;
 import com.web.chon.util.ViewState;
 import java.io.Serializable;
@@ -25,10 +29,14 @@ public class BeanBodega extends SimpleViewBean<Bodega> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Autowired
-    private IfaceCatBodegas ifaceCatBodega;
+    @Autowired private IfaceCatBodegas ifaceCatBodega;
+    @Autowired private PlataformaSecurityContext context;
+    @Autowired private IfaceCatSucursales ifaceCatSucursales;
 
     private ArrayList<Bodega> selectedBodega;
+    private ArrayList<Sucursal> lstSucursal;
+    
+    private UsuarioDominio usuario;
 
     private String title = "";
     public String viewEstate = "";
@@ -36,9 +44,17 @@ public class BeanBodega extends SimpleViewBean<Bodega> implements Serializable {
     @Override
     public void initModel() {
 
+        usuario = context.getUsuarioAutenticado();
+        
+        lstSucursal = new ArrayList<Sucursal>();
+        lstSucursal = ifaceCatSucursales.getSucursales();
+        
         data = new Bodega();
+        if (usuario.getPerId() != 1) {
+            data.setIdSucursalFk(new BigDecimal(usuario.getSucId()));
+        }
 
-        model = new PaginationLazyDataModel<Bodega, BigDecimal>(ifaceCatBodega, new Bodega());
+        model = new PaginationLazyDataModel<Bodega, BigDecimal>(ifaceCatBodega, data);
 
         selectedBodega = new ArrayList<Bodega>();
 
@@ -49,7 +65,6 @@ public class BeanBodega extends SimpleViewBean<Bodega> implements Serializable {
     @Override
     public String delete() {
         if (!selectedBodega.isEmpty()) {
-            System.out.println("delete mo empity");
             for (Bodega bodega : selectedBodega) {
                 try {
                     ifaceCatBodega.delete(bodega.getIdBodegaPK());
@@ -148,5 +163,23 @@ public class BeanBodega extends SimpleViewBean<Bodega> implements Serializable {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    public ArrayList<Sucursal> getLstSucursal() {
+        return lstSucursal;
+    }
+
+    public void setLstSucursal(ArrayList<Sucursal> lstSucursal) {
+        this.lstSucursal = lstSucursal;
+    }
+
+    public UsuarioDominio getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(UsuarioDominio usuario) {
+        this.usuario = usuario;
+    }
+    
+    
 
 }

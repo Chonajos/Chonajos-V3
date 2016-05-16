@@ -96,13 +96,15 @@ public class ServiceCatBodegas implements IfaceCatBodegas {
                 first++;
             }
             getEjb();
-            List<Object[]> lstObject = ejb.getBodegas();
+            List<Object[]> lstObject = ejb.getBodepagasPagination(first,pageSize,filters.getIdSucursalFk());
 
             for (Object[] obj : lstObject) {
                 Bodega bodega = new Bodega();
                 bodega.setIdBodegaPK(new BigDecimal(obj[0].toString()));
                 bodega.setNombreBodega((obj[1] == null ? "" : obj[1].toString()));
                 bodega.setDescripcionBodega((obj[2] == null ? "" : obj[2].toString()));
+                bodega.setIdSucursalFk(obj[3] == null ? null: new BigDecimal(obj[3].toString()));
+                bodega.setNombreSucursal((obj[4] == null ? "" : obj[4].toString()));
 
                 lstBodegas.add(bodega);
 

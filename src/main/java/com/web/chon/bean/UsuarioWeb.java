@@ -34,7 +34,7 @@ public class UsuarioWeb implements Serializable {
     }
 
     public String getFechaActual() {
-        return fechaActual = TiempoUtil.getFechaDDMMYYYY(plataformaSecurityContext.getFechaSistema());
+        return fechaActual = TiempoUtil.getFechaDDMMYYYYHHMM(plataformaSecurityContext.getFechaSistema());
     }
 
     public void setFechaActual(String fechaActual) {
