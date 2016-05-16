@@ -125,8 +125,8 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
     @PostConstruct
     public void init() {
-        //cliente = new Cliente();
-
+        cliente = new Cliente();
+        cliente = ifaceCatCliente.getClienteById(1);
         ventaGeneral = new VentaMayoreo();
         usuario = new Usuario();
         usuarioDominio = context.getUsuarioAutenticado();
@@ -166,7 +166,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         setViewEstate("viewAddProducto");
         idTipoVenta = null;
         permisionToWrite = true;
-        cliente = null;
+        cliente  = ifaceCatCliente.getClienteById(1);
         totalProductoTemporal = null;
         TotalVentaGeneral=null;
         JsfUtil.addWarnMessage("Venta Cancelada");
