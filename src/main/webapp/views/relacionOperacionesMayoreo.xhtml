@@ -136,6 +136,9 @@
                             <p:column headerText="Clave" width="60px;" class="alignLeft">
                                 <h:outputText value="#{model.clave}" />
                             </p:column>
+                            <p:column headerText="Producto" width="60px;" class="alignLeft">
+                                <h:outputText value="#{model.nombreSubproducto}" />
+                            </p:column>
                             <p:column headerText="Empaque" width="150px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreEmpaque}" />
                             </p:column>
@@ -158,7 +161,7 @@
                             
                             <p:columnGroup type="footer">
                                 <p:row>
-                                    <p:column colspan="5" style="text-align:right" footerText="Total de Venta:" />
+                                    <p:column colspan="7" style="text-align:right" footerText="Total de Venta:" />
                                     <p:column colspan="1">
                                         <f:facet name="footer">
                                             <h:outputText value="#{beanRelOperMayoreo.totalVenta}">
@@ -166,7 +169,7 @@
                                             </h:outputText>
                                         </f:facet>
                                     </p:column>
-                                    <p:column colspan="1" />
+                                    
                                 </p:row>
                             </p:columnGroup>
                         </p:dataTable>
