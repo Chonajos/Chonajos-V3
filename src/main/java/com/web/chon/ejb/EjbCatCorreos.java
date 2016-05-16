@@ -7,6 +7,7 @@ package com.web.chon.ejb;
 
 import com.web.chon.dominio.Correos;
 import com.web.chon.negocio.NegocioCatCorreos;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -81,7 +82,7 @@ public class EjbCatCorreos implements NegocioCatCorreos {
     }
 
     @Override
-    public List<Object[]> SearchCorreosbyidClientPk(int idClientepk)
+    public List<Object[]> SearchCorreosbyidClientPk(BigDecimal idClientepk)
     {
         System.out.println("EJB_BUSCA_CORREOS POR ID CLIENTE");
         

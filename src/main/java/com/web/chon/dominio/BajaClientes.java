@@ -6,6 +6,7 @@
 package com.web.chon.dominio;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -15,18 +16,20 @@ import java.util.Date;
 public class BajaClientes implements Serializable 
 {
     private static final long serialVersionUID = 1L;
-    private int id_baja_cliente;
+    private BigDecimal id_baja_cliente;
     private int id_motivo_fk;
     private String comentarios;
     private Date fechaBaja;
 
-    public int getId_baja_cliente() {
+    public BigDecimal getId_baja_cliente() {
         return id_baja_cliente;
     }
 
-    public void setId_baja_cliente(int id_baja_cliente) {
+    public void setId_baja_cliente(BigDecimal id_baja_cliente) {
         this.id_baja_cliente = id_baja_cliente;
     }
+
+    
 
     public int getId_motivo_fk() {
         return id_motivo_fk;

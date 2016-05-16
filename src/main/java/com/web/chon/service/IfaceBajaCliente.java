@@ -6,6 +6,7 @@
 package com.web.chon.service;
 
 import com.web.chon.dominio.BajaClientes;
+import java.math.BigDecimal;
 
 /**
  *
@@ -14,5 +15,5 @@ import com.web.chon.dominio.BajaClientes;
 public interface IfaceBajaCliente 
 {
     public int insertCliente(BajaClientes cliente);
-    public int deleteCliente(int idCliente);
+    public int deleteCliente(BigDecimal idCliente);
 }

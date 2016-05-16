@@ -6,6 +6,7 @@
 package com.web.chon.dominio;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  *
@@ -17,14 +18,23 @@ public class Correos implements Serializable
     private int idcorreo;
     private String correo;
     private String tipo;
-    private int id_cliente_fk;
+    private BigDecimal id_cliente_fk;
 
     @Override
     public String toString() {
         return "Correos{" + "idcorreo=" + idcorreo + ", correo=" + correo + ", tipo=" + tipo + ", id_cliente_fk=" + id_cliente_fk + '}';
     }
+
     
     
+    
+    public BigDecimal getId_cliente_fk() {
+        return id_cliente_fk;
+    }
+
+    public void setId_cliente_fk(BigDecimal id_cliente_fk) {
+        this.id_cliente_fk = id_cliente_fk;
+    }
     
      public int getIdcorreo() {
         return idcorreo;
@@ -53,13 +63,7 @@ public class Correos implements Serializable
         this.tipo = tipo;
     }
 
-    public int getId_cliente_fk() {
-        return id_cliente_fk;
-    }
-
-    public void setId_cliente_fk(int id_cliente_fk) {
-        this.id_cliente_fk = id_cliente_fk;
-    }
+ 
     
     
 }

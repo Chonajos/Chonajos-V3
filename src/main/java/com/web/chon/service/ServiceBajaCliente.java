@@ -8,6 +8,7 @@ package com.web.chon.service;
 import com.web.chon.dominio.BajaClientes;
 import com.web.chon.negocio.NegocioBajaClientes;
 import com.web.chon.util.Utilidades;
+import java.math.BigDecimal;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.stereotype.Service;
@@ -37,7 +38,7 @@ public class ServiceBajaCliente implements IfaceBajaCliente
     }
 
     @Override
-    public int deleteCliente(int idCliente) 
+    public int deleteCliente(BigDecimal idCliente) 
     {
           try 
         {

@@ -7,6 +7,7 @@ package com.web.chon.service;
 import com.web.chon.dominio.Cliente;
 import com.web.chon.negocio.NegocioCatCliente;
 import com.web.chon.util.Utilidades;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,7 +36,7 @@ public class ServiceCatCliente implements IfaceCatCliente {
             for(Object[] obj: lstObject )
             {
                 Cliente cliente = new Cliente();
-                cliente.setId_cliente(Integer.parseInt(obj[0].toString()));
+                cliente.setId_cliente(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
                 cliente.setNombre(obj[1] == null ? "" :obj[1].toString());
                 cliente.setPaterno(obj[2] == null ? "" :obj[2].toString());
                 cliente.setMaterno(obj[3] == null ? "" : obj[3].toString());
@@ -105,7 +106,7 @@ public class ServiceCatCliente implements IfaceCatCliente {
              
             for(Object[] obj: lstObject )
             {    
-                cliente.setId_cliente(obj[0] == null ? 0:Integer.parseInt(obj[0].toString()));
+                cliente.setId_cliente(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
                 cliente.setNombre(obj[1] == null ? "":obj[1].toString());
                 cliente.setPaterno(obj[2] == null ? "":obj[2].toString());
                 cliente.setMaterno(obj[3] == null ? "":obj[3].toString());
@@ -178,7 +179,7 @@ public class ServiceCatCliente implements IfaceCatCliente {
             for (Object[] obj : object) {
 
                 Cliente cliente = new Cliente();
-                cliente.setId_cliente(obj[0] == null ? null : Integer.parseInt(obj[0].toString()));
+                cliente.setId_cliente(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
                 cliente.setNombre(obj[1] == null ? "" : obj[1].toString());
                 cliente.setPaterno(obj[2] == null ? "" : obj[2].toString());
                 cliente.setMaterno(obj[3] == null ? "" : obj[3].toString());

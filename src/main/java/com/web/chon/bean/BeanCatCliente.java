@@ -14,6 +14,7 @@ import com.web.chon.service.IfaceCatCorreos;
 import com.web.chon.service.IfaceCatEntidad;
 import com.web.chon.service.IfaceCatMotivos;
 import com.web.chon.service.IfaceCatMunicipio;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -140,7 +141,7 @@ public class BeanCatCliente implements BeanSimple {
     public String insert() {
 
         try {
-            int id_cliente_next_val = ifaceCatCliente.getNextVal();
+            BigDecimal id_cliente_next_val = new BigDecimal(ifaceCatCliente.getNextVal());
             data.setId_cliente(id_cliente_next_val);
 
             System.out.println("Cliente Bean: " + data.toString());

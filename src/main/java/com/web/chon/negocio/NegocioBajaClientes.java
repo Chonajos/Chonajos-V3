@@ -6,6 +6,7 @@
 package com.web.chon.negocio;
 
 import com.web.chon.dominio.BajaClientes;
+import java.math.BigDecimal;
 import javax.ejb.Remote;
 
 /**
@@ -16,5 +17,5 @@ import javax.ejb.Remote;
 public interface NegocioBajaClientes 
 {
     public int insertCliente(BajaClientes clie);
-    public int deleteClienteBajas(int idCliente);
+    public int deleteClienteBajas(BigDecimal idCliente);
 }

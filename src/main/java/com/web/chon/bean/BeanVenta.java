@@ -192,7 +192,7 @@ public class BeanVenta implements Serializable, BeanSimple {
 
                 idVenta = ifaceVenta.getNextVal();
                 venta.setIdVentaPk(new BigDecimal(idVenta));
-                venta.setIdClienteFk(new BigDecimal(cliente.getId_cliente()));
+                venta.setIdClienteFk(cliente.getId_cliente());
                 venta.setIdVendedorFk(usuario.getIdUsuarioPk());
                 venta.setIdSucursal(idSucu);
                 int ventaInsertada = ifaceVenta.insertarVenta(venta);

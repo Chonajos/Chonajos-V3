@@ -9,6 +9,7 @@ import com.web.chon.dominio.Cliente;
 import com.web.chon.dominio.Correos;
 import com.web.chon.negocio.NegocioCatCorreos;
 import com.web.chon.util.Utilidades;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -48,7 +49,7 @@ public class ServiceCatCorreos implements IfaceCatCorreos {
     }
 
     @Override
-    public ArrayList<Correos> SearchCorreosbyidClientPk(int idClientepk) {
+    public ArrayList<Correos> SearchCorreosbyidClientPk(BigDecimal idClientepk) {
         try {
             ArrayList<Correos> lista_correos = new ArrayList<Correos>();
             ejb = (NegocioCatCorreos) Utilidades.getEJBRemote("ejbCatCorreos", NegocioCatCorreos.class.getName());
@@ -56,7 +57,7 @@ public class ServiceCatCorreos implements IfaceCatCorreos {
             for (Object[] obj : lstObject) {
                 Correos c = new Correos();
                 c.setIdcorreo(Integer.parseInt(obj[0].toString()));
-                c.setId_cliente_fk(Integer.parseInt(obj[1].toString()));
+                c.setId_cliente_fk(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
                 c.setCorreo(obj[2] == null ? "" : obj[2].toString());
                 c.setTipo(obj[3] == null ? "" : obj[3].toString());
                 lista_correos.add(c);

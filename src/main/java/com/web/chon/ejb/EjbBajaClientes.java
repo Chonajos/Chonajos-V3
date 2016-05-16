@@ -7,6 +7,7 @@ package com.web.chon.ejb;
 
 import com.web.chon.dominio.BajaClientes;
 import com.web.chon.negocio.NegocioBajaClientes;
+import java.math.BigDecimal;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
@@ -44,7 +45,7 @@ public class EjbBajaClientes implements NegocioBajaClientes
     }
 
     @Override
-    public int deleteClienteBajas(int idCliente) 
+    public int deleteClienteBajas(BigDecimal idCliente) 
     {
        try {
             Query query = em.createNativeQuery("delete BAJA_CLIENTES where ID_BC_PK = ?");

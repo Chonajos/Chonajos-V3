@@ -6,6 +6,7 @@
 package com.web.chon.service;
 
 import com.web.chon.dominio.Correos;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 /**
@@ -16,6 +17,6 @@ public interface IfaceCatCorreos
 {
     public int insertCorreo(Correos co);
     public int deleteCorreos(Correos co);
-    public ArrayList<Correos> SearchCorreosbyidClientPk(int idClientepk);
+    public ArrayList<Correos> SearchCorreosbyidClientPk(BigDecimal idClientepk);
     public int updateCorreos(Correos co);
 }
