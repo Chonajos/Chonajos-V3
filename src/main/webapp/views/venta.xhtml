@@ -29,28 +29,28 @@
 
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
 
-                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 "  for="autocompleteCliente" value ="Cliente:" /> 
                             <p:autoComplete  placeholder="Seleccione un Cliente" id="autocompleteCliente"  required="true" requiredMessage="Ingresa un valor para el campo Cliente." styleClass="autocomplete-input-text-media"
-                                             value="#{beanVenta.cliente}" completeMethod="#{beanVenta.autoCompleteCliente}" forceSelection="true" var="cliente"  inputStyle="width: 200px"
+                                             value="#{beanVenta.cliente}" completeMethod="#{beanVenta.autoCompleteCliente}" forceSelection="true" var="cliente"  inputStyle="width: 180px"
                                              itemLabel="#{cliente.nombreCombleto}"
                                              itemValue="#{cliente.id_cliente}" converter="#{clienteConverter}">
                             </p:autoComplete>
                             <pe:keyFilter for="autocompleteCliente" regEx="/[a-z0-9-_Ã±\s]/i" />
                         </div>
-                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="autocompleteVendedor" value ="Vendedor:" /> 
                             <p:autoComplete  placeholder="Seleccione un Vendedor" id="autocompleteVendedor"  required="true" requiredMessage="Ingresa un valor para el campo Vendedor." styleClass="autocomplete-input-text-media"
-                                             value="#{beanVenta.usuario}" completeMethod="#{beanVenta.autoCompleteVendedor}" forceSelection="true" var="usuario"  inputStyle="width: 200px"
+                                             value="#{beanVenta.usuario}" completeMethod="#{beanVenta.autoCompleteVendedor}" forceSelection="true" var="usuario"  inputStyle="width: 180px"
                                              itemLabel="#{usuario.nombreCompletoUsuario}"
                                              itemValue="#{usuario.idUsuarioPk}" converter="#{usuarioConverter}">
                             </p:autoComplete>
                             <pe:keyFilter for="autocompleteVendedor" regEx="/[a-z0-9-_Ã±\s]/i" />
                         </div>
-                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="autocompleteProducto" value ="Producto:" /> 
                             <p:autoComplete  placeholder="Seleccione un Producto" id="autocompleteProducto"  required="true" requiredMessage="Ingresa un valor para el campo Producto." styleClass="autocomplete-input-text-media"
-                                             value="#{beanVenta.subProducto}" completeMethod="#{beanVenta.autoComplete}" forceSelection="true" var="producto"  inputStyle="width: 200px"
+                                             value="#{beanVenta.subProducto}" completeMethod="#{beanVenta.autoComplete}" forceSelection="true" var="producto"  inputStyle="width: 180px"
                                              itemLabel="#{producto.nombreSubproducto}"
                                              itemValue="#{producto.idSubproductoPk}" converter="#{productoConverter}">
                                 <p:ajax event="itemSelect" update=":formContent:txtPrecioVenta" listener="#{beanVenta.searchById()}" />
@@ -60,23 +60,23 @@
                         </div>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="txtTipoEmpaque" value ="Tipo de Empaque:" /> 
-                            <h:selectOneMenu  id="txtTipoEmpaque" class=" col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanVenta.data.idTipoEmpaqueFk}" requiredMessage="Ingresa un valor para el campo Tipo de Empaque.">
+                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-6 col-md-6 col-sm-4 col-xs-12"  for="txtTipoEmpaque" value ="Tipo de Empaque:" /> 
+                            <h:selectOneMenu  id="txtTipoEmpaque" class=" col-lg-6 col-md-6 col-sm-8 col-xs-12" value="#{beanVenta.data.idTipoEmpaqueFk}" requiredMessage="Ingresa un valor para el campo Tipo de Empaque.">
                                 <f:selectItem itemLabel="Seleccione un empaque" itemValue="-1" />
                                 <f:selectItems value="#{beanVenta.lstTipoEmpaque}" var="empaque" itemLabel="#{empaque.nombreEmpaque}" itemValue="#{empaque.idTipoEmpaquePk}"/>
                                 <p:ajax event="change" update=":formContent:txtPrecioVenta :formContent:labelEmpaque" listener="#{beanVenta.selectedTipoEmpaque}"/>
                             </h:selectOneMenu>
                         </div>
-                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="txtPrecioVenta" value ="Precio de venta:" /> 
-                            <p:inputText id="txtPrecioVenta"  class=" col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanVenta.data.precioProducto}" required="true"
+                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-6 col-md-6 col-sm-4 col-xs-12"  for="txtPrecioVenta" value ="Precio de venta:" /> 
+                            <p:inputText id="txtPrecioVenta"  class=" col-lg-3 col-md-3 col-sm-8 col-xs-12" value="#{beanVenta.data.precioProducto}" required="true"
                                          requiredMessage="Ingresa un valor para el campo Precio de venta." disabled="#{beanVenta.permisionToEdit}"/>
                         </div>
 
-                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12" >
-                            <p:outputLabel class="col-lg-8 col-md-4 col-sm-4 col-xs-12" id="labelEmpaque" for="txtCantidadEmpaque" value ="Cantidad de #{beanVenta.nombreEmpaque}"  /> 
-                            <p:inputText id="txtCantidadEmpaque" maxlength="6" class=" col-lg-4 col-md-8 col-sm-8 col-xs-12" value="#{beanVenta.data.cantidadEmpaque}" required="true" 
+                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12" >
+                            <p:outputLabel class="col-lg-8 col-md-8 col-sm-4 col-xs-12" id="labelEmpaque" for="txtCantidadEmpaque" value ="Cantidad de #{beanVenta.nombreEmpaque}:"  /> 
+                            <p:inputText id="txtCantidadEmpaque" maxlength="6" class=" col-lg-3 col-md-3 col-sm-8 col-xs-12" value="#{beanVenta.data.cantidadEmpaque}" required="true" 
                                          requiredMessage="Ingresa un valor para el campo Cantidad de Empaques." />
                             <pe:keyFilter regEx="/[\d.,\-]/" for="txtCantidadEmpaque"/>  
                         </div>

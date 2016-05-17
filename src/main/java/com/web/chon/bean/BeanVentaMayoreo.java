@@ -168,7 +168,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         permisionToWrite = true;
         cliente  = ifaceCatCliente.getClienteById(1);
         totalProductoTemporal = null;
-        TotalVentaGeneral=null;
+        TotalVentaGeneral=new BigDecimal(0);
         JsfUtil.addWarnMessage("Venta Cancelada");
 
     }

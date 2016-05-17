@@ -20,11 +20,11 @@
                     <div class="form-group">
 
                     </div>
-                    <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12">
-                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-6 col-sm-4 col-xs-12"  for="autocompletePoducto" value ="Producto:" /> 
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="autocompletePoducto" value ="Producto:" /> 
                             <p:autoComplete  placeholder="Seleccione un Producto" id="autocompletePoducto"   styleClass="autocomplete-input-text-media"
-                                             value="#{beanMantenimientoPrecioMayoreo.subProducto}" completeMethod="#{beanMantenimientoPrecioMayoreo.autoComplete}" forceSelection="true" var="producto"  inputStyle="width: 200px"
+                                             value="#{beanMantenimientoPrecioMayoreo.subProducto}" completeMethod="#{beanMantenimientoPrecioMayoreo.autoComplete}" forceSelection="true" var="producto"  inputStyle="width: 180px"
                                              itemLabel="#{producto.nombreSubproducto}"
                                              itemValue="#{producto.idSubproductoPk}" converter="#{productoConverter}">
                                 <p:ajax event="itemSelect" update=":formContent:table" listener="#{beanMantenimientoPrecioMayoreo.buscaExistencias()}"/>
@@ -32,7 +32,7 @@
                             </p:autoComplete>
                             <pe:keyFilter for="autocompletePoducto" regEx="/[a-z0-9-_Ã±\s]/i" />
                         </div>
-                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="filtro" value ="Filtro:"/> 
                             <h:selectOneMenu  id="filtro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanMantenimientoPrecioMayoreo.filtro}">
                                 <f:selectItem itemLabel="Sucursal" itemValue="1" />
@@ -44,7 +44,7 @@
                                 <p:ajax event="change" update=":formContent" listener="#{beanMantenimientoPrecioMayoreo.resetValuesFilter}" />
                             </h:selectOneMenu>
                         </div>
-                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="sucursalFiltro" value ="Sucursal:" rendered="#{beanMantenimientoPrecioMayoreo.filtro =='1'}"/> 
                             <h:selectOneMenu  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanMantenimientoPrecioMayoreo.data.idSucursal}" rendered="#{beanMantenimientoPrecioMayoreo.filtro =='1'}" disabled="#{beanMantenimientoPrecioMayoreo.usuario.getPerId() != 1}">
                                 <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="" />
@@ -52,7 +52,7 @@
                                 <p:ajax event="change" update=":formContent:table" listener="#{beanMantenimientoPrecioMayoreo.buscaExistencias()}" />
                             </h:selectOneMenu>
                         </div>
-                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="comboBodega" value ="Bodega:"  rendered="#{beanMantenimientoPrecioMayoreo.filtro =='2'}"/> 
                             <h:selectOneMenu  id="comboBodega" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanMantenimientoPrecioMayoreo.data.idBodegaFK}"    requiredMessage="Selecciona una opción" rendered="#{beanMantenimientoPrecioMayoreo.filtro =='2'}">
                                 <f:selectItem itemLabel="Seleccione una bodega" itemValue="" />
@@ -60,7 +60,7 @@
                                 <p:ajax event="change" update=":formContent:table" listener="#{beanMantenimientoPrecioMayoreo.buscaExistencias()}"/>
                             </h:selectOneMenu>
                         </div>
-                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="comboProvedor" value ="Provedor:" rendered="#{beanMantenimientoPrecioMayoreo.filtro =='3'}"/> 
                             <h:selectOneMenu  id="comboProvedor" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanMantenimientoPrecioMayoreo.data.idProvedor}" rendered="#{beanMantenimientoPrecioMayoreo.filtro =='3'}">
                                 <f:selectItem itemLabel="Selecciona un Provedor" itemValue="" />
@@ -68,7 +68,7 @@
                                 <p:ajax event="change" update=":formContent:table" listener="#{beanMantenimientoPrecioMayoreo.buscaExistencias()}"/>
                             </h:selectOneMenu>
                         </div>
-                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="txtTipoEmpaque" value ="Empaque:" rendered="#{beanMantenimientoPrecioMayoreo.filtro =='4'}"/> 
                             <h:selectOneMenu  id="txtTipoEmpaque" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanMantenimientoPrecioMayoreo.data.idTipoEmpaqueFK}"  rendered="#{beanMantenimientoPrecioMayoreo.filtro =='4'}">
                                 <f:selectItem itemLabel="Seleccione un empaque" itemValue="" />
@@ -76,15 +76,15 @@
                                 <p:ajax event="change" update=":formContent:table" listener="#{beanMantenimientoPrecioMayoreo.buscaExistencias()}"/>
                             </h:selectOneMenu>
                         </div>
-                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-5 col-md-8 col-sm-4 col-xs-12"  for="comboTipoOrden" value ="Tipo de Convenido:" rendered="#{beanMantenimientoPrecioMayoreo.filtro =='5'}"/> 
+                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-5 col-md-5 col-sm-4 col-xs-12"  for="comboTipoOrden" value ="Tipo de Convenido:" rendered="#{beanMantenimientoPrecioMayoreo.filtro =='5'}"/> 
                             <h:selectOneMenu  id="comboTipoOrden" class=" col-lg-7 col-md-8 col-sm-8 col-xs-12" value="#{beanMantenimientoPrecioMayoreo.data.idTipoConvenio}" rendered="#{beanMantenimientoPrecioMayoreo.filtro =='5'}">
                                 <f:selectItem itemLabel="Tipo de Convenio" itemValue="" />
                                 <f:selectItems value="#{beanMantenimientoPrecioMayoreo.listaTiposConvenio}" var="listitaconvenio" itemLabel="#{listitaconvenio.nombreTipoConvenio}" itemValue="#{listitaconvenio.idTcPK}"/>
                                 <p:ajax event="change" update=":formContent:table"  listener="#{beanMantenimientoPrecioMayoreo.buscaExistencias()}" />
                             </h:selectOneMenu>
                         </div>
-                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="autocompleteClave" value ="Clave:" rendered="#{beanMantenimientoPrecioMayoreo.filtro =='6'}"/> 
                             <p:autoComplete  placeholder="Busca una clave" id="autocompleteClave"   styleClass="autocomplete-input-text-media" rendered="#{beanMantenimientoPrecioMayoreo.filtro =='6'}"
                                              value="#{beanMantenimientoPrecioMayoreo.entradaMercancia}" completeMethod="#{beanMantenimientoPrecioMayoreo.autoCompleteMercancia}" forceSelection="true" var="entradita"  inputStyle="width: 200px"
@@ -105,11 +105,19 @@
                                 </h:outputText>
                             </p:column>
                             <p:column headerText="Clave" width="120px;" style="text-align:center">
-                                <h:outputText value="#{model.identificador}" >
-                                </h:outputText>
+                                <h:outputText value="#{model.identificador}" />
                             </p:column>
                             <p:column headerText="Producto" width="120px;" style="text-align:center">
                                 <h:outputText value="#{model.nombreProducto}" />
+                            </p:column>
+                            <p:column headerText="Mín." width="45px;" style="text-align:center" rendered="#{beanMantenimientoPrecioMayoreo.usuario.perId != 1}">
+                                <h:outputText value="#{model.precioMinimo}" />
+                            </p:column>
+                            <p:column headerText="Vent." width="45px;" style="text-align:center" rendered="#{beanMantenimientoPrecioMayoreo.usuario.perId != 1}">
+                                <h:outputText value="#{model.precioVenta}" />
+                            </p:column>
+                            <p:column headerText="Máx." width="45px;" style="text-align:center" rendered="#{beanMantenimientoPrecioMayoreo.usuario.perId != 1}">
+                                <h:outputText value="#{model.precioMaximo}" />
                             </p:column>
                             <p:column headerText="Empaque" width="80px;" style="text-align:center">
                                 <h:outputText value="#{model.nombreEmpaque}" />
@@ -147,19 +155,19 @@
                             <p:column headerText="Área"  width="100px;" style="text-align:center">
                                 <h:outputText value="#{model.nombreBodega}" />
                             </p:column>
-                            <p:column headerText="Mín." width="45px;" style="text-align:center">
+                            <p:column headerText="Mín." width="45px;" style="text-align:center" rendered="#{beanMantenimientoPrecioMayoreo.usuario.perId == 1}">
                                 <p:cellEditor>
                                     <f:facet name="output"><h:outputText value="#{model.precioMinimo}" /></f:facet>
                                     <f:facet name="input"><p:inputText id="minimoInput" value="#{model.precioMinimo}" maxlength="5" style="width:100%"/></f:facet>
                                 </p:cellEditor>
                             </p:column>
-                            <p:column headerText="Vent." width="45px;" style="text-align:center">
+                            <p:column headerText="Vent." width="45px;" style="text-align:center" rendered="#{beanMantenimientoPrecioMayoreo.usuario.perId == 1}">
                                 <p:cellEditor>
                                     <f:facet name="output"><h:outputText value="#{model.precioVenta}" /></f:facet>
                                     <f:facet name="input"><p:inputText id="ventaInput" value="#{model.precioVenta}" maxlength="5" style="width:100%"/></f:facet>
                                 </p:cellEditor>
                             </p:column>
-                            <p:column headerText="Máx." width="45px;" style="text-align:center">
+                            <p:column headerText="Máx." width="45px;" style="text-align:center" rendered="#{beanMantenimientoPrecioMayoreo.usuario.perId == 1}">
                                 <p:cellEditor>
                                     <f:facet name="output"><h:outputText value="#{model.precioMaximo}" /></f:facet>
                                     <f:facet name="input"><p:inputText id="maximoInput" value="#{model.precioMaximo}" maxlength="5" style="width:100%"/></f:facet>
@@ -170,7 +178,8 @@
                             </p:column>
                             <p:columnGroup type="footer">
                                 <p:row>
-                                    <p:column colspan="4" style="text-align:right" footerText="Totales:" />
+                                    <p:column colspan="4" style="text-align:right" footerText="Totales:" rendered="#{beanMantenimientoPrecioMayoreo.usuario.perId == 1}"/>
+                                    <p:column colspan="7" style="text-align:right" footerText="Totales:" rendered="#{beanMantenimientoPrecioMayoreo.usuario.perId != 1}"/>
                                     <p:column colspan="1">
                                         <f:facet name="footer">
                                             <h:outputText value="#{beanMantenimientoPrecioMayoreo.totalCajas}">

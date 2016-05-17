@@ -20,7 +20,7 @@
                     <div class="form-group" align="right">
                         <p:commandButton value="Atras" update=":formContent" ajax="true" action="#{beanRelOperEntradaMercancia.cancel}" rendered="#{beanRelOperEntradaMercancia.viewEstate =='searchById'}"/>
                     </div>
-                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                         <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="sucursalFiltro" value ="Sucursal:" rendered="#{beanRelOperEntradaMercancia.viewEstate =='init'}"/> 
                         <h:selectOneMenu  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanRelOperEntradaMercancia.data.idSucursalFK}" rendered="#{beanRelOperEntradaMercancia.viewEstate =='init'}" disabled="#{beanRelOperEntradaMercancia.usuario.perId != 1}">
                             <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="-1" />
@@ -29,7 +29,7 @@
                         </h:selectOneMenu>
                     </div>
 
-                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                         <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="autocompleteProvedor" value ="Provedor:" rendered="#{beanRelOperEntradaMercancia.viewEstate =='init'}"/> 
                         <p:autoComplete  placeholder="Seleccione un Provedor" id="autocompleteProvedor" styleClass="autocomplete-input-text-media" rendered="#{beanRelOperEntradaMercancia.viewEstate =='init'}"
                                          value="#{beanRelOperEntradaMercancia.provedor}" completeMethod="#{beanRelOperEntradaMercancia.autoCompleteProvedor}" forceSelection="true" var="provedor"  inputStyle="width: 200px"
@@ -41,9 +41,9 @@
                         <pe:keyFilter for="autocompleteProvedor" regEx="/[a-z0-9-_Ã±\s]/i" />
                     </div>
 
-                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
-                        <p:outputLabel class="col-lg-5 col-md-4 col-sm-4 col-xs-12"  for="selectFiltro" value ="Consulta por Fecha:" rendered="#{beanRelOperEntradaMercancia.viewEstate =='init'}"/> 
-                        <h:selectOneMenu  id="selectFiltro" class="col-lg-7 col-md-8 col-sm-8 col-xs-12" value="#{beanRelOperEntradaMercancia.filtro}" rendered="#{beanRelOperEntradaMercancia.viewEstate =='init'}">
+                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                        <p:outputLabel class="col-lg-5 col-md-5 col-sm-4 col-xs-12"  for="selectFiltro" value ="Consulta por Fecha:" rendered="#{beanRelOperEntradaMercancia.viewEstate =='init'}"/> 
+                        <h:selectOneMenu  id="selectFiltro" class="col-lg-7 col-md-7 col-sm-8 col-xs-12" value="#{beanRelOperEntradaMercancia.filtro}" rendered="#{beanRelOperEntradaMercancia.viewEstate =='init'}">
                             <f:selectItem itemLabel="Consulta por Fecha" itemValue="-1" />
                             <f:selectItem itemLabel="Día" itemValue="1"/>
                             <f:selectItem itemLabel="Mes" itemValue="2"/>

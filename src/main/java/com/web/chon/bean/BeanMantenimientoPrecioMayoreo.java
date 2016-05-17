@@ -184,15 +184,14 @@ public class BeanMantenimientoPrecioMayoreo implements Serializable {
         if (usuario.getPerId() == 1) {
             data.setIdSucursal(null);
         }
-        if(data.getIdSucursal() != null){
-            listaBodegas = ifaceCatBodegas.getBodegaByIdSucursal(data.getIdSucursal());
-        }
-        
+
+        listaBodegas = ifaceCatBodegas.getBodegas();
+
         data.setIdBodegaFK(null);
         data.setIdProvedor(null);
         data.setIdTipoEmpaqueFK(null);
         data.setIdTipoConvenio(null);
-        
+
         entradaMercancia = new EntradaMercancia2();
         buscaExistencias();
 

@@ -175,17 +175,17 @@ button span:hover{
 .alignLeftRadioButton table tbody tr td label{
     text-align: left !important;
 } 
-
+/*Pantalla celular*/
 @media ( max-width : 767px) {
     .navbar {
         border-radius: 4px;
-        height: 90px !important;
+        height: 45px !important;
         border-bottom: 4px;
         border-bottom: 4px solid #3A3232 !important;
 
     }
      .padinTopRes{
-        padding-top:40px !important;
+        padding-top:30px !important;
     }
 
     body {
@@ -197,6 +197,7 @@ button span:hover{
     div label{
         text-align: left !important;
     }
+    
 }
 @media (max-width : 767px){
     .padinTopRes{
@@ -204,7 +205,7 @@ button span:hover{
     }
 
 }
-
+/*pantalla de escritorio*/
 @media (min-width : 767px){
     .padinTopRes{
         padding-top:120px;
@@ -212,3 +213,10 @@ button span:hover{
 
 }
 
+/*Se ocultan componente en el tamño 768*/
+@media (min-width:767px) and (max-width : 768px){
+
+.hidden-button-toggle{
+        display:none;
+    }
+}

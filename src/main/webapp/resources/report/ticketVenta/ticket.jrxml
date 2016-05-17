@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ticket" pageWidth="219" pageHeight="1224" columnWidth="179" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="cce07992-6ec7-4616-8caf-ceb4ee12975b">
-	<property name="ireport.zoom" value="1.0"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ticket" pageWidth="219" pageHeight="1224" columnWidth="179" leftMargin="20" rightMargin="20" topMargin="4" bottomMargin="20" isIgnorePagination="true" uuid="cce07992-6ec7-4616-8caf-ceb4ee12975b">
+	<property name="ireport.zoom" value="1.6105100000000008"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<subDataset name="dataset1" uuid="98370534-40ba-4932-9815-f4270ac51f8a">
@@ -26,51 +26,51 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="103" splitType="Stretch">
+		<band height="92" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="1" width="179" height="18" uuid="2992a9dd-f9dd-4e9d-bf14-8b1d06b0f593"/>
+				<reportElement x="0" y="1" width="179" height="16" uuid="2992a9dd-f9dd-4e9d-bf14-8b1d06b0f593"/>
 				<textElement textAlignment="Center">
-					<font size="8"/>
+					<font size="7"/>
 				</textElement>
 				<text><![CDATA[COMERCIALIZADORA Y EXPORTADORA CHONAJOS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="2" y="17" width="177" height="18" uuid="edba9a9e-5224-4f6c-bf53-21aff6c666ec"/>
+				<reportElement x="2" y="14" width="177" height="14" uuid="edba9a9e-5224-4f6c-bf53-21aff6c666ec"/>
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
 				<text><![CDATA[S DE RL DE CV]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="96" y="84" width="83" height="18" uuid="6e57c4b1-dfa7-4eba-a047-8b089afdeb7c"/>
+				<reportElement x="65" y="78" width="83" height="14" uuid="6e57c4b1-dfa7-4eba-a047-8b089afdeb7c"/>
 				<textElement textAlignment="Left">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{fechaVenta}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="0" y="64" width="179" height="20" uuid="05d247b4-4f8c-41f7-aac5-8462936538c4"/>
+				<reportElement x="0" y="55" width="179" height="14" uuid="05d247b4-4f8c-41f7-aac5-8462936538c4"/>
 				<textElement textAlignment="Center">
-					<font size="8"/>
+					<font size="10" isItalic="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{estado}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="2" y="48" width="177" height="18" uuid="734755f3-a4c0-48ab-8356-b63b7684a7b6"/>
+				<reportElement x="2" y="41" width="177" height="14" uuid="734755f3-a4c0-48ab-8356-b63b7684a7b6"/>
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
 				<text><![CDATA[Telefonos: 55-56-40-58-46, 55-56-40-87-72]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="1" y="84" width="95" height="18" uuid="c2180276-be42-419b-bbd2-140cc6030216"/>
+				<reportElement x="1" y="78" width="65" height="14" uuid="c2180276-be42-419b-bbd2-140cc6030216"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{labelFecha}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="2" y="31" width="177" height="17" uuid="aaea60dc-87cb-4ea6-b2cb-40ae00112a02"/>
+				<reportElement x="2" y="27" width="177" height="14" uuid="aaea60dc-87cb-4ea6-b2cb-40ae00112a02"/>
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
@@ -79,44 +79,44 @@
 		</band>
 	</title>
 	<pageHeader>
-		<band height="60" splitType="Stretch">
+		<band height="47" splitType="Stretch">
 			<textField>
-				<reportElement x="43" y="20" width="137" height="20" uuid="11a3db79-a67a-4727-ada1-73b599dac3c4"/>
+				<reportElement x="43" y="15" width="137" height="14" uuid="11a3db79-a67a-4727-ada1-73b599dac3c4"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{cliente}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="20" width="41" height="20" uuid="7025e223-a60e-4254-b109-d888be23e7fa"/>
+				<reportElement x="0" y="15" width="41" height="14" uuid="7025e223-a60e-4254-b109-d888be23e7fa"/>
 				<textElement textAlignment="Left">
 					<font size="8"/>
 				</textElement>
 				<text><![CDATA[Cliente:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="85" y="0" width="94" height="20" uuid="f1054343-5398-4da7-bbbd-d49445d7b31b"/>
+				<reportElement x="65" y="0" width="94" height="14" uuid="f1054343-5398-4da7-bbbd-d49445d7b31b"/>
 				<textElement textAlignment="Left">
-					<font size="8"/>
+					<font size="10" isBold="false" isUnderline="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{noVenta}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="1" y="40" width="52" height="20" uuid="a517a38f-6e75-4b3a-8359-49bff4a73fff"/>
+				<reportElement x="1" y="29" width="52" height="14" uuid="a517a38f-6e75-4b3a-8359-49bff4a73fff"/>
 				<textElement textAlignment="Left">
 					<font size="8"/>
 				</textElement>
 				<text><![CDATA[Vendedor:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="53" y="40" width="127" height="20" uuid="3bd7f144-80fc-4206-9455-03272186d135"/>
+				<reportElement x="53" y="29" width="127" height="14" uuid="3bd7f144-80fc-4206-9455-03272186d135"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{vendedor}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="1" y="1" width="84" height="19" uuid="6a2ab568-f51e-4c1f-911d-13ce7bdcc253"/>
+				<reportElement x="1" y="0" width="65" height="14" uuid="6a2ab568-f51e-4c1f-911d-13ce7bdcc253"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
@@ -141,7 +141,7 @@
 				<text><![CDATA[CANTIDAD]]></text>
 			</staticText>
 			<line>
-				<reportElement x="1" y="20" width="179" height="1" uuid="23ea086d-93f9-4078-a46f-2093a5a5bea2"/>
+				<reportElement x="0" y="17" width="179" height="1" uuid="23ea086d-93f9-4078-a46f-2093a5a5bea2"/>
 			</line>
 			<staticText>
 				<reportElement x="112" y="1" width="35" height="20" uuid="154e5d4f-f2e1-4322-acc4-c7f05c4fc108"/>
@@ -151,14 +151,14 @@
 				<text><![CDATA[P/U]]></text>
 			</staticText>
 			<componentElement>
-				<reportElement x="1" y="21" width="178" height="18" uuid="34e1bda9-3863-49ce-966c-80f124711798"/>
+				<reportElement x="1" y="19" width="178" height="18" uuid="34e1bda9-3863-49ce-966c-80f124711798"/>
 				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
 					<datasetRun subDataset="dataset1" uuid="5498b2ef-03e0-466a-9339-949f4a310948">
 						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{productos})]]></dataSourceExpression>
 					</datasetRun>
 					<jr:listContents height="18" width="178">
 						<textField isStretchWithOverflow="true">
-							<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="178" height="17" uuid="a8c5c589-8d6f-4ebe-965d-41c8e2e0a555"/>
+							<reportElement stretchType="RelativeToBandHeight" x="0" y="1" width="178" height="17" uuid="a8c5c589-8d6f-4ebe-965d-41c8e2e0a555"/>
 							<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 								<pen lineWidth="0.25" lineStyle="Dotted" lineColor="#000000"/>
 								<topPen lineWidth="0.25" lineStyle="Dotted" lineColor="#000000"/>
@@ -184,23 +184,23 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="42" splitType="Stretch">
+		<band height="35" splitType="Stretch">
 			<textField isStretchWithOverflow="true">
-				<reportElement x="2" y="20" width="177" height="20" uuid="017449dd-3342-408a-ac52-a53e1bbfab8e"/>
+				<reportElement x="2" y="18" width="177" height="16" uuid="017449dd-3342-408a-ac52-a53e1bbfab8e"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{totalLetra}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="128" y="0" width="52" height="20" uuid="e907644f-1905-4d2f-9946-b6520cccb1a2"/>
+				<reportElement x="128" y="0" width="52" height="16" uuid="e907644f-1905-4d2f-9946-b6520cccb1a2"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{ventaTotal}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="98" y="0" width="31" height="20" uuid="8dd11f34-373f-4762-85c0-45742b6d289f"/>
+				<reportElement x="98" y="0" width="31" height="16" uuid="8dd11f34-373f-4762-85c0-45742b6d289f"/>
 				<textElement textAlignment="Left">
 					<font size="8"/>
 				</textElement>

@@ -129,6 +129,7 @@ public class BeanVenta implements Serializable, BeanSimple {
         usuario.setNombreUsuario(usuarioDominio.getUsuNombre());
         usuario.setApaternoUsuario(usuarioDominio.getUsuPaterno());
         usuario.setAmaternoUsuario(usuarioDominio.getUsuMaterno());
+        cliente = ifaceCatCliente.getClienteById(1);
         permisionToEdit = true;
         venta = new Venta();
         venta.setIdSucursal(idSucu);
@@ -147,7 +148,7 @@ public class BeanVenta implements Serializable, BeanSimple {
 
         for (TipoEmpaque empaque : lstTipoEmpaque) {
 
-            if ((empaque.getNombreEmpaque().equals("Kilos") && data.getIdTipoEmpaqueFk().equals(new BigDecimal(-1))) || data.getIdTipoEmpaqueFk().equals(empaque.getIdTipoEmpaquePk())) {
+            if ((empaque.getNombreEmpaque().equalsIgnoreCase("Kilos") && data.getIdTipoEmpaqueFk().equals(new BigDecimal(-1))) || data.getIdTipoEmpaqueFk().equals(empaque.getIdTipoEmpaquePk())) {
                 data.setIdTipoEmpaqueFk(empaque.getIdTipoEmpaquePk());
                 setNombreEmpaque(empaque.getNombreEmpaque());
                 break;
@@ -346,7 +347,7 @@ public class BeanVenta implements Serializable, BeanSimple {
             
             String cantidad = venta.getCantidadEmpaque() + " " + venta.getNombreEmpaque();
             productos.add(venta.getNombreProducto().toUpperCase());
-            productos.add("       " + cantidad + "               " + nf.format(venta.getPrecioProducto()) + "    " + nf.format(venta.getTotal()));
+            productos.add("           " + cantidad + "               " + nf.format(venta.getPrecioProducto()) + "    " + nf.format(venta.getTotal()));
             
         }
 
