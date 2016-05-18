@@ -6,6 +6,7 @@
 package com.web.chon.negocio;
 
 import com.web.chon.dominio.VentaProductoMayoreo;
+import java.math.BigDecimal;
 import java.util.List;
 import javax.ejb.Remote;
 
@@ -17,5 +18,6 @@ import javax.ejb.Remote;
 public interface NegocioVentaMayoreoProducto {
     public int insertarVentaProducto(VentaProductoMayoreo ventaproducto);
     public int getNextVal();
+    
     
 }

@@ -12,4 +12,5 @@ public interface IfaceBuscaVenta
     public ArrayList<BuscaVenta> getVentaById(int idVenta);
     public ArrayList<BuscaVenta> getVentaMayoreoById(int idVenta);
     public int updateCliente(int idVenta);
+    public int updateStatusVentaMayoreo(int idVenta);
 }

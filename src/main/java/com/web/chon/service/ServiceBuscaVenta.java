@@ -98,4 +98,9 @@ public class ServiceBuscaVenta implements IfaceBuscaVenta {
 
         }
     }
+
+    @Override
+    public int updateStatusVentaMayoreo(int idVenta) {
+        return ejb.updateStatusVentaMayoreo(idVenta);
+    }
 }

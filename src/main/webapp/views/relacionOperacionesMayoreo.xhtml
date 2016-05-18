@@ -83,7 +83,7 @@
                         <p:dataTable id="table" var="model" value="#{beanRelOperMayoreo.model}" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." rendered="#{beanRelOperMayoreo.viewEstate =='init'}">
 
                             <p:column headerText="Folio" class="#{model.idStatus eq 1 ? 'statusPedido':'statusPagado'} alignCenter"  width="90px;" >
-                                <h:outputText value="#{model.idVentaPk}" />
+                                <h:outputText value="#{model.ventaSucursal}" />
                             </p:column>
 
                             <p:column headerText="Fecha de venta" width="120px;" class="alignCenter">

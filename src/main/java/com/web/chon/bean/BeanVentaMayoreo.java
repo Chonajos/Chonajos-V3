@@ -111,6 +111,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
     private String title = "";
     private String viewEstate = "";
+    private String ventaRapidaButton="";
 
     private BigDecimal TotalVentaGeneral;
 
@@ -122,9 +123,14 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     private ByteArrayOutputStream outputStream;
 
     private boolean permisionToWrite;
+    private String ventaRapida;
+    
+    private boolean permisionVentaRapida;
+    private boolean ventaRapidaCheck;
 
     @PostConstruct
     public void init() {
+        ventaRapida="0";
         cliente = new Cliente();
         cliente = ifaceCatCliente.getClienteById(1);
         ventaGeneral = new VentaMayoreo();
@@ -133,6 +139,8 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         idSucu = new BigDecimal(usuarioDominio.getSucId());
         usuario.setIdUsuarioPk(usuarioDominio.getIdUsuario());
         usuario.setIdSucursal(idSucu.intValue());
+        usuario.setIdRolFk(new BigDecimal(usuarioDominio.getPerId()));
+        
         usuario.setNombreUsuario(usuarioDominio.getUsuNombre());
         usuario.setApaternoUsuario(usuarioDominio.getUsuPaterno());
         usuario.setAmaternoUsuario(usuarioDominio.getUsuMaterno());
@@ -144,6 +152,38 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         lstVenta = new ArrayList<VentaProductoMayoreo>();
         permisionToWrite = true;
         totalProductoTemporal = null;
+        
+        ventaRapida=(usuario.getIdRolFk()).toString();
+        System.out.println("Venta Rapida: "+ ventaRapida);
+        if(ventaRapida.equals("4"))
+        {
+           
+              lstExistencias = ifaceNegocioExistencia.getExistencias(idSucu, null, null, null, null, null, null);
+              ventaRapidaButton="Rapida";
+              permisionVentaRapida=false;
+              ventaRapidaCheck=true;
+              
+        }
+        else
+        {
+            ventaRapida="2";
+            permisionVentaRapida=true;
+            ventaRapidaCheck=false;
+        }
+        
+    }
+    public void changeVentaRapida()
+    {
+        System.out.println("Check:"+ventaRapidaCheck);
+        if(ventaRapidaCheck)
+        {
+            ventaRapidaButton="Rapida";
+        }
+        else
+        {
+            ventaRapidaButton="";
+        }
+        
     }
 
     public void habilitarBotones() {
@@ -200,6 +240,9 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
             ventaGeneral.setIdClienteFk(cliente.getId_cliente());
             ventaGeneral.setIdSucursalFk(idSucu);
             ventaGeneral.setIdVendedorFK(usuario.getIdUsuarioPk());
+            int temp = ifaceVentaMayoreo.getVentaSucursal(idSucu);
+            
+            ventaGeneral.setVentaSucursal(new BigDecimal(temp+1));
             
             //System.out.println("Venta General: " + ventaGeneral.toString());
             if (ifaceVentaMayoreo.insertarVenta(ventaGeneral) != 0) {
@@ -284,6 +327,12 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
         }
 
+    }
+    
+    public void addProductoEnd()
+    {
+        addProducto();
+        inserts();
     }
 
     public void addProducto() {
@@ -777,4 +826,42 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         this.totalProductoTemporal = totalProductoTemporal;
     }
 
+    public String getVentaRapida() {
+        return ventaRapida;
+    }
+
+    public void setVentaRapida(String ventaRapida) {
+        this.ventaRapida = ventaRapida;
+    }
+
+   
+
+    public String getVentaRapidaButton() {
+        return ventaRapidaButton;
+    }
+
+    public void setVentaRapidaButton(String ventaRapidaButton) {
+        this.ventaRapidaButton = ventaRapidaButton;
+    }
+
+    public boolean isPermisionVentaRapida() {
+        return permisionVentaRapida;
+    }
+
+    public void setPermisionVentaRapida(boolean permisionVentaRapida) {
+        this.permisionVentaRapida = permisionVentaRapida;
+    }
+
+    public boolean isVentaRapidaCheck() {
+        return ventaRapidaCheck;
+    }
+
+    public void setVentaRapidaCheck(boolean ventaRapidaCheck) {
+        
+        this.ventaRapidaCheck = ventaRapidaCheck;
+        changeVentaRapida();
+    }
+
+  
+    
 }

@@ -107,5 +107,22 @@ public class EjbBuscaVenta implements NegocioBuscaVenta
             return null;
         }
     }
+
+    @Override
+    public int updateStatusVentaMayoreo(int idVenta) {
+      
+        try {
+            Query query = em.createNativeQuery("UPDATE VENTA_MAYOREO SET ID_STATUS_FK= ?,FECHA_PAGO = sysdate WHERE ID_VENTA_MAYOREO_PK = ? ");
+            query.setParameter(1, 2);
+            query.setParameter(2, idVenta);
+            return query.executeUpdate();
+
+        } catch (Exception ex) 
+        {
+           
+            Logger.getLogger(EjbBuscaVenta.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        }
+    }
     
 }

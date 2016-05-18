@@ -69,14 +69,20 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
             venta.setFechaPago(obj[6] == null ? null: (Date) obj[6]);
             venta.setIdSucursal(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
             venta.setIdTipoVenta(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
-            venta.setNombreCliente(obj[9].toString());
-            venta.setNombreVendedor(obj[10].toString());
-            venta.setTotalVenta(obj[11] == null ? null : new BigDecimal(obj[11].toString()));
-            venta.setNombreTipoVenta(obj[12].toString());
+            venta.setVentaSucursal(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
+            venta.setNombreCliente(obj[10].toString());
+            venta.setNombreVendedor(obj[11].toString());
+            venta.setTotalVenta(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
+            venta.setNombreTipoVenta(obj[13].toString());
             lstVenta.add(venta);
         }
         
         return lstVenta;
+    }
+    @Override
+    public int getVentaSucursal(BigDecimal idSucursal) {
+        getEjb();
+        return ejb.getVentaSucursal(idSucursal);
     }
     
 }

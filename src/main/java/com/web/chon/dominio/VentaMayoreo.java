@@ -24,10 +24,19 @@ public class VentaMayoreo implements Serializable{
     private Date fechaPago;
     private BigDecimal idSucursalFk;
     private BigDecimal idtipoVentaFk;
+    private BigDecimal ventaSucursal;
 
     @Override
     public String toString() {
         return "VentaMayoreo{" + "idVentaMayoreoPk=" + idVentaMayoreoPk + ", idClienteFk=" + idClienteFk + ", idVendedorFK=" + idVendedorFK + ", fechaVenta=" + fechaVenta + ", fechaPromesaPago=" + fechaPromesaPago + ", idStatusFk=" + idStatusFk + ", fechaPago=" + fechaPago + ", idSucursalFk=" + idSucursalFk + ", idtipoVentaFk=" + idtipoVentaFk + '}';
+    }
+
+    public BigDecimal getVentaSucursal() {
+        return ventaSucursal;
+    }
+
+    public void setVentaSucursal(BigDecimal ventaSucursal) {
+        this.ventaSucursal = ventaSucursal;
     }
 
    

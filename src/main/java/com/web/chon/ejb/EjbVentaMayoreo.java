@@ -25,13 +25,14 @@ public class EjbVentaMayoreo implements NegocioVentaMayoreo {
 
     @Override
     public int insertarVenta(VentaMayoreo venta) {
-       Query query = em.createNativeQuery("INSERT INTO VENTA_MAYOREO(ID_VENTA_MAYOREO_PK,ID_CLIENTE_FK,ID_VENDEDOR_FK,FECHA_VENTA,ID_SUCURSAL_FK,ID_TIPO_VENTA_FK,ID_STATUS_FK) VALUES(?,?,?,sysdate,?,?,1)");
+       Query query = em.createNativeQuery("INSERT INTO VENTA_MAYOREO(ID_VENTA_MAYOREO_PK,ID_CLIENTE_FK,ID_VENDEDOR_FK,FECHA_VENTA,ID_SUCURSAL_FK,ID_TIPO_VENTA_FK,ID_STATUS_FK,VENTASUCURSAL) VALUES(?,?,?,sysdate,?,?,1,?)");
         System.out.println("venta_mayoreo ejb :" + venta.toString());
         query.setParameter(1, venta.getIdVentaMayoreoPk());
         query.setParameter(2, venta.getIdClienteFk());
         query.setParameter(3, venta.getIdVendedorFK());
         query.setParameter(4, venta.getIdSucursalFk());
         query.setParameter(5, venta.getIdtipoVentaFk());
+        query.setParameter(6, venta.getVentaSucursal());
         return query.executeUpdate();
     }
 
@@ -109,6 +110,12 @@ public class EjbVentaMayoreo implements NegocioVentaMayoreo {
             return null;
         }
 
+    }
+    @Override
+    public int getVentaSucursal(BigDecimal idSucursal) {
+        Query query = em.createNativeQuery("select count(*) from VENTA_MAYOREO where ID_SUCURSAL_FK=?");
+        query.setParameter(1, idSucursal);
+        return Integer.parseInt(query.getSingleResult().toString());
     }
     
 }

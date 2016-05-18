@@ -6,6 +6,7 @@
 package com.web.chon.service;
 
 import com.web.chon.dominio.VentaProductoMayoreo;
+import java.math.BigDecimal;
 
 /**
  *
@@ -14,5 +15,7 @@ import com.web.chon.dominio.VentaProductoMayoreo;
 public interface IfaceVentaMayoreoProducto {
     public int insertarVentaMayoreoProducto(VentaProductoMayoreo venta);
     public int getNextVal();
+    
+    
     
 }

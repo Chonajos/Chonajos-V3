@@ -1,4 +1,4 @@
-﻿--BASE DE DATOS : choni
+--BASE DE DATOS : choni
 --USUARIO: choni
 --Contraseña: choni
 
@@ -692,6 +692,11 @@ INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Permisos', 1,'80','NULL');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Asignar permiso a Rol', 0,'80.1','/views/permisoRol.xhtml');
 
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Mayoreo', 1,'90','NULL');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Realizar Pedido', 0,'90.1','/views/ventasMayoreo.xhtml');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Relación de Operaciones', 0,'90.2','/views/relacionOperacionesMayoreo.xhtml');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Pagar Pedido', 0,'90.3','/views/buscaVentaMayoreo.xhtml');
+
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(1,1);
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(2,1);
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(3,1);
@@ -781,3 +786,10 @@ CREATE SEQUENCE venta_Mayoreo_Producto
 INCREMENT BY 1
 START WITH 1
 MINVALUE 0;
+
+
+--Datos de Impresora:
+--Vertical: escala a 78%
+
+
+

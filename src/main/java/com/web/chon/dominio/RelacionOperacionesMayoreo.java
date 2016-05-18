@@ -31,10 +31,19 @@ public class RelacionOperacionesMayoreo implements Serializable{
     private BigDecimal idStatus;
     private BigDecimal idTipoVenta;
     private String nombreTipoVenta;
+    private BigDecimal ventaSucursal;
 
     @Override
     public String toString() {
         return "RelacionOperacionesMayoreo{" + "idVentaPk=" + idVentaPk + ", fechaVenta=" + fechaVenta + ", fechaPromesaPago=" + fechaPromesaPago + ", idClienteFk=" + idClienteFk + ", idVendedorFk=" + idVendedorFk + ", nombreCliente=" + nombreCliente + ", nombreVendedor=" + nombreVendedor + ", totalVenta=" + totalVenta + ", estatus=" + estatus + ", fechaPago=" + fechaPago + ", fechaFiltroInicio=" + fechaFiltroInicio + ", fechaFiltroFin=" + fechaFiltroFin + ", idSucursal=" + idSucursal + ", idStatus=" + idStatus + ", idTipoVenta=" + idTipoVenta + ", nombreTipoVenta=" + nombreTipoVenta + '}';
+    }
+
+    public BigDecimal getVentaSucursal() {
+        return ventaSucursal;
+    }
+
+    public void setVentaSucursal(BigDecimal ventaSucursal) {
+        this.ventaSucursal = ventaSucursal;
     }
 
     

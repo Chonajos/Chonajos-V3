@@ -18,6 +18,7 @@ import javax.ejb.Remote;
 public interface NegocioVentaMayoreo {
     public int insertarVenta(VentaMayoreo venta);
     public int getNextVal();
+    public int getVentaSucursal(BigDecimal idSucursal);
     List<Object[]> getVentasByInterval(String fechaInicio, String fechaFin, BigDecimal idSucursal, BigDecimal idStatusVenta,BigDecimal idTipoVenta);
     
 }

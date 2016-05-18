@@ -9,6 +9,7 @@ package com.web.chon.service;
 import com.web.chon.dominio.VentaProductoMayoreo;
 import com.web.chon.negocio.NegocioVentaMayoreoProducto;
 import com.web.chon.util.Utilidades;
+import java.math.BigDecimal;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.stereotype.Service;
@@ -41,4 +42,6 @@ public class ServiceVentaMayoreoProducto implements IfaceVentaMayoreoProducto{
     public int getNextVal() {
          getEjb();
         return ejb.getNextVal();}
+
+    
 }
