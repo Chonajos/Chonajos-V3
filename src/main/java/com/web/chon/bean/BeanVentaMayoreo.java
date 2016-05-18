@@ -6,7 +6,7 @@
 package com.web.chon.bean;
 
 import com.web.chon.dominio.Cliente;
-import com.web.chon.dominio.EntradaMercancia2;
+import com.web.chon.dominio.EntradaMercancia;
 import com.web.chon.dominio.ExistenciaProducto;
 import com.web.chon.dominio.Subproducto;
 import com.web.chon.dominio.TipoVenta;
@@ -97,7 +97,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     private Usuario usuario;
     private Subproducto subProducto;
     private VentaProductoMayoreo data;
-    private EntradaMercancia2 entradaMercancia;
+    private EntradaMercancia entradaMercancia;
     private ExistenciaProducto ep;
     private VentaMayoreo ventaGeneral;
     private VentaProductoMayoreo dataRemove;
@@ -689,11 +689,11 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         this.totalVenta = totalVenta;
     }
 
-    public EntradaMercancia2 getEntradaMercancia() {
+    public EntradaMercancia getEntradaMercancia() {
         return entradaMercancia;
     }
 
-    public void setEntradaMercancia(EntradaMercancia2 entradaMercancia) {
+    public void setEntradaMercancia(EntradaMercancia entradaMercancia) {
         this.entradaMercancia = entradaMercancia;
     }
 

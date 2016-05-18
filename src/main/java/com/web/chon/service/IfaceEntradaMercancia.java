@@ -6,7 +6,7 @@
 package com.web.chon.service;
 
 import com.web.chon.core.service.PaginacionService;
-import com.web.chon.dominio.EntradaMercancia2;
+import com.web.chon.dominio.EntradaMercancia;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,13 +15,14 @@ import java.util.Date;
  *
  * @author marcogante
  */
-public interface IfaceEntradaMercancia extends PaginacionService<EntradaMercancia2, BigDecimal> {
+public interface IfaceEntradaMercancia extends PaginacionService<EntradaMercancia, BigDecimal> {
 
-    public int insertEntradaMercancia(EntradaMercancia2 entrada);
+    public int insertEntradaMercancia(EntradaMercancia entrada);
 
-    public int buscaMaxMovimiento(EntradaMercancia2 entrada);
+    public int buscaMaxMovimiento(EntradaMercancia entrada);
 
     public int getNextVal();
+    public int getCarroSucursal(BigDecimal idSucursal);
 
     /**
      * Obtiene una lista de la entrada de mercancia por medio de filtros de
@@ -33,7 +34,7 @@ public interface IfaceEntradaMercancia extends PaginacionService<EntradaMercanci
      * @param idProvedor
      * @return
      */
-    public ArrayList<EntradaMercancia2> getEntradaProductoByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idProvedor);
+    public ArrayList<EntradaMercancia> getEntradaProductoByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idProvedor);
 
-    public ArrayList<EntradaMercancia2> getSubEntradaByNombre(String nombre);
+    public ArrayList<EntradaMercancia> getSubEntradaByNombre(String nombre);
 }

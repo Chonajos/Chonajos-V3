@@ -5,7 +5,7 @@
  */
 package com.web.chon.util;
 
-import com.web.chon.dominio.EntradaMercancia2;
+import com.web.chon.dominio.EntradaMercancia;
 import com.web.chon.service.IfaceEntradaMercancia;
 import java.math.BigDecimal;
 
@@ -56,9 +56,9 @@ public class EntradaMercanciaCoverter implements Converter {
 
         if (value != null) {
 
-            if (value instanceof EntradaMercancia2) {
+            if (value instanceof EntradaMercancia) {
 
-                return String.valueOf(((EntradaMercancia2) value).getIdEmPK());
+                return String.valueOf(((EntradaMercancia) value).getIdEmPK());
 
             } else {
 

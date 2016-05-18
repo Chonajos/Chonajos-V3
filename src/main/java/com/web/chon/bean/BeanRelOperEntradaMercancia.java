@@ -1,6 +1,6 @@
 package com.web.chon.bean;
 
-import com.web.chon.dominio.EntradaMercancia2;
+import com.web.chon.dominio.EntradaMercancia;
 import com.web.chon.dominio.EntradaMercanciaProducto;
 import com.web.chon.dominio.Provedor;
 import com.web.chon.dominio.Sucursal;
@@ -42,11 +42,11 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     
     private ArrayList<Provedor> lstProvedor;
     private ArrayList<Sucursal> listaSucursales;
-    private ArrayList<EntradaMercancia2> lstEntradaMercancia;
+    private ArrayList<EntradaMercancia> lstEntradaMercancia;
     private ArrayList<EntradaMercanciaProducto> lstEntradaMercanciaProdcuto;
     
     private Provedor provedor;
-    private EntradaMercancia2 data;
+    private EntradaMercancia data;
     private UsuarioDominio usuario;
 
     private String title;
@@ -67,7 +67,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         listaSucursales = new ArrayList<Sucursal>();
         listaSucursales = ifaceCatSucursales.getSucursales();
 
-        data = new EntradaMercancia2();
+        data = new EntradaMercancia();
 
         provedor = new Provedor();
 
@@ -91,7 +91,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
                     lstEntradaMercancia = ifaceEntradaMercancia.getEntradaProductoByIntervalDate(data.getFechaFiltroInicio(), data.getFechaFiltroFin(), data.getIdSucursalFK(), data.getIdProvedorFK());
                 } else {
 
-                    lstEntradaMercancia = new ArrayList<EntradaMercancia2>();
+                    lstEntradaMercancia = new ArrayList<EntradaMercancia>();
                 }
                 break;
             case 1:
@@ -128,7 +128,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     public void cancel() {
         setViewEstate("init");
         lstEntradaMercanciaProdcuto = new ArrayList<EntradaMercanciaProducto>();
-        lstEntradaMercancia = new ArrayList<EntradaMercancia2>();
+        lstEntradaMercancia = new ArrayList<EntradaMercancia>();
         data.reset();
         provedor = null;
         filtro = -1;
@@ -237,19 +237,19 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         this.lstEntradaMercanciaProdcuto = lstEntradaMercanciaProdcuto;
     }
 
-    public EntradaMercancia2 getData() {
+    public EntradaMercancia getData() {
         return data;
     }
 
-    public void setData(EntradaMercancia2 data) {
+    public void setData(EntradaMercancia data) {
         this.data = data;
     }
 
-    public ArrayList<EntradaMercancia2> getLstEntradaMercancia() {
+    public ArrayList<EntradaMercancia> getLstEntradaMercancia() {
         return lstEntradaMercancia;
     }
 
-    public void setLstEntradaMercancia(ArrayList<EntradaMercancia2> lstEntradaMercancia) {
+    public void setLstEntradaMercancia(ArrayList<EntradaMercancia> lstEntradaMercancia) {
         this.lstEntradaMercancia = lstEntradaMercancia;
     }
 

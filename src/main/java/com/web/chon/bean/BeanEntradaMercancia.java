@@ -6,7 +6,7 @@
 package com.web.chon.bean;
 
 import com.web.chon.dominio.Bodega;
-import com.web.chon.dominio.EntradaMercancia2;
+import com.web.chon.dominio.EntradaMercancia;
 import com.web.chon.dominio.EntradaMercanciaProducto;
 import com.web.chon.dominio.ExistenciaProducto;
 import com.web.chon.dominio.Provedor;
@@ -47,7 +47,7 @@ import java.math.RoundingMode;
  */
 @Component
 @Scope("view")
-public class BeanEntradaMercancia2 implements Serializable {
+public class BeanEntradaMercancia implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
@@ -82,7 +82,7 @@ public class BeanEntradaMercancia2 implements Serializable {
     private ArrayList<TipoEmpaque> lstTipoEmpaque;
     private ArrayList<ExistenciaProducto> existencia_repetida;
 
-    private EntradaMercancia2 data;
+    private EntradaMercancia data;
     private EntradaMercanciaProducto dataProducto;
     private EntradaMercanciaProducto dataRemove;
     private EntradaMercanciaProducto dataEdit;
@@ -113,8 +113,10 @@ public class BeanEntradaMercancia2 implements Serializable {
         permisionToEditProducto=false;
         labels = new ArrayList<String>();
         labels.add("Precio");
-        labels.add("Ingresa el % de comisión");
-        labels.add("Ingresa el precio por pacto por unidad");
+        labels.add("Precio %");
+        labels.add("Pacto");
+        
+        
         permisionToPush = true;
         listaSucursales = new ArrayList<Sucursal>();
         listaSucursales = ifaceCatSucursales.getSucursales();
@@ -124,12 +126,13 @@ public class BeanEntradaMercancia2 implements Serializable {
         
         dataProducto = new EntradaMercanciaProducto();
         lstTipoEmpaque = ifaceEmpaque.getEmpaques();
-        data = new EntradaMercancia2();
+        data = new EntradaMercancia();
         usuario = context.getUsuarioAutenticado();
         if(usuario.getPerId() != 1) {
             
             data.setIdSucursalFK(new BigDecimal(usuario.getSucId()));
         }
+        data.setIdUsuario(usuario.getIdUsuario());
         listaTiposConvenio = new ArrayList<TipoConvenio>();
         listaTiposConvenio = ifaceCovenio.getTipos();
         setTitle("Registro Entrada de Mercancia");
@@ -162,12 +165,15 @@ public class BeanEntradaMercancia2 implements Serializable {
     public void inserts() {
 
         int idEntradaMercancia = 0;
-        EntradaMercancia2 entrada_mercancia = new EntradaMercancia2();
+        int idCarroSucursal = 0;
+        EntradaMercancia entrada_mercancia = new EntradaMercancia();
 
         try {
             if (!listaMercanciaProducto.isEmpty() && listaMercanciaProducto.size() > 0) {
                 idEntradaMercancia = ifaceEntradaMercancia.getNextVal();
+                idCarroSucursal = ifaceEntradaMercancia.getCarroSucursal(data.getIdSucursalFK());
                 entrada_mercancia.setIdEmPK(new BigDecimal(idEntradaMercancia));
+                entrada_mercancia.setIdUsuario(data.getIdUsuario());
                 entrada_mercancia.setIdProvedorFK(data.getIdProvedorFK());
                 entrada_mercancia.setIdSucursalFK(data.getIdSucursalFK());
                 entrada_mercancia.setAbreviacion(data.getAbreviacion());
@@ -179,7 +185,11 @@ public class BeanEntradaMercancia2 implements Serializable {
                 entrada_mercancia.setKilosTotalesProvedor(data.getKilosTotalesProvedor());
                 entrada_mercancia.setComentariosGenerales(data.getComentariosGenerales());
                 entrada_mercancia.setFechaRemision(data.getFechaRemision());
+                entrada_mercancia.setIdCarroSucursal(new BigDecimal(idCarroSucursal+1));
 
+                
+                
+                
                 int mercanciaOrdenada = ifaceEntradaMercancia.insertEntradaMercancia(entrada_mercancia);
                 if (mercanciaOrdenada != 0) {
                     for (int i = 0; i < listaMercanciaProducto.size(); i++) {
@@ -477,11 +487,11 @@ public class BeanEntradaMercancia2 implements Serializable {
         this.listaProvedores = listaProvedores;
     }
 
-    public EntradaMercancia2 getData() {
+    public EntradaMercancia getData() {
         return data;
     }
 
-    public void setData(EntradaMercancia2 data) {
+    public void setData(EntradaMercancia data) {
         this.data = data;
     }
 

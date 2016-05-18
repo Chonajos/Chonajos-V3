@@ -42,6 +42,7 @@ public class ExistenciaProducto implements Serializable {
     private BigDecimal precioMaximo;
     private boolean estatusBloqueo;
     private BigDecimal convenio;
+    private BigDecimal carroSucursal;
 
     public void reset() {
         idSucursal = null;
@@ -54,11 +55,20 @@ public class ExistenciaProducto implements Serializable {
         precioVenta = null;
         precioMaximo = null;
         estatusBloqueo = true;
+        carroSucursal = null;
     }
 
     @Override
     public String toString() {
         return "ExistenciaProducto{" + "idExistenciaProductoPk=" + idExistenciaProductoPk + ", idEmFK=" + idEmFK + ", idSubProductoFK=" + idSubProductoFK + ", idTipoEmpaqueFK=" + idTipoEmpaqueFK + ", cantidadPaquetes=" + cantidadPaquetes + ", kilosTotalesProducto=" + kilosTotalesProducto + ", comentarios=" + comentarios + ", precio=" + precio + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + ", idTipoConvenio=" + idTipoConvenio + ", idBodegaFK=" + idBodegaFK + ", nombreTipoConvenio=" + nombreTipoConvenio + ", nombreBodega=" + nombreBodega + ", kilospromprod=" + kilospromprod + ", numeroMovimiento=" + numeroMovimiento + ", pesoTara=" + pesoTara + ", idSucursal=" + idSucursal + ", idProvedor=" + idProvedor + ", nombreProvedorCompleto=" + nombreProvedorCompleto + ", identificador=" + identificador + ", nombreSucursal=" + nombreSucursal + ", precioMinimo=" + precioMinimo + ", precioVenta=" + precioVenta + ", precioMaximo=" + precioMaximo + ", estatusBloqueo=" + estatusBloqueo + '}';
+    }
+
+    public BigDecimal getCarroSucursal() {
+        return carroSucursal;
+    }
+
+    public void setCarroSucursal(BigDecimal carroSucursal) {
+        this.carroSucursal = carroSucursal;
     }
 
     

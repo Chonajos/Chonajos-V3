@@ -1,6 +1,6 @@
 package com.web.chon.service;
 
-import com.web.chon.dominio.EntradaMercancia2;
+import com.web.chon.dominio.EntradaMercancia;
 import com.web.chon.dominio.Pagina;
 
 import com.web.chon.negocio.NegocioEntradaMercancia;
@@ -34,7 +34,7 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
     }
 
     @Override
-    public int insertEntradaMercancia(EntradaMercancia2 entrada) {
+    public int insertEntradaMercancia(EntradaMercancia entrada) {
 
         getEjb();
         return ejb.insertEntradaMercancia(entrada);
@@ -42,7 +42,7 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
     }
 
     @Override
-    public int buscaMaxMovimiento(EntradaMercancia2 entrada) {
+    public int buscaMaxMovimiento(EntradaMercancia entrada) {
         getEjb();
         try {
             System.out.println("Entrada Service: " + entrada.toString());
@@ -68,17 +68,17 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
     }
 
     @Override
-    public ArrayList<EntradaMercancia2> getEntradaProductoByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idProvedor) {
+    public ArrayList<EntradaMercancia> getEntradaProductoByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idProvedor) {
         getEjb();
 
         List<Object[]> lstObject = new ArrayList<Object[]>();
-        ArrayList<EntradaMercancia2> lstEntradaMercancia2 = new ArrayList<EntradaMercancia2>();
+        ArrayList<EntradaMercancia> lstEntradaMercancia2 = new ArrayList<EntradaMercancia>();
 
         lstObject = ejb.getEntradaProductoByIntervalDate(fechaInicio, fechaFin, idSucursal, idProvedor);
 
         for (Object[] obj : lstObject) {
 
-            EntradaMercancia2 dominio = new EntradaMercancia2();
+            EntradaMercancia dominio = new EntradaMercancia();
             dominio.setIdEmPK(new BigDecimal(obj[0].toString()));
             dominio.setIdProvedorFK(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
             dominio.setMovimiento(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
@@ -98,20 +98,20 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
     }
 
     @Override
-    public Pagina<EntradaMercancia2> findAll(Pageable pageable) {
+    public Pagina<EntradaMercancia> findAll(Pageable pageable) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Pagina<EntradaMercancia2> findAllDominio(EntradaMercancia2 filters, int first, int pageSize) {
+    public Pagina<EntradaMercancia> findAllDominio(EntradaMercancia filters, int first, int pageSize) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public EntradaMercancia2 getById(BigDecimal dominio) {
+    public EntradaMercancia getById(BigDecimal dominio) {
         getEjb();
         List<Object[]> object = ejb.getEntradaById(dominio);
-        EntradaMercancia2 entra = new EntradaMercancia2();
+        EntradaMercancia entra = new EntradaMercancia();
         for (Object[] obj : object) {
             entra.setIdEmPK(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
             entra.setFolio(obj[1] == null ? "" : obj[1].toString());
@@ -121,22 +121,22 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
 }
 
 @Override
-        public EntradaMercancia2 getById(String dominio) {
+        public EntradaMercancia getById(String dominio) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-        public int create(EntradaMercancia2 dominio) {
+        public int create(EntradaMercancia dominio) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-        public int update(EntradaMercancia2 dominio) {
+        public int update(EntradaMercancia dominio) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-        public List<EntradaMercancia2> getAll() {
+        public List<EntradaMercancia> getAll() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -146,17 +146,17 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
     }
 
     @Override
-        public ArrayList<EntradaMercancia2> getSubEntradaByNombre(String nombre) {
+        public ArrayList<EntradaMercancia> getSubEntradaByNombre(String nombre) {
         System.out.println("Entro a Servicio, clave: "+nombre);
         try {
-            ArrayList<EntradaMercancia2> lstEntradas = new ArrayList<EntradaMercancia2>();
+            ArrayList<EntradaMercancia> lstEntradas = new ArrayList<EntradaMercancia>();
           
             getEjb();
            List<Object[]> object = ejb.getSubEntradaByNombre(nombre);
 
             for (Object[] obj : object) {
 
-                EntradaMercancia2 entrada = new EntradaMercancia2();
+                EntradaMercancia entrada = new EntradaMercancia();
                 entrada.setIdEmPK(obj[0] == null ? null:new BigDecimal(obj[0].toString()));
                 entrada.setFolio(obj[1] == null ? "" : obj[1].toString());
 
@@ -172,6 +172,18 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
             return null;
         }
     
+    }
+
+    @Override
+    public int getCarroSucursal(BigDecimal idSucursal) {
+       getEjb();
+        try {
+            return ejb.getCarroSucursal(idSucursal);
+
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceEntradaMercancia.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        }
     }
 
 }

@@ -5,7 +5,7 @@
  */
 package com.web.chon.negocio;
 
-import com.web.chon.dominio.EntradaMercancia2;
+import com.web.chon.dominio.EntradaMercancia;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -18,11 +18,13 @@ import javax.ejb.Remote;
 @Remote
 public interface NegocioEntradaMercancia {
 
-    public int insertEntradaMercancia(EntradaMercancia2 entrada);
+    public int insertEntradaMercancia(EntradaMercancia entrada);
 
     public int getNextVal();
+    
+    public int getCarroSucursal(BigDecimal idSucursal);
 
-    public int buscaMaxMovimiento(EntradaMercancia2 entrada);
+    public int buscaMaxMovimiento(EntradaMercancia entrada);
 
     public List<Object[]> getEntradaProductoByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idProvedor);
 

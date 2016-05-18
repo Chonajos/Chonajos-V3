@@ -77,6 +77,7 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
                 expro.setIdTipoEmpaqueFK(obj[16] == null ? null : new BigDecimal(obj[16].toString()));
                 expro.setIdBodegaFK(obj[17] == null ? null : new BigDecimal(obj[17].toString()));
                 expro.setConvenio(obj[18] == null ? null : new BigDecimal(obj[18].toString()));
+                expro.setCarroSucursal(obj[19] == null ? null : new BigDecimal(obj[19].toString()));
                 lista.add(expro);
             }
             return lista;

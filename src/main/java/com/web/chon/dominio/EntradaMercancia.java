@@ -13,7 +13,7 @@ import java.util.Date;
  *
  * @author freddy
  */
-public class EntradaMercancia2 extends ValueObject implements Serializable {
+public class EntradaMercancia extends ValueObject implements Serializable {
 
     private BigDecimal idEmPK;
     private BigDecimal idProvedorFK;
@@ -30,15 +30,17 @@ public class EntradaMercancia2 extends ValueObject implements Serializable {
     private BigDecimal idStatusFk;
     private BigDecimal kilosTotales;
     private BigDecimal kilosTotalesProvedor;
-    
-
+    private BigDecimal idCarroSucursal;
     private String nombreSucursal;
     private String nombreProvedor;
+    private BigDecimal idUsuario;
 
     @Override
     public String toString() {
-        return "EntradaMercancia2{" + "idEmPK=" + idEmPK + ", idProvedorFK=" + idProvedorFK + ", movimiento=" + movimiento + ", fecha=" + fecha + ", remision=" + remision + ", idSucursalFK=" + idSucursalFK + ", fechaFiltroInicio=" + fechaFiltroInicio + ", fechaFiltroFin=" + fechaFiltroFin + ", fechaRemision=" + fechaRemision + ", comentariosGenerales=" + comentariosGenerales + ", abreviacion=" + abreviacion + ", folio=" + folio + ", idStatusFk=" + idStatusFk + ", kilosTotales=" + kilosTotales + ", kilosTotalesProvedor=" + kilosTotalesProvedor + ", nombreSucursal=" + nombreSucursal + ", nombreProvedor=" + nombreProvedor + '}';
+        return "EntradaMercancia{" + "idEmPK=" + idEmPK + ", idProvedorFK=" + idProvedorFK + ", movimiento=" + movimiento + ", fecha=" + fecha + ", remision=" + remision + ", idSucursalFK=" + idSucursalFK + ", fechaFiltroInicio=" + fechaFiltroInicio + ", fechaFiltroFin=" + fechaFiltroFin + ", fechaRemision=" + fechaRemision + ", comentariosGenerales=" + comentariosGenerales + ", abreviacion=" + abreviacion + ", folio=" + folio + ", idStatusFk=" + idStatusFk + ", kilosTotales=" + kilosTotales + ", kilosTotalesProvedor=" + kilosTotalesProvedor + ", idCarroSucursal=" + idCarroSucursal + ", nombreSucursal=" + nombreSucursal + ", nombreProvedor=" + nombreProvedor + '}';
     }
+
+    
 
     @Override
     public void reset() {
@@ -59,7 +61,26 @@ public class EntradaMercancia2 extends ValueObject implements Serializable {
         nombreProvedor = null;
         fechaRemision=null;
     comentariosGenerales=null;
+    idCarroSucursal=null;
+    
 
+    }
+
+    public BigDecimal getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(BigDecimal idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+
+    
+    public BigDecimal getIdCarroSucursal() {
+        return idCarroSucursal;
+    }
+
+    public void setIdCarroSucursal(BigDecimal idCarroSucursal) {
+        this.idCarroSucursal = idCarroSucursal;
     }
 
     

@@ -5,7 +5,7 @@
  */
 package com.web.chon.ejb;
 
-import com.web.chon.dominio.EntradaMercancia2;
+import com.web.chon.dominio.EntradaMercancia;
 import com.web.chon.negocio.NegocioEntradaMercancia;
 import com.web.chon.util.TiempoUtil;
 import java.math.BigDecimal;
@@ -29,11 +29,11 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
     EntityManager em;
 
     @Override
-    public int insertEntradaMercancia(EntradaMercancia2 entrada) {
+    public int insertEntradaMercancia(EntradaMercancia entrada) {
         System.out.println("EJB_INSERTA_ENTRADAMERCANCIA");
         try {
             System.out.println("Entrada: " + entrada);
-            Query query = em.createNativeQuery("INSERT INTO ENTRADAMERCANCIA (ID_EM_PK,ID_PROVEDOR_FK,MOVIMIENTO,FECHA,REMISION,ID_SUCURSAL_FK,IDENTIFICADOR,ID_STATUS_FK,KILOSTOTALES,KILOSTOTALESPROVEDOR,COMENTARIOS,FECHAREMISION)VALUES (?,?,?,sysdate,?,?,?,1,?,?,?,?)");
+            Query query = em.createNativeQuery("INSERT INTO ENTRADAMERCANCIA (ID_EM_PK,ID_PROVEDOR_FK,MOVIMIENTO,FECHA,REMISION,ID_SUCURSAL_FK,IDENTIFICADOR,ID_STATUS_FK,KILOSTOTALES,KILOSTOTALESPROVEDOR,COMENTARIOS,FECHAREMISION,CARROSUCURSAL,ID_USUARIO_FK)VALUES (?,?,?,sysdate,?,?,?,1,?,?,?,?,?,?)");
             query.setParameter(1, entrada.getIdEmPK());
             query.setParameter(2, entrada.getIdProvedorFK());
             query.setParameter(3, entrada.getMovimiento());
@@ -44,6 +44,9 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
             query.setParameter(8, entrada.getKilosTotalesProvedor());
             query.setParameter(9, entrada.getComentariosGenerales());
             query.setParameter(10, entrada.getFechaRemision());
+            query.setParameter(11, entrada.getIdCarroSucursal());
+            query.setParameter(12, entrada.getIdUsuario());
+            
 
             return query.executeUpdate();
 
@@ -54,7 +57,7 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
 
     }
 
-    public int buscaMaxMovimiento(EntradaMercancia2 entrada) {
+    public int buscaMaxMovimiento(EntradaMercancia entrada) {
         System.out.println("EJB_BUSCA_MAX_MOVIMIENTO");
         try {
             System.out.println("Entrada: " + entrada.toString());
@@ -128,5 +131,13 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
         query.setParameter(1, id);
 
         return query.getResultList();
+    }
+
+    @Override
+    public int getCarroSucursal(BigDecimal idSucursal) {
+        Query query = em.createNativeQuery("select count(*) from ENTRADAMERCANCIA where ID_SUCURSAL_FK=?");
+        query.setParameter(1, idSucursal);
+        return Integer.parseInt(query.getSingleResult().toString());
+        
     }
 }

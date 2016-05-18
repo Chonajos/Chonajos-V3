@@ -1,7 +1,7 @@
 package com.web.chon.bean;
 
 import com.web.chon.dominio.Bodega;
-import com.web.chon.dominio.EntradaMercancia2;
+import com.web.chon.dominio.EntradaMercancia;
 import com.web.chon.dominio.ExistenciaProducto;
 import com.web.chon.dominio.Provedor;
 import com.web.chon.dominio.Subproducto;
@@ -56,11 +56,11 @@ public class BeanMantenimientoPrecioMayoreo implements Serializable {
     private ArrayList<Provedor> listaProvedores;
     private ArrayList<TipoEmpaque> lstTipoEmpaque;
     private ArrayList<TipoConvenio> listaTiposConvenio;
-    private ArrayList<EntradaMercancia2> lstEntradaMercancia;
+    private ArrayList<EntradaMercancia> lstEntradaMercancia;
 
     private ExistenciaProducto data;
     private Subproducto subProducto;
-    private EntradaMercancia2 entradaMercancia;
+    private EntradaMercancia entradaMercancia;
     private UsuarioDominio usuario;
 
     private String title = "";
@@ -83,7 +83,7 @@ public class BeanMantenimientoPrecioMayoreo implements Serializable {
 
         data = new ExistenciaProducto();
         subProducto = new Subproducto();
-        entradaMercancia = new EntradaMercancia2();
+        entradaMercancia = new EntradaMercancia();
 
         listaSucursales = ifaceCatSucursales.getSucursales();
         listaProvedores = ifaceCatProvedores.getProvedores();
@@ -145,7 +145,7 @@ public class BeanMantenimientoPrecioMayoreo implements Serializable {
         return true;
     }
 
-    public ArrayList<EntradaMercancia2> autoCompleteMercancia(String clave) {
+    public ArrayList<EntradaMercancia> autoCompleteMercancia(String clave) {
         lstEntradaMercancia = ifaceEntradaMercancia.getSubEntradaByNombre(clave.toUpperCase());
         return lstEntradaMercancia;
     }
@@ -192,7 +192,7 @@ public class BeanMantenimientoPrecioMayoreo implements Serializable {
         data.setIdTipoEmpaqueFK(null);
         data.setIdTipoConvenio(null);
 
-        entradaMercancia = new EntradaMercancia2();
+        entradaMercancia = new EntradaMercancia();
         buscaExistencias();
 
     }
@@ -266,11 +266,11 @@ public class BeanMantenimientoPrecioMayoreo implements Serializable {
         this.listaTiposConvenio = listaTiposConvenio;
     }
 
-    public ArrayList<EntradaMercancia2> getLstEntradaMercancia() {
+    public ArrayList<EntradaMercancia> getLstEntradaMercancia() {
         return lstEntradaMercancia;
     }
 
-    public void setLstEntradaMercancia(ArrayList<EntradaMercancia2> lstEntradaMercancia) {
+    public void setLstEntradaMercancia(ArrayList<EntradaMercancia> lstEntradaMercancia) {
         this.lstEntradaMercancia = lstEntradaMercancia;
     }
 
@@ -290,11 +290,11 @@ public class BeanMantenimientoPrecioMayoreo implements Serializable {
         this.subProducto = subProducto;
     }
 
-    public EntradaMercancia2 getEntradaMercancia() {
+    public EntradaMercancia getEntradaMercancia() {
         return entradaMercancia;
     }
 
-    public void setEntradaMercancia(EntradaMercancia2 entradaMercancia) {
+    public void setEntradaMercancia(EntradaMercancia entradaMercancia) {
         this.entradaMercancia = entradaMercancia;
     }
 
