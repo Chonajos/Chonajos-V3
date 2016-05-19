@@ -72,7 +72,7 @@
 			<textField>
 				<reportElement x="2" y="27" width="177" height="14" uuid="aaea60dc-87cb-4ea6-b2cb-40ae00112a02"/>
 				<textElement textAlignment="Center">
-					<font size="8"/>
+					<font size="10" isBold="true" isItalic="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{labelSucursal}]]></textFieldExpression>
 			</textField>

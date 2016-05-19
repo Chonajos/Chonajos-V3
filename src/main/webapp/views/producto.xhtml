@@ -19,7 +19,7 @@
                     <p:commandButton value="Eliminar" update=":formProducto" ajax="true" action="#{beanSubProducto.delete}" icon="ui-icon-trash" />
                 </div>
                 <div class="col-lg-10 col-md-10 col-md-12 col-xs-12 col-lg-offset-1 col-md-offset-1">
-                    <p:dataTable var="model" value="#{beanSubProducto.model}" rows="10" scrollable="true"
+                    <p:dataTable var="model" value="#{beanSubProducto.model}" rows="20" scrollable="true"
                                  paginator="true" selection="#{beanSubProducto.selectedSubProducto}" rowKey="#{model.idSubproductoPk}"
                                  emptyMessage="No se encontraron Registros.">
                         <p:column selectionMode="multiple" width="32px; !important" class="alignCenter"/>

@@ -98,8 +98,15 @@ html{
 .ui-selectonemenu{
     width: inherit !important;
 }
+
+/*Color azul en autocomplete*/
+ul .ui-state-highlight {
+    background-image:-webkit-linear-gradient(top, #0088cc, #0077b3) !important;
+
+}
+
 .ui-priority-primary, .ui-widget-content .ui-priority-primary, .ui-widget-header .ui-priority-primary{
-    /*background-image:linear-gradient(to bottom, #DCDCDC, rgb(208, 209, 212)) !important;*/
+    background-image:linear-gradient(to bottom, #DCDCDC, rgb(208, 209, 212)) !important;
     background-color:#0081c2;
 }
 
@@ -125,8 +132,6 @@ div label{
 .alignLeftRadioButton table  label{
     text-align: left !important;
 }
-
-
 
 /*quitar bordes de paneles*/
 .ui-panel .ui-panel-content{
@@ -184,7 +189,7 @@ button span:hover{
         border-bottom: 4px solid #3A3232 !important;
 
     }
-     .padinTopRes{
+    .padinTopRes{
         padding-top:30px !important;
     }
 
@@ -197,7 +202,7 @@ button span:hover{
     div label{
         text-align: left !important;
     }
-    
+
 }
 @media (max-width : 767px){
     .padinTopRes{
@@ -216,7 +221,7 @@ button span:hover{
 /*Se ocultan componente en el tamño 768*/
 @media (min-width:767px) and (max-width : 768px){
 
-.hidden-button-toggle{
+    .hidden-button-toggle{
         display:none;
     }
 }

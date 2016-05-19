@@ -40,6 +40,7 @@ public class ServiceVentaProducto implements IfaceVentaProducto {
         if (ejb == null) {
             getEjb();
         }
+        System.out.println("" + ventaProducto.toString());
         return ejb.insertarVentaProducto(ventaProducto, idVenta);
     }
 
