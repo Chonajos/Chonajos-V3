@@ -16,12 +16,23 @@
             var hiddenCode = "#{beanVenta.viewEstate}";
         </script>
         <h:form id="formContent" >
+            <p:confirmDialog  global="true" showEffect="fade" hideEffect="fade">
+                <div class="alignCenter">
+                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton  value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </div>
+            </p:confirmDialog>
+            <p:ajaxStatus onsuccess="PF('statusDialog').hide()" />
+            <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                      closable="false" resizable="false" showHeader="false">
+                <p:graphicImage value="../resources/img/carga.gif" />
+            </p:dialog>
             <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:panel >
                 <div class="container-fluid">
                     <div class="form-group" align="right">
                         <p:commandButton value="Agregar" update=":formContent" ajax="true" action="#{beanVenta.addProducto}" rendered="#{beanVenta.viewEstate =='init'}"/>
-                        <p:commandButton value="Vender" id="vender" ajax="false" update=":formContent"   action="#{beanVenta.inserts}" immediate="true" resetValues="true" rendered="#{beanVenta.viewEstate =='init'}"/>
+                        <p:commandButton value="Vender" id="vender" ajax="false" update=":formContent"   action="#{beanVenta.inserts}" immediate="true" resetValues="true" rendered="#{beanVenta.viewEstate =='init'}" onclick="PF('statusDialog').show();"/>
                         <!--<p:commandButton  value="imprimir ticket" id="btonImprimir" ajax="true" rendered="{beanVenta.viewEstate =='init'}"  onclick="window.frames.miFrame.print();" resetValues="true" action="{beanVenta.cancel}"/>-->
                         <p:commandButton value="Aceptar" update=":formContent" ajax="true" action="#{beanVenta.updateProducto}" rendered="#{beanVenta.viewEstate =='update'}"/>
                         <p:commandButton value="Cancelar" update=":formContent" ajax="true" action="#{beanVenta.cancel}" immediate="true" resetValues="true" rendered="#{beanVenta.viewEstate =='update'}"/>

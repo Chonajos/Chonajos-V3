@@ -127,14 +127,14 @@
 	<columnHeader>
 		<band height="39" splitType="Stretch">
 			<staticText>
-				<reportElement stretchType="RelativeToBandHeight" x="1" y="0" width="64" height="20" uuid="3de5b056-e0b4-4452-ac39-0490692c29c9"/>
+				<reportElement stretchType="RelativeToBandHeight" x="1" y="0" width="52" height="20" uuid="3de5b056-e0b4-4452-ac39-0490692c29c9"/>
 				<textElement textAlignment="Left">
 					<font size="8"/>
 				</textElement>
 				<text><![CDATA[PRODUCTO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="66" y="1" width="46" height="20" uuid="1fd357bf-c36e-4cc6-b93f-93d4955f97b7"/>
+				<reportElement x="53" y="1" width="46" height="20" uuid="1fd357bf-c36e-4cc6-b93f-93d4955f97b7"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
@@ -144,7 +144,7 @@
 				<reportElement x="0" y="17" width="179" height="1" uuid="23ea086d-93f9-4078-a46f-2093a5a5bea2"/>
 			</line>
 			<staticText>
-				<reportElement x="112" y="1" width="35" height="20" uuid="154e5d4f-f2e1-4322-acc4-c7f05c4fc108"/>
+				<reportElement x="111" y="1" width="23" height="20" uuid="154e5d4f-f2e1-4322-acc4-c7f05c4fc108"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
@@ -175,7 +175,7 @@
 				</jr:list>
 			</componentElement>
 			<staticText>
-				<reportElement x="147" y="1" width="32" height="20" uuid="0f0f3c84-986f-4f89-8a31-ca6323b8d3b4"/>
+				<reportElement x="149" y="1" width="20" height="20" uuid="0f0f3c84-986f-4f89-8a31-ca6323b8d3b4"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
@@ -193,14 +193,14 @@
 				<textFieldExpression><![CDATA[$P{totalLetra}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="128" y="0" width="52" height="16" uuid="e907644f-1905-4d2f-9946-b6520cccb1a2"/>
+				<reportElement x="134" y="0" width="46" height="16" uuid="e907644f-1905-4d2f-9946-b6520cccb1a2"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{ventaTotal}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="98" y="0" width="31" height="16" uuid="8dd11f34-373f-4762-85c0-45742b6d289f"/>
+				<reportElement x="110" y="0" width="31" height="16" uuid="8dd11f34-373f-4762-85c0-45742b6d289f"/>
 				<textElement textAlignment="Left">
 					<font size="8"/>
 				</textElement>

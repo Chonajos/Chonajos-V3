@@ -27,17 +27,13 @@ public class UtilUpload {
 
         String ubicacionPdf = null;
         ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-        String temporal ="";
-            if(servletContext.getRealPath("")==null)
-            {
-                temporal = Constantes.PATHSERVER;
-            }
-            else
-            {
-                temporal = servletContext.getRealPath("");
-            }
-            
-        
+        String temporal = "";
+        if (servletContext.getRealPath("") == null) {
+            temporal = Constantes.PATHSERVER;
+        } else {
+            temporal = servletContext.getRealPath("");
+        }
+
         String ruta = temporal + File.separatorChar + "resources" + File.separatorChar + "pdf" + File.separatorChar + "temp" + File.separatorChar + nombreArchivo;
 
         File file = null;
@@ -48,8 +44,15 @@ public class UtilUpload {
             int cont = 0;
             while (file.exists()) {
                 cont++;
+
+                if (cont > 1) {
+                    ruta = ruta.substring(0, ruta.length() - 1);
+                    nombreArchivo = nombreArchivo.substring(0, nombreArchivo.length() - 1);
+                }
+
                 ruta += cont;
                 nombreArchivo += cont;
+                
                 file = new File(ruta + ".pdf");
             }
 

@@ -73,15 +73,23 @@ public class BeanVenta implements Serializable, BeanSimple {
 
     private static final long serialVersionUID = 1L;
 
-    @Autowired private IfaceVenta ifaceVenta;
-    @Autowired private IfaceEmpaque ifaceEmpaque;
-    @Autowired private IfaceSubProducto ifaceSubProducto;
-    @Autowired private IfaceVentaProducto ifaceVentaProducto;
-    @Autowired IfaceCatCliente ifaceCatCliente;
-    @Autowired IfaceCatUsuario ifaceCatUsuario;
-    @Autowired IfaceMantenimientoPrecio ifaceMantenimientoPrecio;
-    @Autowired private PlataformaSecurityContext context;
-    
+    @Autowired
+    private IfaceVenta ifaceVenta;
+    @Autowired
+    private IfaceEmpaque ifaceEmpaque;
+    @Autowired
+    private IfaceSubProducto ifaceSubProducto;
+    @Autowired
+    private IfaceVentaProducto ifaceVentaProducto;
+    @Autowired
+    IfaceCatCliente ifaceCatCliente;
+    @Autowired
+    IfaceCatUsuario ifaceCatUsuario;
+    @Autowired
+    IfaceMantenimientoPrecio ifaceMantenimientoPrecio;
+    @Autowired
+    private PlataformaSecurityContext context;
+
     private ArrayList<VentaProducto> lstVenta;
     private ArrayList<Subproducto> lstProducto;
     private ArrayList<TipoEmpaque> lstTipoEmpaque;
@@ -187,20 +195,19 @@ public class BeanVenta implements Serializable, BeanSimple {
     public void inserts() {
         int idVenta = 0;
         Venta venta = new Venta();
-
+       
         try {
             if (!lstVenta.isEmpty() && lstVenta.size() > 0) {
-                
+
                 idVenta = ifaceVenta.getNextVal();
                 venta.setIdVentaPk(new BigDecimal(idVenta));
                 venta.setIdClienteFk(cliente.getId_cliente());
                 venta.setIdVendedorFk(usuario.getIdUsuarioPk());
                 venta.setIdSucursal(idSucu);
                 int ventaInsertada = ifaceVenta.insertarVenta(venta);
-                
+
                 if (ventaInsertada != 0) {
                     for (VentaProducto producto : lstVenta) {
-                        System.out.println("1" + producto.toString());
                         ifaceVentaProducto.insertarVentaProducto(producto, idVenta);
                     }
                     setParameterTicket(idVenta);
@@ -210,17 +217,20 @@ public class BeanVenta implements Serializable, BeanSimple {
                     lstVenta.clear();
                     totalVenta = new BigDecimal(0);
                     RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
+   
 
                 } else {
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al insertar la venta."));
+                    
                 }
             } else {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Necesitas agregar al menos un producto para realizar la venta."));
-
+                
             }
 
         } catch (StackOverflowError ex) {
             ex.printStackTrace();
+            
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", ex.toString()));
 
         } catch (Exception e) {
@@ -274,12 +284,12 @@ public class BeanVenta implements Serializable, BeanSimple {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "El precio de venta esta fuera de valores permitidos: Mínimo:" + min + " Máximo: " + max));
 
             } else {
-                
+
                 VentaProducto venta = new VentaProducto();
                 TipoEmpaque empaque = new TipoEmpaque();
-                
+
                 DecimalFormat df = new DecimalFormat("#,###.##");
-                
+
                 empaque = getEmpaque(data.getIdTipoEmpaqueFk());
                 venta.setCantidadEmpaque(data.getCantidadEmpaque());
                 venta.setIdTipoEmpaqueFk(data.getIdTipoEmpaqueFk());
@@ -290,19 +300,17 @@ public class BeanVenta implements Serializable, BeanSimple {
                 venta.setIdProductoFk(subProducto.getIdSubproductoPk());
                 venta.setNombreEmpaque(empaque.getNombreEmpaque());
                 venta.setTotal(new BigDecimal(venta.getPrecioProducto()).multiply(venta.getCantidadEmpaque()));
-                
+
                 lstVenta.add(venta);
-                
+
                 calcularTotalVenta();
-                
+
                 data.reset();
-                
+
                 subProducto = new Subproducto();
-                
-                UtilUpload.deleteFile(rutaPDF);
-                
+
                 selectedTipoEmpaque();
-                
+
                 variableInicial = false;
 
             }
@@ -341,16 +349,17 @@ public class BeanVenta implements Serializable, BeanSimple {
         NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
         DecimalFormat df = new DecimalFormat("###.##");
         Date date = new Date();
-        
+
         ArrayList<String> productos = new ArrayList<String>();
         NumeroALetra numeroLetra = new NumeroALetra();
-        
+
         for (VentaProducto venta : lstVenta) {
-            
+
             String cantidad = venta.getCantidadEmpaque() + " " + venta.getNombreEmpaque();
             productos.add(venta.getNombreProducto().toUpperCase());
-            productos.add("           " + cantidad + "               " + nf.format(venta.getPrecioProducto()) + "    " + nf.format(venta.getTotal()));
-            
+            //80 16 espacios 24 cantidad 14 p/u 20 pt
+            productos.add("                       " + cantidad + "     " + nf.format(venta.getPrecioProducto()) + "    " + nf.format(venta.getTotal()));
+
         }
 
         String totalVentaStr = numeroLetra.Convertir(df.format(totalVenta), true);
@@ -475,12 +484,12 @@ public class BeanVenta implements Serializable, BeanSimple {
             System.out.println("Error >" + e.getMessage());
         }
     }
-    
-      @Override
+
+
+    @Override
     public String insert() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
 
     public String getPathFileJasper() {
         return pathFileJasper;
@@ -673,5 +682,6 @@ public class BeanVenta implements Serializable, BeanSimple {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
+
 
 }

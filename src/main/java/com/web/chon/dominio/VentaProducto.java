@@ -147,7 +147,6 @@ public class VentaProducto implements Serializable {
       idVentaProductoPk = null;
       precioProducto = null;
       idProductoFk = null;
-      idTipoEmpaqueFk = new BigDecimal(-1);
       cantidadEmpaque = null;
       kilosVenta = null;
       total = null;
