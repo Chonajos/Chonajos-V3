@@ -73,22 +73,14 @@ public class BeanVenta implements Serializable, BeanSimple {
 
     private static final long serialVersionUID = 1L;
 
-    @Autowired
-    private IfaceVenta ifaceVenta;
-    @Autowired
-    private IfaceEmpaque ifaceEmpaque;
-    @Autowired
-    private IfaceSubProducto ifaceSubProducto;
-    @Autowired
-    private IfaceVentaProducto ifaceVentaProducto;
-    @Autowired
-    IfaceCatCliente ifaceCatCliente;
-    @Autowired
-    IfaceCatUsuario ifaceCatUsuario;
-    @Autowired
-    IfaceMantenimientoPrecio ifaceMantenimientoPrecio;
-    @Autowired
-    private PlataformaSecurityContext context;
+    @Autowired private IfaceVenta ifaceVenta;
+    @Autowired private IfaceEmpaque ifaceEmpaque;
+    @Autowired private IfaceSubProducto ifaceSubProducto;
+    @Autowired private IfaceVentaProducto ifaceVentaProducto;
+    @Autowired IfaceCatCliente ifaceCatCliente;
+    @Autowired IfaceCatUsuario ifaceCatUsuario;
+    @Autowired IfaceMantenimientoPrecio ifaceMantenimientoPrecio;
+    @Autowired private PlataformaSecurityContext context;
 
     private ArrayList<VentaProducto> lstVenta;
     private ArrayList<Subproducto> lstProducto;
@@ -218,10 +210,8 @@ public class BeanVenta implements Serializable, BeanSimple {
                     totalVenta = new BigDecimal(0);
                     RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
    
-
                 } else {
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al insertar la venta."));
-                    
                 }
             } else {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Necesitas agregar al menos un producto para realizar la venta."));
@@ -230,7 +220,6 @@ public class BeanVenta implements Serializable, BeanSimple {
 
         } catch (StackOverflowError ex) {
             ex.printStackTrace();
-            
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", ex.toString()));
 
         } catch (Exception e) {
@@ -308,6 +297,8 @@ public class BeanVenta implements Serializable, BeanSimple {
                 data.reset();
 
                 subProducto = new Subproducto();
+                
+//                UtilUpload.deleteFile(rutaPDF);
 
                 selectedTipoEmpaque();
 
@@ -357,7 +348,6 @@ public class BeanVenta implements Serializable, BeanSimple {
 
             String cantidad = venta.getCantidadEmpaque() + " " + venta.getNombreEmpaque();
             productos.add(venta.getNombreProducto().toUpperCase());
-            //80 16 espacios 24 cantidad 14 p/u 20 pt
             productos.add("                       " + cantidad + "     " + nf.format(venta.getPrecioProducto()) + "    " + nf.format(venta.getTotal()));
 
         }
@@ -485,12 +475,12 @@ public class BeanVenta implements Serializable, BeanSimple {
         }
     }
 
-
     @Override
     public String insert() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    
     public String getPathFileJasper() {
         return pathFileJasper;
     }
@@ -682,6 +672,5 @@ public class BeanVenta implements Serializable, BeanSimple {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
-
 
 }

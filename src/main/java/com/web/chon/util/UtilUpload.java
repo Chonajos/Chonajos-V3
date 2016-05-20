@@ -46,25 +46,33 @@ public class UtilUpload {
                 cont++;
 
                 if (cont > 1) {
-                    ruta = ruta.substring(0, ruta.length() - 1);
-                    nombreArchivo = nombreArchivo.substring(0, nombreArchivo.length() - 1);
+                    
+                    System.out.println("Ruta :" + ruta);
+                    ruta = ruta.replace("ticketPdf"+(cont - 1), "ticketPdf"+cont);
+                    System.out.println("Ruta remplace:" + ruta);
+                    System.out.println("Nombre archivo :" + nombreArchivo);
+                    nombreArchivo = nombreArchivo.replace("ticketPdf"+(cont - 1), "ticketPdf"+cont);
+                    System.out.println("Nombre archivo remplace:" + nombreArchivo);
+                } else {
+
+                    ruta += cont;
+                    nombreArchivo += cont;
                 }
 
-                ruta += cont;
-                nombreArchivo += cont;
-                
                 file = new File(ruta + ".pdf");
+                System.out.println("Se creo file: "+ruta + ".pdf");
             }
 
             inputStream = new ByteArrayInputStream(bytes);
+            System.out.println("file.getAbsolutePath() :"+file.getAbsolutePath());
             FileOutputStream out = new FileOutputStream(file.getAbsolutePath());
-
+            System.out.println("absolute path");
             int c = 0;
 
             while ((c = inputStream.read()) >= 0) {
                 out.write(c);
             }
-
+            System.out.println("se escribio correctamente");
             out.flush();
             out.close();
             ubicacionPdf = "/resources/pdf/temp/" + nombreArchivo + ".pdf";

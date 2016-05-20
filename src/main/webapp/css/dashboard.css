@@ -49,6 +49,10 @@ html{
 {
     color:deepskyblue;
 }
+.statusCancelado
+{
+    color:red;
+}
 
 .menuPrincipal{
     font-weight: bold;

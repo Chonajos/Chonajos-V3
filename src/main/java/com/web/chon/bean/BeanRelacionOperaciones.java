@@ -143,6 +143,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     public void cancel() {
         viewEstate = "init";
         lstVenta.clear();
+        getTotalVentaByInterval();
     }
 
     public void detallesVenta() {
