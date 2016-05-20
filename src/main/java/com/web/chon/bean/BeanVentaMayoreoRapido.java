@@ -270,7 +270,7 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
 
                 }
                 setParameterTicket(idVentaInsert.intValue());
-                generateReport(ventaGeneral.getVentaSucursal());
+                generateReport(ventaGeneral.getVentaSucursal().intValue());
                 selectedExistencia = new ExistenciaProducto();
                 lstExistencias = new ArrayList<ExistenciaProducto>();
                 lstVenta = new ArrayList<VentaProductoMayoreo>();
