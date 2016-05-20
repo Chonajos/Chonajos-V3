@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ticket" pageWidth="219" pageHeight="1224" columnWidth="179" leftMargin="20" rightMargin="20" topMargin="4" bottomMargin="20" isIgnorePagination="true" uuid="cce07992-6ec7-4616-8caf-ceb4ee12975b">
-	<property name="ireport.zoom" value="1.6105100000000008"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.zoom" value="6.115909044841463"/>
+	<property name="ireport.x" value="99"/>
+	<property name="ireport.y" value="754"/>
 	<subDataset name="dataset1" uuid="98370534-40ba-4932-9815-f4270ac51f8a">
 		<queryString language="SQL">
 			<![CDATA[]]>
@@ -125,16 +125,16 @@
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="39" splitType="Stretch">
+		<band height="38" splitType="Stretch">
 			<staticText>
-				<reportElement stretchType="RelativeToBandHeight" x="1" y="0" width="52" height="20" uuid="3de5b056-e0b4-4452-ac39-0490692c29c9"/>
+				<reportElement stretchType="RelativeToBandHeight" x="1" y="0" width="52" height="17" uuid="3de5b056-e0b4-4452-ac39-0490692c29c9"/>
 				<textElement textAlignment="Left">
 					<font size="8"/>
 				</textElement>
 				<text><![CDATA[PRODUCTO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="53" y="1" width="46" height="20" uuid="1fd357bf-c36e-4cc6-b93f-93d4955f97b7"/>
+				<reportElement x="53" y="1" width="46" height="16" uuid="1fd357bf-c36e-4cc6-b93f-93d4955f97b7"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
@@ -144,21 +144,21 @@
 				<reportElement x="0" y="17" width="179" height="1" uuid="23ea086d-93f9-4078-a46f-2093a5a5bea2"/>
 			</line>
 			<staticText>
-				<reportElement x="111" y="1" width="23" height="20" uuid="154e5d4f-f2e1-4322-acc4-c7f05c4fc108"/>
+				<reportElement x="111" y="1" width="23" height="16" uuid="154e5d4f-f2e1-4322-acc4-c7f05c4fc108"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
 				<text><![CDATA[P/U]]></text>
 			</staticText>
 			<componentElement>
-				<reportElement x="1" y="19" width="178" height="18" uuid="34e1bda9-3863-49ce-966c-80f124711798"/>
+				<reportElement x="1" y="19" width="178" height="15" uuid="34e1bda9-3863-49ce-966c-80f124711798"/>
 				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
 					<datasetRun subDataset="dataset1" uuid="5498b2ef-03e0-466a-9339-949f4a310948">
 						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{productos})]]></dataSourceExpression>
 					</datasetRun>
-					<jr:listContents height="18" width="178">
+					<jr:listContents height="15" width="178">
 						<textField isStretchWithOverflow="true">
-							<reportElement stretchType="RelativeToBandHeight" x="0" y="1" width="178" height="17" uuid="a8c5c589-8d6f-4ebe-965d-41c8e2e0a555"/>
+							<reportElement stretchType="RelativeToBandHeight" x="0" y="1" width="178" height="14" uuid="a8c5c589-8d6f-4ebe-965d-41c8e2e0a555"/>
 							<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 								<pen lineWidth="0.25" lineStyle="Dotted" lineColor="#000000"/>
 								<topPen lineWidth="0.25" lineStyle="Dotted" lineColor="#000000"/>
@@ -175,7 +175,7 @@
 				</jr:list>
 			</componentElement>
 			<staticText>
-				<reportElement x="149" y="1" width="20" height="20" uuid="0f0f3c84-986f-4f89-8a31-ca6323b8d3b4"/>
+				<reportElement x="149" y="1" width="20" height="16" uuid="0f0f3c84-986f-4f89-8a31-ca6323b8d3b4"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
