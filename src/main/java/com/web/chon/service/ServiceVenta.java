@@ -60,6 +60,7 @@ public class ServiceVenta implements IfaceVenta {
             venta.setIdClienteFk(new BigDecimal(obj[1].toString()));
             venta.setIdVendedorFk(new BigDecimal(obj[2].toString()));
             venta.setFechaVenta((Date)obj[3]);
+            System.out.println("Fecha: "+venta.getFechaVenta());
             venta.setFechaPromesaPago(obj[4] == null ? null: (Date) obj[4]);
             venta.setIdStatus(Integer.parseInt(obj[5]==null ? "0" :obj[5].toString()));
             venta.setFechaPago(obj[6] == null ? null: (Date) obj[6]);
@@ -67,7 +68,6 @@ public class ServiceVenta implements IfaceVenta {
             venta.setNombreCliente(obj[8].toString());
             venta.setNombreVendedor(obj[9].toString());
             venta.setTotalVenta(new BigDecimal(obj[10].toString()));
-            
             lstVenta.add(venta);
         }
         

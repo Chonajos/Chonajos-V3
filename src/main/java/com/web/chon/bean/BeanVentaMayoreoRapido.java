@@ -31,6 +31,7 @@ import com.web.chon.util.TiempoUtil;
 import com.web.chon.util.UtilUpload;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -45,6 +46,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
+//import static jdk.management.resource.internal.SimpleResourceContext.contexts;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRExporter;
 import net.sf.jasperreports.engine.JRExporterParameter;
@@ -62,7 +64,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Scope("view")
-public class BeanVentaMayoreo implements Serializable, BeanSimple {
+public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
 
     private static final long serialVersionUID = 1L;
 
@@ -128,16 +130,10 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     private boolean permisionVentaRapida;
     private boolean ventaRapidaCheck;
 
-    private BigDecimal recibido;
-    private BigDecimal cambio;
 
-    private boolean pruaba;
-    private boolean charLine = true;
 
     @PostConstruct
     public void init() {
-
-//        pruaba = false;
         ventaRapida = "0";
         cliente = new Cliente();
         cliente = ifaceCatCliente.getClienteById(1);
@@ -178,18 +174,14 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
     }
 
-    public void calculaCambio() {
-        cambio = recibido.subtract(TotalVentaGeneral, MathContext.UNLIMITED);
-    }
+    
 
     public void changeVentaRapida() {
+        System.out.println("Check:" + ventaRapidaCheck);
         if (ventaRapidaCheck) {
             ventaRapidaButton = "Rapida";
-            lstExistencias = ifaceNegocioExistencia.getExistencias(idSucu, null, null, null, null, null, null);
-
         } else {
             ventaRapidaButton = "";
-            lstExistencias = new ArrayList<ExistenciaProducto>();
         }
 
     }
@@ -217,11 +209,11 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         totalProductoTemporal = null;
         TotalVentaGeneral = new BigDecimal(0);
         JsfUtil.addWarnMessage("Venta Cancelada");
-        changeVentaRapida();
 
     }
 
-    public void inserts() {
+    public void inserts() throws IOException 
+    {
         if (lstVenta.isEmpty()) {
 
             JsfUtil.addErrorMessageClean("Tu pedido se encuentra vacío favor de agregar productos");
@@ -235,7 +227,8 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         } else if (idTipoVenta == null) {
             changeView();
             JsfUtil.addErrorMessageClean("Favor de Seleccionar un tipo de venta");
-        } else {
+        } else 
+        {
             BigDecimal idVentaInsert = new BigDecimal(ifaceVentaMayoreo.getNextVal());
             ventaGeneral.setIdVentaMayoreoPk(idVentaInsert);
             ventaGeneral.setIdtipoVentaFk(idTipoVenta);
@@ -289,10 +282,15 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                 TotalVentaGeneral = new BigDecimal(0);
 
                 //cliente=new Cliente();
-                changeVentaRapida();
             }
-            RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
-        }
+             //RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
+        
+            //FacesContext contexts =FacesContext.getCurrentInstance();
+            //contexts.getExternalContext().getRequestParameterMap().put("folio", "hola");
+            FacesContext.getCurrentInstance().getExternalContext().redirect("buscaVentaMayoreo.xhtml"); 
+            //return "buscaVentaMayoreo?displayTargetPopUp&faces-redirect=true&includeViewParams=true&folio=folio";
+           }
+        
     }
 
     public void changeViewToAddProducto() {
@@ -317,10 +315,10 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         if (idproductito != null) {
             lstExistencias = ifaceNegocioExistencia.getExistencias(idSucu, null, null, idproductito, null, null, null);
             if (lstExistencias.size() == 1) {
-
+                
                 selectedExistencia = new ExistenciaProducto();
-                selectedExistencia = lstExistencias.get(0);
-
+                selectedExistencia=lstExistencias.get(0);
+                
                 habilitarBotones();
             } else {
                 selectedExistencia = new ExistenciaProducto();
@@ -335,18 +333,13 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
             data.setKilosVendidos(null);
             selectedExistencia = new ExistenciaProducto();
             permisionToWrite = true;
-            if (ventaRapida.equals("4")) {
-
-                lstExistencias = ifaceNegocioExistencia.getExistencias(idSucu, null, null, null, null, null, null);
-
-            } 
-
+            lstExistencias.clear();
 
         }
 
     }
 
-    public void addProductoEnd() {
+    public void addProductoEnd() throws IOException {
         addProducto();
         inserts();
     }
@@ -356,7 +349,8 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
             JsfUtil.addErrorMessage("Seleccione un Producto de la tabla, o agrego una cantidad o peso en 0 Kg.");
 
         } else //            System.out.println("idSubProducto:" + selectedExistencia.getIdSubProductoFK());
-         if (selectedExistencia.getPrecioVenta() == null) {
+        {
+            if (selectedExistencia.getPrecioVenta() == null) {
                 JsfUtil.addErrorMessage("No se tiene precio de venta para este producto. Contactar al administrador.");
             } else if (data.getPrecioProducto().intValue() < selectedExistencia.getPrecioMinimo().intValue() || data.getPrecioProducto().intValue() > selectedExistencia.getPrecioMaximo().intValue()) {
                 JsfUtil.addErrorMessage("Precio de Venta fuera de Rango \n Precio Maximo =" + selectedExistencia.getPrecioMaximo() + " Precio minimo =" + selectedExistencia.getPrecioMinimo());
@@ -368,16 +362,24 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
             //            JsfUtil.addErrorMessage("Producto Bloqueado, contactar al administrador");
             //        } 
             else if (lstVenta.isEmpty()) {
-
+//                System.out.println("Lista vacia agregando producto");
                 add();
                 limpia();
             } else {
                 for (int i = 0; i < lstVenta.size(); i++) {
                     VentaProductoMayoreo productoRepetido = lstVenta.get(i);
+//                    System.out.println("Recorriendo lista Venta");
+//                    System.out.println("repetido id: " + productoRepetido.getIdExistenciaFk() + " nuevo: " + selectedExistencia.getIdExistenciaProductoPk());
                     if (productoRepetido.getIdExistenciaFk().equals(selectedExistencia.getIdExistenciaProductoPk()) && productoRepetido.getPrecioProducto().equals(data.getPrecioProducto())) {
+//                        System.out.println("Encontro producto repetido verificando existencias");
                         BigDecimal enlista = productoRepetido.getCantidadEmpaque();
                         BigDecimal totalexistencia = selectedExistencia.getCantidadPaquetes();
                         BigDecimal suma = enlista.add(data.getCantidadEmpaque(), MathContext.UNLIMITED);
+
+//                        System.out.println("Total Existencia: " + totalexistencia);
+//                        System.out.println("Total en Lista: " + enlista);
+//                        System.out.println("Total Suma: " + suma);
+//                        System.out.println("Total nuevo: " + data.getCantidadEmpaque());
                         BigDecimal kilosnelista = productoRepetido.getKilosVendidos();
                         BigDecimal kilostotalexistencia = selectedExistencia.getKilosTotalesProducto();
                         BigDecimal kilossuma = kilosnelista.add(data.getKilosVendidos(), MathContext.UNLIMITED);
@@ -412,7 +414,8 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
                 }
             }
-        changeVentaRapida();
+        }
+
     }
 
     public void add() {
@@ -529,7 +532,6 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     }
 
     public void editProducto() {
-selectedExistencia = new ExistenciaProducto();
         subProducto = ifaceSubProducto.getSubProductoById(dataEdit.getIdSubProductofk());
         data.setCantidadEmpaque(dataEdit.getCantidadEmpaque());
         data.setKilosVendidos(dataEdit.getKilosVendidos());
@@ -549,22 +551,6 @@ selectedExistencia = new ExistenciaProducto();
         dataEdit.setPrecioProducto(data.getPrecioProducto());
         setViewEstate("viewCarrito");
         JsfUtil.addSuccessMessage("Producto Modificado Correctamente");
-        TotalVentaGeneral = new BigDecimal(0);
-        for (VentaProductoMayoreo producto : lstVenta) {
-            TotalVentaGeneral = TotalVentaGeneral.add(producto.getTotalVenta(), MathContext.UNLIMITED);
-
-        }
-        selectedExistencia = null;
-        lstExistencias = new ArrayList<ExistenciaProducto>();
-        data.reset();
-        subProducto = new Subproducto();
-        setViewEstate("viewAddProducto");
-
-        totalProductoTemporal = null;
-        //TotalVentaGeneral = new BigDecimal(0);
-
-        changeVentaRapida();
-
     }
 
     public void remove() {
@@ -882,45 +868,9 @@ selectedExistencia = new ExistenciaProducto();
     public void setVentaRapidaCheck(boolean ventaRapidaCheck) {
 
         this.ventaRapidaCheck = ventaRapidaCheck;
-        System.out.println("Check: " + ventaRapidaCheck);
-//changeVentaRapida();
+        changeVentaRapida();
     }
 
-    public BigDecimal getRecibido() {
-        return recibido;
-    }
-
-    public void setRecibido(BigDecimal recibido) {
-        this.recibido = recibido;
-    }
-
-    public BigDecimal getCambio() {
-        return cambio;
-    }
-
-    public void setCambio(BigDecimal cambio) {
-        this.cambio = cambio;
-    }
-
-    public boolean isPruaba() {
-        System.out.println("prubea is:" + pruaba);
-        return pruaba;
-    }
-
-    public void setPruaba(boolean pruaba) {
-        System.out.println("prubea set:" + pruaba);
-        this.pruaba = pruaba;
-    }
-
-    public boolean isCharLine() {
-        System.out.println("isChar:" + charLine);
-        return charLine;
-    }
-
-    public void setCharLine(boolean charLine) {
-        System.out.println("thisChar:" + this.charLine);
-        System.out.println("Char:" + charLine);
-        this.charLine = charLine;
-    }
+  
 
 }

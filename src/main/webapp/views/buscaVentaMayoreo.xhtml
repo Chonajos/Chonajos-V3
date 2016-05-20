@@ -20,34 +20,32 @@
                     <div class="form-group" align="right">
                         <p:commandButton value="Buscar" update=":formContent" ajax="true" action="#{beanBuscaVentaMayoreo.searchById()}" />
                         <p:commandButton value="Pagar" update=":formContent" ajax="true" action="#{beanBuscaVentaMayoreo.updateVenta()}" rendered="#{beanBuscaVentaMayoreo.viewEstate=='init'}" disabled="#{beanBuscaVentaMayoreo.statusButtonPagar}" oncomplete="window.frames.miFrame.print();"/>
-
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtid_venta" value ="Número de folio:" /> 
-                            <p:inputText id="txtid_venta" maxlength="10" class=" col-lg-1 col-md-4 col-sm-8 col-xs-6" value="#{beanBuscaVentaMayoreo.data.idVenta}"  required="true"
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-6 col-md-3 col-sm-4 col-xs-6"  for="txtid_venta" value ="Folio:" /> 
+                            <p:inputText id="txtid_venta" maxlength="10" class=" col-lg-6 col-md-4 col-sm-8 col-xs-6" value="#{beanBuscaVentaMayoreo.data.idVenta}"  required="true"
                                          requiredMessage="Ingresa un número de folio.">
                                 <pe:keyFilter regEx="/[0-9_]/i"/>
                             </p:inputText>
                         </div>
-                    </div>
-                </div>
-            </p:panel>
-            <p:panel> 
-                <div class="container-fluid">
-                    <!--Datos de Vendedor y Cliente -->
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtNombreCliente" value ="Nombre de Cliente:" /> 
-                            <p:inputText id="txtNombreCliente" readonly="true" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanBuscaVentaMayoreo.data.nombreCliente}">
+                        <div class="col-lg-5 col-md-12 col-sm-12 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-6 col-md-3 col-sm-4 col-xs-6"  for="txtNombreCliente" value ="Cliente:" /> 
+                            <p:inputText id="txtNombreCliente" readonly="true" class=" col-lg-6 col-md-4 col-sm-8 col-xs-6" value="#{beanBuscaVentaMayoreo.data.nombreCliente}">
                             </p:inputText>
                         </div>
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"   for="txtNombreVendedor" value ="Nombre de Vendedor:" /> 
-                            <p:inputText id="txtNombreVendedor"  readonly="true" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanBuscaVentaMayoreo.data.nombreVendedor}">
+                        <div class="col-lg-5 col-md-12 col-sm-12 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-6 col-md-3 col-sm-4 col-xs-6"   for="txtNombreVendedor" value ="Vendedor:" /> 
+                            <p:inputText id="txtNombreVendedor"  readonly="true" class=" col-lg-6 col-md-4 col-sm-8 col-xs-6" value="#{beanBuscaVentaMayoreo.data.nombreVendedor}">
                             </p:inputText>
                         </div>
                     </div>
+
+
                 </div>
 
+            </p:panel>
+            <p:panel>
 
                 <p:dataTable var="model" value="#{beanBuscaVentaMayoreo.model}" styleClass="ui-datatable-hor-scroll"  emptyMessage="Productos.">
 
@@ -93,6 +91,30 @@
                     </p:columnGroup>
                 </p:dataTable>
                 <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanBuscaVentaMayoreo.rutaPDF}"/>
+
+                <div class="container-fluid">
+                    <div class="form-group" align="center">
+                        <h:panelGrid columns="2" cellpadding="5">
+                            <h:outputLabel for="totalPagar: "  value="Total a Pagar:" />
+                            <p:inputText id="totalPagar" value="#{beanBuscaVentaMayoreo.totalVenta}" disabled="true" label="totalPagar" >
+                                <pe:keyFilter regEx="/[\d.,\-]/"/> 
+                                <f:convertNumber pattern="$#,##0.00"/>
+                            </p:inputText>
+
+                            <h:outputLabel for="recibido:" value="Recibido:" />
+                            <p:inputText id="recibido" value="#{beanBuscaVentaMayoreo.recibido}"  label="recibido" >
+                                <pe:keyFilter regEx="/[\d.,\-]/"/> 
+                               
+                                <p:ajax event="blur" update="cambio" listener ="#{beanBuscaVentaMayoreo.calculaCambio()}"/>
+                            </p:inputText>
+                            <h:outputLabel for="cambio:" value="Cambio:" />
+                            <p:inputText id="cambio" value="#{beanBuscaVentaMayoreo.cambio}" label="cambio" >
+                                
+                                <pe:keyFilter regEx="/[\d.,\-]/"/> 
+                            </p:inputText>
+
+                        </h:panelGrid></div>
+                </div>
             </p:panel>
         </h:form>
     </ui:define>

@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -70,9 +71,15 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     private StreamedContent media;
     private UsuarioDominio usuarioDominio;
     private ArrayList<BuscaVenta> selectedVenta;
+        private BigDecimal recibido;
+    private BigDecimal cambio;
     
     @PostConstruct
-    public void init() {
+    public void init() 
+    {
+        FacesContext contexts =FacesContext.getCurrentInstance();
+        String folio = contexts.getExternalContext().getRequestParameterMap().get("folio");
+        System.out.println("FolioPasado: "+folio);
         data = new BuscaVenta();
         model = new ArrayList<BuscaVenta>(); 
         
@@ -89,6 +96,9 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
         statusButtonPagar = true;
     }
     
+    public void calculaCambio() {
+        cambio = recibido.subtract(totalVenta, MathContext.UNLIMITED);
+    }
     public void generateReport() {
         JRExporter exporter = null;
         
@@ -386,4 +396,21 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     public void setNumber(String number) {
         this.number = number;
     }
+
+    public BigDecimal getRecibido() {
+        return recibido;
+    }
+
+    public void setRecibido(BigDecimal recibido) {
+        this.recibido = recibido;
+    }
+
+    public BigDecimal getCambio() {
+        return cambio;
+    }
+
+    public void setCambio(BigDecimal cambio) {
+        this.cambio = cambio;
+    }
+    
 }
