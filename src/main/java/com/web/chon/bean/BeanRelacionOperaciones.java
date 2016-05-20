@@ -87,6 +87,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     
     private String nombreSucursalImpresion;
     private String statusVentaImpresion;
+    private Date fechaImpresion;
 
     @PostConstruct
     public void init() {
@@ -168,7 +169,8 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
         
         System.out.println(data.getFechaVenta());
         
-        paramReport.put("fechaVenta", dateTime);
+        
+        paramReport.put("fechaVenta", TiempoUtil.getFechaDDMMYYYYHHMM(fechaImpresion));
         paramReport.put("noVenta", Integer.toString(idVenta));
         paramReport.put("cliente", data.getNombreCliente());
         paramReport.put("vendedor", data.getNombreVendedor());
@@ -267,6 +269,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     {
         lstVenta = ifaceBuscaVenta.getVentaById(data.getIdVentaPk().intValue());
         idSucursalImpresion=new BigDecimal(data.getIdSucursal());
+        fechaImpresion = lstVenta.get(0).getFechaVenta();
         
         
         statusVentaImpresion = lstVenta.get(0).getNombreStatus();
@@ -478,6 +481,14 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
 
     public void setStatusVentaImpresion(String statusVentaImpresion) {
         this.statusVentaImpresion = statusVentaImpresion;
+    }
+
+    public Date getFechaImpresion() {
+        return fechaImpresion;
+    }
+
+    public void setFechaImpresion(Date fechaImpresion) {
+        this.fechaImpresion = fechaImpresion;
     }
     
     
