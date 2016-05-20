@@ -46,13 +46,8 @@ public class UtilUpload {
                 cont++;
 
                 if (cont > 1) {
-                    
-                    System.out.println("Ruta :" + ruta);
-                    ruta = ruta.replace("ticketPdf"+(cont - 1), "ticketPdf"+cont);
-                    System.out.println("Ruta remplace:" + ruta);
-                    System.out.println("Nombre archivo :" + nombreArchivo);
-                    nombreArchivo = nombreArchivo.replace("ticketPdf"+(cont - 1), "ticketPdf"+cont);
-                    System.out.println("Nombre archivo remplace:" + nombreArchivo);
+                    ruta = ruta.replace("ticketPdf" + (cont - 1), "ticketPdf" + cont);
+                    nombreArchivo = nombreArchivo.replace("ticketPdf" + (cont - 1), "ticketPdf" + cont);
                 } else {
 
                     ruta += cont;
@@ -60,23 +55,22 @@ public class UtilUpload {
                 }
 
                 file = new File(ruta + ".pdf");
-                System.out.println("Se creo file: "+ruta + ".pdf");
             }
 
             inputStream = new ByteArrayInputStream(bytes);
-            System.out.println("file.getAbsolutePath() :"+file.getAbsolutePath());
             FileOutputStream out = new FileOutputStream(file.getAbsolutePath());
-            System.out.println("absolute path");
             int c = 0;
 
             while ((c = inputStream.read()) >= 0) {
                 out.write(c);
             }
-            System.out.println("se escribio correctamente");
+            
             out.flush();
             out.close();
             ubicacionPdf = "/resources/pdf/temp/" + nombreArchivo + ".pdf";
+            
             System.out.println("archivo upload succes");
+            
         } catch (Exception e) {
             System.out.println("error > " + e.getMessage());
             System.out.println("Error al Generar el temporal del PDF");
