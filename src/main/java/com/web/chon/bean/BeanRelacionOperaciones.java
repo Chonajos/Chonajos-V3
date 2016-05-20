@@ -10,12 +10,32 @@ import com.web.chon.service.IfaceBuscaVenta;
 import com.web.chon.service.IfaceCatStatusVenta;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceVenta;
+import com.web.chon.util.Constantes;
+import com.web.chon.util.JasperReportUtil;
+import com.web.chon.util.JsfUtil;
+import com.web.chon.util.NumeroALetra;
 import com.web.chon.util.TiempoUtil;
+import com.web.chon.util.UtilUpload;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
+import net.sf.jasperreports.engine.JREmptyDataSource;
+import net.sf.jasperreports.engine.JRExporter;
+import net.sf.jasperreports.engine.JRExporterParameter;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -53,6 +73,20 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     private Date fechaFin;
     private Date fechaInicio;
     private BigDecimal totalVenta;
+    
+    
+    //datos impresion
+    private int idVentaTemporal; //utilizado para comprobacion de venta
+    private String rutaPDF;
+    private String number;
+    private String pathFileJasper = "C:/Users/Juan/Documents/NetBeansProjects/Chonajos-V2/ticket.jasper";
+    private ByteArrayOutputStream outputStream;
+    private Map paramReport = new HashMap();
+    
+    private BigDecimal idSucursalImpresion;
+    
+    private String nombreSucursalImpresion;
+    private String statusVentaImpresion;
 
     @PostConstruct
     public void init() {
@@ -77,6 +111,74 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
 
         setTitle("Relación de Operaciónes Entrada de Mercancia.");
         setViewEstate("init");
+
+    }
+    public void generateReport() {
+        JRExporter exporter = null;
+        
+        try {
+            ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+            
+            String temporal = "";
+            if (servletContext.getRealPath("") == null) {
+                temporal = Constantes.PATHSERVER;
+            } else {
+                temporal = servletContext.getRealPath("");
+            }
+            
+            pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketVenta" + File.separatorChar + "ticket.jasper";
+            JasperPrint jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport, new JREmptyDataSource());
+            
+            outputStream = JasperReportUtil.getOutputStreamFromReport(paramReport, getPathFileJasper());
+            exporter = new JRPdfExporter();
+            exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
+            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, outputStream);
+
+            byte[] bytes = outputStream.toByteArray();
+            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf",data.getIdVentaPk().intValue(),idSucursalImpresion.intValue());
+            
+        } catch (Exception exception) {
+            System.out.println("Error >" + exception.getMessage());
+            
+        }
+        
+    }
+    
+    private void setParameterTicket(int idVenta) {
+        
+        NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
+        DecimalFormat df = new DecimalFormat("###.##");
+        Date date = new Date();
+        ArrayList<String> productos = new ArrayList<String>();
+        NumeroALetra numeroLetra = new NumeroALetra();
+        for (BuscaVenta venta : lstVenta) 
+        {
+            String cantidad = venta.getCantidadEmpaque() + " " + venta.getNombreEmpaque();
+            productos.add(venta.getNombreSubproducto().toUpperCase());
+            productos.add("       " + cantidad + "               " + nf.format(venta.getPrecioProducto()) + "    " + nf.format(venta.getTotal()));
+        }
+        
+        String totalVentaStr = numeroLetra.Convertir(df.format(totalVenta), true);
+        
+        putValues(TiempoUtil.getFechaDDMMYYYYHHMM(date), productos, nf.format(totalVenta), totalVentaStr, idVenta);
+        
+    }
+    
+    private void putValues(String dateTime, ArrayList<String> items, String total, String totalVentaStr, int idVenta) {
+        
+        System.out.println(data.getFechaVenta());
+        
+        paramReport.put("fechaVenta", dateTime);
+        paramReport.put("noVenta", Integer.toString(idVenta));
+        paramReport.put("cliente", data.getNombreCliente());
+        paramReport.put("vendedor", data.getNombreVendedor());
+        paramReport.put("productos", items);
+        paramReport.put("ventaTotal", total);
+        paramReport.put("totalLetra", totalVentaStr);
+        paramReport.put("labelFecha", "Fecha de Pago:");
+        paramReport.put("labelFolio", "Folio de Venta:");
+        paramReport.put("estado", statusVentaImpresion);
+        paramReport.put("labelSucursal", nombreSucursalImpresion);
 
     }
 
@@ -146,9 +248,42 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
         getTotalVentaByInterval();
     }
 
+    
+    public void cancelarVenta()
+    {
+        if(ifaceBuscaVenta.cancelarVenta(data.getIdVentaPk().intValue())!=0)
+        {
+             JsfUtil.addSuccessMessageClean("Venta Cancelada");
+            data.setIdStatus(0);
+             getVentasByIntervalDate();
+             
+        }
+        else
+        {
+            JsfUtil.addErrorMessageClean("Ocurrió un error al intentar cancelar la venta.");
+        }
+    }
+    public void imprimirVenta()
+    {
+        lstVenta = ifaceBuscaVenta.getVentaById(data.getIdVentaPk().intValue());
+        idSucursalImpresion=new BigDecimal(data.getIdSucursal());
+        
+        
+        statusVentaImpresion = lstVenta.get(0).getNombreStatus();
+        nombreSucursalImpresion = lstVenta.get(0).getNombreSucursal();
+        
+        //System.out.println("Estatus Venta: "+statusVentaImpresion);
+        
+        
+        calculatotalVentaDetalle();
+        setParameterTicket(data.getIdVentaPk().intValue());
+        generateReport();
+        
+    }
     public void detallesVenta() {
         viewEstate = "searchById";
         lstVenta = ifaceBuscaVenta.getVentaById(data.getIdVentaPk().intValue());
+        
         calculatotalVentaDetalle();
 
     }
@@ -271,6 +406,78 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
 
     public void setUsuario(UsuarioDominio usuario) {
         this.usuario = usuario;
+    }
+
+    public int getIdVentaTemporal() {
+        return idVentaTemporal;
+    }
+
+    public void setIdVentaTemporal(int idVentaTemporal) {
+        this.idVentaTemporal = idVentaTemporal;
+    }
+
+    public String getRutaPDF() {
+        return rutaPDF;
+    }
+
+    public void setRutaPDF(String rutaPDF) {
+        this.rutaPDF = rutaPDF;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getPathFileJasper() {
+        return pathFileJasper;
+    }
+
+    public void setPathFileJasper(String pathFileJasper) {
+        this.pathFileJasper = pathFileJasper;
+    }
+
+    public ByteArrayOutputStream getOutputStream() {
+        return outputStream;
+    }
+
+    public void setOutputStream(ByteArrayOutputStream outputStream) {
+        this.outputStream = outputStream;
+    }
+
+    public Map getParamReport() {
+        return paramReport;
+    }
+
+    public void setParamReport(Map paramReport) {
+        this.paramReport = paramReport;
+    }
+
+    public BigDecimal getIdSucursalImpresion() {
+        return idSucursalImpresion;
+    }
+
+    public void setIdSucursalImpresion(BigDecimal idSucursalImpresion) {
+        this.idSucursalImpresion = idSucursalImpresion;
+    }
+
+    public String getNombreSucursalImpresion() {
+        return nombreSucursalImpresion;
+    }
+
+    public void setNombreSucursalImpresion(String nombreSucursalImpresion) {
+        this.nombreSucursalImpresion = nombreSucursalImpresion;
+    }
+
+    public String getStatusVentaImpresion() {
+        return statusVentaImpresion;
+    }
+
+    public void setStatusVentaImpresion(String statusVentaImpresion) {
+        this.statusVentaImpresion = statusVentaImpresion;
     }
     
     

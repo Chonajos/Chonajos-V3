@@ -29,16 +29,21 @@ public class BuscaVenta implements Serializable
     private String clave;
     private BigDecimal carro;
     private BigDecimal kilosVendidos;
+    private String nombreSucursal;
 
     @Override
     public String toString() {
         return "BuscaVenta{" + "nombreCliente=" + nombreCliente + ", nombreVendedor=" + nombreVendedor + ", idVenta=" + idVenta + ", nombreSubproducto=" + nombreSubproducto + ", nombreEmpaque=" + nombreEmpaque + ", cantidadEmpaque=" + cantidadEmpaque + ", precioProducto=" + precioProducto + ", total=" + total + ", totalVenta=" + totalVenta + ", fechaVenta=" + fechaVenta + ", fechaPromesaPago=" + fechaPromesaPago + ", nombreStatus=" + nombreStatus + ", statusFK=" + statusFK + ", idSucursalFk=" + idSucursalFk + ", clave=" + clave + ", carro=" + carro + ", kilosVendidos=" + kilosVendidos + '}';
     }
 
-    
-    
-    
-    
+    public String getNombreSucursal() {
+        return nombreSucursal;
+    }
+
+    public void setNombreSucursal(String nombreSucursal) {
+        this.nombreSucursal = nombreSucursal;
+    }
+
     
     public int getStatusFK() {
         return statusFK;

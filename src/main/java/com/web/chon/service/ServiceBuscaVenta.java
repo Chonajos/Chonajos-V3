@@ -20,6 +20,17 @@ import org.springframework.stereotype.Service;
 public class ServiceBuscaVenta implements IfaceBuscaVenta {
 
     NegocioBuscaVenta ejb;
+    
+    private void getEjb() {
+        try {
+            if (ejb == null) {
+                ejb = (NegocioBuscaVenta) Utilidades.getEJBRemote("ejbBuscaVenta", NegocioBuscaVenta.class.getName());
+            }
+
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceBuscaVenta.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     @Override
     public ArrayList<BuscaVenta> getVentaById(int idVenta) {
@@ -44,6 +55,7 @@ public class ServiceBuscaVenta implements IfaceBuscaVenta {
                 busca_venta.setNombreStatus(obj[10] == null ? "" : obj[10].toString());
                 busca_venta.setStatusFK(obj[11] == null ? 0 : Integer.parseInt(obj[11].toString())); //id status
                 busca_venta.setIdSucursalFk(obj[12] == null ? null : new BigDecimal(obj[12].toString())); 
+                busca_venta.setNombreSucursal(obj[13] == null ? "" : obj[13].toString());
                 lstVentas.add(busca_venta);
             }
 
@@ -102,5 +114,12 @@ public class ServiceBuscaVenta implements IfaceBuscaVenta {
     @Override
     public int updateStatusVentaMayoreo(int idVenta) {
         return ejb.updateStatusVentaMayoreo(idVenta);
+    }
+
+    @Override
+    public int cancelarVenta(int idVenta) {
+       getEjb();
+       return ejb.cancelarVenta(idVenta);
+    
     }
 }

@@ -69,7 +69,7 @@
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <p:dataTable id="table" var="model" value="#{beanRelacionOperaciones.model}" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." rendered="#{beanRelacionOperaciones.viewEstate =='init'}">
 
-                            <p:column headerText="Folio" class="#{model.idStatus eq 1 ? 'statusPedido': (model.idStatus eq 2 ? 'statusPagado':(model.idStatus eq 3 ? 'statusEntregado':'statusCancelado'))}  alignCenter"  width="90px;" >
+                            <p:column headerText="Folio" class="#{model.idStatus eq 1 ? 'statusPedido': (model.idStatus eq 2 ? 'statusPagado':(model.idStatus eq 3 ? 'statusEntregado':'statusCancelado'))}  alignCenter"  width="60px;" >
                                 <h:outputText value="#{model.idVentaPk}" />
                             </p:column>
 
@@ -83,13 +83,13 @@
                                     <f:convertDateTime pattern="HH:mm" />
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Cliente" width="300px;" class="alignLeft">
+                            <p:column headerText="Cliente" width="250px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreCliente}" />
                             </p:column>
-                            <p:column headerText="Vendedor" width="300px;" class="alignLeft">
+                            <p:column headerText="Vendedor" width="250px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreVendedor}" />
                             </p:column>
-                            <p:column headerText="Total de Venta" width="120px;" class="alignCenter">
+                            <p:column headerText="Total de Venta" width="120px;" class="alignRight">
                                 <h:outputText value="#{model.totalVenta}">
                                     <f:convertNumber pattern="#,##0.00" />
                                 </h:outputText>
@@ -99,15 +99,26 @@
                                     <f:setPropertyActionListener value="#{model}" target="#{beanRelacionOperaciones.data}"/>
                                 </p:commandButton>
                             </p:column>
+                            <p:column headerText="Imprimir" width="60px;" class="alignCenter">
+                                <p:commandButton id="print" ajax="true" process="@this" action="#{beanRelacionOperaciones.imprimirVenta()}" icon="ui-icon-print" styleClass="ui-priority-primary" update=":formContent" oncomplete="window.frames.miFrame.print();">
+                                    <f:setPropertyActionListener value="#{model}" target="#{beanRelacionOperaciones.data}"/>
+                                </p:commandButton>
+                            </p:column>
+                            <p:column headerText="Cancelar" width="60px;" class="alignCenter">
+                                <p:commandButton id="cancel" ajax="true" process="@this" action="#{beanRelacionOperaciones.cancelarVenta()}" icon="ui-icon-trash" styleClass="ui-priority-primary" update=":formContent">
+                                    <f:setPropertyActionListener value="#{model}" target="#{beanRelacionOperaciones.data}"/>
+                                </p:commandButton>
+                            </p:column>
                             <p:columnGroup type="footer">
                                 <p:column colspan="5" footerText="Total: " style="text-align:right"/>
-                                <p:column colspan="2" >
+                                <p:column colspan="1" >
                                     <f:facet name="footer">
-                                        <h:outputText value="#{beanRelacionOperaciones.totalVenta}">
-                                            <f:convertNumber pattern="#,###.000"/>
+                                        <h:outputText value="#{beanRelacionOperaciones.totalVenta}" class="alignRight">
+                                            <f:convertNumber pattern="$#,###.00"/>
                                         </h:outputText>
                                     </f:facet>
                                 </p:column>
+                                <p:column colspan="3" />
                             </p:columnGroup>
                         </p:dataTable>
 
@@ -151,6 +162,8 @@
                         </p:dataTable>
                     </div>
                 </div>
+                <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanRelacionOperaciones.rutaPDF}"/>
+            
             </p:panel>
         </h:form>
     </ui:define>

@@ -19,6 +19,7 @@ public interface NegocioBuscaVenta
     public List<Object[]> getVentaById(int idVenta);
     public List<Object[]> getVentaMayoreoById(int idVenta);
     public int updateCliente(int idVenta);
+    public int cancelarVenta(int idVenta);
     public int updateStatusVentaMayoreo(int idVenta);
     
 }

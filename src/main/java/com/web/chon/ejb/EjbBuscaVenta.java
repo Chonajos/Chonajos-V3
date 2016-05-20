@@ -25,7 +25,7 @@ public class EjbBuscaVenta implements NegocioBuscaVenta
     {
         try {
 
-            Query query = em.createNativeQuery("select c.nombre ||' '||c.APELLIDO_PATERNO||' '||c.APELLIDO_MATERNO   as nombre_cliente,u.NOMBRE_USUARIO||' '||u.APATERNO_USUARIO||' '||u.AMATERNO_USUARIO as nombre_vendedor,v.ID_VENTA_PK, sp.NOMBRE_SUBPRODUCTO,tem.NOMBRE_EMPAQUE,vp.CANTIDAD_EMPAQUE,vp.PRECIO_PRODUCTO,vp.TOTAL_VENTA,v.FECHA_VENTA,v.FECHA_PROMESA_PAGO,sv.NOMBRE_STATUS,v.status_fk,v.ID_SUCURSAL_FK\n" +
+            Query query = em.createNativeQuery("select c.nombre ||' '||c.APELLIDO_PATERNO||' '||c.APELLIDO_MATERNO   as nombre_cliente,u.NOMBRE_USUARIO||' '||u.APATERNO_USUARIO||' '||u.AMATERNO_USUARIO as nombre_vendedor,v.ID_VENTA_PK, sp.NOMBRE_SUBPRODUCTO,tem.NOMBRE_EMPAQUE,vp.CANTIDAD_EMPAQUE,vp.PRECIO_PRODUCTO,vp.TOTAL_VENTA,v.FECHA_VENTA,v.FECHA_PROMESA_PAGO,sv.NOMBRE_STATUS,v.status_fk,v.ID_SUCURSAL_FK,sucu.NOMBRE_SUCURSAL\n" +
 "       from Venta v\n" +
 "       INNER JOIN Venta_Producto vp\n" +
 "       on v.id_venta_pk=vp.id_venta_fk\n" +
@@ -39,8 +39,10 @@ public class EjbBuscaVenta implements NegocioBuscaVenta
 "       on v.ID_VENDEDOR_FK=u.ID_USUARIO_PK\n" +
 "       INNER JOIN status_venta sv\n" +
 "       on v.status_fk=sv.ID_STATUS_PK\n" +
-"       where v.ID_VENTA_PK = ?");
-            System.out.println("EJbBuscaVenta:getVentabyId: idVenta: "+idVenta);
+"       INNER JOIN SUCURSAL sucu\n" +
+"       on sucu.ID_SUCURSAL_PK = v.ID_SUCURSAL_FK\n" +
+"      where v.ID_VENTA_PK = ?");
+            //System.out.println("EJbBuscaVenta:getVentabyId: idVenta: "+idVenta);
             query.setParameter(1, idVenta);
 
             return query.getResultList();
@@ -96,7 +98,7 @@ public class EjbBuscaVenta implements NegocioBuscaVenta
 " inner join ENTRADAMERCANCIA em\n" +
 " on em.ID_EM_PK = vmp.ID_ENTRADA_MERCANCIA_FK\n" +
 " where vm.ID_VENTA_MAYOREO_PK = ?");
-            System.out.println("EJbBuscaVenta:getVentaMayoreobyId: idVenta: "+idVenta);
+            //System.out.println("EJbBuscaVenta:getVentaMayoreobyId: idVenta: "+idVenta);
             query.setParameter(1, idVenta);
 
             return query.getResultList();
@@ -114,6 +116,22 @@ public class EjbBuscaVenta implements NegocioBuscaVenta
         try {
             Query query = em.createNativeQuery("UPDATE VENTA_MAYOREO SET ID_STATUS_FK= ?,FECHA_PAGO = sysdate WHERE ID_VENTA_MAYOREO_PK = ? ");
             query.setParameter(1, 2);
+            query.setParameter(2, idVenta);
+            return query.executeUpdate();
+
+        } catch (Exception ex) 
+        {
+           
+            Logger.getLogger(EjbBuscaVenta.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        }
+    }
+
+    @Override
+    public int cancelarVenta(int idVenta) {
+       try {
+            Query query = em.createNativeQuery("UPDATE VENTA SET STATUS_FK= ? WHERE ID_VENTA_PK = ? ");
+            query.setParameter(1, 4);
             query.setParameter(2, idVenta);
             return query.executeUpdate();
 
