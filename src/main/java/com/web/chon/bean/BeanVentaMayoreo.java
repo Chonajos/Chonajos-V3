@@ -277,7 +277,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
                 }
                 setParameterTicket(idVentaInsert.intValue());
-                generateReport();
+                generateReport(ventaGeneral.getVentaSucursal().intValue());
                 selectedExistencia = new ExistenciaProducto();
                 lstExistencias = new ArrayList<ExistenciaProducto>();
                 lstVenta = new ArrayList<VentaProductoMayoreo>();
@@ -454,7 +454,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
     }
 
-    public void generateReport() {
+    public void generateReport(int folio) {
         JRExporter exporter = null;
 
         try {
@@ -476,7 +476,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
             exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, outputStream);
 
             byte[] bytes = outputStream.toByteArray();
-            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf");
+            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf",folio,usuarioDominio.getSucId());
 
         } catch (Exception exception) {
             System.out.println("Error >" + exception.getMessage());
