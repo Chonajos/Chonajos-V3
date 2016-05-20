@@ -78,6 +78,54 @@ public class UtilUpload {
         }
         return ubicacionPdf;
     }
+    
+    /**
+     * Guarda un archivo pdf temporal para la impresion de tickets
+     *
+     * @param bytes
+     * @param nombreArchivo
+     * @return
+     */
+    public static String saveFileTemp(byte[] bytes, String nombreArchivo,int folio,int idSucursal) {
+
+        String ubicacionPdf = null;
+        ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+        String temporal = "";
+        if (servletContext.getRealPath("") == null) {
+            temporal = Constantes.PATHSERVER;
+        } else {
+            temporal = servletContext.getRealPath("");
+        }
+
+        String ruta = temporal + File.separatorChar + "resources" + File.separatorChar + "pdf" + File.separatorChar + "temp" + File.separatorChar + nombreArchivo;
+
+        File file = null;
+        InputStream inputStream = null;
+
+        try {
+            file = new File(ruta+idSucursal+"_"+folio+ ".pdf");
+            
+            inputStream = new ByteArrayInputStream(bytes);
+            FileOutputStream out = new FileOutputStream(file.getAbsolutePath());
+            int c = 0;
+
+            while ((c = inputStream.read()) >= 0) {
+                out.write(c);
+            }
+            
+            out.flush();
+            out.close();
+            ubicacionPdf = "/resources/pdf/temp/" + nombreArchivo + ".pdf";
+            
+            System.out.println("archivo upload succes");
+            
+        } catch (Exception e) {
+            System.out.println("error > " + e.getMessage());
+            System.out.println("Error al Generar el temporal del PDF");
+            e.getStackTrace();
+        }
+        return ubicacionPdf;
+    }
 
     public static boolean deleteFile(String rutaArchivo) {
         ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();

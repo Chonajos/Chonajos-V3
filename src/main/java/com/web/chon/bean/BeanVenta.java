@@ -204,7 +204,7 @@ public class BeanVenta implements Serializable, BeanSimple {
                     }
                     setParameterTicket(idVenta);
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info!", "La venta se realizo correctamente."));
-                    generateReport();
+                    generateReport(idVenta);
                     cancel();
                     lstVenta.clear();
                     totalVenta = new BigDecimal(0);
@@ -420,10 +420,11 @@ public class BeanVenta implements Serializable, BeanSimple {
         data.reset();
         subProducto = new Subproducto();
         viewEstate = "init";
+        init();
 
     }
 
-    public void generateReport() {
+    public void generateReport(int idVenta) {
         JRExporter exporter = null;
 
         try {
@@ -446,7 +447,7 @@ public class BeanVenta implements Serializable, BeanSimple {
 //            exporter.setParameter(JRPdfExporterParameter.PDF_JAVASCRIPT, "this.print();");
             byte[] bytes = outputStream.toByteArray();
 
-            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf");
+            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf",idVenta,idSucu);
 
         } catch (Exception exception) {
             System.out.println("Error >" + exception.getMessage());
