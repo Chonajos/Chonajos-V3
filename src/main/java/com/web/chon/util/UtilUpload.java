@@ -103,8 +103,9 @@ public class UtilUpload {
         InputStream inputStream = null;
 
         try {
-            file = new File(ruta+idSucursal+"_"+folio+ ".pdf");
             
+            file = new File(ruta+idSucursal+"_"+folio+ ".pdf");
+            nombreArchivo+=+idSucursal+"_"+folio;
             inputStream = new ByteArrayInputStream(bytes);
             FileOutputStream out = new FileOutputStream(file.getAbsolutePath());
             int c = 0;
@@ -116,7 +117,8 @@ public class UtilUpload {
             out.flush();
             out.close();
             ubicacionPdf = "/resources/pdf/temp/" + nombreArchivo + ".pdf";
-            
+            System.out.println("archivo upload succes ubicacionPdf"+ubicacionPdf);
+             System.out.println("archivo upload succes ubicacionPdf"+ubicacionPdf);
             System.out.println("archivo upload succes");
             
         } catch (Exception e) {

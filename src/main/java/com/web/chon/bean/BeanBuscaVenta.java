@@ -111,7 +111,7 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
             exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, outputStream);
 
             byte[] bytes = outputStream.toByteArray();
-            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf");
+            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf",data.getIdVenta().intValue(),usuarioDominio.getSucId());
             
         } catch (Exception exception) {
             System.out.println("Error >" + exception.getMessage());
