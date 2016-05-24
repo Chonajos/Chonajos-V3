@@ -51,30 +51,34 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
 
     private static final long serialVersionUID = 1L;
 
-    @Autowired private IfaceVenta ifaceVenta;
-    @Autowired private IfaceBuscaVenta ifaceBuscaVenta;
-    @Autowired private PlataformaSecurityContext context;
-    @Autowired private IfaceCatSucursales ifaceCatSucursales;
-    @Autowired private IfaceCatStatusVenta ifaceCatStatusVenta;
-    
+    @Autowired
+    private IfaceVenta ifaceVenta;
+    @Autowired
+    private IfaceBuscaVenta ifaceBuscaVenta;
+    @Autowired
+    private PlataformaSecurityContext context;
+    @Autowired
+    private IfaceCatSucursales ifaceCatSucursales;
+    @Autowired
+    private IfaceCatStatusVenta ifaceCatStatusVenta;
+
     private ArrayList<BuscaVenta> lstVenta;
     private ArrayList<Sucursal> listaSucursales;
     private ArrayList<RelacionOperaciones> model;
     private ArrayList<StatusVenta> listaStatusVenta;
-    
+
     private UsuarioDominio usuario;
     private RelacionOperaciones data;
-    
+
     private String title;
     private String viewEstate;
-    
+
     private int filtro;
-    
+
     private Date fechaFin;
     private Date fechaInicio;
     private BigDecimal totalVenta;
-    
-    
+
     //datos impresion
     private int idVentaTemporal; //utilizado para comprobacion de venta
     private String rutaPDF;
@@ -82,9 +86,9 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     private String pathFileJasper = "C:/Users/Juan/Documents/NetBeansProjects/Chonajos-V2/ticket.jasper";
     private ByteArrayOutputStream outputStream;
     private Map paramReport = new HashMap();
-    
+
     private BigDecimal idSucursalImpresion;
-    
+
     private String nombreSucursalImpresion;
     private String statusVentaImpresion;
     private Date fechaImpresion;
@@ -92,14 +96,13 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     @PostConstruct
     public void init() {
 
-       
         data = new RelacionOperaciones();
         model = new ArrayList<RelacionOperaciones>();
-        
+
         usuario = context.getUsuarioAutenticado();
-        
+
         /*Validacion de perfil administrador*/
-        if(usuario.getPerId() != 1) {
+        if (usuario.getPerId() != 1) {
             data.setIdSucursal(usuario.getSucId());
         }
 
@@ -114,62 +117,67 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
         setViewEstate("init");
 
     }
+    
+    public void addComent()
+    {
+        data.setComentarioCancel(data.getComentarioCancel());
+        System.out.println("Comentarios: "+data.getComentarioCancel());
+    }
+
     public void generateReport() {
         JRExporter exporter = null;
-        
+
         try {
             ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-            
+
             String temporal = "";
             if (servletContext.getRealPath("") == null) {
                 temporal = Constantes.PATHSERVER;
             } else {
                 temporal = servletContext.getRealPath("");
             }
-            
+
             pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketVenta" + File.separatorChar + "ticket.jasper";
             JasperPrint jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport, new JREmptyDataSource());
-            
+
             outputStream = JasperReportUtil.getOutputStreamFromReport(paramReport, getPathFileJasper());
             exporter = new JRPdfExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
             exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, outputStream);
 
             byte[] bytes = outputStream.toByteArray();
-            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf",data.getIdVentaPk().intValue(),idSucursalImpresion.intValue());
-            
+            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf", data.getIdVentaPk().intValue(), idSucursalImpresion.intValue());
+
         } catch (Exception exception) {
             System.out.println("Error >" + exception.getMessage());
-            
+
         }
-        
+
     }
-    
+
     private void setParameterTicket(int idVenta) {
-        
+
         NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
         DecimalFormat df = new DecimalFormat("###.##");
         Date date = new Date();
         ArrayList<String> productos = new ArrayList<String>();
         NumeroALetra numeroLetra = new NumeroALetra();
-        for (BuscaVenta venta : lstVenta) 
-        {
+        for (BuscaVenta venta : lstVenta) {
             String cantidad = venta.getCantidadEmpaque() + " " + venta.getNombreEmpaque();
             productos.add(venta.getNombreSubproducto().toUpperCase());
             productos.add("       " + cantidad + "               " + nf.format(venta.getPrecioProducto()) + "    " + nf.format(venta.getTotal()));
         }
-        
+
         String totalVentaStr = numeroLetra.Convertir(df.format(totalVenta), true);
-        
+
         putValues(TiempoUtil.getFechaDDMMYYYYHHMM(date), productos, nf.format(totalVenta), totalVentaStr, idVenta);
-        
+
     }
-    
+
     private void putValues(String dateTime, ArrayList<String> items, String total, String totalVentaStr, int idVenta) {
-        
+
         System.out.println(data.getFechaVenta());
-        
-        
+
         paramReport.put("fechaVenta", TiempoUtil.getFechaDDMMYYYYHHMM(fechaImpresion));
         paramReport.put("noVenta", Integer.toString(idVenta));
         paramReport.put("cliente", data.getNombreCliente());
@@ -250,43 +258,45 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
         getTotalVentaByInterval();
     }
 
-    
-    public void cancelarVenta()
-    {
-        if(ifaceBuscaVenta.cancelarVenta(data.getIdVentaPk().intValue())!=0)
+    public void cancelarVenta() {
+        if (data.getIdStatus() != 4) 
         {
-             JsfUtil.addSuccessMessageClean("Venta Cancelada");
-            data.setIdStatus(0);
-             getVentasByIntervalDate();
-             
+            System.out.println("comentarios: "+data.getComentarioCancel());
+            if (ifaceBuscaVenta.cancelarVenta(data.getIdVentaPk().intValue(), usuario.getIdUsuario().intValue(), data.getComentarioCancel()) != 0) {
+                JsfUtil.addSuccessMessageClean("Venta Cancelada");
+                data.setIdStatus(0);
+                getVentasByIntervalDate();
+
+            } else {
+                JsfUtil.addErrorMessageClean("Ocurrió un error al intentar cancelar la venta.");
+            }
         }
         else
         {
-            JsfUtil.addErrorMessageClean("Ocurrió un error al intentar cancelar la venta.");
+           JsfUtil.addErrorMessageClean("No puedes volver a cancelar la venta");
+             
         }
     }
-    public void imprimirVenta()
-    {
+
+    public void imprimirVenta() {
         lstVenta = ifaceBuscaVenta.getVentaById(data.getIdVentaPk().intValue());
-        idSucursalImpresion=new BigDecimal(data.getIdSucursal());
+        idSucursalImpresion = new BigDecimal(data.getIdSucursal());
         fechaImpresion = lstVenta.get(0).getFechaVenta();
-        
-        
+
         statusVentaImpresion = lstVenta.get(0).getNombreStatus();
         nombreSucursalImpresion = lstVenta.get(0).getNombreSucursal();
-        
+
         //System.out.println("Estatus Venta: "+statusVentaImpresion);
-        
-        
         calculatotalVentaDetalle();
         setParameterTicket(data.getIdVentaPk().intValue());
         generateReport();
-        
+
     }
+
     public void detallesVenta() {
         viewEstate = "searchById";
         lstVenta = ifaceBuscaVenta.getVentaById(data.getIdVentaPk().intValue());
-        
+
         calculatotalVentaDetalle();
 
     }
@@ -490,7 +500,5 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     public void setFechaImpresion(Date fechaImpresion) {
         this.fechaImpresion = fechaImpresion;
     }
-    
-    
 
 }

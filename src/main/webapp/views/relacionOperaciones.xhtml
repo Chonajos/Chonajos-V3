@@ -12,8 +12,23 @@
         <div>
             <h3>#{beanRelacionOperaciones.title}</h3>
         </div>
+        
         <h:form id="formContent">
-            <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
+            <p:confirmDialog   global="true" showEffect="fade" hideEffect="fade">
+            <div class="alignCenter">
+
+                <p:outputLabel   for="txtcomentarios" value ="Comentarios:" /> 
+                <p:inputText id="txtcomentarios"  value="#{beanRelacionOperaciones.data.comentarioCancel}" required="true">
+                <p:ajax event="change" update="@this" listener="#{beanRelacionOperaciones.addComent()}" ></p:ajax>
+                <p:ajax event="blur" update="@this" listener="#{beanRelacionOperaciones.addComent()}"></p:ajax>
+                </p:inputText>
+
+                <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton  value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                
+            </div>
+        </p:confirmDialog>
+            <p:messages id="messages" showDetail="true" showSummary="false" showIcon="false" autoUpdate="true" closable="true" />
             <p:growl id="messagess" showDetail="true" life="2000" />
             <p:panel>
                 <div class="container-fluid">
@@ -107,6 +122,7 @@
                             <p:column headerText="Cancelar" width="60px;" class="alignCenter">
                                 <p:commandButton id="cancel" ajax="true" process="@this" action="#{beanRelacionOperaciones.cancelarVenta()}" icon="ui-icon-trash" styleClass="ui-priority-primary" update=":formContent">
                                     <f:setPropertyActionListener value="#{model}" target="#{beanRelacionOperaciones.data}"/>
+                                    <p:confirm header="Confirmación" message="¿Estás seguro de cancelar la venta?" icon="ui-icon-alert"/>
                                 </p:commandButton>
                             </p:column>
                             <p:columnGroup type="footer">
@@ -163,7 +179,7 @@
                     </div>
                 </div>
                 <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanRelacionOperaciones.rutaPDF}"/>
-            
+
             </p:panel>
         </h:form>
     </ui:define>

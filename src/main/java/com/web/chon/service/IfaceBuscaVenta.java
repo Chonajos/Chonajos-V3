@@ -10,8 +10,10 @@ import java.util.ArrayList;
 public interface IfaceBuscaVenta 
 {
     public ArrayList<BuscaVenta> getVentaById(int idVenta);
-    public ArrayList<BuscaVenta> getVentaMayoreoById(int idVenta);
-    public int updateCliente(int idVenta);
-    public int cancelarVenta(int idVenta);
-    public int updateStatusVentaMayoreo(int idVenta);
+    public ArrayList<BuscaVenta> getVentaMayoreoById(int idVenta,int idSucursal);
+    public int updateVenta(int idVenta,int idUsusario);
+    
+    public int cancelarVenta(int idVenta,int idUsuario,String comentarios);
+    public int cancelarVentaMayoreo(int idVenta,int idUsuario,String comentarios);
+    public int updateStatusVentaMayoreo(int idVenta,int idUsuario);
 }

@@ -49,7 +49,7 @@ public class EntradaMercancia extends ValueObject implements Serializable {
         movimiento = null;
         fecha = null;
         remision = null;
-        idSucursalFK = new BigDecimal(-1);
+        //idSucursalFK = new BigDecimal(-1);
         fechaFiltroFin = null;
         fechaFiltroInicio = null;
         abreviacion = null;

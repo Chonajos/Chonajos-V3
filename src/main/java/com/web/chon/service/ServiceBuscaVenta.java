@@ -69,17 +69,17 @@ public class ServiceBuscaVenta implements IfaceBuscaVenta {
     }
 
     @Override
-    public int updateCliente(int idVenta) {
-        return ejb.updateCliente(idVenta);
+    public int updateVenta(int idVenta,int idUsusario) {
+        return ejb.updateVenta(idVenta,idUsusario);
     }
 
     @Override
-    public ArrayList<BuscaVenta> getVentaMayoreoById(int idVenta) 
+    public ArrayList<BuscaVenta> getVentaMayoreoById(int idVenta, int idSucursal) 
     {
        try {
             ArrayList<BuscaVenta> lstVentas = new ArrayList<BuscaVenta>();
             ejb = (NegocioBuscaVenta) Utilidades.getEJBRemote("ejbBuscaVenta", NegocioBuscaVenta.class.getName());
-            List<Object[]> lstObject = ejb.getVentaMayoreoById(idVenta);
+            List<Object[]> lstObject = ejb.getVentaMayoreoById(idVenta,idSucursal);
             for (Object[] obj : lstObject) {
 
                 BuscaVenta busca_venta = new BuscaVenta();
@@ -112,14 +112,24 @@ public class ServiceBuscaVenta implements IfaceBuscaVenta {
     }
 
     @Override
-    public int updateStatusVentaMayoreo(int idVenta) {
-        return ejb.updateStatusVentaMayoreo(idVenta);
+    public int updateStatusVentaMayoreo(int idVenta,int idUsuario) 
+    {
+        getEjb();
+        return ejb.updateStatusVentaMayoreo(idVenta,idUsuario);
     }
 
     @Override
-    public int cancelarVenta(int idVenta) {
+    public int cancelarVenta(int idVenta, int idUsuario, String comentarios) {
        getEjb();
-       return ejb.cancelarVenta(idVenta);
+       return ejb.cancelarVenta(idVenta, idUsuario,  comentarios);
+    }
+
+    @Override
+    public int cancelarVentaMayoreo(int idVenta, int idUsuario, String comentarios) {
+       getEjb();
+       return ejb.cancelarVentaMayoreo(idVenta, idUsuario,  comentarios);
     
     }
+
+    
 }

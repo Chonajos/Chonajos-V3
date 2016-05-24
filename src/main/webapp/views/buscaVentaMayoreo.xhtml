@@ -14,7 +14,7 @@
         </div>
         <h:form id="formContent">
             <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
-            <p:growl id="messagess" showDetail="true" life="2000" />
+            <!--<p:growl id="messagess" showDetail="true" life="2000" />-->
             <p:panel>
                 <div class="container-fluid">
                     <div class="form-group" align="right">
@@ -101,15 +101,14 @@
                                 <f:convertNumber pattern="$#,##0.00"/>
                             </p:inputText>
 
-                            <h:outputLabel for="recibido:" value="Recibido:" />
+                            <h:outputLabel for="recibido" value="Recibido:" />
                             <p:inputText id="recibido" value="#{beanBuscaVentaMayoreo.recibido}"  label="recibido" >
                                 <pe:keyFilter regEx="/[\d.,\-]/"/> 
-                               
                                 <p:ajax event="blur" update="cambio" listener ="#{beanBuscaVentaMayoreo.calculaCambio()}"/>
                             </p:inputText>
-                            <h:outputLabel for="cambio:" value="Cambio:" />
+                            <h:outputLabel for="cambio" value="Cambio:" />
                             <p:inputText id="cambio" value="#{beanBuscaVentaMayoreo.cambio}" label="cambio" >
-                                
+                                <f:convertNumber type="currency" currencySymbol="$"/>
                                 <pe:keyFilter regEx="/[\d.,\-]/"/> 
                             </p:inputText>
 

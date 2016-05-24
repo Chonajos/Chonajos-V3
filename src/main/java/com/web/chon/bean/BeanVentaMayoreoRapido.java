@@ -15,6 +15,7 @@ import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.dominio.VentaMayoreo;
 import com.web.chon.dominio.VentaProductoMayoreo;
 import com.web.chon.security.service.PlataformaSecurityContext;
+import com.web.chon.service.IfaceBuscaVenta;
 
 import com.web.chon.service.IfaceCatCliente;
 import com.web.chon.service.IfaceCatUsuario;
@@ -44,8 +45,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
+import javax.xml.transform.Source;
 //import static jdk.management.resource.internal.SimpleResourceContext.contexts;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRExporter;
@@ -68,6 +71,8 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
 
     private static final long serialVersionUID = 1L;
 
+    @Autowired
+    private IfaceBuscaVenta ifaceBuscaVenta;
     @Autowired
     private IfaceVentaMayoreo ifaceVentaMayoreo;
     @Autowired
@@ -130,10 +135,17 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
     private boolean permisionVentaRapida;
     private boolean ventaRapidaCheck;
 
+    private BigDecimal recibido;
+    private BigDecimal cambio;
+    //Datos para el pago rapido
+    private BigDecimal folio;
+    private BigDecimal status;
+    
 
 
     @PostConstruct
     public void init() {
+   
         ventaRapida = "0";
         cliente = new Cliente();
         cliente = ifaceCatCliente.getClienteById(1);
@@ -150,7 +162,7 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
         usuario.setAmaternoUsuario(usuarioDominio.getUsuMaterno());
         TotalVentaGeneral = new BigDecimal(0);
         data = new VentaProductoMayoreo();
-        setTitle("Venta Mayoreo");
+        setTitle("Venta Rápida");
         setViewEstate("viewAddProducto");
         lstTipoVenta = ifaceTipoVenta.getAll();
         lstVenta = new ArrayList<VentaProductoMayoreo>();
@@ -158,7 +170,6 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
         totalProductoTemporal = null;
 
         ventaRapida = (usuario.getIdRolFk()).toString();
-        System.out.println("Venta Rapida: " + ventaRapida);
         if (ventaRapida.equals("4")) {
 
             lstExistencias = ifaceNegocioExistencia.getExistencias(idSucu, null, null, null, null, null, null);
@@ -174,6 +185,10 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
 
     }
 
+    public void calculaCambio() {
+        System.out.println("Entra a cambiar");
+        cambio = recibido.subtract(totalVenta, MathContext.UNLIMITED);
+    }
     
 
     public void changeVentaRapida() {
@@ -238,7 +253,8 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
             int temp = ifaceVentaMayoreo.getVentaSucursal(idSucu);
 
             ventaGeneral.setVentaSucursal(new BigDecimal(temp + 1));
-
+            folio = ventaGeneral.getVentaSucursal();
+            
             //System.out.println("Venta General: " + ventaGeneral.toString());
             if (ifaceVentaMayoreo.insertarVenta(ventaGeneral) != 0) {
                 //si la venta se ingreso el siguiente paso es ingresar los productos.
@@ -259,8 +275,8 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
                         existencia_actualizada.setCantidadPaquetes(existencia.getCantidadPaquetes().subtract(producto.getCantidadEmpaque(), MathContext.UNLIMITED));
                         existencia_actualizada.setKilosTotalesProducto(existencia.getKilosTotalesProducto().subtract(producto.getKilosVendidos(), MathContext.UNLIMITED));
                         if (ifaceNegocioExistencia.updateExistenciaProducto(existencia_actualizada) != 0) {
-
-                            JsfUtil.addSuccessMessageClean("Venta de Productos finalizada");
+                            totalVenta=TotalVentaGeneral;
+                            JsfUtil.addSuccessMessageClean("Venta Finalizada");
                         } else {
                             JsfUtil.addErrorMessageClean("Error actualizando existencia de producto: " + producto.getNombreProducto());
                         }
@@ -269,17 +285,8 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
                     }
 
                 }
-                setParameterTicket(idVentaInsert.intValue());
-                generateReport(ventaGeneral.getVentaSucursal().intValue());
-                selectedExistencia = new ExistenciaProducto();
-                lstExistencias = new ArrayList<ExistenciaProducto>();
-                lstVenta = new ArrayList<VentaProductoMayoreo>();
-                data.reset();
-                subProducto = new Subproducto();
-                setViewEstate("viewAddProducto");
-                idTipoVenta = null;
-                totalProductoTemporal = null;
-                TotalVentaGeneral = new BigDecimal(0);
+                
+                setViewEstate("cobrar");
 
                 //cliente=new Cliente();
             }
@@ -287,10 +294,39 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
         
             //FacesContext contexts =FacesContext.getCurrentInstance();
             //contexts.getExternalContext().getRequestParameterMap().put("folio", "hola");
-            FacesContext.getCurrentInstance().getExternalContext().redirect("buscaVentaMayoreo.xhtml"); 
+            //FacesContext.getCurrentInstance().getExternalContext().redirect("buscaVentaMayoreo.xhtml"); 
             //return "buscaVentaMayoreo?displayTargetPopUp&faces-redirect=true&includeViewParams=true&folio=folio";
            }
         
+    }
+    
+    public void updateVenta() {
+
+            try {
+                ifaceBuscaVenta.updateStatusVentaMayoreo(folio.intValue(), usuario.getIdUsuarioPk().intValue());
+                JsfUtil.addSuccessMessageClean("Venta Pagada");
+                setParameterTicket(folio.intValue());
+                generateReport(folio.intValue());
+
+                selectedExistencia = new ExistenciaProducto();
+                lstExistencias = new ArrayList<ExistenciaProducto>();
+                lstVenta = new ArrayList<VentaProductoMayoreo>();
+                data.reset();
+                subProducto = new Subproducto();
+                idTipoVenta = null;
+                totalProductoTemporal = null;
+                TotalVentaGeneral = new BigDecimal(0);
+                totalVenta = null;
+                folio = null;
+                setViewEstate("viewAddProducto");
+                RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
+        
+            } catch (Exception ex) 
+            {
+                JsfUtil.addErrorMessageClean("Ocurrió un error al realizar el pago");
+                }
+        
+        //return "buscaVentas";
     }
 
     public void changeViewToAddProducto() {
@@ -459,6 +495,7 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
 
     public void generateReport(int folio) {
         JRExporter exporter = null;
+        
 
         try {
             ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
@@ -469,7 +506,7 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
             } else {
                 temporal = servletContext.getRealPath("");
             }
-
+            
             pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketVenta" + File.separatorChar + "ticket.jasper";
             JasperPrint jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport, new JREmptyDataSource());
 
@@ -480,6 +517,7 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
 
             byte[] bytes = outputStream.toByteArray();
             rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf",folio,usuarioDominio.getSucId());
+            
 
         } catch (Exception exception) {
             System.out.println("Error >" + exception.getMessage());
@@ -516,7 +554,7 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
         paramReport.put("productos", items);
         paramReport.put("ventaTotal", total);
         paramReport.put("totalLetra", totalVentaStr);
-        paramReport.put("estado", "PEDIDO MARCADO");
+        paramReport.put("estado", "PEDIDO PAGADO");
         paramReport.put("labelFecha", "Fecha de Venta:");
         paramReport.put("labelFolio", "Folio de Venta:");
         paramReport.put("labelSucursal", usuarioDominio.getNombreSucursal());
@@ -871,6 +909,39 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
         changeVentaRapida();
     }
 
+    public BigDecimal getRecibido() {
+        return recibido;
+    }
+
+    public void setRecibido(BigDecimal recibido) {
+        this.recibido = recibido;
+    }
+
+    public BigDecimal getCambio() {
+        return cambio;
+    }
+
+    public void setCambio(BigDecimal cambio) {
+        this.cambio = cambio;
+    }
+
+    public BigDecimal getFolio() {
+        return folio;
+    }
+
+    public void setFolio(BigDecimal folio) {
+        this.folio = folio;
+    }
+
+    public BigDecimal getStatus() {
+        return status;
+    }
+
+    public void setStatus(BigDecimal status) {
+        this.status = status;
+    }
+
+    
   
 
 }
