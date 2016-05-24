@@ -14,7 +14,7 @@
             <div>
                 <h3>Mantenimiento de Precios Mayoreo</h3>
             </div>
-            <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
+            <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:panel rendered="#{beanMantenimientoPrecioMayoreo.viewEstate =='init'}">
                 <div class="container-fluid">
                     <div class="form-group">
@@ -107,7 +107,7 @@
                             <p:column headerText="Clave" width="120px;" style="text-align:center">
                                 <h:outputText value="#{model.identificador}" />
                             </p:column>
-                            <p:column headerText="Producto" width="120px;" style="text-align:center">
+                            <p:column headerText="Producto" width="120px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreProducto}" />
                             </p:column>
                             <p:column headerText="Mín." width="45px;" style="text-align:center" rendered="#{beanMantenimientoPrecioMayoreo.usuario.perId != 1}">
@@ -119,40 +119,40 @@
                             <p:column headerText="Máx." width="45px;" style="text-align:center" rendered="#{beanMantenimientoPrecioMayoreo.usuario.perId != 1}">
                                 <h:outputText value="#{model.precioMaximo}" />
                             </p:column>
-                            <p:column headerText="Empaque" width="80px;" style="text-align:center">
+                            <p:column headerText="Empaque" width="80px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreEmpaque}" />
                             </p:column>
-                            <p:column headerText="Cant." width="70px;" style="text-align:center">
+                            <p:column headerText="Cant." width="70px;" class="alignRight">
                                 <h:outputText value="#{model.cantidadPaquetes}">
 
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Kg." width="70px;" style="text-align:center">
+                            <p:column headerText="Kg." width="70px;" class="alignRight">
                                 <h:outputText value="#{model.kilosTotalesProducto}">
                                     <f:convertNumber pattern="#,##0" />
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Costo" width="48px;" style="text-align:center">
+                            <p:column headerText="Costo" width="48px;" class="alignRight">
                                 <h:outputText value="#{model.convenio}">
                                     <f:convertNumber pattern="#,##0" />
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Convenio" width="90px;" style="text-align:center">
+                            <p:column headerText="Convenio" width="90px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreTipoConvenio}">
                                     <f:convertNumber pattern="#,##0.00" />
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Provedor" width="120px;" style="text-align:center">
+                            <p:column headerText="Provedor" width="120px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreProvedorCompleto}">
                                     <f:convertNumber pattern="#,##0.00" />
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Sucursal" width="120px;" style="text-align:center">
+                            <p:column headerText="Sucursal" width="120px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreSucursal}">
                                     <f:convertNumber pattern="#,##0.00" />
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Área"  width="100px;" style="text-align:center">
+                            <p:column headerText="Área"  width="100px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreBodega}" />
                             </p:column>
                             <p:column headerText="Mín." width="45px;" style="text-align:center" rendered="#{beanMantenimientoPrecioMayoreo.usuario.perId == 1}">
@@ -194,7 +194,7 @@
                                             </h:outputText>
                                         </f:facet>
                                     </p:column>
-                                    <p:column colspan="8" rendered="#{beanMantenimientoPrecioMayoreo.usuario.perId != 1}"/>
+                                    <p:column colspan="5" rendered="#{beanMantenimientoPrecioMayoreo.usuario.perId != 1}"/>
                                     <p:column colspan="9" rendered="#{beanMantenimientoPrecioMayoreo.usuario.perId == 1}"/>
                                 </p:row>
                             </p:columnGroup>

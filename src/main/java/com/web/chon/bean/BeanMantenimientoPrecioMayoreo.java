@@ -59,6 +59,7 @@ public class BeanMantenimientoPrecioMayoreo implements Serializable {
     private ArrayList<EntradaMercancia> lstEntradaMercancia;
 
     private ExistenciaProducto data;
+    private ExistenciaProducto dataEdit;
     private Subproducto subProducto;
     private EntradaMercancia entradaMercancia;
     private UsuarioDominio usuario;
@@ -120,7 +121,7 @@ public class BeanMantenimientoPrecioMayoreo implements Serializable {
 
     public String updatePrecio() {
         if (validateMaxMin()) {
-            if (ifaceNegocioExistencia.updatePrecio(data) == 1) {
+            if (ifaceNegocioExistencia.updatePrecio(dataEdit) == 1) {
                 JsfUtil.addSuccessMessage("Actualización Exitosa.");
                 return "existencias";
             } else {
@@ -136,9 +137,9 @@ public class BeanMantenimientoPrecioMayoreo implements Serializable {
 
     private boolean validateMaxMin() {
 
-        if (data.getPrecioVenta().doubleValue() > (data.getPrecioMaximo().doubleValue())) {
+        if (dataEdit.getPrecioVenta().doubleValue() > (dataEdit.getPrecioMaximo().doubleValue())) {
             return false;
-        } else if (data.getPrecioVenta().doubleValue() < data.getPrecioMinimo().doubleValue()) {
+        } else if (dataEdit.getPrecioVenta().doubleValue() < dataEdit.getPrecioMinimo().doubleValue()) {
             return false;
         }
 
@@ -166,11 +167,12 @@ public class BeanMantenimientoPrecioMayoreo implements Serializable {
     }
 
     public void onRowEdit(RowEditEvent event) {
+        dataEdit = new ExistenciaProducto();
+        dataEdit = (ExistenciaProducto) event.getObject();
 
-        data = (ExistenciaProducto) event.getObject();
-
-        System.out.println("editado " + data.toString());
+        System.out.println("editado " + dataEdit.toString());
         updatePrecio();
+        
 
     }
 

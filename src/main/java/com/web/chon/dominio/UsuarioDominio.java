@@ -33,6 +33,7 @@ public class UsuarioDominio extends ValueObject implements PlataformaUsuario {
     private int perId;
     private String perDescripcion;
     private int sucId;
+    private String telefonoSucursal;
     private BigDecimal idUsuario;
     private Set<Menu> menu = new HashSet<Menu>();
     private Set<String> allowedUrl = new HashSet<String>();
@@ -208,5 +209,15 @@ public class UsuarioDominio extends ValueObject implements PlataformaUsuario {
     public void setNombreSucursal(String nombreSucursal) {
         this.nombreSucursal = nombreSucursal;
     }
+
+    public String getTelefonoSucursal() {
+        return telefonoSucursal;
+    }
+
+    public void setTelefonoSucursal(String telefonoSucursal) {
+        this.telefonoSucursal = telefonoSucursal;
+    }
+    
+    
     
 }
