@@ -92,12 +92,7 @@
                 <div class="container-fluid">
                     <div class="form-group" align="right">
                         <p:commandButton    value="Agregar a Pedido" update=":formContent" ajax="true" action="#{beanVentaMayoreoRapido.addProducto()}" rendered="#{beanVentaMayoreoRapido.viewEstate =='viewAddProducto'}"/>
-
-                        <p:commandLink   value="Agregar a Pedido y Finalizar" update=":formContent" ajax="false" action="buscaVentaMayoreo.xhtml" >
-                            
-                            <p:confirm header="Confirmación" message="¿Estás seguro de finalizar la venta?" icon="ui-icon-alert"/>
-                            <f:param name="folio" id="folio"  value="foliesito"/>
-                        </p:commandLink>
+                        <p:commandButton    value="Agregar a Pedido y Finalizar" update=":formContent" ajax="true" action="#{beanVentaMayoreoRapido.addProductoEnd()}" rendered="#{beanVentaMayoreoRapido.viewEstate =='viewAddProducto'}"/>
                         <p:commandButton value="Aceptar" update=":formContent" ajax="true" action="#{beanVentaMayoreoRapido.updateProducto()}" rendered="#{beanVentaMayoreoRapido.viewEstate =='update'}"/>
                         <p:commandButton value="Cancelar Edición" update=":formContent" ajax="true" action="#{beanVentaMayoreoRapido.changeView()}" immediate="true" resetValues="true" rendered="#{beanVentaMayoreoRapido.viewEstate =='update'}"/>
                         <p:commandButton value="Ver Pedido" update=":formContent" id="verCarrito" ajax="true" action="#{beanVentaMayoreoRapido.changeView()}"    immediate="true" resetValues="true" rendered="#{beanVentaMayoreoRapido.viewEstate =='viewAddProducto'}"/>
@@ -256,7 +251,37 @@
                 </div>
                 <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanVentaMayoreoRapido.rutaPDF}"/>
             </p:panel>
+            <p:panel id="panel6" rendered="#{beanVentaMayoreoRapido.viewEstate=='cobrar'}">
+              
+             
+            <div class="container-fluid">
+                    <div class="form-group" align="center">
+                        <h:panelGrid columns="2" cellpadding="5">
+                            <h:outputLabel for="totalPagar"  value="Total a Pagar:" />
+                            <p:inputText id="totalPagar" value="#{beanVentaMayoreoRapido.totalVenta}" disabled="true" label="totalPagar" >
+                                <pe:keyFilter regEx="/[\d.,\-]/"/> 
+                                <f:convertNumber pattern="$#,##0.00"/>
+                            </p:inputText>
 
+                            <h:outputLabel for="recibido:" value="Recibido:" />
+                            <p:inputText id="recibido" value="#{beanVentaMayoreoRapido.recibido}"  label="recibido" >
+                                <pe:keyFilter regEx="/[\d.,\-]/"/> 
+                               
+                                <p:ajax event="blur" update="cambio" listener ="#{beanVentaMayoreoRapido.calculaCambio()}"/>
+                            </p:inputText>
+                            <h:outputLabel for="cambio:" value="Cambio:" />
+                            <p:inputText id="cambio" value="#{beanVentaMayoreoRapido.cambio}" label="cambio" >
+                                
+                                <pe:keyFilter regEx="/[\d.,\-]/"/> 
+                            </p:inputText>
+                            <p:commandButton value="Pagar" update=":formContent" ajax="true"  action="#{beanVentaMayoreoRapido.updateVenta()}" rendered="#{beanVentaMayoreoRapido.viewEstate =='cobrar'}" oncomplete="window.frames.miFrame.print();"/>
+
+                        </h:panelGrid>
+                    </div>
+                </div>
+                
+            </p:panel>
+            <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanVentaMayoreoRapido.rutaPDF}"/>
         </h:form>
     </ui:define>
 </ui:composition>

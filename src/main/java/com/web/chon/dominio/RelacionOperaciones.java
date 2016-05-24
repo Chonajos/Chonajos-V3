@@ -25,11 +25,21 @@ public class RelacionOperaciones implements Serializable {
     private Date fechaFiltroFin;
     private int idSucursal;
     private int idStatus;
+    private String comentarioCancel;
 
 
     public RelacionOperaciones() {
         
     }
+
+    public String getComentarioCancel() {
+        return comentarioCancel;
+    }
+
+    public void setComentarioCancel(String comentarioCancel) {
+        this.comentarioCancel = comentarioCancel;
+    }
+    
 
     public int getIdSucursal() {
         return idSucursal;

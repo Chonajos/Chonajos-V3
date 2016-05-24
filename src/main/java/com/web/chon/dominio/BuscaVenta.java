@@ -1,4 +1,3 @@
-
 package com.web.chon.dominio;
 
 import java.io.Serializable;
@@ -9,8 +8,8 @@ import java.util.Date;
  *
  * @author freddy
  */
-public class BuscaVenta implements Serializable 
-{
+public class BuscaVenta implements Serializable {
+
     private static final long serialVersionUID = 1L;
     private String nombreCliente;
     private String nombreVendedor;
@@ -29,17 +28,42 @@ public class BuscaVenta implements Serializable
     private String clave;
     private BigDecimal carro;
     private BigDecimal kilosVendidos;
+    private String nombreSucursal;
+
+    public void reset() {
+        nombreCliente="";
+        nombreVendedor="";
+        idVenta=null;
+        nombreSubproducto="";
+        nombreEmpaque="";
+        cantidadEmpaque=null;
+        precioProducto=null;
+        total=null;
+        totalVenta=null;
+        fechaVenta=null;
+        fechaPromesaPago=null;
+        nombreStatus=null;
+        statusFK=0;
+        idSucursalFk=null;
+        clave="";
+        carro=null;
+        kilosVendidos=null;
+        nombreSucursal=null;
+    }
 
     @Override
     public String toString() {
         return "BuscaVenta{" + "nombreCliente=" + nombreCliente + ", nombreVendedor=" + nombreVendedor + ", idVenta=" + idVenta + ", nombreSubproducto=" + nombreSubproducto + ", nombreEmpaque=" + nombreEmpaque + ", cantidadEmpaque=" + cantidadEmpaque + ", precioProducto=" + precioProducto + ", total=" + total + ", totalVenta=" + totalVenta + ", fechaVenta=" + fechaVenta + ", fechaPromesaPago=" + fechaPromesaPago + ", nombreStatus=" + nombreStatus + ", statusFK=" + statusFK + ", idSucursalFk=" + idSucursalFk + ", clave=" + clave + ", carro=" + carro + ", kilosVendidos=" + kilosVendidos + '}';
     }
 
-    
-    
-    
-    
-    
+    public String getNombreSucursal() {
+        return nombreSucursal;
+    }
+
+    public void setNombreSucursal(String nombreSucursal) {
+        this.nombreSucursal = nombreSucursal;
+    }
+
     public int getStatusFK() {
         return statusFK;
     }
@@ -76,8 +100,6 @@ public class BuscaVenta implements Serializable
         this.totalVenta = totalVenta;
     }
 
-    
-    
     public String getClave() {
         return clave;
     }
@@ -102,7 +124,6 @@ public class BuscaVenta implements Serializable
         this.kilosVendidos = kilosVendidos;
     }
 
-    
     public BigDecimal getIdSucursalFk() {
         return idSucursalFk;
     }
@@ -110,7 +131,6 @@ public class BuscaVenta implements Serializable
     public void setIdSucursalFk(BigDecimal idSucursalFk) {
         this.idSucursalFk = idSucursalFk;
     }
-    
 
     public void setStatusFK(int statusFK) {
         this.statusFK = statusFK;
@@ -156,8 +176,6 @@ public class BuscaVenta implements Serializable
         this.nombreEmpaque = nombreEmpaque;
     }
 
-   
-
     public Date getFechaVenta() {
         return fechaVenta;
     }
@@ -182,6 +200,4 @@ public class BuscaVenta implements Serializable
         this.nombreStatus = nombreStatus;
     }
 
-    
-    
 }

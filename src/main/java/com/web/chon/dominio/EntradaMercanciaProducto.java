@@ -31,23 +31,13 @@ public class EntradaMercanciaProducto extends ValueObject implements Serializabl
     private BigDecimal kilospromprod;
     private int numeroMovimiento;
     private BigDecimal pesoTara;
-    private BigDecimal pesoTaraTemporal;
+    private BigDecimal pesoNeto;
 
     @Override
     public String toString() {
-        return "EntradaMercanciaProducto{" + "idEmpPK=" + idEmpPK + ", idEmFK=" + idEmFK + ", idSubProductoFK=" + idSubProductoFK + ", idTipoEmpaqueFK=" + idTipoEmpaqueFK + ", cantidadPaquetes=" + cantidadPaquetes + ", kilosTotalesProducto=" + kilosTotalesProducto + ", comentarios=" + comentarios + ", precio=" + precio + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + ", idTipoConvenio=" + idTipoConvenio + ", idBodegaFK=" + idBodegaFK + ", nombreTipoConvenio=" + nombreTipoConvenio + ", nombreBodega=" + nombreBodega + ", kilospromprod=" + kilospromprod + ", numeroMovimiento=" + numeroMovimiento + ", pesoTara=" + pesoTara + '}';
+        return "EntradaMercanciaProducto{" + "idEmpPK=" + idEmpPK + ", idEmFK=" + idEmFK + ", idSubProductoFK=" + idSubProductoFK + ", idTipoEmpaqueFK=" + idTipoEmpaqueFK + ", cantidadPaquetes=" + cantidadPaquetes + ", kilosTotalesProducto=" + kilosTotalesProducto + ", comentarios=" + comentarios + ", precio=" + precio + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + ", idTipoConvenio=" + idTipoConvenio + ", idBodegaFK=" + idBodegaFK + ", nombreTipoConvenio=" + nombreTipoConvenio + ", nombreBodega=" + nombreBodega + ", kilospromprod=" + kilospromprod + ", numeroMovimiento=" + numeroMovimiento + ", pesoTara=" + pesoTara + ", pesoNeto=" + pesoNeto + '}';
     }
 
-    public BigDecimal getPesoTaraTemporal() {
-        return pesoTaraTemporal;
-    }
-
-    public void setPesoTaraTemporal(BigDecimal pesoTaraTemporal) {
-        this.pesoTaraTemporal = pesoTaraTemporal;
-    }
-    
-
-    
     @Override
     public void reset() {
        idEmFK = null;
@@ -64,7 +54,17 @@ public class EntradaMercanciaProducto extends ValueObject implements Serializabl
        nombreTipoConvenio=null;
        nombreBodega  = null;
        pesoTara=null;
+       pesoNeto=null;
     }
+
+    public BigDecimal getPesoNeto() {
+        return pesoNeto;
+    }
+
+    public void setPesoNeto(BigDecimal pesoNeto) {
+        this.pesoNeto = pesoNeto;
+    }
+    
 
     public BigDecimal getPesoTara() {
         return pesoTara;

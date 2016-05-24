@@ -100,10 +100,10 @@
                                 <h:outputText value="#{model.nombreTipoVenta}">
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Cliente" width="300px;" class="alignLeft">
+                            <p:column headerText="Cliente" width="200px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreCliente}" />
                             </p:column>
-                            <p:column headerText="Vendedor" width="300px;" class="alignLeft">
+                            <p:column headerText="Vendedor" width="200px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreVendedor}" />
                             </p:column>
                             <p:column headerText="Total de Venta" width="120px;" class="alignCenter">
@@ -116,15 +116,21 @@
                                     <f:setPropertyActionListener value="#{model}" target="#{beanRelOperMayoreo.data}"/>
                                 </p:commandButton>
                             </p:column>
+                            <p:column headerText="Cancelar" width="60px;" class="alignCenter">
+                                <p:commandButton id="cancelar" ajax="true" process="@this" action="#{beanRelOperMayoreo.cancelarVenta}" icon="ui-icon-trash" styleClass="ui-priority-primary" update=":formContent">
+                                    <f:setPropertyActionListener value="#{model}" target="#{beanRelOperMayoreo.data}"/>
+                                </p:commandButton>
+                            </p:column>
                             <p:columnGroup type="footer">
                                 <p:column colspan="6" footerText="Total: " style="text-align:right"/>
-                                <p:column colspan="2" >
+                                <p:column colspan="1" >
                                     <f:facet name="footer">
                                         <h:outputText value="#{beanRelOperMayoreo.totalVenta}">
-                                            <f:convertNumber pattern="#,###.000"/>
+                                            <f:convertNumber pattern="#,###.00"/>
                                         </h:outputText>
                                     </f:facet>
                                 </p:column>
+                                <p:column colspan="2" ></p:column>
                                 
                             </p:columnGroup>
                         </p:dataTable>

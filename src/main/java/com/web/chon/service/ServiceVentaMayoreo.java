@@ -70,10 +70,14 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
             venta.setIdSucursal(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
             venta.setIdTipoVenta(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
             venta.setVentaSucursal(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
-            venta.setNombreCliente(obj[10].toString());
-            venta.setNombreVendedor(obj[11].toString());
-            venta.setTotalVenta(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
-            venta.setNombreTipoVenta(obj[13].toString());
+            venta.setIdCajero(obj[10] == null ? null : new BigDecimal(obj[10].toString()));
+            venta.setIdCancelUser(obj[11] == null ? null : new BigDecimal(obj[11].toString()));
+            venta.setFechaCancelacion((Date)obj[12]);
+            venta.setNombreCliente(obj[13]==null ? "" :obj[13].toString());
+            venta.setNombreCliente(obj[14].toString());
+            venta.setNombreVendedor(obj[15].toString());
+            venta.setTotalVenta(obj[16] == null ? null : new BigDecimal(obj[16].toString()));
+            venta.setNombreTipoVenta(obj[17].toString());
             lstVenta.add(venta);
         }
         

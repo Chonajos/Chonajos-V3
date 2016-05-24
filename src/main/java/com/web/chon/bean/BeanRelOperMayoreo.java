@@ -19,6 +19,7 @@ import com.web.chon.service.IfaceCatStatusVenta;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceTipoVenta;
 import com.web.chon.service.IfaceVentaMayoreo;
+import com.web.chon.util.JsfUtil;
 import com.web.chon.util.TiempoUtil;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -136,7 +137,8 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple{
     }
     public void getTotalVentaByInterval() {
         totalVenta = new BigDecimal(0);
-        for (RelacionOperacionesMayoreo dominio : model) {
+        for (RelacionOperacionesMayoreo dominio : model) 
+        {
             totalVenta = totalVenta.add(dominio.getTotalVenta());
         }
     }
@@ -147,9 +149,29 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple{
 
     public void detallesVenta() {
         viewEstate = "searchById";
-        lstVenta = ifaceBuscaVenta.getVentaMayoreoById(data.getIdVentaPk().intValue());
+        lstVenta = ifaceBuscaVenta.getVentaMayoreoById(data.getIdVentaPk().intValue(),data.getIdSucursal().intValue());
         calculatotalVentaDetalle();
 
+    }
+    public void cancelarVenta()
+    {
+        if (data.getIdStatus().intValue() != 4) 
+        {
+            //System.out.println("comentarios: "+data.getComentarioCancel());
+            if (ifaceBuscaVenta.cancelarVentaMayoreo(data.getIdVentaPk().intValue(), usuario.getIdUsuario().intValue(), data.getComentariosCancel()) != 0) {
+                JsfUtil.addSuccessMessageClean("Venta Cancelada");
+                data.setIdStatus(null);
+                getVentasByIntervalDate();
+
+            } else {
+                JsfUtil.addErrorMessageClean("Ocurrió un error al intentar cancelar la venta.");
+            }
+        }
+        else
+        {
+           JsfUtil.addErrorMessageClean("No puedes volver a cancelar la venta");
+             
+        }
     }
 
     public void calculatotalVentaDetalle() {

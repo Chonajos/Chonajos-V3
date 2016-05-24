@@ -20,6 +20,17 @@ import org.springframework.stereotype.Service;
 public class ServiceBuscaVenta implements IfaceBuscaVenta {
 
     NegocioBuscaVenta ejb;
+    
+    private void getEjb() {
+        try {
+            if (ejb == null) {
+                ejb = (NegocioBuscaVenta) Utilidades.getEJBRemote("ejbBuscaVenta", NegocioBuscaVenta.class.getName());
+            }
+
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceBuscaVenta.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     @Override
     public ArrayList<BuscaVenta> getVentaById(int idVenta) {
@@ -44,6 +55,7 @@ public class ServiceBuscaVenta implements IfaceBuscaVenta {
                 busca_venta.setNombreStatus(obj[10] == null ? "" : obj[10].toString());
                 busca_venta.setStatusFK(obj[11] == null ? 0 : Integer.parseInt(obj[11].toString())); //id status
                 busca_venta.setIdSucursalFk(obj[12] == null ? null : new BigDecimal(obj[12].toString())); 
+                busca_venta.setNombreSucursal(obj[13] == null ? "" : obj[13].toString());
                 lstVentas.add(busca_venta);
             }
 
@@ -57,17 +69,17 @@ public class ServiceBuscaVenta implements IfaceBuscaVenta {
     }
 
     @Override
-    public int updateCliente(int idVenta) {
-        return ejb.updateCliente(idVenta);
+    public int updateVenta(int idVenta,int idUsusario) {
+        return ejb.updateVenta(idVenta,idUsusario);
     }
 
     @Override
-    public ArrayList<BuscaVenta> getVentaMayoreoById(int idVenta) 
+    public ArrayList<BuscaVenta> getVentaMayoreoById(int idVenta, int idSucursal) 
     {
        try {
             ArrayList<BuscaVenta> lstVentas = new ArrayList<BuscaVenta>();
             ejb = (NegocioBuscaVenta) Utilidades.getEJBRemote("ejbBuscaVenta", NegocioBuscaVenta.class.getName());
-            List<Object[]> lstObject = ejb.getVentaMayoreoById(idVenta);
+            List<Object[]> lstObject = ejb.getVentaMayoreoById(idVenta,idSucursal);
             for (Object[] obj : lstObject) {
 
                 BuscaVenta busca_venta = new BuscaVenta();
@@ -100,7 +112,24 @@ public class ServiceBuscaVenta implements IfaceBuscaVenta {
     }
 
     @Override
-    public int updateStatusVentaMayoreo(int idVenta) {
-        return ejb.updateStatusVentaMayoreo(idVenta);
+    public int updateStatusVentaMayoreo(int idVenta,int idUsuario) 
+    {
+        getEjb();
+        return ejb.updateStatusVentaMayoreo(idVenta,idUsuario);
     }
+
+    @Override
+    public int cancelarVenta(int idVenta, int idUsuario, String comentarios) {
+       getEjb();
+       return ejb.cancelarVenta(idVenta, idUsuario,  comentarios);
+    }
+
+    @Override
+    public int cancelarVentaMayoreo(int idVenta, int idUsuario, String comentarios) {
+       getEjb();
+       return ejb.cancelarVentaMayoreo(idVenta, idUsuario,  comentarios);
+    
+    }
+
+    
 }

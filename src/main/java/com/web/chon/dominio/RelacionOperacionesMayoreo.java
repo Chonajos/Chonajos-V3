@@ -32,12 +32,49 @@ public class RelacionOperacionesMayoreo implements Serializable{
     private BigDecimal idTipoVenta;
     private String nombreTipoVenta;
     private BigDecimal ventaSucursal;
+    private BigDecimal idCajero;
+    private BigDecimal idCancelUser;
+    private String comentariosCancel;
+    private Date fechaCancelacion;
 
     @Override
     public String toString() {
-        return "RelacionOperacionesMayoreo{" + "idVentaPk=" + idVentaPk + ", fechaVenta=" + fechaVenta + ", fechaPromesaPago=" + fechaPromesaPago + ", idClienteFk=" + idClienteFk + ", idVendedorFk=" + idVendedorFk + ", nombreCliente=" + nombreCliente + ", nombreVendedor=" + nombreVendedor + ", totalVenta=" + totalVenta + ", estatus=" + estatus + ", fechaPago=" + fechaPago + ", fechaFiltroInicio=" + fechaFiltroInicio + ", fechaFiltroFin=" + fechaFiltroFin + ", idSucursal=" + idSucursal + ", idStatus=" + idStatus + ", idTipoVenta=" + idTipoVenta + ", nombreTipoVenta=" + nombreTipoVenta + '}';
+        return "RelacionOperacionesMayoreo{" + "idVentaPk=" + idVentaPk + ", fechaVenta=" + fechaVenta + ", fechaPromesaPago=" + fechaPromesaPago + ", idClienteFk=" + idClienteFk + ", idVendedorFk=" + idVendedorFk + ", nombreCliente=" + nombreCliente + ", nombreVendedor=" + nombreVendedor + ", totalVenta=" + totalVenta + ", estatus=" + estatus + ", fechaPago=" + fechaPago + ", fechaFiltroInicio=" + fechaFiltroInicio + ", fechaFiltroFin=" + fechaFiltroFin + ", idSucursal=" + idSucursal + ", idStatus=" + idStatus + ", idTipoVenta=" + idTipoVenta + ", nombreTipoVenta=" + nombreTipoVenta + ", ventaSucursal=" + ventaSucursal + ", idCajero=" + idCajero + ", idCancelUser=" + idCancelUser + ", comentariosCancel=" + comentariosCancel + ", fechaCancelacion=" + fechaCancelacion + '}';
     }
 
+    public BigDecimal getIdCajero() {
+        return idCajero;
+    }
+
+    public void setIdCajero(BigDecimal idCajero) {
+        this.idCajero = idCajero;
+    }
+
+    public BigDecimal getIdCancelUser() {
+        return idCancelUser;
+    }
+
+    public void setIdCancelUser(BigDecimal idCancelUser) {
+        this.idCancelUser = idCancelUser;
+    }
+
+    public String getComentariosCancel() {
+        return comentariosCancel;
+    }
+
+    public void setComentariosCancel(String comentariosCancel) {
+        this.comentariosCancel = comentariosCancel;
+    }
+
+    public Date getFechaCancelacion() {
+        return fechaCancelacion;
+    }
+
+    public void setFechaCancelacion(Date fechaCancelacion) {
+        this.fechaCancelacion = fechaCancelacion;
+    }
+
+    
     public BigDecimal getVentaSucursal() {
         return ventaSucursal;
     }
