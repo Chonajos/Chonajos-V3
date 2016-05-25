@@ -154,6 +154,7 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
         paramReport.put("labelFolio", "Folio de Venta:");
         paramReport.put("estado", "PEDIDO PAGADO");
         paramReport.put("labelSucursal", usuarioDominio.getNombreSucursal());
+        paramReport.put("telefonos", usuarioDominio.getTelefonoSucursal());
 
     }
 

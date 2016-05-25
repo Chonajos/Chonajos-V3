@@ -92,7 +92,7 @@ public class PlataformaUserDetailsServiceImpl implements PlataformaUserDetailsSe
             dominio.setPerDescripcion(obj[8].toString());
             dominio.setIdUsuario(new BigDecimal(obj[9].toString()));
             dominio.setNombreSucursal(obj[10] == null ? "":obj[10].toString());
-            dominio.setNombreSucursal(obj[11] == null ? "":obj[11].toString());
+            dominio.setTelefonoSucursal(obj[11] == null ? "":obj[11].toString());
             
             menu = new TreeMap<Menu, Set<Menu>>();
             allowedUrl = new HashSet<String>();

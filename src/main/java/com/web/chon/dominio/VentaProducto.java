@@ -113,33 +113,11 @@ public class VentaProducto implements Serializable {
     public void setNombreEmpaque(String nombreEmpaque) {
         this.nombreEmpaque = nombreEmpaque;
     }
-    
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (idVentaProductoPk != null ? idVentaProductoPk.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof VentaProducto)) {
-            return false;
-        }
-        VentaProducto other = (VentaProducto) object;
-        if ((this.idVentaProductoPk == null && other.idVentaProductoPk != null) || (this.idVentaProductoPk != null && !this.idVentaProductoPk.equals(other.idVentaProductoPk))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public String toString() {
         return "VentaProducto{" + "idVentaProductoPk=" + idVentaProductoPk + ", precioProducto=" + precioProducto + ", idProductoFk=" + idProductoFk + ", idTipoEmpaqueFk=" + idTipoEmpaqueFk + ", idTipoVentaFk=" + idTipoVentaFk + ", cantidadEmpaque=" + cantidadEmpaque + ", kilosVenta=" + kilosVenta + ", total=" + total + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + '}';
     }
-
    
 
     public void reset() {
