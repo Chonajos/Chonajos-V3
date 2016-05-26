@@ -88,39 +88,7 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
         }
     }
 
-//    @Override
-//    public ArrayList<ExistenciaProducto> getExistencias(BigDecimal idSucursal, BigDecimal idProvedorFk) {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
-//    @Override
-//    public ArrayList<ExistenciaProducto> getExistenciasbyIdSubProducto(String idSubproductoFk) {
-//        getEjb();
-//        
-//        try{
-//        ArrayList<ExistenciaProducto> lista = new ArrayList<ExistenciaProducto>();
-//            System.out.println("SerivceNegocioExistencia: getExistenciasbyIdSubProducto : "+idSubproductoFk+"");
-//         List<Object[]> lstObject = ejb.getExistenciasByIdSubProducto(idSubproductoFk);
-//         for(Object[] obj: lstObject )
-//            {
-//                ExistenciaProducto expro = new ExistenciaProducto();
-//                expro.setIdExistenciaProductoPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
-////                expro.setIdEmFk(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
-////                expro.setIdentificador(obj[2] == null ? "" : obj[2].toString());
-////                expro.setNombreSubproducto(obj[3] == null ? "" : obj[3].toString());
-////                expro.setNombreEmpaque(obj[4] == null ? "" : obj[4].toString());
-////                expro.setNombreBodega(obj[5] == null ? "" : obj[5].toString());
-////                expro.setCantidadEmpaque(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
-////                expro.setKilosExistencia(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
-//                lista.add(expro);
-//            }
-//         return lista;
-//        }catch (Exception ex) {
-//            Logger.getLogger(ServiceNegocioExistencia.class.getName()).log(Level.SEVERE, null, ex);
-//            return null;
-//
-//        }
-//    
-//    }
+
     @Override
     public ArrayList<ExistenciaProducto> getExistenciaProductoRepetidos(BigDecimal idSucursal, String idSubproductoFk, BigDecimal idTipoEmpaqueFk, BigDecimal idBodegaFk, BigDecimal idProvedorFk, BigDecimal idEMFK, BigDecimal idTipoConvenio) {
 
@@ -167,7 +135,7 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
     }
 
     @Override
-    public List<ExistenciaProducto> getExistenciaById(BigDecimal idExistencia) {
+    public ArrayList<ExistenciaProducto> getExistenciaById(BigDecimal idExistencia) {
          getEjb();
 
         try {
@@ -179,7 +147,7 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
                 expro.setIdExistenciaProductoPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
                 expro.setKilosTotalesProducto(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
                 expro.setCantidadPaquetes(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
-
+                System.out.println("Existencia Service: "+expro.toString());
                 lista.add(expro);
             }
             return lista;
@@ -189,5 +157,49 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
 
         }
     
+    }
+
+    @Override
+    public ArrayList<ExistenciaProducto> getExistenciasCancelar(BigDecimal idSucursal, BigDecimal idBodega, BigDecimal idProvedor, String idProducto, BigDecimal idEmpaque, BigDecimal idConvenio, BigDecimal idEmPK) {
+       getEjb();
+        System.out.println("Ejecuto Service GetExistencias Cancelar");
+
+        try {
+            ArrayList<ExistenciaProducto> lista = new ArrayList<ExistenciaProducto>();
+            //System.out.println("SerivceNegocioExistencia: getExistencias : "+idSucursal+ " idProvedorFk: "+idProvedorFk);
+            List<Object[]> lstObject = ejb.getExistenciasCancelar(idSucursal, idBodega, idProvedor, idProducto, idEmpaque, idConvenio, idEmPK);
+            for (Object[] obj : lstObject) {
+                ExistenciaProducto expro = new ExistenciaProducto();
+                expro.setIdExistenciaProductoPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+                expro.setIdEmFK(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
+                expro.setIdentificador(obj[2] == null ? "" : obj[2].toString());
+                expro.setNombreProducto(obj[3] == null ? "" : obj[3].toString());
+                expro.setNombreEmpaque(obj[4] == null ? "" : obj[4].toString());
+                expro.setCantidadPaquetes(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
+                expro.setKilosTotalesProducto(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
+                expro.setNombreTipoConvenio(obj[7] == null ? "" : obj[7].toString());
+                expro.setNombreProvedorCompleto(obj[8] == null ? "" : obj[8].toString());
+                expro.setNombreSucursal(obj[9] == null ? "" : obj[9].toString());
+                expro.setNombreBodega(obj[10] == null ? "" : obj[10].toString());
+                expro.setPrecioMinimo(obj[11] == null ? null : new BigDecimal(obj[11].toString()));
+                expro.setPrecioVenta(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
+                expro.setPrecioMaximo(obj[13] == null ? null : new BigDecimal(obj[13].toString()));
+                expro.setEstatusBloqueo(obj[14] == null ? false : (obj[14].toString().equals("1") ? true:false));
+                expro.setIdSubProductoFK(obj[15] == null ? "" : obj[15].toString());
+                expro.setIdTipoEmpaqueFK(obj[16] == null ? null : new BigDecimal(obj[16].toString()));
+                expro.setIdBodegaFK(obj[17] == null ? null : new BigDecimal(obj[17].toString()));
+                expro.setConvenio(obj[18] == null ? null : new BigDecimal(obj[18].toString()));
+                expro.setCarroSucursal(obj[19] == null ? null : new BigDecimal(obj[19].toString()));
+                lista.add(expro);
+            }
+            return lista;
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceNegocioExistencia.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+
+        }
+        
+        
+        
     }
 }

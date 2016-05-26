@@ -214,7 +214,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
             try {
                 ifaceBuscaVenta.updateStatusVentaMayoreo(data.getIdVenta().intValue(), usuario.getIdUsuarioPk().intValue());
                 //searchById();
-                setParameterTicket(data.getIdVenta().intValue());
+                setParameterTicket(data.getFolioSucursal().intValue());
                 generateReport();
                 data.setNombreCliente("");
                 data.setNombreVendedor("");
@@ -237,11 +237,12 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     public void searchById() {
         statusButtonPagar = false;
 
-        model = ifaceBuscaVenta.getVentaMayoreoById(data.getIdVenta().intValue(),usuario.getIdSucursal());
+        model = ifaceBuscaVenta.getVentaMayoreoById(data.getFolioSucursal().intValue(),usuario.getIdSucursal());
         if (model.isEmpty()) {
             data.setNombreCliente("");
             data.setNombreVendedor("");
             data.setIdVenta(new BigDecimal(0));
+            data.setFolioSucursal(null);
             statusButtonPagar = true;
 
             JsfUtil.addWarnMessageClean("No se encontraron Registros.");
@@ -250,9 +251,11 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
             data.setNombreCliente(model.get(0).getNombreCliente());
             data.setNombreVendedor(model.get(0).getNombreVendedor());
             data.setStatusFK(model.get(0).getStatusFK());
+            data.setFolioSucursal(model.get(0).getFolioSucursal());
             data.setIdVenta(model.get(0).getIdVenta());
             data.setIdSucursalFk(model.get(0).getIdSucursalFk());
             idVentaTemporal = data.getIdVenta().intValue();
+            
             calculatotalVenta();
             if (data.getStatusFK() == 2) {
                 statusButtonPagar = true;

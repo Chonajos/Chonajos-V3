@@ -100,6 +100,12 @@ public class ServiceBuscaVenta implements IfaceBuscaVenta {
                 busca_venta.setNombreStatus(obj[13] == null ? "" : obj[13].toString());
                 busca_venta.setStatusFK(obj[14] == null ? 0 : Integer.parseInt(obj[14].toString())); //id status
                 busca_venta.setIdSucursalFk(obj[15] == null ? null : new BigDecimal(obj[15].toString())); 
+                busca_venta.setFolioSucursal(obj[16] == null ? null : new BigDecimal(obj[16].toString()));
+                busca_venta.setIdSubProducto(obj[17] == null ? "" : obj[17].toString());
+                busca_venta.setIdTipoEmpaque(obj[18] == null ? null : new BigDecimal(obj[18].toString()));
+                busca_venta.setIdBodega(obj[19] == null ? null : new BigDecimal(obj[19].toString()));
+                busca_venta.setIdTipoConvenio(obj[20] == null ? null : new BigDecimal(obj[20].toString()));
+                busca_venta.setIdProvedor(obj[21] == null ? null : new BigDecimal(obj[21].toString()));
                 lstVentas.add(busca_venta);
             }
 

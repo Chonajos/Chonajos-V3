@@ -29,6 +29,13 @@ public class BuscaVenta implements Serializable {
     private BigDecimal carro;
     private BigDecimal kilosVendidos;
     private String nombreSucursal;
+    private BigDecimal folioSucursal;
+    private String idSubProducto;
+    private BigDecimal idTipoEmpaque;
+    private BigDecimal idBodega;
+    private BigDecimal idTipoConvenio;
+    private BigDecimal idProvedor;
+    
 
     public void reset() {
         nombreCliente="";
@@ -53,9 +60,60 @@ public class BuscaVenta implements Serializable {
 
     @Override
     public String toString() {
-        return "BuscaVenta{" + "nombreCliente=" + nombreCliente + ", nombreVendedor=" + nombreVendedor + ", idVenta=" + idVenta + ", nombreSubproducto=" + nombreSubproducto + ", nombreEmpaque=" + nombreEmpaque + ", cantidadEmpaque=" + cantidadEmpaque + ", precioProducto=" + precioProducto + ", total=" + total + ", totalVenta=" + totalVenta + ", fechaVenta=" + fechaVenta + ", fechaPromesaPago=" + fechaPromesaPago + ", nombreStatus=" + nombreStatus + ", statusFK=" + statusFK + ", idSucursalFk=" + idSucursalFk + ", clave=" + clave + ", carro=" + carro + ", kilosVendidos=" + kilosVendidos + '}';
+        return "BuscaVenta{" + "nombreCliente=" + nombreCliente + ", nombreVendedor=" + nombreVendedor + ", idVenta=" + idVenta + ", nombreSubproducto=" + nombreSubproducto + ", nombreEmpaque=" + nombreEmpaque + ", cantidadEmpaque=" + cantidadEmpaque + ", precioProducto=" + precioProducto + ", total=" + total + ", totalVenta=" + totalVenta + ", fechaVenta=" + fechaVenta + ", fechaPromesaPago=" + fechaPromesaPago + ", nombreStatus=" + nombreStatus + ", statusFK=" + statusFK + ", idSucursalFk=" + idSucursalFk + ", clave=" + clave + ", carro=" + carro + ", kilosVendidos=" + kilosVendidos + ", nombreSucursal=" + nombreSucursal + ", folioSucursal=" + folioSucursal + ", idSubProducto=" + idSubProducto + ", idTipoEmpaque=" + idTipoEmpaque + ", idBodega=" + idBodega + ", idTipoConvenio=" + idTipoConvenio + ", idProvedor=" + idProvedor + '}';
     }
 
+    public String getIdSubProducto() {
+        return idSubProducto;
+    }
+
+    public void setIdSubProducto(String idSubProducto) {
+        this.idSubProducto = idSubProducto;
+    }
+
+
+    public BigDecimal getIdTipoEmpaque() {
+        return idTipoEmpaque;
+    }
+
+    public void setIdTipoEmpaque(BigDecimal idTipoEmpaque) {
+        this.idTipoEmpaque = idTipoEmpaque;
+    }
+
+    public BigDecimal getIdBodega() {
+        return idBodega;
+    }
+
+    public void setIdBodega(BigDecimal idBodega) {
+        this.idBodega = idBodega;
+    }
+
+    public BigDecimal getIdTipoConvenio() {
+        return idTipoConvenio;
+    }
+
+    public void setIdTipoConvenio(BigDecimal idTipoConvenio) {
+        this.idTipoConvenio = idTipoConvenio;
+    }
+
+    public BigDecimal getIdProvedor() {
+        return idProvedor;
+    }
+
+    public void setIdProvedor(BigDecimal idProvedor) {
+        this.idProvedor = idProvedor;
+    }
+
+    
+    public BigDecimal getFolioSucursal() {
+        return folioSucursal;
+    }
+
+    public void setFolioSucursal(BigDecimal folioSucursal) {
+        this.folioSucursal = folioSucursal;
+    }
+
+    
     public String getNombreSucursal() {
         return nombreSucursal;
     }

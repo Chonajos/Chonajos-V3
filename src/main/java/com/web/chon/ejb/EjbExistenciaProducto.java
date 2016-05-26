@@ -84,6 +84,7 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
     @Override
     public int updateExistenciaProducto(ExistenciaProducto e) {
 
+        System.out.println("EJBUPDATEPRODUCTO:--------------------"+e.toString());
         try {
 
             Query query = em.createNativeQuery("update EXISTENCIA_PRODUCTO SET CANTIDAD_EMPACAQUE=?, KILOS_TOTALES=? WHERE ID_EXP_PK=?");
@@ -203,38 +204,6 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
         }
     }
 
-//    @Override
-//    public List<Object[]> getExistenciasByIdSubProducto(String idSubproductoFk) {
-//         try 
-//        {
-//            Query query = em.createNativeQuery("select ex.ID_EXISTENCIA_PRODUCTO_PK,em.ID_EM_PK,em.IDENTIFICADOR,subp.NOMBRE_SUBPRODUCTO, te.NOMBRE_EMPAQUE,\n" +
-//" bod.NOMBRE,ex.CANTIDAD_EMPAQUE,ex.KILOS_EXISTENCIA,suc.NOMBRE_SUCURSAL\n" +
-//"from EXISTENCIA_PRODUCTO ex\n" +
-//"join ENTRADAMERCANCIAPRODUCTO emp\n" +
-//"on emp.ID_EMP_PK =  ex.ID_EMP_FK\n" +
-//"join ENTRADAMERCANCIA em\n" +
-//"on em.ID_EM_PK = emp.ID_EM_FK\n" +
-//"join SUBPRODUCTO subp\n" +
-//"on subp.ID_SUBPRODUCTO_PK = emp.ID_SUBPRODUCTO_FK\n" +
-//"join TIPO_EMPAQUE te\n" +
-//"on te.ID_TIPO_EMPAQUE_PK = emp.ID_TIPO_EMPAQUE_FK\n" +
-//"join bodega bod\n" +
-//"on bod.ID_BD_PK = ex.ID_BODEGA_FK\n" +
-//"join SUCURSAL suc \n" +
-//"on suc.ID_SUCURSAL_PK = ex.ID_SUCURSAL_FK\n" +
-//"join PROVEDORES prov\n" +
-//"on prov.ID_PROVEDOR_PK = em.ID_PROVEDOR_FK\n" +
-//"where subp.ID_SUBPRODUCTO_PK = '"+idSubproductoFk+"'\n" +
-//"order by em.ID_EM_PK");
-//            
-//             return query.getResultList();
-//        } catch (Exception ex) {
-//            System.out.println("Encontro null ejb");
-//            Logger.getLogger(EjbExistenciaProducto.class.getName()).log(Level.SEVERE, null, ex);
-//            return null;
-//        }
-//    
-//    }
     @Override
     public List<Object[]> getExistenciasRepetidas(BigDecimal idSucursal, String idSubproductoFk, BigDecimal idTipoEmpaqueFk, BigDecimal idBodegaFk, BigDecimal idProvedorFk, BigDecimal idEMFK, BigDecimal idTipoConvenio) {
 
@@ -268,5 +237,106 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
             Logger.getLogger(EjbExistenciaProducto.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
+    }
+
+    @Override
+    public List<Object[]> getExistenciasCancelar(BigDecimal idSucursal, BigDecimal idBodega, BigDecimal idProvedor, String idProducto, BigDecimal idEmpaque, BigDecimal idConvenio, BigDecimal idEmPK) {
+       System.out.println("Ejecuto Get Existencias para Cancelar");
+        try {
+           
+
+            Query query;
+            int cont = 0;
+            StringBuffer cadena = new StringBuffer("select ex.ID_EXP_PK,em.ID_EM_PK,em.IDENTIFICADOR,subp.NOMBRE_SUBPRODUCTO, te.NOMBRE_EMPAQUE, \n"
+                    + "ex.CANTIDAD_EMPACAQUE,ex.KILOS_TOTALES,tc.DESCRIPCION_TIPO,\n"
+                    + "prove.nombre_provedor ||' '|| prove.A_PATERNO_PROVE || ' ' || prove.A_MATERNO_PROVE as nombreProvedor, \n"
+                    + "sucu.NOMBRE_SUCURSAL,bod.NOMBRE, ex.PRECIO_MINIMO, ex.PRECIO_VENTA, ex.PRECIO_MAXIMO,\n"
+                    + "ex.ESTATUS_BLOQUEO,ex.ID_SUBPRODUCTO_FK,ex.ID_TIPO_EMPAQUE_FK,bod.ID_BD_PK,ex.ID_TIPO_CONVENIO_FK,em.CARROSUCURSAL\n"
+                    + "from EXISTENCIA_PRODUCTO ex\n"
+                    + "join ENTRADAMERCANCIA em\n"
+                    + "on em.ID_EM_PK = ex.ID_EM_FK\n"
+                    + "join SUBPRODUCTO subp\n"
+                    + "on subp.ID_SUBPRODUCTO_PK = ex.ID_SUBPRODUCTO_FK\n"
+                    + "join TIPO_EMPAQUE te\n"
+                    + "on te.ID_TIPO_EMPAQUE_PK = ex.ID_TIPO_EMPAQUE_FK\n"
+                    + "join BODEGA bod\n"
+                    + "on bod.ID_BD_PK = ex.ID_BODEGA_FK\n"
+                    + "join TIPO_CONVENIO tc\n"
+                    + "on tc.ID_TC_PK = ex.ID_TIPO_CONVENIO_FK\n"
+                    + "join SUCURSAL sucu\n"
+                    + "on sucu.ID_SUCURSAL_PK = ex.ID_SUCURSAL_FK\n"
+                    + "join provedores prove\n"
+                    + "on prove.id_provedor_pk = em.id_provedor_fk");
+                BigDecimal cero = new BigDecimal(0);
+
+                if (idSucursal != null && idSucursal != cero) {
+                    if (cont == 0) {
+                        cadena.append(" WHERE ");
+                    } else {
+                        cadena.append(" AND ");
+                    }
+                    cadena.append("ex.ID_SUCURSAL_FK = '" + idSucursal + "' ");
+                    cont++;
+
+                }
+                if (idBodega != null && idBodega != cero) {
+                    if (cont == 0) {
+                        cadena.append(" WHERE ");
+                    } else {
+                        cadena.append(" AND ");
+                    }
+                    cadena.append("ex.ID_BODEGA_FK = '" + idBodega + "' ");
+                    cont++;
+                }
+                if (idProvedor != null && idProvedor != cero) {
+                    if (cont == 0) {
+                        cadena.append(" WHERE ");
+                    } else {
+                        cadena.append(" AND ");
+                    }
+                    cadena.append("em.ID_PROVEDOR_FK  = '" + idProvedor + "' ");
+                    cont++;
+                }
+                if (idProducto != null && idProducto != "") {
+                    if (cont == 0) {
+                        cadena.append(" WHERE ");
+                    } else {
+                        cadena.append(" AND ");
+                    }
+                    cadena.append("ex.ID_SUBPRODUCTO_FK  = '" + idProducto + "' ");
+                    cont++;
+                }
+                if (idEmpaque != null && idEmpaque != cero) {
+                    if (cont == 0) {
+                        cadena.append(" WHERE ");
+                    } else {
+                        cadena.append(" AND ");
+                    }
+                    cadena.append("ex.ID_TIPO_EMPAQUE_FK  = '" + idEmpaque + "' ");
+                    cont++;
+                }
+                if (idConvenio != null && idConvenio != cero) {
+                    if (cont == 0) {
+                        cadena.append(" WHERE ");
+                    } else {
+                        cadena.append(" AND ");
+                    }
+                    cadena.append("ex.ID_TIPO_CONVENIO_FK  = '" + idConvenio + "' ");
+                    cont++;
+                }
+            
+
+            cadena.append("ORDER BY  em.ID_EM_PK");
+
+            query = em.createNativeQuery(cadena.toString());
+            System.out.println(query);
+
+            return query.getResultList();
+        } catch (Exception ex) {
+            System.out.println("Encontro null ejb");
+            Logger.getLogger(EjbExistenciaProducto.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    
     }
 }

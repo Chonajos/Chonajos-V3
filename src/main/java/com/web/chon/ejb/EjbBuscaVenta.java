@@ -82,7 +82,8 @@ public class EjbBuscaVenta implements NegocioBuscaVenta
        
         try {
 
-            Query query = em.createNativeQuery("select vmp.ID_ENTRADA_MERCANCIA_FK as carro, em.IDENTIFICADOR as clave, c.nombre ||' '||c.APELLIDO_PATERNO||' '||c.APELLIDO_MATERNO   as nombre_cliente,u.NOMBRE_USUARIO||' '||u.APATERNO_USUARIO||' '||u.AMATERNO_USUARIO as nombre_vendedor,vm.ID_VENTA_MAYOREO_PK, sp.NOMBRE_SUBPRODUCTO,tem.NOMBRE_EMPAQUE,vmp.CANTIDAD_EMPAQUE,vmp.KILOS_VENDIDOS,vmp.PRECIO_PRODUCTO,vmp.TOTAL_VENTA,vm.FECHA_VENTA,vm.FECHA_PROMESA_PAGO,sv.NOMBRE_STATUS,vm.ID_STATUS_FK,vm.ID_SUCURSAL_FK\n" +
+            Query query = em.createNativeQuery("select vmp.ID_ENTRADA_MERCANCIA_FK as carro, em.IDENTIFICADOR as clave, c.nombre ||' '||c.APELLIDO_PATERNO||' '||c.APELLIDO_MATERNO   as nombre_cliente,u.NOMBRE_USUARIO||' '||u.APATERNO_USUARIO||' '||u.AMATERNO_USUARIO as nombre_vendedor,vm.ID_VENTA_MAYOREO_PK, sp.NOMBRE_SUBPRODUCTO,tem.NOMBRE_EMPAQUE,vmp.CANTIDAD_EMPAQUE,vmp.KILOS_VENDIDOS,vmp.PRECIO_PRODUCTO,vmp.TOTAL_VENTA,vm.FECHA_VENTA,vm.FECHA_PROMESA_PAGO,sv.NOMBRE_STATUS,vm.ID_STATUS_FK,\n" +
+"vm.ID_SUCURSAL_FK,vm.VENTASUCURSAL,vmp.ID_SUBPRODUCTO_FK,vmp.ID_TIPO_EMPAQUE_FK,exp.ID_BODEGA_FK,exp.ID_TIPO_CONVENIO_FK,em.ID_PROVEDOR_FK\n" +
 "from VENTA_MAYOREO vm\n" +
 "INNER JOIN VENTAMAYOREOPRODUCTO vmp\n" +
 "on vm.ID_VENTA_MAYOREO_PK=vmp.ID_VENTA_MAYOREO_FK\n" +
@@ -98,6 +99,8 @@ public class EjbBuscaVenta implements NegocioBuscaVenta
 "on vm.ID_STATUS_FK=sv.ID_STATUS_PK\n" +
 "inner join ENTRADAMERCANCIA em\n" +
 "on em.ID_EM_PK = vmp.ID_ENTRADA_MERCANCIA_FK\n" +
+"INNER JOIN EXISTENCIA_PRODUCTO exp\n" +
+"on exp.ID_EM_FK = vmp.ID_ENTRADA_MERCANCIA_FK\n" +
 "where vm.VENTASUCURSAL = ? and vm.ID_SUCURSAL_FK=?");
             //System.out.println("EJbBuscaVenta:getVentaMayoreobyId: idVenta: "+idVenta);
             query.setParameter(1, idVenta);
@@ -114,8 +117,8 @@ public class EjbBuscaVenta implements NegocioBuscaVenta
 
     @Override
     public int updateStatusVentaMayoreo(int idVenta,int idUsuario) {
-        System.out.println("Entro a EJB");
-        System.out.println("idusuario:" + idUsuario);
+        //System.out.println("Entro a EJB");
+        //System.out.println("idusuario:" + idUsuario);
       
         try {
             Query query = em.createNativeQuery("UPDATE VENTA_MAYOREO SET ID_STATUS_FK= ?,ID_CAJERO_FK=?,FECHA_PAGO = sysdate WHERE ID_VENTA_MAYOREO_PK = ? ");
