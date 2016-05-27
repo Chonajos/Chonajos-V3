@@ -170,18 +170,18 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
         totalProductoTemporal = null;
 
         ventaRapida = (usuario.getIdRolFk()).toString();
-        if (ventaRapida.equals("4")) {
+//        if (ventaRapida.equals("4")) {
 
             lstExistencias = ifaceNegocioExistencia.getExistencias(idSucu, null, null, null, null, null, null);
-            ventaRapidaButton = "Rapida";
+//            ventaRapidaButton = "Rapida";
             permisionVentaRapida = false;
-            ventaRapidaCheck = true;
-
-        } else {
-            ventaRapida = "2";
-            permisionVentaRapida = true;
-            ventaRapidaCheck = false;
-        }
+//            ventaRapidaCheck = true;
+//
+//        } else {
+//            ventaRapida = "2";
+//            permisionVentaRapida = true;
+//            ventaRapidaCheck = false;
+//        }
 
     }
 
@@ -252,8 +252,10 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
             ventaGeneral.setIdVendedorFK(usuario.getIdUsuarioPk());
             int temp = ifaceVentaMayoreo.getVentaSucursal(idSucu);
 
+            
             ventaGeneral.setVentaSucursal(new BigDecimal(temp + 1));
-            folio = ventaGeneral.getVentaSucursal();
+            folio = ventaGeneral.getIdVentaMayoreoPk();
+            //folio = ventaGeneral.getVentaSucursal();
             
             //System.out.println("Venta General: " + ventaGeneral.toString());
             if (ifaceVentaMayoreo.insertarVenta(ventaGeneral) != 0) {
@@ -303,10 +305,10 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
     public void updateVenta() {
 
             try {
-                ifaceBuscaVenta.updateStatusVentaMayoreo(folio.intValue(), usuario.getIdUsuarioPk().intValue());
+                ifaceBuscaVenta.updateStatusVentaMayoreo(ventaGeneral.getVentaSucursal().intValue(), usuario.getIdUsuarioPk().intValue());
                 JsfUtil.addSuccessMessageClean("Venta Pagada");
-                setParameterTicket(folio.intValue());
-                generateReport(folio.intValue());
+                setParameterTicket(ventaGeneral.getVentaSucursal().intValue());
+                generateReport(ventaGeneral.getVentaSucursal().intValue());
 
                 selectedExistencia = new ExistenciaProducto();
                 lstExistencias = new ArrayList<ExistenciaProducto>();
@@ -369,7 +371,7 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
             data.setKilosVendidos(null);
             selectedExistencia = new ExistenciaProducto();
             permisionToWrite = true;
-            lstExistencias.clear();
+            lstExistencias = ifaceNegocioExistencia.getExistencias(idSucu, null, null, null, null, null, null);
 
         }
 
@@ -483,7 +485,7 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
 
     public void limpia() {
         selectedExistencia = new ExistenciaProducto();
-        lstExistencias = new ArrayList<ExistenciaProducto>();
+        //lstExistencias = new ArrayList<ExistenciaProducto>();
         data.reset();
 
         JsfUtil.addSuccessMessageClean("Producto Agregado al Pedido Correctamente");
@@ -587,6 +589,10 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
         dataEdit.setKilosVendidos(data.getKilosVendidos());
         dataEdit.setTotalVenta(data.getKilosVendidos().multiply(data.getPrecioProducto(), MathContext.UNLIMITED));
         dataEdit.setPrecioProducto(data.getPrecioProducto());
+        TotalVentaGeneral = new BigDecimal(0);
+        for (VentaProductoMayoreo producto : lstVenta) {
+            TotalVentaGeneral = TotalVentaGeneral.add(producto.getTotalVenta(), MathContext.UNLIMITED);
+        }
         setViewEstate("viewCarrito");
         JsfUtil.addSuccessMessage("Producto Modificado Correctamente");
     }

@@ -110,8 +110,8 @@
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <p:dataTable id="table" var="model" value="#{beanRelOperEntradaMercancia.lstEntradaMercancia}" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." rendered="#{beanRelOperEntradaMercancia.viewEstate =='init'}">
 
-                            <p:column headerText="Número de Movimiento" width="90px;" class="alignCenter">
-                                <h:outputText value="#{model.idEmPK}" />
+                            <p:column headerText="Carro" width="90px;" class="alignCenter">
+                                <h:outputText value="#{model.idCarroSucursal}" />
                             </p:column>
                             <p:column headerText="Folio de Remisión" width="150px;" class="alignCenter">
                                 <h:outputText value="#{model.folio}"/>

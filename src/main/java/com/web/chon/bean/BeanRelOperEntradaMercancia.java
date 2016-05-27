@@ -119,7 +119,6 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     public void getEntradaProductoByIntervalDate() {
         setFechaInicioFin(filtro);
         BigDecimal idProvedor = provedor == null ? null : provedor.getIdProvedorPK();
-
         lstEntradaMercancia = ifaceEntradaMercancia.getEntradaProductoByIntervalDate(data.getFechaFiltroInicio(), data.getFechaFiltroFin(), data.getIdSucursalFK(), idProvedor);
 
 

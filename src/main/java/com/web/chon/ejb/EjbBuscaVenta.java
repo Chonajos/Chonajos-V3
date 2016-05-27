@@ -82,29 +82,28 @@ public class EjbBuscaVenta implements NegocioBuscaVenta
        
         try {
 
-            Query query = em.createNativeQuery("select vmp.ID_ENTRADA_MERCANCIA_FK as carro, em.IDENTIFICADOR as clave, c.nombre ||' '||c.APELLIDO_PATERNO||' '||c.APELLIDO_MATERNO   as nombre_cliente,u.NOMBRE_USUARIO||' '||u.APATERNO_USUARIO||' '||u.AMATERNO_USUARIO as nombre_vendedor,vm.ID_VENTA_MAYOREO_PK, sp.NOMBRE_SUBPRODUCTO,tem.NOMBRE_EMPAQUE,vmp.CANTIDAD_EMPAQUE,vmp.KILOS_VENDIDOS,vmp.PRECIO_PRODUCTO,vmp.TOTAL_VENTA,vm.FECHA_VENTA,vm.FECHA_PROMESA_PAGO,sv.NOMBRE_STATUS,vm.ID_STATUS_FK,\n" +
-"vm.ID_SUCURSAL_FK,vm.VENTASUCURSAL,vmp.ID_SUBPRODUCTO_FK,vmp.ID_TIPO_EMPAQUE_FK,exp.ID_BODEGA_FK,exp.ID_TIPO_CONVENIO_FK,em.ID_PROVEDOR_FK\n" +
-"from VENTA_MAYOREO vm\n" +
-"INNER JOIN VENTAMAYOREOPRODUCTO vmp\n" +
-"on vm.ID_VENTA_MAYOREO_PK=vmp.ID_VENTA_MAYOREO_FK\n" +
-"INNER JOIN subproducto sp\n" +
-"on sp.id_subproducto_pk=vmp.ID_SUBPRODUCTO_FK\n" +
+            Query query = em.createNativeQuery("select em.CARROSUCURSAL,em.IDENTIFICADOR,sp.NOMBRE_SUBPRODUCTO,tem.NOMBRE_EMPAQUE,vmp.CANTIDAD_EMPAQUE,vmp.KILOS_VENDIDOS,vmp.PRECIO_PRODUCTO,vmp.TOTAL_VENTA from VENTAMAYOREOPRODUCTO vmp \n" +
+"join VENTA_MAYOREO vm\n" +
+"on vm.ID_VENTA_MAYOREO_PK = vmp.ID_VENTA_MAYOREO_FK\n" +
 "INNER JOIN tipo_empaque tem\n" +
 "on vmp.ID_TIPO_EMPAQUE_FK= tem.ID_TIPO_EMPAQUE_PK\n" +
-"INNER JOIN cliente c\n" +
-"on vm.ID_CLIENTE_FK= c.ID_CLIENTE\n" +
-"INNER JOIN usuario u\n" +
-"on  vm.ID_VENDEDOR_FK=u.ID_USUARIO_PK\n" +
-"INNER JOIN status_venta sv\n" +
-"on vm.ID_STATUS_FK=sv.ID_STATUS_PK\n" +
-"inner join ENTRADAMERCANCIA em\n" +
-"on em.ID_EM_PK = vmp.ID_ENTRADA_MERCANCIA_FK\n" +
+"INNER JOIN subproducto sp\n" +
+"on sp.id_subproducto_pk=vmp.ID_SUBPRODUCTO_FK\n" +
 "INNER JOIN EXISTENCIA_PRODUCTO exp\n" +
-"on exp.ID_EM_FK = vmp.ID_ENTRADA_MERCANCIA_FK\n" +
-"where vm.VENTASUCURSAL = ? and vm.ID_SUCURSAL_FK=?");
+"on exp.ID_EXP_PK = vmp.ID_EXISTENCIA_FK\n" +
+"INNER JOIN ENTRADAMERCANCIAPRODUCTO emp\n" +
+"on emp.ID_EMP_PK = exp.ID_EMP_FK\n" +
+"INNER JOIN ENTRADAMERCANCIA em\n" +
+"on em.ID_EM_PK = emp.ID_EM_FK\n" +
+"where vm.VENTASUCURSAL=? and vm.ID_SUCURSAL_FK=?");
             //System.out.println("EJbBuscaVenta:getVentaMayoreobyId: idVenta: "+idVenta);
             query.setParameter(1, idVenta);
             query.setParameter(2, idSucursal);
+            System.out.println("EjB: idVenta"+idVenta);
+            System.out.println("EJB: idSucursal: "+idSucursal);
+            System.out.println("==========================================");
+            System.out.println(query);
+            System.out.println("==========================================");
 
             return query.getResultList();
 

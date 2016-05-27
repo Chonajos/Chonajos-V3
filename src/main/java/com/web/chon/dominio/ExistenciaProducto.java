@@ -43,6 +43,7 @@ public class ExistenciaProducto implements Serializable {
     private boolean estatusBloqueo;
     private BigDecimal convenio;
     private BigDecimal carroSucursal;
+    private BigDecimal idEntradaMercanciaProductoFK;
 
     public void reset() {
         idSucursal = null;
@@ -63,6 +64,15 @@ public class ExistenciaProducto implements Serializable {
         return "ExistenciaProducto{" + "idExistenciaProductoPk=" + idExistenciaProductoPk + ", idEmFK=" + idEmFK + ", idSubProductoFK=" + idSubProductoFK + ", idTipoEmpaqueFK=" + idTipoEmpaqueFK + ", cantidadPaquetes=" + cantidadPaquetes + ", kilosTotalesProducto=" + kilosTotalesProducto + ", comentarios=" + comentarios + ", precio=" + precio + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + ", idTipoConvenio=" + idTipoConvenio + ", idBodegaFK=" + idBodegaFK + ", nombreTipoConvenio=" + nombreTipoConvenio + ", nombreBodega=" + nombreBodega + ", kilospromprod=" + kilospromprod + ", numeroMovimiento=" + numeroMovimiento + ", pesoTara=" + pesoTara + ", idSucursal=" + idSucursal + ", idProvedor=" + idProvedor + ", nombreProvedorCompleto=" + nombreProvedorCompleto + ", identificador=" + identificador + ", nombreSucursal=" + nombreSucursal + ", precioMinimo=" + precioMinimo + ", precioVenta=" + precioVenta + ", precioMaximo=" + precioMaximo + ", estatusBloqueo=" + estatusBloqueo + '}';
     }
 
+    public BigDecimal getIdEntradaMercanciaProductoFK() {
+        return idEntradaMercanciaProductoFK;
+    }
+
+    public void setIdEntradaMercanciaProductoFK(BigDecimal idEntradaMercanciaProductoFK) {
+        this.idEntradaMercanciaProductoFK = idEntradaMercanciaProductoFK;
+    }
+
+    
     public BigDecimal getCarroSucursal() {
         return carroSucursal;
     }

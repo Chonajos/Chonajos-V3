@@ -276,7 +276,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                     }
 
                 }
-                setParameterTicket(idVentaInsert.intValue());
+                setParameterTicket(ventaGeneral.getVentaSucursal().intValue());
                 generateReport(ventaGeneral.getVentaSucursal().intValue());
                 selectedExistencia = new ExistenciaProducto();
                 lstExistencias = new ArrayList<ExistenciaProducto>();
@@ -338,8 +338,11 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
             if (ventaRapida.equals("4")) {
 
                 lstExistencias = ifaceNegocioExistencia.getExistencias(idSucu, null, null, null, null, null, null);
-
-            } 
+            }
+            else
+            {
+                lstExistencias.clear();
+            }
 
 
         }
@@ -397,7 +400,6 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                             limpia();
                             //System.out.println("Existencias suficientes, producto actualizado");
                             JsfUtil.addSuccessMessageClean("Producto Actualizado");
-
                         }
                     } else {
                         System.out.println("No encontro repetidos");
@@ -529,7 +531,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     }
 
     public void editProducto() {
-selectedExistencia = new ExistenciaProducto();
+        selectedExistencia = new ExistenciaProducto();
         subProducto = ifaceSubProducto.getSubProductoById(dataEdit.getIdSubProductofk());
         data.setCantidadEmpaque(dataEdit.getCantidadEmpaque());
         data.setKilosVendidos(dataEdit.getKilosVendidos());

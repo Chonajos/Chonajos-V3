@@ -16,7 +16,7 @@ import java.util.ArrayList;
  */
 public interface IfaceEntradaMercanciaProducto extends PaginacionService<EntradaMercanciaProducto, BigDecimal> {
 
-    public int insertEntradaMercancia(EntradaMercanciaProducto producto);
+    public int insertEntradaMercanciaProducto(EntradaMercanciaProducto producto);
 
     public int getNextVal();
 

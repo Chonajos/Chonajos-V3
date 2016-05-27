@@ -85,30 +85,32 @@ public class ServiceBuscaVenta implements IfaceBuscaVenta {
                 BuscaVenta busca_venta = new BuscaVenta();
                 busca_venta.setCarro(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
                 busca_venta.setClave(obj[1] == null ? "" : obj[1].toString());
-                busca_venta.setNombreCliente(obj[2] == null ? "" : obj[2].toString());
-                busca_venta.setNombreVendedor(obj[3] == null ? "" : obj[3].toString());
-                busca_venta.setIdVenta(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
-                busca_venta.setNombreSubproducto(obj[5] == null ? "" : obj[5].toString());
-                busca_venta.setNombreEmpaque(obj[6] == null ? "" : obj[6].toString());
-                busca_venta.setCantidadEmpaque(obj[0] == null ? null : new BigDecimal(obj[7].toString()));
-                busca_venta.setKilosVendidos(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
-                busca_venta.setPrecioProducto(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
+                //busca_venta.setNombreCliente(obj[2] == null ? "" : obj[2].toString());
+                //busca_venta.setNombreVendedor(obj[3] == null ? "" : obj[3].toString());
+                //busca_venta.setIdVenta(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
+                busca_venta.setNombreSubproducto(obj[2] == null ? "" : obj[2].toString());
+                busca_venta.setNombreEmpaque(obj[3] == null ? "" : obj[3].toString());
+                busca_venta.setCantidadEmpaque(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
+                busca_venta.setKilosVendidos(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
+                busca_venta.setPrecioProducto(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
                 busca_venta.setTotal(busca_venta.getKilosVendidos().multiply(busca_venta.getPrecioProducto(), MathContext.UNLIMITED));
-                busca_venta.setTotalVenta(obj[10] == null ? null : new BigDecimal(obj[10].toString()));
-                busca_venta.setFechaVenta((Date) obj[11]);
-                busca_venta.setFechaPromesaPago((Date) obj[12]);
-                busca_venta.setNombreStatus(obj[13] == null ? "" : obj[13].toString());
-                busca_venta.setStatusFK(obj[14] == null ? 0 : Integer.parseInt(obj[14].toString())); //id status
-                busca_venta.setIdSucursalFk(obj[15] == null ? null : new BigDecimal(obj[15].toString())); 
-                busca_venta.setFolioSucursal(obj[16] == null ? null : new BigDecimal(obj[16].toString()));
-                busca_venta.setIdSubProducto(obj[17] == null ? "" : obj[17].toString());
-                busca_venta.setIdTipoEmpaque(obj[18] == null ? null : new BigDecimal(obj[18].toString()));
-                busca_venta.setIdBodega(obj[19] == null ? null : new BigDecimal(obj[19].toString()));
-                busca_venta.setIdTipoConvenio(obj[20] == null ? null : new BigDecimal(obj[20].toString()));
-                busca_venta.setIdProvedor(obj[21] == null ? null : new BigDecimal(obj[21].toString()));
+                busca_venta.setTotalVenta(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
+                //busca_venta.setFechaVenta((Date) obj[11]);
+                //busca_venta.setFechaPromesaPago((Date) obj[12]);
+                //busca_venta.setNombreStatus(obj[13] == null ? "" : obj[13].toString());
+                //busca_venta.setStatusFK(obj[14] == null ? 0 : Integer.parseInt(obj[14].toString())); //id status
+                //busca_venta.setIdSucursalFk(obj[15] == null ? null : new BigDecimal(obj[15].toString())); 
+                //busca_venta.setFolioSucursal(obj[16] == null ? null : new BigDecimal(obj[16].toString()));
+                //busca_venta.setIdSubProducto(obj[17] == null ? "" : obj[17].toString());
+                //busca_venta.setIdTipoEmpaque(obj[18] == null ? null : new BigDecimal(obj[18].toString()));
+                //busca_venta.setIdBodega(obj[19] == null ? null : new BigDecimal(obj[19].toString()));
+                //busca_venta.setIdTipoConvenio(obj[20] == null ? null : new BigDecimal(obj[20].toString()));
+                //busca_venta.setIdProvedor(obj[21] == null ? null : new BigDecimal(obj[21].toString()));
+                
+                System.out.println("###################################");
+                System.out.println(busca_venta.toString());
                 lstVentas.add(busca_venta);
             }
-
             return lstVentas;
         } catch (Exception ex) {
             Logger.getLogger(ServiceBuscaVenta.class.getName()).log(Level.SEVERE, null, ex);

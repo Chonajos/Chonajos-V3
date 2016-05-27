@@ -25,7 +25,7 @@ public class EjbVentaMayoreoProducto implements NegocioVentaMayoreoProducto{
 
     @Override
     public int insertarVentaProducto(VentaProductoMayoreo ventaproducto) {
-        Query query = em.createNativeQuery("INSERT INTO VENTAMAYOREOPRODUCTO(ID_V_M_P_PK,ID_VENTA_MAYOREO_FK,ID_SUBPRODUCTO_FK,PRECIO_PRODUCTO,KILOS_VENDIDOS,CANTIDAD_EMPAQUE,TOTAL_VENTA,ID_TIPO_EMPAQUE_FK,ID_ENTRADA_MERCANCIA_FK) VALUES(?,?,?,?,?,?,?,?,?)");
+        Query query = em.createNativeQuery("INSERT INTO VENTAMAYOREOPRODUCTO(ID_V_M_P_PK,ID_VENTA_MAYOREO_FK,ID_SUBPRODUCTO_FK,PRECIO_PRODUCTO,KILOS_VENDIDOS,CANTIDAD_EMPAQUE,TOTAL_VENTA,ID_TIPO_EMPAQUE_FK,ID_ENTRADA_MERCANCIA_FK,ID_EXISTENCIA_FK) VALUES(?,?,?,?,?,?,?,?,?,?)");
         System.out.println("venta_mayoreo_producto ejb :" + ventaproducto.toString());
         query.setParameter(1, ventaproducto.getIdVentaMayProdPk());
         query.setParameter(2, ventaproducto.getIdVentaMayoreoFk());
@@ -36,6 +36,7 @@ public class EjbVentaMayoreoProducto implements NegocioVentaMayoreoProducto{
         query.setParameter(7, ventaproducto.getTotalVenta());
         query.setParameter(8, ventaproducto.getIdTipoEmpaqueFk());
         query.setParameter(9, ventaproducto.getIdEntradaMercanciaFk());
+        query.setParameter(10, ventaproducto.getIdExistenciaFk());
         return query.executeUpdate();
         
     }

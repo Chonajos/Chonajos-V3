@@ -29,6 +29,7 @@ public class VentaProductoMayoreo implements Serializable {
     private String nombreEmpaque;
     private BigDecimal idExistenciaFk;
     private BigDecimal idTipoVentaFK;
+    
 
 
     public VentaProductoMayoreo()
@@ -53,14 +54,13 @@ public class VentaProductoMayoreo implements Serializable {
         nombreEmpaque = null;
         idExistenciaFk=null;
         idTipoVentaFK=null;
-
-
     }
 
     @Override
     public String toString() {
         return "VentaProductoMayoreo{" + "idVentaMayProdPk=" + idVentaMayProdPk + ", idVentaMayoreoFk=" + idVentaMayoreoFk + ", idSubProductofk=" + idSubProductofk + ", precioProducto=" + precioProducto + ", kilosVendidos=" + kilosVendidos + ", cantidadEmpaque=" + cantidadEmpaque + ", totalVenta=" + totalVenta + ", idTipoEmpaqueFk=" + idTipoEmpaqueFk + ", idEntradaMercanciaFk=" + idEntradaMercanciaFk + ", clave=" + clave + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + ", idExistenciaFk=" + idExistenciaFk + ", idTipoVentaFK=" + idTipoVentaFK + '}';
     }
+
     
 
     public BigDecimal getIdTipoVentaFK() {

@@ -156,7 +156,9 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
 
     public void detallesVenta() {
         viewEstate = "searchById";
-        lstVenta = ifaceBuscaVenta.getVentaMayoreoById(data.getIdVentaPk().intValue(), data.getIdSucursal().intValue());
+        System.out.println("IdVenta: "+data.getIdVentaPk());
+        System.out.println("IdSucursal: "+data.getIdSucursal());
+        lstVenta = ifaceBuscaVenta.getVentaMayoreoById(data.getVentaSucursal().intValue(), data.getIdSucursal().intValue());
         calculatotalVentaDetalle();
 
     }
@@ -164,7 +166,7 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
     public void cancelarVenta() {
         if (data.getIdStatus().intValue() != 4) {
             //System.out.println("comentarios: "+data.getComentarioCancel());
-            lstVenta = ifaceBuscaVenta.getVentaMayoreoById(data.getIdVentaPk().intValue(), data.getIdSucursal().intValue());
+            lstVenta = ifaceBuscaVenta.getVentaMayoreoById(data.getVentaSucursal().intValue(), data.getIdSucursal().intValue());
 
             for (BuscaVenta producto : lstVenta) 
             {

@@ -43,6 +43,7 @@ public class EjbEntradaMercanciaProducto implements NegocioEntradaMercanciaProdu
             query.setParameter(9, producto.getPrecio());
             query.setParameter(10, producto.getKilospromprod());
             query.setParameter(11, producto.getIdEmpPK());
+            
 
             return query.executeUpdate();
 

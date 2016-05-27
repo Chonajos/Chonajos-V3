@@ -78,6 +78,7 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
             venta.setNombreVendedor(obj[15].toString());
             venta.setTotalVenta(obj[16] == null ? null : new BigDecimal(obj[16].toString()));
             venta.setNombreTipoVenta(obj[17].toString());
+
             lstVenta.add(venta);
         }
         

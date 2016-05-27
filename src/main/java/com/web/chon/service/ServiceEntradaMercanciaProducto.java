@@ -37,7 +37,7 @@ public class ServiceEntradaMercanciaProducto implements IfaceEntradaMercanciaPro
     }
 
     @Override
-    public int insertEntradaMercancia(EntradaMercanciaProducto producto) {
+    public int insertEntradaMercanciaProducto(EntradaMercanciaProducto producto) {
 
         getEjb();
         return ejb.insertEntradaMercanciaProducto(producto);

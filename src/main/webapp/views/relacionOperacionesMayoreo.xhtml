@@ -13,6 +13,12 @@
             <h3>#{beanRelOperMayoreo.title}</h3>
         </div>
         <h:form id="formContent">
+            <p:confirmDialog  global="true" showEffect="fade" hideEffect="fade">
+                <div class="alignCenter">
+                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton  value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </div>
+            </p:confirmDialog>
             <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <!--<p:growl id="messagess" showDetail="true" life="2000" />-->
             <p:panel>
@@ -119,6 +125,7 @@
                             <p:column headerText="Cancelar" width="60px;" class="alignCenter">
                                 <p:commandButton id="cancelar" ajax="true" process="@this" action="#{beanRelOperMayoreo.cancelarVenta}" icon="ui-icon-trash" styleClass="ui-priority-primary" update=":formContent">
                                     <f:setPropertyActionListener value="#{model}" target="#{beanRelOperMayoreo.data}"/>
+                                <p:confirm header="Confirmación" message="¿Estás seguro de cancelar la venta?" icon="ui-icon-alert"/>
                                 </p:commandButton>
                             </p:column>
                             <p:columnGroup type="footer">
