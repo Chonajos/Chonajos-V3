@@ -30,10 +30,10 @@
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-11" >#{usuarioWeb.usuario.nombreCompleto} </div>
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-11" >#{usuarioWeb.usuario.perDescripcion}</div>
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-11 hidden-xs">
-                                        <p:commandLink  id="ajax" ajax="false"  actionListener="#{securityBean.logout}">
-                                            <h:outputText value="Cerrar Sesión" />
+                                        <p:commandLink id="send" styleClass="si-icon-16x16 si-icon-send" action="#{securityBean.logout()}" ajax="false">
+                                           <h:graphicImage value="../resources/img/salir.ico"  width="25" height="25"/>
+                                            <h:outputText value="Salir" />
                                         </p:commandLink>
-
                                     </div>
                                 </div>
                                 <div class="col-xs-2 hidden-lg hidden-md hidden-sm hidden-button-toggle">

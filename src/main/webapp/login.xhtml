@@ -14,13 +14,13 @@
 
         <div  align="center" style="zoom:100%">
             <div class="form-group" align="center">
-            <a class="hidden-xs hidden-sm col-lg-2 col-md-5"><img style="height:100px; width:200px;" src="../resources/img/logo.png" alt="logo"></img></a>
-            <a class="hidden-lg hidden-md col-lg-2 col-md-5"><img align="center" style="height:100px; width:200px;" src="../resources/img/logo.png" alt="logo"></img></a>
+                <a class="hidden-xs hidden-sm col-lg-2 col-md-5"><img style="height:100px; width:200px;" src="../resources/img/logo.png" alt="logo"></img></a>
+                <a class="hidden-lg hidden-md col-lg-2 col-md-5"><img align="center" style="height:100px; width:200px;" src="../resources/img/logo.png" alt="logo"></img></a>
             </div>
-            
+
             <p:spacer class="hidden-xs hidden-md hidden-sm" height="150"/>
             <p:spacer class="hidden-xs hidden-lg hidden-sm" height="0"/>
-      
+
             <p:growl id="growl" showDetail="true" life="6000" />
             <h:form id="loginFormId" prependId="false">
                 <p:spacer height="100"/>
@@ -40,7 +40,7 @@
                             <p:password value="#{securityBean.password}" style="margin-bottom: 10px;" class="col-lg-12 col-md-12 col-sm-12 col-xs-12"
                                         id="j_password" required="true" maxlength="15" requiredMessage="Password Requerido" label="password" autocomplete="off"/>
                             <div align="center"  class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
-                                 <p:spacer height="60"/>
+                                <p:spacer height="60"/>
                                 <p:commandButton id="btnLogin" value="iniciar" action="#{securityBean.doLogin}" ajax="false" styleClass="btnLoginPanel" update=":growl" icon="ui-icon-circle-check"/>
                             </div>
                         </div>

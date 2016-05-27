@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="./../templates/main.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                xmlns:o="http://omnifaces.org/ui">
+
+    <ui:define name="content">
+        <h:form id="formUsuario">
+
+
+            <p:panel>
+
+                <div>
+                    <h3>#{beanCatUsuario.title}</h3>
+                </div>
+                <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
+
+                <div class="form-group" align="right">
+                    <p:commandButton value="Guardar" update=":formUsuario" ajax="true" action="#{beanCatUsuario.update}" icon="ui-icon-person" />
+                    <p:commandButton value="Cancelar" update=":formUsuario" ajax="true" action="#{beanCatUsuario.delete()}" icon="ui-icon-trash" />
+                </div>
+
+                <div class="container">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-12"  for="txtNombre" value ="Nombre:" /> 
+                        <p:inputText id="txtNombre" maxlength="45" class=" col-lg-4 col-md-4 col-sm-8 col-xs-12" value="#{beanCatUsuario.data.nombreUsuario}" required="true"
+                                     requiredMessage="Ingresa un valor para el campo Nombre del usuario.">
+                            <pe:keyFilter regEx="/[a-z_ áéíóú]/i"/>
+                        </p:inputText>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-12"  for="txtPaterno" value ="Apellido Paterno:" /> 
+                        <p:inputText id="txtPaterno" maxlength="45" class=" col-lg-4 col-md-4 col-sm-8 col-xs-12" value="#{beanCatUsuario.data.apaternoUsuario}" required="true"
+                                     requiredMessage="Ingresa un valor para el campo Apellido Paterno del usuario.">
+                            <pe:keyFilter regEx="/[a-z_ áéíóú]/i"/>
+                        </p:inputText>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-12"  for="txtMaterno" value ="Apellido Materno:" /> 
+                        <p:inputText id="txtMaterno" maxlength="45" class=" col-lg-4 col-md-4 col-sm-8 col-xs-12" value="#{beanCatUsuario.data.amaternoUsuario}" required="true"
+                                     requiredMessage="Ingresa un valor para el campo Apellido Materno del usuario.">
+                            <pe:keyFilter regEx="/[a-z_ áéíóú]/i"/>
+                        </p:inputText>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-12"  for="txtClave" value ="Clave:" /> 
+                        <p:inputText id="txtClave" maxlength="13" class=" col-lg-4 col-md-4 col-sm-8 col-xs-12" value="#{beanCatUsuario.data.claveUsuario}" required="true"
+                                     requiredMessage="Ingresa un valor para el campo Clave del usuario.">
+                            <pe:keyFilter regEx="/[a-z_0-9]/i"/>
+                        </p:inputText>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-12"  for="txtContrasena" value ="Contraseña:" /> 
+                        <p:password id="txtContrasena" maxlength="13" class=" col-lg-5 col-md-4 col-sm-8 col-xs-12" value="#{beanCatUsuario.data.contrasenaUsuario}" required="true"
+                                    requiredMessage="Ingresa un valor para el campo Contraseña del usuario.">
+                            <pe:keyFilter regEx="/[a-z0-9_]/i"/>
+                            <f:validateLength maximum="8" minimum="8" />
+                        </p:password>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-12"  for="txtConfirmar" value ="Confirmar contraseña:" /> 
+                        <p:password id="txtConfirmar" maxlength="8" class=" col-lg-5 col-md-4 col-sm-8 col-xs-12" value="#{beanCatUsuario.data.confirmaUsuario}" required="true"
+                                    requiredMessage="Confirma el valor para el campo Contraseña del usuario." validatorMessage="La contraseña debe tener como minimo 8 caracteres">
+                            <pe:keyFilter regEx="/[a-z0-9_]/i"/>
+                            <p:ajax event="blur" process="txtContrasena txtConfirmar equal" />
+                            <f:validateLength maximum="8" minimum="8" />
+                        </p:password>
+                        <h:message for="txtConfirmar" />
+                        <o:validateEqual id="equal" components="txtContrasena txtConfirmar" message="Las contraseñas escritas no coinciden. Verificar campos." showMessageFor="txtConfirmar" />
+                    </div>
+                </div>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>

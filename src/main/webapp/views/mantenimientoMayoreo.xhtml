@@ -110,15 +110,6 @@
                             <p:column headerText="Producto" width="120px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreProducto}" />
                             </p:column>
-                            <p:column headerText="Mín." width="45px;" style="text-align:center" rendered="#{beanMantenimientoPrecioMayoreo.usuario.perId != 1}">
-                                <h:outputText value="#{model.precioMinimo}" />
-                            </p:column>
-                            <p:column headerText="Vent." width="45px;" style="text-align:center" rendered="#{beanMantenimientoPrecioMayoreo.usuario.perId != 1}">
-                                <h:outputText value="#{model.precioVenta}" />
-                            </p:column>
-                            <p:column headerText="Máx." width="45px;" style="text-align:center" rendered="#{beanMantenimientoPrecioMayoreo.usuario.perId != 1}">
-                                <h:outputText value="#{model.precioMaximo}" />
-                            </p:column>
                             <p:column headerText="Empaque" width="80px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreEmpaque}" />
                             </p:column>
@@ -155,19 +146,19 @@
                             <p:column headerText="Área"  width="100px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreBodega}" />
                             </p:column>
-                            <p:column headerText="Mín." width="45px;" style="text-align:center" rendered="#{beanMantenimientoPrecioMayoreo.usuario.perId == 1}">
+                            <p:column headerText="Mín." width="45px;" style="text-align:center">
                                 <p:cellEditor>
                                     <f:facet name="output"><h:outputText value="#{model.precioMinimo}" /></f:facet>
                                     <f:facet name="input"><p:inputText id="minimoInput" value="#{model.precioMinimo}" maxlength="5" style="width:100%"/></f:facet>
                                 </p:cellEditor>
                             </p:column>
-                            <p:column headerText="Vent." width="45px;" style="text-align:center" rendered="#{beanMantenimientoPrecioMayoreo.usuario.perId == 1}">
+                            <p:column headerText="Vent." width="45px;" style="text-align:center">
                                 <p:cellEditor>
                                     <f:facet name="output"><h:outputText value="#{model.precioVenta}" /></f:facet>
                                     <f:facet name="input"><p:inputText id="ventaInput" value="#{model.precioVenta}" maxlength="5" style="width:100%"/></f:facet>
                                 </p:cellEditor>
                             </p:column>
-                            <p:column headerText="Máx." width="45px;" style="text-align:center" rendered="#{beanMantenimientoPrecioMayoreo.usuario.perId == 1}">
+                            <p:column headerText="Máx." width="45px;" style="text-align:center" >
                                 <p:cellEditor>
                                     <f:facet name="output"><h:outputText value="#{model.precioMaximo}" /></f:facet>
                                     <f:facet name="input"><p:inputText id="maximoInput" value="#{model.precioMaximo}" maxlength="5" style="width:100%"/></f:facet>
