@@ -166,13 +166,13 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
     public void cancelarVenta() {
         if (data.getIdStatus().intValue() != 4) {
             //System.out.println("comentarios: "+data.getComentarioCancel());
-            lstVenta = ifaceBuscaVenta.buscaVentaCancelar(data.getVentaSucursal().intValue(), data.getIdSucursal().intValue())
+            lstVenta = ifaceBuscaVenta.buscaVentaCancelar(data.getVentaSucursal().intValue(), data.getIdSucursal().intValue());
             for (BuscaVenta producto : lstVenta) 
             {
                 System.out.println("Objeto Producto Bean: "+producto.toString());
                 BigDecimal cantidad = producto.getCantidadEmpaque();
                 BigDecimal kilos = producto.getKilosVendidos();
-                BigDecimal idExistencia = producto.get;
+                BigDecimal idExistencia = producto.getIdExistenciaFk();
                 
                 System.out.println("Kilos a Regresar: "+kilos);
                 System.out.println("Cantidad a Regresar: "+cantidad);
@@ -182,7 +182,7 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
                 
                 //public ArrayList<ExistenciaProducto> getExistencias(BigDecimal idSucursal, BigDecimal idBodega, BigDecimal idProvedor,String idProducto, BigDecimal idEmpaque, BigDecimal idConvenio,BigDecimal idEmPK);
     
-                exis=ifaceNegocioExistencia.getExistenciasCancelar(producto.getIdSucursalFk(), producto.getIdBodega(), producto.getIdProvedor(),producto.getIdSubProducto(), producto.getIdTipoEmpaque(), producto.getIdTipoConvenio(),null);
+                exis=ifaceNegocioExistencia.getExistenciasCancelar(idExistencia);
                 System.out.println("ExistenciaId: "+exis.get(0).getIdExistenciaProductoPk());
                 System.out.println("Existencia Cantidad:"+exis.get(0).getCantidadPaquetes());
                 System.out.println("Existencia Kilos: "+exis.get(0).getKilosTotalesProducto());
@@ -199,7 +199,7 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
                 ExistenciaProducto ep = new ExistenciaProducto();
                 ep.setCantidadPaquetes(cantidad);
                 ep.setKilosTotalesProducto(kilos);
-                ep.setIdExistenciaProductoPk(exis.get(0).getIdExistenciaProductoPk());
+                ep.setIdExistenciaProductoPk(idExistencia);
                 
                 
                 

@@ -36,6 +36,7 @@ public class BuscaVenta implements Serializable {
     private BigDecimal idTipoConvenio;
     private BigDecimal idProvedor;
     private BigDecimal idStatus;
+    private BigDecimal idExistenciaFk;
     
 
     public void reset() {
@@ -62,6 +63,14 @@ public class BuscaVenta implements Serializable {
     @Override
     public String toString() {
         return "BuscaVenta{" + "nombreCliente=" + nombreCliente + ", nombreVendedor=" + nombreVendedor + ", idVenta=" + idVenta + ", nombreSubproducto=" + nombreSubproducto + ", nombreEmpaque=" + nombreEmpaque + ", cantidadEmpaque=" + cantidadEmpaque + ", precioProducto=" + precioProducto + ", total=" + total + ", totalVenta=" + totalVenta + ", fechaVenta=" + fechaVenta + ", fechaPromesaPago=" + fechaPromesaPago + ", nombreStatus=" + nombreStatus + ", statusFK=" + statusFK + ", idSucursalFk=" + idSucursalFk + ", clave=" + clave + ", carro=" + carro + ", kilosVendidos=" + kilosVendidos + ", nombreSucursal=" + nombreSucursal + ", folioSucursal=" + folioSucursal + ", idSubProducto=" + idSubProducto + ", idTipoEmpaque=" + idTipoEmpaque + ", idBodega=" + idBodega + ", idTipoConvenio=" + idTipoConvenio + ", idProvedor=" + idProvedor + ", idStatus=" + idStatus + '}';
+    }
+
+    public BigDecimal getIdExistenciaFk() {
+        return idExistenciaFk;
+    }
+
+    public void setIdExistenciaFk(BigDecimal idExistenciaFk) {
+        this.idExistenciaFk = idExistenciaFk;
     }
 
     

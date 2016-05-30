@@ -204,13 +204,12 @@ public class ServiceBuscaVenta implements IfaceBuscaVenta {
          try {
             ArrayList<BuscaVenta> lstVentas = new ArrayList<BuscaVenta>();
             ejb = (NegocioBuscaVenta) Utilidades.getEJBRemote("ejbBuscaVenta", NegocioBuscaVenta.class.getName());
-            List<Object[]> lstObject = ejb.getVentaMayoreoByIdBuscaVenta(idVenta,idSucursal);
+            List<Object[]> lstObject = ejb.buscaVentaCancelar(idVenta,idSucursal);
             for (Object[] obj : lstObject) {
                 BuscaVenta busca_venta = new BuscaVenta();
-                busca_venta.set
-                busca_venta.setCantidadEmpaque(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
-                busca_venta.setKilosVendidos(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
-                
+                busca_venta.setIdExistenciaFk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+                busca_venta.setCantidadEmpaque(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
+                busca_venta.setKilosVendidos(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
                 lstVentas.add(busca_venta);
             }
             return lstVentas;
