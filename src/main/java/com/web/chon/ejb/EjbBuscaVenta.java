@@ -178,6 +178,43 @@ public class EjbBuscaVenta implements NegocioBuscaVenta
         
     }
 
+    @Override
+    public List<Object[]> getVentaMayoreoByIdBuscaVenta(int idVenta, int idSucursal) {
+        System.out.println("EJB BuscaVenta ");
+        try {
+
+            Query query = em.createNativeQuery("select vm.ID_VENTA_MAYOREO_PK, vm.VENTASUCURSAL as folio, usu.NOMBRE_USUARIO as Vendedor, cl.NOMBRE as Cliente,\n" +
+"sub.NOMBRE_SUBPRODUCTO,te.NOMBRE_EMPAQUE,vmp.PRECIO_PRODUCTO, vmp.CANTIDAD_EMPAQUE,vmp.KILOS_VENDIDOS, vmp.TOTAL_VENTA, st.NOMBRE_STATUS,st.ID_STATUS_PK\n" +
+"from VENTA_MAYOREO vm \n" +
+"join USUARIO usu\n" +
+"on usu.ID_USUARIO_PK = vm.ID_VENDEDOR_FK\n" +
+"inner join cliente cl\n" +
+"on cl.ID_CLIENTE = vm.ID_CLIENTE_FK\n" +
+"join VENTAMAYOREOPRODUCTO vmp\n" +
+"on vmp.ID_VENTA_MAYOREO_FK = vm.ID_VENTA_MAYOREO_PK\n" +
+"join SUBPRODUCTO sub\n" +
+"on sub.ID_SUBPRODUCTO_PK = vmp.ID_SUBPRODUCTO_FK\n" +
+"join TIPO_EMPAQUE te\n" +
+"on te.ID_TIPO_EMPAQUE_PK = vmp.ID_TIPO_EMPAQUE_FK\n" +
+"join STATUS_VENTA st\n" +
+"on st.ID_STATUS_PK = vm.ID_STATUS_FK\n" +
+"where vm.VENTASUCURSAL = ? and vm.ID_SUCURSAL_FK = ?");
+           query.setParameter(1, idVenta);
+            query.setParameter(2, idSucursal);
+            System.out.println(query);
+
+
+            return query.getResultList();
+
+        } catch (Exception ex) 
+        {
+            Logger.getLogger(EjbBuscaVenta.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    
+    
+    }
+
    
     
 }

@@ -206,6 +206,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     }
 
     public void updateVenta() {
+        System.out.println("Status Venta :"+data.getStatusFK());
         if (data.getStatusFK() == 2) {
             JsfUtil.addErrorMessageClean("Error, la venta ya se encuentra pagada");
         } else if (data.getIdVenta().intValue() != idVentaTemporal) {
@@ -237,7 +238,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     public void searchById() {
         statusButtonPagar = false;
 
-        model = ifaceBuscaVenta.getVentaMayoreoById(data.getFolioSucursal().intValue(),usuario.getIdSucursal());
+        model = ifaceBuscaVenta.getVentaMayoreoByIdBuscaVenta(data.getFolioSucursal().intValue(),usuario.getIdSucursal());
         if (model.isEmpty()) {
             data.setNombreCliente("");
             data.setNombreVendedor("");
@@ -250,23 +251,25 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
         } else {
             data.setNombreCliente(model.get(0).getNombreCliente());
             data.setNombreVendedor(model.get(0).getNombreVendedor());
-            data.setStatusFK(model.get(0).getStatusFK());
+            data.setStatusFK(model.get(0).getIdStatus().intValue());
             data.setFolioSucursal(model.get(0).getFolioSucursal());
             data.setIdVenta(model.get(0).getIdVenta());
             data.setIdSucursalFk(model.get(0).getIdSucursalFk());
+            data.setNombreStatus(model.get(0).getNombreStatus());
             idVentaTemporal = data.getIdVenta().intValue();
             
             calculatotalVenta();
             if (data.getStatusFK() == 2) {
                 statusButtonPagar = true;
             }
-            if (data.getIdSucursalFk().equals(new BigDecimal(usuario.getIdSucursal()))) {
-
-                statusButtonPagar = false;
-            } else {
-                JsfUtil.addWarnMessageClean("No puedes cobrar el folio de otra sucursal.");
-                statusButtonPagar = true;
-            }
+//            if (data.getIdSucursalFk().equals(new BigDecimal(usuario.getIdSucursal()))) {
+//
+//                statusButtonPagar = false;
+//            } else 
+//            {
+//                JsfUtil.addWarnMessageClean("No puedes cobrar el folio de otra sucursal.");
+//                statusButtonPagar = true;
+//            }
             if (data.getStatusFK() == 2) {
                 JsfUtil.addWarnMessageClean("No puedes pagar de nuevo este producto");
                 statusButtonPagar = true;

@@ -166,14 +166,13 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
     public void cancelarVenta() {
         if (data.getIdStatus().intValue() != 4) {
             //System.out.println("comentarios: "+data.getComentarioCancel());
-            lstVenta = ifaceBuscaVenta.getVentaMayoreoById(data.getVentaSucursal().intValue(), data.getIdSucursal().intValue());
-
+            lstVenta = ifaceBuscaVenta.buscaVentaCancelar(data.getVentaSucursal().intValue(), data.getIdSucursal().intValue())
             for (BuscaVenta producto : lstVenta) 
             {
                 System.out.println("Objeto Producto Bean: "+producto.toString());
                 BigDecimal cantidad = producto.getCantidadEmpaque();
                 BigDecimal kilos = producto.getKilosVendidos();
-                BigDecimal idExistencia = producto.getCarro();
+                BigDecimal idExistencia = producto.get;
                 
                 System.out.println("Kilos a Regresar: "+kilos);
                 System.out.println("Cantidad a Regresar: "+cantidad);

@@ -46,6 +46,9 @@
 
             </p:panel>
             <p:panel>
+                <div>
+            <h5>Estado de la Venta :#{beanBuscaVentaMayoreo.data.nombreStatus}</h5>
+        </div>
 
                 <p:dataTable var="model" value="#{beanBuscaVentaMayoreo.model}" styleClass="ui-datatable-hor-scroll"  emptyMessage="Productos.">
 
@@ -63,29 +66,29 @@
                     </p:column>
                     <p:column headerText="Precio de venta" width="60px;" class="alignCenter">
                         <h:outputText value="#{model.precioProducto}">
-                            <f:convertNumber pattern="#,##0.00"/>
+                            <f:convertNumber pattern="$#,##0.00"/>
                         </h:outputText>
                     </p:column>
                     <p:column headerText="Total" width="90px;" class="alignCenter">
-                        <h:outputText value="#{model.total}">
+                        <h:outputText value="$#{model.total}">
                             <f:convertNumber pattern="#,##0.00"/>
                         </h:outputText>
                     </p:column>
-                    <p:column headerText="Status" width="90px;" class="alignLeft">
-                        <h:outputText value="#{model.nombreStatus}"> 
+<!--                    <p:column headerText="Status" width="90px;" class="alignLeft">
+                        <h:outputText value="{model.nombreStatus}"> 
                         </h:outputText>
-                    </p:column>
+                    </p:column>-->
                     <p:columnGroup type="footer">
                         <p:row>
                             <p:column colspan="5" style="text-align:right" footerText="Total de Venta:" />
                             <p:column colspan="1">
                                 <f:facet name="footer">
                                     <h:outputText value="#{beanBuscaVentaMayoreo.totalVenta}">
-                                        <f:convertNumber for="totalVenta" pattern="#,##0.00"/>
+                                        <f:convertNumber for="totalVenta" pattern="$#,##0.00"/>
                                     </h:outputText>
                                 </f:facet>
                             </p:column>
-                            <p:column colspan="1" />
+
 
                         </p:row>
                     </p:columnGroup>
