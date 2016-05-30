@@ -90,6 +90,12 @@ public class BeanCambioContrasena implements BeanSimple {
         return "welcome";
     }
 
+    public void cancel(){
+        contrasenaActualComfirmacion = "";
+        data.setConfirmaUsuario("");
+        data.setContrasenaUsuario("");
+    }
+    
     @Override
     public void searchById() {
 

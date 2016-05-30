@@ -30,8 +30,8 @@
                 <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
 
                 <div class="form-group" align="right">
-                    <p:commandButton value="Guardar" update=":formContrasena" ajax="true" action="#{beanCambioContrasena.update}" icon="ui-icon-person" />
-                    <p:commandButton value="Cancelar" update=":formContrasena" ajax="true" action="#{beanCambioContrasena.delete()}" icon="ui-icon-trash" />
+                    <p:commandButton value="Guardar" update=":formContrasena" ajax="true" action="#{beanCambioContrasena.update}" />
+                    <p:commandButton value="Cancelar" update=":formContrasena" ajax="true" action="#{beanCambioContrasena.cancel()}" resetValues="true"/>
                 </div>
 
                 <div class="container">

@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ticket" pageWidth="219" pageHeight="1224" columnWidth="179" leftMargin="20" rightMargin="20" topMargin="4" bottomMargin="20" isIgnorePagination="true" uuid="cce07992-6ec7-4616-8caf-ceb4ee12975b">
 	<property name="ireport.zoom" value="2.5937424601000028"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="96"/>
+	<property name="ireport.y" value="69"/>
 	<subDataset name="dataset1" uuid="98370534-40ba-4932-9815-f4270ac51f8a">
 		<queryString language="SQL">
 			<![CDATA[]]>
@@ -27,7 +27,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="83" splitType="Stretch">
+		<band height="91" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="17" width="179" height="16" uuid="2992a9dd-f9dd-4e9d-bf14-8b1d06b0f593"/>
 				<textElement textAlignment="Center">
@@ -43,7 +43,7 @@
 				<text><![CDATA[S DE RL DE CV]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="68" y="69" width="83" height="14" uuid="6e57c4b1-dfa7-4eba-a047-8b089afdeb7c"/>
+				<reportElement x="68" y="77" width="83" height="14" uuid="6e57c4b1-dfa7-4eba-a047-8b089afdeb7c"/>
 				<textElement textAlignment="Left">
 					<font size="8"/>
 				</textElement>
@@ -57,7 +57,7 @@
 				<textFieldExpression><![CDATA[$P{estado}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="1" y="69" width="68" height="14" uuid="c2180276-be42-419b-bbd2-140cc6030216"/>
+				<reportElement x="1" y="77" width="68" height="14" uuid="c2180276-be42-419b-bbd2-140cc6030216"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>

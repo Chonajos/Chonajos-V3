@@ -400,6 +400,9 @@ public class BeanVenta implements Serializable, BeanSimple {
 
         TipoEmpaque empaque = new TipoEmpaque();
         empaque = getEmpaque(data.getIdTipoEmpaqueFk());
+        
+        data.setIdProductoFk(subProducto.getIdSubproductoPk());
+        data.setNombreProducto(subProducto.getNombreSubproducto());
 
         dataEdit.setCantidadEmpaque(data.getCantidadEmpaque());
         dataEdit.setIdProductoFk(data.getIdProductoFk());
@@ -423,6 +426,13 @@ public class BeanVenta implements Serializable, BeanSimple {
         subProducto = new Subproducto();
         viewEstate = "init";
         init();
+
+    }
+    
+      public void cancelarModificacion() {
+        data.reset();
+        subProducto = new Subproducto();
+        viewEstate = "init";
 
     }
 

@@ -50,7 +50,7 @@
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-12"  for="selectProductos" value ="Categoría:"/> 
-                            <h:selectOneMenu id="selectProductos" value="#{beanSubProducto.data.idProductoFk}" required="true" class="col-lg-4 col-md-5 col-sm-8 col-xs-12" requiredMessage="Ingresa un valor para el campo Producto.">
+                            <h:selectOneMenu id="selectProductos" value="#{beanSubProducto.data.idProductoFk}" required="true" class="col-lg-4 col-md-5 col-sm-8 col-xs-12" requiredMessage="Ingresa un valor para el campo Producto." disabled = "#{beanSubProducto.viewEstate=='searchById'}">
                                 <f:selectItem itemLabel="Seleccione la opción" itemValue="#{null}" noSelectionOption="true" />
                                 <f:selectItems value="#{beanSubProducto.lstProducto}" var="producto" itemLabel="#{producto.nombreProducto}" itemValue="#{producto.idProductoPk}" />
                             </h:selectOneMenu>
