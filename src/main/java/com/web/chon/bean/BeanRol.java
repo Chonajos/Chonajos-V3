@@ -46,7 +46,7 @@ public class BeanRol extends SimpleViewBean<Rol> implements Serializable {
 
         lstRol = ifaceCatRol.getAll();
 
-        setTitle("Catalogo de Roles.");
+        setTitle("Catalogo de Roles");
 
     }
 
@@ -107,20 +107,20 @@ public class BeanRol extends SimpleViewBean<Rol> implements Serializable {
     }
 
     public void searchById() {
-        setTitle("Editar Roles.");
+        setTitle("Editar Roles");
         state = ViewState.SEARCH;
 
     }
 
     public void viewNew() {
         data = new Rol();
-        setTitle("Alta de Roles.");
+        setTitle("Alta de Roles");
         actionNew();
 
     }
 
     public void backView() {
-        setTitle("Catalogo de Bodegas.");
+        setTitle("Catalogo de Bodegas");
         selectedRol = new ArrayList<Rol>();
         actionBack();
     }

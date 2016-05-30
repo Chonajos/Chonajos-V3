@@ -200,7 +200,7 @@ public class BeanCatProvedor extends SimpleViewBean<Provedor> implements Seriali
     public void searchById() {
         buscaMunicipios();
         buscaMunicipios2();
-        setTitle("Editar Provedor.");
+        setTitle("Editar Provedor");
         setViewEstate("searchById");
         permissionToWrite = false;
         permissionToEdit = true;
@@ -216,7 +216,7 @@ public class BeanCatProvedor extends SimpleViewBean<Provedor> implements Seriali
     public String searchDatabyId() {
         buscaMunicipios();
         buscaMunicipios2();
-        setTitle("Editar Provedor.");
+        setTitle("Editar Provedor");
         setViewEstate("searchById");
         permissionToWrite = false;
         permissionToEdit = true;

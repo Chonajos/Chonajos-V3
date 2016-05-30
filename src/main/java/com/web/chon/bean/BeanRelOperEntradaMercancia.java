@@ -78,7 +78,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
             data.setIdSucursalFK(new BigDecimal(usuario.getSucId()));
         }
         
-        setTitle("Relación de Operaciónes.");
+        setTitle("Relación de Operaciónes");
         setViewEstate("init");
 
     }

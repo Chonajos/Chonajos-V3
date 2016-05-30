@@ -40,7 +40,7 @@ public class BeanEmpaque implements Serializable, BeanSimple {
         selectedEmpaque = new ArrayList<TipoEmpaque>();
         model = ifaceEmpaque.getEmpaques();
 
-        setTitle("Catalogo de Tipo Empaques.");
+        setTitle("Catalogo de Tipo Empaques");
         setViewEstate("init");
 
     }
@@ -94,19 +94,19 @@ public class BeanEmpaque implements Serializable, BeanSimple {
 
     @Override
     public void searchById() {
-        setTitle("Editar Tipo Empaque.");
+        setTitle("Editar Tipo Empaque");
         setViewEstate("searchById");
 
     }
 
     public void viewNew() {
         data = new TipoEmpaque();
-        setTitle("Alta de Tipo Empaque.");
+        setTitle("Alta de Tipo Empaque");
         setViewEstate("new");
     }
 
     public void backView() {
-        setTitle("Catalogo de Tipo de Empaque.");
+        setTitle("Catalogo de Tipo de Empaque");
         setViewEstate("init");
     }
 

@@ -46,7 +46,7 @@ public class BeanProducto implements Serializable, BeanSimple {
         selectedProducto = new ArrayList<Producto>();
         model = ifaceProducto.getProductos();
 
-        setTitle("Catalogo de Categorías.");
+        setTitle("Catalogo de Categorías");
         setViewEstate("init");
 
     }
@@ -113,12 +113,12 @@ public class BeanProducto implements Serializable, BeanSimple {
 
     public void viewNew() {
         data = new Producto();
-        setTitle("Alta de Categorías.");
+        setTitle("Alta de Categorías");
         setViewEstate("new");
     }
 
     public void backView() {
-        setTitle("Catalogo de Categorías.");
+        setTitle("Catalogo de Categorías");
         setViewEstate("init");
     }
 

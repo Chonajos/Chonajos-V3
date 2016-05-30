@@ -51,7 +51,7 @@ public class BeanSubProducto implements Serializable, BeanSimple {
         lstProducto = ifaceProducto.getProductos();
         model = ifaceSubProducto.getSubProductos();
 
-        setTitle("Catalogo de Productos.");
+        setTitle("Catalogo de Productos");
         setViewEstate("init");
 
     }
@@ -123,19 +123,19 @@ public class BeanSubProducto implements Serializable, BeanSimple {
 
     @Override
     public void searchById() {
-        setTitle("Editar Productos.");
+        setTitle("Editar Productos");
         setViewEstate("searchById");
 
     }
 
     public void viewNew() {
         data = new Subproducto();
-        setTitle("Alta de Producto.");
+        setTitle("Alta de Producto");
         setViewEstate("new");
     }
 
     public void backView() {
-        setTitle("Catalogo de Producto.");
+        setTitle("Catalogo de Producto");
         setViewEstate("init");
     }
 

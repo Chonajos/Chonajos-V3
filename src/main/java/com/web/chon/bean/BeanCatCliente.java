@@ -102,7 +102,7 @@ public class BeanCatCliente implements BeanSimple {
             dominio.setEmails(emails_del_cliente);
         }
 
-        setTitle("Catalogo de Clientes.");
+        setTitle("Catalogo de Clientes");
         setViewEstate("init");
 
         lista_entidades = ifaceCatEntidad.getEntidades();
@@ -234,7 +234,7 @@ public class BeanCatCliente implements BeanSimple {
     public void searchById() {
         buscaMunicipios();
         buscaMunicipios2();
-        setTitle("Editar Cliente.");
+        setTitle("Editar Cliente");
         setViewEstate("searchById");
         permissionToWrite = false;
         permissionToEdit = true;

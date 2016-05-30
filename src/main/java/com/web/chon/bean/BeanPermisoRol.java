@@ -45,7 +45,7 @@ public class BeanPermisoRol extends SimpleViewBean<AccesMenu> implements Seriali
         
         lstAccesMenu = new ArrayList<AccesMenu>();
         lstRol = ifaceRol.getAll();
-        setTitle("Administrar Acceso a pantallas por Rol");
+        setTitle("Administrar Acceso a Pantallas por Rol");
         
     }
     

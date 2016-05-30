@@ -113,7 +113,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
         listaSucursales = ifaceCatSucursales.getSucursales();
         listaStatusVenta = ifaceCatStatusVenta.getStatusVentas();
 
-        setTitle("Relación de Operaciónes Venta Menudeo.");
+        setTitle("Relación de Operaciónes Venta Menudeo");
         setViewEstate("init");
 
     }

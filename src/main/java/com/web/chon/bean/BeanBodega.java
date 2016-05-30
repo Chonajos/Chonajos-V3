@@ -58,7 +58,7 @@ public class BeanBodega extends SimpleViewBean<Bodega> implements Serializable {
 
         selectedBodega = new ArrayList<Bodega>();
 
-        setTitle("Catalogo de Bodegas.");
+        setTitle("Catalogo de Bodegas");
 
     }
 
@@ -116,14 +116,14 @@ public class BeanBodega extends SimpleViewBean<Bodega> implements Serializable {
     }
 
     public void searchById() {
-        setTitle("Editar Bodega.");
+        setTitle("Editar Bodega");
         state = ViewState.SEARCH;
 
     }
 
     public void viewNew() {
         data = new Bodega();
-        setTitle("Alta de Bodegas.");
+        setTitle("Alta de Bodegas");
         actionNew();
 
     }

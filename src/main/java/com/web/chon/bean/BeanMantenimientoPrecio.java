@@ -73,7 +73,7 @@ public class BeanMantenimientoPrecio implements Serializable {
             data.setIdSucursal(usuarioDominio.getSucId());
         }
         
-        setTitle("Mantenimiento de Precios.");
+        setTitle("Mantenimiento de Precios");
         setViewEstate("init");
 
     }

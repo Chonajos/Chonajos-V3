@@ -51,7 +51,7 @@ public class BeanCatUsuario implements BeanSimple {
         model = ifaceCatUsuario.getUsuarios();
         lstRol = ifaceCatRol.getAll();
         lstSucursal = ifaceCatSucursales.getSucursales();
-        setTitle("Catalogo de Usuarios.");
+        setTitle("Catalogo de Usuarios");
         setViewEstate("init");
 
     }
@@ -111,19 +111,19 @@ public class BeanCatUsuario implements BeanSimple {
 
     @Override
     public void searchById() {
-        setTitle("Editar Usuario.");
+        setTitle("Editar Usuario");
         setViewEstate("searchById");
 
     }
 
     public void viewNew() {
         data = new Usuario();
-        setTitle("Alta de Usuarios.");
+        setTitle("Alta de Usuarios");
         setViewEstate("new");
     }
 
     public void backView() {
-        setTitle("Catalogo de Usuarios.");
+        setTitle("Catalogo de Usuarios");
         setViewEstate("init");
     }
 

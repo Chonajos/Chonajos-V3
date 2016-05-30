@@ -140,7 +140,7 @@ public class BeanVenta implements Serializable, BeanSimple {
         lstVenta = new ArrayList<VentaProducto>();
         selectedTipoEmpaque();
         variableInicial = false;
-        setTitle("Venta de Productos.");
+        setTitle("Venta de Productos");
         setViewEstate("init");
     }
 
