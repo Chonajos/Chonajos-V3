@@ -13,19 +13,31 @@
                 <h3>#{beanTopVentas.title}</h3>
             </div>
             <p:messages id="messages" showDetail="true" showIcon="false"  showSummary="false" autoUpdate="true" closable="true" />
-            
-            <p:panel   style="border: 0px;" >
-                <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12">
-                    
-                        <p:outputLabel for="opcion" value="Tipo de Ventas:" />
-                        <p:selectOneRadio id="opcion" value="#{beanTopVentas.radio}">
-                            <f:selectItem itemLabel="Mayoreo" itemValue="mayoreo" />
-                            <f:selectItem itemLabel="Menudeo" itemValue="menudeo" />
-                            <p:ajax event="change" process="@this"  listener="#{beanTopVentas.changeView()}"  update="formContent" />
-                            
-                        </p:selectOneRadio>
-                </div>
+
+            <p:panel  style="border: 0px;" >
                 
+              
+    <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+        <p:outputLabel for="console" value="Tipo de Ventas:" />
+        <p:selectOneRadio id="console" value="">
+            <f:selectItem itemLabel="Mayoreo" itemValue="Xbox One" />
+            <f:selectItem itemLabel="Menudeo" itemValue="PS4" />
+        </p:selectOneRadio>
+    </h:panelGrid>
+                
+                
+    <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+        <p:outputLabel for="ranking" value="Ranking:" />
+        <p:selectOneRadio id="ranking" value="">
+            <f:selectItem itemLabel="Mejores" itemValue="Xbox One" />
+            <f:selectItem itemLabel="Peores" itemValue="PS4" />
+        </p:selectOneRadio>
+    </h:panelGrid>
+                
+                
+                
+              
+
                 <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
                     <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="selectFiltro" value ="Consulta por Fecha:"/> 
                     <h:selectOneMenu  id="selectFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanTopVentas.filtro}">
@@ -41,9 +53,9 @@
                     <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="calendarInicio" value ="Fecha de Inicio:" /> 
                     <p:calendar id="calendarInicio" class="col-lg-6 col-md-8 col-sm-8 col-xs-12 calendario" navigator="true" placeholder="dd/mm/yyyy"
                                 value="#{beanTopVentas.fechaFiltroInicio}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button" >
-                    <p:ajax   event="dateSelect"
-                              listener="#{beanTopVentas.setFechaInicioFin(4)}"
-                                          update="formContent" />
+                        <p:ajax   event="dateSelect"
+                                  listener="#{beanTopVentas.setFechaInicioFin(4)}"
+                                  update="formContent" />
                     </p:calendar>
                 </div>
 
@@ -52,8 +64,8 @@
                     <p:calendar id="calendarFin" class="col-lg-6 col-md-8 col-sm-8 col-xs-12 calendario" navigator="true" placeholder="dd/mm/yyyy"
                                 value="#{beanTopVentas.fechaFiltroFin}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button" >
                         <p:ajax   event="dateSelect"
-                              listener="#{beanTopVentas.setFechaInicioFin(4)}"
-                                          update="formContent" />
+                                  listener="#{beanTopVentas.setFechaInicioFin(4)}"
+                                  update="formContent" />
                     </p:calendar>
                 </div>
             </p:panel>   
@@ -65,41 +77,46 @@
                     </div>
 
                     <p:dataTable var="model" value="#{beanTopVentas.modelMayoreo}" rows="20" scrollable="true"
-                                 paginator="true" 
                                  emptyMessage="No se encontraron Registros." >
 
-                        <p:column headerText="Sucursal" width="200px; !important" style="text-align:center">
-                            <h:outputText value="#{model.nombreSucursal}" />
+                        <p:column headerText="Sucursal" width="150px; !important" class="alignCenter">
+                            <h:outputText value="#{model.nombreSucursal}" class="alignRight"/>
                         </p:column>
 
-                        <p:column headerText="Vendedor" width="300px; !important"  class="alignLeft">
+                        <p:column headerText="Vendedor" width="100px; !important"  class="alignLeft">
                             <h:outputText value="#{model.nombreVendedor} #{model.apPaternoVendedor} " />
                         </p:column>
 
-                        <p:column headerText="Número de Ventas" width="100px; !important" class="alignCenter">
-                            <h:outputText value="#{model.numVentas}" />
+                        <p:column headerText="Ventas" width="100px; !important" class="alignRight" >
+                            <h:outputText value="#{model.numVentas}" class="alignRight"/>
+                        </p:column>
+                        <p:column headerText="Kilos" width="100px; !important" class="alignRight">
+                            <h:outputText value="#{model.numVentas}" class="alignRight"/>
+                        </p:column>
+                        <p:column headerText="Total" width="100px; !important" class="alignRight">
+                            <h:outputText value="#{model.numVentas}" class="alignRight">
+                                <f:convertNumber pattern="$#,##0.00"/>
+                            </h:outputText>
                         </p:column>
                     </p:dataTable>
                 </div>
             </p:panel>
             <p:panel rendered="#{beanTopVentas.viewEstate=='Menudeo'}" style="border: 0px;" >
-                <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12 col-lg-offset-2">
+                <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 col-lg-offset-2">
                     <div>
                         <h5>#{beanTopVentas.titleView}</h5>
                     </div>
-                    <p:dataTable var="modelMenudeo" value="#{beanTopVentas.modelMenudeo}" rows="20" scrollable="true"
-                                 paginator="true" 
-                                 emptyMessage="No se encontraron Registros." >
+                    <p:dataTable var="modelMenudeo" value="#{beanTopVentas.modelMenudeo}"  scrollable="true" emptyMessage="No se encontraron Registros." >
 
-                        <p:column headerText="Sucursal" width="200px; !important" style="text-align:center">
+                        <p:column headerText="Sucursal" width="150px;" class="alignLeft">
                             <h:outputText value="#{modelMenudeo.nombreSucursal}" />
                         </p:column>
 
-                        <p:column headerText="Vendedor" width="300px; !important"  class="alignLeft">
+                        <p:column headerText="Vendedor" width="100px;"  class="alignLeft">
                             <h:outputText value="#{modelMenudeo.nombreVendedor} #{model.apPaternoVendedor} " />
                         </p:column>
 
-                        <p:column headerText="Número de Ventas" width="100px; !important" class="alignCenter">
+                        <p:column headerText="Número de Ventas" width="50px;" class="alignRight">
                             <h:outputText value="#{modelMenudeo.numVentas}" />
                         </p:column>
                     </p:dataTable>
