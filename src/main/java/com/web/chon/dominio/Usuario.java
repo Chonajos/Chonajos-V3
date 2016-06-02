@@ -338,7 +338,7 @@ public class Usuario extends Generic {
     }
 
     public String getNombreCompletoUsuario() {
-        return nombreUsuario+" "+apaternoUsuario+" "+amaternoUsuario;
+        return nombreUsuario == null ? "":nombreUsuario+" "+(apaternoUsuario == null ? "":apaternoUsuario+" "+(amaternoUsuario == null ? "":" "+amaternoUsuario));
     }
 
     public void setNombreCompletoUsuario(String nombreCompletoUsuario) {

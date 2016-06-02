@@ -10,6 +10,7 @@ import com.web.chon.security.service.PlataformaUserDetailsServiceImpl;
 import com.web.chon.service.IfaceCatRol;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceCatUsuario;
+import com.web.chon.util.JsfUtil;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -44,17 +45,18 @@ public class BeanCambioContrasena implements BeanSimple {
     
     @PostConstruct
     public void init() {
+        try {
+            
+            usuario = context.getUsuarioAutenticado();
+            data = new Usuario();
+            data = ifaceCatUsuario.getUsuariosById(usuario.getIdUsuario().intValue());
+            contrasenaActual = usuario.getUsuPassword();
 
-        usuario = context.getUsuarioAutenticado();
-
-        data = new Usuario();
-
-        data = ifaceCatUsuario.getUsuariosById(usuario.getIdUsuario().intValue());
-        contrasenaActual = usuario.getUsuPassword();
-        System.out.println("data :" + data.toString());
-
-        setTitle("Cambio de Contraseña.");
-
+            setTitle("Cambio de Contraseña.");
+        } catch (ClassCastException ce) {
+            setTitle("Cambio de Contraseña.");
+            data = new Usuario();
+        }
     }
 
     @Override
@@ -87,13 +89,23 @@ public class BeanCambioContrasena implements BeanSimple {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar modificar la Contraseña :" + data.getNombreUsuario() + "."));
         }
 
-        return "welcome";
+        return "cambioContrasena";
     }
 
     public void cancel(){
         contrasenaActualComfirmacion = "";
         data.setConfirmaUsuario("");
         data.setContrasenaUsuario("");
+    }
+    
+    public void getUserByClave(){
+        
+        data = ifaceCatUsuario.getUsuarioByClave(data.getClaveUsuario(),0);
+        contrasenaActual = data.getContrasenaUsuario();
+        
+        if(data.getClaveUsuario() == null){
+            JsfUtil.addErrorMessage("No se Encontraron Registros.");
+        }
     }
     
     @Override
@@ -133,6 +145,4 @@ public class BeanCambioContrasena implements BeanSimple {
         this.contrasenaActualComfirmacion = contrasenaActualComfirmacion;
     }
     
-    
-
 }
