@@ -24,5 +24,7 @@ public interface NegocioCatUsuario {
     public int insertarUsuario(Usuario usuario);
     
     public List<Object[]> getUsuarioByNombreCompleto(String nombreUsuario,int idSucursal);
+    
+    public List<Object[]> getUsuarioByClave(String clave,int idSucursal);
 
 }

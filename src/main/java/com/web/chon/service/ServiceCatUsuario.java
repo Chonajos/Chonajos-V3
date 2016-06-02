@@ -80,7 +80,6 @@ public class ServiceCatUsuario implements IfaceCatUsuario {
                 usuario.setIdRolFk(obj[21] == null ? null : new BigDecimal(obj[21].toString()));
                 usuario.setIdSucursal(obj[26] == null ? -1 : Integer.parseInt(obj[26].toString()));
 
-
             }
 
             return usuario;
@@ -109,11 +108,11 @@ public class ServiceCatUsuario implements IfaceCatUsuario {
     }
 
     @Override
-    public ArrayList<Usuario> getUsuarioByNombreCompleto(String nombre,int idSucursal) {
+    public ArrayList<Usuario> getUsuarioByNombreCompleto(String nombre, int idSucursal) {
         try {
             ArrayList<Usuario> lstUsuario = new ArrayList<Usuario>();
             ejb = (NegocioCatUsuario) Utilidades.getEJBRemote("ejbCatUsuario", NegocioCatUsuario.class.getName());
-            List<Object[]> object = ejb.getUsuarioByNombreCompleto(nombre,idSucursal);
+            List<Object[]> object = ejb.getUsuarioByNombreCompleto(nombre, idSucursal);
 
             for (Object[] obj : object) {
 
@@ -129,6 +128,36 @@ public class ServiceCatUsuario implements IfaceCatUsuario {
             return lstUsuario;
         } catch (Exception ex) {
             Logger.getLogger(ServiceCatUsuario.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
+    @Override
+    public Usuario getUsuarioByClave(String clave,int idSucursal) {
+        try {
+
+            Usuario usuario = new Usuario();
+            ejb = (NegocioCatUsuario) Utilidades.getEJBRemote("ejbCatUsuario", NegocioCatUsuario.class.getName());
+
+            List<Object[]> lstObject = ejb.getUsuarioByClave(clave,idSucursal);
+
+            for (Object[] obj : lstObject) {
+
+                usuario.setIdUsuarioPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+                usuario.setNombreUsuario(obj[1] == null ? "" : obj[1].toString());
+                usuario.setApaternoUsuario(obj[2] == null ? "" : obj[2].toString());
+                usuario.setAmaternoUsuario(obj[3] == null ? "" : obj[3].toString());
+                usuario.setClaveUsuario(obj[18] == null ? "" : obj[18].toString());
+                usuario.setContrasenaUsuario(obj[4] == null ? "" : obj[4].toString());
+                usuario.setRfcUsuario(obj[16] == null ? "" : obj[16].toString());
+                usuario.setIdRolFk(obj[21] == null ? null : new BigDecimal(obj[21].toString()));
+                usuario.setIdSucursal(obj[26] == null ? -1 : Integer.parseInt(obj[26].toString()));
+
+            }
+            
+            return usuario;
+
+        } catch (Exception ex) {
             return null;
         }
     }

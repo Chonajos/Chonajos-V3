@@ -10,6 +10,7 @@
 
     <http auto-config="true" access-denied-page="/login.xhtml" use-expressions="true">
         <intercept-url pattern="/login.xhtml" access="permitAll"/>		
+        <intercept-url pattern="/views/cambioContrasena.xhtml" access="permitAll"/>
         <intercept-url pattern="/views/*" access="isAuthenticated()"/>
         <form-login login-page='/login.xhtml' />
         <custom-filter ref="customFilter" after="FILTER_SECURITY_INTERCEPTOR" />
