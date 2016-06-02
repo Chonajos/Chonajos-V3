@@ -399,32 +399,26 @@ public class BeanVenta implements Serializable, BeanSimple {
     public void updateProducto() {
 
         TipoEmpaque empaque = new TipoEmpaque();
+        empaque = getEmpaque(data.getIdTipoEmpaqueFk());
         
-        if (data.getPrecioProducto() != null) {
-            empaque = getEmpaque(data.getIdTipoEmpaqueFk());
+        data.setIdProductoFk(subProducto.getIdSubproductoPk());
+        data.setNombreProducto(subProducto.getNombreSubproducto());
 
-            data.setIdProductoFk(subProducto.getIdSubproductoPk());
-            data.setNombreProducto(subProducto.getNombreSubproducto());
+        dataEdit.setCantidadEmpaque(data.getCantidadEmpaque());
+        dataEdit.setIdProductoFk(data.getIdProductoFk());
+        dataEdit.setIdTipoEmpaqueFk(data.getIdTipoEmpaqueFk());
+        dataEdit.setIdVentaProductoPk(data.getIdVentaProductoPk());
+        dataEdit.setKilosVenta(data.getKilosVenta());
+        dataEdit.setPrecioProducto(data.getPrecioProducto());
+        dataEdit.setNombreProducto(data.getNombreProducto());
+        dataEdit.setIdProductoFk(data.getIdProductoFk());
+        dataEdit.setNombreEmpaque(empaque.getNombreEmpaque());
 
-            dataEdit.setCantidadEmpaque(data.getCantidadEmpaque());
-            dataEdit.setIdProductoFk(data.getIdProductoFk());
-            dataEdit.setIdTipoEmpaqueFk(data.getIdTipoEmpaqueFk());
-            dataEdit.setIdVentaProductoPk(data.getIdVentaProductoPk());
-            dataEdit.setKilosVenta(data.getKilosVenta());
-            dataEdit.setPrecioProducto(data.getPrecioProducto());
-            dataEdit.setNombreProducto(data.getNombreProducto());
-            dataEdit.setIdProductoFk(data.getIdProductoFk());
-            dataEdit.setNombreEmpaque(empaque.getNombreEmpaque());
+        dataEdit.setTotal(new BigDecimal(dataEdit.getPrecioProducto()).multiply(dataEdit.getCantidadEmpaque()));
 
-            dataEdit.setTotal(new BigDecimal(dataEdit.getPrecioProducto()).multiply(dataEdit.getCantidadEmpaque()));
-            calcularTotalVenta();
-            viewEstate = "init";
-            data.reset();
-        } else {
-            JsfUtil.addErrorMessage("No se tiene el precio de este prodcuto, favor de contactar al gerente.");
-        }
-
-        
+        calcularTotalVenta();
+        viewEstate = "init";
+        data.reset();
     }
 
     public void cancel() {

@@ -1,3 +1,4 @@
+
 package com.web.chon.ejb;
 
 import com.web.chon.dominio.Usuario;
@@ -83,7 +84,7 @@ public class EjbCatUsuario implements NegocioCatUsuario {
             query.setParameter(5, usuario.getContrasenaUsuario());
             query.setParameter(6, usuario.getRfcUsuario());
             query.setParameter(7, usuario.getIdRolFk());
-            query.setParameter(8, usuario.getIdSucursal() == -1 ? null : usuario.getIdSucursal());
+            query.setParameter(8,usuario.getIdSucursal() == -1 ? null : usuario.getIdSucursal());
             query.setParameter(9, usuario.getIdUsuarioPk());
 
             return query.executeUpdate();
@@ -139,39 +140,11 @@ public class EjbCatUsuario implements NegocioCatUsuario {
 
     @Override
     public List<Object[]> getUsuarioByNombreCompleto(String nombreUsuario, int idSucursal) {
-        Query query;
+        Query query = em.createNativeQuery("SELECT * FROM USUARIO WHERE UPPER(NOMBRE_USUARIO ||' '|| APATERNO_USUARIO ||' '|| AMATERNO_USUARIO )  LIKE UPPER('%" + nombreUsuario + "%') and id_sucursal_fk = ?");
 
         //se comento  and ID_ROL_FK = 2 para filtro por rol vendedor TODO FIXME
-        if (idSucursal == 0) {
-            query = em.createNativeQuery("SELECT * FROM USUARIO WHERE UPPER(NOMBRE_USUARIO ||' '|| APATERNO_USUARIO ||' '|| AMATERNO_USUARIO )  LIKE UPPER('%" + nombreUsuario + "%') ");
-        } else {
-            query = em.createNativeQuery("SELECT * FROM USUARIO WHERE UPPER(NOMBRE_USUARIO ||' '|| APATERNO_USUARIO ||' '|| AMATERNO_USUARIO )  LIKE UPPER('%" + nombreUsuario + "%') and id_sucursal_fk = ?");
-            query.setParameter(1, idSucursal);
-        }
-
+        query.setParameter(1, idSucursal);
         return query.getResultList();
-    }
-
-    @Override
-    public List<Object[]> getUsuarioByClave(String clave, int idSucursal) {
-        try {
-            Query query;
-
-            if (idSucursal == 0) {
-                query = em.createNativeQuery("SELECT * FROM Usuario WHERE TRIM(CLAVE_USUARIO) = ?");
-                query.setParameter(1, clave.trim());
-            } else {
-                query = em.createNativeQuery("SELECT * FROM Usuario WHERE TRIM(CLAVE_USUARIO) = ? AND id_sucursal_fk = ?");
-                query.setParameter(1, clave.trim());
-                query.setParameter(2, idSucursal);
-            }
-
-            return query.getResultList();
-
-        } catch (Exception ex) {
-            Logger.getLogger(EjbProducto.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
-        }
     }
 
 }
