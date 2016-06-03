@@ -113,15 +113,17 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
         listaSucursales = ifaceCatSucursales.getSucursales();
         listaStatusVenta = ifaceCatStatusVenta.getStatusVentas();
 
+        filtro = 1;
+        getVentasByIntervalDate();
+        
         setTitle("Relación de Operaciónes Venta Menudeo");
         setViewEstate("init");
 
     }
-    
-    public void addComent()
-    {
+
+    public void addComent() {
         data.setComentarioCancel(data.getComentarioCancel());
-        System.out.println("Comentarios: "+data.getComentarioCancel());
+        System.out.println("Comentarios: " + data.getComentarioCancel());
     }
 
     public void generateReport() {
@@ -259,9 +261,8 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     }
 
     public void cancelarVenta() {
-        if (data.getIdStatus() != 4) 
-        {
-            System.out.println("comentarios: "+data.getComentarioCancel());
+        if (data.getIdStatus() != 4) {
+            System.out.println("comentarios: " + data.getComentarioCancel());
             if (ifaceBuscaVenta.cancelarVenta(data.getIdVentaPk().intValue(), usuario.getIdUsuario().intValue(), data.getComentarioCancel()) != 0) {
                 JsfUtil.addSuccessMessageClean("Venta Cancelada");
                 data.setIdStatus(0);
@@ -270,11 +271,9 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
             } else {
                 JsfUtil.addErrorMessageClean("Ocurrió un error al intentar cancelar la venta.");
             }
-        }
-        else
-        {
-           JsfUtil.addErrorMessageClean("No puedes volver a cancelar la venta");
-             
+        } else {
+            JsfUtil.addErrorMessageClean("No puedes volver a cancelar la venta");
+
         }
     }
 
