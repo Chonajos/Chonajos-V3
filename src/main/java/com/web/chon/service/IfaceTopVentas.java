@@ -6,6 +6,7 @@
 package com.web.chon.service;
 
 import com.web.chon.dominio.topVentas;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -14,7 +15,7 @@ import java.util.Date;
  * @author freddy
  */
 public interface IfaceTopVentas {
-    public ArrayList<topVentas> getMayoreo(Date fechaInicio, Date fechaFin);
-    public ArrayList<topVentas> getMenudeo(Date fechaInicio, Date fechaFin);
+    public ArrayList<topVentas> getMayoreo(Date fechaInicio, Date fechaFin,String orden,BigDecimal rows);
+    public ArrayList<topVentas> getMenudeo(Date fechaInicio, Date fechaFin,String orden,BigDecimal rows);
     
 }
