@@ -9,6 +9,7 @@ import com.web.chon.dominio.topVentas;
 import com.web.chon.service.IfaceTopVentas;
 import com.web.chon.util.TiempoUtil;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.annotation.PostConstruct;
@@ -39,19 +40,23 @@ public class BeanTopVentas implements Serializable, BeanSimple {
     private int filtro;
     private Date fechaFiltroInicio;
     private Date fechaFiltroFin;
+    private String orden;
+    private BigDecimal rows;
 
     @PostConstruct
     public void init() {
-        radio = "mayoreo";
+        radio = "ambos";
+        orden="desc";
+        rows=null;
 
         modelMayoreo = new ArrayList<topVentas>();
         modelMenudeo = new ArrayList<topVentas>();
 
-        modelMayoreo = ifaceTopVentas.getMayoreo(fechaInicio, fechaFin);
-        modelMenudeo = ifaceTopVentas.getMenudeo(fechaInicio, fechaFin);
-        setTitleView("Ventas Mayoreo");
+        modelMayoreo = ifaceTopVentas.getMayoreo(fechaInicio, fechaFin,orden,rows);
+        modelMenudeo = ifaceTopVentas.getMenudeo(fechaInicio, fechaFin,orden,rows);
         setTitle("Top de Ventas");
-        setViewEstate("Mayoreo");
+        setTitleView("Ventas Totales");
+        setViewEstate("Ambos");
 
     }
 
@@ -61,18 +66,23 @@ public class BeanTopVentas implements Serializable, BeanSimple {
             setViewEstate("Mayoreo");
             radio = "mayoreo";
 
-        } else {
+        } else if(radio.equals("menudeo")){
             setTitleView("Ventas Menudeo");
             setViewEstate("Menudeo");
             radio = "menudeo";
-            System.out.println("Entro aqui");
+        }
+        else
+        {
+            setTitleView("Ventas Totales");
+            setViewEstate("Ambos");
+            radio = "ambos";
         }
     }
 
     public void getTopVentasByIntervalDate() {
         setFechaInicioFin(filtro);
-        modelMayoreo = ifaceTopVentas.getMayoreo(getFechaFiltroInicio(), getFechaFiltroFin());
-        modelMenudeo = ifaceTopVentas.getMenudeo(getFechaFiltroInicio(), getFechaFiltroFin());
+        modelMayoreo = ifaceTopVentas.getMayoreo(getFechaFiltroInicio(), getFechaFiltroFin(),orden,rows);
+        modelMenudeo = ifaceTopVentas.getMenudeo(getFechaFiltroInicio(), getFechaFiltroFin(),orden,rows);
 
     }
 
@@ -83,12 +93,12 @@ public class BeanTopVentas implements Serializable, BeanSimple {
                 System.out.println("Fecha Inicio: " + getFechaFiltroInicio());
                 System.out.println("Fecha Fin: " + getFechaFiltroFin());
                 if (getFechaFiltroInicio() != null && getFechaFiltroFin() != null) {
-                    modelMayoreo = ifaceTopVentas.getMayoreo(getFechaFiltroInicio(), getFechaFiltroFin());
-                    modelMenudeo = ifaceTopVentas.getMenudeo(getFechaFiltroInicio(), getFechaFiltroFin());
+                    modelMayoreo = ifaceTopVentas.getMayoreo(getFechaFiltroInicio(), getFechaFiltroFin(),orden,rows);
+                    modelMenudeo = ifaceTopVentas.getMenudeo(getFechaFiltroInicio(), getFechaFiltroFin(),orden,rows);
 
                 } else {
-                    modelMayoreo = ifaceTopVentas.getMayoreo(null, null);
-                    modelMenudeo = ifaceTopVentas.getMenudeo(null, null);
+                    modelMayoreo = ifaceTopVentas.getMayoreo(null, null,null,null);
+                    modelMenudeo = ifaceTopVentas.getMenudeo(null, null,null,null);
                 }
                 break;
             case 1:
@@ -220,5 +230,23 @@ public class BeanTopVentas implements Serializable, BeanSimple {
     public void setFechaFiltroFin(Date fechaFiltroFin) {
         this.fechaFiltroFin = fechaFiltroFin;
     }
+
+    public String getOrden() {
+        return orden;
+    }
+
+    public void setOrden(String orden) {
+        this.orden = orden;
+    }
+
+    public BigDecimal getRows() {
+        return rows;
+    }
+
+    public void setRows(BigDecimal rows) {
+        this.rows = rows;
+    }
+    
+    
 
 }

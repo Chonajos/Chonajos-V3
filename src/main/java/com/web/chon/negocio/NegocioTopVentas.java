@@ -6,6 +6,7 @@
 package com.web.chon.negocio;
 
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Remote;
@@ -17,7 +18,7 @@ import javax.ejb.Remote;
  */
 @Remote
 public interface NegocioTopVentas {
-    public List<Object[]> getMayoreo(String fechaInicio, String fechaFin);
-    public List<Object[]> getMenudeo(String fechaInicio, String fechaFin);
+    public List<Object[]> getMayoreo(String fechaInicio, String fechaFin,String orden,BigDecimal rows);
+    public List<Object[]> getMenudeo(String fechaInicio, String fechaFin,String orden,BigDecimal rows);
     
 }

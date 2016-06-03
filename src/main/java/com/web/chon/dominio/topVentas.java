@@ -23,12 +23,39 @@ public class topVentas implements Serializable{
     private BigDecimal numVentas;
     private Date fechaInicio;
     private Date fechaFin;
+    private BigDecimal empaques;
+    private BigDecimal kilos;
+    private BigDecimal dinero;
 
     @Override
     public String toString() {
-        return "topVentas{" + "nombreSucursal=" + nombreSucursal + ", nombreVendedor=" + nombreVendedor + ", apPaternoVendedor=" + apPaternoVendedor + ", apMaternoVendedor=" + apMaternoVendedor + ", idVendedor=" + idVendedor + ", numVentas=" + numVentas + ", fechaInicio=" + fechaInicio + ", fechaFin=" + fechaFin + '}';
+        return "topVentas{" + "nombreSucursal=" + nombreSucursal + ", nombreVendedor=" + nombreVendedor + ", apPaternoVendedor=" + apPaternoVendedor + ", apMaternoVendedor=" + apMaternoVendedor + ", idVendedor=" + idVendedor + ", numVentas=" + numVentas + ", fechaInicio=" + fechaInicio + ", fechaFin=" + fechaFin + ", empaques=" + empaques + ", kilos=" + kilos + ", dinero=" + dinero + '}';
     }
 
+    public BigDecimal getEmpaques() {
+        return empaques;
+    }
+
+    public void setEmpaques(BigDecimal empaques) {
+        this.empaques = empaques;
+    }
+
+    public BigDecimal getKilos() {
+        return kilos;
+    }
+
+    public void setKilos(BigDecimal kilos) {
+        this.kilos = kilos;
+    }
+
+    public BigDecimal getDinero() {
+        return dinero;
+    }
+
+    public void setDinero(BigDecimal dinero) {
+        this.dinero = dinero;
+    }
+   
     
     public String getNombreSucursal() {
         return nombreSucursal;
