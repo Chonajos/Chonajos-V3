@@ -46,6 +46,15 @@ public class CustomFilter extends OncePerRequestFilter {
         {
             j = url.lastIndexOf("7002");
         }
+        
+        if( j==-1)
+        {
+            j = url.lastIndexOf("80");
+        }
+        if( j==-1)
+        {
+            j = url.lastIndexOf("443");
+        }
 
         if ((url.substring(j)).equalsIgnoreCase("/login.xhtml")) {
 
