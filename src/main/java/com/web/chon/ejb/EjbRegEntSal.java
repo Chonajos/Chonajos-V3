@@ -30,8 +30,9 @@ public class EjbRegEntSal implements NegocioRegEntSal
     @Override
     public List<Object[]> getUsuarioByIdUsuario(BigDecimal idUsuarioFK, String fechaHoy) {
       try {
-;
-            Query query = em.createNativeQuery("select * from REGISTROENTRADA reg where ID_USUARIO_FK = ? and TO_DATE(TO_CHAR(reg.FECHAENTRADA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '"+fechaHoy +"' AND '"+fechaHoy +"'");
+
+            Query query = em.createNativeQuery("select reg.*,usu.NOMBRE_USUARIO,usu.APATERNO_USUARIO,usu.AMATERNO_USUARIO from REGISTROENTRADA reg inner join USUARIO usu\n" +
+"on usu.ID_USUARIO_PK = reg.ID_USUARIO_FK where ID_USUARIO_FK = ? and TO_DATE(TO_CHAR(reg.FECHAENTRADA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '"+fechaHoy +"' AND '"+fechaHoy +"'");
             query.setParameter(1, idUsuarioFK);
 
             return query.getResultList();
@@ -70,6 +71,39 @@ public class EjbRegEntSal implements NegocioRegEntSal
     public int getNextVal() {
         Query query = em.createNativeQuery("SELECT S_REGISTROENTRADA.nextVal FROM DUAL");
         return Integer.parseInt(query.getSingleResult().toString());
+    
+    }
+
+    @Override
+    public List<Object[]> getRegistros(BigDecimal idUsuarioFK, String fechaInicio, String fechaFin) {
+        System.out.println("EJB: idUser_ "+idUsuarioFK+" Fecha Inicio: "+fechaInicio+" Fecha Fin: "+fechaFin);
+        try {
+
+            Query query = em.createNativeQuery("select reg.*,usu.NOMBRE_USUARIO,usu.APATERNO_USUARIO,usu.AMATERNO_USUARIO from REGISTROENTRADA reg inner join USUARIO usu\n" +
+"on usu.ID_USUARIO_PK = reg.ID_USUARIO_FK where ID_USUARIO_FK = ? and  TO_DATE(TO_CHAR(reg.FECHAENTRADA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '"+fechaInicio +"' AND '"+fechaFin+"'");
+            query.setParameter(1, idUsuarioFK);
+            System.out.println("query: "+query);
+            return query.getResultList();
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbRegEntSal.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
+    @Override
+    public List<Object[]> getALL(String fechaInicio, String fechaFin) {
+      try {
+
+            Query query = em.createNativeQuery("select reg.*,usu.NOMBRE_USUARIO,usu.APATERNO_USUARIO,usu.AMATERNO_USUARIO from REGISTROENTRADA reg inner join USUARIO usu\n" +
+"on usu.ID_USUARIO_PK = reg.ID_USUARIO_FK where TO_DATE(TO_CHAR(reg.FECHAENTRADA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '"+fechaInicio +"' AND '"+fechaFin+"'");
+            System.out.println("query: "+query);
+            return query.getResultList();
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbRegEntSal.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     
     }
     

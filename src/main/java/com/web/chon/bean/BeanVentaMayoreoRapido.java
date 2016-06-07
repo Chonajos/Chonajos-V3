@@ -305,7 +305,8 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
     public void updateVenta() {
 
             try {
-                ifaceBuscaVenta.updateStatusVentaMayoreo(ventaGeneral.getVentaSucursal().intValue(), usuario.getIdUsuarioPk().intValue());
+                ifaceBuscaVenta.updateStatusVentaMayoreo(ventaGeneral.getIdVentaMayoreoPk().intValue(), usuario.getIdUsuarioPk().intValue());
+                
                 JsfUtil.addSuccessMessageClean("Venta Pagada");
                 setParameterTicket(ventaGeneral.getVentaSucursal().intValue());
                 generateReport(ventaGeneral.getVentaSucursal().intValue());
@@ -383,8 +384,8 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
     }
 
     public void addProducto() {
-        if (selectedExistencia == null || data.getCantidadEmpaque().intValue() == 0 || data.getKilosVendidos().intValue() == 0) {
-            JsfUtil.addErrorMessage("Seleccione un Producto de la tabla, o agrego una cantidad o peso en 0 Kg.");
+        if (selectedExistencia == null || data.getKilosVendidos().compareTo(BigDecimal.ZERO) == 0) {
+            JsfUtil.addErrorMessage("Seleccione un Producto de la tabla, o peso en 0 Kg.");
 
         } else //            System.out.println("idSubProducto:" + selectedExistencia.getIdSubProductoFK());
         {
@@ -559,6 +560,7 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
         paramReport.put("estado", "PEDIDO PAGADO");
         paramReport.put("labelFecha", "Fecha de Venta:");
         paramReport.put("labelFolio", "Folio de Venta:");
+        paramReport.put("telefonos", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:"+usuarioDominio.getTelefonoSucursal());
         paramReport.put("labelSucursal", usuarioDominio.getNombreSucursal());
 
     }

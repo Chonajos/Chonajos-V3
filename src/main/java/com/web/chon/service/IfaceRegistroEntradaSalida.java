@@ -17,6 +17,9 @@ import java.util.Date;
 public interface IfaceRegistroEntradaSalida 
 {
     public ArrayList<RegistroEntradaSalida> getUsuarioByIdUsuario(BigDecimal idUsuarioFK,Date fechaHoy);
+    public ArrayList<RegistroEntradaSalida> getRegistros(BigDecimal idUsuarioFK,Date fechaInicio, Date fechaFin);
+    public ArrayList<RegistroEntradaSalida> getALL(Date fechaInicio, Date fechaFin);
+    
     public int updateSalidabyIdReg(RegistroEntradaSalida data);
     public int insertEntradabyIdReg(RegistroEntradaSalida data);
     public int getNextVal ();

@@ -6,99 +6,106 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:pe="http://primefaces.org/ui/extensions">
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                xmlns:o="http://omnifaces.org/ui">
 
     <ui:define name="content">
         <div>
-            <h3>#{BeanHistorialRegEntSal.title}</h3>
+            <h3>#{beanHistorialRegEntSal.title}</h3>
         </div>
-        
+        <script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=true"></script>
+
         <h:form id="formContent">
             <p:messages id="messages" showDetail="true" showSummary="false" showIcon="false" autoUpdate="true" closable="true" />
             <p:growl id="messagess" showDetail="true" life="2000" />
-            <p:panel>
+            <p:panel id="panel1" rendered="#{beanHistorialRegEntSal.viewEstate=='init'}">
                 <div class="container-fluid">
                     <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
-                        <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="sucursalFiltro" value ="Sucursals:" rendered="#{BeanHistorialRegEntSal.viewEstate =='init'}" /> 
-                        <h:selectOneMenu  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{BeanHistorialRegEntSal.data.idSucursal}" rendered="#{BeanHistorialRegEntSal.viewEstate =='init'}" disabled="#{BeanHistorialRegEntSal.usuario.perId != 1}">
+                        <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="sucursalFiltro" value ="Sucursals:" rendered="#{beanHistorialRegEntSal.viewEstate =='init'}" /> 
+                        <h:selectOneMenu  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanHistorialRegEntSal.data.idSucursalFk}">
                             <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="" />
-                            <f:selectItems value="#{BeanHistorialRegEntSal.listaSucursales}" var="sucursalita" itemLabel="#{sucursalita.nombreSucursal}" itemValue="#{sucursalita.idSucursalPk}"/>
-                            <p:ajax event="change" listener="#{BeanHistorialRegEntSal.printStatus()}" update=":formContent:table"/>
+                            <f:selectItems value="#{beanHistorialRegEntSal.listaSucursales}" var="sucursalita" itemLabel="#{sucursalita.nombreSucursal}" itemValue="#{sucursalita.idSucursalPk}"/>
+                            <p:ajax event="change" listener="#{beanHistorialRegEntSal.changeComboUsers()}" update=":formContent:comboUser"/>
                         </h:selectOneMenu>
                     </div>
                     <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
-                        <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="selectFiltro" value ="Consulta por Fecha:" rendered="#{BeanHistorialRegEntSal.viewEstate =='init'}"/> 
-                        <h:selectOneMenu  id="selectFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{BeanHistorialRegEntSal.filtro}" rendered="#{BeanHistorialRegEntSal.viewEstate =='init'}">
+                        <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="comboUser" value ="Usuario:" rendered="#{beanHistorialRegEntSal.viewEstate =='init'}" /> 
+                        <h:selectOneMenu  id="comboUser" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanHistorialRegEntSal.data.idUsuarioFk}">
+                            <f:selectItem itemLabel="Selecciona un usuario" itemValue="" />
+                            <f:selectItems value="#{beanHistorialRegEntSal.listaUsuarios}" var="usuarios" itemLabel="#{usuarios.nombreCompletoUsuario}" itemValue="#{usuarios.idUsuarioPk}"/>
+                            <p:ajax event="change" listener="#{beanHistorialRegEntSal.printStatus()}" update=":formContent:table"/>
+                        </h:selectOneMenu>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                        <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="selectFiltro" value ="Consulta por Fecha:" rendered="#{beanHistorialRegEntSal.viewEstate =='init'}"/> 
+                        <h:selectOneMenu  id="selectFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanHistorialRegEntSal.filtro}" rendered="#{beanHistorialRegEntSal.viewEstate =='init'}">
                             <f:selectItem itemLabel="Seleccione un Filtro" itemValue="-1" />
                             <f:selectItem itemLabel="Día" itemValue="1"/>
                             <f:selectItem itemLabel="Mes" itemValue="2"/>
                             <f:selectItem itemLabel="Año" itemValue="3"/>
-                            <p:ajax event="change" update=":formContent:table formContent:calendarInicio formContent:calendarFin" listener="#{BeanHistorialRegEntSal.getVentasByIntervalDate()}"/>
+                            <p:ajax event="change" update=":formContent:table formContent:calendarInicio formContent:calendarFin" listener="#{beanHistorialRegEntSal.getRegistrosByIntervalDate()}"/>
                         </h:selectOneMenu>
                     </div>
 
                     <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 form-group">
-                        <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="calendarInicio" value ="Fecha de Inicio:" rendered="#{BeanHistorialRegEntSal.viewEstate =='init'}"/> 
+                        <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="calendarInicio" value ="Fecha de Inicio:" rendered="#{beanHistorialRegEntSal.viewEstate =='init'}"/> 
                         <p:calendar id="calendarInicio" class="col-lg-6 col-md-8 col-sm-8 col-xs-12 calendario" navigator="true" placeholder="dd/mm/yyyy"
-                                    value="#{BeanHistorialRegEntSal.data.fechaFiltroInicio}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button" rendered="#{BeanHistorialRegEntSal.viewEstate =='init'}">
+                                    value="#{beanHistorialRegEntSal.data.fechaFiltroInicio}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button" rendered="#{beanHistorialRegEntSal.viewEstate =='init'}">
                             <p:ajax   event="dateSelect"
-                                      listener="#{BeanHistorialRegEntSal.setFechaInicioFin(4)}"
+                                      listener="#{beanHistorialRegEntSal.setFechaInicioFin(4)}"
                                       update=":formContent:table" />
                         </p:calendar>
                     </div>
                     <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
-                        <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="calendarFin" value ="Fecha de Fin:" rendered="#{BeanHistorialRegEntSal.viewEstate =='init'}"/> 
+                        <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="calendarFin" value ="Fecha de Fin:" rendered="#{beanHistorialRegEntSal.viewEstate =='init'}"/> 
                         <p:calendar id="calendarFin" class="col-lg-6 col-md-8 col-sm-8 col-xs-12 calendario" navigator="true" placeholder="dd/mm/yyyy"
-                                    value="#{BeanHistorialRegEntSal.data.fechaFiltroFin}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button" rendered="#{BeanHistorialRegEntSal.viewEstate =='init'}">
+                                    value="#{beanHistorialRegEntSal.data.fechaFiltroFin}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button" rendered="#{beanHistorialRegEntSal.viewEstate =='init'}">
                             <p:ajax event="dateSelect"
-                                    listener="#{BeanHistorialRegEntSal.setFechaInicioFin(4)}"
+                                    listener="#{beanHistorialRegEntSal.setFechaInicioFin(4)}"
                                     update=":formContent:table"  />
                         </p:calendar>
                     </div>
 
-                    
+
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <p:dataTable id="table" var="model" value="#{BeanHistorialRegEntSal.model}" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." rendered="#{BeanHistorialRegEntSal.viewEstate =='init'}">
-
-                            <p:column headerText="Folio" class="#{model.idStatus eq 1 ? 'statusPedido': (model.idStatus eq 2 ? 'statusPagado':(model.idStatus eq 3 ? 'statusEntregado':'statusCancelado'))}  alignCenter"  width="60px;" >
-                                <h:outputText value="#{model.idVentaPk}" />
+                        <p:dataTable id="table" var="model" value="#{beanHistorialRegEntSal.model}" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." rendered="#{beanHistorialRegEntSal.viewEstate =='init'}">
+                            <p:column headerText="Nombre" width="120px;" class="alignCenter">
+                                <h:outputText value="#{model.nombre} #{model.apPaterno} #{model.apMaterno}">
+                                </h:outputText>
                             </p:column>
-
-                            <p:column headerText="Fecha de venta" width="120px;" class="alignCenter">
-                                <h:outputText value="#{model.fechaVenta}">
+                            
+                            <p:column headerText="Fecha" width="120px;" class="alignCenter">
+                                <h:outputText value="#{model.fechaEntrada}">
                                     <f:convertDateTime pattern="dd/MM/yyyy"/>
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Hora de venta" width="120px;" class="alignCenter">
-                                <h:outputText value="#{model.fechaVenta}">
+                            <p:column headerText="Hora de Entrada" width="120px;" class="alignCenter">
+                                <h:outputText value="#{model.fechaEntrada}">
                                     <f:convertDateTime pattern="HH:mm" />
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Cliente" width="250px;" class="alignLeft">
-                                <h:outputText value="#{model.nombreCliente}" />
-                            </p:column>
-                            <p:column headerText="Vendedor" width="250px;" class="alignLeft">
-                                <h:outputText value="#{model.nombreVendedor}" />
-                            </p:column>
-                            <p:column headerText="Total de Venta" width="120px;" class="alignRight">
-                                <h:outputText value="#{model.totalVenta}">
-                                    <f:convertNumber pattern="#,##0.00" />
+                            <p:column headerText="Hora de Salida" width="120px;" class="alignCenter">
+                                <h:outputText value="#{model.fechaSalida}">
+                                    <f:convertDateTime pattern="HH:mm" />
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Ver" width="60px;" class="alignCenter">
-                                <p:commandButton id="editar" ajax="true" process="@this" action="#{BeanHistorialRegEntSal.detallesVenta}" icon="ui-icon-search" styleClass="ui-priority-primary" update=":formContent">
-                                    <f:setPropertyActionListener value="#{model}" target="#{BeanHistorialRegEntSal.data}"/>
+
+                            <p:column headerText="Ver Ubicaciones" width="60px;" class="alignCenter">
+                                <p:commandButton id="verEnt" ajax="true"  onclick="PF('dlg').show();" action="#{beanHistorialRegEntSal.verUbicaciones()}" icon="ui-icon-search" styleClass="ui-priority-primary" update=":formContent:gmap" >
+                                    <f:setPropertyActionListener value="#{model}" target="#{beanHistorialRegEntSal.data}"/>
                                 </p:commandButton>
+
                             </p:column>
-                            <p:column headerText="Imprimir" width="60px;" class="alignCenter">
-                                <p:commandButton id="print" ajax="true" process="@this" action="#{BeanHistorialRegEntSal.imprimirVenta()}" icon="ui-icon-print" styleClass="ui-priority-primary" update=":formContent" oncomplete="window.frames.miFrame.print();">
-                                    <f:setPropertyActionListener value="#{model}" target="#{BeanHistorialRegEntSal.data}"/>
-                                </p:commandButton>
-                            </p:column>
+
                         </p:dataTable>
+                        
                     </div>
                 </div>
-               </p:panel>
+            </p:panel>
+            <p:dialog id="gmapDialog" widgetVar="dlg" width="625" height="400" modal="true">
+                <p:gmap id="gmap" center="#{beanHistorialRegEntSal.puntoCentral}" zoom="20" type="HYBRID" style="width:100%;height:400px" model="#{beanHistorialRegEntSal.simpleModel}" />
+                        </p:dialog>
+
         </h:form>
     </ui:define>
 </ui:composition>

@@ -116,14 +116,15 @@ public class EjbBuscaVenta implements NegocioBuscaVenta
 
     @Override
     public int updateStatusVentaMayoreo(int idVenta,int idUsuario) {
-        //System.out.println("Entro a EJB");
-        //System.out.println("idusuario:" + idUsuario);
+        System.out.println("Entro a EJB");
+        System.out.println("idusuario:" + idUsuario);
       
         try {
             Query query = em.createNativeQuery("UPDATE VENTA_MAYOREO SET ID_STATUS_FK= ?,ID_CAJERO_FK=?,FECHA_PAGO = sysdate WHERE ID_VENTA_MAYOREO_PK = ? ");
             query.setParameter(1, 2);
             query.setParameter(2, idUsuario);
             query.setParameter(3, idVenta);
+            
             return query.executeUpdate();
 
         } catch (Exception ex) 

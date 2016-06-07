@@ -12,6 +12,8 @@ import javax.ejb.Remote;
 public interface NegocioCatUsuario {
 
     public List<Object[]> getUsuarios();
+    
+    public List<Object[]> getUsuariosbyIdSucursal(int idSucursal);
 
     public List<Object[]> getUsuarioById(int idUsuario);
 

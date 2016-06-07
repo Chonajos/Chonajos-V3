@@ -15,6 +15,8 @@ import java.util.ArrayList;
 public interface IfaceCatUsuario {
 
     public ArrayList<Usuario> getUsuarios();
+    
+     public ArrayList<Usuario> getUsuariosbyIdSucursal(int idSucursal);
 
     public Usuario getUsuariosById(int idUsuario);
 

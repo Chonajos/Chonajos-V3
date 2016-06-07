@@ -24,12 +24,18 @@ public class RegistroEntradaSalida implements Serializable{
     private double longitudSalida;
     private BigDecimal idUsuarioFk;
     private BigDecimal idSucursalFk;
+    private Date fechaFiltroInicio;
+    private Date fechaFiltroFin;
+    private String nombre;
+    private String apPaterno;
+    private String apMaterno;
 
     @Override
     public String toString() {
-        return "RegistroEntradaSalida{" + "idRegEntSalPk=" + idRegEntSalPk + ", fechaEntrada=" + fechaEntrada + ", fechaSalida=" + fechaSalida + ", latitudEntrada=" + latitudEntrada + ", latitudSalida=" + latitudSalida + ", longitudEntrada=" + longitudEntrada + ", longitudSalida=" + longitudSalida + ", idUsuarioFk=" + idUsuarioFk + ", idSucursalFk=" + idSucursalFk + '}';
+        return "RegistroEntradaSalida{" + "idRegEntSalPk=" + idRegEntSalPk + ", fechaEntrada=" + fechaEntrada + ", fechaSalida=" + fechaSalida + ", latitudEntrada=" + latitudEntrada + ", latitudSalida=" + latitudSalida + ", longitudEntrada=" + longitudEntrada + ", longitudSalida=" + longitudSalida + ", idUsuarioFk=" + idUsuarioFk + ", idSucursalFk=" + idSucursalFk + ", fechaFiltroInicio=" + fechaFiltroInicio + ", fechaFiltroFin=" + fechaFiltroFin + ", nombre=" + nombre + ", apPaterno=" + apPaterno + ", apMaterno=" + apMaterno + '}';
     }
 
+    
     public BigDecimal getIdRegEntSalPk() {
         return idRegEntSalPk;
     }
@@ -86,7 +92,6 @@ public class RegistroEntradaSalida implements Serializable{
         this.longitudSalida = longitudSalida;
     }
 
- 
     public BigDecimal getIdUsuarioFk() {
         return idUsuarioFk;
     }
@@ -102,6 +107,48 @@ public class RegistroEntradaSalida implements Serializable{
     public void setIdSucursalFk(BigDecimal idSucursalFk) {
         this.idSucursalFk = idSucursalFk;
     }
+
+    public Date getFechaFiltroInicio() {
+        return fechaFiltroInicio;
+    }
+
+    public void setFechaFiltroInicio(Date fechaFiltroInicio) {
+        this.fechaFiltroInicio = fechaFiltroInicio;
+    }
+
+    public Date getFechaFiltroFin() {
+        return fechaFiltroFin;
+    }
+
+    public void setFechaFiltroFin(Date fechaFiltroFin) {
+        this.fechaFiltroFin = fechaFiltroFin;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getApPaterno() {
+        return apPaterno;
+    }
+
+    public void setApPaterno(String apPaterno) {
+        this.apPaterno = apPaterno;
+    }
+
+    public String getApMaterno() {
+        return apMaterno;
+    }
+
+    public void setApMaterno(String apMaterno) {
+        this.apMaterno = apMaterno;
+    }
+
     
+   
     
 }

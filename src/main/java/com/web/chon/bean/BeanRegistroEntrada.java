@@ -29,8 +29,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Scope("view")
-public class BeanRegistroEntrada implements Serializable, BeanSimple
-{
+public class BeanRegistroEntrada implements Serializable, BeanSimple {
+
     private static final long serialVersionUID = 1L;
     private boolean botonGuardarEnabled;
     private boolean renderMap;
@@ -44,17 +44,17 @@ public class BeanRegistroEntrada implements Serializable, BeanSimple
     private boolean permissionToEntrada;
     private boolean permisionToSalida;
     private boolean bandera;
-    
+
     @Autowired
     IfaceRegistroEntradaSalida ifaceRegEntSal;
-    
+
     @Autowired
     IfaceCatUsuario ifaceCatUsuario;
     @Autowired
     private PlataformaSecurityContext context;
+
     @PostConstruct
-    public void init()
-    {
+    public void init() {
         usuario = new Usuario();
         usuarioDominio = context.getUsuarioAutenticado();
         usuario.setIdUsuarioPk(usuarioDominio.getIdUsuario());
@@ -64,38 +64,30 @@ public class BeanRegistroEntrada implements Serializable, BeanSimple
         data.setIdSucursalFk(new BigDecimal(usuario.getIdSucursal()));
         fechaTemporal = context.getFechaSistema();
         ArrayList<RegistroEntradaSalida> lista = new ArrayList<RegistroEntradaSalida>();
-        
+
         lista = ifaceRegEntSal.getUsuarioByIdUsuario(data.getIdUsuarioFk(), fechaTemporal);
-        
-        if(lista==null || lista.isEmpty())
-        {
-        
+
+        if (lista == null || lista.isEmpty()) {
+
             //data.setFechaEntrada(user.getFechaEntrada());
             //Ya tiene la entrada Registrada
-            bandera =true;
+            bandera = true;
             permissionToEntrada = false;
             permisionToSalida = true;
-            
-            
-        }
-        else
-        {
+
+        } else {
             data.setIdRegEntSalPk(lista.get(0).getIdRegEntSalPk());
-            
+
             bandera = false;
             permissionToEntrada = true;
             permisionToSalida = false;
-            
-            //nueva entrada
-            
-        }
-        
 
-        
+            //nueva entrada
+        }
+
 //        latitud=19.367365;
 //        longitud=-99.096502;
     }
-    
 
     @Override
     public String delete() {
@@ -104,46 +96,54 @@ public class BeanRegistroEntrada implements Serializable, BeanSimple
 
     @Override
     public String insert() {
-        if(bandera)
+        if (bandera) {
+            if (latitud == null || longitud == null) {
+                data.setLatitudSalida(0);
+                data.setLongitudSalida(0);
+                int idRegEntSal = ifaceRegEntSal.getNextVal();
+                data.setIdRegEntSalPk(new BigDecimal(idRegEntSal));
+                if (ifaceRegEntSal.insertEntradabyIdReg(data) != 0) {
+                    JsfUtil.addSuccessMessageClean("Registro de Entrada Sin Ubicación");
+                } else {
+                    JsfUtil.addErrorMessageClean("Ocurrio un problema al registrar la Entrada");
+                }
+            } else {
+                data.setLatitudEntrada(latitud);
+                data.setLongitudEntrada(longitud);
+                data.setLatitudSalida(0);
+                data.setLongitudSalida(0);
+                int idRegEntSal = ifaceRegEntSal.getNextVal();
+                data.setIdRegEntSalPk(new BigDecimal(idRegEntSal));
+                if (ifaceRegEntSal.insertEntradabyIdReg(data) != 0) {
+                    JsfUtil.addSuccessMessageClean("Registro de Entrada Realizado Correctamente");
+                } else {
+                    JsfUtil.addErrorMessageClean("Ocurrio un problema al registrar la Entrada");
+                }
+            }
+        } else if (latitud == null || longitud == null) 
         {
-            
-            data.setLatitudEntrada(latitud);
-            data.setLongitudEntrada(longitud);
             data.setLatitudSalida(0);
             data.setLongitudSalida(0);
-            int idRegEntSal = ifaceRegEntSal.getNextVal();
-            data.setIdRegEntSalPk(new BigDecimal(idRegEntSal));
-            if(ifaceRegEntSal.insertEntradabyIdReg(data)!=0)
-            {
-                JsfUtil.addSuccessMessageClean("Registro de Entrada Realizado Correctamente");
-            }
-            else
-            {
-                JsfUtil.addErrorMessageClean("Ocurrio un problema al registrar la Entrada");
-            }
-        }
-        else
-        {
-            
-            data.setLatitudSalida(latitud);
-            data.setLongitudSalida(longitud);
-            if(ifaceRegEntSal.updateSalidabyIdReg(data)!=0)
-            {
-                JsfUtil.addSuccessMessageClean("Registro de Salida Realizado Correctamente");
-        }
-            else
-            {
+            if (ifaceRegEntSal.updateSalidabyIdReg(data) != 0) {
+                JsfUtil.addSuccessMessageClean("Registro de Salida Realizado Correctamente, sin Ubicación");
+            } else {
                 JsfUtil.addErrorMessageClean("Ocurrio un problema al registrar la Salida");
             }
-            
+
+        } else {
+
+            data.setLatitudSalida(latitud);
+            data.setLongitudSalida(longitud);
+            if (ifaceRegEntSal.updateSalidabyIdReg(data) != 0) {
+                JsfUtil.addSuccessMessageClean("Registro de Salida Realizado Correctamente");
+            } else {
+                JsfUtil.addErrorMessageClean("Ocurrio un problema al registrar la Salida");
+            }
+
         }
-        
-        System.out.println("=================");
-        System.out.println(data.toString());
-        
+
         return "";
-       }
-    
+    }
 
     @Override
     public String update() {
@@ -218,6 +218,5 @@ public class BeanRegistroEntrada implements Serializable, BeanSimple
     public void setPermisionToSalida(boolean permisionToSalida) {
         this.permisionToSalida = permisionToSalida;
     }
-    
-    
+
 }

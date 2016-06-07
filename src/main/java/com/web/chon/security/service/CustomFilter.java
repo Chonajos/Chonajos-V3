@@ -42,6 +42,10 @@ public class CustomFilter extends OncePerRequestFilter {
 
         int i = url.lastIndexOf("/views/");
         int j = url.lastIndexOf("7001");
+        if( j==-1)
+        {
+            j = url.lastIndexOf("7002");
+        }
 
         if ((url.substring(j)).equalsIgnoreCase("/login.xhtml")) {
 

@@ -33,7 +33,7 @@ public class EjbCatUsuario implements NegocioCatUsuario {
             return resultList;
 
         } catch (Exception ex) {
-            Logger.getLogger(EjbProducto.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(EjbCatUsuario.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
     }
@@ -47,7 +47,7 @@ public class EjbCatUsuario implements NegocioCatUsuario {
             return query.getResultList();
 
         } catch (Exception ex) {
-            Logger.getLogger(EjbProducto.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(EjbCatUsuario.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
     }
@@ -63,7 +63,7 @@ public class EjbCatUsuario implements NegocioCatUsuario {
             return query.executeUpdate();
 
         } catch (Exception ex) {
-            Logger.getLogger(EjbProducto.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(EjbCatUsuario.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
     }
@@ -89,7 +89,7 @@ public class EjbCatUsuario implements NegocioCatUsuario {
             return query.executeUpdate();
 
         } catch (Exception ex) {
-            Logger.getLogger(EjbProducto.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(EjbCatUsuario.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
 
@@ -127,7 +127,7 @@ public class EjbCatUsuario implements NegocioCatUsuario {
             }
 
         } catch (Exception ex) {
-            Logger.getLogger(EjbProducto.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(EjbCatUsuario.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
     }
@@ -169,9 +169,30 @@ public class EjbCatUsuario implements NegocioCatUsuario {
             return query.getResultList();
 
         } catch (Exception ex) {
-            Logger.getLogger(EjbProducto.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(EjbCatUsuario.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
+    }
+
+    @Override
+    public List<Object[]> getUsuariosbyIdSucursal(int idSucursal) {
+        
+        try {
+
+            System.out.println("EJB_GET");
+
+            Query query = em.createNativeQuery("SELECT * FROM USUARIO where ID_SUCURSAL_FK = ?");
+            query.setParameter(1, idSucursal);
+            List<Object[]> resultList = null;
+            resultList = query.getResultList();
+
+            return resultList;
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbCatUsuario.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    
     }
 
 }

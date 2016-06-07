@@ -46,7 +46,6 @@ public class ServiceCatUsuario implements IfaceCatUsuario {
                 usuario.setRfcUsuario(obj[16] == null ? "" : obj[16].toString());
                 usuario.setIdRolFk(obj[21] == null ? null : new BigDecimal(obj[21].toString()));
                 usuario.setIdSucursal(obj[26] == null ? -1 : Integer.parseInt(obj[26].toString()));
-
                 lstUsuario.add(usuario);
 
             }
@@ -54,7 +53,7 @@ public class ServiceCatUsuario implements IfaceCatUsuario {
             return lstUsuario;
 
         } catch (Exception ex) {
-            Logger.getLogger(ServiceProducto.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ServiceCatUsuario.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
 
@@ -85,7 +84,7 @@ public class ServiceCatUsuario implements IfaceCatUsuario {
             return usuario;
 
         } catch (Exception ex) {
-            Logger.getLogger(ServiceProducto.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ServiceCatUsuario.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
 
@@ -158,6 +157,38 @@ public class ServiceCatUsuario implements IfaceCatUsuario {
             return usuario;
 
         } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    @Override
+    public ArrayList<Usuario> getUsuariosbyIdSucursal(int idSucursal) {
+       
+        try {
+            ArrayList<Usuario> lstUsuario = new ArrayList<Usuario>();
+            ejb = (NegocioCatUsuario) Utilidades.getEJBRemote("ejbCatUsuario", NegocioCatUsuario.class.getName());
+
+            List<Object[]> lstObject = ejb.getUsuariosbyIdSucursal(idSucursal);
+
+            for (Object[] obj : lstObject) {
+
+                Usuario usuario = new Usuario();
+                usuario.setIdUsuarioPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+                usuario.setNombreUsuario(obj[1] == null ? "" : obj[1].toString());
+                usuario.setApaternoUsuario(obj[2] == null ? "" : obj[2].toString());
+                usuario.setAmaternoUsuario(obj[3] == null ? "" : obj[3].toString());
+                usuario.setClaveUsuario(obj[18] == null ? "" : obj[18].toString());
+                usuario.setContrasenaUsuario(obj[4] == null ? "" : obj[4].toString());
+                usuario.setRfcUsuario(obj[16] == null ? "" : obj[16].toString());
+                usuario.setIdRolFk(obj[21] == null ? null : new BigDecimal(obj[21].toString()));
+                usuario.setIdSucursal(obj[26] == null ? -1 : Integer.parseInt(obj[26].toString()));
+                lstUsuario.add(usuario);
+            }
+
+            return lstUsuario;
+
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceCatUsuario.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
     }

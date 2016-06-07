@@ -70,9 +70,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Scope("view")
 public class BeanVenta implements Serializable, BeanSimple {
-
     private static final long serialVersionUID = 1L;
-
     @Autowired private IfaceVenta ifaceVenta;
     @Autowired private IfaceEmpaque ifaceEmpaque;
     @Autowired private IfaceSubProducto ifaceSubProducto;

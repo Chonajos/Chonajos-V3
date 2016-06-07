@@ -163,6 +163,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
         paramReport.put("labelFecha", "Fecha de Pago:");
         paramReport.put("labelFolio", "Folio de Venta:");
         paramReport.put("estado", "PEDIDO PAGADO");
+        paramReport.put("telefonos", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:"+usuarioDominio.getTelefonoSucursal());
         paramReport.put("labelSucursal", usuarioDominio.getNombreSucursal());
 
     }

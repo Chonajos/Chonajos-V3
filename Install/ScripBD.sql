@@ -681,7 +681,8 @@ INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Análisis', 1,'60','NULL');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Análisis de Mercado', 0,'60.1','/views/analisisMercado.xhtml');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Top de Ventas', 0,'60.2','/views/topVentas.xhtml');
-INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Registro Entrada', 0,'60.4','/views/RegistroEntradaSalida.xhtml');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Registro Entrada', 0,'60.4','/views/registroEntradaSalida.xhtml');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Registros', 0,'60.5','/views/relacionHorarios.xhtml');
 
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Bodegas', 0,'10.6','/views/bodega.xhtml');
 
@@ -813,4 +814,23 @@ CREATE SEQUENCE S_RegistroEntrada
 INCREMENT BY 1
 START WITH 1
 MINVALUE 0;
+
+
+create table ExistenciaMenudeo(
+id_exmen_pk number not null,
+id_subproducto_fk number,
+id_sucursal_fk number,
+kilos number,
+CONSTRAINT c_em_id_exmen_pk PRIMARY KEY (id_exmen_pk),
+CONSTRAINT c_em_id_sucursal_fk FOREIGN KEY(id_sucursal_fk) references sucursal(ID_SUCURSAL_PK)
+);
+
+CREATE SEQUENCE S_ExistenciaMenudeo
+INCREMENT BY 1
+START WITH 1
+MINVALUE 0;
+
+
+
+
 

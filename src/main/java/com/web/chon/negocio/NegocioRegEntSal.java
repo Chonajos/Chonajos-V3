@@ -18,6 +18,9 @@ import javax.ejb.Remote;
 @Remote
 public interface NegocioRegEntSal {
     public List<Object[]> getUsuarioByIdUsuario(BigDecimal idUsuarioFK,String fechaHoy);
+    public List<Object[]> getALL(String fechaInicio, String fechaFin);
+  
+    public List<Object[]> getRegistros(BigDecimal idUsuarioFK, String fechaInicio, String fechaFin);
     public int updateSalidabyIdReg(RegistroEntradaSalida data);
     public int insertEntradabyIdReg(RegistroEntradaSalida data);
     public int getNextVal ();

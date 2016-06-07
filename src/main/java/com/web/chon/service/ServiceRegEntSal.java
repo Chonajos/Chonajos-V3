@@ -50,10 +50,13 @@ public class ServiceRegEntSal implements  IfaceRegistroEntradaSalida{
                 reg.setFechaSalida((Date) obj[2]);
                 reg.setLatitudEntrada(obj[3] == null ? null : Double.valueOf(obj[3].toString()));
                 reg.setLongitudEntrada(obj[4] == null ? null : Double.valueOf(obj[4].toString()));
-                reg.setLongitudSalida(obj[5] == null ? null : Double.valueOf(obj[5].toString()));
-                reg.setLatitudSalida(obj[6] == null ? null : Double.valueOf(obj[6].toString()));
+                reg.setLongitudSalida(obj[6] == null ? null : Double.valueOf(obj[6].toString()));
+                reg.setLatitudSalida(obj[5] == null ? null : Double.valueOf(obj[5].toString()));
                 reg.setIdUsuarioFk(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
                 reg.setIdSucursalFk(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
+                reg.setNombre(obj[9] == null ? null:obj[9].toString());
+                reg.setApMaterno(obj[10] == null ? null:obj[10].toString());
+                reg.setApMaterno(obj[11] == null ? null:obj[11].toString());
                 lstTop.add(reg);
             }
             return lstTop;
@@ -83,6 +86,73 @@ public class ServiceRegEntSal implements  IfaceRegistroEntradaSalida{
         getEjb();
         return ejb.getNextVal();
     
+    }
+
+    @Override
+    public ArrayList<RegistroEntradaSalida> getRegistros(BigDecimal idUsuarioFK, Date fechaInicio, Date fechaFin) {
+       getEjb();
+        
+        try {
+            ArrayList<RegistroEntradaSalida> lstTop = new ArrayList<RegistroEntradaSalida>();
+            List<Object[]> lstObject = ejb.getRegistros(idUsuarioFK, TiempoUtil.getFechaDDMMYYYY(fechaInicio),TiempoUtil.getFechaDDMMYYYY(fechaFin));
+            for (Object[] obj : lstObject) 
+            {
+                RegistroEntradaSalida reg = new RegistroEntradaSalida();
+                reg.setIdRegEntSalPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+                reg.setFechaEntrada((Date) obj[1]);
+                reg.setFechaSalida((Date) obj[2]);
+                reg.setLatitudEntrada(obj[3] == null ? null : Double.valueOf(obj[3].toString()));
+                reg.setLongitudEntrada(obj[4] == null ? null : Double.valueOf(obj[4].toString()));
+                reg.setLongitudSalida(obj[6] == null ? null : Double.valueOf(obj[6].toString()));
+                reg.setLatitudSalida(obj[5] == null ? null : Double.valueOf(obj[5].toString()));
+                reg.setIdUsuarioFk(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
+                reg.setIdSucursalFk(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
+                reg.setNombre(obj[9] == null ? null:obj[9].toString());
+                reg.setApMaterno(obj[10] == null ? null:obj[10].toString());
+                reg.setApMaterno(obj[11] == null ? null:obj[11].toString());
+                lstTop.add(reg);
+                System.out.println("REG: "+reg);
+            }
+            return lstTop;
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceRegEntSal.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    
+    }
+
+    @Override
+    public ArrayList<RegistroEntradaSalida> getALL(Date fechaInicio, Date fechaFin) {
+       getEjb();
+        
+        try {
+            ArrayList<RegistroEntradaSalida> lstTop = new ArrayList<RegistroEntradaSalida>();
+            List<Object[]> lstObject = ejb.getALL( TiempoUtil.getFechaDDMMYYYY(fechaInicio),TiempoUtil.getFechaDDMMYYYY(fechaFin));
+            for (Object[] obj : lstObject) 
+            {
+                RegistroEntradaSalida reg = new RegistroEntradaSalida();
+                reg.setIdRegEntSalPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+                reg.setFechaEntrada((Date) obj[1]);
+                reg.setFechaSalida((Date) obj[2]);
+                reg.setLatitudEntrada(obj[3] == null ? null : Double.valueOf(obj[3].toString()));
+                reg.setLongitudEntrada(obj[4] == null ? null : Double.valueOf(obj[4].toString()));
+                reg.setLongitudSalida(obj[6] == null ? null : Double.valueOf(obj[6].toString()));
+                reg.setLatitudSalida(obj[5] == null ? null : Double.valueOf(obj[5].toString()));
+                reg.setIdUsuarioFk(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
+                reg.setIdSucursalFk(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
+                reg.setNombre(obj[9] == null ? null:obj[9].toString());
+                reg.setApMaterno(obj[10] == null ? null:obj[10].toString());
+                reg.setApMaterno(obj[11] == null ? null:obj[11].toString());
+                lstTop.add(reg);
+                System.out.println("REG: "+reg);
+            }
+            return lstTop;
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceRegEntSal.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+        
+        
     }
     
 }

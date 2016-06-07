@@ -40,7 +40,7 @@
                         <h:selectOneMenu  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanRelacionOperaciones.data.idSucursal}" rendered="#{beanRelacionOperaciones.viewEstate =='init'}" disabled="#{beanRelacionOperaciones.usuario.perId != 1}">
                             <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="" />
                             <f:selectItems value="#{beanRelacionOperaciones.listaSucursales}" var="sucursalita" itemLabel="#{sucursalita.nombreSucursal}" itemValue="#{sucursalita.idSucursalPk}"/>
-                            <p:ajax event="change" listener="#{beanRelacionOperaciones.printStatus()}" update=":formContent:table"/>
+                            <p:ajax event="change" listener="#{beanRelacionOperaciones.printStatus()}" update=":formContent:table formContent:calendarInicio formContent:calendarFin :formContent:selectFiltro"/>
                         </h:selectOneMenu>
                     </div>
                     <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
@@ -60,7 +60,7 @@
                                     value="#{beanRelacionOperaciones.data.fechaFiltroInicio}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button" rendered="#{beanRelacionOperaciones.viewEstate =='init'}">
                             <p:ajax   event="dateSelect"
                                       listener="#{beanRelacionOperaciones.setFechaInicioFin(4)}"
-                                      update=":formContent:table" />
+                                      update=":formContent:table formContent:selectFiltro" />
                         </p:calendar>
                     </div>
                     <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
@@ -69,7 +69,7 @@
                                     value="#{beanRelacionOperaciones.data.fechaFiltroFin}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button" rendered="#{beanRelacionOperaciones.viewEstate =='init'}">
                             <p:ajax event="dateSelect"
                                     listener="#{beanRelacionOperaciones.setFechaInicioFin(4)}"
-                                    update=":formContent:table"  />
+                                    update=":formContent:table formContent:selectFiltro"  />
                         </p:calendar>
                     </div>
 

@@ -355,7 +355,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     }
 
     public void addProducto() {
-        if (selectedExistencia == null || data.getKilosVendidos().intValue() == 0) {
+        if (selectedExistencia == null || data.getKilosVendidos().compareTo(BigDecimal.ZERO) == 0) {
             JsfUtil.addErrorMessage("Seleccione un Producto de la tabla o peso en 0 Kg.");
 
         } else //            System.out.println("idSubProducto:" + selectedExistencia.getIdSubProductoFK());
@@ -518,6 +518,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         paramReport.put("estado", "PEDIDO MARCADO");
         paramReport.put("labelFecha", "Fecha de Venta:");
         paramReport.put("labelFolio", "Folio de Venta:");
+        paramReport.put("telefonos", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:"+usuarioDominio.getTelefonoSucursal());
         paramReport.put("labelSucursal", usuarioDominio.getNombreSucursal());
 
     }
