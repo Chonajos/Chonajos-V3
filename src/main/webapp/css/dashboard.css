@@ -111,8 +111,11 @@ ul .ui-state-highlight {
 }
 
 .ui-priority-primary, .ui-widget-content .ui-priority-primary, .ui-widget-header .ui-priority-primary{
+    background:#ffffff;
+    color: blue;
     background-image:linear-gradient(to bottom, #DCDCDC, rgb(208, 209, 212)) !important;
     background-color:#0081c2;
+    
 }
 
 .ui-state{
@@ -120,6 +123,7 @@ ul .ui-state-highlight {
 }
 /*Color azul a los botones*/
 .ui-button-text{
+    background:#0081c2;
     background-image:-webkit-linear-gradient(top, #0088cc, #0077b3);
     color: white;
     border-radius: 5px;
