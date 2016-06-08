@@ -95,7 +95,7 @@ public class BeanHistorialRegEntSal implements Serializable{
         double c = 2 * Math.asin(Math.sqrt(a));
         metros = (int) ((R * c)/0.00062137);
         
-        if(metros > rangoMaximoPermitido){
+        if(metros > rangoMaximoPermitido){ 
         	return false;
         }
         return true;
