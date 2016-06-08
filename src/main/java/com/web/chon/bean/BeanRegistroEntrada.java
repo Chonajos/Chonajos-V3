@@ -142,7 +142,7 @@ public class BeanRegistroEntrada implements Serializable, BeanSimple {
 
         }
 
-        return "";
+        return "registroEntradaSalida";
     }
 
     @Override

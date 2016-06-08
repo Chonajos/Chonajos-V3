@@ -97,7 +97,7 @@
             </h1>
             <p:messages id="messages" showDetail="true" autoUpdate="true"  showSummary="false" closable="true" />
             <div class="btn-group" role="group" aria-label="First group ">	
-                <p:commandButton  id="btnGuardar" value="Registrar Entrada" action="#{beanRegistroEntrada.insert()}" disabled="#{beanRegistroEntrada.permissionToEntrada}" >
+                <p:commandButton  id="btnGuardar" value="Registrar Entrada" ajax="false" action="#{beanRegistroEntrada.insert()}" disabled="#{beanRegistroEntrada.permissionToEntrada}" >
                 </p:commandButton>
                 <p:commandButton  id="btnRefresh" value="Registrar Salida" action="#{beanRegistroEntrada.insert()}" disabled="#{beanRegistroEntrada.permisionToSalida}" >
                 </p:commandButton>		

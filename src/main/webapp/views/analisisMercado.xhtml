@@ -64,7 +64,7 @@
                         <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-3 col-sm-4 col-xs-6"  for="calendarInicio" value ="Fecha:" rendered="#{beanAnalisisMercado.state =='INIT' and beanAnalisisMercado.insertar !='precioPromedio'}"/> 
                             <p:calendar id="calendarRemanente" class="col-lg-6 col-md-4 col-sm-8 col-xs-6 calendario" navigator="true" placeholder="dd/mm/yyyy"
-                                        value="#{beanAnalisisMercado.fechaRemanente}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button" rendered="#{beanAnalisisMercado.state =='INIT' and beanAnalisisMercado.insertar !='precioPromedio'}">
+                                        value="#{beanAnalisisMercado.fechaRemanente}" locale="es" pattern="dd/MM/yyyy" showOn="button" rendered="#{beanAnalisisMercado.state =='INIT' and beanAnalisisMercado.insertar !='precioPromedio'}">
                                 <p:ajax event="dateSelect" update=":formContent:txtRemanente"
                                         listener="#{beanAnalisisMercado.searchRemanente}"/>
 
