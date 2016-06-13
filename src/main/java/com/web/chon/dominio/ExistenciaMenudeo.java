@@ -18,12 +18,35 @@ public class ExistenciaMenudeo implements Serializable {
     private BigDecimal idSucursalFk;
     private BigDecimal kilos;
     private BigDecimal idSubProductoPk;
+    private BigDecimal cantidadEmpaque;
+    private BigDecimal idTipoEmpaqueFK;
+    private BigDecimal idStatusFk;
 
-    @Override
-    public String toString() {
-        return "ExistenciaMenudeo{" + "idExMenPk=" + idExMenPk + ", idSucursalFk=" + idSucursalFk + ", kilos=" + kilos + ", idSubProductoPk=" + idSubProductoPk + '}';
+    public BigDecimal getCantidadEmpaque() {
+        return cantidadEmpaque;
     }
 
+    public void setCantidadEmpaque(BigDecimal cantidadEmpaque) {
+        this.cantidadEmpaque = cantidadEmpaque;
+    }
+
+    public BigDecimal getIdTipoEmpaqueFK() {
+        return idTipoEmpaqueFK;
+    }
+
+    public void setIdTipoEmpaqueFK(BigDecimal idTipoEmpaqueFK) {
+        this.idTipoEmpaqueFK = idTipoEmpaqueFK;
+    }
+
+    public BigDecimal getIdStatusFk() {
+        return idStatusFk;
+    }
+
+    public void setIdStatusFk(BigDecimal idStatusFk) {
+        this.idStatusFk = idStatusFk;
+    }
+
+    
    
     public BigDecimal getIdExMenPk() {
         return idExMenPk;
