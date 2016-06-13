@@ -2,7 +2,6 @@ package com.web.chon.security.service;
 
 import java.io.IOException;
 
-import javax.faces.context.FacesContext;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -42,17 +41,14 @@ public class CustomFilter extends OncePerRequestFilter {
 
         int i = url.lastIndexOf("/views/");
         int j = url.lastIndexOf("7001");
-        if( j==-1)
-        {
+        if (j == -1) {
             j = url.lastIndexOf("7002");
         }
-        
-        if( j==-1)
-        {
+
+        if (j == -1) {
             j = url.lastIndexOf("80");
         }
-        if( j==-1)
-        {
+        if (j == -1) {
             j = url.lastIndexOf("443");
         }
 
@@ -99,7 +95,7 @@ public class CustomFilter extends OncePerRequestFilter {
 
     private void hasPermission(String url) throws SecurityAccessException {
         usuario = context.getUsuarioAutenticado();
-        
+
         if (url.equalsIgnoreCase("/views/welcome.xhtml")) {
             return;
         }

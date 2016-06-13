@@ -370,6 +370,23 @@
                                 </h:selectOneMenu>
                             </div>  
                         </p:tab>
+                        <p:tab title="Crédito de Clientes" id="credito">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                                <!--<h3 class="first">Crédito de Clientes</h3>-->
+                            </div>
+
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                                <p:outputLabel class="col-lg-2 col-md-2 col-sm-3 col-xs-12"  for="txtdiasCredito" value ="Dias de Crédito:" /> 
+                                <p:inputText id="txtdiasCredito" maxlength="3" class=" col-lg-2 col-md-2 col-sm-3 col-xs-12" value="#{beanCatCliente.data.diasCredito}" disabled="#{beanCatCliente.permissionToWrite}">
+                                    <pe:keyFilter regEx="/[0-9]/i"/> 
+                                </p:inputText>
+
+                                <p:outputLabel class="col-lg-2 col-md-2 col-sm-3 col-xs-12"  for="txtLimiteCredito" value ="Limite de Crédito:" /> 
+                                <p:inputText id="txtLimiteCredito" maxlength="7" class=" col-lg-2 col-md-2 col-sm-3 col-xs-12" value="#{beanCatCliente.data.limiteCredito}" disabled="#{beanCatCliente.permissionToWrite}">                                   
+                                    <pe:keyFilter regEx="/[0-9]/i"/> 
+                                </p:inputText>
+                            </div>
+                        </p:tab>
                     </p:accordionPanel>
                 </div>
             </p:panel>

@@ -63,13 +63,13 @@ public class Cliente implements Serializable
     private String nombreStatus;
     private CodigoPostal codigo_Postal;
     private Date fecha_alta;
+    private BigDecimal diasCredito;
+    private BigDecimal limiteCredito;
 
     @Override
     public String toString() {
-        return "Cliente{" + "id_cliente=" + id_cliente + ", nombre=" + nombre + ", paterno=" + paterno + ", materno=" + materno + ", empresa=" + empresa + ", calle=" + calle + ", ID_CP=" + ID_CP + ", estado_id=" + estado_id + ", municipio=" + municipio + ", sexo=" + sexo + ", fecha_nacimiento=" + fecha_nacimiento + ", tel_movil=" + tel_movil + ", tel_fijo=" + tel_fijo + ", ext=" + ext + ", email=" + email + ", num_int=" + num_int + ", num_ext=" + num_ext + ", colonia=" + colonia + ", clavecelular=" + clavecelular + ", nombreCombleto=" + nombreCombleto + ", ladacelular=" + ladacelular + ", ID_CP_FISCAL=" + ID_CP_FISCAL + ", calleFiscal=" + calleFiscal + ", num_int_fiscal=" + num_int_fiscal + ", num_ext_fiscal=" + num_ext_fiscal + ", coloniaFiscal=" + coloniaFiscal + ", estadoFiscal=" + estadoFiscal + ", municipioFiscal=" + municipioFiscal + ", codigoPostal=" + codigoPostal + ", codigoPostalFiscal=" + codigoPostalFiscal + ", nextel=" + nextel + ", razon_social=" + razon_social + ", rfcFiscal=" + rfcFiscal + ", ladaoficina=" + ladaoficina + ", claveoficina=" + claveoficina + ", nextelclave=" + nextelclave + ", nombreEstado=" + nombreEstado + ", nombreDelegacionMunicipio=" + nombreDelegacionMunicipio + ", nombreEstadoFiscal=" + nombreEstadoFiscal + ", nombreDeleMunFiscal=" + nombreDeleMunFiscal + ", emails=" + emails + ", status_cliente=" + status_cliente + ", statusClienteBoolean=" + statusClienteBoolean + ", nombreStatus=" + nombreStatus + ", codigo_Postal=" + codigo_Postal + ", fecha_alta=" + fecha_alta + '}';
+        return "Cliente{" + "id_cliente=" + id_cliente + ", nombre=" + nombre + ", paterno=" + paterno + ", materno=" + materno + ", empresa=" + empresa + ", calle=" + calle + ", ID_CP=" + ID_CP + ", estado_id=" + estado_id + ", municipio=" + municipio + ", sexo=" + sexo + ", fecha_nacimiento=" + fecha_nacimiento + ", tel_movil=" + tel_movil + ", tel_fijo=" + tel_fijo + ", ext=" + ext + ", email=" + email + ", num_int=" + num_int + ", num_ext=" + num_ext + ", colonia=" + colonia + ", clavecelular=" + clavecelular + ", nombreCombleto=" + nombreCombleto + ", ladacelular=" + ladacelular + ", ID_CP_FISCAL=" + ID_CP_FISCAL + ", calleFiscal=" + calleFiscal + ", num_int_fiscal=" + num_int_fiscal + ", num_ext_fiscal=" + num_ext_fiscal + ", coloniaFiscal=" + coloniaFiscal + ", estadoFiscal=" + estadoFiscal + ", municipioFiscal=" + municipioFiscal + ", codigoPostal=" + codigoPostal + ", codigoPostalFiscal=" + codigoPostalFiscal + ", nextel=" + nextel + ", razon_social=" + razon_social + ", rfcFiscal=" + rfcFiscal + ", ladaoficina=" + ladaoficina + ", claveoficina=" + claveoficina + ", nextelclave=" + nextelclave + ", nombreEstado=" + nombreEstado + ", nombreDelegacionMunicipio=" + nombreDelegacionMunicipio + ", nombreEstadoFiscal=" + nombreEstadoFiscal + ", nombreDeleMunFiscal=" + nombreDeleMunFiscal + ", emails=" + emails + ", status_cliente=" + status_cliente + ", statusClienteBoolean=" + statusClienteBoolean + ", nombreStatus=" + nombreStatus + ", codigo_Postal=" + codigo_Postal + ", fecha_alta=" + fecha_alta + ", diasCredito=" + diasCredito + ", limiteCredito=" + limiteCredito + '}';
     }
-
-    
     
     public BigDecimal getId_cliente() {
         return id_cliente;
@@ -467,5 +467,20 @@ public class Cliente implements Serializable
         this.codigoPostal = codigoPostal;
     }
 
+    public BigDecimal getDiasCredito() {
+        return diasCredito;
+    }
+
+    public void setDiasCredito(BigDecimal diasCredito) {
+        this.diasCredito = diasCredito;
+    }
+
+    public BigDecimal getLimiteCredito() {
+        return limiteCredito;
+    }
+
+    public void setLimiteCredito(BigDecimal limiteCredito) {
+        this.limiteCredito = limiteCredito;
+    }
     
 }
