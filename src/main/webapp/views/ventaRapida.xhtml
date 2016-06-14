@@ -61,8 +61,7 @@
                                              value="#{beanVentaMayoreoRapido.cliente}" completeMethod="#{beanVentaMayoreoRapido.autoCompleteCliente}" forceSelection="true" var="cliente"  inputStyle="width: 200px"
                                              itemLabel="#{cliente.nombreCombleto}"
                                              itemValue="#{cliente.id_cliente}" converter="#{clienteConverter}">
-                                <p:ajax event="change" update="@this"></p:ajax>
-                                <p:ajax event="itemSelect" update="@this"></p:ajax>
+                                
                             </p:autoComplete>
                             <pe:keyFilter for="autocompleteCliente" regEx="/[a-z0-9-_Ã±\s]/i" />
                         </div>
@@ -72,8 +71,7 @@
                                              value="#{beanVentaMayoreoRapido.usuario}" completeMethod="#{beanVentaMayoreoRapido.autoCompleteVendedor}" forceSelection="true" var="usuario"  inputStyle="width: 200px"
                                              itemLabel="#{usuario.nombreCompletoUsuario}"
                                              itemValue="#{usuario.idUsuarioPk}" converter="#{usuarioConverter}">
-                                <p:ajax event="change" update="@this"></p:ajax>
-                                <p:ajax event="itemSelect" update="@this"></p:ajax>
+                               
                             </p:autoComplete>
                             <pe:keyFilter for="autocompleteVendedor" regEx="/[a-z0-9-_Ã±\s]/i" />
                         </div>

@@ -13,7 +13,7 @@ import javax.ejb.Remote;
 
 /**
  *
- * @author marcogante
+ * @author freddy
  */
 @Remote
 public interface NegocioEntradaMercancia {
