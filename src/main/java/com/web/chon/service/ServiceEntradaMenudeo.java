@@ -34,7 +34,8 @@ public class ServiceEntradaMenudeo implements IfaceEntradaMenudeo{
 
     @Override
     public int insertEntradaMercancia(EntradaMenudeo entrada) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        getEjb();
+        return ejb.insertEntradaMenudeo(entrada);
     }
 
     @Override
@@ -44,11 +45,26 @@ public class ServiceEntradaMenudeo implements IfaceEntradaMenudeo{
 
     @Override
     public int getNextVal() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      getEjb();
+        try {
+            return ejb.getNextVal();
+
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceEntradaMenudeo.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        }
     }
 
     @Override
     public int getFolio(BigDecimal idSucursal) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       getEjb();
+        try {
+            return ejb.getFolio(idSucursal);
+
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceEntradaMenudeo.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        }
+        
     }
 }

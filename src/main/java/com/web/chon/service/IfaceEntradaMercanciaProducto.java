@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 /**
  *
- * @author marcogante
+ * @author freddy
  */
 public interface IfaceEntradaMercanciaProducto extends PaginacionService<EntradaMercanciaProducto, BigDecimal> {
 

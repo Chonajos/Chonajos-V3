@@ -14,6 +14,7 @@ import java.util.Date;
  * @author freddy
  */
 public class EntradaMenudeo implements Serializable {
+
     private static final long serialVersionUID = 1L;
     private BigDecimal idEmmPk;
     private BigDecimal idProvedorFk;
@@ -26,12 +27,37 @@ public class EntradaMenudeo implements Serializable {
     private String ticketProvedor;
     private String ticketBascula;
     private BigDecimal folio;
+    private BigDecimal idUsuario;
+
+    public void reset() {
+        idEmmPk = null;
+        idProvedorFk = null;
+        fecha = null;
+        //idSucursalFk = null;
+        idStatusFk = null;
+        kilosTotales = null;
+        kilosProvedor = null;
+        comentarios = null;
+        ticketProvedor = null;
+        ticketBascula = null;
+        folio = null;
+        //idUsuario = null;
+
+    }
 
     @Override
     public String toString() {
-        return "EntradaMenudeo{" + "idEmmPk=" + idEmmPk + ", idProvedorFk=" + idProvedorFk + ", fecha=" + fecha + ", idSucursalFk=" + idSucursalFk + ", idStatusFk=" + idStatusFk + ", kilosTotales=" + kilosTotales + ", kilosProvedor=" + kilosProvedor + ", comentarios=" + comentarios + ", ticketProvedor=" + ticketProvedor + ", ticketBascula=" + ticketBascula + ", folio=" + folio + '}';
+        return "EntradaMenudeo{" + "idEmmPk=" + idEmmPk + ", idProvedorFk=" + idProvedorFk + ", fecha=" + fecha + ", idSucursalFk=" + idSucursalFk + ", idStatusFk=" + idStatusFk + ", kilosTotales=" + kilosTotales + ", kilosProvedor=" + kilosProvedor + ", comentarios=" + comentarios + ", ticketProvedor=" + ticketProvedor + ", ticketBascula=" + ticketBascula + ", folio=" + folio + ", idUsuario=" + idUsuario + '}';
     }
-    
+
+    public BigDecimal getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(BigDecimal idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+
     public BigDecimal getIdEmmPk() {
         return idEmmPk;
     }
@@ -119,6 +145,5 @@ public class EntradaMenudeo implements Serializable {
     public void setFolio(BigDecimal folio) {
         this.folio = folio;
     }
-    
-    
+
 }

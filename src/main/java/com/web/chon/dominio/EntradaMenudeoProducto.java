@@ -13,6 +13,7 @@ import java.math.BigDecimal;
  * @author freddy
  */
 public class EntradaMenudeoProducto implements Serializable {
+
     private static final long serialVersionUID = 1L;
     private BigDecimal idEmmpPk;
     private BigDecimal idEmmFk;
@@ -21,13 +22,36 @@ public class EntradaMenudeoProducto implements Serializable {
     private BigDecimal kilosTotales;
     private BigDecimal cantidadEmpaque;
     private String comentarios;
+    private BigDecimal precio;
+    private String nombreProducto;
+    private String nombreEmpaque;
+
+    public void reset() {
+        idEmmpPk = null;
+        idEmmFk = null;
+        idSubproductoFk = null;
+        idtipoEmpaqueFk = null;
+        kilosTotales = null;
+        cantidadEmpaque = null;
+        comentarios = null;
+        precio = null;
+        nombreProducto = null;
+        nombreEmpaque = null;
+    }
 
     @Override
     public String toString() {
-        return "EntradaMenudeoProducto{" + "idEmmpPk=" + idEmmpPk + ", idEmmFk=" + idEmmFk + ", idSubproductoFk=" + idSubproductoFk + ", idtipoEmpaqueFk=" + idtipoEmpaqueFk + ", kilosTotales=" + kilosTotales + ", cantidadEmpaque=" + cantidadEmpaque + ", comentarios=" + comentarios + '}';
+        return "EntradaMenudeoProducto{" + "idEmmpPk=" + idEmmpPk + ", idEmmFk=" + idEmmFk + ", idSubproductoFk=" + idSubproductoFk + ", idtipoEmpaqueFk=" + idtipoEmpaqueFk + ", kilosTotales=" + kilosTotales + ", cantidadEmpaque=" + cantidadEmpaque + ", comentarios=" + comentarios + ", precio=" + precio + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + '}';
     }
 
-    
+    public BigDecimal getPrecio() {
+        return precio;
+    }
+
+    public void setPrecio(BigDecimal precio) {
+        this.precio = precio;
+    }
+
     public BigDecimal getIdEmmpPk() {
         return idEmmpPk;
     }
@@ -83,7 +107,21 @@ public class EntradaMenudeoProducto implements Serializable {
     public void setComentarios(String comentarios) {
         this.comentarios = comentarios;
     }
-    
-    
-    
+
+    public String getNombreProducto() {
+        return nombreProducto;
+    }
+
+    public void setNombreProducto(String nombreProducto) {
+        this.nombreProducto = nombreProducto;
+    }
+
+    public String getNombreEmpaque() {
+        return nombreEmpaque;
+    }
+
+    public void setNombreEmpaque(String nombreEmpaque) {
+        this.nombreEmpaque = nombreEmpaque;
+    }
+
 }
