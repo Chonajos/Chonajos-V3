@@ -98,19 +98,15 @@
                             <p:column headerText="Observaciones" width="55px;" class="alignRight">
                                 <p:cellEditor>
                                     <f:facet name="output">
-                                        <h:outputText value="#{model.kilos}" >
-                                            <f:convertNumber pattern="#,##0.00" />
-                                        </h:outputText>
+                                        <h:outputText value="#{model.observaciones}" />
                                     </f:facet>
                                     <f:facet name="input">
-                                        <p:inputText id="kilosIn" value="#{model.kilos}" maxlength="6" style="width:100%">
-                                            <f:convertNumber pattern="#,##0.00" />
-                                        </p:inputText>
+                                        <p:inputText id="observacionesIn" value="#{model.observaciones}" maxlength="6" style="width:100%"/>
                                     </f:facet>
                                 </p:cellEditor>
                             </p:column>
                             <p:column style="width:32px" rendered="#{beanAjustesExistenciasMenudeo.usuario.perId == 1}">
-                                <p:rowEditor/>
+                                <p:rowEditor />
                             </p:column>
 
 

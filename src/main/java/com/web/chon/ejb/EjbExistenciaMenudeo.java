@@ -31,8 +31,19 @@ public class EjbExistenciaMenudeo implements NegocioExistenciaMenudeo {
     }
 
     @Override
-    public int updateExistenciaMenudeo(ExistenciaMenudeo em) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public int updateExistenciaMenudeo(ExistenciaMenudeo existenciaMenudeo) {
+        try {
+            Query query = em.createNativeQuery("UPDATE TABLE EXISTENCIAMENUDEO SET KILOS = ?, CANTIDADEMPAQUE = ? WHERE ID_EXMEN_PK = ?");
+            query.setParameter(1, existenciaMenudeo.getKilos());
+            query.setParameter(1, existenciaMenudeo.getCantidadEmpaque());
+            query.setParameter(1, existenciaMenudeo.getIdExMenPk());
+
+            return query.executeUpdate();
+        } catch (Exception ex) {
+            Logger.getLogger(EjbExistenciaMenudeo.class.getName()).log(Logger.Level.INFO, "Error en la busqueda por id", ex);
+            return 0;
+        }
+
     }
 
     @Override
@@ -53,7 +64,18 @@ public class EjbExistenciaMenudeo implements NegocioExistenciaMenudeo {
 
     @Override
     public List<Object[]> getExistenciasMenudeoById(BigDecimal id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            Query query = em.createNativeQuery("SELECT EXM.ID_EXMEN_PK,EXM.ID_SUBPRODUCTO_FK,EXM.ID_SUCURSAL_FK,EXM.KILOS,EXM.CANTIDADEMPAQUE,EXM.IDTIPOEMPAQUEFK,EXM.IDSTATUSFK,SUB.NOMBRE_SUBPRODUCTO,TE.NOMBRE_EMPAQUE  FROM EXISTENCIAMENUDEO EXM "
+                    + "INNER JOIN SUBPRODUCTO SUB ON SUB.ID_SUBPRODUCTO_PK = EXM.ID_SUBPRODUCTO_FK "
+                    + "INNER JOIN TIPO_EMPAQUE TE ON TE.ID_TIPO_EMPAQUE_PK = EXM.IDTIPOEMPAQUEFK "
+                    + "WHERE EXM.ID_EXMEN_PK = ? ");
+            query.setParameter(1, id);
+
+            return query.getResultList();
+        } catch (Exception ex) {
+            Logger.getLogger(EjbExistenciaMenudeo.class.getName()).log(Logger.Level.INFO, "Error en la busqueda por id", ex);
+            return null;
+        }
     }
 
     @Override
