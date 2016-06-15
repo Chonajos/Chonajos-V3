@@ -17,10 +17,12 @@ public class ExistenciaMenudeo implements Serializable {
     private BigDecimal idExMenPk;
     private BigDecimal idSucursalFk;
     private BigDecimal kilos;
-    private BigDecimal idSubProductoPk;
+    private String idSubProductoPk;
     private BigDecimal cantidadEmpaque;
     private BigDecimal idTipoEmpaqueFK;
     private BigDecimal idStatusFk;
+    private String nombreProducto;
+    private String nombreEmpaque;
 
     public BigDecimal getCantidadEmpaque() {
         return cantidadEmpaque;
@@ -72,13 +74,31 @@ public class ExistenciaMenudeo implements Serializable {
         this.kilos = kilos;
     }
 
-    public BigDecimal getIdSubProductoPk() {
+    public String getIdSubProductoPk() {
         return idSubProductoPk;
     }
 
-    public void setIdSubProductoPk(BigDecimal idSubProductoPk) {
+    public void setIdSubProductoPk(String idSubProductoPk) {
         this.idSubProductoPk = idSubProductoPk;
     }
+
+    public String getNombreProducto() {
+        return nombreProducto;
+    }
+
+    public void setNombreProducto(String nombreProducto) {
+        this.nombreProducto = nombreProducto;
+    }
+
+    public String getNombreEmpaque() {
+        return nombreEmpaque;
+    }
+
+    public void setNombreEmpaque(String nombreEmpaque) {
+        this.nombreEmpaque = nombreEmpaque;
+    }
+    
+    
 
 
 }

@@ -7,6 +7,7 @@ package com.web.chon.service;
 
 import com.web.chon.dominio.ExistenciaMenudeo;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,9 +17,9 @@ import java.util.List;
 public interface IfaceExistenciaMenudeo {
     public int insertaExistenciaMenudeo(ExistenciaMenudeo em);
     public int updateExistenciaMenudeo(ExistenciaMenudeo em);
-    public List<ExistenciaMenudeo> getExistenciasMenudeoByIdSucursal(BigDecimal idSucursal);
-    public List<ExistenciaMenudeo> getExistenciasMenudeoById(BigDecimal id);
-    public List<ExistenciaMenudeo> getExistenciasMenudeo(BigDecimal id);
+    public ArrayList<ExistenciaMenudeo> getExistenciasMenudeoByIdSucursal(BigDecimal idSucursal);
+    public ExistenciaMenudeo getExistenciasMenudeoById(BigDecimal id);
+    public ArrayList<ExistenciaMenudeo> getExistenciasMenudeo();
 
     
 }

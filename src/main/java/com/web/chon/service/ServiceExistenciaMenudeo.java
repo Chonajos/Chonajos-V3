@@ -9,6 +9,7 @@ import com.web.chon.dominio.ExistenciaMenudeo;
 import com.web.chon.negocio.NegocioExistenciaMenudeo;
 import com.web.chon.util.Utilidades;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,9 +20,10 @@ import org.springframework.stereotype.Service;
  * @author freddy
  */
 @Service
-public class ServiceExistenciaMenudeo implements IfaceExistenciaMenudeo{
+public class ServiceExistenciaMenudeo implements IfaceExistenciaMenudeo {
 
     NegocioExistenciaMenudeo ejb;
+
     private void getEjb() {
         try {
             if (ejb == null) {
@@ -32,6 +34,7 @@ public class ServiceExistenciaMenudeo implements IfaceExistenciaMenudeo{
             Logger.getLogger(ServiceExistenciaMenudeo.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     @Override
     public int insertaExistenciaMenudeo(ExistenciaMenudeo em) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -43,18 +46,41 @@ public class ServiceExistenciaMenudeo implements IfaceExistenciaMenudeo{
     }
 
     @Override
-    public List<ExistenciaMenudeo> getExistenciasMenudeoByIdSucursal(BigDecimal idSucursal) {
+    public ArrayList<ExistenciaMenudeo> getExistenciasMenudeoByIdSucursal(BigDecimal idSucursal) {
+
+        getEjb();
+
+        ArrayList<ExistenciaMenudeo> lstExistenciaMenudeo = new ArrayList<ExistenciaMenudeo>();
+        System.out.println("getSucId" + idSucursal);
+        List<Object[]> lstObject = ejb.getExistenciasMenudeoByIdSucursal(idSucursal);
+
+        for (Object[] obj : lstObject) {
+
+            ExistenciaMenudeo data = new ExistenciaMenudeo();
+
+            data.setIdExMenPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+            data.setIdSubProductoPk(obj[1] == null ? null : obj[1].toString());
+            data.setIdSucursalFk(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
+            data.setKilos(obj[3] == null ? null : new BigDecimal(obj[3].toString()));
+            data.setCantidadEmpaque(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
+            data.setIdTipoEmpaqueFK(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
+            data.setIdStatusFk(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
+            data.setNombreProducto(obj[7] == null ? null : obj[7].toString());
+            data.setNombreEmpaque(obj[8] == null ? null : obj[8].toString());
+
+            lstExistenciaMenudeo.add(data);
+        }
+        return lstExistenciaMenudeo;
+    }
+
+    @Override
+    public ExistenciaMenudeo getExistenciasMenudeoById(BigDecimal id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<ExistenciaMenudeo> getExistenciasMenudeoById(BigDecimal id) {
+    public ArrayList<ExistenciaMenudeo> getExistenciasMenudeo() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public List<ExistenciaMenudeo> getExistenciasMenudeo(BigDecimal id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
 }

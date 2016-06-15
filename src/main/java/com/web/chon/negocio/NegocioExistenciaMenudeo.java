@@ -8,11 +8,13 @@ package com.web.chon.negocio;
 import com.web.chon.dominio.ExistenciaMenudeo;
 import java.math.BigDecimal;
 import java.util.List;
+import javax.ejb.Remote;
 
 /**
  *
  * @author freddy
  */
+@Remote
 public interface NegocioExistenciaMenudeo {
     public int insertaExistenciaMenudeo(ExistenciaMenudeo em);
     public int updateExistenciaMenudeo(ExistenciaMenudeo em);
