@@ -263,9 +263,11 @@ public class BeanEntradaMenudeo implements Serializable {
     }
 
     public void cancel() {
+        kilosEntradaReales = kilosEntradaReales.add(dataEdit.getKilosTotales(), MathContext.UNLIMITED);
         dataProducto.reset();
         subProducto = new Subproducto();
         viewEstate = "init";
+        
 
     }
 
