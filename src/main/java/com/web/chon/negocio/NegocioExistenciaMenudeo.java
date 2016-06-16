@@ -16,12 +16,29 @@ import javax.ejb.Remote;
  */
 @Remote
 public interface NegocioExistenciaMenudeo {
+
     public int insertaExistenciaMenudeo(ExistenciaMenudeo em);
+
     public int updateExistenciaMenudeo(ExistenciaMenudeo em);
+
     public List<Object[]> getExistenciasMenudeoByIdSucursal(BigDecimal idSucursal);
+
     public List<Object[]> getExistenciasMenudeoById(BigDecimal id);
-    public List<Object[]> getExistenciasRepetidasById(String ID_SUBPRODUCTO_FK, BigDecimal ID_SUCURSAL_FK,BigDecimal IDTIPOEMPAQUEFK);
+
+    public List<Object[]> getExistenciasRepetidasById(String ID_SUBPRODUCTO_FK, BigDecimal ID_SUCURSAL_FK, BigDecimal IDTIPOEMPAQUEFK);
+
     public List<Object[]> getExistenciasMenudeo(BigDecimal id);
+
     public int getNextVal();
-    
+
+    /**
+     * Obtiene las existencias por medio de id de sucursal y el id de
+     * subproducto
+     *
+     * @param idSucursal
+     * @param idSubProducto
+     * @return
+     */
+    public List<Object[]> getExistenciasMenudeoByIdSucursalAndIdSubproducto(BigDecimal idSucursal, String idSubProducto);
+
 }

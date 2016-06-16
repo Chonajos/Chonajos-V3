@@ -42,8 +42,7 @@ public class EjbExistenciaMenudeo implements NegocioExistenciaMenudeo {
             java.util.logging.Logger.getLogger(EjbExistenciaMenudeo.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
-    
-    
+
     }
 
     @Override
@@ -98,14 +97,14 @@ public class EjbExistenciaMenudeo implements NegocioExistenciaMenudeo {
     public List<Object[]> getExistenciasMenudeo(BigDecimal id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     @Override
     public List<Object[]> getExistenciasRepetidasById(String ID_SUBPRODUCTO_FK, BigDecimal ID_SUCURSAL_FK, BigDecimal IDTIPOEMPAQUEFK) {
         try {
-            Query query = em.createNativeQuery("select exm.ID_EXMEN_PK,exm.ID_SUBPRODUCTO_FK,exm.ID_SUCURSAL_FK,exm.KILOS,exm.CANTIDADEMPAQUE,\n" +
-"exm.IDTIPOEMPAQUEFK, exm.IDSTATUSFK \n" +
-"from EXISTENCIAMENUDEO exm\n" +
-"where exm.ID_SUBPRODUCTO_FK = ? and exm.ID_SUCURSAL_FK = ? and exm.IDTIPOEMPAQUEFK = ?");
+            Query query = em.createNativeQuery("select exm.ID_EXMEN_PK,exm.ID_SUBPRODUCTO_FK,exm.ID_SUCURSAL_FK,exm.KILOS,exm.CANTIDADEMPAQUE,\n"
+                    + "exm.IDTIPOEMPAQUEFK, exm.IDSTATUSFK \n"
+                    + "from EXISTENCIAMENUDEO exm\n"
+                    + "where exm.ID_SUBPRODUCTO_FK = ? and exm.ID_SUCURSAL_FK = ? and exm.IDTIPOEMPAQUEFK = ?");
             query.setParameter(1, ID_SUBPRODUCTO_FK);
             query.setParameter(2, ID_SUCURSAL_FK);
             query.setParameter(3, IDTIPOEMPAQUEFK);
@@ -119,9 +118,36 @@ public class EjbExistenciaMenudeo implements NegocioExistenciaMenudeo {
 
     @Override
     public int getNextVal() {
-          Query query = em.createNativeQuery("SELECT S_EXISTENCIAMENUDEO.nextVal FROM DUAL");
+        Query query = em.createNativeQuery("SELECT S_EXISTENCIAMENUDEO.nextVal FROM DUAL");
         return Integer.parseInt(query.getSingleResult().toString());
-    
+
+    }
+
+    @Override
+    public List<Object[]> getExistenciasMenudeoByIdSucursalAndIdSubproducto(BigDecimal idSucursal, String idSubProducto) {
+        try {
+            StringBuilder queryBuffer = new StringBuilder("SELECT EXM.ID_EXMEN_PK,EXM.ID_SUBPRODUCTO_FK,EXM.ID_SUCURSAL_FK,EXM.KILOS,EXM.CANTIDADEMPAQUE,EXM.IDTIPOEMPAQUEFK,EXM.IDSTATUSFK,SUB.NOMBRE_SUBPRODUCTO,TE.NOMBRE_EMPAQUE  FROM EXISTENCIAMENUDEO EXM INNER JOIN SUBPRODUCTO SUB ON SUB.ID_SUBPRODUCTO_PK = EXM.ID_SUBPRODUCTO_FK INNER JOIN TIPO_EMPAQUE TE ON TE.ID_TIPO_EMPAQUE_PK = EXM.IDTIPOEMPAQUEFK ");
+            int cont =0;
+            if(idSucursal != null){
+                queryBuffer.append(" WHERE ID_SUCURSAL_FK = "+idSucursal+" ");
+                cont++;
+            }
+            
+            if(idSubProducto != null || idSubProducto!= ""){
+                if(cont > 0){
+                    queryBuffer.append(" AND EXM.ID_SUBPRODUCTO_FK = "+idSubProducto+" ");
+                }else{
+                    queryBuffer.append(" WHERE EXM.ID_SUBPRODUCTO_FK = "+idSubProducto+" ");
+                }
+            }
+            
+            Query query = em.createNativeQuery(queryBuffer.toString());
+
+            return query.getResultList();
+        } catch (Exception ex) {
+            Logger.getLogger(EjbExistenciaMenudeo.class.getName()).log(Logger.Level.INFO, "Error en la busqueda por id de sucursal, Subproducto", ex);
+            return null;
+        }
     }
 
 }

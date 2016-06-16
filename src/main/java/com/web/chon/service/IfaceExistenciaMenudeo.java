@@ -22,6 +22,8 @@ public interface IfaceExistenciaMenudeo {
     public ExistenciaMenudeo getExistenciasRepetidasById(String ID_SUBPRODUCTO_FK, BigDecimal ID_SUCURSAL_FK,BigDecimal IDTIPOEMPAQUEFK);
     public ArrayList<ExistenciaMenudeo> getExistenciasMenudeo();
     public int getNexVal();
+    
+    public ArrayList<ExistenciaMenudeo> getExistenciasMenudeoByIdSucursalAndIdSubproducto(BigDecimal idSucursal, String idSubProducto);
 
     
 }

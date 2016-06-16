@@ -75,12 +75,12 @@ public class BeanAjustesExistenciasMenudeo implements Serializable {
         usuario = context.getUsuarioAutenticado();
 
         data = new ExistenciaMenudeo();
-        System.out.println("usuario.getUsuId()" + usuario.getSucId());
+        
         data.setIdSucursalFk(new BigDecimal(String.valueOf(usuario.getSucId())));
 
         listaSucursales = ifaceCatSucursales.getSucursales();
 
-        model = ifaceExistenciaMenudeo.getExistenciasMenudeoByIdSucursal(new BigDecimal(String.valueOf(usuario.getSucId())));
+        model = ifaceExistenciaMenudeo.getExistenciasMenudeoByIdSucursal(data.getIdSucursalFk());
 
         lstTipoEmpaque = ifaceEmpaque.getEmpaques();
 
@@ -89,43 +89,47 @@ public class BeanAjustesExistenciasMenudeo implements Serializable {
     }
 
     public void buscaExistencias() {
-
+        if(subProducto != null){
+            model = ifaceExistenciaMenudeo.getExistenciasMenudeoByIdSucursalAndIdSubproducto(data.getIdSucursalFk(),subProducto.getIdSubproductoPk());
+        }else{
+            model = ifaceExistenciaMenudeo.getExistenciasMenudeoByIdSucursal(data.getIdSucursalFk());
+        }
+        
     }
 
     public void onRowEdit(RowEditEvent event) {
 
-        ExistenciaMenudeo existenciaMenudeo = new ExistenciaMenudeo();
+        ExistenciaMenudeo existenciaMenudeoOld = new ExistenciaMenudeo();
+        ExistenciaMenudeo existenciaMenudeoNew = new ExistenciaMenudeo();
         ajusteExistenciaMenudeo = new AjusteExistenciaMenudeo();
         
-        System.out.println("onrowEDIT");
-        existenciaMenudeo = ifaceExistenciaMenudeo.getExistenciasMenudeoById(data.getIdExMenPk());
-        System.out.println("GET EXISTENCIA");
-        data = (ExistenciaMenudeo) event.getObject();
-        System.out.println("data :::::::::::::"+data.toString());
-        if(ifaceExistenciaMenudeo.updateExistenciaMenudeo(data)== 0){
-            System.out.println("error al modificar");
-        }
-        System.out.println("UPDATE EXISTENCIA");
-        ajusteExistenciaMenudeo.setEmpaqueAjustados(data.getCantidadEmpaque());
-        ajusteExistenciaMenudeo.setEmpaqueAnterior(existenciaMenudeo.getCantidadEmpaque());
-        ajusteExistenciaMenudeo.setFechaAjuste(context.getFechaSistema());
-        ajusteExistenciaMenudeo.setIdExistenciaMenudeoFK(data.getIdExMenPk());
-        ajusteExistenciaMenudeo.setIdSucursalFK(data.getIdSucursalFk());
-        ajusteExistenciaMenudeo.setIdTipoEmpaqueFK(data.getIdTipoEmpaqueFK());
-        ajusteExistenciaMenudeo.setIdUsuarioAjusteFK(usuario.getIdUsuario());
-        ajusteExistenciaMenudeo.setKilosAjustados(existenciaMenudeo.getKilos());
-        ajusteExistenciaMenudeo.setKilosAnteior(existenciaMenudeo.getKilos());
-        ajusteExistenciaMenudeo.setObservaciones(data.getObservaciones());
+        existenciaMenudeoNew = (ExistenciaMenudeo) event.getObject();
+        existenciaMenudeoOld = ifaceExistenciaMenudeo.getExistenciasMenudeoById(data.getIdExMenPk());
 
-        if(ifaceAjusteExistenciaMenudeo.insert(ajusteExistenciaMenudeo) == 0){
-            System.out.println("error al insertar");
+        if (ifaceExistenciaMenudeo.updateExistenciaMenudeo(data) != 0) {
+            
+            ajusteExistenciaMenudeo.setEmpaqueAjustados(existenciaMenudeoOld.getCantidadEmpaque());
+            ajusteExistenciaMenudeo.setEmpaqueAnterior(existenciaMenudeoOld.getCantidadEmpaque());
+            ajusteExistenciaMenudeo.setFechaAjuste(context.getFechaSistema());
+            ajusteExistenciaMenudeo.setIdExistenciaMenudeoFK(existenciaMenudeoOld.getIdExMenPk());
+            ajusteExistenciaMenudeo.setIdSucursalFK(existenciaMenudeoOld.getIdSucursalFk());
+            ajusteExistenciaMenudeo.setIdTipoEmpaqueFK(existenciaMenudeoOld.getIdTipoEmpaqueFK());
+            ajusteExistenciaMenudeo.setIdUsuarioAjusteFK(usuario.getIdUsuario());
+            ajusteExistenciaMenudeo.setKilosAjustados(existenciaMenudeoOld.getKilos());
+            ajusteExistenciaMenudeo.setKilosAnteior(existenciaMenudeoOld.getKilos());
+            ajusteExistenciaMenudeo.setObservaciones(existenciaMenudeoOld.getObservaciones());
+
+            if (ifaceAjusteExistenciaMenudeo.insert(ajusteExistenciaMenudeo) == 0) {
+                JsfUtil.addErrorMessage("Error al Modificar el Registro.");
+            }
         }
-System.out.println("INSERTAR AJUSTE EXISTENCIA");
-        JsfUtil.addSuccessMessage("Se modifico el Refistro existosamente.");
+
+        JsfUtil.addSuccessMessage("Se Modifico el Registro Existosamente.");
     }
 
     public void onRowCancel(RowEditEvent event) {
-        System.out.println("cancel");
+
+        JsfUtil.addWarnMessage("Se Cancelo la Modificación.");
 
     }
 
