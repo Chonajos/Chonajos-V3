@@ -51,7 +51,7 @@
                         </div>-->
                     </div>
 
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12 col-lg-offset-2">
                         <p:dataTable id="table" var="model" value="#{beanAjustesExistenciasMenudeo.model}" editable="true" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." >
                             <p:ajax event="rowEdit" listener="#{beanAjustesExistenciasMenudeo.onRowEdit}" update="table" />
                             <p:ajax event="rowEditCancel" listener="#{beanAjustesExistenciasMenudeo.onRowCancel}" update="table" />
