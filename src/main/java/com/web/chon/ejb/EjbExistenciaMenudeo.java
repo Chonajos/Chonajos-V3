@@ -33,14 +33,14 @@ public class EjbExistenciaMenudeo implements NegocioExistenciaMenudeo {
     @Override
     public int updateExistenciaMenudeo(ExistenciaMenudeo existenciaMenudeo) {
         try {
-            Query query = em.createNativeQuery("UPDATE TABLE EXISTENCIAMENUDEO SET KILOS = ?, CANTIDADEMPAQUE = ? WHERE ID_EXMEN_PK = ?");
+            Query query = em.createNativeQuery("UPDATE EXISTENCIAMENUDEO SET KILOS = ?, CANTIDADEMPAQUE = ? WHERE ID_EXMEN_PK = ?");
             query.setParameter(1, existenciaMenudeo.getKilos());
-            query.setParameter(1, existenciaMenudeo.getCantidadEmpaque());
-            query.setParameter(1, existenciaMenudeo.getIdExMenPk());
+            query.setParameter(2, existenciaMenudeo.getCantidadEmpaque());
+            query.setParameter(3, existenciaMenudeo.getIdExMenPk());
 
             return query.executeUpdate();
         } catch (Exception ex) {
-            Logger.getLogger(EjbExistenciaMenudeo.class.getName()).log(Logger.Level.INFO, "Error en la busqueda por id", ex);
+            Logger.getLogger(EjbExistenciaMenudeo.class.getName()).log(Logger.Level.INFO, "Error en la modificacion de esxistencias", ex);
             return 0;
         }
 
@@ -57,7 +57,7 @@ public class EjbExistenciaMenudeo implements NegocioExistenciaMenudeo {
 
             return query.getResultList();
         } catch (Exception ex) {
-            Logger.getLogger(EjbExistenciaMenudeo.class.getName()).log(Logger.Level.INFO, "Error en la busqueda por id", ex);
+            Logger.getLogger(EjbExistenciaMenudeo.class.getName()).log(Logger.Level.INFO, "Error en la busqueda por id de sucursal", ex);
             return null;
         }
     }

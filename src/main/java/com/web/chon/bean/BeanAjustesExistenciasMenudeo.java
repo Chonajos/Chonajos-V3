@@ -95,11 +95,13 @@ public class BeanAjustesExistenciasMenudeo implements Serializable {
     public void onRowEdit(RowEditEvent event) {
 
         ExistenciaMenudeo existenciaMenudeo = new ExistenciaMenudeo();
+        ajusteExistenciaMenudeo = new AjusteExistenciaMenudeo();
+        
         System.out.println("onrowEDIT");
         existenciaMenudeo = ifaceExistenciaMenudeo.getExistenciasMenudeoById(data.getIdExMenPk());
         System.out.println("GET EXISTENCIA");
         data = (ExistenciaMenudeo) event.getObject();
-
+        System.out.println("data :::::::::::::"+data.toString());
         if(ifaceExistenciaMenudeo.updateExistenciaMenudeo(data)== 0){
             System.out.println("error al modificar");
         }
