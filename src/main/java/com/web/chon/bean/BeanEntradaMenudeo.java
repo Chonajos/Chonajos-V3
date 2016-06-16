@@ -7,6 +7,7 @@ package com.web.chon.bean;
 
 import com.web.chon.dominio.EntradaMenudeo;
 import com.web.chon.dominio.EntradaMenudeoProducto;
+import com.web.chon.dominio.ExistenciaMenudeo;
 import com.web.chon.dominio.Provedor;
 import com.web.chon.dominio.Subproducto;
 import com.web.chon.dominio.Sucursal;
@@ -18,6 +19,7 @@ import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceEmpaque;
 import com.web.chon.service.IfaceEntradaMenudeo;
 import com.web.chon.service.IfaceEntradaMenudeoProducto;
+import com.web.chon.service.IfaceExistenciaMenudeo;
 import com.web.chon.service.IfaceSubProducto;
 import com.web.chon.util.JsfUtil;
 import java.io.Serializable;
@@ -38,27 +40,21 @@ import org.springframework.stereotype.Component;
 public class BeanEntradaMenudeo implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @Autowired
-    private IfaceCatSucursales ifaceCatSucursales;
-    @Autowired
-    private IfaceSubProducto ifaceSubProducto;
-    @Autowired
-    private IfaceCatProvedores ifaceCatProvedores;
-    @Autowired
-    private IfaceEmpaque ifaceEmpaque;
-    @Autowired
-    private PlataformaSecurityContext context;
-    @Autowired
-    private IfaceEntradaMenudeo ifaceEntradaMenudeo;
-    @Autowired
-    private IfaceEntradaMenudeoProducto ifaceEntradaMenudeoProducto;
+    @Autowired private IfaceCatSucursales ifaceCatSucursales;
+    @Autowired private IfaceSubProducto ifaceSubProducto;
+    @Autowired private IfaceCatProvedores ifaceCatProvedores;
+    @Autowired private IfaceEmpaque ifaceEmpaque;
+    @Autowired private PlataformaSecurityContext context;
+    @Autowired private IfaceEntradaMenudeo ifaceEntradaMenudeo;
+    @Autowired private IfaceEntradaMenudeoProducto ifaceEntradaMenudeoProducto;
+    @Autowired private IfaceExistenciaMenudeo ifaceExistenciaMenudeo;
+    
     private ArrayList<Provedor> listaProvedores;
     private ArrayList<Sucursal> listaSucursales;
     private ArrayList<TipoEmpaque> lstTipoEmpaque;
     private ArrayList<EntradaMenudeoProducto> listaMenudeoProducto;
 
     private EntradaMenudeo data;
-
     private EntradaMenudeoProducto dataProducto;
     private EntradaMenudeoProducto dataRemove;
     private EntradaMenudeoProducto dataEdit;
@@ -124,7 +120,50 @@ public class BeanEntradaMenudeo implements Serializable {
                 System.out.println("EmP:" + mp.toString());
                 if (ifaceEntradaMenudeoProducto.insertEntradaMercanciaProducto(mp) != 0) {
                     System.out.println("Se ingreso correctamente");
-                    JsfUtil.addSuccessMessageClean("Entrada de Mercancia Correcto");
+                    //una vez ingresada verificar si ya existe en la tabla existencias.
+                    ExistenciaMenudeo ex = new ExistenciaMenudeo();
+                    ex = ifaceExistenciaMenudeo.getExistenciasRepetidasById(mp.getIdSubproductoFk(),entrada_mercancia.getIdSucursalFk(),mp.getIdtipoEmpaqueFk());
+                    
+                    if(ex.getIdExMenPk()==null)
+                    {
+                        System.out.println("No se encontraron repetidos");
+                        //no se encontraron repetidos por lo tanto insertar
+                        int idExistencia = ifaceExistenciaMenudeo.getNexVal();
+                        ExistenciaMenudeo existencia = new ExistenciaMenudeo();
+                        existencia.setCantidadEmpaque(mp.getCantidadEmpaque());
+                        existencia.setIdExMenPk(new BigDecimal(idExistencia));
+                        //existencia.setIdStatusFk(kilosEntradaReales);
+                        existencia.setIdSubProductoPk(mp.getIdSubproductoFk());
+                        existencia.setIdSucursalFk(entrada_mercancia.getIdSucursalFk());
+                        existencia.setIdTipoEmpaqueFK(mp.getIdtipoEmpaqueFk());
+                        existencia.setKilos(mp.getKilosTotales());
+                        
+                        if(ifaceExistenciaMenudeo.insertaExistenciaMenudeo(existencia)!=0)
+                        {
+                            System.out.println("Se inserto correcatemente");
+                        }
+                        else
+                        {
+                            System.out.println("Ocurrio algun error");
+                        }
+                    }
+                    else
+                    {
+                        System.out.println("Se encontraron repetidos");
+                        ex.setCantidadEmpaque(ex.getCantidadEmpaque().add(mp.getCantidadEmpaque(), MathContext.UNLIMITED));
+                        ex.setKilos(ex.getKilos().add(mp.getKilosTotales(), MathContext.UNLIMITED));
+                        if(ifaceExistenciaMenudeo.updateExistenciaMenudeo(ex)!=0)
+                        {
+                            System.out.println("Se actualizo con exito");
+                        }
+                        else
+                        {
+                            System.out.println("Ocurrio un erro al actualizar producto repetido");
+                        }
+                    }
+                    
+                    //JsfUtil.addSuccessMessageClean("Entrada de Mercancia Correcto");
+                    
                 } else {
                     JsfUtil.addErrorMessageClean("Ocurrio un problema, contactar al administrador");
                     System.out.println("Ocurrio algun error");

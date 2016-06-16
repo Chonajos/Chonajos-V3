@@ -20,5 +20,8 @@ public interface NegocioExistenciaMenudeo {
     public int updateExistenciaMenudeo(ExistenciaMenudeo em);
     public List<Object[]> getExistenciasMenudeoByIdSucursal(BigDecimal idSucursal);
     public List<Object[]> getExistenciasMenudeoById(BigDecimal id);
+    public List<Object[]> getExistenciasRepetidasById(String ID_SUBPRODUCTO_FK, BigDecimal ID_SUCURSAL_FK,BigDecimal IDTIPOEMPAQUEFK);
     public List<Object[]> getExistenciasMenudeo(BigDecimal id);
+    public int getNextVal();
+    
 }

@@ -37,7 +37,8 @@ public class ServiceExistenciaMenudeo implements IfaceExistenciaMenudeo {
 
     @Override
     public int insertaExistenciaMenudeo(ExistenciaMenudeo em) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        getEjb();
+        return ejb.insertaExistenciaMenudeo(em);
     }
 
     @Override
@@ -100,6 +101,38 @@ public class ServiceExistenciaMenudeo implements IfaceExistenciaMenudeo {
     @Override
     public ArrayList<ExistenciaMenudeo> getExistenciasMenudeo() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public ExistenciaMenudeo getExistenciasRepetidasById(String ID_SUBPRODUCTO_FK, BigDecimal ID_SUCURSAL_FK, BigDecimal IDTIPOEMPAQUEFK) {
+       getEjb();
+        List<Object[]> lstObject = ejb.getExistenciasRepetidasById(ID_SUBPRODUCTO_FK, ID_SUCURSAL_FK, IDTIPOEMPAQUEFK);
+        ExistenciaMenudeo data = new ExistenciaMenudeo();
+        for (Object[] obj : lstObject) {
+
+            data.setIdExMenPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+            data.setIdSubProductoPk(obj[1] == null ? null : obj[1].toString());
+            data.setIdSucursalFk(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
+            data.setKilos(obj[3] == null ? null : new BigDecimal(obj[3].toString()));
+            data.setCantidadEmpaque(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
+            data.setIdTipoEmpaqueFK(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
+            data.setIdStatusFk(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
+            
+        }
+        return data;
+    }
+
+    @Override
+    public int getNexVal() {
+       getEjb();
+        try {
+            return ejb.getNextVal();
+
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceExistenciaMenudeo.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        }
+
     }
 
 }
