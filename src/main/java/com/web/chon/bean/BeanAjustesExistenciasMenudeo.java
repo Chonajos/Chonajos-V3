@@ -104,10 +104,11 @@ public class BeanAjustesExistenciasMenudeo implements Serializable {
         ajusteExistenciaMenudeo = new AjusteExistenciaMenudeo();
         
         existenciaMenudeoNew = (ExistenciaMenudeo) event.getObject();
-        existenciaMenudeoOld = ifaceExistenciaMenudeo.getExistenciasMenudeoById(data.getIdExMenPk());
+        existenciaMenudeoOld = ifaceExistenciaMenudeo.getExistenciasMenudeoById(existenciaMenudeoNew.getIdExMenPk());
 
-        if (ifaceExistenciaMenudeo.updateExistenciaMenudeo(data) != 0) {
-            
+        System.out.println("insercion existencia menude "+existenciaMenudeoNew.toString());
+        if (ifaceExistenciaMenudeo.updateExistenciaMenudeo(existenciaMenudeoNew) != 0) {
+            System.out.println("insercion existencia menude ");
             ajusteExistenciaMenudeo.setEmpaqueAjustados(existenciaMenudeoOld.getCantidadEmpaque());
             ajusteExistenciaMenudeo.setEmpaqueAnterior(existenciaMenudeoOld.getCantidadEmpaque());
             ajusteExistenciaMenudeo.setFechaAjuste(context.getFechaSistema());

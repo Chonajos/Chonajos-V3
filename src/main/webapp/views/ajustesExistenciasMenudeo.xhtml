@@ -55,19 +55,18 @@
                         <p:dataTable id="table" var="model" value="#{beanAjustesExistenciasMenudeo.model}" editable="true" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." >
                             <p:ajax event="rowEdit" listener="#{beanAjustesExistenciasMenudeo.onRowEdit}" update="table" />
                             <p:ajax event="rowEditCancel" listener="#{beanAjustesExistenciasMenudeo.onRowCancel}" update="table" />
-                            <p:column headerText="Clave del Producto"   width="45px;" style="text-align:center">
-                                <h:outputText value="#{model.idSubProductoPk}">
-                                </h:outputText>
+                            <p:column headerText="Clave del Producto"   width="45px;" class="alignCenter">
+                                <h:outputText value="#{model.idSubProductoPk}"/>
                             </p:column>
 
-                            <p:column headerText="Producto" width="120px;" style="text-align:center">
+                            <p:column headerText="Producto" width="120px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreProducto}" >
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Empaque" width="120px;" class="alignLeft">
+                            <p:column headerText="Empaque" width="120px;" class="alignLeft" rendered="false">
                                 <h:outputText value="#{model.nombreEmpaque}" />
                             </p:column>
-                            <p:column headerText="Cantidad Empaque" width="80px;" class="alignLeft">
+                            <p:column headerText="Cantidad Empaque" width="80px;" class="alignRight" rendered="false">
                                 <p:cellEditor>
                                     <f:facet name="output">
                                         <h:outputText value="#{model.cantidadEmpaque}" >
@@ -95,7 +94,7 @@
                                     </f:facet>
                                 </p:cellEditor>
                             </p:column>
-                            <p:column headerText="Observaciones" width="55px;" class="alignRight">
+                            <p:column headerText="Observaciones" width="90px;" class="alignLeft">
                                 <p:cellEditor>
                                     <f:facet name="output">
                                         <h:outputText value="#{model.observaciones}" />

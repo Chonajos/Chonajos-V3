@@ -73,6 +73,8 @@ public class BeanMantenimientoPrecio implements Serializable {
             data.setIdSucursal(usuarioDominio.getSucId());
         }
         
+        selectedTipoEmpaque();
+        
         setTitle("Mantenimiento de Precios");
         setViewEstate("init");
 
@@ -103,6 +105,7 @@ public class BeanMantenimientoPrecio implements Serializable {
         int temporal = data.getIdSucursal();
         data = new MantenimientoPrecios();
         data.setIdSucursal(temporal);
+        selectedTipoEmpaque();
 
     }
 
@@ -127,9 +130,10 @@ public class BeanMantenimientoPrecio implements Serializable {
         int idEmpaque = data.getIdTipoEmpaquePk() == null ? 0 : data.getIdTipoEmpaquePk().intValue();
         String idSubProducto = subproducto.getIdSubproductoPk() == null ? "" : subproducto.getIdSubproductoPk();
         int idSucursal = data.getIdSucursal();
-        System.out.println("BeanIdSucu : " + data.getIdSucursal());
+        
         data = ifaceMantenimientoPrecio.getMantenimientoPrecioById(idSubProducto, idEmpaque, idSucursal);
 
+        System.out.println("printitng data "+data.toString());
         if (data.getIdSubproducto() != null && (!data.getIdSubproducto().equals(""))) {
             update = true;
         } else {
@@ -138,6 +142,8 @@ public class BeanMantenimientoPrecio implements Serializable {
         data.setIdSucursal(idSucursal);
         data.setIdSubproducto(idSubProducto);
         data.setIdTipoEmpaquePk(new BigDecimal(idEmpaque));
+        
+        System.out.println("printitng "+data.toString());
 
     }
 
@@ -150,6 +156,19 @@ public class BeanMantenimientoPrecio implements Serializable {
         }
 
         return true;
+    }
+    
+    public void selectedTipoEmpaque() {
+
+        for (TipoEmpaque empaque : lstTipoEmpaque) {
+
+            if (empaque.getNombreEmpaque().equalsIgnoreCase("Kilos") || empaque.getNombreEmpaque().equalsIgnoreCase("Kilo"))  {
+                data.setIdTipoEmpaquePk(empaque.getIdTipoEmpaquePk());
+                break;
+            }
+
+        }
+
     }
 
     public String getTitle() {
