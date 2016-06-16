@@ -45,6 +45,7 @@ public class EjbAjusteExistenciaMenudeo implements NegocioAjusteExistenciaMenude
             query.setParameter(11, data.getObservaciones());
 
             return query.executeUpdate();
+            
         } catch (Exception ex) {
             Logger.getLogger(EjbAjusteExistenciaMenudeo.class.getName()).log(Level.INFO, "Error al Insertar el registro " + data.toString(), ex);
             return 0;

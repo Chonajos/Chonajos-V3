@@ -42,7 +42,8 @@ public class ServiceExistenciaMenudeo implements IfaceExistenciaMenudeo {
 
     @Override
     public int updateExistenciaMenudeo(ExistenciaMenudeo em) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        getEjb();
+        return ejb.updateExistenciaMenudeo(em);
     }
 
     @Override
