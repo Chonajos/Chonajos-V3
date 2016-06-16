@@ -19,7 +19,7 @@ public interface IfaceExistenciaMenudeo {
     public int updateExistenciaMenudeo(ExistenciaMenudeo em);
     public ArrayList<ExistenciaMenudeo> getExistenciasMenudeoByIdSucursal(BigDecimal idSucursal);
     public ExistenciaMenudeo getExistenciasMenudeoById(BigDecimal id);
-    public ExistenciaMenudeo getExistenciasRepetidasById(String ID_SUBPRODUCTO_FK, BigDecimal ID_SUCURSAL_FK,BigDecimal IDTIPOEMPAQUEFK);
+    public ExistenciaMenudeo getExistenciasRepetidasById(String ID_SUBPRODUCTO_FK, BigDecimal ID_SUCURSAL_FK);
     public ArrayList<ExistenciaMenudeo> getExistenciasMenudeo();
     public int getNexVal();
     

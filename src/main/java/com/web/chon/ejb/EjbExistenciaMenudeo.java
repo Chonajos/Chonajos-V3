@@ -99,15 +99,15 @@ public class EjbExistenciaMenudeo implements NegocioExistenciaMenudeo {
     }
 
     @Override
-    public List<Object[]> getExistenciasRepetidasById(String ID_SUBPRODUCTO_FK, BigDecimal ID_SUCURSAL_FK, BigDecimal IDTIPOEMPAQUEFK) {
+    public List<Object[]> getExistenciasRepetidasById(String ID_SUBPRODUCTO_FK, BigDecimal ID_SUCURSAL_FK) {
         try {
             Query query = em.createNativeQuery("select exm.ID_EXMEN_PK,exm.ID_SUBPRODUCTO_FK,exm.ID_SUCURSAL_FK,exm.KILOS,exm.CANTIDADEMPAQUE,\n"
                     + "exm.IDTIPOEMPAQUEFK, exm.IDSTATUSFK \n"
                     + "from EXISTENCIAMENUDEO exm\n"
-                    + "where exm.ID_SUBPRODUCTO_FK = ? and exm.ID_SUCURSAL_FK = ? and exm.IDTIPOEMPAQUEFK = ?");
+                    + "where exm.ID_SUBPRODUCTO_FK = ? and exm.ID_SUCURSAL_FK = ? ");
             query.setParameter(1, ID_SUBPRODUCTO_FK);
             query.setParameter(2, ID_SUCURSAL_FK);
-            query.setParameter(3, IDTIPOEMPAQUEFK);
+
 
             return query.getResultList();
         } catch (Exception ex) {

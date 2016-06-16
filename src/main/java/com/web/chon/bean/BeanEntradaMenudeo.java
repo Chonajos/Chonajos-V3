@@ -122,7 +122,7 @@ public class BeanEntradaMenudeo implements Serializable {
                     System.out.println("Se ingreso correctamente");
                     //una vez ingresada verificar si ya existe en la tabla existencias.
                     ExistenciaMenudeo ex = new ExistenciaMenudeo();
-                    ex = ifaceExistenciaMenudeo.getExistenciasRepetidasById(mp.getIdSubproductoFk(),entrada_mercancia.getIdSucursalFk(),mp.getIdtipoEmpaqueFk());
+                    ex = ifaceExistenciaMenudeo.getExistenciasRepetidasById(mp.getIdSubproductoFk(),entrada_mercancia.getIdSucursalFk());
                     
                     if(ex.getIdExMenPk()==null)
                     {
@@ -141,10 +141,13 @@ public class BeanEntradaMenudeo implements Serializable {
                         if(ifaceExistenciaMenudeo.insertaExistenciaMenudeo(existencia)!=0)
                         {
                             System.out.println("Se inserto correcatemente");
+                            JsfUtil.addSuccessMessageClean("Entrada de Mercancia Correcto");
                         }
                         else
                         {
                             System.out.println("Ocurrio algun error");
+                            JsfUtil.addErrorMessageClean("Ocurrio un problema, contactar al administrador");
+                    
                         }
                     }
                     else
@@ -155,14 +158,17 @@ public class BeanEntradaMenudeo implements Serializable {
                         if(ifaceExistenciaMenudeo.updateExistenciaMenudeo(ex)!=0)
                         {
                             System.out.println("Se actualizo con exito");
+                            JsfUtil.addSuccessMessageClean("Entrada de Mercancia Correcto");
                         }
                         else
                         {
+                            JsfUtil.addErrorMessageClean("Ocurrio un problema, contactar al administrador");
+                    
                             System.out.println("Ocurrio un erro al actualizar producto repetido");
                         }
                     }
                     
-                    //JsfUtil.addSuccessMessageClean("Entrada de Mercancia Correcto");
+                    
                     
                 } else {
                     JsfUtil.addErrorMessageClean("Ocurrio un problema, contactar al administrador");

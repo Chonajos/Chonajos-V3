@@ -103,9 +103,9 @@ public class ServiceExistenciaMenudeo implements IfaceExistenciaMenudeo {
     }
 
     @Override
-    public ExistenciaMenudeo getExistenciasRepetidasById(String ID_SUBPRODUCTO_FK, BigDecimal ID_SUCURSAL_FK, BigDecimal IDTIPOEMPAQUEFK) {
+    public ExistenciaMenudeo getExistenciasRepetidasById(String ID_SUBPRODUCTO_FK, BigDecimal ID_SUCURSAL_FK) {
         getEjb();
-        List<Object[]> lstObject = ejb.getExistenciasRepetidasById(ID_SUBPRODUCTO_FK, ID_SUCURSAL_FK, IDTIPOEMPAQUEFK);
+        List<Object[]> lstObject = ejb.getExistenciasRepetidasById(ID_SUBPRODUCTO_FK, ID_SUCURSAL_FK);
         ExistenciaMenudeo data = new ExistenciaMenudeo();
         for (Object[] obj : lstObject) {
 

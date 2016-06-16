@@ -1,6 +1,7 @@
 package com.web.chon.bean;
 
 import com.web.chon.dominio.Cliente;
+import com.web.chon.dominio.ExistenciaMenudeo;
 import com.web.chon.dominio.MantenimientoPrecios;
 import com.web.chon.dominio.Subproducto;
 import com.web.chon.dominio.TipoEmpaque;
@@ -12,6 +13,7 @@ import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceCatCliente;
 import com.web.chon.service.IfaceCatUsuario;
 import com.web.chon.service.IfaceEmpaque;
+import com.web.chon.service.IfaceExistenciaMenudeo;
 import com.web.chon.service.IfaceMantenimientoPrecio;
 import com.web.chon.service.IfaceSubProducto;
 import com.web.chon.service.IfaceVenta;
@@ -29,6 +31,7 @@ import java.io.File;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -70,15 +73,26 @@ import org.springframework.stereotype.Component;
 @Component
 @Scope("view")
 public class BeanVenta implements Serializable, BeanSimple {
+
     private static final long serialVersionUID = 1L;
-    @Autowired private IfaceVenta ifaceVenta;
-    @Autowired private IfaceEmpaque ifaceEmpaque;
-    @Autowired private IfaceSubProducto ifaceSubProducto;
-    @Autowired private IfaceVentaProducto ifaceVentaProducto;
-    @Autowired IfaceCatCliente ifaceCatCliente;
-    @Autowired IfaceCatUsuario ifaceCatUsuario;
-    @Autowired IfaceMantenimientoPrecio ifaceMantenimientoPrecio;
-    @Autowired private PlataformaSecurityContext context;
+    @Autowired
+    private IfaceVenta ifaceVenta;
+    @Autowired
+    private IfaceEmpaque ifaceEmpaque;
+    @Autowired
+    private IfaceSubProducto ifaceSubProducto;
+    @Autowired
+    private IfaceVentaProducto ifaceVentaProducto;
+    @Autowired
+    IfaceCatCliente ifaceCatCliente;
+    @Autowired
+    IfaceCatUsuario ifaceCatUsuario;
+    @Autowired
+    IfaceMantenimientoPrecio ifaceMantenimientoPrecio;
+    @Autowired
+    private PlataformaSecurityContext context;
+    @Autowired
+    private IfaceExistenciaMenudeo ifaceExistenciaMenudeo;
 
     private ArrayList<VentaProducto> lstVenta;
     private ArrayList<Subproducto> lstProducto;
@@ -135,6 +149,7 @@ public class BeanVenta implements Serializable, BeanSimple {
         data.setIdTipoEmpaqueFk(new BigDecimal(-1));
         lstProducto = new ArrayList<Subproducto>();
         lstTipoEmpaque = ifaceEmpaque.getEmpaques();
+        
         lstVenta = new ArrayList<VentaProducto>();
         selectedTipoEmpaque();
         variableInicial = false;
@@ -181,11 +196,34 @@ public class BeanVenta implements Serializable, BeanSimple {
     public String delete() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    private boolean restarExistencias(VentaProducto producto)
+    {
+         ExistenciaMenudeo ex = new ExistenciaMenudeo();
+        ex = ifaceExistenciaMenudeo.getExistenciasRepetidasById(producto.getIdProductoFk(), new BigDecimal(venta.getIdSucursal()));
+        if (ex.getIdExMenPk() == null) {
+            System.out.println("------No se encontraron existencias de este producto");
+            JsfUtil.addErrorMessage("-----No se encontraron existencias de este producto");
+            return false;
+        } else {
+            System.out.println("-----Se encontraron existencias");
+            System.out.println("Antes: "+ex.getKilos());
+            ex.setKilos(ex.getKilos().subtract(producto.getCantidadEmpaque(), MathContext.UNLIMITED));
+            System.out.println("Despues:"+ex.getKilos());
+            System.out.println("Restados: "+producto.getCantidadEmpaque());
+            if (ifaceExistenciaMenudeo.updateExistenciaMenudeo(ex)!=0) {
+                System.out.println("-----se restaron existencias de kilos");
+                return true;
+            } else {
+                return false;
+            }
+        }
+        
+    }
+    
     public void inserts() {
         int idVenta = 0;
         Venta venta = new Venta();
-       
+
         try {
             if (!lstVenta.isEmpty() && lstVenta.size() > 0) {
 
@@ -198,7 +236,15 @@ public class BeanVenta implements Serializable, BeanSimple {
 
                 if (ventaInsertada != 0) {
                     for (VentaProducto producto : lstVenta) {
-                        ifaceVentaProducto.insertarVentaProducto(producto, idVenta);
+                        if(restarExistencias(producto))
+                        {
+                            ifaceVentaProducto.insertarVentaProducto(producto, idVenta);
+                        
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
                     setParameterTicket(idVenta);
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info!", "La venta se realizo correctamente."));
@@ -207,13 +253,13 @@ public class BeanVenta implements Serializable, BeanSimple {
                     lstVenta.clear();
                     totalVenta = new BigDecimal(0);
                     RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
-   
+
                 } else {
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al insertar la venta."));
                 }
             } else {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Necesitas agregar al menos un producto para realizar la venta."));
-                
+
             }
 
         } catch (StackOverflowError ex) {
@@ -271,12 +317,10 @@ public class BeanVenta implements Serializable, BeanSimple {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "El precio de venta esta fuera de valores permitidos: Mínimo:" + min + " Máximo: " + max));
 
             } else {
-
+                if(verificaExistencia()){
                 VentaProducto venta = new VentaProducto();
                 TipoEmpaque empaque = new TipoEmpaque();
-
                 DecimalFormat df = new DecimalFormat("#,###.##");
-
                 empaque = getEmpaque(data.getIdTipoEmpaqueFk());
                 venta.setCantidadEmpaque(data.getCantidadEmpaque());
                 venta.setIdTipoEmpaqueFk(data.getIdTipoEmpaqueFk());
@@ -287,24 +331,39 @@ public class BeanVenta implements Serializable, BeanSimple {
                 venta.setIdProductoFk(subProducto.getIdSubproductoPk());
                 venta.setNombreEmpaque(empaque.getNombreEmpaque());
                 venta.setTotal(new BigDecimal(venta.getPrecioProducto()).multiply(venta.getCantidadEmpaque()));
-
                 lstVenta.add(venta);
-
                 calcularTotalVenta();
-
                 data.reset();
-
                 subProducto = new Subproducto();
-                
 //                UtilUpload.deleteFile(rutaPDF);
-
                 selectedTipoEmpaque();
-
                 variableInicial = false;
-
+                }
+                
             }
+
         } else {
             JsfUtil.addErrorMessage("No se tiene el precio de este prodcuto, favor de contactar al gerente.");
+        }
+
+    }
+
+    private boolean verificaExistencia() {
+        ExistenciaMenudeo ex = new ExistenciaMenudeo();
+        ex = ifaceExistenciaMenudeo.getExistenciasRepetidasById(subProducto.getIdSubproductoPk(), new BigDecimal(venta.getIdSucursal()));
+        if (ex.getIdExMenPk() == null) {
+            System.out.println("No se encontraron existencias de este producto");
+            JsfUtil.addErrorMessage("No se encontraron existencias de este producto");
+            return false;
+        } else {
+            System.out.println("Se encontraron existencias");
+            if (data.getCantidadEmpaque().intValue() > ex.getKilos().intValue()) {
+                System.out.println("No alcanzan las existencias");
+                JsfUtil.addErrorMessageClean("No alcanzan las existencias, solo hay " + ex.getKilos() + " Kilos Disponibles");
+                return false;
+            } else {
+                return true;
+            }
         }
 
     }
@@ -368,8 +427,8 @@ public class BeanVenta implements Serializable, BeanSimple {
         paramReport.put("estado", "PEDIDO MARCADO");
         paramReport.put("labelFecha", "Fecha de Venta:");
         paramReport.put("labelFolio", "Folio de Venta:");
-        paramReport.put("telefonos", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:"+usuarioDominio.getTelefonoSucursal());
-        
+        paramReport.put("telefonos", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:" + usuarioDominio.getTelefonoSucursal());
+
         paramReport.put("labelSucursal", usuarioDominio.getNombreSucursal());
 
     }
@@ -397,13 +456,13 @@ public class BeanVenta implements Serializable, BeanSimple {
     public void updateProducto() {
 
         TipoEmpaque empaque = new TipoEmpaque();
-        
-        if (data.getPrecioProducto() != null) {
-            empaque = getEmpaque(data.getIdTipoEmpaqueFk());
 
+        if (data.getPrecioProducto() != null) 
+        {
+            if(verificaExistencia()){
+            empaque = getEmpaque(data.getIdTipoEmpaqueFk());
             data.setIdProductoFk(subProducto.getIdSubproductoPk());
             data.setNombreProducto(subProducto.getNombreSubproducto());
-
             dataEdit.setCantidadEmpaque(data.getCantidadEmpaque());
             dataEdit.setIdProductoFk(data.getIdProductoFk());
             dataEdit.setIdTipoEmpaqueFk(data.getIdTipoEmpaqueFk());
@@ -413,16 +472,15 @@ public class BeanVenta implements Serializable, BeanSimple {
             dataEdit.setNombreProducto(data.getNombreProducto());
             dataEdit.setIdProductoFk(data.getIdProductoFk());
             dataEdit.setNombreEmpaque(empaque.getNombreEmpaque());
-
             dataEdit.setTotal(new BigDecimal(dataEdit.getPrecioProducto()).multiply(dataEdit.getCantidadEmpaque()));
             calcularTotalVenta();
             viewEstate = "init";
             data.reset();
+            }
         } else {
             JsfUtil.addErrorMessage("No se tiene el precio de este prodcuto, favor de contactar al gerente.");
         }
 
-        
     }
 
     public void cancel() {
@@ -432,8 +490,8 @@ public class BeanVenta implements Serializable, BeanSimple {
         init();
 
     }
-    
-      public void cancelarModificacion() {
+
+    public void cancelarModificacion() {
         data.reset();
         subProducto = new Subproducto();
         viewEstate = "init";
@@ -463,7 +521,7 @@ public class BeanVenta implements Serializable, BeanSimple {
 //            exporter.setParameter(JRPdfExporterParameter.PDF_JAVASCRIPT, "this.print();");
             byte[] bytes = outputStream.toByteArray();
 
-            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf",idVenta,idSucu);
+            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf", idVenta, idSucu);
 
         } catch (Exception exception) {
             System.out.println("Error >" + exception.getMessage());
@@ -497,7 +555,6 @@ public class BeanVenta implements Serializable, BeanSimple {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    
     public String getPathFileJasper() {
         return pathFileJasper;
     }
