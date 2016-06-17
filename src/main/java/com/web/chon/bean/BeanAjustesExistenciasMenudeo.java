@@ -108,16 +108,16 @@ public class BeanAjustesExistenciasMenudeo implements Serializable {
 
         if (ifaceExistenciaMenudeo.updateExistenciaMenudeo(existenciaMenudeoNew) != 0) {
 
-            ajusteExistenciaMenudeo.setEmpaqueAjustados(existenciaMenudeoOld.getCantidadEmpaque());
+            ajusteExistenciaMenudeo.setEmpaqueAjustados(existenciaMenudeoNew.getCantidadEmpaque());
             ajusteExistenciaMenudeo.setEmpaqueAnterior(existenciaMenudeoOld.getCantidadEmpaque());
             ajusteExistenciaMenudeo.setFechaAjuste(context.getFechaSistema());
-            ajusteExistenciaMenudeo.setIdExistenciaMenudeoFK(existenciaMenudeoOld.getIdExMenPk());
-            ajusteExistenciaMenudeo.setIdSucursalFK(existenciaMenudeoOld.getIdSucursalFk());
-            ajusteExistenciaMenudeo.setIdTipoEmpaqueFK(existenciaMenudeoOld.getIdTipoEmpaqueFK());
+            ajusteExistenciaMenudeo.setIdExistenciaMenudeoFK(existenciaMenudeoNew.getIdExMenPk());
+            ajusteExistenciaMenudeo.setIdSucursalFK(existenciaMenudeoNew.getIdSucursalFk());
+            ajusteExistenciaMenudeo.setIdTipoEmpaqueFK(existenciaMenudeoNew.getIdTipoEmpaqueFK());
             ajusteExistenciaMenudeo.setIdUsuarioAjusteFK(usuario.getIdUsuario());
-            ajusteExistenciaMenudeo.setKilosAjustados(existenciaMenudeoOld.getKilos());
+            ajusteExistenciaMenudeo.setKilosAjustados(existenciaMenudeoNew.getKilos());
             ajusteExistenciaMenudeo.setKilosAnteior(existenciaMenudeoOld.getKilos());
-            ajusteExistenciaMenudeo.setObservaciones(existenciaMenudeoOld.getObservaciones());
+            ajusteExistenciaMenudeo.setObservaciones(existenciaMenudeoNew.getObservaciones());
 
             if (ifaceAjusteExistenciaMenudeo.insert(ajusteExistenciaMenudeo) == 0) {
                 JsfUtil.addErrorMessage("Error al Modificar el Registro.");
