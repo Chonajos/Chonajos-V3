@@ -150,4 +150,38 @@ public class EjbExistenciaMenudeo implements NegocioExistenciaMenudeo {
         }
     }
 
+    @Override
+    public List<Object[]> getRelacion(BigDecimal idSucursal, String idSubproducto) {
+        try {
+            Query query = em.createNativeQuery("SELECT (SELECT SUM(EMP.KILOS_TOTALES) FROM ENTRADAMENUDEOPRODUCTO EMP\n" +
+"JOIN ENTRADAMERCANCIAMENUDEO EMM ON EMM.ID_EMM_PK = EMP.ID_EMM_FK\n" +
+"WHERE EMP.ID_SUBPRODUCTO_FK = ? AND EMM.ID_SUCURSAL_FK = ?) AS ENTRADA,\n" +
+"(SELECT EXM.KILOS FROM EXISTENCIAMENUDEO EXM  WHERE EXM.ID_SUBPRODUCTO_FK = ? AND EXM.ID_SUCURSAL_FK = ?) AS EXISTENCIA,\n" +
+"(SELECT SUM(VP.CANTIDAD_EMPAQUE) AS KILOS_VENDIDOS from VENTA_PRODUCTO VP\n" +
+"JOIN VENTA V on V.ID_VENTA_PK = VP.ID_VENTA_FK \n" +
+"WHERE VP.ID_SUBPRODUCTO_FK = ? and V.ID_SUCURSAL_FK=?) AS VENDIDOS,\n" +
+"(SELECT NVL(sum(AEXM.KILOS_AJUSTADOS -AEXM.KILOS_ANTERIOR),0) AS KILOS_AJUSTADOS\n" +
+"FROM AJUSTE_EXISTENCIA_MENUDEO  AEXM\n" +
+"RIGHT JOIN EXISTENCIAMENUDEO EXM ON EXM.ID_EXMEN_PK = AEXM.ID_EXISTENCIA_MENUDEO_FK\n" +
+"WHERE EXM.ID_SUCURSAL_FK =? AND EXM.ID_SUBPRODUCTO_FK=?) AS AJUSTES\n" +
+"FROM EXISTENCIAMENUDEO");
+            query.setParameter(1, idSubproducto);
+            query.setParameter(2, idSucursal);
+            query.setParameter(3, idSubproducto);
+            query.setParameter(4, idSucursal);
+            query.setParameter(5, idSubproducto);
+            query.setParameter(6, idSucursal);
+            query.setParameter(7, idSubproducto);
+            query.setParameter(8, idSucursal);
+         
+            
+
+            return query.getResultList();
+        } catch (Exception ex) {
+            Logger.getLogger(EjbExistenciaMenudeo.class.getName()).log(Logger.Level.INFO, "Error en la busqueda por id", ex);
+            return null;
+        }
+    
+    }
+
 }

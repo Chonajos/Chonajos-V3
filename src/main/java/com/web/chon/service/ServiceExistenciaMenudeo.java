@@ -6,6 +6,7 @@
 package com.web.chon.service;
 
 import com.web.chon.dominio.ExistenciaMenudeo;
+import com.web.chon.dominio.RelEntSalExAj;
 import com.web.chon.negocio.NegocioExistenciaMenudeo;
 import com.web.chon.util.Utilidades;
 import java.math.BigDecimal;
@@ -160,6 +161,26 @@ public class ServiceExistenciaMenudeo implements IfaceExistenciaMenudeo {
             lstExistenciaMenudeo.add(data);
         }
         return lstExistenciaMenudeo;
+    }
+
+    @Override
+    public RelEntSalExAj getRelacion(BigDecimal idSucursal, String idSubproducto) {
+       getEjb();
+
+        RelEntSalExAj data = new RelEntSalExAj();
+        List<Object[]> lstObject = ejb.getRelacion(idSucursal, idSubproducto);
+
+        for (Object[] obj : lstObject) {
+
+            data.setKilosEntrada(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+            data.setKilosVendidos(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
+            data.setKilosAjustados(obj[3] == null ? null : new BigDecimal(obj[3].toString()));
+            data.setKilosExistencia(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
+           
+        }
+        System.out.println("Data: "+data.toString());
+        return data;
+    
     }
 
 }

@@ -6,6 +6,7 @@
 package com.web.chon.service;
 
 import com.web.chon.dominio.ExistenciaMenudeo;
+import com.web.chon.dominio.RelEntSalExAj;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,6 @@ public interface IfaceExistenciaMenudeo {
     public int getNexVal();
     
     public ArrayList<ExistenciaMenudeo> getExistenciasMenudeoByIdSucursalAndIdSubproducto(BigDecimal idSucursal, String idSubProducto);
-
+    public RelEntSalExAj getRelacion(BigDecimal idSucursal, String idSubproducto);
     
 }

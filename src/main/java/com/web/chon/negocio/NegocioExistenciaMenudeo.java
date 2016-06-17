@@ -28,6 +28,8 @@ public interface NegocioExistenciaMenudeo {
     public List<Object[]> getExistenciasRepetidasById(String ID_SUBPRODUCTO_FK, BigDecimal ID_SUCURSAL_FK);
 
     public List<Object[]> getExistenciasMenudeo(BigDecimal id);
+    
+    public List<Object[]> getRelacion(BigDecimal idSucursal, String idSubproducto);
 
     public int getNextVal();
 
