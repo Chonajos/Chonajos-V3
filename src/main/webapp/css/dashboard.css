@@ -124,7 +124,7 @@ ul .ui-state-highlight {
 /*Color azul a los botones*/
 .ui-button-text{
     background:#0081c2;
-    background-image:-webkit-linear-gradient(top, #0088cc, #0077b3);
+    background-image:-webkit-linear-gradient(top, #2399e5, #239ce5);
     color: white;
     border-radius: 5px;
     border: 1px solid #0016b0 !important;
@@ -143,12 +143,12 @@ div label{
 }
 
 /*quitar bordes de paneles*/
-.ui-panel .ui-panel-content{
-    padding: 0.0em 0em !important;
-}
+/*.ui-panel .ui-panel-content{
+    padding: 0.2em 0.2em !important;
+}*/
 .container-fluid{
-    padding-right: 0px;
-    padding-left: 0px;
+    padding-right: 2px;
+    padding-left: 2px;
 
 }
 /*quitar bordes de paneles*/
@@ -189,6 +189,12 @@ button span:hover{
 .alignLeftRadioButton table tbody tr td label{
     text-align: left !important;
 } 
+
+/*Iconos color negro si se quita esta linea son grices*/
+.ui-widget-content .ui-icon {
+    background-image: url("/javax.faces.resource/images/ui-icons_222222_256x240.png.xhtml?ln=primefaces-casablanca") !important;
+}
+
 /*Pantalla celular*/
 @media ( max-width : 767px) {
     .navbar {

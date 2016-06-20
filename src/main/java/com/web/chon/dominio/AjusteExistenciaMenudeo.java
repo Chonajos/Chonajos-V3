@@ -23,6 +23,7 @@ public class AjusteExistenciaMenudeo implements Serializable {
     private BigDecimal kilosAnteior;
     private BigDecimal kilosAjustados;
     private String observaciones;
+    private String motivoAjuste;
 
     @Override
     public String toString() {
@@ -126,6 +127,15 @@ public class AjusteExistenciaMenudeo implements Serializable {
         this.idSucursalFK = idSucursalFK;
     }
 
+    public String getMotivoAjuste() {
+        return motivoAjuste;
+    }
+
+    public void setMotivoAjuste(String motivoAjuste) {
+        this.motivoAjuste = motivoAjuste;
+    }
+
+    
 
     
     

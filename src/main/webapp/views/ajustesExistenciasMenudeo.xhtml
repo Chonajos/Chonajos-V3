@@ -41,17 +41,17 @@
                             <pe:keyFilter for="autocompletePoducto" regEx="/[a-z0-9-_Ã±\s]/i" />
                         </div>
 
-<!--                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="txtTipoEmpaque" value ="Empaque:"/> 
-                            <h:selectOneMenu  id="txtTipoEmpaque" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanAjustesExistenciasMenudeo.data.idTipoEmpaqueFK}" >
-                                <f:selectItem itemLabel="Seleccione un empaque" itemValue="" />
-                                <f:selectItems value="#{beanAjustesExistenciasMenudeo.lstTipoEmpaque}" var="empaque" itemLabel="#{empaque.nombreEmpaque}" itemValue="#{empaque.idTipoEmpaquePk}"/>
-                                <p:ajax event="change" update=":formContent:table" listener="#{beanAjustesExistenciasMenudeo.buscaExistencias()}"/>
-                            </h:selectOneMenu>
-                        </div>-->
+                        <!--                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="txtTipoEmpaque" value ="Empaque:"/> 
+                                                    <h:selectOneMenu  id="txtTipoEmpaque" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanAjustesExistenciasMenudeo.data.idTipoEmpaqueFK}" >
+                                                        <f:selectItem itemLabel="Seleccione un empaque" itemValue="" />
+                                                        <f:selectItems value="#{beanAjustesExistenciasMenudeo.lstTipoEmpaque}" var="empaque" itemLabel="#{empaque.nombreEmpaque}" itemValue="#{empaque.idTipoEmpaquePk}"/>
+                                                        <p:ajax event="change" update=":formContent:table" listener="#{beanAjustesExistenciasMenudeo.buscaExistencias()}"/>
+                                                    </h:selectOneMenu>
+                                                </div>-->
                     </div>
 
-                    <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12 col-lg-offset-2">
+                    <div class="col-lg-10 col-md-12 col-sm-12 col-xs-12 col-lg-offset-1">
                         <p:dataTable id="table" var="model" value="#{beanAjustesExistenciasMenudeo.model}" editable="true" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." >
                             <p:ajax event="rowEdit" listener="#{beanAjustesExistenciasMenudeo.onRowEdit}" update="table" />
                             <p:ajax event="rowEditCancel" listener="#{beanAjustesExistenciasMenudeo.onRowCancel}" update="table" />
@@ -80,6 +80,21 @@
                                     </f:facet>
                                 </p:cellEditor>
                             </p:column>
+                            <p:column headerText="Motivo de Merma" width="55px;" class="alignLeft">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText id="outputMotivo" value="Selecciona" style="width:100%"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <h:selectOneMenu  id="comboMotivoOupuInput" class="col-lg-12 col-md-8 col-sm-8 col-xs-12 " value="#{model.motivoAjuste}"  required="true">
+                                            <f:selectItem itemLabel="Selecciona" itemValue="null" />
+                                            <f:selectItem itemLabel="Deshidratación" itemValue="1" />
+                                            <f:selectItem itemLabel="Empaque" itemValue="2" />
+                                            <f:selectItem itemLabel="Desecho o basura" itemValue="3" />
+                                        </h:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
                             <p:column headerText="Kilos" width="55px;" class="alignRight">
                                 <p:cellEditor>
                                     <f:facet name="output">
@@ -104,7 +119,7 @@
                                     </f:facet>
                                 </p:cellEditor>
                             </p:column>
-                            <p:column style="width:16px" headerText="Editar" rendered="#{beanAjustesExistenciasMenudeo.usuario.perId == 1}">
+                            <p:column style="width:16px" headerText="Ajuste" rendered="#{beanAjustesExistenciasMenudeo.usuario.perId == 1}">
                                 <p:rowEditor/>
                             </p:column>
 

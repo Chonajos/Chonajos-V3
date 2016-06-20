@@ -118,6 +118,7 @@ public class BeanAjustesExistenciasMenudeo implements Serializable {
             ajusteExistenciaMenudeo.setKilosAjustados(existenciaMenudeoNew.getKilos());
             ajusteExistenciaMenudeo.setKilosAnteior(existenciaMenudeoOld.getKilos());
             ajusteExistenciaMenudeo.setObservaciones(existenciaMenudeoNew.getObservaciones());
+            ajusteExistenciaMenudeo.setMotivoAjuste(existenciaMenudeoNew.getMotivoAjuste());
 
             if (ifaceAjusteExistenciaMenudeo.insert(ajusteExistenciaMenudeo) == 0) {
                 JsfUtil.addErrorMessage("Error al Modificar el Registro.");

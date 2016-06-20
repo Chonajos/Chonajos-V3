@@ -8,14 +8,14 @@
 
     <ui:composition>
         <nav class="navbar navbar-default navbar-fixed-top " role="navigation" >
-            <div> 
-                <div class="form-group" style="width:100%;" >
-                    <div class="navbar-header" style="width:100%;" align="right">
-                        <div class="col-lg-9 col-md-8 col-sm-8 hidden-button-toggle" align="left" style="padding-right:0px; padding-left:15px; ">
+            <div style="padding-right:0px; padding-left:0px; "> 
+                <div class="form-group"  style="padding-right:0px; padding-left:0px; width:100%;">
+                    <div class="navbar-header" style="padding-right:0px; padding-left:0px; width:100%;" align="right">
+                        <div class="col-lg-9 col-md-8 col-sm-8 hidden-button-toggle" align="left" style="padding-right:0px; padding-left:0px; ">
                             <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2" style="padding-right:0px; padding-left:0px; ">
                                 <a class="nav navbar-nav hidden-xs col-lg-12 col-md-12 col-sm-12" style="padding-right:0px;" href="welcome.xhtml"><img style="height:60px; width:100px;" src="../resources/img/logo.png" alt="logo"></img></a>
                             </div>
-                            <div class="col-lg-10 col-md-7 col-sm-10 col-xs-6 hidden-xs" align="left" style="padding-right:0px; padding-left:15px; ">
+                            <div class="col-lg-10 col-md-7 col-sm-10 col-xs-6 hidden-xs" align="left" style="padding-right:0px; padding-left:0px; ">
                                 <div class="nav navbar-nav hidden-xs col-lg-offset-1" style="color: #039; font-size: 22px; padding-left:30px;">Sistema Integral de Ventas</div>
                                 <h:form id="formHeader">
                                     <div class="col-lg-10 col-md-7 col-sm-10 col-xs-6 hidden-xs" style="color: #039; font-size: 12px; padding-left:30px;"><p:outputLabel id="fechaSystemasi" value="#{usuarioWeb.fechaActual}"/></div>
@@ -24,21 +24,40 @@
                             </div>
 
                         </div>
-                        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 ">
-                            <h:form style="align-content: center">
-                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-10 " style="padding-right:5px;">
+                        <div class="hidden-lg hidden-md hidden-sm hidden-button-toggle col-xs-2" align="left" style="padding-right:0px; padding-left:0px; ">
+                            <div class="col-lg-1 col-md-1 col-sm-2 col-xs-12" style="padding-right:0px; padding-left:0px; ">
+                                <a style="padding-right:0px; padding-top: 0px;" href="welcome.xhtml"><img style="height:40px; width:60px;" src="../resources/img/logo.png" alt="logo"></img></a>
+                            </div>
+                            <div class="col-lg-10 col-md-7 col-sm-10 col-xs-6 " align="left" style="padding-right:0px; padding-left:15px; ">
+                                <div class="nav navbar-nav hidden-xs col-lg-offset-1" style="color: #039; font-size: 22px; padding-left:30px;">Sistema Integral de Ventas</div>
+                                <h:form id="formHeaderResp">
+                                    <div class="col-lg-10 col-md-7 col-sm-10 col-xs-6 hidden-xs" style="color: #039; font-size: 12px; padding-left:30px;"><p:outputLabel id="fechaSystemasi" value="#{usuarioWeb.fechaActual}"/></div>
+                                    <p:poll interval="60" listener="#{usuarioWeb.getFechaActual}" update="fechaSystemasi"/>
+                                    
+                                </h:form>
+                            </div>
+
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-10 " style="padding-right:0px;">
+                            <h:form style="padding-right:0px; padding-left:0px; align-content: center;">
+                                <div class="col-lg-12 col-md-12 col-sm-12 hidden-xs " style="padding-right:0px;">
                                     <div class="col-lg-10 col-md-10 col-sm-10 col-xs-11" >#{usuarioWeb.usuario.nombreCompleto} </div>
-                                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 hidden-xs">
+                                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 hidden-xs" >
                                         <p:commandLink id="send" styleClass="si-icon-16x16 si-icon-send" action="#{securityBean.logout()}" ajax="false">
                                             <h:graphicImage value="../resources/img/salir.ico"  width="25" height="25"/>
                                         </p:commandLink>
                                     </div>
                                     <div class="col-lg-10 col-md-10 col-sm-10 col-xs-11" >#{usuarioWeb.usuario.perDescripcion}</div>
-
-
                                 </div>
-                                <div class="col-xs-2 hidden-lg hidden-md hidden-sm hidden-button-toggle">
-                                    <button type="button" id="btnMenuRes" class="navbar-toggle collapsed" data-toggle="collapse"  aria-expanded="false" aria-controls="navbar">
+
+                                <div class="hidden-md hidden-sm hidden-lg col-xs-10" style="padding-right:0px;">
+                                    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-11 alignLeft" >#{usuarioWeb.usuario.nombreCompleto} </div>
+                                    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-11 alignLeft" >#{usuarioWeb.usuario.perDescripcion}</div>
+                                </div>
+
+
+                                <div class="col-xs-2 hidden-lg hidden-md hidden-sm hidden-button-toggle alignRight" style="padding-right:0px; padding-left:0px; ">
+                                    <button type="button" id="btnMenuRes" class="navbar-toggle collapsed alignRight" data-toggle="collapse"  aria-expanded="false" aria-controls="navbar" style="margin:0px; ">
                                         <span class="sr-only">Toggle navigation</span>
                                         <span class="icon-bar"></span>
                                         <span class="icon-bar"></span>
@@ -50,11 +69,12 @@
                     </div>
 
 
-                    <div id="navbar" class="navbar-collapse navbar-right hidden-xs" style="width:100%; height:35px !important; margin-right: 0px !important; ">        	          
+                    <div id="navbar" class="navbar-collapse  hidden-xs" style="width:100%; height:35px !important; margin-right: 0px !important; ">        	          
                         <ul class="nav navbar-nav" style="width:100%;"  >
                             <ui:include src="menu.xhtml"></ui:include>
                         </ul>
                     </div>
+
                 </div>
 
             </div>

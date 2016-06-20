@@ -13,6 +13,7 @@ import java.math.BigDecimal;
  * @author freddy
  */
 public class ExistenciaMenudeo implements Serializable {
+
     private static final long serialVersionUID = 1L;
     private BigDecimal idExMenPk;
     private BigDecimal idSucursalFk;
@@ -23,9 +24,10 @@ public class ExistenciaMenudeo implements Serializable {
     private BigDecimal idStatusFk;
     private String nombreProducto;
     private String nombreEmpaque;
-    
+
     //campo que se utiliza en ajustes de existencia
     private String observaciones;
+    private String motivoAjuste;
 
     public BigDecimal getCantidadEmpaque() {
         return cantidadEmpaque;
@@ -51,8 +53,6 @@ public class ExistenciaMenudeo implements Serializable {
         this.idStatusFk = idStatusFk;
     }
 
-    
-   
     public BigDecimal getIdExMenPk() {
         return idExMenPk;
     }
@@ -113,8 +113,15 @@ public class ExistenciaMenudeo implements Serializable {
     public void setObservaciones(String observaciones) {
         this.observaciones = observaciones;
     }
-    
-    
 
+    public String getMotivoAjuste() {
+        return motivoAjuste;
+    }
+
+    public void setMotivoAjuste(String motivoAjuste) {
+        this.motivoAjuste = motivoAjuste;
+    }
+    
+    
 
 }

@@ -1,8 +1,31 @@
 <html xmlns="http://www.w3.org/1999/xhtml" 
       xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
       xmlns:p="http://primefaces.org/ui">
-    <h:body>        
-        <h:form>
+    <h:body>    
+        <!--Ocultar el menu-->
+        <script>
+                    function showhide()
+                    {
+                        if ($(".menubarHide").is(":visible")) {
+                            $(".menubarHide").hide();
+
+                            $("#navbar").attr("style", "height:0px !important;");
+                            $(".padinTopRes").attr("style", "padding-top:50px;");
+
+
+                        } else {
+                            $(".menubarHide").show();
+                            $("#navbar").attr("style", "padding:100 px !important;");
+
+                            $(".padinTopRes").attr("style", "padding-top:85px;");
+
+
+                        }
+                    }   
+
+        </script>    
+      <h:form>
             <p:menubar styleClass="hidden-xs" model="#{beanUsuario.menuModel}" rendered="#{beanUsuario.usuario != null}" autoDisplay="false"/>			                		 		     			
         </h:form>
     </h:body>
