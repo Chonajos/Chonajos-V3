@@ -30,7 +30,7 @@ public class EjbAjusteExistenciaMenudeo implements NegocioAjusteExistenciaMenude
     public int insert(AjusteExistenciaMenudeo data) {
 
         try {
-            Query query = em.createNativeQuery("INSERT INTO AJUSTE_EXISTENCIA_MENUDEO (ID_AJUSTE_MENUDEO ,ID_EXISTENCIA_MENUDEO_FK ,ID_USUARIO_AJUSTE_FK , ID_USUARIO_APRUEBA_FK , id_tipo_empaque_fk,ID_SUSCURSAL_FK ,FECHA_AJUSTE ,EMPAQUE_ANTERIOR , EMPAQUE_AJUSTADOS, KILOS_ANTERIOR ,KILOS_AJUSTADOS, OBSERVACIONES ) VALUES(S_AJUSTE_EXISTENCIA_MENUDEO.NextVal,?,?,?,?,?,?,?,?,?,?,?)");
+            Query query = em.createNativeQuery("INSERT INTO AJUSTE_EXISTENCIA_MENUDEO (ID_AJUSTE_MENUDEO ,ID_EXISTENCIA_MENUDEO_FK ,ID_USUARIO_AJUSTE_FK , ID_USUARIO_APRUEBA_FK , id_tipo_empaque_fk,ID_SUSCURSAL_FK ,FECHA_AJUSTE ,EMPAQUE_ANTERIOR , EMPAQUE_AJUSTADOS, KILOS_ANTERIOR ,KILOS_AJUSTADOS, OBSERVACIONES,MOTIVO_AJUSTE ) VALUES(S_AJUSTE_EXISTENCIA_MENUDEO.NextVal,?,?,?,?,?,?,?,?,?,?,?,?)");
 
             query.setParameter(1, data.getIdExistenciaMenudeoFK());
             query.setParameter(2, data.getIdUsuarioAjusteFK());
@@ -43,6 +43,7 @@ public class EjbAjusteExistenciaMenudeo implements NegocioAjusteExistenciaMenude
             query.setParameter(9, data.getKilosAnteior());
             query.setParameter(10, data.getKilosAjustados());
             query.setParameter(11, data.getObservaciones());
+            query.setParameter(12, data.getMotivoAjuste());
 
             return query.executeUpdate();
             

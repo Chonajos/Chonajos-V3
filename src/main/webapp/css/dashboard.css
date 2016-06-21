@@ -189,6 +189,38 @@ button span:hover{
 .alignLeftRadioButton table tbody tr td label{
     text-align: left !important;
 } 
+/**tamaño en el header de la aplicacion con menu*/
+.navbar-fixed-top {
+    top: 0;
+    border-width: 0 0 1px;
+    height: 100px;
+}
+
+/**tamaño en el header de la aplicacion sin menu*/
+.navbar-fixed-top-menu {
+    top: 0;
+    border-width: 0 0 1px;
+    height: 70px;
+}
+
+/**Boton flotante de abrir y cerrar menu**/
+.flotante {
+        display:scroll;
+        position:fixed;
+        height:10px;
+        width:10px;
+        bottom:3px;
+        right:0px;
+}
+.flotante span
+{
+        display:scroll;
+        position:fixed;
+        height:10px;
+        width:10px;
+        bottom:30px;
+        right:0px;
+}
 
 /*Iconos color negro si se quita esta linea son grices*/
 .ui-widget-content .ui-icon {

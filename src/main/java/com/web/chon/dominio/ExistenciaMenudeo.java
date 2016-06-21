@@ -28,6 +28,7 @@ public class ExistenciaMenudeo implements Serializable {
     //campo que se utiliza en ajustes de existencia
     private String observaciones;
     private String motivoAjuste;
+    private BigDecimal kilosAjustados;
 
     public BigDecimal getCantidadEmpaque() {
         return cantidadEmpaque;
@@ -121,6 +122,16 @@ public class ExistenciaMenudeo implements Serializable {
     public void setMotivoAjuste(String motivoAjuste) {
         this.motivoAjuste = motivoAjuste;
     }
+
+    public BigDecimal getKilosAjustados() {
+        return kilosAjustados;
+    }
+
+    public void setKilosAjustados(BigDecimal kilosAjustados) {
+        this.kilosAjustados = kilosAjustados;
+    }
+    
+    
     
     
 

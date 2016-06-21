@@ -5,28 +5,33 @@
     <h:body>    
         <!--Ocultar el menu-->
         <script>
-                    function showhide()
-                    {
-                        if ($(".menubarHide").is(":visible")) {
-                            $(".menubarHide").hide();
+            function showhide()
+            {
+                if ($(".menubarHide").is(":visible")) {
+                    $(".menubarHide").hide();
 
-                            $("#navbar").attr("style", "height:0px !important;");
-                            $(".padinTopRes").attr("style", "padding-top:50px;");
+                    $("#navbar").attr("style", "height:0px !important;");
+                    $(".padinTopRes").attr("style", "padding-top:50px;");
+                    $("#navbar").addClass("navbar-fixed-top-menu");
+//                            $("#navbar").addClass("navbar-fixed-top");
+
+                } else {
+                    $(".menubarHide").show();
+                    $("#navbar").attr("style", "padding:120 px !important;");
+                    
 
 
-                        } else {
-                            $(".menubarHide").show();
-                            $("#navbar").attr("style", "padding:100 px !important;");
-
-                            $(".padinTopRes").attr("style", "padding-top:85px;");
+                    $(".padinTopRes").attr("style", "padding-top:85px;");
 
 
-                        }
-                    }   
+                }
+            }
 
         </script>    
-      <h:form>
-            <p:menubar styleClass="hidden-xs" model="#{beanUsuario.menuModel}" rendered="#{beanUsuario.usuario != null}" autoDisplay="false"/>			                		 		     			
+        <h:form>
+            <p:menubar styleClass="hidden-xs menubarHide" model="#{beanUsuario.menuModel}" rendered="#{beanUsuario.usuario != null}" autoDisplay="false"/>			                		 		     			
+
+            <p:commandButton class="flotante" icon="ui-icon-hola" onclick="showhide();"/>
         </h:form>
     </h:body>
 </html>  

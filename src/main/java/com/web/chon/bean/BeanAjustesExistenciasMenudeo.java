@@ -106,6 +106,9 @@ public class BeanAjustesExistenciasMenudeo implements Serializable {
         existenciaMenudeoNew = (ExistenciaMenudeo) event.getObject();
         existenciaMenudeoOld = ifaceExistenciaMenudeo.getExistenciasMenudeoById(existenciaMenudeoNew.getIdExMenPk());
 
+        //Se ajusta la tabla de existencia
+        existenciaMenudeoNew.setKilos(existenciaMenudeoNew.getKilos().add(existenciaMenudeoNew.getKilosAjustados()));
+        
         if (ifaceExistenciaMenudeo.updateExistenciaMenudeo(existenciaMenudeoNew) != 0) {
 
             ajusteExistenciaMenudeo.setEmpaqueAjustados(existenciaMenudeoNew.getCantidadEmpaque());
