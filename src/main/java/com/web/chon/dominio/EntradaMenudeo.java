@@ -28,6 +28,12 @@ public class EntradaMenudeo implements Serializable {
     private String ticketBascula;
     private BigDecimal folio;
     private BigDecimal idUsuario;
+    
+    private Date fechaFiltroInicio;
+    private Date fechaFiltroFin;
+    private String nombreProvedor;
+    private String apPaternoProvedor;
+    private String apMaternoProvedor;
 
     public void reset() {
         idEmmPk = null;
@@ -145,5 +151,48 @@ public class EntradaMenudeo implements Serializable {
     public void setFolio(BigDecimal folio) {
         this.folio = folio;
     }
+
+    public Date getFechaFiltroInicio() {
+        return fechaFiltroInicio;
+    }
+
+    public void setFechaFiltroInicio(Date fechaFiltroInicio) {
+        this.fechaFiltroInicio = fechaFiltroInicio;
+    }
+
+    public Date getFechaFiltroFin() {
+        return fechaFiltroFin;
+    }
+
+    public void setFechaFiltroFin(Date fechaFiltroFin) {
+        this.fechaFiltroFin = fechaFiltroFin;
+    }
+
+    public String getNombreProvedor() {
+        return nombreProvedor;
+    }
+
+    public void setNombreProvedor(String nombreProvedor) {
+        this.nombreProvedor = nombreProvedor;
+    }
+
+    public String getApPaternoProvedor() {
+        return apPaternoProvedor;
+    }
+
+    public void setApPaternoProvedor(String apPaternoProvedor) {
+        this.apPaternoProvedor = apPaternoProvedor;
+    }
+
+    public String getApMaternoProvedor() {
+        return apMaternoProvedor;
+    }
+
+    public void setApMaternoProvedor(String apMaternoProvedor) {
+        this.apMaternoProvedor = apMaternoProvedor;
+    }
+    
+    
+    
 
 }

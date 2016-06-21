@@ -7,7 +7,9 @@ package com.web.chon.ejb;
 
 import com.web.chon.dominio.EntradaMenudeo;
 import com.web.chon.negocio.NegocioEntradaMenudeo;
+import com.web.chon.util.TiempoUtil;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -80,6 +82,37 @@ public class EjbEntradaMenudeo implements NegocioEntradaMenudeo{
     @Override
     public List<Object[]> getEntradaById(BigDecimal id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<Object[]> getEntradaProductoByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal) {
+       int cont = 0;
+        StringBuffer query = new StringBuffer("select emm.ID_EMM_PK,emm.ID_PROVEDOR_FK, emm.FECHA,emm.ID_SUCURSAL_FK,emm.ID_STATUS_FK,\n" +
+"emm.KILOSTOTALES, emm.KILOSTOTALESPROVEDOR, emm.COMENTARIOS, emm.FOLIO, emm.ID_USER_FK, \n" +
+"prov.NOMBRE_PROVEDOR, prov.A_PATERNO_PROVE, \n" +
+"prov.A_MATERNO_PROVE\n" +
+"from ENTRADAMERCANCIAMENUDEO emm\n" +
+"join PROVEDORES prov\n" +
+"on prov.ID_PROVEDOR_PK = emm.ID_PROVEDOR_FK");
+        if (fechaInicio != null) 
+        {
+            cont++;
+            query.append(" WHERE TO_DATE(TO_CHAR(emm.FECHA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + TiempoUtil.getFechaDDMMYY(fechaInicio) + "' AND '" + TiempoUtil.getFechaDDMMYY(fechaFin) + "' ");
+        }
+        if (idSucursal != null && !idSucursal.equals(new BigDecimal(-1))) 
+        {
+            if (cont == 0) {
+                cont++;
+                query.append(" WHERE ");
+            } else {
+                query.append(" AND ");
+            }
+            query.append(" emm.ID_SUCURSAL_FK =" + idSucursal);
+        }
+        query.append(" ORDER BY emm.ID_EMM_PK");
+        System.out.println("Query: "+query);
+        return em.createNativeQuery(query.toString()).getResultList();
+        
     }
     
 }

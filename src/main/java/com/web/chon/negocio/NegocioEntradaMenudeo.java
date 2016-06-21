@@ -8,6 +8,7 @@ package com.web.chon.negocio;
 
 import com.web.chon.dominio.EntradaMenudeo;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Remote;
 
@@ -29,4 +30,6 @@ public interface NegocioEntradaMenudeo {
     public int buscaMaxMovimiento(EntradaMenudeo entrada);
     
     public List<Object[]>  getEntradaById(BigDecimal id);
+    
+        public List<Object[]> getEntradaProductoByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal);
 }

@@ -35,8 +35,8 @@
                                              value="#{beanRelaEntSalExAj.subProducto}" completeMethod="#{beanRelaEntSalExAj.autoComplete}" forceSelection="true" var="producto"  inputStyle="width: 180px"
                                              itemLabel="#{producto.nombreSubproducto}"
                                              itemValue="#{producto.idSubproductoPk}" converter="#{productoConverter}">
-                                <p:ajax event="itemSelect" update=":formContent" listener="#{beanRelaEntSalExAj.search()}" />
-                                <p:ajax event="change" update=":formContent" listener="#{beanRelaEntSalExAj.search()}" />
+                                <p:ajax event="itemSelect" update=":formContent:table" listener="#{beanRelaEntSalExAj.search()}" />
+                                <p:ajax event="change" update=":formContent:table" listener="#{beanRelaEntSalExAj.search()}" />
                             </p:autoComplete>
                             <pe:keyFilter for="autocompleteProducto" regEx="/[a-z0-9-_Ã±\s]/i" />
                         </div>

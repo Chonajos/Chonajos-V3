@@ -171,11 +171,9 @@ public class EjbExistenciaMenudeo implements NegocioExistenciaMenudeo {
             query.setParameter(4, idSucursal);
             query.setParameter(5, idSubproducto);
             query.setParameter(6, idSucursal);
-            query.setParameter(7, idSubproducto);
-            query.setParameter(8, idSucursal);
+            query.setParameter(7, idSucursal);
+            query.setParameter(8, idSubproducto);
          
-            
-
             return query.getResultList();
         } catch (Exception ex) {
             Logger.getLogger(EjbExistenciaMenudeo.class.getName()).log(Logger.Level.INFO, "Error en la busqueda por id", ex);
