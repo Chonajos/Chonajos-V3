@@ -53,6 +53,8 @@ public class BeanHistEntMenudeo implements Serializable{
     
     private int filtro;
     
+    private BigDecimal totalKilosDetalle;
+    
     @PostConstruct
     public void init() {
         data= new EntradaMenudeo();
@@ -69,6 +71,13 @@ public class BeanHistEntMenudeo implements Serializable{
     }
     public void back()
     {
+        setViewEstate("init");
+        lstEntradaMercanciaProdcuto = new ArrayList<EntradaMenudeoProducto>();
+        
+        //data.reset();
+//        fechaInicio = null;
+//        fechaFin = null;
+//        getEntradaProductoByIntervalDate();
         
     }
     
@@ -76,7 +85,7 @@ public class BeanHistEntMenudeo implements Serializable{
         setViewEstate("searchById");
 
         lstEntradaMercanciaProdcuto = ifaceEntradaMenudeoProducto.getEntradaProductoById(data.getIdEmmPk());
-        //getTotalKilosProducto();
+         getTotalKilosProducto();
     }
     
     public void setFechaInicioFin(int filter) {
@@ -115,6 +124,13 @@ public class BeanHistEntMenudeo implements Serializable{
     setFechaInicioFin(filtro);
         System.out.println("Sucursal: "+data.getIdSucursalFk());
     lstEntradaMercancia = ifaceEntradaMenudeo.getEntradaProductoByIntervalDate(data.getFechaFiltroInicio(), data.getFechaFiltroFin(), data.getIdSucursalFk());
+   
+    }
+    public void getTotalKilosProducto() {
+        totalKilosDetalle = new BigDecimal(0);
+        for (EntradaMenudeoProducto dominio : lstEntradaMercanciaProdcuto) {
+            totalKilosDetalle = totalKilosDetalle.add(dominio.getKilosTotales());
+        }
 
     }
 
@@ -197,6 +213,14 @@ public class BeanHistEntMenudeo implements Serializable{
 
     public void setLstEntradaMercanciaProdcuto(ArrayList<EntradaMenudeoProducto> lstEntradaMercanciaProdcuto) {
         this.lstEntradaMercanciaProdcuto = lstEntradaMercanciaProdcuto;
+    }
+
+    public BigDecimal getTotalKilosDetalle() {
+        return totalKilosDetalle;
+    }
+
+    public void setTotalKilosDetalle(BigDecimal totalKilosDetalle) {
+        this.totalKilosDetalle = totalKilosDetalle;
     }
     
     

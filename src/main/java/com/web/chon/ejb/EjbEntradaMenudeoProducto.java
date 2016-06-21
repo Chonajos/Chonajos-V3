@@ -59,8 +59,18 @@ public class EjbEntradaMenudeoProducto implements NegocioMenudeoProducto {
     @Override
     public List<Object[]> getEntradaMenudeoProductoByIdEM(BigDecimal idEntradaMenudeo) {
 
-        Query query = em.createNativeQuery("");
-        return em.createNativeQuery(query.toString()).getResultList();
+           Query query = em.createNativeQuery("select emp.ID_EMMP_PK, emp.ID_EMM_FK, emp.ID_SUBPRODUCTO_FK, emp.ID_TIPO_EMPAQUE_FK, emp.KILOS_TOTALES, emp.CANTIDAD_EMPACAQUE,\n" +
+"emp.COMENTARIOS, sub.NOMBRE_SUBPRODUCTO, te.NOMBRE_EMPAQUE\n" +
+"from ENTRADAMENUDEOPRODUCTO emp\n" +
+"join SUBPRODUCTO sub\n" +
+"on sub.ID_SUBPRODUCTO_PK = emp.ID_SUBPRODUCTO_FK\n" +
+"join TIPO_EMPAQUE te\n" +
+"on te.ID_TIPO_EMPAQUE_PK = emp.ID_TIPO_EMPAQUE_FK\n" +
+"where emp.ID_EMM_FK = ?");
+
+        query.setParameter(1, idEntradaMenudeo);
+
+        return query.getResultList();
 
     }
 
