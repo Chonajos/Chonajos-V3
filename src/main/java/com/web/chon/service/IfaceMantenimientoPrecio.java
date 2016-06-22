@@ -6,6 +6,7 @@
 package com.web.chon.service;
 
 import com.web.chon.dominio.MantenimientoPrecios;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 /**
@@ -24,5 +25,8 @@ public interface IfaceMantenimientoPrecio {
     public int updateMantenimientoPrecio(MantenimientoPrecios mantenimientoPrecios);
     
     public int insertarMantenimientoPrecio(MantenimientoPrecios mantenimientoPrecios);
+    
+    public ArrayList<MantenimientoPrecios> getMantenimientoPrecioByIdSuc(BigDecimal idSucursal);
+    
     
 }

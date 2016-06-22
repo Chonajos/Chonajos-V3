@@ -51,6 +51,91 @@
                             </h:selectOneMenu>
                         </div>
                     </div>
+
+
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <p:dataTable id="table" var="model" value="#{beanMantenimientoPrecio.model}" editable="true" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." >
+                            <p:ajax event="rowEdit" listener="#{beanMantenimientoPrecio.onRowEdit}" update="table" />
+                            <p:ajax event="rowEditCancel" listener="#{beanMantenimientoPrecio.onRowCancel}" update="table" />
+                            <p:column headerText="Clave de Producto"   width="45px;" style="text-align:center">
+                                <h:outputText value="#{model.idSubproducto}">
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Producto" width="120px;" style="text-align:center">
+                                <h:outputText value="#{model.nombreSubProducto}" />
+                            </p:column>
+                            <p:column headerText="Existencia (Kilos)" width="120px;" class="alignLeft">
+                                <h:outputText value="#{model.existenciaKilos}" />
+                            </p:column>
+                            <p:column headerText="Mín." width="45px;" style="text-align:center">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{model.precioMinimo}" /></f:facet>
+                                    <f:facet name="input"><p:inputText id="minimoInput" value="#{model.precioMinimo}" maxlength="5" style="width:100%"/></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Vent." width="45px;" style="text-align:center">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{model.precioVenta}" /></f:facet>
+                                    <f:facet name="input"><p:inputText id="ventaInput" value="#{model.precioVenta}" maxlength="5" style="width:100%"/></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Máx." width="45px;" style="text-align:center" >
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{model.precioMaximo}" /></f:facet>
+                                    <f:facet name="input"><p:inputText id="maximoInput" value="#{model.precioMaximo}" maxlength="5" style="width:100%"/></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column style="width:32px" rendered="#{beanMantenimientoPrecioMayoreo.usuario.perId == 1}">
+                                <p:rowEditor/>
+                            </p:column>
+<!--                            <p:columnGroup type="footer">
+                                <p:row>
+                                    <p:column colspan="4" style="text-align:right" footerText="Totales:" rendered="#{beanMantenimientoPrecioMayoreo.usuario.perId == 1}"/>
+                                    <p:column colspan="7" style="text-align:right" footerText="Totales:" rendered="#{beanMantenimientoPrecioMayoreo.usuario.perId != 1}"/>
+                                    <p:column colspan="1">
+                                        <f:facet name="footer">
+                                            <h:outputText value="#{beanMantenimientoPrecioMayoreo.totalCajas}">
+                                                <f:convertNumber for="totalVenta" pattern="#,##0.00"/>
+                                            </h:outputText>
+                                        </f:facet>
+                                    </p:column>
+                                    <p:column colspan="1">
+                                        <f:facet name="footer">
+                                            <h:outputText value="#{beanMantenimientoPrecioMayoreo.totalKilos}">
+                                                <f:convertNumber for="totalVenta" pattern="#,##0.00"/>
+                                            </h:outputText>
+                                        </f:facet>
+                                    </p:column>
+                                    <p:column colspan="5" rendered="#{beanMantenimientoPrecioMayoreo.usuario.perId != 1}"/>
+                                    <p:column colspan="9" rendered="#{beanMantenimientoPrecioMayoreo.usuario.perId == 1}"/>
+                                </p:row>
+                            </p:columnGroup>-->
+                        </p:dataTable>
+                    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="txtPrecioVenta" value ="Precio de venta:" /> 

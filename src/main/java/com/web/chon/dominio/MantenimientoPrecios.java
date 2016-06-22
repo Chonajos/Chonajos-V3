@@ -15,12 +15,19 @@ public class MantenimientoPrecios extends ValueObject {
     private BigDecimal precioMinimo;
     private BigDecimal precioMaximo;
     private int idSucursal;
+    private String nombreSubProducto;
+    
+    private BigDecimal costoReal;
+    private BigDecimal costoMerma;
+    private BigDecimal existenciaKilos;
 
     @Override
     public String toString() {
-        return "MantenimientoPrecios{" + "idSubproducto=" + idSubproducto + ", idTipoEmpaquePk=" + idTipoEmpaquePk + ", precioVenta=" + precioVenta + ", precioMinimo=" + precioMinimo + ", precioMaximo=" + precioMaximo + '}';
+        return "MantenimientoPrecios{" + "idSubproducto=" + idSubproducto + ", idTipoEmpaquePk=" + idTipoEmpaquePk + ", precioVenta=" + precioVenta + ", precioMinimo=" + precioMinimo + ", precioMaximo=" + precioMaximo + ", idSucursal=" + idSucursal + ", nombreSubProducto=" + nombreSubProducto + ", costoReal=" + costoReal + ", costoMerma=" + costoMerma + ", existenciaKilos=" + existenciaKilos + '}';
     }
 
+   
+    
     public int getIdSucursal() {
         return idSucursal;
     }
@@ -68,7 +75,40 @@ public class MantenimientoPrecios extends ValueObject {
 
     public void setPrecioMaximo(BigDecimal precioMaximo) {
         this.precioMaximo = precioMaximo;
-    }   
+    } 
+
+    public BigDecimal getCostoReal() {
+        return costoReal;
+    }
+
+    public void setCostoReal(BigDecimal costoReal) {
+        this.costoReal = costoReal;
+    }
+
+    public BigDecimal getCostoMerma() {
+        return costoMerma;
+    }
+
+    public void setCostoMerma(BigDecimal costoMerma) {
+        this.costoMerma = costoMerma;
+    }
+
+    public String getNombreSubProducto() {
+        return nombreSubProducto;
+    }
+
+    public void setNombreSubProducto(String nombreSubProducto) {
+        this.nombreSubProducto = nombreSubProducto;
+    }
+
+    public BigDecimal getExistenciaKilos() {
+        return existenciaKilos;
+    }
+
+    public void setExistenciaKilos(BigDecimal existenciaKilos) {
+        this.existenciaKilos = existenciaKilos;
+    }
+    
 
     @Override
     public void reset() {

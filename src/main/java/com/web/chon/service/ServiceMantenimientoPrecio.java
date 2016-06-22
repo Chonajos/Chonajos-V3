@@ -1,7 +1,6 @@
 package com.web.chon.service;
 
 import com.web.chon.dominio.MantenimientoPrecios;
-import com.web.chon.dominio.Subproducto;
 import com.web.chon.negocio.NegocioMantenimientoPrecio;
 import com.web.chon.util.Utilidades;
 import java.math.BigDecimal;
@@ -23,18 +22,21 @@ public class ServiceMantenimientoPrecio implements IfaceMantenimientoPrecio {
     NegocioMantenimientoPrecio ejb;
 
     @Override
-    public MantenimientoPrecios getMantenimientoPrecioById(String idSubProducto, int idEmpaque,int idSucursal) {
+    public MantenimientoPrecios getMantenimientoPrecioById(String idSubProducto, int idEmpaque, int idSucursal) {
         try {
             MantenimientoPrecios mantenimientoPrecios = new MantenimientoPrecios();
             ejb = (NegocioMantenimientoPrecio) Utilidades.getEJBRemote("ejbMantenimientoPrecio", NegocioMantenimientoPrecio.class.getName());
-            List<Object[]> object = ejb.getPrecioByIdEmpaqueAndIdProducto(idSubProducto.trim(), idEmpaque,idSucursal);
+            List<Object[]> object = ejb.getPrecioByIdEmpaqueAndIdProducto(idSubProducto.trim(), idEmpaque, idSucursal);
             for (Object[] obj : object) {
 
                 mantenimientoPrecios.setIdSubproducto(obj[0] == null ? "" : obj[0].toString());
-                mantenimientoPrecios.setIdTipoEmpaquePk(obj[1] == null ? new BigDecimal(-1) : new BigDecimal(obj[1].toString()));
-                mantenimientoPrecios.setPrecioVenta(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
-                mantenimientoPrecios.setPrecioMinimo(obj[3] == null ? null : new BigDecimal(obj[3].toString()));
-                mantenimientoPrecios.setPrecioMaximo(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
+                mantenimientoPrecios.setNombreSubProducto(obj[1] == null ? null : obj[1].toString());
+                mantenimientoPrecios.setPrecioMinimo(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
+                mantenimientoPrecios.setPrecioVenta(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
+                mantenimientoPrecios.setPrecioMaximo(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
+                mantenimientoPrecios.setExistenciaKilos(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
+                mantenimientoPrecios.setCostoReal(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
+                mantenimientoPrecios.setCostoMerma(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
             }
 
             return mantenimientoPrecios;
@@ -57,6 +59,39 @@ public class ServiceMantenimientoPrecio implements IfaceMantenimientoPrecio {
     @Override
     public int insertarMantenimientoPrecio(MantenimientoPrecios mantenimientoPrecios) {
         return ejb.insertarMantenimientoPrecio(mantenimientoPrecios);
+    }
+
+    @Override
+    public ArrayList<MantenimientoPrecios> getMantenimientoPrecioByIdSuc(BigDecimal idSucursal) {
+
+        try {
+            ArrayList<MantenimientoPrecios> lstMantenimientoPrecios = new ArrayList<MantenimientoPrecios>();
+
+            ejb = (NegocioMantenimientoPrecio) Utilidades.getEJBRemote("ejbMantenimientoPrecio", NegocioMantenimientoPrecio.class.getName());
+            List<Object[]> object = ejb.getAllByIdSuc(idSucursal);
+            for (Object[] obj : object) {
+
+                MantenimientoPrecios mantenimientoPrecios = new MantenimientoPrecios();
+
+                mantenimientoPrecios.setIdSubproducto(obj[0] == null ? "" : obj[0].toString());
+                mantenimientoPrecios.setNombreSubProducto(obj[1] == null ? null : obj[1].toString());
+                mantenimientoPrecios.setPrecioMinimo(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
+                mantenimientoPrecios.setPrecioVenta(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
+                mantenimientoPrecios.setPrecioMaximo(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
+                mantenimientoPrecios.setExistenciaKilos(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
+                mantenimientoPrecios.setCostoReal(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
+                mantenimientoPrecios.setCostoMerma(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
+
+                System.out.println("mantenimiento data " + mantenimientoPrecios.toString());
+                lstMantenimientoPrecios.add(mantenimientoPrecios);
+            }
+
+            return lstMantenimientoPrecios;
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceMantenimientoPrecio.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.web.chon.bean;
 
+import com.web.chon.dominio.ExistenciaProducto;
 import com.web.chon.dominio.MantenimientoPrecios;
 import com.web.chon.dominio.Subproducto;
 import com.web.chon.dominio.Sucursal;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import org.primefaces.event.RowEditEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -46,6 +48,7 @@ public class BeanMantenimientoPrecio implements Serializable {
     private ArrayList<Sucursal> listaSucursales;
 
     private ArrayList<Subproducto> lstProducto;
+    private ArrayList<MantenimientoPrecios> model;
     private ArrayList<TipoEmpaque> lstTipoEmpaque;
 
     private String title = "";
@@ -54,6 +57,8 @@ public class BeanMantenimientoPrecio implements Serializable {
     private boolean update;
 
     private MantenimientoPrecios data;
+    private MantenimientoPrecios dataEdit;
+
     private Subproducto subproducto;
     private UsuarioDominio usuarioDominio;
 
@@ -67,14 +72,15 @@ public class BeanMantenimientoPrecio implements Serializable {
         lstProducto = new ArrayList<Subproducto>();
         lstTipoEmpaque = ifaceEmpaque.getEmpaques();
         usuarioDominio = context.getUsuarioAutenticado();
-        
+
         /*Validacion de perfil para bloquear la sucursal*/
         if (usuarioDominio.getPerId() != 1) {
             data.setIdSucursal(usuarioDominio.getSucId());
         }
+        model = ifaceMantenimientoPrecio.getMantenimientoPrecioByIdSuc(new BigDecimal(data.getIdSucursal()));
         
         selectedTipoEmpaque();
-        
+
         setTitle("Mantenimiento de Precios");
         setViewEstate("init");
 
@@ -84,7 +90,7 @@ public class BeanMantenimientoPrecio implements Serializable {
 
         if (validateMaxMin()) {
             if (update) {
-                if (ifaceMantenimientoPrecio.updateMantenimientoPrecio(data) == 1) {
+                if (ifaceMantenimientoPrecio.updateMantenimientoPrecio(dataEdit) == 1) {
 
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro modificado."));
                 } else {
@@ -111,7 +117,7 @@ public class BeanMantenimientoPrecio implements Serializable {
 
     public String insertarPrecio() {
 
-        if (ifaceMantenimientoPrecio.insertarMantenimientoPrecio(data) == 1) {
+        if (ifaceMantenimientoPrecio.insertarMantenimientoPrecio(dataEdit) == 1) {
 
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro Insertado."));
         } else {
@@ -130,10 +136,10 @@ public class BeanMantenimientoPrecio implements Serializable {
         int idEmpaque = data.getIdTipoEmpaquePk() == null ? 0 : data.getIdTipoEmpaquePk().intValue();
         String idSubProducto = subproducto.getIdSubproductoPk() == null ? "" : subproducto.getIdSubproductoPk();
         int idSucursal = data.getIdSucursal();
-        
+
         data = ifaceMantenimientoPrecio.getMantenimientoPrecioById(idSubProducto, idEmpaque, idSucursal);
 
-        System.out.println("printitng data "+data.toString());
+        System.out.println("printitng data " + data.toString());
         if (data.getIdSubproducto() != null && (!data.getIdSubproducto().equals(""))) {
             update = true;
         } else {
@@ -142,8 +148,8 @@ public class BeanMantenimientoPrecio implements Serializable {
         data.setIdSucursal(idSucursal);
         data.setIdSubproducto(idSubProducto);
         data.setIdTipoEmpaquePk(new BigDecimal(idEmpaque));
-        
-        System.out.println("printitng "+data.toString());
+
+        System.out.println("printitng " + data.toString());
 
     }
 
@@ -157,17 +163,30 @@ public class BeanMantenimientoPrecio implements Serializable {
 
         return true;
     }
-    
+
     public void selectedTipoEmpaque() {
 
         for (TipoEmpaque empaque : lstTipoEmpaque) {
 
-            if (empaque.getNombreEmpaque().equalsIgnoreCase("Kilos") || empaque.getNombreEmpaque().equalsIgnoreCase("Kilo"))  {
+            if (empaque.getNombreEmpaque().equalsIgnoreCase("Kilos") || empaque.getNombreEmpaque().equalsIgnoreCase("Kilo")) {
                 data.setIdTipoEmpaquePk(empaque.getIdTipoEmpaquePk());
                 break;
             }
 
         }
+
+    }
+    
+    public void onRowEdit(RowEditEvent event) {
+        MantenimientoPrecios dataEdit = new MantenimientoPrecios();
+        dataEdit = (MantenimientoPrecios) event.getObject();
+        searchById();
+        updatePrecio();
+
+    }
+
+    public void onRowCancel(RowEditEvent event) {
+        System.out.println("cancel");
 
     }
 
@@ -243,7 +262,13 @@ public class BeanMantenimientoPrecio implements Serializable {
     public void setUsuarioDominio(UsuarioDominio usuarioDominio) {
         this.usuarioDominio = usuarioDominio;
     }
-    
-    
+
+    public ArrayList<MantenimientoPrecios> getModel() {
+        return model;
+    }
+
+    public void setModel(ArrayList<MantenimientoPrecios> model) {
+        this.model = model;
+    }
 
 }

@@ -3,6 +3,7 @@ package com.web.chon.ejb;
 import com.web.chon.dominio.MantenimientoPrecios;
 import com.web.chon.dominio.Subproducto;
 import com.web.chon.negocio.NegocioMantenimientoPrecio;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,8 +25,7 @@ public class EjbMantenimientoPrecio implements NegocioMantenimientoPrecio {
     EntityManager em;
 
     @Override
-    public List<Object[]> getPrecioByIdEmpaqueAndIdProducto(String idProducto, int idEmpaque,int idSucursal)
-    {
+    public List<Object[]> getPrecioByIdEmpaqueAndIdProducto(String idProducto, int idEmpaque, int idSucursal) {
         Query query = em.createNativeQuery("SELECT * FROM MANTENIMIENTO_PRECIO WHERE TRIM(ID_SUBPRODUCTO_FK) = ? AND ID_TIPO_EMPAQUE_FK = ? AND ID_SUCURSAL_FK = ? ");
         query.setParameter(1, idProducto);
         query.setParameter(2, idEmpaque);
@@ -37,7 +37,7 @@ public class EjbMantenimientoPrecio implements NegocioMantenimientoPrecio {
     @Override
     public int insertarMantenimientoPrecio(MantenimientoPrecios mantenimientoPrecios) {
         try {
-            System.out.println("data ejb insert:"+mantenimientoPrecios.toString());
+            System.out.println("data ejb insert:" + mantenimientoPrecios.toString());
             Query query = em.createNativeQuery("INSERT INTO MANTENIMIENTO_PRECIO (ID_SUBPRODUCTO_FK,ID_TIPO_EMPAQUE_FK,PRECIO_VENTA,PRECIO_MINIMO,PRECIO_MAXIMO,ID_SUCURSAL_FK) values(?,?,?,?,?,?)");
             query.setParameter(1, mantenimientoPrecios.getIdSubproducto());
             query.setParameter(2, mantenimientoPrecios.getIdTipoEmpaquePk());
@@ -72,6 +72,26 @@ public class EjbMantenimientoPrecio implements NegocioMantenimientoPrecio {
         } catch (Exception ex) {
             Logger.getLogger(EjbMantenimientoPrecio.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
+        }
+    }
+
+    @Override
+    public List<Object[]> getAllByIdSuc(BigDecimal idSucursal) {
+
+        try {
+            Query query = em.createNativeQuery("SELECT SP.ID_SUBPRODUCTO_PK, SP.NOMBRE_SUBPRODUCTO, MP.ID_SUCURSAL_FK,MP.ID_TIPO_EMPAQUE_FK,MP.PRECIO_MINIMO,MP.PRECIO_VENTA,MP.PRECIO_MAXIMO, "
+                    + "EXM.KILOS,MP.COSTOREAL,MP.COSTOMERMA FROM SUBPRODUCTO SP  "
+                    + "LEFT JOIN MANTENIMIENTO_PRECIO MP ON SP.ID_SUBPRODUCTO_PK = MP.ID_SUBPRODUCTO_FK AND MP.ID_SUCURSAL_FK = ? "
+                    + "LEFT JOIN EXISTENCIAMENUDEO EXM ON EXM.ID_SUBPRODUCTO_FK = SP.ID_SUBPRODUCTO_PK AND EXM.ID_SUCURSAL_FK = ? ");
+
+            query.setParameter(1, idSucursal);
+            query.setParameter(2, idSucursal);
+
+            return query.getResultList();
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbMantenimientoPrecio.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
     }
 
