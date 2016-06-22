@@ -69,6 +69,7 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
     private Date fechaInicio;
     private Date fechaFin;
     private BigDecimal totalVenta;
+    private BigDecimal totalVentaDetalle;
 
     @PostConstruct
     public void init() {
@@ -226,10 +227,10 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
     }
 
     public void calculatotalVentaDetalle() {
-        totalVenta = new BigDecimal(0);
+        totalVentaDetalle = new BigDecimal(0);
 
         for (BuscaVenta venta : lstVenta) {
-            totalVenta = totalVenta.add(venta.getTotal());
+            totalVentaDetalle = totalVentaDetalle.add(venta.getTotal());
         }
     }
 
@@ -355,6 +356,14 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
 
     public void setUsuario(UsuarioDominio usuario) {
         this.usuario = usuario;
+    }
+
+    public BigDecimal getTotalVentaDetalle() {
+        return totalVentaDetalle;
+    }
+
+    public void setTotalVentaDetalle(BigDecimal totalVentaDetalle) {
+        this.totalVentaDetalle = totalVentaDetalle;
     }
 
 }

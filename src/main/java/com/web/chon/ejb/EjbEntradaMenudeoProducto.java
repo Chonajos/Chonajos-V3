@@ -33,7 +33,7 @@ public class EjbEntradaMenudeoProducto implements NegocioMenudeoProducto {
         System.out.println(entrada.toString());
         try {
 
-            Query query = em.createNativeQuery("INSERT INTO ENTRADAMENUDEOPRODUCTO (ID_EMMP_PK,ID_EMM_FK,ID_SUBPRODUCTO_FK,ID_TIPO_EMPAQUE_FK,KILOS_TOTALES,CANTIDAD_EMPACAQUE,COMENTARIOS)VALUES (?,?,?,?,?,?,?)");
+            Query query = em.createNativeQuery("INSERT INTO ENTRADAMENUDEOPRODUCTO (ID_EMMP_PK,ID_EMM_FK,ID_SUBPRODUCTO_FK,ID_TIPO_EMPAQUE_FK,KILOS_TOTALES,CANTIDAD_EMPACAQUE,COMENTARIOS,PRECIO)VALUES (?,?,?,?,?,?,?,?)");
             query.setParameter(1, entrada.getIdEmmpPk());
             query.setParameter(2, entrada.getIdEmmFk());
             query.setParameter(3, entrada.getIdSubproductoFk());
@@ -41,6 +41,7 @@ public class EjbEntradaMenudeoProducto implements NegocioMenudeoProducto {
             query.setParameter(5, entrada.getKilosTotales());
             query.setParameter(6, entrada.getCantidadEmpaque());
             query.setParameter(7, entrada.getComentarios());
+            query.setParameter(8, entrada.getPrecio());
 
             return query.executeUpdate();
         } catch (Exception ex) {

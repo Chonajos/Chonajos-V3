@@ -8,6 +8,7 @@ package com.web.chon.bean;
 import com.web.chon.dominio.EntradaMenudeo;
 import com.web.chon.dominio.EntradaMenudeoProducto;
 import com.web.chon.dominio.ExistenciaMenudeo;
+import com.web.chon.dominio.MantenimientoPrecios;
 import com.web.chon.dominio.Provedor;
 import com.web.chon.dominio.Subproducto;
 import com.web.chon.dominio.Sucursal;
@@ -20,6 +21,7 @@ import com.web.chon.service.IfaceEmpaque;
 import com.web.chon.service.IfaceEntradaMenudeo;
 import com.web.chon.service.IfaceEntradaMenudeoProducto;
 import com.web.chon.service.IfaceExistenciaMenudeo;
+import com.web.chon.service.IfaceMantenimientoPrecio;
 import com.web.chon.service.IfaceSubProducto;
 import com.web.chon.util.JsfUtil;
 import java.io.Serializable;
@@ -48,6 +50,8 @@ public class BeanEntradaMenudeo implements Serializable {
     @Autowired private IfaceEntradaMenudeo ifaceEntradaMenudeo;
     @Autowired private IfaceEntradaMenudeoProducto ifaceEntradaMenudeoProducto;
     @Autowired private IfaceExistenciaMenudeo ifaceExistenciaMenudeo;
+    @Autowired private IfaceMantenimientoPrecio ifaceMantenimientoPrecio;
+    
     
     private ArrayList<Provedor> listaProvedores;
     private ArrayList<Sucursal> listaSucursales;
@@ -55,6 +59,7 @@ public class BeanEntradaMenudeo implements Serializable {
     private ArrayList<EntradaMenudeoProducto> listaMenudeoProducto;
 
     private EntradaMenudeo data;
+    private MantenimientoPrecios mantenimiento;
     private EntradaMenudeoProducto dataProducto;
     private EntradaMenudeoProducto dataRemove;
     private EntradaMenudeoProducto dataEdit;
@@ -120,6 +125,7 @@ public class BeanEntradaMenudeo implements Serializable {
                 System.out.println("EmP:" + mp.toString());
                 if (ifaceEntradaMenudeoProducto.insertEntradaMercanciaProducto(mp) != 0) {
                     System.out.println("Se ingreso correctamente");
+                    
                     //una vez ingresada verificar si ya existe en la tabla existencias.
                     ExistenciaMenudeo ex = new ExistenciaMenudeo();
                     ex = ifaceExistenciaMenudeo.getExistenciasRepetidasById(mp.getIdSubproductoFk(),entrada_mercancia.getIdSucursalFk());
@@ -140,8 +146,22 @@ public class BeanEntradaMenudeo implements Serializable {
                         
                         if(ifaceExistenciaMenudeo.insertaExistenciaMenudeo(existencia)!=0)
                         {
-                            System.out.println("Se inserto correcatemente");
-                            JsfUtil.addSuccessMessageClean("Entrada de Mercancia Correcto");
+                            //primero buscar si ya existe en mantenimiento de precios
+                            MantenimientoPrecios mant  = new MantenimientoPrecios();
+                            mant =ifaceMantenimientoPrecio.getMantenimientoPrecioById(mp.getIdSubproductoFk(), mp.getIdtipoEmpaqueFk().intValue(), entrada_mercancia.getIdSucursalFk().intValue());
+                            
+                            
+                            System.out.println("Se inserto correcatemente en existencias");
+                            if(insertaMantenimiento(mp,entrada_mercancia)){
+                                System.out.println("Se inserto correcatemente en mantenimiento");
+                                JsfUtil.addSuccessMessageClean("Entrada de Mercancia Correcto");
+                            }else
+                            {
+                               System.out.println("Ocurrio algun error");
+                            JsfUtil.addErrorMessageClean("Ocurrio un problema, contactar al administrador");
+                     
+                            }
+                            
                         }
                         else
                         {
@@ -186,6 +206,23 @@ public class BeanEntradaMenudeo implements Serializable {
             listaMenudeoProducto.clear();
         }
 
+    }
+    
+    public boolean insertaMantenimiento(EntradaMenudeoProducto mp,EntradaMenudeo em)
+    {
+       mantenimiento = new MantenimientoPrecios();
+       mantenimiento.setIdSubproducto(mp.getIdSubproductoFk());
+       mantenimiento.setIdTipoEmpaquePk(mp.getIdtipoEmpaqueFk());
+       mantenimiento.setIdSucursal(em.getIdSucursalFk().intValue());
+       mantenimiento.setCostoReal(mp.getPrecio());
+       if(ifaceMantenimientoPrecio.insertarMantenimientoPrecio(mantenimiento)!=0){
+           System.out.println("Se ingreso en la tabla mantenimiento de precios");
+           return true;
+       }else{
+           System.out.println("Ocurrio un error al ingresar en mantenimiento de precios");
+           return false;
+       }
+       
     }
 
     public void addProducto() {
@@ -421,5 +458,14 @@ public class BeanEntradaMenudeo implements Serializable {
     public void setKilosEntradaReales(BigDecimal kilosEntradaReales) {
         this.kilosEntradaReales = kilosEntradaReales;
     }
+
+    public MantenimientoPrecios getMantenimiento() {
+        return mantenimiento;
+    }
+
+    public void setMantenimiento(MantenimientoPrecios mantenimiento) {
+        this.mantenimiento = mantenimiento;
+    }
+    
 
 }

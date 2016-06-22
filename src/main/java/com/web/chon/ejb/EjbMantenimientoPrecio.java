@@ -38,13 +38,15 @@ public class EjbMantenimientoPrecio implements NegocioMantenimientoPrecio {
     public int insertarMantenimientoPrecio(MantenimientoPrecios mantenimientoPrecios) {
         try {
             System.out.println("data ejb insert:" + mantenimientoPrecios.toString());
-            Query query = em.createNativeQuery("INSERT INTO MANTENIMIENTO_PRECIO (ID_SUBPRODUCTO_FK,ID_TIPO_EMPAQUE_FK,PRECIO_VENTA,PRECIO_MINIMO,PRECIO_MAXIMO,ID_SUCURSAL_FK) values(?,?,?,?,?,?)");
+            Query query = em.createNativeQuery("INSERT INTO MANTENIMIENTO_PRECIO (ID_SUBPRODUCTO_FK,ID_TIPO_EMPAQUE_FK,PRECIO_VENTA,PRECIO_MINIMO,PRECIO_MAXIMO,ID_SUCURSAL_FK,COSTOREAL,COSTOMERMA) values(?,?,?,?,?,?,?,?)");
             query.setParameter(1, mantenimientoPrecios.getIdSubproducto());
             query.setParameter(2, mantenimientoPrecios.getIdTipoEmpaquePk());
             query.setParameter(3, mantenimientoPrecios.getPrecioVenta());
             query.setParameter(4, mantenimientoPrecios.getPrecioMinimo());
             query.setParameter(5, mantenimientoPrecios.getPrecioMaximo());
             query.setParameter(6, mantenimientoPrecios.getIdSucursal());
+            query.setParameter(7, mantenimientoPrecios.getCostoReal());
+            query.setParameter(8, mantenimientoPrecios.getCostoMerma());
 
             return query.executeUpdate();
 

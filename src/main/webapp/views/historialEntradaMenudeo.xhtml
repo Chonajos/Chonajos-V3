@@ -102,6 +102,11 @@
                                     <f:convertNumber pattern="#,##0.00"/>
                                 </h:outputText>
                             </p:column>
+                            <p:column headerText="Precio" width="60px;" class="alignCenter">
+                                <h:outputText value="#{model.precio}">
+                                    <f:convertNumber pattern="#,##0.00"/>
+                                </h:outputText>
+                            </p:column>
                             <p:column headerText="Comentarios" width="120px;" class="alignLeft">
                                 <h:outputText value="#{model.comentarios}" />
                             </p:column>
