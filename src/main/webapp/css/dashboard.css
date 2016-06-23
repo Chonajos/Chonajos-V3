@@ -189,19 +189,19 @@ button span:hover{
 .alignLeftRadioButton table tbody tr td label{
     text-align: left !important;
 } 
-/**tamaño en el header de la aplicacion con menu*/
-/*.navbar-fixed-top {
+/*tamaño en el header de la aplicacion con menu*/
+.navbar-fixed-top {
     top: 0;
     border-width: 0 0 1px;
     height: 100px;
 }
 
-*tamaño en el header de la aplicacion sin menu
+/*tamaño en el header de la aplicacion sin menu*/
 .navbar-fixed-top-menu {
     top: 0;
     border-width: 0 0 1px;
     height: 70px;
-}*/
+}
 
 /**Boton flotante de abrir y cerrar menu**/
 .flotante {

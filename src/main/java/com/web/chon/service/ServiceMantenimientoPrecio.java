@@ -81,6 +81,8 @@ public class ServiceMantenimientoPrecio implements IfaceMantenimientoPrecio {
                 mantenimientoPrecios.setExistenciaKilos(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
                 mantenimientoPrecios.setCostoReal(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
                 mantenimientoPrecios.setCostoMerma(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
+                //Se suma el 30 % para sacar el precio sugerido
+                mantenimientoPrecios.setPrecioSugerido(mantenimientoPrecios.getCostoReal().add(mantenimientoPrecios.getCostoReal().multiply(new BigDecimal(0.3)))) ;
 
                 System.out.println("mantenimiento data " + mantenimientoPrecios.toString());
                 lstMantenimientoPrecios.add(mantenimientoPrecios);

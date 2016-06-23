@@ -81,7 +81,7 @@ public class BeanMantenimientoPrecio implements Serializable {
 
         selectedTipoEmpaque();
 
-        setTitle("Mantenimiento de Precios");
+        setTitle("Mantenimiento de Precios Menudeo");
         setViewEstate("init");
 
     }

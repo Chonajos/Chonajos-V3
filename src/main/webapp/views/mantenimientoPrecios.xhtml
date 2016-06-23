@@ -17,7 +17,7 @@
             <p:panel>
                 <div class="container">
                     <div class="form-group" align="right">
-                        <p:commandButton value="Actualizar" update=":formContent:txtPrecioMinimo formContent:txtPrecioVenta formContent:txtPrecioMaximo formContent:txtTipoEmpaque formContent:autocompletePoducto" ajax="true" action="#{beanMantenimientoPrecio.updatePrecio}"/>
+                        <!--<p:commandButton value="Actualizar" update=":formContent:txtPrecioMinimo formContent:txtPrecioVenta formContent:txtPrecioMaximo formContent:txtTipoEmpaque formContent:autocompletePoducto" ajax="true" action="{beanMantenimientoPrecio.updatePrecio}"/>-->
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
@@ -27,9 +27,6 @@
                                 <p:ajax event="change" update=":formContent" listener="#{beanMantenimientoPrecio.serachMantenimientoPrecios()}" />
                             </h:selectOneMenu>
                         </div>
-                    </div>
-
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="autocompletePoducto" value ="Producto:" /> 
                             <p:autoComplete  placeholder="Seleccione un Producto" id="autocompletePoducto"  required="true" requiredMessage="Ingresa un valor para el campo Producto." styleClass="autocomplete-input-text-media"
@@ -41,6 +38,10 @@
                             </p:autoComplete>
                             <pe:keyFilter for="autocompletePoducto" regEx="/[a-z0-9-_Ã±\s]/i" />
                         </div>
+                    </div>
+
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+
                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="txtTipoEmpaque" value ="Tipo de Empaque:" rendered="false"/> 
                             <h:selectOneMenu  id="txtTipoEmpaque" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanMantenimientoPrecio.data.idTipoEmpaquePk}" required="true" requiredMessage="Ingresa un valor para el campo Tipo de Empaque." disabled="true" rendered="false">
@@ -60,13 +61,24 @@
                                 <h:outputText value="#{model.idSubproducto}">
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Producto" width="120px;" style="text-align:center">
+                            <p:column headerText="Producto" width="120px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreSubProducto}" />
                             </p:column>
-                            <p:column headerText="Existencia (Kilos)" width="120px;" class="alignLeft">
+                            <p:column headerText="Existencia (Kilos)" width="80px;" class="alignRight">
                                 <h:outputText value="#{model.existenciaKilos}" />
                             </p:column>
-                            <p:column headerText="Mín." width="45px;" style="text-align:center">
+                            <p:column headerText="Costo Real" width="60px;" class="alignRight">
+                                <h:outputText value="#{model.costoReal}" />
+                            </p:column>
+<!--                            <p:column headerText="Costo Merma" width="60px;" class="alignRight">
+                                <h:outputText value="#{model.costoMerma}" />
+                            </p:column>-->
+                            <p:column headerText="Precio Sugerido" width="60px;" class="alignRight">
+                                <h:outputText value="#{model.precioSugerido}" >
+                                    <f:convertNumber pattern="###,###.##" /> 
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Mín." width="45px;" class="alignRight">
                                 <p:cellEditor>
                                     <f:facet name="output"><h:outputText value="#{model.precioMinimo}" /></f:facet>
                                     <f:facet name="input">
@@ -76,7 +88,7 @@
                                     </f:facet>
                                 </p:cellEditor>
                             </p:column>
-                            <p:column headerText="Vent." width="45px;" style="text-align:center">
+                            <p:column headerText="Vent." width="45px;" class="alignRight">
                                 <p:cellEditor>
                                     <f:facet name="output"><h:outputText value="#{model.precioVenta}" /></f:facet>
                                     <f:facet name="input">
@@ -86,7 +98,7 @@
                                     </f:facet>
                                 </p:cellEditor>
                             </p:column>
-                            <p:column headerText="Máx." width="45px;" style="text-align:center" >
+                            <p:column headerText="Máx." width="45px;" class="alignRight" >
                                 <p:cellEditor>
                                     <f:facet name="output"><h:outputText value="#{model.precioMaximo}" /></f:facet>
                                     <f:facet name="input">

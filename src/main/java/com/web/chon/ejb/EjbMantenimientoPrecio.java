@@ -87,8 +87,10 @@ public class EjbMantenimientoPrecio implements NegocioMantenimientoPrecio {
 
             queryStr = new StringBuilder("SELECT SP.ID_SUBPRODUCTO_PK, SP.NOMBRE_SUBPRODUCTO, MP.ID_SUCURSAL_FK,MP.ID_TIPO_EMPAQUE_FK,MP.PRECIO_MINIMO,MP.PRECIO_VENTA,MP.PRECIO_MAXIMO, "
                     + "EXM.KILOS,MP.COSTOREAL,MP.COSTOMERMA FROM SUBPRODUCTO SP  "
-                    + "LEFT JOIN MANTENIMIENTO_PRECIO MP ON SP.ID_SUBPRODUCTO_PK = MP.ID_SUBPRODUCTO_FK AND MP.ID_SUCURSAL_FK = " + idSucursal + " "
-                    + "LEFT JOIN EXISTENCIAMENUDEO EXM ON EXM.ID_SUBPRODUCTO_FK = SP.ID_SUBPRODUCTO_PK AND EXM.ID_SUCURSAL_FK = " + idSucursal + " ");
+                    + "RIGHT JOIN MANTENIMIENTO_PRECIO MP ON SP.ID_SUBPRODUCTO_PK = MP.ID_SUBPRODUCTO_FK AND MP.ID_SUCURSAL_FK = " + idSucursal + " "
+                    + "RIGHT JOIN EXISTENCIAMENUDEO EXM ON EXM.ID_SUBPRODUCTO_FK = SP.ID_SUBPRODUCTO_PK AND EXM.ID_SUCURSAL_FK = " + idSucursal + " ");
+            
+            //Para mostrar todos los productos que estan registrados cambiar RIGHT por left
 
             if (idSubProducto != null) {
                 queryStr.append("WHERE SP.ID_SUBPRODUCTO_PK =" + idSubProducto.trim() + "");
