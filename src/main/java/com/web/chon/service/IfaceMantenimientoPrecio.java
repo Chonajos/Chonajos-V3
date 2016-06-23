@@ -26,7 +26,7 @@ public interface IfaceMantenimientoPrecio {
     
     public int insertarMantenimientoPrecio(MantenimientoPrecios mantenimientoPrecios);
     
-    public ArrayList<MantenimientoPrecios> getMantenimientoPrecioByIdSuc(BigDecimal idSucursal);
+    public ArrayList<MantenimientoPrecios> getMantenimientoPrecioByIdSucAndIdSubProducto(BigDecimal idSucursal, String idSubProducto);
     
     
 }

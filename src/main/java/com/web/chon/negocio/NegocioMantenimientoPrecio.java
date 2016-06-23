@@ -18,6 +18,6 @@ public interface NegocioMantenimientoPrecio {
 
     public int updateMantenimientoPrecio(MantenimientoPrecios mantenimientoPrecios);
 
-    public List<Object[]> getAllByIdSuc(BigDecimal idSucursal);
+    public List<Object[]> getAllByIdSucAndIdSubProducto(BigDecimal idSucursal,String idSubProducto);
 
 }

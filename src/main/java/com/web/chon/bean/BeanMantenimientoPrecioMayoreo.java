@@ -129,7 +129,7 @@ public class BeanMantenimientoPrecioMayoreo implements Serializable {
                 return null;
             }
         } else {
-            JsfUtil.addErrorMessage("Error en la Validación de Datos Minimo : " + data.getPrecioMinimo() + " Maximo: " + data.getPrecioMaximo());
+            JsfUtil.addErrorMessage("Error en la Validación de Datos Minimo : " + dataEdit.getPrecioMinimo() + " Maximo: " + dataEdit.getPrecioMaximo());
             return null;
         }
 

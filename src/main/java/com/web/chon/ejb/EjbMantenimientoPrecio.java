@@ -60,14 +60,16 @@ public class EjbMantenimientoPrecio implements NegocioMantenimientoPrecio {
     public int updateMantenimientoPrecio(MantenimientoPrecios mantenimientoPrecios) {
         try {
 
-            Query query = em.createNativeQuery("UPDATE MANTENIMIENTO_PRECIO SET ID_SUBPRODUCTO_FK = ? ,ID_TIPO_EMPAQUE_FK =? ,PRECIO_VENTA = ?, PRECIO_MINIMO = ? ,PRECIO_MAXIMO = ?  WHERE TRIM(ID_SUBPRODUCTO_FK) = ? AND ID_TIPO_EMPAQUE_FK = ?");
+            Query query = em.createNativeQuery("UPDATE MANTENIMIENTO_PRECIO SET ID_SUBPRODUCTO_FK = ? ,ID_TIPO_EMPAQUE_FK =? ,PRECIO_VENTA = ?, PRECIO_MINIMO = ? ,PRECIO_MAXIMO = ?,COSTOREAL = ?,COSTOMERMA = ?  WHERE TRIM(ID_SUBPRODUCTO_FK) = ? AND ID_TIPO_EMPAQUE_FK = ?");
             query.setParameter(1, mantenimientoPrecios.getIdSubproducto());
             query.setParameter(2, mantenimientoPrecios.getIdTipoEmpaquePk());
             query.setParameter(3, mantenimientoPrecios.getPrecioVenta());
             query.setParameter(4, mantenimientoPrecios.getPrecioMinimo());
             query.setParameter(5, mantenimientoPrecios.getPrecioMaximo());
-            query.setParameter(6, mantenimientoPrecios.getIdSubproducto());
-            query.setParameter(7, mantenimientoPrecios.getIdTipoEmpaquePk());
+            query.setParameter(6, mantenimientoPrecios.getCostoReal());
+            query.setParameter(7, mantenimientoPrecios.getCostoMerma());
+            query.setParameter(8, mantenimientoPrecios.getIdSubproducto());
+            query.setParameter(9, mantenimientoPrecios.getIdTipoEmpaquePk());
 
             return query.executeUpdate();
 
@@ -78,16 +80,28 @@ public class EjbMantenimientoPrecio implements NegocioMantenimientoPrecio {
     }
 
     @Override
-    public List<Object[]> getAllByIdSuc(BigDecimal idSucursal) {
+    public List<Object[]> getAllByIdSucAndIdSubProducto(BigDecimal idSucursal, String idSubProducto) {
 
         try {
-            Query query = em.createNativeQuery("SELECT SP.ID_SUBPRODUCTO_PK, SP.NOMBRE_SUBPRODUCTO, MP.ID_SUCURSAL_FK,MP.ID_TIPO_EMPAQUE_FK,MP.PRECIO_MINIMO,MP.PRECIO_VENTA,MP.PRECIO_MAXIMO, "
-                    + "EXM.KILOS,MP.COSTOREAL,MP.COSTOMERMA FROM SUBPRODUCTO SP  "
-                    + "LEFT JOIN MANTENIMIENTO_PRECIO MP ON SP.ID_SUBPRODUCTO_PK = MP.ID_SUBPRODUCTO_FK AND MP.ID_SUCURSAL_FK = ? "
-                    + "LEFT JOIN EXISTENCIAMENUDEO EXM ON EXM.ID_SUBPRODUCTO_FK = SP.ID_SUBPRODUCTO_PK AND EXM.ID_SUCURSAL_FK = ? ");
+            StringBuilder queryStr;
+            if (idSucursal != null) {
+                queryStr = new StringBuilder("SELECT SP.ID_SUBPRODUCTO_PK, SP.NOMBRE_SUBPRODUCTO, MP.ID_SUCURSAL_FK,MP.ID_TIPO_EMPAQUE_FK,MP.PRECIO_MINIMO,MP.PRECIO_VENTA,MP.PRECIO_MAXIMO, "
+                        + "EXM.KILOS,MP.COSTOREAL,MP.COSTOMERMA FROM SUBPRODUCTO SP  "
+                        + "LEFT JOIN MANTENIMIENTO_PRECIO MP ON SP.ID_SUBPRODUCTO_PK = MP.ID_SUBPRODUCTO_FK AND MP.ID_SUCURSAL_FK = " + idSucursal + " "
+                        + "LEFT JOIN EXISTENCIAMENUDEO EXM ON EXM.ID_SUBPRODUCTO_FK = SP.ID_SUBPRODUCTO_PK AND EXM.ID_SUCURSAL_FK = " + idSucursal + " ");
+            } else {
 
-            query.setParameter(1, idSucursal);
-            query.setParameter(2, idSucursal);
+                queryStr = new StringBuilder("SELECT SP.ID_SUBPRODUCTO_PK, SP.NOMBRE_SUBPRODUCTO, MP.ID_SUCURSAL_FK,MP.ID_TIPO_EMPAQUE_FK,MP.PRECIO_MINIMO,MP.PRECIO_VENTA,MP.PRECIO_MAXIMO, "
+                        + "EXM.KILOS,MP.COSTOREAL,MP.COSTOMERMA FROM SUBPRODUCTO SP  "
+                        + "LEFT JOIN MANTENIMIENTO_PRECIO MP ON SP.ID_SUBPRODUCTO_PK = MP.ID_SUBPRODUCTO_FK "
+                        + "LEFT JOIN EXISTENCIAMENUDEO EXM ON EXM.ID_SUBPRODUCTO_FK = SP.ID_SUBPRODUCTO_PK ");
+
+            }
+            if (idSubProducto != null) {
+                queryStr.append("WHERE SP.ID_SUBPRODUCTO_PK =" + idSubProducto.trim() + "");
+            }
+
+            Query query = em.createNativeQuery(queryStr.toString());
 
             return query.getResultList();
 

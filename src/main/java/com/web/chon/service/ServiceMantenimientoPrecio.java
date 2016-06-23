@@ -31,12 +31,12 @@ public class ServiceMantenimientoPrecio implements IfaceMantenimientoPrecio {
 
                 mantenimientoPrecios.setIdSubproducto(obj[0] == null ? "" : obj[0].toString());
                 mantenimientoPrecios.setNombreSubProducto(obj[1] == null ? null : obj[1].toString());
-                mantenimientoPrecios.setPrecioMinimo(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
-                mantenimientoPrecios.setPrecioVenta(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
-                mantenimientoPrecios.setPrecioMaximo(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
-                mantenimientoPrecios.setExistenciaKilos(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
-                mantenimientoPrecios.setCostoReal(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
-                mantenimientoPrecios.setCostoMerma(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
+                mantenimientoPrecios.setPrecioMinimo(obj[3] == null ? null : new BigDecimal(obj[3].toString()));
+                mantenimientoPrecios.setPrecioVenta(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
+                mantenimientoPrecios.setPrecioMaximo(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
+                mantenimientoPrecios.setIdSucursal(obj[5] == null ? null : Integer.valueOf(obj[5].toString()));
+                mantenimientoPrecios.setCostoReal(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
+                mantenimientoPrecios.setCostoMerma(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
             }
 
             return mantenimientoPrecios;
@@ -62,13 +62,13 @@ public class ServiceMantenimientoPrecio implements IfaceMantenimientoPrecio {
     }
 
     @Override
-    public ArrayList<MantenimientoPrecios> getMantenimientoPrecioByIdSuc(BigDecimal idSucursal) {
+    public ArrayList<MantenimientoPrecios> getMantenimientoPrecioByIdSucAndIdSubProducto(BigDecimal idSucursal, String idSubProducto) {
 
         try {
             ArrayList<MantenimientoPrecios> lstMantenimientoPrecios = new ArrayList<MantenimientoPrecios>();
 
             ejb = (NegocioMantenimientoPrecio) Utilidades.getEJBRemote("ejbMantenimientoPrecio", NegocioMantenimientoPrecio.class.getName());
-            List<Object[]> object = ejb.getAllByIdSuc(idSucursal);
+            List<Object[]> object = ejb.getAllByIdSucAndIdSubProducto(idSucursal, idSubProducto);
             for (Object[] obj : object) {
 
                 MantenimientoPrecios mantenimientoPrecios = new MantenimientoPrecios();
