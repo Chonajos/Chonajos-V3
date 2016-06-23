@@ -42,17 +42,25 @@ import org.springframework.stereotype.Component;
 public class BeanEntradaMenudeo implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @Autowired private IfaceCatSucursales ifaceCatSucursales;
-    @Autowired private IfaceSubProducto ifaceSubProducto;
-    @Autowired private IfaceCatProvedores ifaceCatProvedores;
-    @Autowired private IfaceEmpaque ifaceEmpaque;
-    @Autowired private PlataformaSecurityContext context;
-    @Autowired private IfaceEntradaMenudeo ifaceEntradaMenudeo;
-    @Autowired private IfaceEntradaMenudeoProducto ifaceEntradaMenudeoProducto;
-    @Autowired private IfaceExistenciaMenudeo ifaceExistenciaMenudeo;
-    @Autowired private IfaceMantenimientoPrecio ifaceMantenimientoPrecio;
-    
-    
+    @Autowired
+    private IfaceCatSucursales ifaceCatSucursales;
+    @Autowired
+    private IfaceSubProducto ifaceSubProducto;
+    @Autowired
+    private IfaceCatProvedores ifaceCatProvedores;
+    @Autowired
+    private IfaceEmpaque ifaceEmpaque;
+    @Autowired
+    private PlataformaSecurityContext context;
+    @Autowired
+    private IfaceEntradaMenudeo ifaceEntradaMenudeo;
+    @Autowired
+    private IfaceEntradaMenudeoProducto ifaceEntradaMenudeoProducto;
+    @Autowired
+    private IfaceExistenciaMenudeo ifaceExistenciaMenudeo;
+    @Autowired
+    private IfaceMantenimientoPrecio ifaceMantenimientoPrecio;
+
     private ArrayList<Provedor> listaProvedores;
     private ArrayList<Sucursal> listaSucursales;
     private ArrayList<TipoEmpaque> lstTipoEmpaque;
@@ -125,13 +133,12 @@ public class BeanEntradaMenudeo implements Serializable {
                 System.out.println("EmP:" + mp.toString());
                 if (ifaceEntradaMenudeoProducto.insertEntradaMercanciaProducto(mp) != 0) {
                     System.out.println("Se ingreso correctamente");
-                    
+
                     //una vez ingresada verificar si ya existe en la tabla existencias.
                     ExistenciaMenudeo ex = new ExistenciaMenudeo();
-                    ex = ifaceExistenciaMenudeo.getExistenciasRepetidasById(mp.getIdSubproductoFk(),entrada_mercancia.getIdSucursalFk());
-                    
-                    if(ex.getIdExMenPk()==null)
-                    {
+                    ex = ifaceExistenciaMenudeo.getExistenciasRepetidasById(mp.getIdSubproductoFk(), entrada_mercancia.getIdSucursalFk());
+
+                    if (ex.getIdExMenPk() == null) {
                         System.out.println("No se encontraron repetidos");
                         //no se encontraron repetidos por lo tanto insertar
                         int idExistencia = ifaceExistenciaMenudeo.getNexVal();
@@ -143,53 +150,28 @@ public class BeanEntradaMenudeo implements Serializable {
                         existencia.setIdSucursalFk(entrada_mercancia.getIdSucursalFk());
                         existencia.setIdTipoEmpaqueFK(mp.getIdtipoEmpaqueFk());
                         existencia.setKilos(mp.getKilosTotales());
-                        
-                        if(ifaceExistenciaMenudeo.insertaExistenciaMenudeo(existencia)!=0)
-                        {
-                            //primero buscar si ya existe en mantenimiento de precios
-                            MantenimientoPrecios mant  = new MantenimientoPrecios();
-                            mant =ifaceMantenimientoPrecio.getMantenimientoPrecioById(mp.getIdSubproductoFk(), mp.getIdtipoEmpaqueFk().intValue(), entrada_mercancia.getIdSucursalFk().intValue());
-                            
-                            
+
+                        if (ifaceExistenciaMenudeo.insertaExistenciaMenudeo(existencia) != 0) {
                             System.out.println("Se inserto correcatemente en existencias");
-                            if(insertaMantenimiento(mp,entrada_mercancia)){
-                                System.out.println("Se inserto correcatemente en mantenimiento");
-                                JsfUtil.addSuccessMessageClean("Entrada de Mercancia Correcto");
-                            }else
-                            {
-                               System.out.println("Ocurrio algun error");
-                            JsfUtil.addErrorMessageClean("Ocurrio un problema, contactar al administrador");
-                     
-                            }
-                            
-                        }
-                        else
-                        {
+                            updatateMantenimiento(mp,entrada_mercancia);
+                        } else {
                             System.out.println("Ocurrio algun error");
                             JsfUtil.addErrorMessageClean("Ocurrio un problema, contactar al administrador");
-                    
+
                         }
-                    }
-                    else
-                    {
+                    } else {
                         System.out.println("Se encontraron repetidos");
                         ex.setCantidadEmpaque(ex.getCantidadEmpaque().add(mp.getCantidadEmpaque(), MathContext.UNLIMITED));
                         ex.setKilos(ex.getKilos().add(mp.getKilosTotales(), MathContext.UNLIMITED));
-                        if(ifaceExistenciaMenudeo.updateExistenciaMenudeo(ex)!=0)
-                        {
-                            System.out.println("Se actualizo con exito");
-                            JsfUtil.addSuccessMessageClean("Entrada de Mercancia Correcto");
-                        }
-                        else
+                        if (ifaceExistenciaMenudeo.updateExistenciaMenudeo(ex) != 0) {
+                            updatateMantenimiento(mp,entrada_mercancia);
+                        } else 
                         {
                             JsfUtil.addErrorMessageClean("Ocurrio un problema, contactar al administrador");
-                    
+
                             System.out.println("Ocurrio un erro al actualizar producto repetido");
                         }
                     }
-                    
-                    
-                    
                 } else {
                     JsfUtil.addErrorMessageClean("Ocurrio un problema, contactar al administrador");
                     System.out.println("Ocurrio algun error");
@@ -207,22 +189,76 @@ public class BeanEntradaMenudeo implements Serializable {
         }
 
     }
-    
-    public boolean insertaMantenimiento(EntradaMenudeoProducto mp,EntradaMenudeo em)
-    {
-       mantenimiento = new MantenimientoPrecios();
-       mantenimiento.setIdSubproducto(mp.getIdSubproductoFk());
-       mantenimiento.setIdTipoEmpaquePk(mp.getIdtipoEmpaqueFk());
-       mantenimiento.setIdSucursal(em.getIdSucursalFk().intValue());
-       mantenimiento.setCostoReal(mp.getPrecio());
-       if(ifaceMantenimientoPrecio.insertarMantenimientoPrecio(mantenimiento)!=0){
-           System.out.println("Se ingreso en la tabla mantenimiento de precios");
-           return true;
-       }else{
-           System.out.println("Ocurrio un error al ingresar en mantenimiento de precios");
-           return false;
-       }
+
+    public void updatateMantenimiento(EntradaMenudeoProducto mp,EntradaMenudeo entrada_mercancia) {
+        MantenimientoPrecios mant = new MantenimientoPrecios();
+        mant = ifaceMantenimientoPrecio.getMantenimientoPrecioById(mp.getIdSubproductoFk(), mp.getIdtipoEmpaqueFk().intValue(), entrada_mercancia.getIdSucursalFk().intValue());
+        if (mant.getIdSubproducto() != null) 
+        {
+            System.out.println("Ya se encontro un mantenimiento de precios de este producto");
+            //buscar las existencias de ese producto
+            //sumaras con las nuevas
+            //formula:
+            // existencias * costoreal = X
+            // nuevas * precioNuevo = Y
+            //Totalexistencias = existencias + nuevas.
+            //Costostotales = X+Y
+            //CostoRealNuevo = Costostotales/Totalexistencias
+            BigDecimal costoReal = mant.getCostoReal();
+            BigDecimal precioNuevo = mp.getPrecio();
+            BigDecimal nuevas = mp.getKilosTotales();
+            ExistenciaMenudeo existencia = ifaceExistenciaMenudeo.getExistenciasRepetidasById(mp.getIdSubproductoFk(), entrada_mercancia.getIdSucursalFk());
+            BigDecimal existencias = existencia.getKilos();
+            BigDecimal totalExistencias = existencias.add(nuevas, MathContext.UNLIMITED);
+            BigDecimal X = existencias.multiply(costoReal, MathContext.UNLIMITED);
+            BigDecimal y = nuevas.multiply(precioNuevo, MathContext.UNLIMITED);
+            BigDecimal costoTotales = X.add(y, MathContext.UNLIMITED);
+            BigDecimal costoRealNuevo = costoTotales.divide(totalExistencias, MathContext.UNLIMITED);
+            System.out.println("========================");
+            System.out.println("CostoReal: "+costoRealNuevo);
+            
+        } else
+        {    
+            if (insertaMantenimiento(mp, entrada_mercancia)) 
+            {
+                System.out.println("Se inserto correcatemente en mantenimiento");
+                JsfUtil.addSuccessMessageClean("Entrada de Mercancia Correcto");
+            } else 
+            {
+                System.out.println("Ocurrio algun error");
+                JsfUtil.addErrorMessageClean("Ocurrio un problema, contactar al administrador");
+            }
+        }
        
+    }
+
+    public boolean insertaMantenimiento(EntradaMenudeoProducto mp, EntradaMenudeo em) {
+        mantenimiento = new MantenimientoPrecios();
+        mantenimiento.setIdSubproducto(mp.getIdSubproductoFk());
+        
+        mantenimiento.setIdTipoEmpaquePk(selectedTipoEmpaque());
+        mantenimiento.setIdSucursal(em.getIdSucursalFk().intValue());
+        mantenimiento.setCostoReal(mp.getPrecio());
+        if (ifaceMantenimientoPrecio.insertarMantenimientoPrecio(mantenimiento) != 0) {
+            System.out.println("Se ingreso en la tabla mantenimiento de precios");
+            return true;
+        } else {
+            System.out.println("Ocurrio un error al ingresar en mantenimiento de precios");
+            return false;
+        }
+
+    }
+    
+    public BigDecimal selectedTipoEmpaque() 
+    {
+
+        for (TipoEmpaque empaque : lstTipoEmpaque) 
+        {
+            if ((empaque.getNombreEmpaque().equalsIgnoreCase("Kilos"))) {
+                return empaque.getIdTipoEmpaquePk();
+            }
+        }
+        return BigDecimal.ZERO;
     }
 
     public void addProducto() {
@@ -304,7 +340,6 @@ public class BeanEntradaMenudeo implements Serializable {
         dataProducto.reset();
         subProducto = new Subproducto();
         viewEstate = "init";
-        
 
     }
 
@@ -466,6 +501,5 @@ public class BeanEntradaMenudeo implements Serializable {
     public void setMantenimiento(MantenimientoPrecios mantenimiento) {
         this.mantenimiento = mantenimiento;
     }
-    
 
 }
