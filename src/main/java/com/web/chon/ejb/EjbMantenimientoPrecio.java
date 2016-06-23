@@ -84,23 +84,17 @@ public class EjbMantenimientoPrecio implements NegocioMantenimientoPrecio {
 
         try {
             StringBuilder queryStr;
-            if (idSucursal != null) {
-                queryStr = new StringBuilder("SELECT SP.ID_SUBPRODUCTO_PK, SP.NOMBRE_SUBPRODUCTO, MP.ID_SUCURSAL_FK,MP.ID_TIPO_EMPAQUE_FK,MP.PRECIO_MINIMO,MP.PRECIO_VENTA,MP.PRECIO_MAXIMO, "
-                        + "EXM.KILOS,MP.COSTOREAL,MP.COSTOMERMA FROM SUBPRODUCTO SP  "
-                        + "LEFT JOIN MANTENIMIENTO_PRECIO MP ON SP.ID_SUBPRODUCTO_PK = MP.ID_SUBPRODUCTO_FK AND MP.ID_SUCURSAL_FK = " + idSucursal + " "
-                        + "LEFT JOIN EXISTENCIAMENUDEO EXM ON EXM.ID_SUBPRODUCTO_FK = SP.ID_SUBPRODUCTO_PK AND EXM.ID_SUCURSAL_FK = " + idSucursal + " ");
-            } else {
 
-                queryStr = new StringBuilder("SELECT SP.ID_SUBPRODUCTO_PK, SP.NOMBRE_SUBPRODUCTO, MP.ID_SUCURSAL_FK,MP.ID_TIPO_EMPAQUE_FK,MP.PRECIO_MINIMO,MP.PRECIO_VENTA,MP.PRECIO_MAXIMO, "
-                        + "EXM.KILOS,MP.COSTOREAL,MP.COSTOMERMA FROM SUBPRODUCTO SP  "
-                        + "LEFT JOIN MANTENIMIENTO_PRECIO MP ON SP.ID_SUBPRODUCTO_PK = MP.ID_SUBPRODUCTO_FK "
-                        + "LEFT JOIN EXISTENCIAMENUDEO EXM ON EXM.ID_SUBPRODUCTO_FK = SP.ID_SUBPRODUCTO_PK ");
+            queryStr = new StringBuilder("SELECT SP.ID_SUBPRODUCTO_PK, SP.NOMBRE_SUBPRODUCTO, MP.ID_SUCURSAL_FK,MP.ID_TIPO_EMPAQUE_FK,MP.PRECIO_MINIMO,MP.PRECIO_VENTA,MP.PRECIO_MAXIMO, "
+                    + "EXM.KILOS,MP.COSTOREAL,MP.COSTOMERMA FROM SUBPRODUCTO SP  "
+                    + "LEFT JOIN MANTENIMIENTO_PRECIO MP ON SP.ID_SUBPRODUCTO_PK = MP.ID_SUBPRODUCTO_FK AND MP.ID_SUCURSAL_FK = " + idSucursal + " "
+                    + "LEFT JOIN EXISTENCIAMENUDEO EXM ON EXM.ID_SUBPRODUCTO_FK = SP.ID_SUBPRODUCTO_PK AND EXM.ID_SUCURSAL_FK = " + idSucursal + " ");
 
-            }
             if (idSubProducto != null) {
                 queryStr.append("WHERE SP.ID_SUBPRODUCTO_PK =" + idSubProducto.trim() + "");
             }
 
+            queryStr.append(" ORDER by SP.ID_SUBPRODUCTO_PK ");
             Query query = em.createNativeQuery(queryStr.toString());
 
             return query.getResultList();
