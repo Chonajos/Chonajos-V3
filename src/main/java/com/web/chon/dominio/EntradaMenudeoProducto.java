@@ -25,6 +25,7 @@ public class EntradaMenudeoProducto implements Serializable {
     private BigDecimal precio;
     private String nombreProducto;
     private String nombreEmpaque;
+    private BigDecimal porcentarjeMerma;
 
     public void reset() {
         idEmmpPk = null;
@@ -37,13 +38,24 @@ public class EntradaMenudeoProducto implements Serializable {
         precio = null;
         nombreProducto = null;
         nombreEmpaque = null;
+        porcentarjeMerma = null;
     }
 
     @Override
     public String toString() {
-        return "EntradaMenudeoProducto{" + "idEmmpPk=" + idEmmpPk + ", idEmmFk=" + idEmmFk + ", idSubproductoFk=" + idSubproductoFk + ", idtipoEmpaqueFk=" + idtipoEmpaqueFk + ", kilosTotales=" + kilosTotales + ", cantidadEmpaque=" + cantidadEmpaque + ", comentarios=" + comentarios + ", precio=" + precio + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + '}';
+        return "EntradaMenudeoProducto{" + "idEmmpPk=" + idEmmpPk + ", idEmmFk=" + idEmmFk + ", idSubproductoFk=" + idSubproductoFk + ", idtipoEmpaqueFk=" + idtipoEmpaqueFk + ", kilosTotales=" + kilosTotales + ", cantidadEmpaque=" + cantidadEmpaque + ", comentarios=" + comentarios + ", precio=" + precio + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + ", porcentarjeMerma=" + porcentarjeMerma + '}';
     }
 
+    public BigDecimal getPorcentarjeMerma() {
+        return porcentarjeMerma;
+    }
+
+    public void setPorcentarjeMerma(BigDecimal porcentarjeMerma) {
+        this.porcentarjeMerma = porcentarjeMerma;
+    }
+
+    
+    
     public BigDecimal getPrecio() {
         return precio;
     }
@@ -124,4 +136,5 @@ public class EntradaMenudeoProducto implements Serializable {
         this.nombreEmpaque = nombreEmpaque;
     }
 
+    
 }

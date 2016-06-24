@@ -27,6 +27,7 @@ import com.web.chon.util.JsfUtil;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -148,12 +149,14 @@ public class BeanEntradaMenudeo implements Serializable {
                         //existencia.setIdStatusFk(kilosEntradaReales);
                         existencia.setIdSubProductoPk(mp.getIdSubproductoFk());
                         existencia.setIdSucursalFk(entrada_mercancia.getIdSucursalFk());
-                        existencia.setIdTipoEmpaqueFK(mp.getIdtipoEmpaqueFk());
+                        existencia.setIdTipoEmpaqueFK(selectedTipoEmpaque());
                         existencia.setKilos(mp.getKilosTotales());
+                        
+                        updatateMantenimiento(mp,entrada_mercancia);
 
                         if (ifaceExistenciaMenudeo.insertaExistenciaMenudeo(existencia) != 0) {
                             System.out.println("Se inserto correcatemente en existencias");
-                            updatateMantenimiento(mp,entrada_mercancia);
+                            
                         } else {
                             System.out.println("Ocurrio algun error");
                             JsfUtil.addErrorMessageClean("Ocurrio un problema, contactar al administrador");
@@ -163,8 +166,12 @@ public class BeanEntradaMenudeo implements Serializable {
                         System.out.println("Se encontraron repetidos");
                         ex.setCantidadEmpaque(ex.getCantidadEmpaque().add(mp.getCantidadEmpaque(), MathContext.UNLIMITED));
                         ex.setKilos(ex.getKilos().add(mp.getKilosTotales(), MathContext.UNLIMITED));
-                        if (ifaceExistenciaMenudeo.updateExistenciaMenudeo(ex) != 0) {
-                            updatateMantenimiento(mp,entrada_mercancia);
+                        
+                        updatateMantenimiento(mp,entrada_mercancia);
+                        if (ifaceExistenciaMenudeo.updateExistenciaMenudeo(ex) != 0) 
+                        {
+                            System.out.println("Se inserto correcatemente en existencias");
+                        
                         } else 
                         {
                             JsfUtil.addErrorMessageClean("Ocurrio un problema, contactar al administrador");
@@ -192,6 +199,7 @@ public class BeanEntradaMenudeo implements Serializable {
 
     public void updatateMantenimiento(EntradaMenudeoProducto mp,EntradaMenudeo entrada_mercancia) {
         MantenimientoPrecios mant = new MantenimientoPrecios();
+        mp.setIdtipoEmpaqueFk(selectedTipoEmpaque());
         mant = ifaceMantenimientoPrecio.getMantenimientoPrecioById(mp.getIdSubproductoFk(), mp.getIdtipoEmpaqueFk().intValue(), entrada_mercancia.getIdSucursalFk().intValue());
         if (mant.getIdSubproducto() != null) 
         {
@@ -204,18 +212,47 @@ public class BeanEntradaMenudeo implements Serializable {
             //Totalexistencias = existencias + nuevas.
             //Costostotales = X+Y
             //CostoRealNuevo = Costostotales/Totalexistencias
-            BigDecimal costoReal = mant.getCostoReal();
-            BigDecimal precioNuevo = mp.getPrecio();
-            BigDecimal nuevas = mp.getKilosTotales();
             ExistenciaMenudeo existencia = ifaceExistenciaMenudeo.getExistenciasRepetidasById(mp.getIdSubproductoFk(), entrada_mercancia.getIdSucursalFk());
             BigDecimal existencias = existencia.getKilos();
-            BigDecimal totalExistencias = existencias.add(nuevas, MathContext.UNLIMITED);
-            BigDecimal X = existencias.multiply(costoReal, MathContext.UNLIMITED);
-            BigDecimal y = nuevas.multiply(precioNuevo, MathContext.UNLIMITED);
-            BigDecimal costoTotales = X.add(y, MathContext.UNLIMITED);
-            BigDecimal costoRealNuevo = costoTotales.divide(totalExistencias, MathContext.UNLIMITED);
+            System.out.println("A: "+existencias);
+            
+            BigDecimal costoReal = mant.getCostoReal();
+            System.out.println("B: "+costoReal);
+            
+             BigDecimal X = existencias.multiply(costoReal).setScale(2);
+            System.out.println("C: "+X);
+            
+            BigDecimal nuevas = mp.getKilosTotales();
+            System.out.println("D: "+nuevas);
+            
+            BigDecimal precioNuevo = mp.getPrecio();
+            System.out.println("E: "+precioNuevo);
+            
+            BigDecimal y = nuevas.multiply(precioNuevo).setScale(2);
+             System.out.println("F: "+y);
+            
+            
+            BigDecimal totalExistencias = existencias.add(nuevas);
+            System.out.println("G: "+totalExistencias);
+           
+            
+            BigDecimal costoTotales = X.add(y);
+            System.out.println("H: "+costoTotales);
+            
+            BigDecimal costoRealNuevo = costoTotales.divide(totalExistencias,2,RoundingMode.HALF_UP);
             System.out.println("========================");
-            System.out.println("CostoReal: "+costoRealNuevo);
+            System.out.println("I: "+costoRealNuevo);
+            mant.setCostoReal(costoRealNuevo);
+            mant.setIdTipoEmpaquePk(selectedTipoEmpaque());
+            if(ifaceMantenimientoPrecio.updateMantenimientoPrecio(mant)!=0){
+            System.out.println("Se inserto correcatemente en mantenimiento");
+            JsfUtil.addSuccessMessageClean("Entrada de Mercancia Correcto");
+            }
+            else{
+                System.out.println("Ocurrio algun error");
+                JsfUtil.addErrorMessageClean("Ocurrio un problema, contactar al administrador");
+            
+            }
             
         } else
         {    
