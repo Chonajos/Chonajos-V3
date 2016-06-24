@@ -144,6 +144,8 @@ public class BeanAjustesExistenciasMenudeo implements Serializable {
         }
 
         JsfUtil.addSuccessMessage("Se Modifico el Registro Existosamente.");
+        
+        init();
     }
 
     public void onRowCancel(RowEditEvent event) {

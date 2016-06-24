@@ -242,7 +242,6 @@ public class BeanMantenimientoPrecio implements Serializable {
     }
 
     public void setSubproducto(Subproducto subproducto) {
-        System.out.println("set subproducto:" + subproducto.toString());
         this.subproducto = subproducto;
     }
 
