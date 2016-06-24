@@ -65,6 +65,7 @@ public class ServiceEntradaMenudeoProducto implements IfaceEntradaMenudeoProduct
             dominio.setComentarios(obj[6] == null ? "" : obj[6].toString());
             dominio.setNombreProducto(obj[7] == null ? "" : obj[7].toString());
             dominio.setNombreEmpaque(obj[8] == null ? "" : obj[8].toString());
+            dominio.setKilosTotales(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
             lstEntradaMercancia2.add(dominio);
         }
         return lstEntradaMercancia2;
