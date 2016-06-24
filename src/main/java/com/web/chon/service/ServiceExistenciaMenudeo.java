@@ -93,6 +93,7 @@ public class ServiceExistenciaMenudeo implements IfaceExistenciaMenudeo {
             data.setIdStatusFk(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
             data.setNombreProducto(obj[7] == null ? null : obj[7].toString());
             data.setNombreEmpaque(obj[8] == null ? null : obj[8].toString());
+            data.setCostoReal(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
 
         }
         return data;

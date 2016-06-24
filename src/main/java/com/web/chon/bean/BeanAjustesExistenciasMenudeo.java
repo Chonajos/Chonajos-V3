@@ -5,6 +5,7 @@ import com.web.chon.dominio.Bodega;
 import com.web.chon.dominio.EntradaMercancia;
 import com.web.chon.dominio.ExistenciaMenudeo;
 import com.web.chon.dominio.ExistenciaProducto;
+import com.web.chon.dominio.MantenimientoPrecios;
 import com.web.chon.dominio.Provedor;
 import com.web.chon.dominio.Subproducto;
 import com.web.chon.dominio.Sucursal;
@@ -19,6 +20,7 @@ import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceEmpaque;
 import com.web.chon.service.IfaceEntradaMercancia;
 import com.web.chon.service.IfaceExistenciaMenudeo;
+import com.web.chon.service.IfaceMantenimientoPrecio;
 import com.web.chon.service.IfaceNegocioExistencia;
 import com.web.chon.service.IfaceSubProducto;
 import com.web.chon.service.IfaceTipoCovenio;
@@ -55,6 +57,7 @@ public class BeanAjustesExistenciasMenudeo implements Serializable {
     private IfaceExistenciaMenudeo ifaceExistenciaMenudeo;
     @Autowired
     private IfaceAjusteExistenciaMenudeo ifaceAjusteExistenciaMenudeo;
+    @Autowired private IfaceMantenimientoPrecio ifaceMantenimientoPrecio;
 
     private List<ExistenciaMenudeo> model;
     private ArrayList<Subproducto> lstProducto;
@@ -101,11 +104,17 @@ public class BeanAjustesExistenciasMenudeo implements Serializable {
 
         ExistenciaMenudeo existenciaMenudeoOld = new ExistenciaMenudeo();
         ExistenciaMenudeo existenciaMenudeoNew = new ExistenciaMenudeo();
+        MantenimientoPrecios mantenimientoPrecios = new MantenimientoPrecios();
         ajusteExistenciaMenudeo = new AjusteExistenciaMenudeo();
         
         existenciaMenudeoNew = (ExistenciaMenudeo) event.getObject();
         existenciaMenudeoOld = ifaceExistenciaMenudeo.getExistenciasMenudeoById(existenciaMenudeoNew.getIdExMenPk());
-
+        
+        mantenimientoPrecios = ifaceMantenimientoPrecio.getMantenimientoPrecioById(existenciaMenudeoNew.getIdSubProductoPk(), existenciaMenudeoNew.getIdTipoEmpaqueFK().intValue(), existenciaMenudeoNew.getIdSucursalFk().intValue());
+        
+        
+        System.out.println("ajusteExistenciaMenudeo "+ajusteExistenciaMenudeo.toString());
+        
         //Se ajusta la tabla de existencia
         existenciaMenudeoNew.setKilos(existenciaMenudeoNew.getKilos().add(existenciaMenudeoNew.getKilosAjustados()));
         
@@ -124,6 +133,7 @@ public class BeanAjustesExistenciasMenudeo implements Serializable {
             ajusteExistenciaMenudeo.setMotivoAjuste(existenciaMenudeoNew.getMotivoAjuste());
 
             if (ifaceAjusteExistenciaMenudeo.insert(ajusteExistenciaMenudeo) == 0) {
+                ifaceMantenimientoPrecio.updateMantenimientoPrecio(mantenimientoPrecios);
                 JsfUtil.addErrorMessage("Error al Modificar el Registro.");
             }
         }

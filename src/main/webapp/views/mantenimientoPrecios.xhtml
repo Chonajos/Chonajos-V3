@@ -57,7 +57,7 @@
                         <p:dataTable id="table" var="model" value="#{beanMantenimientoPrecio.model}" editable="true" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." >
                             <p:ajax event="rowEdit" listener="#{beanMantenimientoPrecio.onRowEdit}" update="table" />
                             <p:ajax event="rowEditCancel" listener="#{beanMantenimientoPrecio.onRowCancel}" update="table" />
-                            <p:column headerText="Clave de Producto"   width="45px;" style="text-align:center">
+                            <p:column headerText="Clave de Producto"   width="80px;" style="text-align:center">
                                 <h:outputText value="#{model.idSubproducto}">
                                 </h:outputText>
                             </p:column>
@@ -65,14 +65,18 @@
                                 <h:outputText value="#{model.nombreSubProducto}" />
                             </p:column>
                             <p:column headerText="Existencia (Kilos)" width="80px;" class="alignRight">
-                                <h:outputText value="#{model.existenciaKilos}" />
+                                <h:outputText value="#{model.existenciaKilos}" >
+                                    <f:convertNumber pattern="###,###.##" /> 
+                                </h:outputText>
                             </p:column>
                             <p:column headerText="Costo Real" width="60px;" class="alignRight">
-                                <h:outputText value="#{model.costoReal}" />
+                                <h:outputText value="#{model.costoReal}" >
+                                    <f:convertNumber pattern="###,###.##" /> 
+                                </h:outputText>
                             </p:column>
-<!--                            <p:column headerText="Costo Merma" width="60px;" class="alignRight">
-                                <h:outputText value="#{model.costoMerma}" />
-                            </p:column>-->
+                            <!--                            <p:column headerText="Costo Merma" width="60px;" class="alignRight">
+                                                            <h:outputText value="#{model.costoMerma}" />
+                                                        </p:column>-->
                             <p:column headerText="Precio Sugerido" width="60px;" class="alignRight">
                                 <h:outputText value="#{model.precioSugerido}" >
                                     <f:convertNumber pattern="###,###.##" /> 
@@ -80,7 +84,11 @@
                             </p:column>
                             <p:column headerText="Mín." width="45px;" class="alignRight">
                                 <p:cellEditor>
-                                    <f:facet name="output"><h:outputText value="#{model.precioMinimo}" /></f:facet>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{model.precioMinimo}" >
+                                            <f:convertNumber pattern="###,###.##" /> 
+                                        </h:outputText>
+                                    </f:facet>
                                     <f:facet name="input">
                                         <p:inputText id="minimoInput" value="#{model.precioMinimo}" maxlength="5" style="width:100%">
                                             <f:convertNumber pattern="###,###.##" /> 
@@ -90,7 +98,11 @@
                             </p:column>
                             <p:column headerText="Vent." width="45px;" class="alignRight">
                                 <p:cellEditor>
-                                    <f:facet name="output"><h:outputText value="#{model.precioVenta}" /></f:facet>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{model.precioVenta}">
+                                            <f:convertNumber pattern="###,###.##" /> 
+                                        </h:outputText>
+                                    </f:facet>
                                     <f:facet name="input">
                                         <p:inputText id="ventaInput" value="#{model.precioVenta}" maxlength="5" style="width:100%" >
                                             <f:convertNumber pattern="###,###.##" /> 
@@ -100,7 +112,11 @@
                             </p:column>
                             <p:column headerText="Máx." width="45px;" class="alignRight" >
                                 <p:cellEditor>
-                                    <f:facet name="output"><h:outputText value="#{model.precioMaximo}" /></f:facet>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{model.precioMaximo}" >
+                                            <f:convertNumber pattern="###,###.##" /> 
+                                        </h:outputText>
+                                    </f:facet>
                                     <f:facet name="input">
                                         <p:inputText id="maximoInput" value="#{model.precioMaximo}" maxlength="5" style="width:100%">
                                             <f:convertNumber pattern="###,###.##" /> 

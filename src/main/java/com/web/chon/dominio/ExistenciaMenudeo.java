@@ -29,7 +29,14 @@ public class ExistenciaMenudeo implements Serializable {
     private String observaciones;
     private String motivoAjuste;
     private BigDecimal kilosAjustados;
+    private BigDecimal costoReal;
 
+    @Override
+    public String toString() {
+        return "ExistenciaMenudeo{" + "idExMenPk=" + idExMenPk + ", idSucursalFk=" + idSucursalFk + ", kilos=" + kilos + ", idSubProductoPk=" + idSubProductoPk + ", cantidadEmpaque=" + cantidadEmpaque + ", idTipoEmpaqueFK=" + idTipoEmpaqueFK + ", idStatusFk=" + idStatusFk + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + ", observaciones=" + observaciones + ", motivoAjuste=" + motivoAjuste + ", kilosAjustados=" + kilosAjustados + ", costoReal=" + costoReal + '}';
+    }
+    
+    
     public BigDecimal getCantidadEmpaque() {
         return cantidadEmpaque;
     }
@@ -102,11 +109,6 @@ public class ExistenciaMenudeo implements Serializable {
         this.nombreEmpaque = nombreEmpaque;
     }
 
-    @Override
-    public String toString() {
-        return "ExistenciaMenudeo{" + "idExMenPk=" + idExMenPk + ", idSucursalFk=" + idSucursalFk + ", kilos=" + kilos + ", idSubProductoPk=" + idSubProductoPk + ", cantidadEmpaque=" + cantidadEmpaque + ", idTipoEmpaqueFK=" + idTipoEmpaqueFK + ", idStatusFk=" + idStatusFk + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + '}';
-    }
-
     public String getObservaciones() {
         return observaciones;
     }
@@ -130,9 +132,13 @@ public class ExistenciaMenudeo implements Serializable {
     public void setKilosAjustados(BigDecimal kilosAjustados) {
         this.kilosAjustados = kilosAjustados;
     }
-    
-    
-    
-    
+
+    public BigDecimal getCostoReal() {
+        return costoReal;
+    }
+
+    public void setCostoReal(BigDecimal costoReal) {
+        this.costoReal = costoReal;
+    }
 
 }
