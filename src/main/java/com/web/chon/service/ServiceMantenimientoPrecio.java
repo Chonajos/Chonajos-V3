@@ -30,13 +30,15 @@ public class ServiceMantenimientoPrecio implements IfaceMantenimientoPrecio {
             for (Object[] obj : object) {
 
                 mantenimientoPrecios.setIdSubproducto(obj[0] == null ? "" : obj[0].toString());
-                mantenimientoPrecios.setNombreSubProducto(obj[1] == null ? null : obj[1].toString());
+                mantenimientoPrecios.setIdTipoEmpaquePk(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
                 mantenimientoPrecios.setPrecioMinimo(obj[3] == null ? null : new BigDecimal(obj[3].toString()));
                 mantenimientoPrecios.setPrecioVenta(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
                 mantenimientoPrecios.setPrecioMaximo(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
                 mantenimientoPrecios.setIdSucursal(obj[5] == null ? null : Integer.valueOf(obj[5].toString()));
                 mantenimientoPrecios.setCostoReal(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
                 mantenimientoPrecios.setCostoMerma(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
+                
+                System.out.println("by id"+mantenimientoPrecios.toString());
             }
 
             return mantenimientoPrecios;

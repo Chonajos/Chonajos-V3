@@ -27,6 +27,8 @@ import com.web.chon.service.IfaceTipoCovenio;
 import com.web.chon.util.JsfUtil;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -102,6 +104,8 @@ public class BeanAjustesExistenciasMenudeo implements Serializable {
 
     public void onRowEdit(RowEditEvent event) {
 
+        System.out.println("onrow edit");
+        
         ExistenciaMenudeo existenciaMenudeoOld = new ExistenciaMenudeo();
         ExistenciaMenudeo existenciaMenudeoNew = new ExistenciaMenudeo();
         MantenimientoPrecios mantenimientoPrecios = new MantenimientoPrecios();
@@ -112,12 +116,13 @@ public class BeanAjustesExistenciasMenudeo implements Serializable {
         
         mantenimientoPrecios = ifaceMantenimientoPrecio.getMantenimientoPrecioById(existenciaMenudeoNew.getIdSubProductoPk(), existenciaMenudeoNew.getIdTipoEmpaqueFK().intValue(), existenciaMenudeoNew.getIdSucursalFk().intValue());
         
-        
-        System.out.println("ajusteExistenciaMenudeo "+ajusteExistenciaMenudeo.toString());
-        
-        //Se ajusta la tabla de existencia
         existenciaMenudeoNew.setKilos(existenciaMenudeoNew.getKilos().add(existenciaMenudeoNew.getKilosAjustados()));
         
+        //Se optiene el costo real para modificarlo en mantenimiento de precios
+        mantenimientoPrecios.setCostoReal((existenciaMenudeoOld.getKilos().multiply(existenciaMenudeoOld.getCostoReal()).divide(existenciaMenudeoNew.getKilos(),2,RoundingMode.HALF_UP)));
+        ifaceMantenimientoPrecio.updateMantenimientoPrecio(mantenimientoPrecios);
+        
+        //Se ajusta la tabla de existencia
         if (ifaceExistenciaMenudeo.updateExistenciaMenudeo(existenciaMenudeoNew) != 0) {
 
             ajusteExistenciaMenudeo.setEmpaqueAjustados(existenciaMenudeoNew.getCantidadEmpaque());
