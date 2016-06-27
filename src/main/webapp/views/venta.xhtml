@@ -108,15 +108,17 @@
                             <p:column headerText="Empaque" width="150px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreEmpaque}" />
                             </p:column>
-                            <p:column headerText="Cantidad" width="85px;" class="alignCenter">
-                                <h:outputText value="#{model.cantidadEmpaque}" />
+                            <p:column headerText="Cantidad" width="85px;" class="alignRight">
+                                <h:outputText value="#{model.cantidadEmpaque}" >
+                                    <f:convertNumber pattern="#,###,00"/>
+                                </h:outputText>
                             </p:column>
-                            <p:column headerText="Precio de venta" width="60px;" class="alignCenter">
+                            <p:column headerText="Precio de venta" width="60px;" class="alignRight">
                                 <h:outputText value="#{model.precioProducto}">
                                     <f:convertNumber pattern="#,##0.00"/>
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Total" width="90px;" class="alignCenter">
+                            <p:column headerText="Total" width="90px;" class="alignRight">
                                 <h:outputText value="#{model.total}">
                                     <f:convertNumber pattern="#,##0.00"/>
                                 </h:outputText>
@@ -134,10 +136,10 @@
                             <p:columnGroup type="footer">
                                 <p:row>
                                     <p:column colspan="4" style="text-align:right" footerText="Total de Venta:" />
-                                    <p:column colspan="1">
+                                    <p:column colspan="1" class="alignRight">
                                         <f:facet name="footer">
-                                            <h:outputText value="#{beanVenta.totalVenta}">
-                                                <f:convertNumber for="totalVenta" pattern="#,##0.00"/>
+                                            <h:outputText value="#{beanVenta.totalVenta}" >
+                                                <f:convertNumber currencySymbol="$" type="currency" />
                                             </h:outputText>
                                         </f:facet>
                                     </p:column>

@@ -118,9 +118,9 @@ public class BeanAjustesExistenciasMenudeo implements Serializable {
         
         existenciaMenudeoNew.setKilos(existenciaMenudeoNew.getKilos().add(existenciaMenudeoNew.getKilosAjustados()));
         
-        //Se optiene el costo real para modificarlo en mantenimiento de precios
-        mantenimientoPrecios.setCostoReal((existenciaMenudeoOld.getKilos().multiply(existenciaMenudeoOld.getCostoReal()).divide(existenciaMenudeoNew.getKilos(),2,RoundingMode.HALF_UP)));
-        ifaceMantenimientoPrecio.updateMantenimientoPrecio(mantenimientoPrecios);
+        //Se optiene el costo real para modificarlo en mantenimiento de precios se comento se validara si ajuste modifica precios reales
+//        mantenimientoPrecios.setCostoReal((existenciaMenudeoOld.getKilos().multiply(existenciaMenudeoOld.getCostoReal()).divide(existenciaMenudeoNew.getKilos(),2,RoundingMode.HALF_UP)));
+//        ifaceMantenimientoPrecio.updateMantenimientoPrecio(mantenimientoPrecios);
         
         //Se ajusta la tabla de existencia
         if (ifaceExistenciaMenudeo.updateExistenciaMenudeo(existenciaMenudeoNew) != 0) {

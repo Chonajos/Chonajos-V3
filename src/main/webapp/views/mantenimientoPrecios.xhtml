@@ -71,22 +71,24 @@
                             </p:column>
                             <p:column headerText="Costo Real" width="60px;" class="alignRight">
                                 <h:outputText value="#{model.costoReal}" >
-                                    <f:convertNumber pattern="###,###.00" /> 
+                                    <f:convertNumber type="currency" currencySymbol="$"/> 
                                 </h:outputText>
                             </p:column>
                             <p:column headerText="Costo Merma" width="60px;" class="alignRight">
-                                <h:outputText value="#{model.costoMerma}" />
+                                <h:outputText value="#{model.costoMerma}" >
+                                    <f:convertNumber type="currency" currencySymbol="$"/> 
+                                </h:outputText>
                             </p:column>
                             <p:column headerText="Precio Sugerido" width="60px;" class="alignRight">
                                 <h:outputText value="#{model.precioSugerido}" >
-                                    <f:convertNumber pattern="###,###.##" /> 
+                                    <f:convertNumber type="currency" currencySymbol="$"/> 
                                 </h:outputText>
                             </p:column>
                             <p:column headerText="Mínimo" width="45px;" class="alignRight">
                                 <p:cellEditor>
                                     <f:facet name="output">
                                         <h:outputText value="#{model.precioMinimo}" >
-                                            <f:convertNumber pattern="###,###.00" /> 
+                                            <f:convertNumber type="currency" currencySymbol="$"/>  
                                         </h:outputText>
                                     </f:facet>
                                     <f:facet name="input">
@@ -100,7 +102,7 @@
                                 <p:cellEditor>
                                     <f:facet name="output">
                                         <h:outputText value="#{model.precioVenta}">
-                                            <f:convertNumber pattern="###,###.00" /> 
+                                            <f:convertNumber type="currency" currencySymbol="$"/> 
                                         </h:outputText>
                                     </f:facet>
                                     <f:facet name="input">
@@ -114,7 +116,7 @@
                                 <p:cellEditor>
                                     <f:facet name="output">
                                         <h:outputText value="#{model.precioMaximo}" >
-                                            <f:convertNumber pattern="###,###.00" /> 
+                                            <f:convertNumber type="currency" currencySymbol="$"/> 
                                         </h:outputText>
                                     </f:facet>
                                     <f:facet name="input">

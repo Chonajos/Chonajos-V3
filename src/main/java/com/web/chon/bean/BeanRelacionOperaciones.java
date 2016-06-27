@@ -67,7 +67,8 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     private IfaceCatStatusVenta ifaceCatStatusVenta;
     @Autowired
     private IfaceVentaProducto ifaceVentaProducto;
-    @Autowired IfaceExistenciaMenudeo ifaceExistenciaMenudeo ;
+    @Autowired
+    IfaceExistenciaMenudeo ifaceExistenciaMenudeo;
 
     private ArrayList<BuscaVenta> lstVenta;
     private ArrayList<Sucursal> listaSucursales;
@@ -110,9 +111,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
         usuario = context.getUsuarioAutenticado();
 
         /*Validacion de perfil administrador*/
-        if (usuario.getPerId() != 1) {
-            data.setIdSucursal(usuario.getSucId());
-        }
+        data.setIdSucursal(usuario.getSucId());
 
         lstVenta = new ArrayList<BuscaVenta>();
         listaSucursales = new ArrayList<Sucursal>();
@@ -123,7 +122,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
 
         filtro = 1;
         getVentasByIntervalDate();
-        
+
         setTitle("Relación de Operaciónes Venta Menudeo");
         setViewEstate("init");
 
@@ -271,27 +270,22 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     public void cancelarVenta() {
         if (data.getIdStatus() != 4) {
             System.out.println("comentarios: " + data.getComentarioCancel());
-            if (ifaceBuscaVenta.cancelarVenta(data.getIdVentaPk().intValue(), usuario.getIdUsuario().intValue(), data.getComentarioCancel()) != 0)
-            {
-                
+            if (ifaceBuscaVenta.cancelarVenta(data.getIdVentaPk().intValue(), usuario.getIdUsuario().intValue(), data.getComentarioCancel()) != 0) {
+
                 listaProductoCancel = ifaceVentaProducto.getVentasProductoByIdVenta(data.getIdVentaPk().intValue());
-                for(VentaProducto vp : listaProductoCancel)
-                {
-                    
-                    System.out.println("Bean=========="+vp.toString());
+                for (VentaProducto vp : listaProductoCancel) {
+
+                    System.out.println("Bean==========" + vp.toString());
                     ExistenciaMenudeo em = new ExistenciaMenudeo();
                     em = ifaceExistenciaMenudeo.getExistenciasRepetidasById(vp.getIdProductoFk(), new BigDecimal(data.getIdSucursal()));
-                    System.out.println("Bean ::::::::::::"+ em.toString());
+                    System.out.println("Bean ::::::::::::" + em.toString());
                     BigDecimal kilosExistencia = em.getKilos();
                     kilosExistencia = kilosExistencia.add(vp.getKilosVenta());
                     em.setKilos(kilosExistencia);
-                    if(ifaceExistenciaMenudeo.updateExistenciaMenudeo(em)!=0)
-                    {
+                    if (ifaceExistenciaMenudeo.updateExistenciaMenudeo(em) != 0) {
                         System.out.println("se regresaron existencias con exito");
-                    
-                    }
-                    else
-                    {
+
+                    } else {
                         System.out.println("Ocurrio un problema");
                         break;
                     }
@@ -299,8 +293,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
                 JsfUtil.addSuccessMessageClean("Venta Cancelada");
                 data.setIdStatus(0);
                 getVentasByIntervalDate();
-                
-                
+
             } else {
                 JsfUtil.addErrorMessageClean("Ocurrió un error al intentar cancelar la venta.");
             }
@@ -540,5 +533,4 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
         this.listaProductoCancel = listaProductoCancel;
     }
 
-    
 }
