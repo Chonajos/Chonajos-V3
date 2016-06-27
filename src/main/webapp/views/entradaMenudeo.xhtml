@@ -133,20 +133,22 @@
                         <p:column headerText="Empaque" width="150px;" style="text-align:center">
                             <h:outputText value="#{model.nombreEmpaque}" />
                         </p:column>
-                        <p:column headerText="Cantidad" width="75px;" style="text-align:center">
+                        <p:column headerText="Cantidad" width="75px;" style="text-align:right">
                             <h:outputText value="#{model.cantidadEmpaque}" />
                         </p:column>
-                        <p:column headerText="Kilos" width="60px;" style="text-align:center">
-                            <h:outputText value="#{model.kilosTotales} Kg">
+                        <p:column headerText="Kg" width="60px;" style="text-align:right">
+                            <h:outputText value="#{model.kilosTotales}">
 
                             </h:outputText>
                         </p:column>
-                        <p:column headerText="Precio" width="60px;" style="text-align:center">
-                            <h:outputText value="$#{model.precio}">
+                        <p:column headerText="Precio" width="60px;" style="text-align:right">
+                            <h:outputText value="#{model.precio}">
+                                <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
                         </p:column>
-                        <p:column headerText="%Merma" width="60px;" style="text-align:center">
-                            <h:outputText value="%#{model.porcentarjeMerma}">
+                        <p:column headerText="%Merma01" width="60px;" style="text-align:center">
+                            <h:outputText value="#{model.porcentarjeMerma*0.01}">
+                                <f:convertNumber type="percent" currencySymbol="%"/>
                             </h:outputText>
                         </p:column>
 

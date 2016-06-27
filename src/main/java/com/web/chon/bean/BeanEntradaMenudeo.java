@@ -86,7 +86,7 @@ public class BeanEntradaMenudeo implements Serializable {
 
     @PostConstruct
     public void init() {
-        setTitle("Registro Entrada de Mercancia");
+        setTitle("Registro Entrada de Mercancia de Menudeo");
         setViewEstate("init");
         listaSucursales = new ArrayList<Sucursal>();
         listaSucursales = ifaceCatSucursales.getSucursales();

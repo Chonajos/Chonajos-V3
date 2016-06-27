@@ -104,9 +104,14 @@
                             </p:column>
                             <p:column headerText="Precio" width="60px;" class="alignCenter">
                                 <h:outputText value="#{model.precio}">
-                                    <f:convertNumber pattern="#,##0.00"/>
+                                    <f:convertNumber type="currency" currencySymbol="$" />
                                 </h:outputText>
                             </p:column>
+                            <p:column headerText="%Merma" width="60px;" style="text-align:center">
+                            <h:outputText value="#{model.porcentarjeMerma}">
+                                <f:convertNumber type="percent" currencySymbol="%"/>
+                            </h:outputText>
+                        </p:column>
                             <p:column headerText="Comentarios" width="120px;" class="alignLeft">
                                 <h:outputText value="#{model.comentarios}" />
                             </p:column>
@@ -120,7 +125,7 @@
                                             </h:outputText>
                                         </f:facet>
                                     </p:column>
-                                    <p:column colspan="1"/>
+                                    <p:column colspan="4"/>
                                 </p:row>
                             </p:columnGroup>
                         </p:dataTable>
