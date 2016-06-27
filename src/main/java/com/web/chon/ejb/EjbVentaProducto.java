@@ -26,8 +26,23 @@ public class EjbVentaProducto implements NegocioVentaProducto {
     EntityManager em;
 
     @Override
-    public List<Object[]> getVentaProductoByIdVenta() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Object[]> getVentaProductoByIdVenta(BigDecimal idVenta) {
+       try {
+
+            Query query = em.createNativeQuery("select ID_SUBPRODUCTO_FK,CANTIDAD_EMPAQUE from VENTA_PRODUCTO where ID_VENTA_FK =?");
+            query.setParameter(1, idVenta);
+            List<Object[]> resultList = null;
+            
+            resultList = query.getResultList();
+
+            return resultList;
+
+        } catch (Exception ex) 
+        {
+            Logger.getLogger(EjbVentaProducto.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+        
     }
 
     @Override

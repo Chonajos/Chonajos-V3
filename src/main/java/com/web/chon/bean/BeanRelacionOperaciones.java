@@ -1,15 +1,19 @@
 package com.web.chon.bean;
 
 import com.web.chon.dominio.BuscaVenta;
+import com.web.chon.dominio.ExistenciaMenudeo;
 import com.web.chon.dominio.RelacionOperaciones;
 import com.web.chon.dominio.StatusVenta;
 import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.UsuarioDominio;
+import com.web.chon.dominio.VentaProducto;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceBuscaVenta;
 import com.web.chon.service.IfaceCatStatusVenta;
 import com.web.chon.service.IfaceCatSucursales;
+import com.web.chon.service.IfaceExistenciaMenudeo;
 import com.web.chon.service.IfaceVenta;
+import com.web.chon.service.IfaceVentaProducto;
 import com.web.chon.util.Constantes;
 import com.web.chon.util.JasperReportUtil;
 import com.web.chon.util.JsfUtil;
@@ -61,11 +65,15 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     private IfaceCatSucursales ifaceCatSucursales;
     @Autowired
     private IfaceCatStatusVenta ifaceCatStatusVenta;
+    @Autowired
+    private IfaceVentaProducto ifaceVentaProducto;
+    @Autowired IfaceExistenciaMenudeo ifaceExistenciaMenudeo ;
 
     private ArrayList<BuscaVenta> lstVenta;
     private ArrayList<Sucursal> listaSucursales;
     private ArrayList<RelacionOperaciones> model;
     private ArrayList<StatusVenta> listaStatusVenta;
+    private ArrayList<VentaProducto> listaProductoCancel;
 
     private UsuarioDominio usuario;
     private RelacionOperaciones data;
@@ -263,11 +271,36 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     public void cancelarVenta() {
         if (data.getIdStatus() != 4) {
             System.out.println("comentarios: " + data.getComentarioCancel());
-            if (ifaceBuscaVenta.cancelarVenta(data.getIdVentaPk().intValue(), usuario.getIdUsuario().intValue(), data.getComentarioCancel()) != 0) {
+            if (ifaceBuscaVenta.cancelarVenta(data.getIdVentaPk().intValue(), usuario.getIdUsuario().intValue(), data.getComentarioCancel()) != 0)
+            {
+                
+                listaProductoCancel = ifaceVentaProducto.getVentasProductoByIdVenta(data.getIdVentaPk().intValue());
+                for(VentaProducto vp : listaProductoCancel)
+                {
+                    
+                    System.out.println("Bean=========="+vp.toString());
+                    ExistenciaMenudeo em = new ExistenciaMenudeo();
+                    em = ifaceExistenciaMenudeo.getExistenciasRepetidasById(vp.getIdProductoFk(), new BigDecimal(data.getIdSucursal()));
+                    System.out.println("Bean ::::::::::::"+ em.toString());
+                    BigDecimal kilosExistencia = em.getKilos();
+                    kilosExistencia = kilosExistencia.add(vp.getKilosVenta());
+                    em.setKilos(kilosExistencia);
+                    if(ifaceExistenciaMenudeo.updateExistenciaMenudeo(em)!=0)
+                    {
+                        System.out.println("se regresaron existencias con exito");
+                    
+                    }
+                    else
+                    {
+                        System.out.println("Ocurrio un problema");
+                        break;
+                    }
+                }
                 JsfUtil.addSuccessMessageClean("Venta Cancelada");
                 data.setIdStatus(0);
                 getVentasByIntervalDate();
-
+                
+                
             } else {
                 JsfUtil.addErrorMessageClean("Ocurrió un error al intentar cancelar la venta.");
             }
@@ -295,7 +328,6 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     public void detallesVenta() {
         viewEstate = "searchById";
         lstVenta = ifaceBuscaVenta.getVentaById(data.getIdVentaPk().intValue());
-
         calculatotalVentaDetalle();
 
     }
@@ -500,4 +532,13 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
         this.fechaImpresion = fechaImpresion;
     }
 
+    public ArrayList<VentaProducto> getListaProductoCancel() {
+        return listaProductoCancel;
+    }
+
+    public void setListaProductoCancel(ArrayList<VentaProducto> listaProductoCancel) {
+        this.listaProductoCancel = listaProductoCancel;
+    }
+
+    
 }
