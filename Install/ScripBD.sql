@@ -375,6 +375,8 @@ precio_venta number(8,2),
 precio_minimo number(8,2),
 precio_maximo number(8,2),
 id_sucursal_fk number,
+COSTOREAL number,
+COSTOMERMA number,
 CONSTRAINT c_sucursa_id_id_sucursal_fk FOREIGN KEY(id_sucursal_fk) references sucursal(id_sucursal_pk),
 CONSTRAINT c_precio_id_subproducto_fk FOREIGN KEY(id_subproducto_fk) references subproducto(id_subproducto_pk),
 CONSTRAINT c_precio_id_empaque_fk FOREIGN KEY(id_tipo_empaque_fk) references tipo_empaque(id_tipo_empaque_pk)
