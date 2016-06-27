@@ -115,8 +115,14 @@ public class BeanAjustesExistenciasMenudeo implements Serializable {
         existenciaMenudeoOld = ifaceExistenciaMenudeo.getExistenciasMenudeoById(existenciaMenudeoNew.getIdExMenPk());
         
         mantenimientoPrecios = ifaceMantenimientoPrecio.getMantenimientoPrecioById(existenciaMenudeoNew.getIdSubProductoPk(), existenciaMenudeoNew.getIdTipoEmpaqueFK().intValue(), existenciaMenudeoNew.getIdSucursalFk().intValue());
+        System.out.println("salidaEntrada: "+existenciaMenudeoNew.getSalidaEntrada());
         
-        existenciaMenudeoNew.setKilos(existenciaMenudeoNew.getKilos().add(existenciaMenudeoNew.getKilosAjustados()));
+        if(existenciaMenudeoNew.getSalidaEntrada().trim().equalsIgnoreCase("Entrada")){
+            existenciaMenudeoNew.setKilos(existenciaMenudeoNew.getKilos().add(existenciaMenudeoNew.getKilosAjustados()));
+        }else{
+            existenciaMenudeoNew.setKilos(existenciaMenudeoNew.getKilos().subtract(existenciaMenudeoNew.getKilosAjustados()));
+        }
+        
         
         //Se optiene el costo real para modificarlo en mantenimiento de precios se comento se validara si ajuste modifica precios reales
 //        mantenimientoPrecios.setCostoReal((existenciaMenudeoOld.getKilos().multiply(existenciaMenudeoOld.getCostoReal()).divide(existenciaMenudeoNew.getKilos(),2,RoundingMode.HALF_UP)));

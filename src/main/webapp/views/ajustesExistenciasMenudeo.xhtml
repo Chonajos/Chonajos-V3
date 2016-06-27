@@ -51,7 +51,7 @@
                                                 </div>-->
                     </div>
 
-                    <div class="col-lg-10 col-md-12 col-sm-12 col-xs-12 col-lg-offset-1">
+                    <div class="col-lg-11 col-md-12 col-sm-12 col-xs-12">
                         <p:dataTable id="table" var="model" value="#{beanAjustesExistenciasMenudeo.model}" editable="true" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." >
                             <p:ajax event="rowEdit" listener="#{beanAjustesExistenciasMenudeo.onRowEdit}" update="table" />
                             <p:ajax event="rowEditCancel" listener="#{beanAjustesExistenciasMenudeo.onRowCancel}" update="table" />
@@ -85,20 +85,17 @@
                                     <f:convertNumber pattern="#,##0.00" />
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Motivo de Ajuste" width="85px;" class="alignLeft">
+                            <p:column headerText="Entrada/Salida" width="125px;" class="alignLeft">
                                 <p:cellEditor>
                                     <f:facet name="output">
-                                        <h:outputText id="outputMotivo" value="Selecciona" style="width:100%"/>
+                                        <h:outputText value="#{model.salidaEntrada}" />
                                     </f:facet>
                                     <f:facet name="input">
-                                        <h:selectOneMenu  id="comboMotivoOupuInput" class="col-lg-12 col-md-8 col-sm-8 col-xs-12 " value="#{model.motivoAjuste}"  required="true">
-                                            <f:selectItem itemLabel="Deshidratación" itemValue="1" />
-                                            <f:selectItem itemLabel="Empaque" itemValue="2" />
-                                            <f:selectItem itemLabel="Desecho o basura" itemValue="3" />
-                                            <f:selectItem itemLabel="Robo" itemValue="4" />
-                                            <f:selectItem itemLabel="Mercancia no Registrada" itemValue="5" />
-                                            <f:selectItem itemLabel="Otro" itemValue="6" />
-                                        </h:selectOneMenu>
+                                        <p:selectOneRadio value="#{model.salidaEntrada}">
+                                            <f:selectItem itemLabel="Entrada" itemValue="entrada"/>
+                                            <f:selectItem itemLabel="Salida" itemValue="salida" />
+                                            <p:ajax event="change" update="@this"/>
+                                        </p:selectOneRadio>
                                     </f:facet>
                                 </p:cellEditor>
                             </p:column>
@@ -113,6 +110,23 @@
                                         <p:inputText id="kiloAjustadossIn" value="#{model.kilosAjustados}" maxlength="7" style="width:100%" required="true">
                                             <f:convertNumber pattern="#,##0.00" />
                                         </p:inputText>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Motivo de Ajuste" width="85px;" class="alignLeft">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText id="outputMotivo" value="Selecciona" style="width:100%"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <h:selectOneMenu  id="comboMotivoOupuInput" class="col-lg-12 col-md-8 col-sm-8 col-xs-12 " value="#{model.motivoAjuste}"  required="true">
+                                            <f:selectItem itemLabel="Deshidratación" itemValue="1" />
+                                            <f:selectItem itemLabel="Empaque" itemValue="2" />
+                                            <f:selectItem itemLabel="Desecho o basura" itemValue="3" />
+                                            <f:selectItem itemLabel="Robo" itemValue="4" />
+                                            <f:selectItem itemLabel="Mercancia no Registrada" itemValue="5" />
+                                            <f:selectItem itemLabel="Otro" itemValue="6" />
+                                        </h:selectOneMenu>
                                     </f:facet>
                                 </p:cellEditor>
                             </p:column>

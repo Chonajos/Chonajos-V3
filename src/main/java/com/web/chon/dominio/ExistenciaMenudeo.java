@@ -30,10 +30,11 @@ public class ExistenciaMenudeo implements Serializable {
     private String motivoAjuste;
     private BigDecimal kilosAjustados;
     private BigDecimal costoReal;
+    private String salidaEntrada;
 
     @Override
     public String toString() {
-        return "ExistenciaMenudeo{" + "idExMenPk=" + idExMenPk + ", idSucursalFk=" + idSucursalFk + ", kilos=" + kilos + ", idSubProductoPk=" + idSubProductoPk + ", cantidadEmpaque=" + cantidadEmpaque + ", idTipoEmpaqueFK=" + idTipoEmpaqueFK + ", idStatusFk=" + idStatusFk + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + ", observaciones=" + observaciones + ", motivoAjuste=" + motivoAjuste + ", kilosAjustados=" + kilosAjustados + ", costoReal=" + costoReal + '}';
+        return "ExistenciaMenudeo{" + "idExMenPk=" + idExMenPk + ", idSucursalFk=" + idSucursalFk + ", kilos=" + kilos + ", idSubProductoPk=" + idSubProductoPk + ", cantidadEmpaque=" + cantidadEmpaque + ", idTipoEmpaqueFK=" + idTipoEmpaqueFK + ", idStatusFk=" + idStatusFk + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + ", observaciones=" + observaciones + ", motivoAjuste=" + motivoAjuste + ", kilosAjustados=" + kilosAjustados + ", costoReal=" + costoReal + ", salidaEntrada=" + salidaEntrada + '}';
     }
     
     
@@ -133,6 +134,14 @@ public class ExistenciaMenudeo implements Serializable {
         this.kilosAjustados = kilosAjustados;
     }
 
+    public String getSalidaEntrada() {
+        return salidaEntrada;
+    }
+
+    public void setSalidaEntrada(String salidaEntrada) {
+        this.salidaEntrada = salidaEntrada;
+    }
+
     public BigDecimal getCostoReal() {
         return costoReal;
     }
@@ -141,4 +150,6 @@ public class ExistenciaMenudeo implements Serializable {
         this.costoReal = costoReal;
     }
 
+    
+    
 }
