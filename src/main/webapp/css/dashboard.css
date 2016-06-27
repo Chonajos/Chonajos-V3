@@ -154,7 +154,7 @@ div label{
 /*quitar bordes de paneles*/
 /*Letra mas chica en combos*/
 select{
-    font-size: 0.9em !important;
+    font-size: 0.8em !important;
 }
 /*cortar label */
 /*div label { 
@@ -209,8 +209,9 @@ button span:hover{
         position:fixed;
         height:10px;
         width:10px;
-        bottom:3px;
+        bottom:5px;
         right:0px;
+        left:5px;
 }
 .flotante span
 {

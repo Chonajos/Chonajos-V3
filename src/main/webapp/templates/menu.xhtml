@@ -11,15 +11,21 @@
                     
                     $(".menubarHide").hide();
                     
-                    $(".navbar").attr("style", "height:60px !important; margin:0px;");
+                    $(".navbar").attr("style", "height:65px !important; margin:0px;");
                     $(".menuNav").attr("style", "width:5%;");
-                    $(".padinTopRes").attr("style", "padding-top:60px;");
+                    $(".flotante").attr("style", "bottom:-2px !important;");
+                    
+                    $(".flotante").removeAttr("icon");
+                    $(".flotante").children("span:first-child").attr("class","ui-icon-carat-1-s ui-button-icon-left ui-icon ui-c");
+                    $(".padinTopRes").attr("style", "padding-top:65px;");
                     $(".padinTopRes").attr("style", "height:0px;");
                     $(".padinTopRes").attr("style", "padding-top:65px;");
 
                 } else {
                     $(".menubarHide").show();
-                    
+                    $(".flotante").removeAttr("icon");
+                    $(".flotante").children("span:first-child").attr("class","ui-icon-carat-1-n ui-button-icon-left ui-icon ui-c");
+                    $(".flotante").attr("style", "bottom:5px;");
                     $(".menuNav").attr("style", "width:100%;");
                     
                     $(".padinTopRes").attr("style", "padding-top:120px;");
@@ -32,7 +38,7 @@
         <h:form>
             <p:menubar styleClass="hidden-xs menubarHide" model="#{beanUsuario.menuModel}" rendered="#{beanUsuario.usuario != null}" autoDisplay="true"/>			                		 		     			
 
-            <p:commandButton class="flotante" icon="ui-icon-display" onclick="showhide();" title="Ocultar/Mostrar Menu"/>
+            <p:commandButton class="flotante" icon="ui-icon-carat-1-n" onclick="showhide();" title="Ocultar/Mostrar Menu"/>
         </h:form>
     </h:body>
 </html>  

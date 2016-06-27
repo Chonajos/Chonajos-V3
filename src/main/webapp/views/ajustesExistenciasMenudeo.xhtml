@@ -80,7 +80,7 @@
                                     </f:facet>
                                 </p:cellEditor>
                             </p:column>
-                            <p:column headerText="Existencia(Kilos)" width="80px;" class="alignLeft">
+                            <p:column headerText="Existencia(Kg.)" width="80px;" class="alignRight">
                                 <h:outputText value="#{model.kilos}" style="align-content: center" class="alignRight">
                                     <f:convertNumber pattern="#,##0.00" />
                                 </h:outputText>
@@ -102,7 +102,7 @@
                                     </f:facet>
                                 </p:cellEditor>
                             </p:column>
-                            <p:column headerText="Kilos a Ajustar" width="55px;" class="alignRight">
+                            <p:column headerText="Kg. a Ajustar" width="55px;" class="alignRight">
                                 <p:cellEditor>
                                     <f:facet name="output">
                                         <h:outputText value="#{model.kilosAjustados}" >
@@ -126,7 +126,7 @@
                                     </f:facet>
                                 </p:cellEditor>
                             </p:column>
-                            <p:column width="40px;" headerText="Ajuste" class="alignCenter" rendered="#{beanAjustesExistenciasMenudeo.usuario.perId == 1}">
+                            <p:column width="40px;" headerText="Editar" class="alignCenter" rendered="#{beanAjustesExistenciasMenudeo.usuario.perId == 1}">
                                 <p:rowEditor/>
                             </p:column>
 

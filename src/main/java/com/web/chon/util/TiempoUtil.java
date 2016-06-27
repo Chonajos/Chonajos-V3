@@ -19,6 +19,8 @@ public class TiempoUtil {
     private static DateFormat formatoFechaDiaUnoMesAnio = new SimpleDateFormat("01/" + "MM/yyyy");
     private static DateFormat formatoFechaDiaMesAnio = new SimpleDateFormat("dd/MM/yyyy");
     private static DateFormat formatoFechaDiaMesAnioDosDigitos = new SimpleDateFormat("dd/MM/yy");
+    private static DateFormat formatFull = new SimpleDateFormat("EEEE dd 'de' MMMM 'del' yyyy");
+
 //    private static String[] diasEspanol = {"Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"};
     private static String[] diasEspanol = {"Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"};
 
@@ -184,6 +186,7 @@ public class TiempoUtil {
     }
 
     public static Date sumarRestarMeses(Date fecha, int meses) {
+        
         Calendar cal = Calendar.getInstance();
         cal.setTime(fecha);
         cal.add(Calendar.MONTH, meses);
@@ -208,8 +211,9 @@ public class TiempoUtil {
      * @return
      */
     public static int getYear(Date fecha) {
+        
         Calendar cal = Calendar.getInstance();
-        cal.setTime(fecha);;
+        cal.setTime(fecha);
 
         int anio = cal.get(Calendar.YEAR);
 
@@ -224,6 +228,7 @@ public class TiempoUtil {
      * @return
      */
     public static String getMonthYear(Date fecha) {
+        
         int year = 0;
         String month = "";
 
@@ -243,6 +248,7 @@ public class TiempoUtil {
      * @return
      */
     public static String getNameMonth(int month) {
+        
         String nameMonth = "Enero";
         switch (month) {
             case 1:
@@ -297,16 +303,21 @@ public class TiempoUtil {
      * @return
      */
     public static String nombreDia(Date fecha) {
+        
         GregorianCalendar cal = new GregorianCalendar();
         cal.setTime(fecha);
+        
         int numeroDia = cal.get(Calendar.DAY_OF_WEEK);
+        
         return diasEspanol[numeroDia - 1];
     }
 
     public static Date getFechaDDMMYYYYDate(Date fecha) {
+        
         if (fecha == null) {
             return new Date();
         }
+        
         String convertido = formatoFechaDiaMesAnio.format(fecha);
         return fechaTextoDiaMesAnio(convertido);
 
@@ -319,17 +330,17 @@ public class TiempoUtil {
      * @return
      */
     public static int getYearTwoDosDigitos(Date fecha) {
-        
+
         Calendar cal = Calendar.getInstance();
-        
+
         cal.setTime(fecha);;
         String anioStr = Integer.toString(cal.get(Calendar.YEAR));
         anioStr = anioStr.substring(2, anioStr.length());
         int anio = Integer.parseInt(anioStr);
-        
+
         return anio;
     }
-    
+
     /**
      * Obtiene solo el numero de semana del año de la fecha ingresada
      *
@@ -337,27 +348,45 @@ public class TiempoUtil {
      * @return
      */
     public static int getNumberMonthYear(Date fecha) {
-        
+
         Calendar cal = Calendar.getInstance();
-        
+
         cal.setTime(fecha);;
-        
+
         return cal.get(Calendar.WEEK_OF_YEAR);
     }
-    
-      /**
+
+    /**
      * Combierte date a formato DD/MM/YY y lo retorna como String
      *
      * @param fecha
      * @return String fecha en formato DD/MM/YY
      */
     public static String getFechaDDMMYY(Date fecha) {
+        
         if (fecha == null) {
             return "";
         }
         String convertido = formatoFechaDiaMesAnioDosDigitos.format(fecha);
         return convertido;
 
+    }
+
+    /**
+     * Metodo que recibe una fecha y regresa un string en formato nombre del
+     * dia , numero del dia , mes y año
+     *
+     * @param fecha
+     * @return
+     */
+    public static String getFechaFull(Date fecha) {
+
+        if (fecha == null) {
+            return "";
+        }
+        String dateStr = formatFull.format(fecha);
+
+        return dateStr;
     }
 
 }
