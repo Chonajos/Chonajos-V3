@@ -220,11 +220,11 @@ public class BeanEntradaMenudeo implements Serializable {
             
             System.out.println("Kilos con merma: "+mp.getKilosTotales());
             //==============================================================//
-            BigDecimal kilosSinMerma =mp.getKilosTotales().subtract((mp.getPorcentarjeMerma().multiply(mp.getKilosTotales()).setScale(2)).divide(new BigDecimal(100),2,RoundingMode.HALF_UP));
+            BigDecimal kilosSinMerma =mp.getKilosTotales().subtract((mp.getPorcentarjeMerma().multiply(mp.getKilosTotales(), MathContext.UNLIMITED)).divide(new BigDecimal(100),2,RoundingMode.HALF_UP));
             
             System.out.println("Kilos sin merma: "+kilosSinMerma);
             
-            BigDecimal tota = mp.getKilosTotales().multiply(mp.getPrecio().setScale(2));
+            BigDecimal tota = mp.getKilosTotales().multiply(mp.getPrecio(), MathContext.UNLIMITED);
             
             
             BigDecimal costoMermaTemporal = tota.divide(kilosSinMerma,2,RoundingMode.HALF_UP);
@@ -250,9 +250,9 @@ public class BeanEntradaMenudeo implements Serializable {
             
         } else
         {
-            BigDecimal kilosSinMerma =mp.getKilosTotales().subtract((mp.getPorcentarjeMerma().multiply(mp.getKilosTotales()).setScale(2)).divide(new BigDecimal(100),2,RoundingMode.HALF_UP));
+            BigDecimal kilosSinMerma =mp.getKilosTotales().subtract((mp.getPorcentarjeMerma().multiply(mp.getKilosTotales(), MathContext.UNLIMITED)).divide(new BigDecimal(100),2,RoundingMode.HALF_UP));
             
-            BigDecimal tota = mp.getKilosTotales().multiply(mp.getPrecio().setScale(2));
+            BigDecimal tota = mp.getKilosTotales().multiply(mp.getPrecio(), MathContext.UNLIMITED);
             
             costoMermaInicio = tota.divide(kilosSinMerma,2,RoundingMode.HALF_UP);
             
@@ -281,7 +281,7 @@ public class BeanEntradaMenudeo implements Serializable {
             BigDecimal costoReal = mant.getCostoReal();
             System.out.println("B: "+costoReal);
             
-            BigDecimal X = existencias.multiply(costoReal).setScale(2);
+            BigDecimal X = existencias.multiply(costoReal, MathContext.UNLIMITED);
             System.out.println("C: "+X);
             
             BigDecimal nuevas = mp.getKilosTotales();
@@ -290,7 +290,7 @@ public class BeanEntradaMenudeo implements Serializable {
             BigDecimal precioNuevo = mp.getPrecio();
             System.out.println("E: "+precioNuevo);
             
-            BigDecimal y = nuevas.multiply(precioNuevo).setScale(2);
+            BigDecimal y = nuevas.multiply(precioNuevo, MathContext.UNLIMITED);
              System.out.println("F: "+y);
             
             
@@ -317,8 +317,9 @@ public class BeanEntradaMenudeo implements Serializable {
             BigDecimal costoMerma = mant.getCostoMerma();
             System.out.println("B: "+costoMerma);
             
-            BigDecimal X = existencias.multiply(costoMerma).setScale(2);
+            BigDecimal X = existencias.multiply(costoMerma, MathContext.UNLIMITED);
             System.out.println("C: "+X);
+            
             
             BigDecimal nuevas = mp.getKilosTotales();
             System.out.println("D: "+nuevas);
@@ -326,8 +327,10 @@ public class BeanEntradaMenudeo implements Serializable {
             BigDecimal precioNuevo = mp.getPrecio();
             System.out.println("E: "+precioNuevo);
             
-            BigDecimal y = nuevas.multiply(precioNuevo).setScale(2);
-             System.out.println("F: "+y);
+            BigDecimal y = nuevas.multiply(precioNuevo, MathContext.UNLIMITED);
+            System.out.println("F: "+y);
+            
+             
             
             
             BigDecimal totalExistencias = existencias.add(nuevas);

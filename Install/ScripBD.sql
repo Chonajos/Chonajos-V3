@@ -668,15 +668,26 @@ INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Mantenimiento Precios Menudeo', 0,'20.1','/views/mantenimientoPrecios.xhtml');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Mantenimiento Precios Mayoreo', 0,'20.2','/views/mantenimientoMayoreo.xhtml');
 
-INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Ventas', 1,'30','NULL');
-INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Realizar Pedido', 0,'30.1','/views/venta.xhtml');
-INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Pagar Pedido', 0,'30.2','/views/buscaVenta.xhtml');
-INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Relación de Operaciónes', 0,'30.3','/views/relacionOperaciones.xhtml');
-INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Ventas al Mayoreo', 0,'30.4','/views/ventasMayoreo.xhtml');
-INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Ajuste de Existencias', 0,'30.3','/views/ajustesExistenciasMenudeo.xhtml');
-INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Relacion Entrada Salida', 0,'30.4','/views/relacionEntSalExAj.xhtml');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Menudeo', 1,'30','NULL');
+
+
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Ventas', 1,'30.1','NULL');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Entrada Mercancia', 1,'30.2','NULL');
+
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Realizar Pedido', 0,'30.1.1','/views/venta.xhtml');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Pagar Pedido', 0,'30.1.2','/views/buscaVenta.xhtml');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Relación de Operaciónes', 0,'30.1.3','/views/relacionOperaciones.xhtml');
+
+
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Realizar Entrada', 0,'30.2.1','/views/entradaMenudeo.xhtml.xhtml');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Historial Entrada Menudeo', 0,'30.2.2','/views/historialEntradaMenudeo.xhtml');
 
+
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Ajuste de Existencias', 0,'30.3','/views/ajustesExistenciasMenudeo.xhtml');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Relacion Entrada Salida', 0,'30.4','/views/relacionEntSalExAj.xhtml');
+
+
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Ventas al Mayoreo', 0,'30.4','/views/ventasMayoreo.xhtml');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Clientes', 1,'40','NULL');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Cliente', 0,'40.1','/views/clientes.xhtml');
 
@@ -688,6 +699,7 @@ INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Top de Ventas', 0,'60.2','/views/topVentas.xhtml');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Registro Entrada', 0,'60.4','/views/registroEntradaSalida.xhtml');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Registros', 0,'60.5','/views/relacionHorarios.xhtml');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Análisis de Competencia', 0,'60.6','/views/preciosCompetencia.xhtml');
 
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Bodegas', 0,'10.6','/views/bodega.xhtml');
 
@@ -917,3 +929,31 @@ INCREMENT BY 1
 START WITH 1
 MINVALUE 0;
 
+
+CREATE TABLE COMPETIDOR(
+ID_COMPETIDOR_PK NUMBER,
+NOMBRE_COMPETIDOR VARCHAR(50),
+UBICACION VARCHAR(200)
+CONSTRAINT C_ID_COMPETIDOR_PK PRIMARY KEY(ID_COMPETIDOR_PK)
+);
+
+CREATE SEQUENCE s_COMPETIDOR
+INCREMENT BY 1
+START WITH 1
+MINVALUE 0;
+
+CREATE TABLE PRECIOSCOMPETENCIA(
+ID_PC_PK NUMBER,
+ID_COMPETIDOR_FK NUMBER,
+ID_SUBPRODUCTO_FK VARCHAR(8),
+FECHA_REGISTRO DATE,
+PRECIO_VENTA NUMBER,
+CONSTRAINT C_ID_PC_PK PRIMARY KEY(ID_PC_PK),
+CONSTRAINT C_PC_ID_SUBPRODUCTO_FK FOREIGN KEY(ID_SUBPRODUCTO_FK) references SUBPRODUCTO(ID_SUBPRODUCTO_PK),
+CONSTRAINT C_PC_ID_COMPETIDOR_FK FOREIGN KEY(ID_COMPETIDOR_FK) references COMPETIDOR(ID_COMPETIDOR_PK)
+);
+
+CREATE SEQUENCE s_PRECIOSCOMPETENCIA
+INCREMENT BY 1
+START WITH 1
+MINVALUE 0;

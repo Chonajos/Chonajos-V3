@@ -94,7 +94,7 @@
                             <p:outputLabel  class="col-lg-8 col-md-3 col-sm-4 col-xs-6"  for="txtCantidad" value ="Cantidad:" /> 
                             <p:inputText id="txtCantidad" maxlength="6" class=" col-lg-6 col-md-4 col-sm-8 col-xs-6 " value="#{beanEntradaMenudeo.dataProducto.cantidadEmpaque}" 
                                          requiredMessage="Ingresa la Cantidad de Paquetes">
-                                <pe:keyFilter regEx="/[0-9 ]/i"/>
+                                <pe:keyFilter regEx="/[0-9_ .]/i"/>
                             </p:inputText>
                         </div>
                         <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
@@ -146,7 +146,7 @@
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
                         </p:column>
-                        <p:column headerText="%Merma01" width="60px;" style="text-align:center">
+                        <p:column headerText="%Merma" width="60px;" style="text-align:center">
                             <h:outputText value="#{model.porcentarjeMerma*0.01}">
                                 <f:convertNumber type="percent" currencySymbol="%"/>
                             </h:outputText>

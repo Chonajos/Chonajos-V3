@@ -56,16 +56,18 @@ public class BeanHistEntMenudeo implements Serializable{
     private BigDecimal totalKilosDetalle;
     
     @PostConstruct
-    public void init() {
+    public void init() 
+    {
         data= new EntradaMenudeo();
         usuario = context.getUsuarioAutenticado();
-        
         listaSucursales = new ArrayList<Sucursal>();
         listaSucursales = ifaceCatSucursales.getSucursales();
         filtro =  2;
         data.setFechaFiltroInicio(TiempoUtil.getDayOneOfMonth(new Date()));
         data.setFechaFiltroFin(TiempoUtil.getDayEndOfMonth(new Date()));
-         
+        
+        data.setIdSucursalFk(new BigDecimal(usuario.getSucId()));
+        lstEntradaMercancia = ifaceEntradaMenudeo.getEntradaProductoByIntervalDate(data.getFechaFiltroInicio(), data.getFechaFiltroFin(), data.getIdSucursalFk());
         setTitle("Historial Entrada de Mercancia de Menudeo");
         setViewEstate("init");
     }
