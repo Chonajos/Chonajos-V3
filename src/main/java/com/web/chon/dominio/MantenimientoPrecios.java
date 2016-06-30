@@ -21,12 +21,21 @@ public class MantenimientoPrecios extends ValueObject {
     private BigDecimal costoMerma;
     private BigDecimal existenciaKilos;
     private BigDecimal precioSugerido;
+    private BigDecimal precioMercado;
 
     @Override
     public String toString() {
-        return "MantenimientoPrecios{" + "idSubproducto=" + idSubproducto + ", idTipoEmpaquePk=" + idTipoEmpaquePk + ", precioVenta=" + precioVenta + ", precioMinimo=" + precioMinimo + ", precioMaximo=" + precioMaximo + ", idSucursal=" + idSucursal + ", nombreSubProducto=" + nombreSubProducto + ", costoReal=" + costoReal + ", costoMerma=" + costoMerma + ", existenciaKilos=" + existenciaKilos + ", precioSugerido=" + precioSugerido + '}';
+        return "MantenimientoPrecios{" + "idSubproducto=" + idSubproducto + ", idTipoEmpaquePk=" + idTipoEmpaquePk + ", precioVenta=" + precioVenta + ", precioMinimo=" + precioMinimo + ", precioMaximo=" + precioMaximo + ", idSucursal=" + idSucursal + ", nombreSubProducto=" + nombreSubProducto + ", costoReal=" + costoReal + ", costoMerma=" + costoMerma + ", existenciaKilos=" + existenciaKilos + ", precioSugerido=" + precioSugerido + ", precioMercado=" + precioMercado + '}';
     }
-   
+
+    public BigDecimal getPrecioMercado() {
+        return precioMercado;
+    }
+
+    public void setPrecioMercado(BigDecimal precioMercado) {
+        this.precioMercado = precioMercado;
+    }
+
     
     public int getIdSucursal() {
         return idSucursal;

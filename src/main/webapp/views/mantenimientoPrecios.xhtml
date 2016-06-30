@@ -84,6 +84,11 @@
                                     <f:convertNumber type="currency" currencySymbol="$"/> 
                                 </h:outputText>
                             </p:column>
+                            <p:column headerText="Precio Mercado" width="60px;" class="alignRight">
+                                <h:outputText value="#{model.precioSugerido}" >
+                                    <f:convertNumber type="currency" currencySymbol="$"/> 
+                                </h:outputText>
+                            </p:column>
                             <p:column headerText="Mínimo" width="45px;" class="alignRight">
                                 <p:cellEditor>
                                     <f:facet name="output">

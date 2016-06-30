@@ -14,16 +14,37 @@ import java.util.Date;
  * @author freddy
  */
 public class PreciosCompetencia implements Serializable {
+
     private static final long serialVersionUID = 1L;
     private BigDecimal idPcPk;
-    private BigDecimal idSubProductoPk;
+    private String idSubProductoPk;
     private BigDecimal idCompetidorFk;
     private Date fechaRegistro;
     private BigDecimal precioVenta;
+    private String nombreCompetidor;
+    private String nombreProducto;
+
+    public void reset() {
+        idPcPk = null;
+        idSubProductoPk = null;
+        idCompetidorFk = null;
+        fechaRegistro = null;
+        precioVenta = null;
+        nombreCompetidor = null;
+        nombreProducto = null;
+    }
 
     @Override
     public String toString() {
-        return "PreciosCompetencia{" + "idPcPk=" + idPcPk + ", idSubProductoPk=" + idSubProductoPk + ", fechaRegistro=" + fechaRegistro + ", precioVenta=" + precioVenta + '}';
+        return "PreciosCompetencia{" + "idPcPk=" + idPcPk + ", idSubProductoPk=" + idSubProductoPk + ", idCompetidorFk=" + idCompetidorFk + ", fechaRegistro=" + fechaRegistro + ", precioVenta=" + precioVenta + ", nombreCompetidor=" + nombreCompetidor + ", nombreProducto=" + nombreProducto + '}';
+    }
+
+    public String getNombreProducto() {
+        return nombreProducto;
+    }
+
+    public void setNombreProducto(String nombreProducto) {
+        this.nombreProducto = nombreProducto;
     }
 
     public BigDecimal getIdPcPk() {
@@ -34,11 +55,11 @@ public class PreciosCompetencia implements Serializable {
         this.idPcPk = idPcPk;
     }
 
-    public BigDecimal getIdSubProductoPk() {
+    public String getIdSubProductoPk() {
         return idSubProductoPk;
     }
 
-    public void setIdSubProductoPk(BigDecimal idSubProductoPk) {
+    public void setIdSubProductoPk(String idSubProductoPk) {
         this.idSubProductoPk = idSubProductoPk;
     }
 
@@ -65,7 +86,13 @@ public class PreciosCompetencia implements Serializable {
     public void setIdCompetidorFk(BigDecimal idCompetidorFk) {
         this.idCompetidorFk = idCompetidorFk;
     }
-    
-    
-    
+
+    public String getNombreCompetidor() {
+        return nombreCompetidor;
+    }
+
+    public void setNombreCompetidor(String nombreCompetidor) {
+        this.nombreCompetidor = nombreCompetidor;
+    }
+
 }

@@ -5,13 +5,15 @@
  */
 package com.web.chon.service;
 
+import com.web.chon.dominio.PreciosCompetencia;
+
 /**
  *
  * @author freddy
  */
 public interface IfacePreciosCompetencias {
     public int getNextVal();
-    
-    
+    public int insertPreciosCompetencias(PreciosCompetencia pc);
+  
     
 }
