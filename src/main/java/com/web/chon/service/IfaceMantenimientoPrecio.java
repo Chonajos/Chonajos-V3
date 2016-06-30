@@ -8,6 +8,7 @@ package com.web.chon.service;
 import com.web.chon.dominio.MantenimientoPrecios;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  *
@@ -26,7 +27,7 @@ public interface IfaceMantenimientoPrecio {
     
     public int insertarMantenimientoPrecio(MantenimientoPrecios mantenimientoPrecios);
     
-    public ArrayList<MantenimientoPrecios> getMantenimientoPrecioByIdSucAndIdSubProducto(BigDecimal idSucursal, String idSubProducto);
+    public ArrayList<MantenimientoPrecios> getMantenimientoPrecioByIdSucAndIdSubProducto(BigDecimal idSucursal, String idSubProducto, Date fechaMercado);
     
     
 }

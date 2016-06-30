@@ -1,6 +1,7 @@
 package com.web.chon.dominio;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  *
@@ -22,11 +23,22 @@ public class MantenimientoPrecios extends ValueObject {
     private BigDecimal existenciaKilos;
     private BigDecimal precioSugerido;
     private BigDecimal precioMercado;
+    private Date fechaPrecioMercado;
 
     @Override
     public String toString() {
-        return "MantenimientoPrecios{" + "idSubproducto=" + idSubproducto + ", idTipoEmpaquePk=" + idTipoEmpaquePk + ", precioVenta=" + precioVenta + ", precioMinimo=" + precioMinimo + ", precioMaximo=" + precioMaximo + ", idSucursal=" + idSucursal + ", nombreSubProducto=" + nombreSubProducto + ", costoReal=" + costoReal + ", costoMerma=" + costoMerma + ", existenciaKilos=" + existenciaKilos + ", precioSugerido=" + precioSugerido + ", precioMercado=" + precioMercado + '}';
+        return "MantenimientoPrecios{" + "idSubproducto=" + idSubproducto + ", idTipoEmpaquePk=" + idTipoEmpaquePk + ", precioVenta=" + precioVenta + ", precioMinimo=" + precioMinimo + ", precioMaximo=" + precioMaximo + ", idSucursal=" + idSucursal + ", nombreSubProducto=" + nombreSubProducto + ", costoReal=" + costoReal + ", costoMerma=" + costoMerma + ", existenciaKilos=" + existenciaKilos + ", precioSugerido=" + precioSugerido + ", precioMercado=" + precioMercado + ", fechaPrecioMercado=" + fechaPrecioMercado + '}';
     }
+
+    
+    public Date getFechaPrecioMercado() {
+        return fechaPrecioMercado;
+    }
+
+    public void setFechaPrecioMercado(Date fechaPrecioMercado) {
+        this.fechaPrecioMercado = fechaPrecioMercado;
+    }
+
 
     public BigDecimal getPrecioMercado() {
         return precioMercado;

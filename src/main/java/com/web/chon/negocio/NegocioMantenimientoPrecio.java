@@ -2,6 +2,7 @@ package com.web.chon.negocio;
 
 import com.web.chon.dominio.MantenimientoPrecios;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Remote;
 
@@ -18,6 +19,6 @@ public interface NegocioMantenimientoPrecio {
 
     public int updateMantenimientoPrecio(MantenimientoPrecios mantenimientoPrecios);
 
-    public List<Object[]> getAllByIdSucAndIdSubProducto(BigDecimal idSucursal,String idSubProducto);
+    public List<Object[]> getAllByIdSucAndIdSubProducto(BigDecimal idSucursal,String idSubProducto, Date fechaMercado);
 
 }

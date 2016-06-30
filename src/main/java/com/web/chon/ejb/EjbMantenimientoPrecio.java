@@ -3,7 +3,9 @@ package com.web.chon.ejb;
 import com.web.chon.dominio.MantenimientoPrecios;
 import com.web.chon.dominio.Subproducto;
 import com.web.chon.negocio.NegocioMantenimientoPrecio;
+import com.web.chon.util.TiempoUtil;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -80,23 +82,33 @@ public class EjbMantenimientoPrecio implements NegocioMantenimientoPrecio {
     }
 
     @Override
-    public List<Object[]> getAllByIdSucAndIdSubProducto(BigDecimal idSucursal, String idSubProducto) {
+    public List<Object[]> getAllByIdSucAndIdSubProducto(BigDecimal idSucursal, String idSubProducto, Date fechaMercado) {
 
+        String fechaTemporalFin = TiempoUtil.getFechaDDMMYYYY(fechaMercado);
+        String fechaTemporalInicio = TiempoUtil.getFechaDDMMYYYY(TiempoUtil.sumarRestarDias(fechaMercado, -7));
+        System.out.println("Fecha Inicio: "+fechaTemporalInicio);
+        System.out.println("Fecha Fin: "+fechaTemporalFin);
         try {
             StringBuilder queryStr;
 
-            queryStr = new StringBuilder("SELECT SP.ID_SUBPRODUCTO_PK, SP.NOMBRE_SUBPRODUCTO, MP.ID_SUCURSAL_FK,MP.ID_TIPO_EMPAQUE_FK,MP.PRECIO_MINIMO,MP.PRECIO_VENTA,MP.PRECIO_MAXIMO, "
-                    + "EXM.KILOS,MP.COSTOREAL,MP.COSTOMERMA FROM SUBPRODUCTO SP  "
-                    + "RIGHT JOIN MANTENIMIENTO_PRECIO MP ON SP.ID_SUBPRODUCTO_PK = MP.ID_SUBPRODUCTO_FK AND MP.ID_SUCURSAL_FK = " + idSucursal + " "
-                    + "RIGHT JOIN EXISTENCIAMENUDEO EXM ON EXM.ID_SUBPRODUCTO_FK = SP.ID_SUBPRODUCTO_PK AND EXM.ID_SUCURSAL_FK = " + idSucursal + " ");
-            
+             queryStr = new StringBuilder("SELECT SP.ID_SUBPRODUCTO_PK, SP.NOMBRE_SUBPRODUCTO, MP.ID_SUCURSAL_FK,\n" +
+"MP.ID_TIPO_EMPAQUE_FK,MP.PRECIO_MINIMO,MP.PRECIO_VENTA,MP.PRECIO_MAXIMO, \n" +
+"EXM.KILOS,MP.COSTOREAL,MP.COSTOMERMA,prc.PRECIO_VENTA as PRECIO_MERCADO FROM SUBPRODUCTO SP  \n" +
+"RIGHT JOIN MANTENIMIENTO_PRECIO MP ON SP.ID_SUBPRODUCTO_PK = MP.ID_SUBPRODUCTO_FK \n" +
+"AND MP.ID_SUCURSAL_FK = " + idSucursal + " \n" +
+"RIGHT JOIN EXISTENCIAMENUDEO EXM ON EXM.ID_SUBPRODUCTO_FK = SP.ID_SUBPRODUCTO_PK \n" +
+"AND EXM.ID_SUCURSAL_FK = " + idSucursal + " \n" +
+"LEFT join (SELECT  AVG( PRECIO_VENTA) PRECIO_VENTA, ID_SUBPRODUCTO_FK FROM PRECIOSCOMPETENCIA WHERE TO_DATE(TO_CHAR(FECHA_REGISTRO,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + fechaTemporalInicio + "' and '" + fechaTemporalFin + "' \n" +
+"group by ID_SUBPRODUCTO_FK) prc\n" +
+"on   prc.ID_SUBPRODUCTO_FK = SP.ID_SUBPRODUCTO_PK");
             //Para mostrar todos los productos que estan registrados cambiar RIGHT por left
-
             if (idSubProducto != null) {
-                queryStr.append("WHERE SP.ID_SUBPRODUCTO_PK =" + idSubProducto.trim() + "");
+                queryStr.append(" WHERE SP.ID_SUBPRODUCTO_PK ='" + idSubProducto.trim() + "'");
             }
 
-            queryStr.append(" ORDER by SP.ID_SUBPRODUCTO_PK ");
+            queryStr.append(" order by SP.NOMBRE_SUBPRODUCTO ");
+            
+            System.out.println("Query==============:" + queryStr);
             Query query = em.createNativeQuery(queryStr.toString());
 
             return query.getResultList();

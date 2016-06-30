@@ -5,6 +5,7 @@ import com.web.chon.negocio.NegocioMantenimientoPrecio;
 import com.web.chon.util.Utilidades;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -64,13 +65,13 @@ public class ServiceMantenimientoPrecio implements IfaceMantenimientoPrecio {
     }
 
     @Override
-    public ArrayList<MantenimientoPrecios> getMantenimientoPrecioByIdSucAndIdSubProducto(BigDecimal idSucursal, String idSubProducto) {
+    public ArrayList<MantenimientoPrecios> getMantenimientoPrecioByIdSucAndIdSubProducto(BigDecimal idSucursal, String idSubProducto, Date fechaMercado) {
 
         try {
             ArrayList<MantenimientoPrecios> lstMantenimientoPrecios = new ArrayList<MantenimientoPrecios>();
 
             ejb = (NegocioMantenimientoPrecio) Utilidades.getEJBRemote("ejbMantenimientoPrecio", NegocioMantenimientoPrecio.class.getName());
-            List<Object[]> object = ejb.getAllByIdSucAndIdSubProducto(idSucursal, idSubProducto);
+            List<Object[]> object = ejb.getAllByIdSucAndIdSubProducto(idSucursal, idSubProducto,fechaMercado);
             for (Object[] obj : object) {
 
                 MantenimientoPrecios mantenimientoPrecios = new MantenimientoPrecios();
@@ -83,6 +84,8 @@ public class ServiceMantenimientoPrecio implements IfaceMantenimientoPrecio {
                 mantenimientoPrecios.setExistenciaKilos(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
                 mantenimientoPrecios.setCostoReal(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
                 mantenimientoPrecios.setCostoMerma(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
+                mantenimientoPrecios.setPrecioMercado(obj[10] == null ? null : new BigDecimal(obj[10].toString()));
+                
                 //Se suma el 30 % para sacar el precio sugerido
                 mantenimientoPrecios.setPrecioSugerido(mantenimientoPrecios.getCostoReal().add(mantenimientoPrecios.getCostoReal().multiply(new BigDecimal(0.3)))) ;
 

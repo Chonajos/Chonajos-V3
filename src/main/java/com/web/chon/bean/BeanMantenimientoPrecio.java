@@ -12,9 +12,11 @@ import com.web.chon.service.IfaceEmpaque;
 import com.web.chon.service.IfaceMantenimientoPrecio;
 import com.web.chon.service.IfaceSubProducto;
 import com.web.chon.util.JsfUtil;
+import com.web.chon.util.TiempoUtil;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -61,6 +63,7 @@ public class BeanMantenimientoPrecio implements Serializable {
 
     private Subproducto subproducto;
     private UsuarioDominio usuarioDominio;
+    private Date fechaMercado;
 
     @PostConstruct
     public void init() {
@@ -77,7 +80,10 @@ public class BeanMantenimientoPrecio implements Serializable {
         data.setIdSucursal(usuarioDominio.getSucId());
 
         System.out.println("id suc " + data.getIdSucursal());
-        model = ifaceMantenimientoPrecio.getMantenimientoPrecioByIdSucAndIdSubProducto(new BigDecimal(data.getIdSucursal()), null);
+        
+        fechaMercado = new Date();
+        
+        model = ifaceMantenimientoPrecio.getMantenimientoPrecioByIdSucAndIdSubProducto(new BigDecimal(data.getIdSucursal()), null, fechaMercado);
 
         selectedTipoEmpaque();
 
@@ -113,7 +119,7 @@ public class BeanMantenimientoPrecio implements Serializable {
         if (subproducto != null) {
             idSubProducto = subproducto.getIdSubproductoPk();
         }
-        model = ifaceMantenimientoPrecio.getMantenimientoPrecioByIdSucAndIdSubProducto(new BigDecimal(data.getIdSucursal()), idSubProducto);
+        model = ifaceMantenimientoPrecio.getMantenimientoPrecioByIdSucAndIdSubProducto(new BigDecimal(data.getIdSucursal()), idSubProducto,fechaMercado);
     }
 
     public String insertarPrecio() {
@@ -277,4 +283,13 @@ public class BeanMantenimientoPrecio implements Serializable {
         this.model = model;
     }
 
+    public Date getFechaMercado() {
+        return fechaMercado;
+    }
+
+    public void setFechaMercado(Date fechaMercado) {
+        this.fechaMercado = fechaMercado;
+    }
+
+    
 }
