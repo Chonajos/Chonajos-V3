@@ -53,7 +53,7 @@
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-12 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="autocompletePoducto" value ="Producto:" /> 
                             <p:autoComplete  placeholder="Seleccione un Producto" id="autocompletePoducto"  required="false" requiredMessage="Ingresa un valor para el campo Producto." styleClass="autocomplete-input-text-media"
-                                             value="#{beanCompetidor.subProducto}" completeMethod="#{beanCompetidor.autoComplete}" forceSelection="true" var="producto"  inputStyle="width: 170px"
+                                             value="#{beanCompetidor.subProducto}" completeMethod="#{beanCompetidor.autoComplete}" forceSelection="true" var="producto"  inputStyle="width: 190px"
                                              itemLabel="#{producto.nombreSubproducto}"
                                              itemValue="#{producto.idSubproductoPk}" converter="#{productoConverter}">
                             </p:autoComplete>
@@ -67,10 +67,10 @@
                             </h:selectOneMenu>
                         </div>
                         <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
-                            <p:outputLabel  class="col-lg-12 col-md-3 col-sm-4 col-xs-6"  for="txtCantidad" value ="Precio de Venta:" /> 
-                            <p:inputText id="txtCantidad" maxlength="6" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6 " value="#{beanCompetidor.data.precioVenta}" 
+                            <p:outputLabel  class="col-lg-8 col-md-3 col-sm-4 col-xs-6"  for="txtCantidad" value ="Precio:" /> 
+                            <p:inputText id="txtCantidad" maxlength="6" class=" col-lg-4 col-md-4 col-sm-8 col-xs-6 " value="#{beanCompetidor.data.precioVenta}" 
                                          required="false" requiredMessage="">
-                                <pe:keyFilter regEx="/[0-9 ]/i"/>
+                                <pe:keyFilter regEx="/[0-9 . ]/i"/>
                             </p:inputText>
                         </div>
                     </div>

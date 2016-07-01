@@ -38,8 +38,8 @@ public class ServiceMantenimientoPrecio implements IfaceMantenimientoPrecio {
                 mantenimientoPrecios.setIdSucursal(obj[5] == null ? null : Integer.valueOf(obj[5].toString()));
                 mantenimientoPrecios.setCostoReal(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
                 mantenimientoPrecios.setCostoMerma(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
-                
-                System.out.println("by id"+mantenimientoPrecios.toString());
+
+                System.out.println("by id" + mantenimientoPrecios.toString());
             }
 
             return mantenimientoPrecios;
@@ -71,7 +71,7 @@ public class ServiceMantenimientoPrecio implements IfaceMantenimientoPrecio {
             ArrayList<MantenimientoPrecios> lstMantenimientoPrecios = new ArrayList<MantenimientoPrecios>();
 
             ejb = (NegocioMantenimientoPrecio) Utilidades.getEJBRemote("ejbMantenimientoPrecio", NegocioMantenimientoPrecio.class.getName());
-            List<Object[]> object = ejb.getAllByIdSucAndIdSubProducto(idSucursal, idSubProducto,fechaMercado);
+            List<Object[]> object = ejb.getAllByIdSucAndIdSubProducto(idSucursal, idSubProducto, fechaMercado);
             for (Object[] obj : object) {
 
                 MantenimientoPrecios mantenimientoPrecios = new MantenimientoPrecios();
@@ -85,10 +85,14 @@ public class ServiceMantenimientoPrecio implements IfaceMantenimientoPrecio {
                 mantenimientoPrecios.setCostoReal(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
                 mantenimientoPrecios.setCostoMerma(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
                 mantenimientoPrecios.setPrecioMercado(obj[10] == null ? null : new BigDecimal(obj[10].toString()));
-                
-                //Se suma el 30 % para sacar el precio sugerido
-                mantenimientoPrecios.setPrecioSugerido(mantenimientoPrecios.getCostoReal().add(mantenimientoPrecios.getCostoReal().multiply(new BigDecimal(0.3)))) ;
 
+                //Se suma el 30 % para sacar el precio sugerido
+                if (mantenimientoPrecios.getIdSubproducto().equals("")) {
+                    System.out.println("No encontro Registros");
+                } else {
+                    mantenimientoPrecios.setPrecioSugerido(mantenimientoPrecios.getCostoReal().add(mantenimientoPrecios.getCostoReal().multiply(new BigDecimal(0.3))));
+
+                }
                 System.out.println("mantenimiento data " + mantenimientoPrecios.toString());
                 lstMantenimientoPrecios.add(mantenimientoPrecios);
             }
