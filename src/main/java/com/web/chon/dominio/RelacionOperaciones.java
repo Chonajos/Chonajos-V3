@@ -26,6 +26,7 @@ public class RelacionOperaciones implements Serializable {
     private int idSucursal;
     private int idStatus;
     private String comentarioCancel;
+    private int folioSucursal;
 
 
     public RelacionOperaciones() {
@@ -154,22 +155,18 @@ public class RelacionOperaciones implements Serializable {
     public void setFechaPago(Date fechaPago) {
         this.fechaPago = fechaPago;
     }
-    
-    
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (idVentaPk != null ? idVentaPk.hashCode() : 0);
-        return hash;
+
+    public int getFolioSucursal() {
+        return folioSucursal;
+    }
+
+    public void setFolioSucursal(int folioSucursal) {
+        this.folioSucursal = folioSucursal;
     }
 
     @Override
     public String toString() {
-        return "RelacionOperaciones{" + "idVentaPk=" + idVentaPk + ", fechaVenta=" + fechaVenta + ", fechaPromesaPago=" + fechaPromesaPago + ", idClienteFk=" + idClienteFk + ", idVendedorFk=" + idVendedorFk + ", nombreCliente=" + nombreCliente + ", nombreVendedor=" + nombreVendedor + ", totalVenta=" + totalVenta + ", estatus=" + estatus + ", fechaPago=" + fechaPago + ", fechaFiltroInicio=" + fechaFiltroInicio + ", fechaFiltroFin=" + fechaFiltroFin + ", idSucursal=" + idSucursal + ", idStatus=" + idStatus + '}';
+        return "RelacionOperaciones{" + "idVentaPk=" + idVentaPk + ", fechaVenta=" + fechaVenta + ", fechaPromesaPago=" + fechaPromesaPago + ", idClienteFk=" + idClienteFk + ", idVendedorFk=" + idVendedorFk + ", nombreCliente=" + nombreCliente + ", nombreVendedor=" + nombreVendedor + ", totalVenta=" + totalVenta + ", estatus=" + estatus + ", fechaPago=" + fechaPago + ", fechaFiltroInicio=" + fechaFiltroInicio + ", fechaFiltroFin=" + fechaFiltroFin + ", idSucursal=" + idSucursal + ", idStatus=" + idStatus + ", comentarioCancel=" + comentarioCancel + ", folioSucursal=" + folioSucursal + '}';
     }
-
-    
-   
-    
-    
+      
 }

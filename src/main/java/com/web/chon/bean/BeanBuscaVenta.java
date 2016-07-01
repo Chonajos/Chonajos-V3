@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -120,7 +121,7 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
 
     }
 
-    private void setParameterTicket(int idVenta) {
+    private void setParameterTicket(int idVenta,int folioVenta) {
 
         NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
         DecimalFormat df = new DecimalFormat("###.##");
@@ -135,16 +136,16 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
 
         String totalVentaStr = numeroLetra.Convertir(df.format(totalVenta), true);
 
-        putValues(TiempoUtil.getFechaDDMMYYYYHHMM(date), productos, nf.format(totalVenta), totalVentaStr, idVenta);
+        putValues(TiempoUtil.getFechaDDMMYYYYHHMM(date), productos, nf.format(totalVenta), totalVentaStr, idVenta, folioVenta);
 
     }
 
-    private void putValues(String dateTime, ArrayList<String> items, String total, String totalVentaStr, int idVenta) {
+    private void putValues(String dateTime, ArrayList<String> items, String total, String totalVentaStr, int idVenta,int folioVenta) {
 
         System.out.println(data.getFechaVenta());
 
         paramReport.put("fechaVenta", dateTime);
-        paramReport.put("noVenta", Integer.toString(idVenta));
+        paramReport.put("noVenta", Integer.toString(folioVenta));
         paramReport.put("cliente", data.getNombreCliente());
         paramReport.put("vendedor", data.getNombreVendedor());
         paramReport.put("productos", items);
@@ -218,7 +219,7 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
                 searchById();
 
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Venta Pagada"));
-                setParameterTicket(data.getIdVenta().intValue());
+                setParameterTicket(data.getIdVenta().intValue(),data.getFolioSucursal().intValue());
 
                 generateReport();
             } catch (Exception ex) {
@@ -234,7 +235,9 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
     public void searchById() {
         statusButtonPagar = false;
 
-        model = ifaceBuscaVenta.getVentaById(data.getIdVenta().intValue());
+        System.out.println("id de folio"+data.getFolioSucursal());
+        System.out.println("id de sucursal"+usuario.getIdSucursal());
+        model = ifaceBuscaVenta.getVentaByfolioAndIdSuc(data.getFolioSucursal().intValue(), usuario.getIdSucursal());
         if (model.isEmpty()) {
             data.setNombreCliente("");
             data.setNombreVendedor("");

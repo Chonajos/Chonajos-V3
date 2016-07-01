@@ -19,7 +19,7 @@ public interface IfaceVenta {
      * @param subProducto
      * @return 
      */
-    public int insertarVenta(Venta subProducto);
+    public int insertarVenta(Venta subProducto,int folioVenta);
     
     /**
      * Regresa el siguiente id de venta a insertar
@@ -35,4 +35,10 @@ public interface IfaceVenta {
      */
     public ArrayList<RelacionOperaciones> getVentasByIntervalDate(Date fechaInicio, Date fechaFin,int idSucursal,int idStatusVenta);
     
+    
+    /**
+     * obtiene el ultimo folio de venta por id de sucursal
+     */
+    
+    public int getFolioByIdSucursal(int idSucursal);
 }

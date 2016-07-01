@@ -313,7 +313,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
 
         //System.out.println("Estatus Venta: "+statusVentaImpresion);
         calculatotalVentaDetalle();
-        setParameterTicket(data.getIdVentaPk().intValue());
+        setParameterTicket(data.getFolioSucursal());
         generateReport();
 
     }

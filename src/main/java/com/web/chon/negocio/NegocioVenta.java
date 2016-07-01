@@ -10,23 +10,31 @@ import javax.ejb.Remote;
  * @author Juan de la Cruz
  */
 @Remote
-public interface NegocioVenta 
-{
+public interface NegocioVenta {
 
-    public int insertarVenta(Venta venta);
-    
+    public int insertarVenta(Venta venta,int folioVenta);
+
     /**
      * Regresa el siguiente id a guardar para la tabla de venta
-     * @return 
+     *
+     * @return
      */
     public int getNextVal();
-    
+
     /**
      * Obtiene las ventas realizadas por un intervalo de fechas
+     *
      * @param fechaInicio
      * @param fechaFin
-     * @return 
+     * @return
      */
-    public List<Object[]> getVentasByInterval(String fechaInicio, String fechaFin,int idSucursal,int idStatusVenta); //default todo
-   
+    public List<Object[]> getVentasByInterval(String fechaInicio, String fechaFin, int idSucursal, int idStatusVenta); //default todo
+
+    /**
+     * Regresa el siguiente numero de folio de venta de la sucursal
+     *
+     * @return
+     */
+    public int getFolioByIdSucursal(int idSucursal);
+
 }

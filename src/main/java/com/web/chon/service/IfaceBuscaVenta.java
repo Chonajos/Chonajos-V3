@@ -17,4 +17,12 @@ public interface IfaceBuscaVenta
     public int cancelarVenta(int idVenta,int idUsuario,String comentarios);
     public int cancelarVentaMayoreo(int idVenta,int idUsuario,String comentarios);
     public int updateStatusVentaMayoreo(int idVenta,int idUsuario);
+    
+    /**
+     * Busca una venta de menudeo por folio de sucursal y un id de sucursal 
+     * @param folioVenta
+     * @param idSucursal
+     * @return 
+     */
+    public ArrayList<BuscaVenta> getVentaByfolioAndIdSuc(int folioVenta, int idSucursal);
 }

@@ -222,17 +222,19 @@ public class BeanVenta implements Serializable, BeanSimple {
     
     public void inserts() {
         int idVenta = 0;
+        int folioVenta = 0;
         Venta venta = new Venta();
 
         try {
             if (!lstVenta.isEmpty() && lstVenta.size() > 0) {
 
                 idVenta = ifaceVenta.getNextVal();
+                folioVenta = ifaceVenta.getFolioByIdSucursal(idSucu);
                 venta.setIdVentaPk(new BigDecimal(idVenta));
                 venta.setIdClienteFk(cliente.getId_cliente());
                 venta.setIdVendedorFk(usuario.getIdUsuarioPk());
                 venta.setIdSucursal(idSucu);
-                int ventaInsertada = ifaceVenta.insertarVenta(venta);
+                int ventaInsertada = ifaceVenta.insertarVenta(venta,folioVenta);
 
                 if (ventaInsertada != 0) {
                     for (VentaProducto producto : lstVenta) {
@@ -246,9 +248,9 @@ public class BeanVenta implements Serializable, BeanSimple {
                             break;
                         }
                     }
-                    setParameterTicket(idVenta);
+                    setParameterTicket(idVenta,folioVenta);
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info!", "La venta se realizo correctamente."));
-                    generateReport(idVenta);
+                    generateReport(idVenta,folioVenta);
                     cancel();
                     lstVenta.clear();
                     totalVenta = new BigDecimal(0);
@@ -392,7 +394,7 @@ public class BeanVenta implements Serializable, BeanSimple {
         calcularTotalVenta();
     }
 
-    private void setParameterTicket(int idVenta) {
+    private void setParameterTicket(int idVenta,int folioVenta) {
 
         NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
         DecimalFormat df = new DecimalFormat("###.##");
@@ -411,14 +413,14 @@ public class BeanVenta implements Serializable, BeanSimple {
 
         String totalVentaStr = numeroLetra.Convertir(df.format(totalVenta), true);
 
-        putValues(TiempoUtil.getFechaDDMMYYYYHHMM(date), productos, nf.format(totalVenta), totalVentaStr, idVenta);
+        putValues(TiempoUtil.getFechaDDMMYYYYHHMM(date), productos, nf.format(totalVenta), totalVentaStr, idVenta,folioVenta);
 
     }
 
-    private void putValues(String dateTime, ArrayList<String> items, String total, String totalVentaStr, int idVenta) {
+    private void putValues(String dateTime, ArrayList<String> items, String total, String totalVentaStr, int idVenta, int folioVenta) {
 
         paramReport.put("fechaVenta", dateTime);
-        paramReport.put("noVenta", Integer.toString(idVenta));
+        paramReport.put("noVenta", Integer.toString(folioVenta));
         paramReport.put("cliente", cliente.getNombreCombleto());
         paramReport.put("vendedor", usuario.getNombreCompletoUsuario());
         paramReport.put("productos", items);
@@ -498,7 +500,7 @@ public class BeanVenta implements Serializable, BeanSimple {
 
     }
 
-    public void generateReport(int idVenta) {
+    public void generateReport(int idVenta,int folioVenta) {
         JRExporter exporter = null;
 
         try {

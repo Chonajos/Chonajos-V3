@@ -25,5 +25,11 @@ public interface NegocioBuscaVenta
     public int cancelarVentaMayoreo(int idVenta, int idUsuario, String comentarios);
     public int updateStatusVentaMayoreo(int idVenta,int idUsuario);
     
+    /**
+     * Busca una venta por medio de un folio y el id de sucursal
+     * 
+     */
+    public List<Object[]> getVentaMenudeoByfolioAndIdSuc(int folio, int idSucursal);
+    
 
 }

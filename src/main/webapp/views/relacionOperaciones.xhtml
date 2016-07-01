@@ -84,8 +84,8 @@
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <p:dataTable id="table" var="model" value="#{beanRelacionOperaciones.model}" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." rendered="#{beanRelacionOperaciones.viewEstate =='init'}">
 
-                            <p:column headerText="Folio" class="#{model.idStatus eq 1 ? 'statusPedido': (model.idStatus eq 2 ? 'statusPagado':(model.idStatus eq 3 ? 'statusEntregado':'statusCancelado'))}  alignCenter"  width="60px;" >
-                                <h:outputText value="#{model.idVentaPk}" />
+                            <p:column headerText="Folio sucursal" class="#{model.idStatus eq 1 ? 'statusPedido': (model.idStatus eq 2 ? 'statusPagado':(model.idStatus eq 3 ? 'statusEntregado':'statusCancelado'))}  alignCenter"  width="60px;" >
+                                <h:outputText value="#{model.folioSucursal}" />
                             </p:column>
 
                             <p:column headerText="Fecha de venta" width="120px;" class="alignCenter">
