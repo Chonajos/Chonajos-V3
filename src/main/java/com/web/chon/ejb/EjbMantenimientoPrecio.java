@@ -59,10 +59,10 @@ public class EjbMantenimientoPrecio implements NegocioMantenimientoPrecio {
     }
 
     @Override
-    public int updateMantenimientoPrecio(MantenimientoPrecios mantenimientoPrecios) {
+     public int updateMantenimientoPrecio(MantenimientoPrecios mantenimientoPrecios) {
         try {
 
-            Query query = em.createNativeQuery("UPDATE MANTENIMIENTO_PRECIO SET ID_SUBPRODUCTO_FK = ? ,ID_TIPO_EMPAQUE_FK =? ,PRECIO_VENTA = ?, PRECIO_MINIMO = ? ,PRECIO_MAXIMO = ?,COSTOREAL = ?,COSTOMERMA = ?  WHERE TRIM(ID_SUBPRODUCTO_FK) = ? AND ID_TIPO_EMPAQUE_FK = ?");
+            Query query = em.createNativeQuery("UPDATE MANTENIMIENTO_PRECIO SET ID_SUBPRODUCTO_FK = ? ,ID_TIPO_EMPAQUE_FK =? ,PRECIO_VENTA = ?, PRECIO_MINIMO = ? ,PRECIO_MAXIMO = ?,COSTOREAL = ?,COSTOMERMA = ?  WHERE TRIM(ID_SUBPRODUCTO_FK) = ? AND ID_TIPO_EMPAQUE_FK = ? AND ID_SUCURSAL_FK =? ");
             query.setParameter(1, mantenimientoPrecios.getIdSubproducto());
             query.setParameter(2, mantenimientoPrecios.getIdTipoEmpaquePk());
             query.setParameter(3, mantenimientoPrecios.getPrecioVenta());
@@ -72,6 +72,7 @@ public class EjbMantenimientoPrecio implements NegocioMantenimientoPrecio {
             query.setParameter(7, mantenimientoPrecios.getCostoMerma());
             query.setParameter(8, mantenimientoPrecios.getIdSubproducto());
             query.setParameter(9, mantenimientoPrecios.getIdTipoEmpaquePk());
+            query.setParameter(10, mantenimientoPrecios.getIdSucursal());
 
             return query.executeUpdate();
 
@@ -102,8 +103,13 @@ public class EjbMantenimientoPrecio implements NegocioMantenimientoPrecio {
 "group by ID_SUBPRODUCTO_FK) prc\n" +
 "on   prc.ID_SUBPRODUCTO_FK = SP.ID_SUBPRODUCTO_PK");
             //Para mostrar todos los productos que estan registrados cambiar RIGHT por left
-            if (idSubProducto != null) {
-                queryStr.append(" WHERE SP.ID_SUBPRODUCTO_PK ='" + idSubProducto.trim() + "'");
+            if (idSubProducto != null) 
+            {
+                queryStr.append(" WHERE SP.ID_SUBPRODUCTO_PK ='" + idSubProducto.trim() + "' and  EXM.ID_SUCURSAL_FK ='" + idSucursal + "'");
+            }
+            else
+            {
+                queryStr.append(" WHERE EXM.ID_SUCURSAL_FK = '" + idSucursal + "'");
             }
 
             queryStr.append(" order by SP.NOMBRE_SUBPRODUCTO ");
