@@ -198,6 +198,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
         paramReport.put("labelFolio", "Folio de Venta:");
         paramReport.put("estado", statusVentaImpresion);
         paramReport.put("labelSucursal", nombreSucursalImpresion);
+        paramReport.put("telefonos", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:" + usuario.getTelefonoSucursal());
 
     }
 
@@ -315,6 +316,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
         calculatotalVentaDetalle();
         setParameterTicket(data.getFolioSucursal());
         generateReport();
+        getTotalVentaByInterval();
 
     }
 

@@ -106,7 +106,7 @@
                             </p:column>
                             <p:column headerText="Total de Venta" width="120px;" class="alignRight">
                                 <h:outputText value="#{model.totalVenta}">
-                                    <f:convertNumber pattern="#,##0.00" />
+                                    <f:convertNumber type="currency" currencySymbol="$" />
                                 </h:outputText>
                             </p:column>
                             <p:column headerText="Ver" width="60px;" class="alignCenter">
@@ -142,23 +142,23 @@
                             <p:column headerText="Productos" width="150px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreSubproducto}" />
                             </p:column>
-                            <p:column headerText="Empaque" width="150px;" class="alignLeft">
+                            <p:column headerText="Empaque" width="100px;" class="alignCenter">
                                 <h:outputText value="#{model.nombreEmpaque}" />
                             </p:column>
-                            <p:column headerText="Cantidad" width="85px;" class="alignCenter">
+                            <p:column headerText="Kilos" width="85px;" class="alignRight">
                                 <h:outputText value="#{model.cantidadEmpaque}" />
                             </p:column>
-                            <p:column headerText="Precio de venta" width="60px;" class="alignCenter">
+                            <p:column headerText="Precio de venta" width="90px;" class="alignRight">
                                 <h:outputText value="#{model.precioProducto}">
-                                    <f:convertNumber pattern="#,##0.00"/>
+                                    <f:convertNumber type="currency" currencySymbol="$" />
                                 </h:outputText>
                             </p:column>
                             <p:column headerText="Total" width="90px;" class="alignCenter">
                                 <h:outputText value="#{model.total}">
-                                    <f:convertNumber pattern="#,##0.00"/>
+                                    <f:convertNumber type="currency" currencySymbol="$" />
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Status" width="90px;" class="alignLeft">
+                            <p:column headerText="Status" width="90px;" class="alignCenter">
                                 <h:outputText value="#{model.nombreStatus}"> 
                                 </h:outputText>
                             </p:column>
