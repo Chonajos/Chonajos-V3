@@ -3,7 +3,6 @@ package com.web.chon.bean;
 import com.web.chon.dominio.BuscaVenta;
 import com.web.chon.dominio.Usuario;
 import com.web.chon.dominio.UsuarioDominio;
-import com.web.chon.dominio.VentaProducto;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceBuscaVenta;
 import com.web.chon.service.IfaceCatUsuario;
@@ -18,7 +17,6 @@ import java.io.File;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -47,30 +45,35 @@ import org.springframework.stereotype.Component;
 public class BeanBuscaVenta implements Serializable, BeanSimple {
 
     private static final long serialVersionUID = 1L;
-    @Autowired
-    private IfaceBuscaVenta ifaceBuscaVenta;
-    @Autowired
-    private PlataformaSecurityContext context;
-    @Autowired
-    IfaceCatUsuario ifaceCatUsuario;
+    
+    @Autowired IfaceCatUsuario ifaceCatUsuario;
+    @Autowired private PlataformaSecurityContext context;
+    @Autowired private IfaceBuscaVenta ifaceBuscaVenta;
+    
     private ArrayList<BuscaVenta> model;
+    private ArrayList<BuscaVenta> selectedVenta;
+    private ArrayList<BuscaVenta> dataModel; //Modelo con un solo Objeto
+    
+    private BuscaVenta data;
     private Usuario usuario;
+    private UsuarioDominio usuarioDominio;
+    
+    private StreamedContent media;
+    private ByteArrayOutputStream outputStream;
+    
+    private Map paramReport = new HashMap();
 
     private String title;
-    private String viewEstate;
-    private BigDecimal totalVenta;
-    private BuscaVenta data;
-    private Map paramReport = new HashMap();
-    private ArrayList<BuscaVenta> dataModel; //Modelo con un solo Objeto
-    private boolean statusButtonPagar;
-    private int idVentaTemporal; //utilizado para comprobacion de venta
-    private String rutaPDF;
     private String number;
+    private String rutaPDF;
+    private String viewEstate;
     private String pathFileJasper = "C:/Users/Juan/Documents/NetBeansProjects/Chonajos-V2/ticket.jasper";
-    private ByteArrayOutputStream outputStream;
-    private StreamedContent media;
-    private UsuarioDominio usuarioDominio;
-    private ArrayList<BuscaVenta> selectedVenta;
+    
+    private BigDecimal totalVenta;
+    
+    private boolean statusButtonPagar;
+    
+    private int idVentaTemporal; //utilizado para comprobacion de venta 
 
     @PostConstruct
     public void init() {
@@ -203,10 +206,10 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
 
     public void updateVenta() {
         if (data.getStatusFK() == 2) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "La venta :" + data.getIdVenta() + " Ya se encuentra pagada."));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "La venta :" + data.getFolioSucursal() + " Ya se encuentra pagada."));
 
         } else if (data.getIdVenta().intValue() != idVentaTemporal) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "No coincide el numero de venta  :" + data.getIdVenta() + " con la búsqueda."));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "No coincide el numero de venta  :" + data.getFolioSucursal() + " con la búsqueda."));
 
         } else if (data.getStatusFK() == 4)
         {

@@ -90,7 +90,7 @@ public class ServiceMantenimientoPrecio implements IfaceMantenimientoPrecio {
                 if (mantenimientoPrecios.getIdSubproducto().equals("")) {
                     System.out.println("No encontro Registros");
                 } else {
-                    mantenimientoPrecios.setPrecioSugerido(mantenimientoPrecios.getCostoReal().add(mantenimientoPrecios.getCostoReal().multiply(new BigDecimal(0.3))));
+                    mantenimientoPrecios.setPrecioSugerido(mantenimientoPrecios.getCostoMerma().add(mantenimientoPrecios.getCostoMerma().multiply(new BigDecimal(0.3))));
 
                 }
                 System.out.println("mantenimiento data " + mantenimientoPrecios.toString());
