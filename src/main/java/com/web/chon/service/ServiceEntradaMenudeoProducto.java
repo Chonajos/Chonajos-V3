@@ -10,6 +10,7 @@ import com.web.chon.dominio.EntradaMenudeoProducto;
 import com.web.chon.negocio.NegocioMenudeoProducto;
 import com.web.chon.util.Utilidades;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -54,6 +55,8 @@ public class ServiceEntradaMenudeoProducto implements IfaceEntradaMenudeoProduct
         List<Object[]> lstObject = new ArrayList<Object[]>();
         ArrayList<EntradaMenudeoProducto> lstEntradaMercancia2 = new ArrayList<EntradaMenudeoProducto>();
         lstObject = ejb.getEntradaMenudeoProductoByIdEM(id);
+        int count = 1;
+        
         for (Object[] obj : lstObject) {
             EntradaMenudeoProducto dominio = new EntradaMenudeoProducto();
             dominio.setIdEmmpPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
@@ -67,6 +70,9 @@ public class ServiceEntradaMenudeoProducto implements IfaceEntradaMenudeoProduct
             dominio.setNombreEmpaque(obj[8] == null ? "" : obj[8].toString());
             dominio.setPorcentarjeMerma(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
             dominio.setPrecio(obj[10] == null ? null : new BigDecimal(obj[10].toString()));
+            dominio.setCount(count);
+            count=count+1;
+           
             lstEntradaMercancia2.add(dominio);
         }
         return lstEntradaMercancia2;

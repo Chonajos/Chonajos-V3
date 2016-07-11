@@ -23,13 +23,37 @@ import com.web.chon.service.IfaceEntradaMenudeoProducto;
 import com.web.chon.service.IfaceExistenciaMenudeo;
 import com.web.chon.service.IfaceMantenimientoPrecio;
 import com.web.chon.service.IfaceSubProducto;
+import com.web.chon.util.Constantes;
+import com.web.chon.util.JasperReportUtil;
 import com.web.chon.util.JsfUtil;
+import com.web.chon.util.NumeroALetra;
+import com.web.chon.util.TiempoUtil;
+import com.web.chon.util.UtilUpload;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletResponse;
+import net.sf.jasperreports.engine.JREmptyDataSource;
+import net.sf.jasperreports.engine.JRExporter;
+import net.sf.jasperreports.engine.JRExporterParameter;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
+import org.primefaces.model.StreamedContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -83,6 +107,17 @@ public class BeanEntradaMenudeo implements Serializable {
 
     private BigDecimal kilosEntradaReales;
     private BigDecimal costoMermaInicio;
+    
+    //variables para PDF
+    private Map paramReport = new HashMap();
+    private UsuarioDominio usuarioDominio;
+    private String rutaPDF;
+    private StreamedContent media;
+    private ByteArrayOutputStream outputStream;
+    private String number;
+    private int idSucu;
+    private String pathFileJasper = "C:/Users/Juan/Documents/NetBeansProjects/Chonajos-V2/ticket.jasper";
+    
 
     @PostConstruct
     public void init() {
@@ -99,6 +134,8 @@ public class BeanEntradaMenudeo implements Serializable {
         data = new EntradaMenudeo();
 
         usuario = context.getUsuarioAutenticado();
+        usuario.setUsuNombre(usuario.getUsuNombre());
+        
         if (usuario.getPerId() != 1) {
 
             data.setIdSucursalFk(new BigDecimal(usuario.getSucId()));
@@ -125,7 +162,9 @@ public class BeanEntradaMenudeo implements Serializable {
         folio = ifaceEntradaMenudeo.getFolio(data.getIdSucursalFk());
         entrada_mercancia.setFolio(new BigDecimal(folio + 1));
         entrada_mercancia.setIdUsuario(data.getIdUsuario());
-
+        setParameterTicket(entrada_mercancia.getFolio().intValue());
+        
+        
         if (ifaceEntradaMenudeo.insertEntradaMercancia(entrada_mercancia) != 0) {
             System.out.println("Se inserto correctamente");
             for (int i = 0; i < listaMenudeoProducto.size(); i++) {
@@ -490,6 +529,130 @@ public class BeanEntradaMenudeo implements Serializable {
         }
         return empaque;
     }
+    
+    private void setParameterTicket(int folioVenta) {
+
+        NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
+        DecimalFormat df = new DecimalFormat("###.##");
+        Date date = new Date();
+
+        ArrayList<String> productos = new ArrayList<String>();
+        NumeroALetra numeroLetra = new NumeroALetra();
+//tamaño maximo de nombre de producto 35 caracteres
+        BigDecimal costoTotal = new BigDecimal(0);
+        for (EntradaMenudeoProducto producto : listaMenudeoProducto) {
+            int maximoCaracteres=35;
+
+            StringBuilder nombreProducto =  new StringBuilder(producto.getNombreProducto());
+            int tam = nombreProducto.length(); //17
+            while (maximoCaracteres>tam)
+            {
+                nombreProducto.append(" ");
+                maximoCaracteres--;
+            }
+            String kilosproducto = producto.getKilosTotales().toString();
+            String costounitario = producto.getPrecio().toString();
+            BigDecimal costo = producto.getKilosTotales().multiply(producto.getPrecio(), MathContext.UNLIMITED);
+            
+            String costoMultiplicado = costo.toString();
+            costoTotal = costoTotal.add(costo, MathContext.UNLIMITED);
+            
+            String merma = producto.getPorcentarjeMerma().toString();
+            String cadena = nombreProducto+"  "+kilosproducto+"kg  "+nf.format(costounitario)+"  "+nf.format(costoMultiplicado)+"  "+merma+"%";
+            productos.add(cadena);
+            //productos.add("                       " + cantidad + "     " + nf.format(venta.getPrecioProducto()) + "    " + nf.format(venta.getTotal()));
+            System.out.println("============================================");
+            System.out.println(cadena);
+        }
+
+        String costoLetra = numeroLetra.Convertir(df.format(costoTotal), true);
+        putValues(TiempoUtil.getFechaDDMMYYYYHHMM(date), productos, nf.format(costoTotal), data.getKilosTotales().toString(), data.getKilosProvedor().toString(),costoLetra,folioVenta);
+
+    }
+
+    private void putValues(String dateTime, ArrayList<String> items, String costoTotal,String kilosTotales,String kilosProvedor, String totalLetra, int folioVenta) {
+
+        System.out.println("Fecha: "+dateTime);
+        System.out.println("Folio: "+Integer.toString(folioVenta));
+        System.out.println("Provedor: "+data.getNombreProvedor());
+        System.out.println("Recibidor: "+usuario.getNombreCompleto());
+        System.out.println("Productos: ");
+        System.out.println("");
+        for(String nombre:items)
+        {
+            System.out.println(nombre);
+        }
+        System.out.println("costoTotal: "+costoTotal);
+        System.out.println("kilosTotales: "+kilosTotales);
+        System.out.println("totalLetra: "+totalLetra);
+        System.out.println("Telefonos: "+usuario.getTelefonoSucursal());
+        System.out.println("Sucursal: "+usuario.getNombreSucursal());
+        
+        paramReport.put("fecha", dateTime);
+        paramReport.put("folio", Integer.toString(folioVenta));
+        paramReport.put("provedor", data.getNombreProvedor());
+        paramReport.put("recibidor", usuario.getNombreCompleto());
+        paramReport.put("productos", items);
+        paramReport.put("costoTotal", costoTotal);
+        paramReport.put("kilosTotales",kilosTotales);
+        paramReport.put("kilosProvedor", kilosProvedor);
+        paramReport.put("totalLetra", totalLetra);
+        paramReport.put("telefonos", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:" + usuarioDominio.getTelefonoSucursal());
+        paramReport.put("labelSucursal", usuarioDominio.getNombreSucursal());
+
+    }
+    
+    public void generateReport(int idVenta,int folioVenta) {
+        JRExporter exporter = null;
+
+        try {
+            ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+            String temporal = "";
+            if (servletContext.getRealPath("") == null) {
+                temporal = Constantes.PATHSERVER;
+            } else {
+                temporal = servletContext.getRealPath("");
+            }
+
+            pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketVenta" + File.separatorChar + "ticket.jasper";
+
+            JasperPrint jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport, new JREmptyDataSource());
+            outputStream = JasperReportUtil.getOutputStreamFromReport(paramReport, getPathFileJasper());
+            exporter = new JRPdfExporter();
+
+            exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
+            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, outputStream);
+//            exporter.setParameter(JRPdfExporterParameter.PDF_JAVASCRIPT, "this.print();");
+            byte[] bytes = outputStream.toByteArray();
+
+            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf", idVenta, idSucu);
+
+        } catch (Exception exception) {
+            System.out.println("Error >" + exception.getMessage());
+
+        }
+
+    }
+
+    public void downloadFile() {
+        try {
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+
+            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+            response.reset();
+
+            response.setContentType("application/pdf");
+            response.setHeader("Content-disposition", "attachment; filename=" + getNameFilePdf());
+
+            OutputStream output = response.getOutputStream();
+            output.write(outputStream.toByteArray());
+            output.close();
+
+            facesContext.responseComplete();
+        } catch (Exception e) {
+            System.out.println("Error >" + e.getMessage());
+        }
+    }
 
     public ArrayList<Provedor> getListaProvedores() {
         return listaProvedores;
@@ -627,5 +790,55 @@ public class BeanEntradaMenudeo implements Serializable {
         this.costoMermaInicio = costoMermaInicio;
     }
 
-    
+    public UsuarioDominio getUsuarioDominio() {
+        return usuarioDominio;
+    }
+
+    public void setUsuarioDominio(UsuarioDominio usuarioDominio) {
+        this.usuarioDominio = usuarioDominio;
+    }
+
+    public String getRutaPDF() {
+        return rutaPDF;
+    }
+
+    public void setRutaPDF(String rutaPDF) {
+        this.rutaPDF = rutaPDF;
+    }
+
+    public StreamedContent getMedia() {
+        return media;
+    }
+
+    public void setMedia(StreamedContent media) {
+        this.media = media;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getPathFileJasper() {
+        return pathFileJasper;
+    }
+
+    public void setPathFileJasper(String pathFileJasper) {
+        this.pathFileJasper = pathFileJasper;
+    }
+
+    public int getIdSucu() {
+        return idSucu;
+    }
+
+    public void setIdSucu(int idSucu) {
+        this.idSucu = idSucu;
+    }
+
+    public String getNameFilePdf() {
+        return "reporte_dummy.pdf";
+    }
 }

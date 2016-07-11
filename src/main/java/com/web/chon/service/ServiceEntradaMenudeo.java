@@ -5,16 +5,18 @@
  */
 package com.web.chon.service;
 
-
 import com.web.chon.dominio.EntradaMenudeo;
+import com.web.chon.dominio.EntradaMenudeoProducto;
 import com.web.chon.negocio.NegocioEntradaMenudeo;
 import com.web.chon.util.Utilidades;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -22,8 +24,11 @@ import org.springframework.stereotype.Service;
  * @author freddy
  */
 @Service
-public class ServiceEntradaMenudeo implements IfaceEntradaMenudeo{
+public class ServiceEntradaMenudeo implements IfaceEntradaMenudeo {
+
     NegocioEntradaMenudeo ejb;
+    @Autowired
+    private IfaceEntradaMenudeoProducto ifaceEntradaMenudeoProducto;
 
     public void getEjb() {
         if (ejb == null) {
@@ -48,7 +53,7 @@ public class ServiceEntradaMenudeo implements IfaceEntradaMenudeo{
 
     @Override
     public int getNextVal() {
-      getEjb();
+        getEjb();
         try {
             return ejb.getNextVal();
 
@@ -60,7 +65,7 @@ public class ServiceEntradaMenudeo implements IfaceEntradaMenudeo{
 
     @Override
     public int getFolio(BigDecimal idSucursal) {
-       getEjb();
+        getEjb();
         try {
             return ejb.getFolio(idSucursal);
 
@@ -68,17 +73,19 @@ public class ServiceEntradaMenudeo implements IfaceEntradaMenudeo{
             Logger.getLogger(ServiceEntradaMenudeo.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
-        
+
     }
 
     @Override
-    public ArrayList<EntradaMenudeo> getEntradaProductoByIntervalDate(Date fechaFiltroInicio, Date fechaFiltroFin, BigDecimal idSucursal) {
+    public ArrayList<EntradaMenudeo> getEntradaProductoByIntervalDate(Date fechaFiltroInicio, Date fechaFiltroFin, BigDecimal idSucursal, String idSubproductoPk) {
         getEjb();
-
+        System.out.println("Service////////////////" + idSubproductoPk);
         List<Object[]> lstObject = new ArrayList<Object[]>();
         ArrayList<EntradaMenudeo> lstEntradaMercancia2 = new ArrayList<EntradaMenudeo>();
-        lstObject = ejb.getEntradaProductoByIntervalDate(fechaFiltroInicio, fechaFiltroFin, idSucursal);
+        lstObject = ejb.getEntradaProductoByIntervalDate(fechaFiltroInicio, fechaFiltroFin, idSucursal, idSubproductoPk);
+
         for (Object[] obj : lstObject) {
+
             EntradaMenudeo dominio = new EntradaMenudeo();
             dominio.setIdEmmPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
             dominio.setIdProvedorFk(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
@@ -93,9 +100,24 @@ public class ServiceEntradaMenudeo implements IfaceEntradaMenudeo{
             dominio.setNombreProvedor(obj[10] == null ? "" : obj[10].toString());
             dominio.setApPaternoProvedor(obj[11] == null ? "" : obj[11].toString());
             dominio.setApMaternoProvedor(obj[12] == null ? "" : obj[12].toString());
+
+            ArrayList<EntradaMenudeoProducto> lstDetalle = new ArrayList<EntradaMenudeoProducto>();
+            lstDetalle = ifaceEntradaMenudeoProducto.getEntradaProductoById(dominio.getIdEmmPk());
+            dominio.setListaDetalleProducto(lstDetalle);
+            BigDecimal sumaKilos = new BigDecimal(0);
+            BigDecimal sumaCostos = new BigDecimal(0);
+            for(EntradaMenudeoProducto item:lstDetalle)
+            {
+                sumaKilos = sumaKilos.add(item.getKilosTotales(), MathContext.UNLIMITED);
+                sumaCostos = sumaCostos.add(item.getPrecio(), MathContext.UNLIMITED);
+                dominio.setSumaCostos(sumaCostos);
+                dominio.setSumaKilos(sumaKilos);
+            }
+            
             
             lstEntradaMercancia2.add(dominio);
         }
-        return lstEntradaMercancia2;
+            return lstEntradaMercancia2;
+        
     }
 }

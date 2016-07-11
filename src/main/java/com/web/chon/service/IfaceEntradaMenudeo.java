@@ -21,6 +21,6 @@ public interface IfaceEntradaMenudeo
     public int buscaMaxMovimiento(EntradaMenudeo entrada);
     public int getNextVal();
     public int getFolio(BigDecimal idSucursal);
-    public ArrayList<EntradaMenudeo> getEntradaProductoByIntervalDate(Date fechaFiltroInicio, Date fechaFiltroFin, BigDecimal idSucursal);
+    public ArrayList<EntradaMenudeo> getEntradaProductoByIntervalDate(Date fechaFiltroInicio, Date fechaFiltroFin, BigDecimal idSucursal,String idSubproductoFK);
 
 }

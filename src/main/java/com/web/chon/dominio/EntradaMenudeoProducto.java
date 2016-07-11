@@ -26,6 +26,8 @@ public class EntradaMenudeoProducto implements Serializable {
     private String nombreProducto;
     private String nombreEmpaque;
     private BigDecimal porcentarjeMerma;
+    private int count;
+
 
     public void reset() {
         idEmmpPk = null;
@@ -136,5 +138,15 @@ public class EntradaMenudeoProducto implements Serializable {
         this.nombreEmpaque = nombreEmpaque;
     }
 
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+  
+    
     
 }

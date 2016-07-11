@@ -85,8 +85,9 @@ public class EjbEntradaMenudeo implements NegocioEntradaMenudeo{
     }
 
     @Override
-    public List<Object[]> getEntradaProductoByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal) {
+    public List<Object[]> getEntradaProductoByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal,String idSubproductoPk) {
        int cont = 0;
+        System.out.println("EJB==============>"+idSubproductoPk);
         StringBuffer query = new StringBuffer("select emm.ID_EMM_PK,emm.ID_PROVEDOR_FK, emm.FECHA,emm.ID_SUCURSAL_FK,emm.ID_STATUS_FK,\n" +
 "emm.KILOSTOTALES, emm.KILOSTOTALESPROVEDOR, emm.COMENTARIOS, emm.FOLIO, emm.ID_USER_FK, \n" +
 "prov.NOMBRE_PROVEDOR, prov.A_PATERNO_PROVE, \n" +
@@ -94,6 +95,13 @@ public class EjbEntradaMenudeo implements NegocioEntradaMenudeo{
 "from ENTRADAMERCANCIAMENUDEO emm\n" +
 "join PROVEDORES prov\n" +
 "on prov.ID_PROVEDOR_PK = emm.ID_PROVEDOR_FK");
+        
+         if (idSubproductoPk != null && !idSubproductoPk.equals("")) 
+         {
+             query.append(" join ENTRADAMENUDEOPRODUCTO emp\n" +
+"on emp.ID_EMM_FK = emm.ID_EMM_PK");
+         }
+        
         if (fechaInicio != null) 
         {
             cont++;
@@ -101,14 +109,31 @@ public class EjbEntradaMenudeo implements NegocioEntradaMenudeo{
         }
         if (idSucursal != null && !idSucursal.equals(new BigDecimal(-1))) 
         {
-            if (cont == 0) {
+            if (cont == 0) 
+            {
                 cont++;
                 query.append(" WHERE ");
-            } else {
+            } else 
+            {
                 query.append(" AND ");
             }
+            
             query.append(" emm.ID_SUCURSAL_FK =" + idSucursal);
         }
+        if (idSubproductoPk != null && !idSubproductoPk.equals("")) 
+        {
+            if (cont == 0) 
+            {
+                cont++;
+                query.append(" WHERE ");
+            } else 
+            {
+                query.append(" AND ");
+            }
+            
+            query.append(" emp.ID_SUBPRODUCTO_FK = '" + idSubproductoPk+"'");
+        }
+        
         query.append(" ORDER BY emm.ID_EMM_PK");
         System.out.println("Query: "+query);
         return em.createNativeQuery(query.toString()).getResultList();

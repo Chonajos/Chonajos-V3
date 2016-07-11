@@ -194,7 +194,7 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
                 cadena.append(" WHERE  emp.ID_EMP_PK= '" + idEmpPK + "' ");
             }
 
-            cadena.append(" and ex.CANTIDAD_EMPACAQUE > 0 ORDER BY  em.ID_EM_PK");
+            cadena.append("  and (ex.CANTIDAD_EMPACAQUE > 0 or ex.KILOS_TOTALES > 0) ORDER BY  em.ID_EM_PK ");
 
             query = em.createNativeQuery(cadena.toString());
             System.out.println(query);

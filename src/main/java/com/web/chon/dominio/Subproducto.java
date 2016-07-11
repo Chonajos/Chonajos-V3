@@ -82,29 +82,7 @@ public class Subproducto implements Serializable {
         this.nombreCategoria = nombreCategoria;
     }
     
-    
-    
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (idSubproductoPk != null ? idSubproductoPk.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Subproducto)) {
-            return false;
-        }
-        Subproducto other = (Subproducto) object;
-        if ((this.idSubproductoPk == null && other.idSubproductoPk != null) || (this.idSubproductoPk != null && !this.idSubproductoPk.equals(other.idSubproductoPk))) {
-            return false;
-        }
-        return true;
-    }
-
+ 
     @Override
     public String toString() {
         return "Subproducto{" + "idSubproductoPk=" + idSubproductoPk + ", nombreSubproducto=" + nombreSubproducto + ", descripcionSubproducto=" + descripcionSubproducto + ", urlImagenSubproducto=" + urlImagenSubproducto + ", idProductoFk=" + idProductoFk + ", nombreCategoria=" + nombreCategoria + '}';

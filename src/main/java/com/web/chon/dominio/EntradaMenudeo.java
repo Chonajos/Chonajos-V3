@@ -7,6 +7,7 @@ package com.web.chon.dominio;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -34,6 +35,10 @@ public class EntradaMenudeo implements Serializable {
     private String nombreProvedor;
     private String apPaternoProvedor;
     private String apMaternoProvedor;
+    private String idSubproductoFK;
+    private BigDecimal sumaKilos;
+    private BigDecimal sumaCostos;
+    private ArrayList<EntradaMenudeoProducto> listaDetalleProducto;
 
     public void reset() {
         idEmmPk = null;
@@ -47,14 +52,17 @@ public class EntradaMenudeo implements Serializable {
         ticketProvedor = null;
         ticketBascula = null;
         folio = null;
+        idSubproductoFK=null;
+        listaDetalleProducto=null;
         //idUsuario = null;
 
     }
 
     @Override
     public String toString() {
-        return "EntradaMenudeo{" + "idEmmPk=" + idEmmPk + ", idProvedorFk=" + idProvedorFk + ", fecha=" + fecha + ", idSucursalFk=" + idSucursalFk + ", idStatusFk=" + idStatusFk + ", kilosTotales=" + kilosTotales + ", kilosProvedor=" + kilosProvedor + ", comentarios=" + comentarios + ", ticketProvedor=" + ticketProvedor + ", ticketBascula=" + ticketBascula + ", folio=" + folio + ", idUsuario=" + idUsuario + '}';
+        return "EntradaMenudeo{" + "idEmmPk=" + idEmmPk + ", idProvedorFk=" + idProvedorFk + ", fecha=" + fecha + ", idSucursalFk=" + idSucursalFk + ", idStatusFk=" + idStatusFk + ", kilosTotales=" + kilosTotales + ", kilosProvedor=" + kilosProvedor + ", comentarios=" + comentarios + ", ticketProvedor=" + ticketProvedor + ", ticketBascula=" + ticketBascula + ", folio=" + folio + ", idUsuario=" + idUsuario + ", fechaFiltroInicio=" + fechaFiltroInicio + ", fechaFiltroFin=" + fechaFiltroFin + ", nombreProvedor=" + nombreProvedor + ", apPaternoProvedor=" + apPaternoProvedor + ", apMaternoProvedor=" + apMaternoProvedor + ", idSubproductoFK=" + idSubproductoFK + '}';
     }
+    
 
     public BigDecimal getIdUsuario() {
         return idUsuario;
@@ -190,6 +198,38 @@ public class EntradaMenudeo implements Serializable {
 
     public void setApMaternoProvedor(String apMaternoProvedor) {
         this.apMaternoProvedor = apMaternoProvedor;
+    }
+
+    public String getIdSubproductoFK() {
+        return idSubproductoFK;
+    }
+
+    public void setIdSubproductoFK(String idSubproductoFK) {
+        this.idSubproductoFK = idSubproductoFK;
+    }
+
+    public ArrayList<EntradaMenudeoProducto> getListaDetalleProducto() {
+        return listaDetalleProducto;
+    }
+
+    public void setListaDetalleProducto(ArrayList<EntradaMenudeoProducto> listaDetalleProducto) {
+        this.listaDetalleProducto = listaDetalleProducto;
+    }
+
+    public BigDecimal getSumaKilos() {
+        return sumaKilos;
+    }
+
+    public void setSumaKilos(BigDecimal sumaKilos) {
+        this.sumaKilos = sumaKilos;
+    }
+
+    public BigDecimal getSumaCostos() {
+        return sumaCostos;
+    }
+
+    public void setSumaCostos(BigDecimal sumaCostos) {
+        this.sumaCostos = sumaCostos;
     }
     
     

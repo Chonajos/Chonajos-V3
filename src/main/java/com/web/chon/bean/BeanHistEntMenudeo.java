@@ -7,12 +7,15 @@ package com.web.chon.bean;
 
 import com.web.chon.dominio.EntradaMenudeo;
 import com.web.chon.dominio.EntradaMenudeoProducto;
+import com.web.chon.dominio.Subproducto;
 import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceEntradaMenudeo;
 import com.web.chon.service.IfaceEntradaMenudeoProducto;
+import com.web.chon.service.IfaceSubProducto;
+import com.web.chon.util.JsfUtil;
 import com.web.chon.util.TiempoUtil;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -36,8 +39,10 @@ public class BeanHistEntMenudeo implements Serializable{
     @Autowired private IfaceCatSucursales ifaceCatSucursales;
     @Autowired private IfaceEntradaMenudeo ifaceEntradaMenudeo;
     @Autowired private IfaceEntradaMenudeoProducto ifaceEntradaMenudeoProducto;
+    @Autowired private IfaceSubProducto ifaceSubProducto;
     
     private ArrayList<Sucursal> listaSucursales;
+    private ArrayList<Subproducto> lstProducto;
     private ArrayList<EntradaMenudeo> lstEntradaMercancia;
     private ArrayList<EntradaMenudeoProducto> lstEntradaMercanciaProdcuto;
     
@@ -52,24 +57,85 @@ public class BeanHistEntMenudeo implements Serializable{
     private Date fechaInicio;
     
     private int filtro;
-    
+    private Subproducto subProducto;
     private BigDecimal totalKilosDetalle;
+    
+    private boolean enableCalendar;
     
     @PostConstruct
     public void init() 
     {
+        //se pone por default el filtro en mes actual
+        // se deshabilita en calendario cuando hay una seleccion
+        //solo se habilita cuando pongas ingresar fecha mannual
+        filtro =  2;
+        enableCalendar=true;
+        subProducto = new Subproducto();
+                
         data= new EntradaMenudeo();
         usuario = context.getUsuarioAutenticado();
         listaSucursales = new ArrayList<Sucursal>();
         listaSucursales = ifaceCatSucursales.getSucursales();
-        filtro =  2;
+        
         data.setFechaFiltroInicio(TiempoUtil.getDayOneOfMonth(new Date()));
         data.setFechaFiltroFin(TiempoUtil.getDayEndOfMonth(new Date()));
-        
+        subProducto  = new Subproducto();
         data.setIdSucursalFk(new BigDecimal(usuario.getSucId()));
-        lstEntradaMercancia = ifaceEntradaMenudeo.getEntradaProductoByIntervalDate(data.getFechaFiltroInicio(), data.getFechaFiltroFin(), data.getIdSucursalFk());
+        lstEntradaMercancia= new ArrayList<EntradaMenudeo>();
+        lstEntradaMercancia = ifaceEntradaMenudeo.getEntradaProductoByIntervalDate(data.getFechaFiltroInicio(), data.getFechaFiltroFin(), data.getIdSucursalFk(),subProducto.getIdSubproductoPk());
         setTitle("Historial Entrada de Mercancia de Menudeo");
         setViewEstate("init");
+    }
+    public void verificarCombo()
+    {
+        if(filtro==-1)
+        {
+            //se habilitan los calendarios.
+            data.setFechaFiltroInicio(null);
+            data.setFechaFiltroFin(null);
+            enableCalendar=false;
+        }
+        else
+        {
+            switch (filtro) {
+            case 1:
+                data.setFechaFiltroInicio(new Date());
+                data.setFechaFiltroFin(new Date());
+                break;
+
+            case 2:
+                data.setFechaFiltroInicio(TiempoUtil.getDayOneOfMonth(new Date()));
+                data.setFechaFiltroFin(TiempoUtil.getDayEndOfMonth(new Date()));
+
+                break;
+            case 3:
+                data.setFechaFiltroInicio(TiempoUtil.getDayOneYear(new Date()));
+                data.setFechaFiltroFin(TiempoUtil.getDayEndYear(new Date()));
+                break;
+            default:
+                data.setFechaFiltroInicio(null);
+                data.setFechaFiltroFin(null);
+                break;
+        }
+            enableCalendar=true;
+        }
+    }
+    public void buscar()
+    {
+        if(data.getFechaFiltroInicio()==null || data.getFechaFiltroFin()==null)
+        {
+            JsfUtil.addErrorMessageClean("Favor de ingresar un rango de fechas");
+        }
+        else
+        {
+            if(subProducto==null)
+            {
+                subProducto = new Subproducto();
+                subProducto.setIdProductoFk("");
+            }
+            lstEntradaMercancia = ifaceEntradaMenudeo.getEntradaProductoByIntervalDate(data.getFechaFiltroInicio(), data.getFechaFiltroFin(), data.getIdSucursalFk(),subProducto.getIdSubproductoPk());
+        
+            }
     }
     public void back()
     {
@@ -82,6 +148,11 @@ public class BeanHistEntMenudeo implements Serializable{
 //        getEntradaProductoByIntervalDate();
         
     }
+    public ArrayList<Subproducto> autoComplete(String nombreProducto) {
+        lstProducto = ifaceSubProducto.getSubProductoByNombre(nombreProducto.toUpperCase());
+        return lstProducto;
+
+    }
     
     public void detallesEntradaProducto() {
         setViewEstate("searchById");
@@ -91,11 +162,12 @@ public class BeanHistEntMenudeo implements Serializable{
     }
     
     public void setFechaInicioFin(int filter) {
-
+        System.out.println("BEAN$$$$$$$$"+subProducto.getIdSubproductoPk());
         switch (filter) {
             case 4:
                 if (data.getFechaFiltroInicio() != null && data.getFechaFiltroFin() != null) {
-                    lstEntradaMercancia = ifaceEntradaMenudeo.getEntradaProductoByIntervalDate(data.getFechaFiltroInicio(), data.getFechaFiltroFin(), data.getIdSucursalFk());
+                    System.out.println("Bandera");
+                    lstEntradaMercancia = ifaceEntradaMenudeo.getEntradaProductoByIntervalDate(data.getFechaFiltroInicio(), data.getFechaFiltroFin(), data.getIdSucursalFk(),subProducto.getIdSubproductoPk());
                 } else {
                     lstEntradaMercancia = new ArrayList<EntradaMenudeo>();
                 }
@@ -124,8 +196,7 @@ public class BeanHistEntMenudeo implements Serializable{
     
     public void getEntradaProductoByIntervalDate() {
     setFechaInicioFin(filtro);
-        System.out.println("Sucursal: "+data.getIdSucursalFk());
-    lstEntradaMercancia = ifaceEntradaMenudeo.getEntradaProductoByIntervalDate(data.getFechaFiltroInicio(), data.getFechaFiltroFin(), data.getIdSucursalFk());
+    lstEntradaMercancia = ifaceEntradaMenudeo.getEntradaProductoByIntervalDate(data.getFechaFiltroInicio(), data.getFechaFiltroFin(), data.getIdSucursalFk(),subProducto.getIdSubproductoPk());
    
     }
     public void getTotalKilosProducto() {
@@ -224,6 +295,33 @@ public class BeanHistEntMenudeo implements Serializable{
     public void setTotalKilosDetalle(BigDecimal totalKilosDetalle) {
         this.totalKilosDetalle = totalKilosDetalle;
     }
+
+    public ArrayList<Subproducto> getLstProducto() {
+        return lstProducto;
+    }
+
+    public void setLstProducto(ArrayList<Subproducto> lstProducto) {
+        this.lstProducto = lstProducto;
+    }
+
+    public Subproducto getSubProducto() {
+        
+        return subProducto;
+    }
+
+    public void setSubProducto(Subproducto subProducto) {
+        
+        this.subProducto = subProducto;
+    }
+
+    public boolean isEnableCalendar() {
+        return enableCalendar;
+    }
+
+    public void setEnableCalendar(boolean enableCalendar) {
+        this.enableCalendar = enableCalendar;
+    }
+    
     
     
 }
