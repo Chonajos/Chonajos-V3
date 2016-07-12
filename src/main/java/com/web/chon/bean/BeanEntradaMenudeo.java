@@ -44,6 +44,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
@@ -163,6 +164,7 @@ public class BeanEntradaMenudeo implements Serializable {
         entrada_mercancia.setFolio(new BigDecimal(folio + 1));
         entrada_mercancia.setIdUsuario(data.getIdUsuario());
         setParameterTicket(entrada_mercancia.getFolio().intValue());
+        generateReport(folio);
         
         
         if (ifaceEntradaMenudeo.insertEntradaMercancia(entrada_mercancia) != 0) {
@@ -558,11 +560,10 @@ public class BeanEntradaMenudeo implements Serializable {
             costoTotal = costoTotal.add(costo, MathContext.UNLIMITED);
             
             String merma = producto.getPorcentarjeMerma().toString();
-            String cadena = nombreProducto+"  "+kilosproducto+"kg  "+nf.format(costounitario)+"  "+nf.format(costoMultiplicado)+"  "+merma+"%";
+            String cadena = nombreProducto+"  "+kilosproducto+"kg  "+nf.format(producto.getPrecio()).toString()+"  "+nf.format(costo).toString()+"  "+merma+"%";
             productos.add(cadena);
             //productos.add("                       " + cantidad + "     " + nf.format(venta.getPrecioProducto()) + "    " + nf.format(venta.getTotal()));
-            System.out.println("============================================");
-            System.out.println(cadena);
+          
         }
 
         String costoLetra = numeroLetra.Convertir(df.format(costoTotal), true);
@@ -571,10 +572,21 @@ public class BeanEntradaMenudeo implements Serializable {
     }
 
     private void putValues(String dateTime, ArrayList<String> items, String costoTotal,String kilosTotales,String kilosProvedor, String totalLetra, int folioVenta) {
-
+        Provedor p1 = new Provedor();
+        for(Provedor p:listaProvedores)
+        {
+            System.out.println("fooorrrrr");
+            if(p.getIdProvedorPK().equals(data.getIdProvedorFk()))
+            {
+                System.out.println("Entro");
+                p1.setNombreCompleto(p.getNombreCompleto()+" "+p.getApaternoProve()+" "+p.getAmaternoProve());
+                System.out.println(""+p1.getNombreCompleto());
+            }
+        }
+        System.out.println("p1:" + p1.toString());
         System.out.println("Fecha: "+dateTime);
         System.out.println("Folio: "+Integer.toString(folioVenta));
-        System.out.println("Provedor: "+data.getNombreProvedor());
+        System.out.println("Provedor: "+p1.getNombreCompleto());
         System.out.println("Recibidor: "+usuario.getNombreCompleto());
         System.out.println("Productos: ");
         System.out.println("");
@@ -583,26 +595,27 @@ public class BeanEntradaMenudeo implements Serializable {
             System.out.println(nombre);
         }
         System.out.println("costoTotal: "+costoTotal);
-        System.out.println("kilosTotales: "+kilosTotales);
+        System.out.println("kilosTotales: "+kilosTotales+"kg");
+        System.out.println("kilosProvedor: "+kilosProvedor);
         System.out.println("totalLetra: "+totalLetra);
         System.out.println("Telefonos: "+usuario.getTelefonoSucursal());
         System.out.println("Sucursal: "+usuario.getNombreSucursal());
         
         paramReport.put("fecha", dateTime);
         paramReport.put("folio", Integer.toString(folioVenta));
-        paramReport.put("provedor", data.getNombreProvedor());
+        paramReport.put("provedor", p1.getNombreCompleto());
         paramReport.put("recibidor", usuario.getNombreCompleto());
         paramReport.put("productos", items);
         paramReport.put("costoTotal", costoTotal);
-        paramReport.put("kilosTotales",kilosTotales);
-        paramReport.put("kilosProvedor", kilosProvedor);
+        paramReport.put("KgR",kilosTotales);
+        paramReport.put("kgP", kilosProvedor);
         paramReport.put("totalLetra", totalLetra);
-        paramReport.put("telefonos", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:" + usuarioDominio.getTelefonoSucursal());
-        paramReport.put("labelSucursal", usuarioDominio.getNombreSucursal());
+        paramReport.put("telefonos", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:" + usuario.getTelefonoSucursal());
+        paramReport.put("labelSucursal", usuario.getNombreSucursal());
 
     }
     
-    public void generateReport(int idVenta,int folioVenta) {
+    public void generateReport(int folio) {
         JRExporter exporter = null;
 
         try {
@@ -614,7 +627,7 @@ public class BeanEntradaMenudeo implements Serializable {
                 temporal = servletContext.getRealPath("");
             }
 
-            pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketVenta" + File.separatorChar + "ticket.jasper";
+            pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "entradaMercancia" + File.separatorChar + "entrada.jasper";
 
             JasperPrint jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport, new JREmptyDataSource());
             outputStream = JasperReportUtil.getOutputStreamFromReport(paramReport, getPathFileJasper());
@@ -625,7 +638,7 @@ public class BeanEntradaMenudeo implements Serializable {
 //            exporter.setParameter(JRPdfExporterParameter.PDF_JAVASCRIPT, "this.print();");
             byte[] bytes = outputStream.toByteArray();
 
-            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf", idVenta, idSucu);
+            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf",folio, idSucu);
 
         } catch (Exception exception) {
             System.out.println("Error >" + exception.getMessage());

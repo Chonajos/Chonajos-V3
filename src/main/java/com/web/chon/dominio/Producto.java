@@ -89,18 +89,6 @@ public class Producto implements Serializable {
         return hash;
     }
 
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Producto)) {
-            return false;
-        }
-        Producto other = (Producto) object;
-        if ((this.idProductoPk == null && other.idProductoPk != null) || (this.idProductoPk != null && !this.idProductoPk.equals(other.idProductoPk))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public String toString() {

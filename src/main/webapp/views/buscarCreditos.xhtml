@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="./../templates/main.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content">
+        <div>
+            <h3>#{beanBuscaCredito.title}</h3>
+        </div>
+        <h:form id="formContent">
+            <p:messages id="messages"   showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
+            <p:growl id="messagess" showDetail="true" life="2000" />
+            <p:panel>
+                <div class="container-fluid">
+                    <div class="form-group" align="right">
+                        <p:commandButton value="Buscar" update=":formContent" ajax="true" action="#{beanBuscaCredito.searchByIdCliente()}" />
+                        
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtidCliente" value ="Número de Cliente:" /> 
+                            <p:inputText id="txtidCliente" maxlength="10" class=" col-lg-1 col-md-4 col-sm-8 col-xs-6" value="#{beanBuscaCredito.idCliente}"  required="true"
+                                         requiredMessage="Ingresa un número cliente">
+                                <pe:keyFilter regEx="/[0-9_]/i"/>
+                            </p:inputText>
+                        </div>
+                    </div>
+                    <!--Datos de Vendedor y Cliente -->
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtNombreCliente" value ="Nombre de Cliente:" /> 
+                            <p:inputText id="txtNombreCliente" readonly="true" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanBuscaCredito.nombreCompletoCliente}">
+                            </p:inputText>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"   for="txtRFC" value ="RFC:" /> 
+                            <p:inputText id="txtRFC"  readonly="true" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanBuscaCredito.rfcCliente}">
+                            </p:inputText>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"   for="txtTipoCliente" value ="Tipo de Cliente:" /> 
+                            <p:inputText id="txtTipoCliente"  readonly="true" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanBuscaCredito.tipoCliente}">
+                            </p:inputText>
+                        </div>
+                    </div>
+                    
+                    <!--Datos de Credito-->
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtCreditoAutorizado" value ="Crédito Autorizado:" /> 
+                            <p:inputText id="txtCreditoAutorizado" readonly="true" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanBuscaCredito.creditoAutorizado}">
+                            </p:inputText>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"   for="txtCreditoDisponible" value ="Crédito Disponible:" /> 
+                            <p:inputText id="txtCreditoDisponible"  readonly="true" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanBuscaCredito.creditoDisponible}">
+                            </p:inputText>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"   for="txtCreditoUtilizado" value ="Crédito Utilizado:" /> 
+                            <p:inputText id="txtCreditoUtilizado"  readonly="true" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanBuscaCredito.creditoUtilizado}">
+                            </p:inputText>
+                        </div>
+                    </div>
+                    
+                    
+              <p:dataTable var="model" value="#{beanBuscaCredito.modelo}" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron registros.">
+                  <p:column headerText="Folio" width="150px;" class="alignLeft">
+                        <h:outputText value="#{model.folio}" />
+                    </p:column>
+                    <p:column headerText="Periodo" width="150px;" class="alignLeft">
+                        <h:outputText value="#{model.periodo}" />
+                    </p:column>
+                    <p:column headerText="Plazo" width="85px;" class="alignRight">
+                        <h:outputText value="#{model.plazo}" />
+                    </p:column>
+                    <p:column headerText="Periodos de Atraso" width="60px;" class="alignRight">
+                        <h:outputText value="#{model.periodosAtraso}">
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Dias de Atraso" width="90px;" class="alignRight">
+                        <h:outputText value="#{model.diasAtraso}">
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Saldo Deudor" width="90px;" class="alignLeft">
+                        <h:outputText value="#{model.saldoDeudor}"> 
+                        </h:outputText>
+                    </p:column>
+                  <p:column headerText="Saldo Atrasado" width="90px;" class="alignLeft">
+                        <h:outputText value="#{model.saldoAtrasado}"> 
+                        </h:outputText>
+                    </p:column>
+                </p:dataTable>
+                    
+                </div>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>
