@@ -5,6 +5,7 @@ import com.web.chon.dominio.ExistenciaMenudeo;
 import com.web.chon.dominio.MantenimientoPrecios;
 import com.web.chon.dominio.Subproducto;
 import com.web.chon.dominio.TipoEmpaque;
+import com.web.chon.dominio.TipoVenta;
 import com.web.chon.dominio.Usuario;
 import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.dominio.Venta;
@@ -16,6 +17,7 @@ import com.web.chon.service.IfaceEmpaque;
 import com.web.chon.service.IfaceExistenciaMenudeo;
 import com.web.chon.service.IfaceMantenimientoPrecio;
 import com.web.chon.service.IfaceSubProducto;
+import com.web.chon.service.IfaceTipoVenta;
 import com.web.chon.service.IfaceVenta;
 import com.web.chon.service.IfaceVentaProducto;
 import com.web.chon.util.Constantes;
@@ -31,7 +33,9 @@ import java.io.File;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.MathContext;
+import java.math.RoundingMode;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -80,6 +84,8 @@ public class BeanVenta implements Serializable, BeanSimple {
     @Autowired
     private IfaceEmpaque ifaceEmpaque;
     @Autowired
+    private IfaceTipoVenta ifaceTipoVenta;
+    @Autowired
     private IfaceSubProducto ifaceSubProducto;
     @Autowired
     private IfaceVentaProducto ifaceVentaProducto;
@@ -95,6 +101,7 @@ public class BeanVenta implements Serializable, BeanSimple {
     private IfaceExistenciaMenudeo ifaceExistenciaMenudeo;
 
     private ArrayList<VentaProducto> lstVenta;
+    private ArrayList<TipoVenta> lstTipoVenta;
     private ArrayList<Subproducto> lstProducto;
     private ArrayList<TipoEmpaque> lstTipoEmpaque;
     private ArrayList<Usuario> lstUsuario;
@@ -129,6 +136,8 @@ public class BeanVenta implements Serializable, BeanSimple {
     private BigDecimal max;
     private BigDecimal min;
 
+    private BigDecimal INTERES_VENTA = new BigDecimal("0.60");
+
     @PostConstruct
     public void init() {
         max = new BigDecimal(0);
@@ -141,15 +150,17 @@ public class BeanVenta implements Serializable, BeanSimple {
         usuario.setNombreUsuario(usuarioDominio.getUsuNombre());
         usuario.setApaternoUsuario(usuarioDominio.getUsuPaterno());
         usuario.setAmaternoUsuario(usuarioDominio.getUsuMaterno());
+        lstTipoVenta = ifaceTipoVenta.getAll();
         cliente = ifaceCatCliente.getClienteById(1);
-        permisionToEdit = true;
+        permisionToEdit = false;
         venta = new Venta();
         venta.setIdSucursal(idSucu);
         data = new VentaProducto();
         data.setIdTipoEmpaqueFk(new BigDecimal(-1));
+        data.setTipoPago(new BigDecimal("1"));
         lstProducto = new ArrayList<Subproducto>();
         lstTipoEmpaque = ifaceEmpaque.getEmpaques();
-        
+
         lstVenta = new ArrayList<VentaProducto>();
         selectedTipoEmpaque();
         variableInicial = false;
@@ -196,9 +207,9 @@ public class BeanVenta implements Serializable, BeanSimple {
     public String delete() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    private boolean restarExistencias(VentaProducto producto)
-    {
-         ExistenciaMenudeo ex = new ExistenciaMenudeo();
+
+    private boolean restarExistencias(VentaProducto producto) {
+        ExistenciaMenudeo ex = new ExistenciaMenudeo();
         ex = ifaceExistenciaMenudeo.getExistenciasRepetidasById(producto.getIdProductoFk(), new BigDecimal(venta.getIdSucursal()));
         if (ex.getIdExMenPk() == null) {
             System.out.println("------No se encontraron existencias de este producto");
@@ -206,20 +217,20 @@ public class BeanVenta implements Serializable, BeanSimple {
             return false;
         } else {
             System.out.println("-----Se encontraron existencias");
-            System.out.println("Antes: "+ex.getKilos());
+            System.out.println("Antes: " + ex.getKilos());
             ex.setKilos(ex.getKilos().subtract(producto.getCantidadEmpaque(), MathContext.UNLIMITED));
-            System.out.println("Despues:"+ex.getKilos());
-            System.out.println("Restados: "+producto.getCantidadEmpaque());
-            if (ifaceExistenciaMenudeo.updateExistenciaMenudeo(ex)!=0) {
+            System.out.println("Despues:" + ex.getKilos());
+            System.out.println("Restados: " + producto.getCantidadEmpaque());
+            if (ifaceExistenciaMenudeo.updateExistenciaMenudeo(ex) != 0) {
                 System.out.println("-----se restaron existencias de kilos");
                 return true;
             } else {
                 return false;
             }
         }
-        
+
     }
-    
+
     public void inserts() {
         int idVenta = 0;
         int folioVenta = 0;
@@ -234,23 +245,20 @@ public class BeanVenta implements Serializable, BeanSimple {
                 venta.setIdClienteFk(cliente.getId_cliente());
                 venta.setIdVendedorFk(usuario.getIdUsuarioPk());
                 venta.setIdSucursal(idSucu);
-                int ventaInsertada = ifaceVenta.insertarVenta(venta,folioVenta);
+                int ventaInsertada = ifaceVenta.insertarVenta(venta, folioVenta);
 
                 if (ventaInsertada != 0) {
                     for (VentaProducto producto : lstVenta) {
-                        if(restarExistencias(producto))
-                        {
+                        if (restarExistencias(producto)) {
                             ifaceVentaProducto.insertarVentaProducto(producto, idVenta);
-                        
-                        }
-                        else
-                        {
+
+                        } else {
                             break;
                         }
                     }
-                    setParameterTicket(idVenta,folioVenta);
+                    setParameterTicket(idVenta, folioVenta);
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info!", "La venta se realizo correctamente."));
-                    generateReport(idVenta,folioVenta);
+                    generateReport(idVenta, folioVenta);
                     cancel();
                     lstVenta.clear();
                     totalVenta = new BigDecimal(0);
@@ -310,7 +318,7 @@ public class BeanVenta implements Serializable, BeanSimple {
 
         data.setIdProductoFk(idSubProducto);
         data.setIdTipoEmpaqueFk(new BigDecimal(idEmpaque));
-        data.setPrecioProducto(mantenimentoPrecio.getPrecioVenta() == null ? null : mantenimentoPrecio.getPrecioVenta().toBigInteger());
+        data.setPrecioProducto(mantenimentoPrecio.getPrecioVenta() == null ? null : mantenimentoPrecio.getPrecioVenta());
     }
 
     public void addProducto() {
@@ -318,8 +326,7 @@ public class BeanVenta implements Serializable, BeanSimple {
             if (data.getPrecioProducto().intValue() < min.intValue() || data.getPrecioProducto().intValue() > max.intValue()) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "El precio de venta esta fuera de valores permitidos: Mínimo:" + min + " Máximo: " + max));
 
-            } else {
-                if(verificaExistencia()){
+            } else if (verificaExistencia()) {
                 VentaProducto venta = new VentaProducto();
                 TipoEmpaque empaque = new TipoEmpaque();
                 DecimalFormat df = new DecimalFormat("#,###.##");
@@ -328,11 +335,13 @@ public class BeanVenta implements Serializable, BeanSimple {
                 venta.setIdTipoEmpaqueFk(data.getIdTipoEmpaqueFk());
                 venta.setIdVentaProductoPk(data.getIdVentaProductoPk());
                 venta.setKilosVenta(data.getKilosVenta());
-                venta.setPrecioProducto(data.getPrecioProducto());
+//                venta.setPrecioProducto(data.getPrecioProducto());
                 venta.setNombreProducto(subProducto.getNombreSubproducto());
                 venta.setIdProductoFk(subProducto.getIdSubproductoPk());
                 venta.setNombreEmpaque(empaque.getNombreEmpaque());
-                venta.setTotal(new BigDecimal(venta.getPrecioProducto()).multiply(venta.getCantidadEmpaque()));
+                venta.setPrecioSinInteres(data.getPrecioProducto());
+                venta.setPrecioProducto(precioProducto(data.getPrecioProducto()));
+                venta.setTotal(venta.getPrecioProducto().multiply(venta.getCantidadEmpaque()));
                 lstVenta.add(venta);
                 calcularTotalVenta();
                 data.reset();
@@ -340,8 +349,6 @@ public class BeanVenta implements Serializable, BeanSimple {
 //                UtilUpload.deleteFile(rutaPDF);
                 selectedTipoEmpaque();
                 variableInicial = false;
-                }
-                
             }
 
         } else {
@@ -359,7 +366,7 @@ public class BeanVenta implements Serializable, BeanSimple {
             return false;
         } else {
             System.out.println("Se encontraron existencias");
-            if (data.getCantidadEmpaque().intValue() > ex.getKilos().intValue()) {
+            if ((data.getCantidadEmpaque().compareTo(ex.getKilos())) == 1) {
                 System.out.println("No alcanzan las existencias");
                 JsfUtil.addErrorMessageClean("No alcanzan las existencias, solo hay " + ex.getKilos() + " Kilos Disponibles");
                 return false;
@@ -394,7 +401,7 @@ public class BeanVenta implements Serializable, BeanSimple {
         calcularTotalVenta();
     }
 
-    private void setParameterTicket(int idVenta,int folioVenta) {
+    private void setParameterTicket(int idVenta, int folioVenta) {
 
         NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
         DecimalFormat df = new DecimalFormat("###.##");
@@ -413,7 +420,7 @@ public class BeanVenta implements Serializable, BeanSimple {
 
         String totalVentaStr = numeroLetra.Convertir(df.format(totalVenta), true);
 
-        putValues(TiempoUtil.getFechaDDMMYYYYHHMM(date), productos, nf.format(totalVenta), totalVentaStr, idVenta,folioVenta);
+        putValues(TiempoUtil.getFechaDDMMYYYYHHMM(date), productos, nf.format(totalVenta), totalVentaStr, idVenta, folioVenta);
 
     }
 
@@ -447,6 +454,9 @@ public class BeanVenta implements Serializable, BeanSimple {
         data.setIdTipoEmpaqueFk(dataEdit.getIdTipoEmpaqueFk());
         data.setIdVentaProductoPk(dataEdit.getIdVentaProductoPk());
         data.setKilosVenta(dataEdit.getKilosVenta());
+        data.setPrecioSinInteres(dataEdit.getPrecioSinInteres());
+        //comentado para precios con interes
+//        data.setPrecioProducto(dataEdit.getPrecioSinInteres());
         data.setPrecioProducto(dataEdit.getPrecioProducto());
         data.setNombreProducto(dataEdit.getNombreProducto());
         data.setIdProductoFk(dataEdit.getIdProductoFk());
@@ -458,26 +468,30 @@ public class BeanVenta implements Serializable, BeanSimple {
     public void updateProducto() {
 
         TipoEmpaque empaque = new TipoEmpaque();
+        System.out.println("verificaExistencia" + verificaExistencia());
+        if (data.getPrecioProducto() != null) {
+            if (verificaExistencia()) {
+                empaque = getEmpaque(data.getIdTipoEmpaqueFk());
+                data.setIdProductoFk(subProducto.getIdSubproductoPk());
+                data.setNombreProducto(subProducto.getNombreSubproducto());
+                dataEdit.setCantidadEmpaque(data.getCantidadEmpaque());
+                dataEdit.setIdProductoFk(data.getIdProductoFk());
+                dataEdit.setIdTipoEmpaqueFk(data.getIdTipoEmpaqueFk());
+                dataEdit.setIdVentaProductoPk(data.getIdVentaProductoPk());
+                dataEdit.setKilosVenta(data.getKilosVenta());
 
-        if (data.getPrecioProducto() != null) 
-        {
-            if(verificaExistencia()){
-            empaque = getEmpaque(data.getIdTipoEmpaqueFk());
-            data.setIdProductoFk(subProducto.getIdSubproductoPk());
-            data.setNombreProducto(subProducto.getNombreSubproducto());
-            dataEdit.setCantidadEmpaque(data.getCantidadEmpaque());
-            dataEdit.setIdProductoFk(data.getIdProductoFk());
-            dataEdit.setIdTipoEmpaqueFk(data.getIdTipoEmpaqueFk());
-            dataEdit.setIdVentaProductoPk(data.getIdVentaProductoPk());
-            dataEdit.setKilosVenta(data.getKilosVenta());
-            dataEdit.setPrecioProducto(data.getPrecioProducto());
-            dataEdit.setNombreProducto(data.getNombreProducto());
-            dataEdit.setIdProductoFk(data.getIdProductoFk());
-            dataEdit.setNombreEmpaque(empaque.getNombreEmpaque());
-            dataEdit.setTotal(new BigDecimal(dataEdit.getPrecioProducto()).multiply(dataEdit.getCantidadEmpaque()));
-            calcularTotalVenta();
-            viewEstate = "init";
-            data.reset();
+                dataEdit.setNombreProducto(data.getNombreProducto());
+                dataEdit.setIdProductoFk(data.getIdProductoFk());
+                dataEdit.setNombreEmpaque(empaque.getNombreEmpaque());
+                System.out.println("data precio producto : " + data.getPrecioProducto());
+//                dataEdit.setPrecioSinInteres(data.getPrecioProducto());
+                System.out.println("setPrecioSinInteres : " + data.getPrecioProducto());
+                dataEdit.setPrecioProducto(data.getPrecioProducto());
+                System.out.println("dataEdit : " + data.getPrecioSinInteres());
+                dataEdit.setTotal(dataEdit.getPrecioProducto().multiply(dataEdit.getCantidadEmpaque()));
+                calcularTotalVenta();
+                viewEstate = "init";
+                data.reset();
             }
         } else {
             JsfUtil.addErrorMessage("No se tiene el precio de este prodcuto, favor de contactar al gerente.");
@@ -500,7 +514,7 @@ public class BeanVenta implements Serializable, BeanSimple {
 
     }
 
-    public void generateReport(int idVenta,int folioVenta) {
+    public void generateReport(int idVenta, int folioVenta) {
         JRExporter exporter = null;
 
         try {
@@ -549,6 +563,74 @@ public class BeanVenta implements Serializable, BeanSimple {
             facesContext.responseComplete();
         } catch (Exception e) {
             System.out.println("Error >" + e.getMessage());
+        }
+    }
+
+    //Calcula los precios de cada producto cuando es una venta de credito
+    public void calculaPrecioProducto() {
+        if (data.getIdTipoVentaFk().intValue() != 1) {
+
+            BigDecimal diasAnio = new BigDecimal(365);
+            BigDecimal numPagos = data.getNumeroPagos() == null ? new BigDecimal("1") : data.getNumeroPagos();
+            System.out.println("numPagos " + numPagos);
+            System.out.println("data.getTipoPago() :" + data.getTipoPago());
+            BigDecimal totalDiasPagar = numPagos.multiply(data.getTipoPago());
+            System.out.println("totalDiasPagar " + totalDiasPagar);
+            BigDecimal interesDiasPagar = (INTERES_VENTA.divide(diasAnio, 8, RoundingMode.HALF_UP).multiply(totalDiasPagar)).add(new BigDecimal(1));
+            System.out.println("intersDiASpAGAR " + interesDiasPagar);
+            for (VentaProducto dominio : lstVenta) {
+
+                dominio.setPrecioProducto(dominio.getPrecioSinInteres().multiply(interesDiasPagar));
+                dominio.setTotal(dominio.getPrecioProducto().multiply(dominio.getCantidadEmpaque()));
+            }
+
+        } else {
+
+            for (VentaProducto dominio : lstVenta) {
+                System.out.println("precio :)");
+                dominio.setPrecioProducto(dominio.getPrecioSinInteres());
+                dominio.setTotal(dominio.getPrecioProducto().multiply(dominio.getCantidadEmpaque()));
+            }
+
+        }
+
+        calcularTotalVenta();
+    }
+
+    private BigDecimal precioProducto(BigDecimal precioProducto) {
+
+        BigDecimal diasAnio = new BigDecimal(365);
+
+        if (data.getIdTipoVentaFk().intValue() != 1) {
+
+            BigDecimal numPagos = data.getNumeroPagos() == null ? new BigDecimal("1") : data.getNumeroPagos();
+            BigDecimal totalConInteres = new BigDecimal("0");
+            System.out.println("numPagos " + numPagos);
+            BigDecimal totalDiasPagar = numPagos.multiply(data.getTipoPago());
+            System.out.println("totalDiasPagar " + totalDiasPagar);
+            BigDecimal interesDiasPagar = INTERES_VENTA.divide(diasAnio, 8, RoundingMode.HALF_UP).multiply(totalDiasPagar);
+            totalConInteres = precioProducto.multiply(interesDiasPagar.add(new BigDecimal("1")));
+            System.out.println("intersDiASpAGAR " + interesDiasPagar);
+            System.out.println("precio producto" + precioProducto);
+            System.out.println("precio con interes " + totalConInteres);
+
+//            dominio.setPrecioProducto(dominio.getPrecioProducto().divide(interesDiasPagar.add(new BigDecimal(1)), 2, RoundingMode.HALF_UP));
+//            BigDecimal interes = INTERES_VENTA.divide(diasAnio, 6, RoundingMode.HALF_UP).multiply(data.getNumeroPagos() == null ? data.getIdTipoVentaFk() : data.getNumeroPagos().multiply(data.getIdTipoVentaFk()));
+            return totalConInteres;
+        } else {
+            return precioProducto;
+        }
+
+    }
+
+    public void validaCreditoCliente() {
+        System.out.println("cliente.getLimiteCredito() " + cliente.getLimiteCredito());
+        BigDecimal tipoPago = new BigDecimal("1");
+        if (cliente.getLimiteCredito() == null) {
+            JsfUtil.addWarnMessage("El Cliente no tiene Crédito.");
+            data.setTipoPago(tipoPago);
+        } else {
+            JsfUtil.addSuccessMessage("El credito del cliente es de :" + cliente.getLimiteCredito());
         }
     }
 
@@ -747,6 +829,14 @@ public class BeanVenta implements Serializable, BeanSimple {
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
+    }
+
+    public ArrayList<TipoVenta> getLstTipoVenta() {
+        return lstTipoVenta;
+    }
+
+    public void setLstTipoVenta(ArrayList<TipoVenta> lstTipoVenta) {
+        this.lstTipoVenta = lstTipoVenta;
     }
 
 }

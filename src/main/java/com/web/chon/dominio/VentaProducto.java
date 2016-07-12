@@ -17,15 +17,20 @@ public class VentaProducto implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private BigDecimal idVentaProductoPk;
-    private BigInteger precioProducto;
+    private BigDecimal precioProducto;
     private String idProductoFk;
     private BigDecimal idTipoEmpaqueFk;
-    private TipoVenta idTipoVentaFk;
     private BigDecimal cantidadEmpaque;
     private BigDecimal kilosVenta;
     private BigDecimal total;
     private String nombreProducto;
     private String nombreEmpaque;
+    private BigDecimal idTipoVentaFk;
+    
+    //Variable para venta a Credito
+    private BigDecimal numeroPagos;
+    private BigDecimal precioSinInteres;
+    private BigDecimal tipoPago;
 
     public VentaProducto() {
     }
@@ -42,13 +47,15 @@ public class VentaProducto implements Serializable {
         this.idVentaProductoPk = idVentaProductoPk;
     }
 
-    public BigInteger getPrecioProducto() {
+    public BigDecimal getPrecioProducto() {
         return precioProducto;
     }
 
-    public void setPrecioProducto(BigInteger precioProducto) {
+    public void setPrecioProducto(BigDecimal precioProducto) {
         this.precioProducto = precioProducto;
     }
+
+  
 
     public String getIdProductoFk() {
         return idProductoFk;
@@ -66,11 +73,11 @@ public class VentaProducto implements Serializable {
         this.idTipoEmpaqueFk = idTipoEmpaqueFk;
     }
 
-    public TipoVenta getIdTipoVentaFk() {
+    public BigDecimal getIdTipoVentaFk() {
         return idTipoVentaFk;
     }
 
-    public void setIdTipoVentaFk(TipoVenta idTipoVentaFk) {
+    public void setIdTipoVentaFk(BigDecimal idTipoVentaFk) {
         this.idTipoVentaFk = idTipoVentaFk;
     }
 
@@ -114,21 +121,49 @@ public class VentaProducto implements Serializable {
         this.nombreEmpaque = nombreEmpaque;
     }
 
+    public BigDecimal getNumeroPagos() {
+        return numeroPagos;
+    }
+
+    public void setNumeroPagos(BigDecimal numeroPagos) {
+        this.numeroPagos = numeroPagos;
+    }
+
+
+    public BigDecimal getPrecioSinInteres() {
+        return precioSinInteres;
+    }
+
+    public void setPrecioSinInteres(BigDecimal precioSinInteres) {
+        this.precioSinInteres = precioSinInteres;
+    }
+
+    public BigDecimal getTipoPago() {
+        return tipoPago;
+    }
+
+    public void setTipoPago(BigDecimal tipoPago) {
+        this.tipoPago = tipoPago;
+    }
+
+    
+    
+   
+  
     @Override
     public String toString() {
         return "VentaProducto{" + "idVentaProductoPk=" + idVentaProductoPk + ", precioProducto=" + precioProducto + ", idProductoFk=" + idProductoFk + ", idTipoEmpaqueFk=" + idTipoEmpaqueFk + ", idTipoVentaFk=" + idTipoVentaFk + ", cantidadEmpaque=" + cantidadEmpaque + ", kilosVenta=" + kilosVenta + ", total=" + total + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + '}';
     }
-   
 
     public void reset() {
-        
-      idVentaProductoPk = null;
-      precioProducto = null;
-      idProductoFk = null;
-      cantidadEmpaque = null;
-      kilosVenta = null;
-      total = null;
 
-}
+        idVentaProductoPk = null;
+        precioProducto = null;
+        idProductoFk = null;
+        cantidadEmpaque = null;
+        kilosVenta = null;
+        total = null;
+
+    }
 
 }
