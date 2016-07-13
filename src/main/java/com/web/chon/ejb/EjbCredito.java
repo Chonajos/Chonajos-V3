@@ -26,8 +26,8 @@ public class EjbCredito implements NegocioCredito {
 
         try {
 
-            Query query = em.createNativeQuery("INSERT INTO  CREDITO (ID_CREDITO_PK ,ID_CLIENTE_FK ,ID_VENTA_MENUDEO ,ID_VENTA_MAYOREO ,ID_USUARIO_CREDITO ,ID_TIPO_CREDITO_FK ,ESTATUS_CREDITO ,NUMERO_PROMESA_PAGO ,FECHA_INICIO_CREDITO ,FECHA_FIN_CREDITO ,FECHA_PROMESA_FIN_PAGO ,TAZA_INTERES) "
-                    + " VALUES(S_CREDITO.nextval,?,?,?,?,?,?,?,?,?,?,?)");
+            Query query = em.createNativeQuery("INSERT INTO  CREDITO (ID_CREDITO_PK ,ID_CLIENTE_FK ,ID_VENTA_MENUDEO ,ID_VENTA_MAYOREO ,ID_USUARIO_CREDITO ,ID_TIPO_CREDITO_FK ,ESTATUS_CREDITO ,NUMERO_PROMESA_PAGO ,FECHA_INICIO_CREDITO ,FECHA_FIN_CREDITO ,FECHA_PROMESA_FIN_PAGO ,TAZA_INTERES,PLAZOS) "
+                    + " VALUES(S_CREDITO.nextval,?,?,?,?,?,?,?,?,?,?,?,?)");
             query.setParameter(1, credito.getIdClienteFk());
             query.setParameter(2, credito.getIdVentaMenudeo());
             query.setParameter(3, credito.getIdVentaMayoreo());
@@ -39,6 +39,7 @@ public class EjbCredito implements NegocioCredito {
             query.setParameter(9, credito.getFechaFinCredito());
             query.setParameter(10, credito.getFechaPromesaPago());
             query.setParameter(11, credito.getTazaInteres());
+            query.setParameter(12, credito.getPlasos());
 
             return query.executeUpdate();
 
@@ -93,7 +94,7 @@ public class EjbCredito implements NegocioCredito {
     public List<Object[]> getAll() {
         try {
 
-            Query query = em.createNativeQuery("SELECT ID_CREDITO_PK,ID_CLIENTE_FK,ID_VENTA_MENUDEO,ID_VENTA_MAYOREO,ID_USUARIO_CREDITO,ID_TIPO_CREDITO_FK,ESTATUS_CREDITO,NUMERO_PROMESA_PAGO,FECHA_INICIO_CREDITO,FECHA_FIN_CREDITO,FECHA_PROMESA_FIN_PAGO,TAZA_INTERES  FROM CREDITO");
+            Query query = em.createNativeQuery("SELECT ID_CREDITO_PK,ID_CLIENTE_FK,ID_VENTA_MENUDEO,ID_VENTA_MAYOREO,ID_USUARIO_CREDITO,ID_TIPO_CREDITO_FK,ESTATUS_CREDITO,NUMERO_PROMESA_PAGO,FECHA_INICIO_CREDITO,FECHA_FIN_CREDITO,FECHA_PROMESA_FIN_PAGO,TAZA_INTERES,PLAZOS  FROM CREDITO");
             List<Object[]> resultList = null;
             resultList = query.getResultList();
 
@@ -109,7 +110,7 @@ public class EjbCredito implements NegocioCredito {
     public List<Object[]> getById(BigDecimal idCredito) {
         try {
 
-            Query query = em.createNativeQuery("SELECT ID_CREDITO_PK,ID_CLIENTE_FK,ID_VENTA_MENUDEO,ID_VENTA_MAYOREO,ID_USUARIO_CREDITO,ID_TIPO_CREDITO_FK,ESTATUS_CREDITO,NUMERO_PROMESA_PAGO,FECHA_INICIO_CREDITO,FECHA_FIN_CREDITO,FECHA_PROMESA_FIN_PAGO,TAZA_INTERES  FROM CREDITO WHERE ID_CREDITO_PK = ?");
+            Query query = em.createNativeQuery("SELECT ID_CREDITO_PK,ID_CLIENTE_FK,ID_VENTA_MENUDEO,ID_VENTA_MAYOREO,ID_USUARIO_CREDITO,ID_TIPO_CREDITO_FK,ESTATUS_CREDITO,NUMERO_PROMESA_PAGO,FECHA_INICIO_CREDITO,FECHA_FIN_CREDITO,FECHA_PROMESA_FIN_PAGO,TAZA_INTERES,PLAZOS  FROM CREDITO WHERE ID_CREDITO_PK = ?");
             List<Object[]> resultList = null;
             query.setParameter(1, idCredito);
             resultList = query.getResultList();

@@ -32,7 +32,7 @@
                 <div class="container-fluid">
                     <div class="form-group" align="right">
                         <p:commandButton value="Agregar" update="autocompleteProducto table txtPrecioVenta txtCantidadEmpaque" ajax="true" action="#{beanVenta.addProducto}" rendered="#{beanVenta.viewEstate =='init'}"/>
-                        <p:commandButton value="Vender" id="vender" ajax="false" update=":formContent"   action="#{beanVenta.inserts}" immediate="true" resetValues="true" rendered="#{beanVenta.viewEstate =='init'}" onclick="PF('statusDialog').show();"/>
+                        <p:commandButton value="Vender" id="vender" ajax="false" update=":formContent"   action="#{beanVenta.insert}" immediate="true" resetValues="true" rendered="#{beanVenta.viewEstate =='init'}" onclick="PF('statusDialog').show();"/>
                         <!--<p:commandButton  value="imprimir ticket" id="btonImprimir" ajax="true" rendered="{beanVenta.viewEstate =='init'}"  onclick="window.frames.miFrame.print();" resetValues="true" action="{beanVenta.cancel}"/>-->
                         <p:commandButton value="Aceptar" update=":formContent" ajax="true" action="#{beanVenta.updateProducto}" rendered="#{beanVenta.viewEstate =='update'}"/>
                         <p:commandButton value="Cancelar" update=":formContent" ajax="true" action="#{beanVenta.cancelarModificacion}" immediate="true" resetValues="true" rendered="#{beanVenta.viewEstate =='update'}"/>
@@ -110,13 +110,18 @@
                         <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-6 col-md-6 col-sm-4 col-xs-12"  for="txtPrecioVenta" value ="Precio de venta:" /> 
                             <p:inputText id="txtPrecioVenta"  class=" col-lg-3 col-md-3 col-sm-8 col-xs-12" value="#{beanVenta.data.precioProducto}" required="true"
-                                         requiredMessage="Ingresa un valor para el campo Precio de venta." disabled="#{beanVenta.permisionToEdit}"/>
+                                         requiredMessage="Ingresa un valor para el campo Precio de venta." disabled="#{beanVenta.permisionToEdit}">
+                                <p:ajax event="blur"
+                                    listener="#{beanVenta.validaPrecioMinimoMaximo}"
+                                    immediate="true" update="@this" />
+                            </p:inputText>
                         </div>
 
                         <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12" >
                             <p:outputLabel class="col-lg-8 col-md-8 col-sm-4 col-xs-12" id="labelEmpaque" for="txtCantidadEmpaque" value ="Cantidad de #{beanVenta.nombreEmpaque}:"  /> 
                             <p:inputText id="txtCantidadEmpaque" maxlength="6" class=" col-lg-3 col-md-3 col-sm-8 col-xs-12" value="#{beanVenta.data.cantidadEmpaque}" required="true" 
                                          requiredMessage="Ingresa un valor para el campo Cantidad de Empaques." />
+                            
                             <pe:keyFilter regEx="/[\d.,\-]/" for="txtCantidadEmpaque"/>  
                         </div>
                     </div>
@@ -140,11 +145,11 @@
                                 <h:outputText value="#{model.cantidadEmpaque}" >
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Precio de Contado" width="60px;" class="alignRight">
-                                <h:outputText value="#{model.precioSinInteres}">
+<!--                            <p:column headerText="Precio de Contado" width="60px;" class="alignRight">
+                                <h:outputText value="{model.precioSinInteres}">
                                     <f:convertNumber pattern="#,###.00"/>
                                 </h:outputText>
-                            </p:column>
+                            </p:column>-->
                             <p:column headerText="Precio de venta" width="60px;" class="alignRight">
                                 <h:outputText value="#{model.precioProducto}">
                                     <f:convertNumber pattern="#,###.00"/>
@@ -175,7 +180,7 @@
                                             </h:outputText>
                                         </f:facet>
                                     </p:column>
-                                    <p:column colspan="3" />
+                                    <p:column colspan="2" />
                                 </p:row>
                             </p:columnGroup>
                         </p:dataTable>

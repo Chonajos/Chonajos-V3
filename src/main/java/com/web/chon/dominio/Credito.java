@@ -15,12 +15,13 @@ public class Credito extends ValueObject {
     private BigDecimal idVentaMayoreo;
     private BigDecimal idUsuarioCredito;
     private BigDecimal idTipoCreditoFk;
-    private String estatusCredito;
+    private BigDecimal estatusCredito;
     private BigDecimal numeroPromesaPago;
     private Date fechaInicioCredito;
     private Date fechaFinCredito;
     private Date fechaPromesaPago;
     private BigDecimal tazaInteres;
+    private BigDecimal plasos;
 
     @Override
     public String toString() {
@@ -75,14 +76,6 @@ public class Credito extends ValueObject {
         this.idTipoCreditoFk = idTipoCreditoFk;
     }
 
-    public String getEstatusCredito() {
-        return estatusCredito;
-    }
-
-    public void setEstatusCredito(String estatusCredito) {
-        this.estatusCredito = estatusCredito;
-    }
-
     public BigDecimal getNumeroPromesaPago() {
         return numeroPromesaPago;
     }
@@ -122,7 +115,22 @@ public class Credito extends ValueObject {
     public void setTazaInteres(BigDecimal tazaInteres) {
         this.tazaInteres = tazaInteres;
     }
-    
+
+    public BigDecimal getEstatusCredito() {
+        return estatusCredito;
+    }
+
+    public void setEstatusCredito(BigDecimal estatusCredito) {
+        this.estatusCredito = estatusCredito;
+    }
+
+    public BigDecimal getPlasos() {
+        return plasos;
+    }
+
+    public void setPlasos(BigDecimal plasos) {
+        this.plasos = plasos;
+    }
     
 
     @Override
@@ -139,6 +147,7 @@ public class Credito extends ValueObject {
         fechaFinCredito = null;
         fechaPromesaPago = null;
         tazaInteres = null;
+        plasos = null;
     }
 
 }

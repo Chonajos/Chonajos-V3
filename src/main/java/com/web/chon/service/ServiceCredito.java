@@ -9,11 +9,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author Juan de la Cruz
  */
+@Service
 public class ServiceCredito implements IfaceCredito {
 
     NegocioCredito ejb;
@@ -43,12 +45,13 @@ public class ServiceCredito implements IfaceCredito {
             credito.setIdVentaMayoreo(object[3] == null ? null : new BigDecimal(object[3].toString()));
             credito.setIdUsuarioCredito(object[4] == null ? null : new BigDecimal(object[4].toString()));
             credito.setIdTipoCreditoFk(object[5] == null ? null : new BigDecimal(object[5].toString()));
-            credito.setEstatusCredito(object[6] == null ? null : object[6].toString());
+            credito.setEstatusCredito(object[6] == null ? null : new BigDecimal(object[6].toString()));
             credito.setNumeroPromesaPago(object[7] == null ? null : new BigDecimal(object[7].toString()));
             credito.setFechaInicioCredito(object[8] == null ? null : (Date) object[8]);
             credito.setFechaFinCredito(object[9] == null ? null : (Date) object[9]);
             credito.setFechaPromesaPago(object[10] == null ? null : (Date) object[10]);
             credito.setTazaInteres(object[11] == null ? null : new BigDecimal(object[11].toString()));
+            credito.setTazaInteres(object[12] == null ? null : new BigDecimal(object[12].toString()));
 
             lstCredito.add(credito);
         }
@@ -71,12 +74,13 @@ public class ServiceCredito implements IfaceCredito {
             credito.setIdVentaMayoreo(object[3] == null ? null : new BigDecimal(object[3].toString()));
             credito.setIdUsuarioCredito(object[4] == null ? null : new BigDecimal(object[4].toString()));
             credito.setIdTipoCreditoFk(object[5] == null ? null : new BigDecimal(object[5].toString()));
-            credito.setEstatusCredito(object[6] == null ? null : object[6].toString());
+            credito.setEstatusCredito(object[6] == null ? null : new BigDecimal(object[6].toString()));
             credito.setNumeroPromesaPago(object[7] == null ? null : new BigDecimal(object[7].toString()));
             credito.setFechaInicioCredito(object[8] == null ? null : (Date) object[8]);
             credito.setFechaFinCredito(object[9] == null ? null : (Date) object[9]);
             credito.setFechaPromesaPago(object[10] == null ? null : (Date) object[10]);
             credito.setTazaInteres(object[11] == null ? null : new BigDecimal(object[11].toString()));
+            credito.setTazaInteres(object[12] == null ? null : new BigDecimal(object[12].toString()));
         }
 
         return credito;
