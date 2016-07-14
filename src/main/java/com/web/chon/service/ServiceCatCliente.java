@@ -9,6 +9,7 @@ import com.web.chon.dominio.Cliente;
 import com.web.chon.negocio.NegocioCatCliente;
 import com.web.chon.util.Utilidades;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -203,5 +204,32 @@ public class ServiceCatCliente implements IfaceCatCliente {
             return 0;
         }
 
+    }
+
+    @Override
+    public Cliente getClienteCreditoById(int idCliente) {
+       try {
+            Cliente cliente = new Cliente();
+            ejb = (NegocioCatCliente) Utilidades.getEJBRemote("ejbCatCliente", NegocioCatCliente.class.getName());
+            List<Object[]> lstObject = ejb.getClienteCreditoById(idCliente);
+
+            for (Object[] obj : lstObject) {
+                cliente.setId_cliente(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+                cliente.setNombre(obj[1] == null ? "" : obj[1].toString());
+                cliente.setPaterno(obj[2] == null ? "" : obj[2].toString());
+                cliente.setMaterno(obj[3] == null ? "" : obj[3].toString());
+                cliente.setLimiteCredito(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
+                cliente.setUtilizadoMenudeo(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
+                cliente.setUtilizadoMayoreo(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
+                cliente.setUtilizadoTotal(cliente.getUtilizadoMenudeo().add(cliente.getUtilizadoMayoreo(), MathContext.UNLIMITED));
+                cliente.setCreditoDisponible(cliente.getLimiteCredito().subtract(cliente.getUtilizadoTotal(), MathContext.UNLIMITED));
+            }
+            System.out.println("Cliente: "+cliente.toString());
+            return cliente;
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceCatCliente.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+
+        }
     }
 }

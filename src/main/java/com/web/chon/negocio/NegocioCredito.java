@@ -21,6 +21,7 @@ public interface NegocioCredito
     
     public List<Object[]> getAll();
     
+    public List<Object[]> getCreditosActivos(BigDecimal idCliente);
     public List<Object[]> getById(BigDecimal idCredito) ;
 
     

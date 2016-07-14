@@ -20,6 +20,8 @@ public interface NegocioCatCliente {
     public List<Object[]> getClientes();
 
     public List<Object[]> getClienteById(int idCliente);
+    
+    public List<Object[]> getClienteCreditoById(int idCliente);       
 
     public int deleteCliente(int idCliente);
 

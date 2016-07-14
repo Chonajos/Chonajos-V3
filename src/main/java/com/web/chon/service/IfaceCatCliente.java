@@ -19,6 +19,8 @@ public interface IfaceCatCliente
     
     public Cliente getClienteById(int idCliente);
     
+    public Cliente getClienteCreditoById(int idCliente);
+    
     public int deleteCliente(int idCliente);
     
     public int updateCliente(Cliente cliente);

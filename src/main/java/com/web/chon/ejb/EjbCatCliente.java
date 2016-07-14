@@ -197,5 +197,36 @@ public class EjbCatCliente implements NegocioCatCliente {
 
         return query.getResultList();
     }
+    @Override
+    public List<Object[]> getClienteCreditoById(int idCliente) {
+        try {
+
+            Query query = em.createNativeQuery("select c.ID_CLIENTE,c.NOMBRE, c.APELLIDO_PATERNO, c.APELLIDO_MATERNO,c.MONTO_CREDITO,sum(vp.TOTAL_VENTA) as Credito_Utilizado ,\n" +
+"NVL((select sum(vmp.TOTAL_VENTA) as Credito_Utilizado from CREDITO cre\n" +
+"inner join VENTA_MAYOREO vm\n" +
+"on vm.ID_VENTA_MAYOREO_PK = cre.ID_VENTA_MAYOREO\n" +
+"inner join VENTAMAYOREOPRODUCTO vmp\n" +
+"on vmp.ID_VENTA_MAYOREO_FK = vm.ID_VENTA_MAYOREO_PK\n" +
+"inner join cliente c\n" +
+"on c.ID_CLIENTE = cre.ID_CLIENTE_FK\n" +
+"where cre.ESTATUS_CREDITO = 1 and cre.ID_CLIENTE_FK= '"+idCliente+"'),0) as credito_utilizado_mayoreo from CREDITO cre\n" +
+"inner join venta v\n" +
+"on v.ID_VENTA_PK = cre.ID_VENTA_MENUDEO\n" +
+"inner join VENTA_PRODUCTO vp\n" +
+"on vp.ID_VENTA_FK = v.ID_VENTA_PK\n" +
+"inner join cliente c\n" +
+"on c.ID_CLIENTE = cre.ID_CLIENTE_FK\n" +
+"where cre.ESTATUS_CREDITO = 1  and cre.ID_CLIENTE_FK= '"+idCliente+"'\n" +
+"group by c.ID_CLIENTE,c.NOMBRE, c.APELLIDO_PATERNO, c.APELLIDO_MATERNO,c.MONTO_CREDITO");
+            query.setParameter(1, idCliente);
+
+            System.out.println("Query: " +query);
+            return query.getResultList();
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbCatCliente.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
 
 }

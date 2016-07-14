@@ -2,6 +2,7 @@
 package com.web.chon.service;
 
 import com.web.chon.dominio.Credito;
+import com.web.chon.dominio.SaldosDeudas;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
@@ -12,6 +13,8 @@ import java.util.ArrayList;
 public interface IfaceCredito {
     
     public ArrayList<Credito> getAll();
+    
+    public ArrayList<SaldosDeudas> getCreditosActivos(BigDecimal idCliente);
     
     public Credito getById(BigDecimal idCredito);
     
