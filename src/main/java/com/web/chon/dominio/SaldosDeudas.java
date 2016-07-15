@@ -13,8 +13,8 @@ import java.util.Date;
  *
  * @author JesusAlfredo
  */
-public class SaldosDeudas implements Serializable
-{
+public class SaldosDeudas implements Serializable {
+
     private static final long serialVersionUID = 1L;
     private BigDecimal folioCredito;
     private BigDecimal folioVenta;
@@ -33,7 +33,26 @@ public class SaldosDeudas implements Serializable
     private String nombreStatus;
     private BigDecimal saldoTotal;
     private BigDecimal tipoCredito;
- 
+
+    public void reset() {
+        folioCredito = null;
+        folioVenta = null;
+        montoTotal = null;
+        totalAbonado = null;
+        fechaVenta = null;
+        montoAbonar = null;
+        fechaProximaAbonar = null;
+        periodo = null;
+        plazo = null;
+        periodosAtraso = null;
+        diasAtraso = null;
+        saldoDeudor = null;
+        saldoAtrasado = null;
+        idEstatus = null;
+        nombreStatus = null;
+        saldoTotal = null;
+        tipoCredito = null;
+    }
 
     @Override
     public String toString() {
@@ -63,7 +82,6 @@ public class SaldosDeudas implements Serializable
     public void setTipoCredito(BigDecimal tipoCredito) {
         this.tipoCredito = tipoCredito;
     }
-
 
     public BigDecimal getFolioCredito() {
         return folioCredito;
@@ -137,8 +155,6 @@ public class SaldosDeudas implements Serializable
         this.plazo = plazo;
     }
 
-   
-
     public String getPeriodosAtraso() {
         return periodosAtraso;
     }
@@ -178,9 +194,5 @@ public class SaldosDeudas implements Serializable
     public void setSaldoTotal(BigDecimal saldoTotal) {
         this.saldoTotal = saldoTotal;
     }
-
-  
-    
-    
 
 }

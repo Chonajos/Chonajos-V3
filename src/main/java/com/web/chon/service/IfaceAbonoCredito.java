@@ -25,5 +25,7 @@ public interface IfaceAbonoCredito {
     
     public AbonoCredito getById(BigDecimal idAbonoCredito);
     
+    public int getNextVal();
+    
     
 }

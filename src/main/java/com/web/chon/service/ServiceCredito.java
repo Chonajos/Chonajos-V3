@@ -136,6 +136,10 @@ public class ServiceCredito implements IfaceCredito {
                 temporal = auxiliar;
                 System.out.println("Fecha: N°: "+i + " ==== " + temporal);
             }
+            for(Date item : fechasDePago)
+            {
+                Date temp = TiempoUtil.
+            }
             
             
             credito.setMontoAbonar(credito.getSaldoTotal().divide(credito.getPlazo(),2,RoundingMode.HALF_UP));
@@ -152,6 +156,13 @@ public class ServiceCredito implements IfaceCredito {
 
         return lstCreditos;
         
+    }
+
+    @Override
+    public int updateStatus(BigDecimal idCreditoPk, BigDecimal estatus) {
+       getEjb();
+        return ejb.updateStatus(idCreditoPk,estatus);
+    
     }
 
 }

@@ -9,11 +9,16 @@ import com.web.chon.dominio.AbonoCredito;
 import com.web.chon.dominio.Cliente;
 import com.web.chon.dominio.SaldosDeudas;
 import com.web.chon.dominio.TipoAbono;
+import com.web.chon.dominio.UsuarioDominio;
+import com.web.chon.security.service.PlataformaSecurityContext;
+import com.web.chon.service.IfaceAbonoCredito;
 import com.web.chon.service.IfaceCatCliente;
 import com.web.chon.service.IfaceCredito;
 import com.web.chon.service.IfaceTipoAbono;
+import com.web.chon.util.JsfUtil;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import javax.annotation.PostConstruct;
 import org.primefaces.context.RequestContext;
@@ -32,6 +37,9 @@ public class BeanBuscaCredito implements Serializable{
     @Autowired IfaceCatCliente ifaceCatCliente;
     @Autowired IfaceCredito ifaceCredito;
     @Autowired IfaceTipoAbono ifaceTipoAbono;
+    @Autowired IfaceAbonoCredito ifaceAbonoCredito;
+    @Autowired private PlataformaSecurityContext context;
+    
     private BigDecimal idCliente;
     private String nombreCompletoCliente;
     private String rfcCliente;
@@ -50,15 +58,16 @@ public class BeanBuscaCredito implements Serializable{
     private AbonoCredito abono;
     Cliente cliente;
     private String viewCheque;
+    
+    private UsuarioDominio usuarioDominio;
 
     
     @PostConstruct
     public void init() 
     {
         abono = new AbonoCredito();
+        usuarioDominio = context.getUsuarioAutenticado();
         dataAbonar = new SaldosDeudas();
-                dataAbonar.setFolioCredito(new BigDecimal("01"));
-
         cliente = new Cliente();
         modelo = new ArrayList<SaldosDeudas>();
         lstTipoAbonos = ifaceTipoAbono.getAll();
@@ -88,12 +97,55 @@ public class BeanBuscaCredito implements Serializable{
           
     public void abonar()
     {
-//        dataAbonar.setFolioCredito(new BigDecimal("11"));
-        System.out.println("abonar show: "+dataAbonar.toString());
+        AbonoCredito ac = new AbonoCredito();
+        ac.setIdAbonoCreditoPk(new BigDecimal(ifaceAbonoCredito.getNextVal()));
+        ac.setIdCreditoFk(dataAbonar.getFolioCredito());
+        ac.setMontoAbono(abono.getMontoAbono());
+        ac.setIdUsuarioFk(usuarioDominio.getIdUsuario()); //aqui poner el usuario looggeado
+        ac.setIdtipoAbonoFk(abono.getIdtipoAbonoFk());
+        if(abono.getIdtipoAbonoFk().intValue()==3)
+        {
+            ac.setEstatusAbono(new BigDecimal(2));
+                //Entra a estado 2 Que significa que esta pendiente.
+        }
+        else
+        {
+            //Quiere decir que se ejecute el abono.
+            ac.setEstatusAbono(new BigDecimal(1)); 
+        }
+
+        ac.setNumeroCheque(abono.getNumeroCheque());
+        ac.setLibrador(abono.getLibrador());
+        ac.setFechaCobro(abono.getFechaCobro());
+        ac.setBanco(abono.getBanco());
+        ac.setFactura(abono.getFactura());
+        ac.setReferencia(abono.getReferencia());
+        ac.setConcepto(abono.getConcepto());
+        ac.setFechaTransferencia(abono.getFechaTransferencia());
+        //Despues sigue sumar 
+        BigDecimal temporal =dataAbonar.getTotalAbonado().add(abono.getMontoAbono(), MathContext.UNLIMITED);
+
+        if((temporal).compareTo(dataAbonar.getSaldoTotal())==1 || (temporal).compareTo(dataAbonar.getSaldoTotal())==1)
+            {
+                
+                System.out.println("Se liquido Todo cambiar a estatus 2 el credito");
+                ifaceCredito.updateStatus(ac.getIdCreditoFk(), new BigDecimal(2));
+                JsfUtil.addSuccessMessage("Se ha liquidado el crédito exitosamente");
+            }
+       if( ifaceAbonoCredito.insert(ac)==1)
+       {
+           JsfUtil.addSuccessMessage("Se ha realizado un abono existosamente");
+           searchByIdCliente();
+           abono.reset();
+           dataAbonar.reset();
+       }
+       else
+       {
+           JsfUtil.addErrorMessageClean("Ocurrio un error");
+       }
+        System.out.println("AC======================: "+ac.toString());
         
-         RequestContext.getCurrentInstance().execute("PF('dlg').show();");
-//         dataAbonar.setFolioCredito(new BigDecimal("10"));
-        
+//RequestContext.getCurrentInstance().execute("PF('dlg').show();"); 
     }
     public void searchByIdCliente()
     {
@@ -237,6 +289,14 @@ public class BeanBuscaCredito implements Serializable{
 
     public void setViewCheque(String viewCheque) {
         this.viewCheque = viewCheque;
+    }
+
+    public UsuarioDominio getUsuarioDominio() {
+        return usuarioDominio;
+    }
+
+    public void setUsuarioDominio(UsuarioDominio usuarioDominio) {
+        this.usuarioDominio = usuarioDominio;
     }
 
     

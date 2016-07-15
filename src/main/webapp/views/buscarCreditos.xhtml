@@ -58,18 +58,30 @@
                                                 <h:outputLabel for="txtFactura" value="N. Factura:" rendered="#{beanBuscaCredito.viewCheque =='true'}" />
                                                 <p:inputText id="txtFactura"  value="#{beanBuscaCredito.abono.factura}" rendered="#{beanBuscaCredito.viewCheque =='true'}" />
                                             </div>
+                                            <!--Datos para Transferencia-->
+                                        <div class="form-group">
+                                        <h:outputLabel for="txtReferencia" value="N. Referencia:" rendered="#{beanBuscaCredito.viewCheque =='trans'}"/>
+                                        <p:inputText id="txtReferencia"  value="#{beanBuscaCredito.abono.referencia}" rendered="#{beanBuscaCredito.viewCheque =='trans'}"/>
+                                        </div>
+                                            
+                                        <div class="form-group">
+                                        <h:outputLabel for="txtConcepto" value="Concepto:" rendered="#{beanBuscaCredito.viewCheque =='trans'}"/>
+                                        <p:inputText id="txtConcepto"  value="#{beanBuscaCredito.abono.concepto}" rendered="#{beanBuscaCredito.viewCheque =='trans'}"/>
+                                        </div>
+                                            
+                                        <div class="form-group">
+                                                <h:outputLabel  value="Fecha de Transferencia:" rendered="#{beanBuscaCredito.viewCheque =='trans'}" />
+                                                <p:calendar class="calendario" navigator="true" 
+                                                            placeholder="dd/mm/yyyy" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" 
+                                                            showOn="button"  id="popup2" value="#{beanBuscaCredito.abono.fechaTransferencia}" rendered="#{beanBuscaCredito.viewCheque =='trans'}" />
+                                        </div>
+                                        <!--Fin Datos para Transferencia-->
                                         </p:fragment>
                                         <!--Fin Datos para Cheque-->
 
-
-                                        <!--Datos para Transferencia-->
-                                        <p:fragment id="transferencia" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                                        <h:outputLabel for="txtReferencia" value="N. Referencia:" rendered="#{beanBuscaCredito.viewCheque =='trans'}"/>
-                                        <p:inputText id="txtReferencia"  value="#{beanBuscaCredito.abono.referencia}" rendered="#{beanBuscaCredito.viewCheque =='trans'}"/>
-                                        <!--Fin Datos para Transferencia-->
-                                        </p:fragment>
+                                        
                                         <f:facet name="footer">
-                                            <p:commandButton value="Registrar" update=":formContent" action="#{beanBuscaCredito.abonar()}" oncomplete="PF('dlg').hide();"/>
+                                            <p:commandButton value="Registrar" update="formContent" action="#{beanBuscaCredito.abonar()}" oncomplete="PF('dlg').hide();"/>
                                         </f:facet> 
 
                                     </h:panelGrid>
@@ -152,7 +164,7 @@
                         <p:column headerText="Estatus" width="50px;" class="alignLeft">
                             <h:outputText value="#{model.nombreStatus}" />
                         </p:column>
-                        <p:column headerText="Folio de Venta" width="55px;" class="alignLeft">
+                        <p:column headerText="Folio de Venta" width="45px;" class="alignLeft">
                             <h:outputText value="#{model.folioVenta}" />
                         </p:column>
                         <p:column headerText="Fecha de Venta" width="100px;" class="alignCenter">
@@ -186,7 +198,7 @@
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
                         </p:column>
-                        <p:column headerText="Abonar123" width="60px;" class="alignCenter">
+                        <p:column headerText="Abonar" width="60px;" class="alignCenter">
                             <p:commandButton ajax="true"  oncomplete="PF('dlg').show();" update =":formContent:dialogw:" icon="ui-icon-triangle-1-e" styleClass="ui-priority-primary" >
                                 <f:setPropertyActionListener value="#{model}" target="#{beanBuscaCredito.dataAbonar}"/>
                             </p:commandButton>

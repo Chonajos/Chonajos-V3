@@ -25,13 +25,29 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
     public int insert(AbonoCredito abonoCredito) {
 
         try {
+            System.out.println("EJB: =========="+abonoCredito.toString());
 
-            Query query = em.createNativeQuery("INSERT INTO  ABONO_CREDITO (ID_ABONO_CREDITO_PK ,ID_CREDITO_FK ,MONTO_ABONO ,FECHA_ABONO ,ID_USUARIO_FK ) "
-                    + " VALUES(S_ABONO_CREDITO.nextval,?,?,?,?)");
-            query.setParameter(1, abonoCredito.getIdCreditoFk());
-            query.setParameter(2, abonoCredito.getMontoAbono());
-            query.setParameter(3, abonoCredito.getFechaAbono());
+            Query query = em.createNativeQuery("INSERT INTO  ABONO_CREDITO (ID_ABONO_CREDITO_PK ,"
+                    + "ID_CREDITO_FK "
+                    + ",MONTO_ABONO ,FECHA_ABONO ,ID_USUARIO_FK,TIPO_ABONO_FK,ESTATUS,NUMERO_CHEQUE,"
+                    + "LIBRADOR,FECHA_COBRO,BANCO_EMISOR,NUMERO_FACTURA,REFERENCIA,CONCEPTO,FECHA_TRANSFERENCIA ) "
+                    + " VALUES(?,?,?,sysdate,?,?,?,?,?,?,?,?,?,?,?)");
+            query.setParameter(1, abonoCredito.getIdAbonoCreditoPk());
+            query.setParameter(2, abonoCredito.getIdCreditoFk());
+            query.setParameter(3, abonoCredito.getMontoAbono());
+            //fecha
             query.setParameter(4, abonoCredito.getIdUsuarioFk());
+            query.setParameter(5, abonoCredito.getIdtipoAbonoFk());
+            query.setParameter(6, abonoCredito.getEstatusAbono());
+            query.setParameter(7, abonoCredito.getNumeroCheque());
+            query.setParameter(8, abonoCredito.getLibrador());
+            query.setParameter(9, abonoCredito.getFechaCobro()); 
+            query.setParameter(10, abonoCredito.getBanco());
+            query.setParameter(11, abonoCredito.getFactura());
+            query.setParameter(12, abonoCredito.getReferencia());
+            query.setParameter(13, abonoCredito.getConcepto());
+            query.setParameter(14, abonoCredito.getFechaTransferencia());
+            
   
             return query.executeUpdate();
 
@@ -106,6 +122,12 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
             Logger.getLogger(EjbAbonoCredito.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
+    }
+
+    @Override
+    public int getNextVal() {
+        Query query = em.createNativeQuery("SELECT S_ABONO_CREDITO.nextVal FROM DUAL");
+        return Integer.parseInt(query.getSingleResult().toString());
     }
 
 }

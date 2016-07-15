@@ -9,11 +9,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author Juan de la Cruz
  */
+@Service
 public class ServiceAbonoCredito implements IfaceAbonoCredito {
 
     NegocioAbonoCredito ejb;
@@ -86,5 +88,18 @@ public class ServiceAbonoCredito implements IfaceAbonoCredito {
 
         return abonoCredito;
     }
+
+    @Override
+    public int getNextVal() {
+        getEjb();
+        try {
+            return ejb.getNextVal();
+
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceAbonoCredito.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        }
+    }
+    
 
 }

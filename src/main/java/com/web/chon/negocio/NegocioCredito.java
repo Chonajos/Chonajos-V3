@@ -23,6 +23,8 @@ public interface NegocioCredito
     
     public List<Object[]> getCreditosActivos(BigDecimal idCliente);
     public List<Object[]> getById(BigDecimal idCredito) ;
+    
+    public int updateStatus(BigDecimal idCreditoPk, BigDecimal estatus);
 
     
 }

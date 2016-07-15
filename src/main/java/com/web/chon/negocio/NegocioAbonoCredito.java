@@ -22,6 +22,9 @@ public interface NegocioAbonoCredito
     public List<Object[]> getAll();
     
     public List<Object[]> getById(BigDecimal idAbonoCredito) ;
+    
+    public int getNextVal();
+    
 
     
 }

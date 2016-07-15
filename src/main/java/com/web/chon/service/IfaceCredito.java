@@ -22,6 +22,8 @@ public interface IfaceCredito {
     
     public int update(Credito credito);
     
+    public int updateStatus(BigDecimal idCreditoPk, BigDecimal estatus);
+    
     public int insert(Credito credito);
     
     

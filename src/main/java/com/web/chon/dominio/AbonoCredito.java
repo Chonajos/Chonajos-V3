@@ -13,22 +13,66 @@ public class AbonoCredito extends ValueObject {
     private BigDecimal idCreditoFk;
     private BigDecimal montoAbono;
     private Date fechaAbono;
-    private BigDecimal idtipoAbonoFk;
     private BigDecimal idUsuarioFk;
+    private BigDecimal idtipoAbonoFk;
+    private BigDecimal estatusAbono;
     private BigDecimal numeroCheque;
     private String librador;
     private Date fechaCobro;
     private String banco;
     private String factura;
     private String referencia;
+    private String concepto;
+    private Date fechaTransferencia;
 
     @Override
     public String toString() {
-        return "AbonoCredito{" + "idAbonoCreditoPk=" + idAbonoCreditoPk + ", idCreditoFk=" + idCreditoFk + ", montoAbono=" + montoAbono + ", fechaAbono=" + fechaAbono + ", idtipoAbonoFk=" + idtipoAbonoFk + ", idUsuarioFk=" + idUsuarioFk + ", numeroCheque=" + numeroCheque + ", librador=" + librador + ", fechaCobro=" + fechaCobro + ", banco=" + banco + ", factura=" + factura + ", referencia=" + referencia + '}';
+        return "AbonoCredito{" + "idAbonoCreditoPk=" + idAbonoCreditoPk + ", idCreditoFk=" + idCreditoFk + ", montoAbono=" + montoAbono + ", fechaAbono=" + fechaAbono + ", idUsuarioFk=" + idUsuarioFk + ", idtipoAbonoFk=" + idtipoAbonoFk + ", estatusAbono=" + estatusAbono + ", numeroCheque=" + numeroCheque + ", librador=" + librador + ", fechaCobro=" + fechaCobro + ", banco=" + banco + ", factura=" + factura + ", referencia=" + referencia + ", concepto=" + concepto + ", fechaTransferencia=" + fechaTransferencia + '}';
     }
 
-    
-    
+    @Override
+    public void reset() {
+        idAbonoCreditoPk = null;
+        idCreditoFk = null;
+        montoAbono = null;
+        fechaAbono = null;
+        idUsuarioFk = null;
+        idtipoAbonoFk = null;
+        estatusAbono = null;
+        numeroCheque = null;
+        librador = null;
+        fechaCobro = null;
+        banco = null;
+        factura = null;
+        referencia = null;
+        concepto = null;
+        fechaTransferencia = null;
+    }
+
+    public BigDecimal getEstatusAbono() {
+        return estatusAbono;
+    }
+
+    public void setEstatusAbono(BigDecimal estatusAbono) {
+        this.estatusAbono = estatusAbono;
+    }
+
+    public String getConcepto() {
+        return concepto;
+    }
+
+    public void setConcepto(String concepto) {
+        this.concepto = concepto;
+    }
+
+    public Date getFechaTransferencia() {
+        return fechaTransferencia;
+    }
+
+    public void setFechaTransferencia(Date fechaTransferencia) {
+        this.fechaTransferencia = fechaTransferencia;
+    }
+
     public BigDecimal getIdAbonoCreditoPk() {
         return idAbonoCreditoPk;
     }
@@ -125,11 +169,4 @@ public class AbonoCredito extends ValueObject {
         this.referencia = referencia;
     }
 
-    @Override
-    public void reset() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    
-   
 }
