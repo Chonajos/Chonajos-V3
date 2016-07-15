@@ -30,7 +30,10 @@
             <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:panel >
                 <div class="container-fluid">
-                    <div class="form-group" align="right">
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12" align="right">
+                        <p:outputLabel class="col-lg-12 col-md-12 col-sm-12 col-xs-12 "  value ="Limite de credito:#{beanVenta.cliente.limiteCredito}. Credito Disponible :#{beanVenta.cliente.creditoDisponible}" /> 
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12" align="right">
                         <p:commandButton value="Agregar" update="autocompleteProducto table txtPrecioVenta txtCantidadEmpaque" ajax="true" action="#{beanVenta.addProducto}" rendered="#{beanVenta.viewEstate =='init'}"/>
                         <p:commandButton value="Vender" id="vender" ajax="false" update=":formContent"   action="#{beanVenta.insert}" immediate="true" resetValues="true" rendered="#{beanVenta.viewEstate =='init'}" onclick="PF('statusDialog').show();"/>
                         <!--<p:commandButton  value="imprimir ticket" id="btonImprimir" ajax="true" rendered="{beanVenta.viewEstate =='init'}"  onclick="window.frames.miFrame.print();" resetValues="true" action="{beanVenta.cancel}"/>-->

@@ -110,6 +110,13 @@ ul .ui-state-highlight {
 
 }
 
+/*estilos para las tablas secundarias*/
+.seconTable th{
+    color: white;
+    background-image:-webkit-linear-gradient(top, rgba(0, 136, 204, 0.2), rgba(0, 119, 179, 0.44)) !important;
+}
+
+
 .ui-priority-primary, .ui-widget-content .ui-priority-primary, .ui-widget-header .ui-priority-primary{
     background:#ffffff;
     color: blue;

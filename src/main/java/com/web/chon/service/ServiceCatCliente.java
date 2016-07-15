@@ -218,9 +218,9 @@ public class ServiceCatCliente implements IfaceCatCliente {
                 cliente.setNombre(obj[1] == null ? "" : obj[1].toString());
                 cliente.setPaterno(obj[2] == null ? "" : obj[2].toString());
                 cliente.setMaterno(obj[3] == null ? "" : obj[3].toString());
-                cliente.setLimiteCredito(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
-                cliente.setUtilizadoMenudeo(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
-                cliente.setUtilizadoMayoreo(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
+                cliente.setLimiteCredito(obj[4] == null ? new BigDecimal("0") : new BigDecimal(obj[4].toString()));
+                cliente.setUtilizadoMenudeo(obj[5] == null ? new BigDecimal("0") : new BigDecimal(obj[5].toString()));
+                cliente.setUtilizadoMayoreo(obj[6] == null ? new BigDecimal("0") : new BigDecimal(obj[6].toString()));
                 cliente.setUtilizadoTotal(cliente.getUtilizadoMenudeo().add(cliente.getUtilizadoMayoreo(), MathContext.UNLIMITED));
                 cliente.setCreditoDisponible(cliente.getLimiteCredito().subtract(cliente.getUtilizadoTotal(), MathContext.UNLIMITED));
             }
