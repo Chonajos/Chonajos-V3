@@ -33,6 +33,7 @@ public class SaldosDeudas implements Serializable {
     private String nombreStatus;
     private BigDecimal saldoTotal;
     private BigDecimal tipoCredito;
+    private BigDecimal saldoLiquidar;
 
     public void reset() {
         folioCredito = null;
@@ -52,11 +53,21 @@ public class SaldosDeudas implements Serializable {
         nombreStatus = null;
         saldoTotal = null;
         tipoCredito = null;
+        saldoLiquidar=null;
     }
 
     @Override
     public String toString() {
-        return "SaldosDeudas{" + "folioCredito=" + folioCredito + ", folioVenta=" + folioVenta + ", montoTotal=" + montoTotal + ", totalAbonado=" + totalAbonado + ", fechaVenta=" + fechaVenta + ", montoAbonar=" + montoAbonar + ", fechaProximaAbonar=" + fechaProximaAbonar + ", periodo=" + periodo + ", plazo=" + plazo + ", periodosAtraso=" + periodosAtraso + ", diasAtraso=" + diasAtraso + ", saldoDeudor=" + saldoDeudor + ", saldoAtrasado=" + saldoAtrasado + ", idEstatus=" + idEstatus + ", nombreStatus=" + nombreStatus + '}';
+        return "SaldosDeudas{" + "folioCredito=" + folioCredito + ", folioVenta=" + folioVenta + ", montoTotal=" + montoTotal + ", totalAbonado=" + totalAbonado + ", fechaVenta=" + fechaVenta + ", montoAbonar=" + montoAbonar + ", fechaProximaAbonar=" + fechaProximaAbonar + ", periodo=" + periodo + ", plazo=" + plazo + ", periodosAtraso=" + periodosAtraso + ", diasAtraso=" + diasAtraso + ", saldoDeudor=" + saldoDeudor + ", saldoAtrasado=" + saldoAtrasado + ", idEstatus=" + idEstatus + ", nombreStatus=" + nombreStatus + ", saldoTotal=" + saldoTotal + ", tipoCredito=" + tipoCredito + ", saldoLiquidar=" + saldoLiquidar + '}';
+    }
+    
+
+    public BigDecimal getSaldoLiquidar() {
+        return saldoLiquidar;
+    }
+
+    public void setSaldoLiquidar(BigDecimal saldoLiquidar) {
+        this.saldoLiquidar = saldoLiquidar;
     }
 
     public BigDecimal getIdEstatus() {

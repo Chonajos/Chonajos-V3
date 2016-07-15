@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.stereotype.Service;
 import com.web.chon.util.TiempoUtil;
+import java.math.MathContext;
 import java.math.RoundingMode;
 
 /**
@@ -131,19 +132,16 @@ public class ServiceCredito implements IfaceCredito {
             ArrayList<Date> fechasDePago  = new ArrayList<Date>();
             for (int i = 0; i<credito.getPlazo().intValue();i++)
             {
-                Date auxiliar = new Date(TiempoUtil.getFechaDDMMYYYY(TiempoUtil.sumarRestarDias(temporal, credito.getTipoCredito().intValue())));
+                Date auxiliar = TiempoUtil.fechaTextoDiaMesAnio(TiempoUtil.getFechaDDMMYYYY(TiempoUtil.sumarRestarDias(temporal, credito.getTipoCredito().intValue())));
                 fechasDePago.add(auxiliar);
-                temporal = auxiliar;
-                System.out.println("Fecha: N°: "+i + " ==== " + temporal);
+                if(hoy.compareTo(auxiliar)==0 || hoy.compareTo(auxiliar)==-1)
+                {
+                    credito.setFechaProximaAbonar(auxiliar);
+                }
             }
-            for(Date item : fechasDePago)
-            {
-                Date temp = TiempoUtil.
-            }
-            
-            
+              
             credito.setMontoAbonar(credito.getSaldoTotal().divide(credito.getPlazo(),2,RoundingMode.HALF_UP));
-            
+            credito.setSaldoLiquidar(credito.getSaldoTotal().subtract(credito.getTotalAbonado(), MathContext.UNLIMITED));
 //            credito.setNumeroPromesaPago(object[7] == null ? null : new BigDecimal(object[7].toString()));
 //            credito.setFechaInicioCredito(object[8] == null ? null : (Date) object[8]);
 //            credito.setFechaFinCredito(object[9] == null ? null : (Date) object[9]);

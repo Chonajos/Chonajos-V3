@@ -32,14 +32,20 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Scope("view")
-public class BeanBuscaCredito implements Serializable{
+public class BeanBuscaCredito implements Serializable {
+
     private static final long serialVersionUID = 1L;
-    @Autowired IfaceCatCliente ifaceCatCliente;
-    @Autowired IfaceCredito ifaceCredito;
-    @Autowired IfaceTipoAbono ifaceTipoAbono;
-    @Autowired IfaceAbonoCredito ifaceAbonoCredito;
-    @Autowired private PlataformaSecurityContext context;
-    
+    @Autowired
+    IfaceCatCliente ifaceCatCliente;
+    @Autowired
+    IfaceCredito ifaceCredito;
+    @Autowired
+    IfaceTipoAbono ifaceTipoAbono;
+    @Autowired
+    IfaceAbonoCredito ifaceAbonoCredito;
+    @Autowired
+    private PlataformaSecurityContext context;
+
     private BigDecimal idCliente;
     private String nombreCompletoCliente;
     private String rfcCliente;
@@ -51,20 +57,20 @@ public class BeanBuscaCredito implements Serializable{
     private String viewEstate;
     private BigDecimal totalCreditos;
     private BigDecimal totalAbonado;
-    
+
     private ArrayList<SaldosDeudas> modelo;
     private ArrayList<TipoAbono> lstTipoAbonos;
     private SaldosDeudas dataAbonar;
     private AbonoCredito abono;
     Cliente cliente;
     private String viewCheque;
-    
-    private UsuarioDominio usuarioDominio;
 
-    
+    private UsuarioDominio usuarioDominio;
+    private boolean bandera;
+
     @PostConstruct
-    public void init() 
-    {
+    public void init() {
+        bandera = false;
         abono = new AbonoCredito();
         usuarioDominio = context.getUsuarioAutenticado();
         dataAbonar = new SaldosDeudas();
@@ -75,84 +81,91 @@ public class BeanBuscaCredito implements Serializable{
         setViewEstate("init");
         setViewCheque("init");
     }
-    public void addView()
-    {
-  
-        if(abono.getIdtipoAbonoFk().intValue() == 3)
-           {
-               setViewCheque("true");
-           } 
-        else if(abono.getIdtipoAbonoFk().intValue() == 2)
-            {
+
+    public void abonarTotal() {
+
+    }
+
+    public void activaBandera() {
+        bandera = true;
+    }
+
+    public void addView() {
+
+        if (abono.getIdtipoAbonoFk().intValue() == 3) {
+            setViewCheque("true");
+        } else if (abono.getIdtipoAbonoFk().intValue() == 2) {
             setViewCheque("trans");
 
-            } 
-        else
-            {
-                setViewCheque("init");
-            }
-            
+        } else {
+            setViewCheque("init");
+        }
 
-    }       
-          
-    public void abonar()
-    {
+    }
+
+    public void abonar() {
         AbonoCredito ac = new AbonoCredito();
-        ac.setIdAbonoCreditoPk(new BigDecimal(ifaceAbonoCredito.getNextVal()));
-        ac.setIdCreditoFk(dataAbonar.getFolioCredito());
-        ac.setMontoAbono(abono.getMontoAbono());
-        ac.setIdUsuarioFk(usuarioDominio.getIdUsuario()); //aqui poner el usuario looggeado
-        ac.setIdtipoAbonoFk(abono.getIdtipoAbonoFk());
-        if(abono.getIdtipoAbonoFk().intValue()==3)
+        if (bandera != true) 
         {
-            ac.setEstatusAbono(new BigDecimal(2));
+            ac.setIdAbonoCreditoPk(new BigDecimal(ifaceAbonoCredito.getNextVal()));
+            ac.setIdCreditoFk(dataAbonar.getFolioCredito());
+            ac.setMontoAbono(abono.getMontoAbono());
+            ac.setIdUsuarioFk(usuarioDominio.getIdUsuario()); //aqui poner el usuario looggeado
+            ac.setIdtipoAbonoFk(abono.getIdtipoAbonoFk());
+            if (abono.getIdtipoAbonoFk().intValue() == 3) {
+                ac.setEstatusAbono(new BigDecimal(2));
                 //Entra a estado 2 Que significa que esta pendiente.
-        }
-        else
-        {
-            //Quiere decir que se ejecute el abono.
-            ac.setEstatusAbono(new BigDecimal(1)); 
-        }
+            } else {
+                //Quiere decir que se ejecute el abono.
+                ac.setEstatusAbono(new BigDecimal(1));
+            }
 
-        ac.setNumeroCheque(abono.getNumeroCheque());
-        ac.setLibrador(abono.getLibrador());
-        ac.setFechaCobro(abono.getFechaCobro());
-        ac.setBanco(abono.getBanco());
-        ac.setFactura(abono.getFactura());
-        ac.setReferencia(abono.getReferencia());
-        ac.setConcepto(abono.getConcepto());
-        ac.setFechaTransferencia(abono.getFechaTransferencia());
-        //Despues sigue sumar 
-        BigDecimal temporal =dataAbonar.getTotalAbonado().add(abono.getMontoAbono(), MathContext.UNLIMITED);
+            ac.setNumeroCheque(abono.getNumeroCheque());
+            ac.setLibrador(abono.getLibrador());
+            ac.setFechaCobro(abono.getFechaCobro());
+            ac.setBanco(abono.getBanco());
+            ac.setFactura(abono.getFactura());
+            ac.setReferencia(abono.getReferencia());
+            ac.setConcepto(abono.getConcepto());
+            ac.setFechaTransferencia(abono.getFechaTransferencia());
+            //Despues sigue sumar 
+            BigDecimal temporal = dataAbonar.getTotalAbonado().add(abono.getMontoAbono(), MathContext.UNLIMITED);
 
-        if((temporal).compareTo(dataAbonar.getSaldoTotal())==1 || (temporal).compareTo(dataAbonar.getSaldoTotal())==1)
-            {
-                
+            if ((temporal).compareTo(dataAbonar.getSaldoTotal()) == 1 || (temporal).compareTo(dataAbonar.getSaldoTotal()) == 1) {
+
                 System.out.println("Se liquido Todo cambiar a estatus 2 el credito");
                 ifaceCredito.updateStatus(ac.getIdCreditoFk(), new BigDecimal(2));
                 JsfUtil.addSuccessMessage("Se ha liquidado el crédito exitosamente");
             }
-       if( ifaceAbonoCredito.insert(ac)==1)
-       {
-           JsfUtil.addSuccessMessage("Se ha realizado un abono existosamente");
-           searchByIdCliente();
-           abono.reset();
-           dataAbonar.reset();
-       }
-       else
-       {
-           JsfUtil.addErrorMessageClean("Ocurrio un error");
-       }
-        System.out.println("AC======================: "+ac.toString());
-        
+            if (ifaceAbonoCredito.insert(ac) == 1) {
+                JsfUtil.addSuccessMessage("Se ha realizado un abono existosamente");
+                searchByIdCliente();
+                abono.reset();
+                dataAbonar.reset();
+            } else {
+                JsfUtil.addErrorMessageClean("Ocurrio un error");
+            }
+        }
+        else
+        {
+            System.out.println("Va a ser un abono moustro");
+        }
+
 //RequestContext.getCurrentInstance().execute("PF('dlg').show();"); 
     }
-    public void searchByIdCliente()
-    {
+
+    public void searchByIdCliente() {
         cliente = ifaceCatCliente.getClienteCreditoById(cliente.getId_cliente().intValue());
-        modelo = ifaceCredito.getCreditosActivos(cliente.getId_cliente());
-        
+        if (cliente != null && cliente.getId_cliente() != null) {
+            modelo = ifaceCredito.getCreditosActivos(cliente.getId_cliente());
+        } else {
+            JsfUtil.addWarnMessage("El cliente no cuenta con credito");
+            modelo = new ArrayList<SaldosDeudas>();
+            cliente = new Cliente();
+        }
+
     }
+
     public BigDecimal getIdCliente() {
         return idCliente;
     }
@@ -233,8 +246,6 @@ public class BeanBuscaCredito implements Serializable{
         this.modelo = modelo;
     }
 
- 
-
     public Cliente getCliente() {
         return cliente;
     }
@@ -299,9 +310,12 @@ public class BeanBuscaCredito implements Serializable{
         this.usuarioDominio = usuarioDominio;
     }
 
-    
+    public boolean isBandera() {
+        return bandera;
+    }
 
-    
-    
-    
+    public void setBandera(boolean bandera) {
+        this.bandera = bandera;
+    }
+
 }

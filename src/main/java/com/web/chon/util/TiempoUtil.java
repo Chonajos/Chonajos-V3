@@ -388,5 +388,31 @@ public class TiempoUtil {
 
         return dateStr;
     }
+    
+    //Diferencias entre dos fechas
+    //@param fechaInicial La fecha de inicio
+    //@param fechaFinal  La fecha de fin
+    //@return Retorna el numero de dias entre dos fechas
+    public static synchronized int diferenciasDeFechas(Date fechaInicial, Date fechaFinal) {
+
+        DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM);
+        String fechaInicioString = df.format(fechaInicial);
+        try {
+            fechaInicial = df.parse(fechaInicioString);
+        } catch (ParseException ex) {
+        }
+
+        String fechaFinalString = df.format(fechaFinal);
+        try {
+            fechaFinal = df.parse(fechaFinalString);
+        } catch (ParseException ex) {
+        }
+
+        long fechaInicialMs = fechaInicial.getTime();
+        long fechaFinalMs = fechaFinal.getTime();
+        long diferencia = fechaFinalMs - fechaInicialMs;
+        double dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+        return ((int) dias);
+    }
 
 }

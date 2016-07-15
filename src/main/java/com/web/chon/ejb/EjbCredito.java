@@ -138,7 +138,7 @@ public class EjbCredito implements NegocioCredito {
                     + "\n"
                     + "as total,\n"
                     + "(select NVL(sum(ac.MONTO_ABONO),0)from ABONO_CREDITO ac\n"
-                    + "where ac.ID_CREDITO_FK= credit.ID_CREDITO_PK) as Total_Abonado\n"
+                    + "where ac.ID_CREDITO_FK= credit.ID_CREDITO_PK and ac.ESTATUS=1) as Total_Abonado\n"
                     + "\n"
                     + ",credit.ID_TIPO_CREDITO_FK,credit.ESTATUS_CREDITO\n"
                     + "\n"
