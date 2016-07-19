@@ -7,6 +7,7 @@ package com.web.chon.ejb;
 
 import com.web.chon.dominio.Cliente;
 import com.web.chon.negocio.NegocioCatCliente;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -197,33 +198,57 @@ public class EjbCatCliente implements NegocioCatCliente {
 
         return query.getResultList();
     }
+
     @Override
     public List<Object[]> getClienteCreditoById(int idCliente) {
         try {
 
-            Query query = em.createNativeQuery("select c.ID_CLIENTE,c.NOMBRE, c.APELLIDO_PATERNO, c.APELLIDO_MATERNO,c.MONTO_CREDITO,sum(vp.TOTAL_VENTA) as Credito_Utilizado ,\n" +
-"NVL((select sum(vmp.TOTAL_VENTA) as Credito_Utilizado from CREDITO cre\n" +
-"inner join VENTA_MAYOREO vm\n" +
-"on vm.ID_VENTA_MAYOREO_PK = cre.ID_VENTA_MAYOREO\n" +
-"inner join VENTAMAYOREOPRODUCTO vmp\n" +
-"on vmp.ID_VENTA_MAYOREO_FK = vm.ID_VENTA_MAYOREO_PK\n" +
-"inner join cliente c\n" +
-"on c.ID_CLIENTE = cre.ID_CLIENTE_FK\n" +
-"where cre.ESTATUS_CREDITO = 1 and cre.ID_CLIENTE_FK= '"+idCliente+"'),0) as credito_utilizado_mayoreo from CREDITO cre\n" +
-"inner join venta v\n" +
-"on v.ID_VENTA_PK = cre.ID_VENTA_MENUDEO\n" +
-"inner join VENTA_PRODUCTO vp\n" +
-"on vp.ID_VENTA_FK = v.ID_VENTA_PK\n" +
-"inner join cliente c\n" +
-"on c.ID_CLIENTE = cre.ID_CLIENTE_FK\n" +
-"where cre.ESTATUS_CREDITO = 1  and cre.ID_CLIENTE_FK= '"+idCliente+"'\n" +
-"group by c.ID_CLIENTE,c.NOMBRE, c.APELLIDO_PATERNO, c.APELLIDO_MATERNO,c.MONTO_CREDITO");
+            Query query = em.createNativeQuery("select c.ID_CLIENTE,c.NOMBRE, c.APELLIDO_PATERNO, c.APELLIDO_MATERNO,c.MONTO_CREDITO,sum(vp.TOTAL_VENTA) as Credito_Utilizado ,\n"
+                    + "NVL((select sum(vmp.TOTAL_VENTA) as Credito_Utilizado from CREDITO cre\n"
+                    + "inner join VENTA_MAYOREO vm\n"
+                    + "on vm.ID_VENTA_MAYOREO_PK = cre.ID_VENTA_MAYOREO\n"
+                    + "inner join VENTAMAYOREOPRODUCTO vmp\n"
+                    + "on vmp.ID_VENTA_MAYOREO_FK = vm.ID_VENTA_MAYOREO_PK\n"
+                    + "inner join cliente c\n"
+                    + "on c.ID_CLIENTE = cre.ID_CLIENTE_FK\n"
+                    + "where cre.ESTATUS_CREDITO = 1 and cre.ID_CLIENTE_FK= '" + idCliente + "'),0) as credito_utilizado_mayoreo from CREDITO cre\n"
+                    + "inner join venta v\n"
+                    + "on v.ID_VENTA_PK = cre.ID_VENTA_MENUDEO\n"
+                    + "inner join VENTA_PRODUCTO vp\n"
+                    + "on vp.ID_VENTA_FK = v.ID_VENTA_PK\n"
+                    + "inner join cliente c\n"
+                    + "on c.ID_CLIENTE = cre.ID_CLIENTE_FK\n"
+                    + "where cre.ESTATUS_CREDITO = 1  and cre.ID_CLIENTE_FK= '" + idCliente + "'\n"
+                    + "group by c.ID_CLIENTE,c.NOMBRE, c.APELLIDO_PATERNO, c.APELLIDO_MATERNO,c.MONTO_CREDITO");
             query.setParameter(1, idCliente);
 
-            System.out.println("Query: " +query);
+            System.out.println("Query: " + query);
             return query.getResultList();
 
         } catch (Exception ex) {
+            System.out.println("error query :" + ex.toString());
+            Logger.getLogger(EjbCatCliente.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
+    @Override
+    public List<Object[]> getCreditoClienteByIdCliente(BigDecimal idCliente) {
+        try {
+
+            Query query = em.createNativeQuery("select c.ID_CLIENTE, c.NOMBRE ||' '|| c.APELLIDO_PATERNO ||' '|| c.APELLIDO_MATERNO AS NOMBRE_COMPLETO,NVL(c.MONTO_CREDITO,0) AS MONTO_CREDITO "
+                    + " ,NVL((SELECT SUM(VP.TOTAL_VENTA) FROM CREDITO CRE INNER JOIN VENTA V ON CRE.ID_VENTA_MENUDEO = V.ID_VENTA_PK "
+                    + " INNER JOIN VENTA_PRODUCTO VP ON VP.ID_VENTA_FK = V.ID_VENTA_PK WHERE CRE.ID_CLIENTE_FK =c.ID_CLIENTE AND CRE.ESTATUS_CREDITO = 1),0) AS CREDITO_MENUDEO "
+                    + " ,NVL((SELECT SUM(VMP.TOTAL_VENTA) FROM CREDITO CRE INNER JOIN VENTA_MAYOREO VM ON CRE.ID_VENTA_MAYOREO = VM.ID_VENTA_MAYOREO_PK "
+                    + " INNER JOIN VENTAMAYOREOPRODUCTO VMP ON VMP.ID_VENTA_MAYOREO_FK = VM.ID_VENTA_MAYOREO_PK WHERE CRE.ID_CLIENTE_FK =c.ID_CLIENTE AND CRE.ESTATUS_CREDITO = 1),0) AS CREDITO_MAYOREO from CLIENTE c "
+                    + " WHERE C.ID_CLIENTE = ?");
+            query.setParameter(1, idCliente);
+
+            Logger.getLogger(EjbCatCliente.class.getName()).log(Level.INFO, query.toString(), query.toString());
+            return query.getResultList();
+
+        } catch (Exception ex) {
+            System.out.println("error query :" + ex.toString());
             Logger.getLogger(EjbCatCliente.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }

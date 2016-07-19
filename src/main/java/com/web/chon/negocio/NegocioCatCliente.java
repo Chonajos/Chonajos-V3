@@ -6,7 +6,7 @@
 package com.web.chon.negocio;
 
 import com.web.chon.dominio.Cliente;
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.List;
 import javax.ejb.Remote;
 
@@ -32,5 +32,9 @@ public interface NegocioCatCliente {
     public List<Object[]> getClienteByNombreCompleto(String nombreCliente);
     
     public int getNextVal ();
+    
+    public List<Object[]> getCreditoClienteByIdCliente(BigDecimal idCliente);  
+    
+    
   
 }

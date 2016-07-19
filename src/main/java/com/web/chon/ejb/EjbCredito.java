@@ -26,20 +26,20 @@ public class EjbCredito implements NegocioCredito {
 
         try {
 
-            Query query = em.createNativeQuery("INSERT INTO  CREDITO (ID_CREDITO_PK ,ID_CLIENTE_FK ,ID_VENTA_MENUDEO ,ID_VENTA_MAYOREO ,ID_USUARIO_CREDITO ,ID_TIPO_CREDITO_FK ,ESTATUS_CREDITO ,NUMERO_PROMESA_PAGO ,FECHA_INICIO_CREDITO ,FECHA_FIN_CREDITO ,FECHA_PROMESA_FIN_PAGO ,TAZA_INTERES,PLAZOS) "
-                    + " VALUES(S_CREDITO.nextval,?,?,?,?,?,?,?,?,?,?,?,?)");
+            Query query = em.createNativeQuery("INSERT INTO  CREDITO (ID_CREDITO_PK ,ID_CLIENTE_FK ,ID_VENTA_MENUDEO ,ID_VENTA_MAYOREO ,ID_USUARIO_CREDITO  ,ESTATUS_CREDITO ,NUMERO_PROMESA_PAGO ,FECHA_INICIO_CREDITO ,FECHA_FIN_CREDITO ,FECHA_PROMESA_FIN_PAGO ,TAZA_INTERES,PLAZOS) "
+                    + " VALUES(S_CREDITO.nextval,?,?,?,?,?,?,?,?,?,?,?)");
             query.setParameter(1, credito.getIdClienteFk());
             query.setParameter(2, credito.getIdVentaMenudeo());
             query.setParameter(3, credito.getIdVentaMayoreo());
             query.setParameter(4, credito.getIdUsuarioCredito());
-            query.setParameter(5, credito.getIdTipoCreditoFk());
-            query.setParameter(6, credito.getEstatusCredito());
-            query.setParameter(7, credito.getNumeroPromesaPago());
-            query.setParameter(8, credito.getFechaInicioCredito());
-            query.setParameter(9, credito.getFechaFinCredito());
-            query.setParameter(10, credito.getFechaPromesaPago());
-            query.setParameter(11, credito.getTazaInteres());
-            query.setParameter(12, credito.getPlasos());
+//            query.setParameter(5, credito.getIdTipoCreditoFk());
+            query.setParameter(5, credito.getEstatusCredito());
+            query.setParameter(6, credito.getNumeroPromesaPago());
+            query.setParameter(7, credito.getFechaInicioCredito());
+            query.setParameter(8, credito.getFechaFinCredito());
+            query.setParameter(9, credito.getFechaPromesaPago());
+            query.setParameter(10, credito.getTazaInteres());
+            query.setParameter(11, credito.getPlasos());
 
             return query.executeUpdate();
 

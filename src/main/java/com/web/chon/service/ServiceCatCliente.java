@@ -208,7 +208,7 @@ public class ServiceCatCliente implements IfaceCatCliente {
 
     @Override
     public Cliente getClienteCreditoById(int idCliente) {
-       try {
+        try {
             Cliente cliente = new Cliente();
             ejb = (NegocioCatCliente) Utilidades.getEJBRemote("ejbCatCliente", NegocioCatCliente.class.getName());
             List<Object[]> lstObject = ejb.getClienteCreditoById(idCliente);
@@ -224,7 +224,33 @@ public class ServiceCatCliente implements IfaceCatCliente {
                 cliente.setUtilizadoTotal(cliente.getUtilizadoMenudeo().add(cliente.getUtilizadoMayoreo(), MathContext.UNLIMITED));
                 cliente.setCreditoDisponible(cliente.getLimiteCredito().subtract(cliente.getUtilizadoTotal(), MathContext.UNLIMITED));
             }
-            System.out.println("Cliente: "+cliente.toString());
+            System.out.println("Cliente: " + cliente.toString());
+            return cliente;
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceCatCliente.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+
+        }
+    }
+
+    @Override
+    public Cliente getCreditoClienteByIdCliente(BigDecimal idCliente) {
+        try {
+            Cliente cliente = new Cliente();
+            ejb = (NegocioCatCliente) Utilidades.getEJBRemote("ejbCatCliente", NegocioCatCliente.class.getName());
+            List<Object[]> lstObject = ejb.getCreditoClienteByIdCliente(idCliente);
+
+            for (Object[] obj : lstObject) {
+                cliente.setId_cliente(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+                cliente.setNombreCombleto(obj[1] == null ? "" : obj[1].toString());
+                cliente.setLimiteCredito(obj[2] == null ? new BigDecimal("0") : new BigDecimal(obj[2].toString()));
+                cliente.setUtilizadoMenudeo(obj[3] == null ? new BigDecimal("0") : new BigDecimal(obj[3].toString()));
+                cliente.setUtilizadoMayoreo(obj[4] == null ? new BigDecimal("0") : new BigDecimal(obj[4].toString()));
+                cliente.setUtilizadoTotal(cliente.getUtilizadoMenudeo().add(cliente.getUtilizadoMayoreo(), MathContext.UNLIMITED));
+                cliente.setCreditoDisponible(cliente.getLimiteCredito().subtract(cliente.getUtilizadoTotal(), MathContext.UNLIMITED));
+            }
+            System.out.println("clinete service "+cliente.toString());
+
             return cliente;
         } catch (Exception ex) {
             Logger.getLogger(ServiceCatCliente.class.getName()).log(Level.SEVERE, null, ex);
