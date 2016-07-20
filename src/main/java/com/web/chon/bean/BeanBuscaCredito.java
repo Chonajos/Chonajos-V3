@@ -7,6 +7,7 @@ package com.web.chon.bean;
 
 import com.web.chon.dominio.AbonoCredito;
 import com.web.chon.dominio.Cliente;
+import com.web.chon.dominio.Credito;
 import com.web.chon.dominio.SaldosDeudas;
 import com.web.chon.dominio.TipoAbono;
 import com.web.chon.dominio.UsuarioDominio;
@@ -94,25 +95,31 @@ public class BeanBuscaCredito implements Serializable {
         } else if (abono.getIdtipoAbonoFk().intValue() == 2) {
             setViewCheque("trans");
 
-        } else {
+        } 
+        else {
             setViewCheque("init");
         }
 
     }
 
     public void abonar() {
+        if(abono.getIdtipoAbonoFk().intValue() != 5)
+        {
 
-        if (bandera != true) {
+        if (bandera != true) 
+        {
             AbonoCredito ac = new AbonoCredito();
             ac.setIdAbonoCreditoPk(new BigDecimal(ifaceAbonoCredito.getNextVal()));
             ac.setIdCreditoFk(dataAbonar.getFolioCredito());
             ac.setMontoAbono(abono.getMontoAbono());
             ac.setIdUsuarioFk(usuarioDominio.getIdUsuario()); //aqui poner el usuario looggeado
             ac.setIdtipoAbonoFk(abono.getIdtipoAbonoFk());
-            if (abono.getIdtipoAbonoFk().intValue() == 3) {
+            if (abono.getIdtipoAbonoFk().intValue() == 3) 
+            {
                 ac.setEstatusAbono(new BigDecimal(2));
                 //Entra a estado 2 Que significa que esta pendiente.
-            } else {
+            } else 
+            {
                 //Quiere decir que se ejecute el abono.
                 ac.setEstatusAbono(new BigDecimal(1));
             }
@@ -191,6 +198,23 @@ public class BeanBuscaCredito implements Serializable {
             }//fin for
 
             System.out.println("Va a ser un abono moustro");
+        }
+        }
+        else
+        {
+            
+            Credito c = new Credito();
+            c.setIdCreditoPk(dataAbonar.getFolioCredito());
+            c.setStatusACuenta(new BigDecimal(1));
+            if(ifaceCredito.updateACuenta(c)==1)
+            {
+                JsfUtil.addSuccessMessageClean("Monto a Cuenta Registrado");
+            }
+            else
+            {
+                JsfUtil.addErrorMessageClean("Ocurrio un problema");
+            }
+                    
         }
 
 //RequestContext.getCurrentInstance().execute("PF('dlg').show();"); 

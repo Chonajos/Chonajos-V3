@@ -24,11 +24,21 @@ public class AbonoCredito extends ValueObject {
     private String referencia;
     private String concepto;
     private Date fechaTransferencia;
+    private BigDecimal datoACuenta;
 
     @Override
     public String toString() {
-        return "AbonoCredito{" + "idAbonoCreditoPk=" + idAbonoCreditoPk + ", idCreditoFk=" + idCreditoFk + ", montoAbono=" + montoAbono + ", fechaAbono=" + fechaAbono + ", idUsuarioFk=" + idUsuarioFk + ", idtipoAbonoFk=" + idtipoAbonoFk + ", estatusAbono=" + estatusAbono + ", numeroCheque=" + numeroCheque + ", librador=" + librador + ", fechaCobro=" + fechaCobro + ", banco=" + banco + ", factura=" + factura + ", referencia=" + referencia + ", concepto=" + concepto + ", fechaTransferencia=" + fechaTransferencia + '}';
+        return "AbonoCredito{" + "idAbonoCreditoPk=" + idAbonoCreditoPk + ", idCreditoFk=" + idCreditoFk + ", montoAbono=" + montoAbono + ", fechaAbono=" + fechaAbono + ", idUsuarioFk=" + idUsuarioFk + ", idtipoAbonoFk=" + idtipoAbonoFk + ", estatusAbono=" + estatusAbono + ", numeroCheque=" + numeroCheque + ", librador=" + librador + ", fechaCobro=" + fechaCobro + ", banco=" + banco + ", factura=" + factura + ", referencia=" + referencia + ", concepto=" + concepto + ", fechaTransferencia=" + fechaTransferencia + ", datoACuenta=" + datoACuenta + '}';
     }
+
+    public BigDecimal getDatoACuenta() {
+        return datoACuenta;
+    }
+
+    public void setDatoACuenta(BigDecimal datoACuenta) {
+        this.datoACuenta = datoACuenta;
+    }
+    
 
     @Override
     public void reset() {
@@ -46,6 +56,7 @@ public class AbonoCredito extends ValueObject {
         factura = null;
         referencia = null;
         concepto = null;
+        datoACuenta=null;
         fechaTransferencia = null;
     }
 

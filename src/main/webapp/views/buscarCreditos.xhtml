@@ -76,6 +76,10 @@
                                                             showOn="button"  id="popup2" value="#{beanBuscaCredito.abono.fechaTransferencia}" rendered="#{beanBuscaCredito.viewCheque =='trans'}" />
                                             </div>
                                             <!--Fin Datos para Transferencia-->
+                                            <!--Datos para A CUENTA-->
+                                            
+                                            
+                                            <!--FIN Datos A CUENTA -->
                                         </p:fragment>
                                         <!--Fin Datos para Cheque-->
 
@@ -165,10 +169,7 @@
                                 <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
                             </h:outputText>
                         </p:column>
-                        <p:column headerText="Periodos" width="20px;" class="alignCenter">
-                            <h:outputText value="#{model.periodo}" />
-                        </p:column>
-                        <p:column headerText="Venta" width="25px;" class="alignRight">
+                        <p:column headerText="Venta" width="15px;" class="alignRight">
                             <h:outputText value="#{model.saldoTotal}">
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
@@ -176,7 +177,7 @@
                         <p:column headerText="N° Pagos" width="20px;" class="alignCenter">
                             <h:outputText value="#{model.plazo}" />
                         </p:column>
-                        <p:column headerText="Importe de Venta" width="40px;" class="alignRight">
+                        <p:column headerText="Importe de Venta" width="30px;" class="alignRight">
                             <h:outputText value="#{model.montoAbonar}"> 
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
@@ -192,13 +193,18 @@
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputText>
                         </p:column>
-                        <p:column headerText="Periodos Atrasados" width="40px;" class="alignRight">
+                        <p:column headerText="Pagos Atrasados" width="30px;" class="alignRight">
                             <h:outputText value="#{model.periodosAtraso}"> 
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
                         </p:column>
                         <p:column headerText="Saldo Atrasado" width="40px;" class="alignRight">
                             <h:outputText value="#{model.saldoAtrasado}"> 
+                                <f:convertNumber type="currency" currencySymbol="$" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Saldo a Cuenta" width="40px;" class="alignRight">
+                            <h:outputText value="#{model.saldoACuenta}"> 
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
                         </p:column>

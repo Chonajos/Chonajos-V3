@@ -127,7 +127,7 @@ public class ServiceCredito implements IfaceCredito {
             credito.setSaldoTotal(object[4] == null ? null : new BigDecimal(object[4].toString()));
             credito.setTotalAbonado(object[5] == null ? null : new BigDecimal(object[5].toString()));
             credito.setIdEstatus(object[6] == null ? null : new BigDecimal(object[6].toString()));
-            credito.setaCuenta(object[7] == null ? null : new BigDecimal(object[7].toString()));
+            credito.setSaldoACuenta(object[7] == null ? null : new BigDecimal(object[7].toString()));
             credito.setStatusAcuenta(object[8] == null ? null : new BigDecimal(object[8].toString()));
 
             Date hoy = context.getFechaSistema();
@@ -186,6 +186,14 @@ public class ServiceCredito implements IfaceCredito {
         getEjb();
         return ejb.updateStatus(idCreditoPk, estatus);
 
+    }
+
+    @Override
+    public int updateACuenta(Credito credito) {
+       getEjb();
+       return ejb.updateACuenta(credito);
+        
+        
     }
 
 }

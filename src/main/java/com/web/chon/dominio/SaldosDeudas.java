@@ -34,7 +34,7 @@ public class SaldosDeudas implements Serializable {
     private BigDecimal saldoTotal;
     private BigDecimal tipoCredito;
     private BigDecimal saldoLiquidar;
-    private BigDecimal aCuenta;
+    private BigDecimal saldoACuenta;
     private BigDecimal statusAcuenta;
 
     public void reset() {
@@ -56,25 +56,26 @@ public class SaldosDeudas implements Serializable {
         saldoTotal = null;
         tipoCredito = null;
         saldoLiquidar=null;
-        aCuenta=null;
+        saldoACuenta=null;
     statusAcuenta=null;
         
     }
 
     @Override
     public String toString() {
-        return "SaldosDeudas{" + "folioCredito=" + folioCredito + ", folioVenta=" + folioVenta + ", montoTotal=" + montoTotal + ", totalAbonado=" + totalAbonado + ", fechaVenta=" + fechaVenta + ", montoAbonar=" + montoAbonar + ", fechaProximaAbonar=" + fechaProximaAbonar + ", periodo=" + periodo + ", plazo=" + plazo + ", periodosAtraso=" + periodosAtraso + ", diasAtraso=" + diasAtraso + ", saldoDeudor=" + saldoDeudor + ", saldoAtrasado=" + saldoAtrasado + ", idEstatus=" + idEstatus + ", nombreStatus=" + nombreStatus + ", saldoTotal=" + saldoTotal + ", tipoCredito=" + tipoCredito + ", saldoLiquidar=" + saldoLiquidar + ", aCuenta=" + aCuenta + ", statusAcuenta=" + statusAcuenta + '}';
+        return "SaldosDeudas{" + "folioCredito=" + folioCredito + ", folioVenta=" + folioVenta + ", montoTotal=" + montoTotal + ", totalAbonado=" + totalAbonado + ", fechaVenta=" + fechaVenta + ", montoAbonar=" + montoAbonar + ", fechaProximaAbonar=" + fechaProximaAbonar + ", periodo=" + periodo + ", plazo=" + plazo + ", periodosAtraso=" + periodosAtraso + ", diasAtraso=" + diasAtraso + ", saldoDeudor=" + saldoDeudor + ", saldoAtrasado=" + saldoAtrasado + ", idEstatus=" + idEstatus + ", nombreStatus=" + nombreStatus + ", saldoTotal=" + saldoTotal + ", tipoCredito=" + tipoCredito + ", saldoLiquidar=" + saldoLiquidar + ", saldoACuenta=" + saldoACuenta + ", statusAcuenta=" + statusAcuenta + '}';
     }
     
+    
 
-    public BigDecimal getaCuenta() {
-        return aCuenta;
+    public BigDecimal getSaldoACuenta() {
+        return saldoACuenta;
     }
 
-    public void setaCuenta(BigDecimal aCuenta) {
-        this.aCuenta = aCuenta;
+    public void setSaldoACuenta(BigDecimal saldoACuenta) {
+        this.saldoACuenta = saldoACuenta;
     }
-
+    
     public BigDecimal getStatusAcuenta() {
         return statusAcuenta;
     }
@@ -228,4 +229,5 @@ public class SaldosDeudas implements Serializable {
         this.saldoTotal = saldoTotal;
     }
 
+    
 }

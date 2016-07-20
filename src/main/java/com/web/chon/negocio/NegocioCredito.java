@@ -17,6 +17,8 @@ public interface NegocioCredito
     
     public int update(Credito idCredito);
     
+    public int updateACuenta(Credito credito);
+    
     public int delete(BigDecimal idCredito);
     
     public List<Object[]> getAll();

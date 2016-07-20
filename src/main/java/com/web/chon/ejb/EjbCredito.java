@@ -163,4 +163,19 @@ public class EjbCredito implements NegocioCredito {
 
     }
 
+    @Override
+    public int updateACuenta(Credito credito) {
+        try {
+            Query query = em.createNativeQuery("UPDATE CREDITO SET STATUSACUENTA = ? WHERE ID_CREDITO_PK = ?");
+            query.setParameter(1, credito.getStatusACuenta());
+            query.setParameter(2, credito.getIdCreditoPk());
+            return query.executeUpdate();
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbCredito.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        }
+    
+    }
+
 }

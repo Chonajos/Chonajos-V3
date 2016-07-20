@@ -22,12 +22,22 @@ public class Credito extends ValueObject {
     private Date fechaPromesaPago;
     private BigDecimal tazaInteres;
     private BigDecimal plasos;
+    private BigDecimal statusACuenta;
 
     @Override
     public String toString() {
         return "Credito{" + "idCreditoPk=" + idCreditoPk + ", idClienteFk=" + idClienteFk + ", idVentaMenudeo=" + idVentaMenudeo + ", idVentaMayoreo=" + idVentaMayoreo + ", idUsuarioCredito=" + idUsuarioCredito + ", idTipoCreditoFk=" + idTipoCreditoFk + ", estatusCredito=" + estatusCredito + ", numeroPromesaPago=" + numeroPromesaPago + ", fechaInicioCredito=" + fechaInicioCredito + ", fechaFinCredito=" + fechaFinCredito + ", fechaPromesaPago=" + fechaPromesaPago + ", tazaInteres=" + tazaInteres + '}';
     }
 
+    public BigDecimal getStatusACuenta() {
+        return statusACuenta;
+    }
+
+    public void setStatusACuenta(BigDecimal statusACuenta) {
+        this.statusACuenta = statusACuenta;
+    }
+
+    
     public BigDecimal getIdCreditoPk() {
         return idCreditoPk;
     }
