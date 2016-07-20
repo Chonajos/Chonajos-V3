@@ -60,9 +60,10 @@ public class BeanBuscaCredito implements Serializable {
 
     private ArrayList<SaldosDeudas> modelo;
     private ArrayList<TipoAbono> lstTipoAbonos;
+    private ArrayList<Cliente> lstCliente;
     private SaldosDeudas dataAbonar;
     private AbonoCredito abono;
-    Cliente cliente;
+    private Cliente cliente;
     private String viewCheque;
 
     private UsuarioDominio usuarioDominio;
@@ -74,16 +75,12 @@ public class BeanBuscaCredito implements Serializable {
         abono = new AbonoCredito();
         usuarioDominio = context.getUsuarioAutenticado();
         dataAbonar = new SaldosDeudas();
-        cliente = new Cliente();
+        cliente = ifaceCatCliente.getClienteById(1);
         modelo = new ArrayList<SaldosDeudas>();
         lstTipoAbonos = ifaceTipoAbono.getAll();
-        setTitle("Abono de Créditos");
+        setTitle("Historial de Compras");
         setViewEstate("init");
         setViewCheque("init");
-    }
-
-    public void abonarTotal() {
-
     }
 
     public void activaBandera() {
@@ -104,9 +101,9 @@ public class BeanBuscaCredito implements Serializable {
     }
 
     public void abonar() {
-        AbonoCredito ac = new AbonoCredito();
-        if (bandera != true) 
-        {
+
+        if (bandera != true) {
+            AbonoCredito ac = new AbonoCredito();
             ac.setIdAbonoCreditoPk(new BigDecimal(ifaceAbonoCredito.getNextVal()));
             ac.setIdCreditoFk(dataAbonar.getFolioCredito());
             ac.setMontoAbono(abono.getMontoAbono());
@@ -131,7 +128,7 @@ public class BeanBuscaCredito implements Serializable {
             //Despues sigue sumar 
             BigDecimal temporal = dataAbonar.getTotalAbonado().add(abono.getMontoAbono(), MathContext.UNLIMITED);
 
-            if ((temporal).compareTo(dataAbonar.getSaldoTotal()) == 1 || (temporal).compareTo(dataAbonar.getSaldoTotal()) == 1) {
+            if ((temporal).compareTo(dataAbonar.getSaldoTotal()) == 1 || (temporal).compareTo(dataAbonar.getSaldoTotal()) == 0) {
 
                 System.out.println("Se liquido Todo cambiar a estatus 2 el credito");
                 ifaceCredito.updateStatus(ac.getIdCreditoFk(), new BigDecimal(2));
@@ -145,9 +142,54 @@ public class BeanBuscaCredito implements Serializable {
             } else {
                 JsfUtil.addErrorMessageClean("Ocurrio un error");
             }
-        }
-        else
-        {
+        } else {
+
+            for (SaldosDeudas item : modelo) 
+            {
+                BigDecimal AbonoGrande = abono.getMontoAbono();
+                if (AbonoGrande.compareTo(new BigDecimal(0)) == 1) 
+                {
+                    AbonoCredito ac = new AbonoCredito();
+                    ac.setIdAbonoCreditoPk(new BigDecimal(ifaceAbonoCredito.getNextVal()));
+                    ac.setIdCreditoFk(item.getFolioCredito());
+                    AbonoGrande = AbonoGrande.subtract(item.getSaldoLiquidar(), MathContext.UNLIMITED);
+                    ac.setMontoAbono(item.getSaldoLiquidar());
+
+                    ac.setIdUsuarioFk(usuarioDominio.getIdUsuario()); //aqui poner el usuario looggeado
+                    ac.setIdtipoAbonoFk(abono.getIdtipoAbonoFk());
+                    if (abono.getIdtipoAbonoFk().intValue() == 3) {
+                        ac.setEstatusAbono(new BigDecimal(2));
+                        //Entra a estado 2 Que significa que esta pendiente.
+                    } else {
+                        //Quiere decir que se ejecute el abono.
+                        ac.setEstatusAbono(new BigDecimal(1));
+                    }
+                    ac.setNumeroCheque(abono.getNumeroCheque());
+                    ac.setLibrador(abono.getLibrador());
+                    ac.setFechaCobro(abono.getFechaCobro());
+                    ac.setBanco(abono.getBanco());
+                    ac.setFactura(abono.getFactura());
+                    ac.setReferencia(abono.getReferencia());
+                    ac.setConcepto(abono.getConcepto());
+                    ac.setFechaTransferencia(abono.getFechaTransferencia());
+                    BigDecimal temporal = item.getTotalAbonado().add(abono.getMontoAbono(), MathContext.UNLIMITED);
+                    if ((temporal).compareTo(item.getSaldoTotal()) == 1 || (temporal).compareTo(item.getSaldoTotal()) == 0) {
+                        System.out.println("Se liquido Todo cambiar a estatus 2 el credito");
+                        ifaceCredito.updateStatus(ac.getIdCreditoFk(), new BigDecimal(2));
+                        JsfUtil.addSuccessMessageClean("Se ha liquidado el crédito exitosamente");
+                    }
+                    if (ifaceAbonoCredito.insert(ac) == 1)
+                    {
+                        JsfUtil.addSuccessMessageClean("Se ha realizado un abono existosamente");
+                        searchByIdCliente();
+                        //abono.reset();
+                        //dataAbonar.reset();
+                    } else {
+                        JsfUtil.addErrorMessageClean("Ocurrio un error");
+                    }
+                }//fin if
+            }//fin for
+
             System.out.println("Va a ser un abono moustro");
         }
 
@@ -163,6 +205,11 @@ public class BeanBuscaCredito implements Serializable {
             modelo = new ArrayList<SaldosDeudas>();
             cliente = new Cliente();
         }
+
+    }
+    public ArrayList<Cliente> autoCompleteCliente(String nombreCliente) {
+        lstCliente = ifaceCatCliente.getClienteByNombreCompleto(nombreCliente.toUpperCase());
+        return lstCliente;
 
     }
 
@@ -316,6 +363,14 @@ public class BeanBuscaCredito implements Serializable {
 
     public void setBandera(boolean bandera) {
         this.bandera = bandera;
+    }
+
+    public ArrayList<Cliente> getLstCliente() {
+        return lstCliente;
+    }
+
+    public void setLstCliente(ArrayList<Cliente> lstCliente) {
+        this.lstCliente = lstCliente;
     }
 
 }

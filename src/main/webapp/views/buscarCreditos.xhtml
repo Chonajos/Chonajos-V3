@@ -96,115 +96,119 @@
                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 ">
                             <h3>#{beanBuscaCredito.title}</h3>
                         </div>
-                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 alignRight ">
-                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight">
-                                <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6 alignRight"  for="txtidCliente" value ="Número de Cliente:" /> 
-                                <p:inputText id="txtidCliente" maxlength="10" class=" col-lg-3 col-md-4 col-sm-8 col-xs-6 alignRight" value="#{beanBuscaCredito.cliente.id_cliente}"  required="true"
-                                             requiredMessage="Ingresa un número cliente">
-                                    <pe:keyFilter regEx="/[0-9_]/i"/>
-                                    <p:ajax event="change" update="@this"/>
-                                </p:inputText>
+                        <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 alignLeft ">
+                            <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 alignLeft ">
+                                <p:outputLabel class="col-lg-2 col-md-2 col-sm-4 col-xs-12 alignLeft"  for="autocompleteCliente"
+                                               value ="Cliente:" /> 
+                                <p:autoComplete  placeholder="Seleccione un Cliente" id="autocompleteCliente"  required="true" 
+                                                 requiredMessage="Ingresa un valor para el campo Cliente." 
+                                                 styleClass="autocomplete-input-text-media ui-state-highlight-autocomplete" 
+                                                 class="ui-state-highlight-autocomplete alignLeft"
+                                                 value="#{beanBuscaCredito.cliente}" completeMethod="#{beanBuscaCredito.autoCompleteCliente}" 
+                                                 forceSelection="true" var="cliente"  inputStyle="width: 180px"
+                                                 itemLabel="#{cliente.nombreCombleto}"
+                                                 itemValue="#{cliente.id_cliente}" converter="#{clienteConverter}">
+                                </p:autoComplete>
+                                <pe:keyFilter for="autocompleteCliente" regEx="/[a-z0-9-_Ã±\s]/i" />
                                 <p:commandButton value="Buscar" update=":formContent" ajax="true" action="#{beanBuscaCredito.searchByIdCliente()}" />
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="container-fluid">
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 form-group">
-                            <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 alignCenter ">
-                                <h5><b> Datos de Crédito</b></h5>
-                            </div>
-                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                                <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtNombreCliente" value ="Nombre de Cliente:" /> 
-                                <p:inputText id="txtNombreCliente" readonly="true" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanBuscaCredito.cliente.nombre}">
-                                </p:inputText>
-                            </div>
-                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                                <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"   for="txtRFC" value ="RFC:" /> 
-                                <p:inputText id="txtRFC"  readonly="true" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanBuscaCredito.cliente.rfcFiscal}">
-                                </p:inputText>
-                            </div>
-                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                                <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"   for="txtTipoCliente" value ="Tipo de Cliente:" /> 
-                                <p:inputText id="txtTipoCliente"  readonly="true" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanBuscaCredito.tipoCliente}">
-                                </p:inputText>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 form-group">
-                            <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 alignCenter ">
-                                <h5><b> Datos de Crédito</b></h5>
-                            </div>
-                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                                <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtCreditoAutorizado" value ="Crédito Autorizado:" /> 
-                                <p:inputText id="txtCreditoAutorizado" readonly="true" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanBuscaCredito.cliente.limiteCredito}">
-                                    <f:convertNumber type="currency" currencySymbol="$" />
-                                </p:inputText>
-                            </div>
-                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                                <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"   for="txtCreditoDisponible" value ="Crédito Disponible:" /> 
-                                <p:inputText id="txtCreditoDisponible"  readonly="true" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanBuscaCredito.cliente.creditoDisponible}">
-                                    <f:convertNumber type="currency" currencySymbol="$" />
-                                </p:inputText>
-                            </div>
-                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                                <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"   for="txtCreditoUtilizado" value ="Crédito Utilizado:" /> 
-                                <p:inputText id="txtCreditoUtilizado"  readonly="true" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanBuscaCredito.cliente.utilizadoTotal}">
-                                    <f:convertNumber type="currency" currencySymbol="$" />
-                                </p:inputText>
-                            </div> 
-                        </div>
+                <div class="container-fluid alignLeft">
+                    <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12  ">
+                        <h5><b> Datos de Cliente</b></h5>
                     </div>
+                    <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12   ">
+                        <p:outputLabel class="col-lg-5 col-md-3 col-sm-4 col-xs-6  "  for="txtNombreCliente" value ="Nombre de Cliente:" /> 
+                        <p:inputText id="txtNombreCliente" readonly="true" class=" col-lg-7 col-md-4 col-sm-8 col-xs-6 " value="#{beanBuscaCredito.cliente.nombre}">
+                        </p:inputText>
+                    </div>
+                    <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12   ">
+                        <p:outputLabel class="col-lg-5 col-md-3 col-sm-4 col-xs-6 "   for="txtRFC" value ="RFC:" /> 
+                        <p:inputText id="txtRFC"  readonly="true" class=" col-lg-6 col-md-4 col-sm-8 col-xs-6  " value="#{beanBuscaCredito.cliente.rfcFiscal}">
+                        </p:inputText>
+                    </div>
+                    <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12   ">
+                        <p:outputLabel class="col-lg-5 col-md-3 col-sm-4 col-xs-6"   for="txtTipoCliente" value ="Tipo de Cliente:" /> 
+                        <p:inputText id="txtTipoCliente"  readonly="true" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6 " value="#{beanBuscaCredito.tipoCliente}">
+                        </p:inputText>
+                    </div>
+
+                    <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12   ">
+                        <p:outputLabel class="col-lg-5 col-md-3 col-sm-4 col-xs-6 "  for="txtCreditoAutorizado" value ="Crédito Autorizado:" /> 
+                        <p:inputText id="txtCreditoAutorizado" readonly="true" class=" col-lg-3 col-md-4 col-sm-8 col-xs-6 " value="#{beanBuscaCredito.cliente.limiteCredito}">
+                            <f:convertNumber type="currency" currencySymbol="$" />
+                        </p:inputText>
+                    </div>
+                    <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12   ">
+                        <p:outputLabel class="col-lg-5 col-md-3 col-sm-4 col-xs-6 "   for="txtCreditoUtilizado" value ="Crédito Utilizado:" /> 
+                        <p:inputText id="txtCreditoUtilizado"  readonly="true" class=" col-lg-3 col-md-4 col-sm-8 col-xs-6 " value="#{beanBuscaCredito.cliente.utilizadoTotal}">
+                            <f:convertNumber type="currency" currencySymbol="$" />
+                        </p:inputText>
+                    </div> 
+                    <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 alignLeft  ">
+                        <p:outputLabel class="col-lg-5 col-md-3 col-sm-4 col-xs-6 alignLeft"   for="txtCreditoDisponible" value ="Crédito Disponible:" /> 
+                        <p:inputText id="txtCreditoDisponible"  readonly="true" class=" col-lg-3 col-md-4 col-sm-8 col-xs-6 " value="#{beanBuscaCredito.cliente.creditoDisponible}">
+                            <f:convertNumber type="currency" currencySymbol="$" />
+                        </p:inputText>
+                    </div>
+
                 </div>
                 <div class="container-fluid">
-                    <p:dataTable var="model" value="#{beanBuscaCredito.modelo}" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron registros.">
-                        <p:column headerText="Folio Crédito" width="40px;" class="alignCenter">
+                    <p:dataTable var="model" value="#{beanBuscaCredito.modelo}" scrollable="true" scrollHeight="150" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron registros.">
+                        <p:column headerText="Folio" width="20px;" class="alignCenter">
                             <h:outputText value="#{model.folioCredito}" />
                         </p:column>
-                        <p:column headerText="Estatus" width="50px;" class="alignCenter">
-                            <h:outputText value="#{model.nombreStatus}" />
-                        </p:column>
-                        <p:column headerText="Folio de Venta" width="35px;" class="alignCenter">
-                            <h:outputText value="#{model.folioVenta}" />
-                        </p:column>
-                        <p:column headerText="Fecha de Venta" width="100px;" class="alignCenter">
+                        <p:column headerText="Fecha de Venta" width="40px;" class="alignCenter">
                             <h:outputText value="#{model.fechaVenta}" >
                                 <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
                             </h:outputText>
                         </p:column>
-                        <p:column headerText="Periodos" width="70px;" class="alignCenter">
-                            <h:outputText value="#{model.periodo}">
-                            </h:outputText>
+                        <p:column headerText="Periodos" width="20px;" class="alignCenter">
+                            <h:outputText value="#{model.periodo}" />
                         </p:column>
-                        <p:column headerText="N° Plazos" width="35px;" class="alignCenter">
-                            <h:outputText value="#{model.plazo}" />
-                        </p:column>
-                        <p:column headerText="Saldo Total" width="60px;" class="alignRight">
+                        <p:column headerText="Venta" width="25px;" class="alignRight">
                             <h:outputText value="#{model.saldoTotal}">
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
                         </p:column>
-                        <p:column headerText="Total Abonado" width="60px;" class="alignRight">
-                            <h:outputText value="#{model.totalAbonado}"> 
-                                <f:convertNumber type="currency" currencySymbol="$" />
-                            </h:outputText>
+                        <p:column headerText="N° Pagos" width="20px;" class="alignCenter">
+                            <h:outputText value="#{model.plazo}" />
                         </p:column>
-                        <p:column headerText="Fecha de Próximo Pago" width="90px;" class="alignCenter">
-                            <h:outputText value="#{model.fechaProximaAbonar}"> 
-                                <f:convertDateTime pattern="dd/MM/yyyy"/>
-                            </h:outputText>
-                        </p:column>
-                        <p:column headerText="Total a Abonar" width="70px;" class="alignRight">
+                        <p:column headerText="Importe de Venta" width="40px;" class="alignRight">
                             <h:outputText value="#{model.montoAbonar}"> 
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
                         </p:column>
-                        <p:column headerText="Saldo a Liquidar" width="70px;" class="alignRight">
+
+                        <p:column headerText="Total Abonado" width="40px;" class="alignRight">
+                            <h:outputText value="#{model.totalAbonado}"> 
+                                <f:convertNumber type="currency" currencySymbol="$" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Fecha de Próximo Pago" width="40px;" class="alignCenter">
+                            <h:outputText value="#{model.fechaProximaAbonar}"> 
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Periodos Atrasados" width="40px;" class="alignRight">
+                            <h:outputText value="#{model.periodosAtraso}"> 
+                                <f:convertNumber type="currency" currencySymbol="$" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Saldo Atrasado" width="40px;" class="alignRight">
+                            <h:outputText value="#{model.saldoAtrasado}"> 
+                                <f:convertNumber type="currency" currencySymbol="$" />
+                            </h:outputText>
+                        </p:column>
+                        
+                        <p:column headerText="Saldo a Liquidar" width="40px;" class="alignRight">
                             <h:outputText value="#{model.saldoLiquidar}"> 
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
                         </p:column>
-                        <p:column headerText="Abonar" width="30px;" class="alignRight">
+                        <p:column headerText="Abonar" width="30px;" class="alignCenter">
                             <p:commandButton ajax="true"  oncomplete="PF('dlg').show();" update =":formContent:dialogw:" icon="ui-icon-triangle-1-e" styleClass="ui-priority-primary" >
                                 <f:setPropertyActionListener value="#{model}" target="#{beanBuscaCredito.dataAbonar}"/>
                             </p:commandButton>
@@ -219,18 +223,18 @@
                                         </h:outputText>
                                     </f:facet>
                                 </p:column>
-                                <p:column colspan="5" />
+                                <p:column colspan="3" />
                             </p:row>
                         </p:columnGroup>
 
                     </p:dataTable>
                 </div>
                 <div class="container-fluid">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignCenter">
-                            <p:commandButton value="Abonar a Total" update=":formContent" oncomplete="PF('dlg').show();" ajax="true" action="#{beanBuscaCredito.activaBandera()}" />
-                        </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignCenter">
+                        <p:commandButton value="Abonar a Total" update=":formContent" oncomplete="PF('dlg').show();" ajax="true" action="#{beanBuscaCredito.activaBandera()}" />
                     </div>
-             
+                </div>
+
             </p:panel>
         </h:form>
     </ui:define>

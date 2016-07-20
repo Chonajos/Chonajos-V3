@@ -34,6 +34,8 @@ public class SaldosDeudas implements Serializable {
     private BigDecimal saldoTotal;
     private BigDecimal tipoCredito;
     private BigDecimal saldoLiquidar;
+    private BigDecimal aCuenta;
+    private BigDecimal statusAcuenta;
 
     public void reset() {
         folioCredito = null;
@@ -54,13 +56,33 @@ public class SaldosDeudas implements Serializable {
         saldoTotal = null;
         tipoCredito = null;
         saldoLiquidar=null;
+        aCuenta=null;
+    statusAcuenta=null;
+        
     }
 
     @Override
     public String toString() {
-        return "SaldosDeudas{" + "folioCredito=" + folioCredito + ", folioVenta=" + folioVenta + ", montoTotal=" + montoTotal + ", totalAbonado=" + totalAbonado + ", fechaVenta=" + fechaVenta + ", montoAbonar=" + montoAbonar + ", fechaProximaAbonar=" + fechaProximaAbonar + ", periodo=" + periodo + ", plazo=" + plazo + ", periodosAtraso=" + periodosAtraso + ", diasAtraso=" + diasAtraso + ", saldoDeudor=" + saldoDeudor + ", saldoAtrasado=" + saldoAtrasado + ", idEstatus=" + idEstatus + ", nombreStatus=" + nombreStatus + ", saldoTotal=" + saldoTotal + ", tipoCredito=" + tipoCredito + ", saldoLiquidar=" + saldoLiquidar + '}';
+        return "SaldosDeudas{" + "folioCredito=" + folioCredito + ", folioVenta=" + folioVenta + ", montoTotal=" + montoTotal + ", totalAbonado=" + totalAbonado + ", fechaVenta=" + fechaVenta + ", montoAbonar=" + montoAbonar + ", fechaProximaAbonar=" + fechaProximaAbonar + ", periodo=" + periodo + ", plazo=" + plazo + ", periodosAtraso=" + periodosAtraso + ", diasAtraso=" + diasAtraso + ", saldoDeudor=" + saldoDeudor + ", saldoAtrasado=" + saldoAtrasado + ", idEstatus=" + idEstatus + ", nombreStatus=" + nombreStatus + ", saldoTotal=" + saldoTotal + ", tipoCredito=" + tipoCredito + ", saldoLiquidar=" + saldoLiquidar + ", aCuenta=" + aCuenta + ", statusAcuenta=" + statusAcuenta + '}';
     }
     
+
+    public BigDecimal getaCuenta() {
+        return aCuenta;
+    }
+
+    public void setaCuenta(BigDecimal aCuenta) {
+        this.aCuenta = aCuenta;
+    }
+
+    public BigDecimal getStatusAcuenta() {
+        return statusAcuenta;
+    }
+
+    public void setStatusAcuenta(BigDecimal statusAcuenta) {
+        this.statusAcuenta = statusAcuenta;
+    }
+
 
     public BigDecimal getSaldoLiquidar() {
         return saldoLiquidar;
