@@ -135,7 +135,7 @@ public class ServiceCredito implements IfaceCredito {
 //            Date temporal = fechaVenta;
 //
 //            while (temporal.compareTo(hoy) == -1) {
-//                temporal = TiempoUtil.fechaTextoDiaMesAnio(TiempoUtil.getFechaDDMMYYYY(TiempoUtil.sumarRestarDias(temporal, credito.getTipoCredito().intValue())));
+//                temporal = TiempoUtil.fechaTextoDiaMesAnio(TiempoUtil.getFechaDDMMYYYY(TiempoUtil.sumarRestarDias(temporal, 7)));
 //            }
 //            
 //            System.out.println("fecha de siguiente pago ---------------- " + temporal);
@@ -155,7 +155,7 @@ public class ServiceCredito implements IfaceCredito {
  
                 if (auxiliar.compareTo(hoy) == -1) {
                     contador = contador+1;
-                    auxiliar = TiempoUtil.fechaTextoDiaMesAnio(TiempoUtil.getFechaDDMMYYYY(TiempoUtil.sumarRestarDias(fechaVenta, credito.getPlazo().intValue()*7)));
+                    auxiliar = TiempoUtil.fechaTextoDiaMesAnio(TiempoUtil.getFechaDDMMYYYY(TiempoUtil.sumarRestarDias(fechaVenta, 7)));
                     fechasDePago.add(auxiliar);
                     credito.setFechaProximaAbonar(auxiliar);
                     credito.setSaldoAtrasado(credito.getTotalAbonado().subtract(cantidadPorFecha, MathContext.UNLIMITED));
