@@ -23,7 +23,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @Service
 public class ServiceCredito implements IfaceCredito {
-@Autowired
+
+    @Autowired
     private PlataformaSecurityContext context;
     NegocioCredito ejb;
 
@@ -111,8 +112,7 @@ public class ServiceCredito implements IfaceCredito {
     }
 
     @Override
-    public ArrayList<SaldosDeudas> getCreditosActivos(BigDecimal idCliente) 
-    {
+    public ArrayList<SaldosDeudas> getCreditosActivos(BigDecimal idCliente) {
         getEjb();
         ArrayList<SaldosDeudas> lstCreditos = new ArrayList<SaldosDeudas>();
         List<Object[]> lstObject = new ArrayList<Object[]>();
@@ -140,40 +140,32 @@ public class ServiceCredito implements IfaceCredito {
 //            
 //            System.out.println("fecha de siguiente pago ---------------- " + temporal);
 
-            ArrayList<Date> fechasDePago = new ArrayList<Date>();
-
-            ArrayList<BigDecimal> abonosFecha = new ArrayList<BigDecimal>();
             BigDecimal cantidadPorFecha = new BigDecimal(0);
             credito.setMontoAbonar(credito.getSaldoTotal().divide(credito.getPlazo(), 2, RoundingMode.HALF_UP));
-            abonosFecha.add(cantidadPorFecha);
-            int contador=0;
-            for (int i = 0; i <= credito.getPlazo().intValue()*7; i++) {
-               
+            //int contador = 0;
+            int var = credito.getPlazo().intValue();
+            for (int i = 0; i <= var; i++) {
                 Date auxiliar = fechaVenta;
-                cantidadPorFecha = cantidadPorFecha.add(credito.getMontoAbonar(), MathContext.UNLIMITED);
-                abonosFecha.add(cantidadPorFecha);
- 
-                if (auxiliar.compareTo(hoy) == -1) {
-                    contador = contador+1;
+                if (auxiliar.compareTo(hoy) == -1) //si auxiliar es menor entra
+                {
+                    cantidadPorFecha = cantidadPorFecha.add(credito.getMontoAbonar(), MathContext.UNLIMITED);
+
                     auxiliar = TiempoUtil.fechaTextoDiaMesAnio(TiempoUtil.getFechaDDMMYYYY(TiempoUtil.sumarRestarDias(fechaVenta, 7)));
-                    fechasDePago.add(auxiliar);
+                    BigDecimal plazoTemp = (cantidadPorFecha.subtract(credito.getTotalAbonado(), MathContext.UNLIMITED)).divide(credito.getMontoAbonar(), 2, RoundingMode.UP);
+                   // contador += contador;
+                   // credito.setPeriodosAtraso(Integer.toString(contador));
+                   double t = Math.ceil(Double.parseDouble(plazoTemp.toString()))+1;
+                   //System.out.println(Math.ceil(2.3);
+                    credito.setPeriodosAtraso(Double.toString(t));
                     credito.setFechaProximaAbonar(auxiliar);
                     credito.setSaldoAtrasado(credito.getTotalAbonado().subtract(cantidadPorFecha, MathContext.UNLIMITED));
 
                 }
-                credito.setPeriodosAtraso(Integer.toString(contador));
 
                 fechaVenta = auxiliar;
             }
 
             credito.setSaldoLiquidar(credito.getSaldoTotal().subtract(credito.getTotalAbonado(), MathContext.UNLIMITED));
-//            credito.setNumeroPromesaPago(object[7] == null ? null : new BigDecimal(object[7].toString()));
-//            credito.setFechaInicioCredito(object[8] == null ? null : (Date) object[8]);
-//            credito.setFechaFinCredito(object[9] == null ? null : (Date) object[9]);
-//            credito.setFechaPromesaPago(object[10] == null ? null : (Date) object[10]);
-//            credito.setTazaInteres(object[11] == null ? null : new BigDecimal(object[11].toString()));
-//            credito.setTazaInteres(object[12] == null ? null : new BigDecimal(object[12].toString()));
-
             lstCreditos.add(credito);
         }
 
@@ -190,10 +182,9 @@ public class ServiceCredito implements IfaceCredito {
 
     @Override
     public int updateACuenta(Credito credito) {
-       getEjb();
-       return ejb.updateACuenta(credito);
-        
-        
+        getEjb();
+        return ejb.updateACuenta(credito);
+
     }
 
 }
