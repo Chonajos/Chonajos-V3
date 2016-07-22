@@ -26,8 +26,10 @@ public class EjbCredito implements NegocioCredito {
 
         try {
 
-            Query query = em.createNativeQuery("INSERT INTO  CREDITO (ID_CREDITO_PK ,ID_CLIENTE_FK ,ID_VENTA_MENUDEO ,ID_VENTA_MAYOREO ,ID_USUARIO_CREDITO  ,ESTATUS_CREDITO ,NUMERO_PROMESA_PAGO ,FECHA_INICIO_CREDITO ,FECHA_FIN_CREDITO ,FECHA_PROMESA_FIN_PAGO ,TAZA_INTERES,PLAZOS,NUMERO_PAGOS) "
-                    + " VALUES(S_CREDITO.nextval,?,?,?,?,?,?,?,?,?,?,?,?)");
+            System.out.println("CREDITO ---------------------------------------------- " + credito.toString());
+
+            Query query = em.createNativeQuery("INSERT INTO  CREDITO (ID_CREDITO_PK ,ID_CLIENTE_FK ,ID_VENTA_MENUDEO ,ID_VENTA_MAYOREO ,ID_USUARIO_CREDITO  ,ESTATUS_CREDITO ,NUMERO_PROMESA_PAGO ,FECHA_INICIO_CREDITO ,FECHA_FIN_CREDITO ,FECHA_PROMESA_FIN_PAGO ,TAZA_INTERES,PLAZOS,NUMERO_PAGOS,MONTO_CREDITO,ACUENTA,STATUSACUENTA) "
+                    + " VALUES(S_CREDITO.nextval,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
             query.setParameter(1, credito.getIdClienteFk());
             query.setParameter(2, credito.getIdVentaMenudeo());
             query.setParameter(3, credito.getIdVentaMayoreo());
@@ -40,6 +42,9 @@ public class EjbCredito implements NegocioCredito {
             query.setParameter(10, credito.getTazaInteres());
             query.setParameter(11, credito.getPlasos());
             query.setParameter(12, credito.getNumeroPagos());
+            query.setParameter(13, credito.getMontoCredito());
+            query.setParameter(14, credito.getDejaCuenta());
+            query.setParameter(15, credito.getStatusACuenta());
 
             return query.executeUpdate();
 
@@ -69,7 +74,8 @@ public class EjbCredito implements NegocioCredito {
             return query.executeUpdate();
 
         } catch (Exception ex) {
-            Logger.getLogger(EjbCredito.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(EjbCredito.class
+                    .getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
     }
@@ -85,7 +91,8 @@ public class EjbCredito implements NegocioCredito {
             return query.executeUpdate();
 
         } catch (Exception ex) {
-            Logger.getLogger(EjbCredito.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(EjbCredito.class
+                    .getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
     }
@@ -98,8 +105,10 @@ public class EjbCredito implements NegocioCredito {
             List<Object[]> resultList = null;
             resultList = query.getResultList();
             return resultList;
+
         } catch (Exception ex) {
-            Logger.getLogger(EjbCredito.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(EjbCredito.class
+                    .getName()).log(Level.SEVERE, null, ex);
             return null;
         }
     }
@@ -116,7 +125,8 @@ public class EjbCredito implements NegocioCredito {
             return resultList;
 
         } catch (Exception ex) {
-            Logger.getLogger(EjbCredito.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(EjbCredito.class
+                    .getName()).log(Level.SEVERE, null, ex);
             return null;
         }
     }
@@ -125,22 +135,23 @@ public class EjbCredito implements NegocioCredito {
     public List<Object[]> getCreditosActivos(BigDecimal idCliente) {
         try {
 
-            Query query = em.createNativeQuery("select cre.ID_CREDITO_PK as folio,stc.NOMBRE_STATUS,cre.FECHA_INICIO_CREDITO,cre.PLAZOS,cre.MONTO_CREDITO \n" +
-",\n" +
-"(select NVL(sum(ac.MONTO_ABONO),0)from ABONO_CREDITO ac\n" +
-"where ac.ID_CREDITO_FK= cre.ID_CREDITO_PK and ac.ESTATUS=1) \n" +
-"as Total_Abonado,cre.ESTATUS_CREDITO,cre.ACUENTA,cre.STATUSACUENTA\n" +
-"from credito cre\n" +
-"inner join STATUS_CREDITO stc\n" +
-"on stc.ID_STATUS_CREDITO_PK = cre.ESTATUS_CREDITO\n" +
-"where cre.ESTATUS_CREDITO=1 and cre.ID_CLIENTE_FK ='" + idCliente + "'");
+            Query query = em.createNativeQuery("select cre.ID_CREDITO_PK as folio,stc.NOMBRE_STATUS,cre.FECHA_INICIO_CREDITO,cre.PLAZOS,cre.MONTO_CREDITO \n"
+                    + ",\n"
+                    + "(select NVL(sum(ac.MONTO_ABONO),0)from ABONO_CREDITO ac\n"
+                    + "where ac.ID_CREDITO_FK= cre.ID_CREDITO_PK and ac.ESTATUS=1) \n"
+                    + "as Total_Abonado,cre.ESTATUS_CREDITO,cre.ACUENTA,cre.STATUSACUENTA\n"
+                    + "from credito cre\n"
+                    + "inner join STATUS_CREDITO stc\n"
+                    + "on stc.ID_STATUS_CREDITO_PK = cre.ESTATUS_CREDITO\n"
+                    + "where cre.ESTATUS_CREDITO=1 and cre.ID_CLIENTE_FK ='" + idCliente + "'");
             List<Object[]> resultList = null;
             resultList = query.getResultList();
 
             return resultList;
 
         } catch (Exception ex) {
-            Logger.getLogger(EjbCredito.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(EjbCredito.class
+                    .getName()).log(Level.SEVERE, null, ex);
             return null;
         }
     }
@@ -155,7 +166,8 @@ public class EjbCredito implements NegocioCredito {
             return query.executeUpdate();
 
         } catch (Exception ex) {
-            Logger.getLogger(EjbCredito.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(EjbCredito.class
+                    .getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
 
@@ -170,10 +182,11 @@ public class EjbCredito implements NegocioCredito {
             return query.executeUpdate();
 
         } catch (Exception ex) {
-            Logger.getLogger(EjbCredito.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(EjbCredito.class
+                    .getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
-    
+
     }
 
 }
