@@ -23,10 +23,13 @@ public class Credito extends ValueObject {
     private BigDecimal tazaInteres;
     private BigDecimal plasos;
     private BigDecimal statusACuenta;
+    private BigDecimal dejaCuenta;
+    private BigDecimal montoCredito;
+    private BigDecimal numeroPagos;
 
     @Override
     public String toString() {
-        return "Credito{" + "idCreditoPk=" + idCreditoPk + ", idClienteFk=" + idClienteFk + ", idVentaMenudeo=" + idVentaMenudeo + ", idVentaMayoreo=" + idVentaMayoreo + ", idUsuarioCredito=" + idUsuarioCredito + ", idTipoCreditoFk=" + idTipoCreditoFk + ", estatusCredito=" + estatusCredito + ", numeroPromesaPago=" + numeroPromesaPago + ", fechaInicioCredito=" + fechaInicioCredito + ", fechaFinCredito=" + fechaFinCredito + ", fechaPromesaPago=" + fechaPromesaPago + ", tazaInteres=" + tazaInteres + '}';
+        return "Credito{" + "idCreditoPk=" + idCreditoPk + ", idClienteFk=" + idClienteFk + ", idVentaMenudeo=" + idVentaMenudeo + ", idVentaMayoreo=" + idVentaMayoreo + ", idUsuarioCredito=" + idUsuarioCredito + ", idTipoCreditoFk=" + idTipoCreditoFk + ", estatusCredito=" + estatusCredito + ", numeroPromesaPago=" + numeroPromesaPago + ", fechaInicioCredito=" + fechaInicioCredito + ", fechaFinCredito=" + fechaFinCredito + ", fechaPromesaPago=" + fechaPromesaPago + ", tazaInteres=" + tazaInteres + ", plasos=" + plasos + ", statusACuenta=" + statusACuenta + ", dejaCuenta=" + dejaCuenta + ", montoCredito=" + montoCredito + ", numeroPagos=" + numeroPagos + '}';
     }
 
     public BigDecimal getStatusACuenta() {
@@ -37,7 +40,6 @@ public class Credito extends ValueObject {
         this.statusACuenta = statusACuenta;
     }
 
-    
     public BigDecimal getIdCreditoPk() {
         return idCreditoPk;
     }
@@ -141,23 +143,51 @@ public class Credito extends ValueObject {
     public void setPlasos(BigDecimal plasos) {
         this.plasos = plasos;
     }
-    
+
+    public BigDecimal getDejaCuenta() {
+        return dejaCuenta;
+    }
+
+    public void setDejaCuenta(BigDecimal dejaCuenta) {
+        this.dejaCuenta = dejaCuenta;
+    }
+
+    public BigDecimal getMontoCredito() {
+        return montoCredito;
+    }
+
+    public void setMontoCredito(BigDecimal montoCredito) {
+        this.montoCredito = montoCredito;
+    }
+
+    public BigDecimal getNumeroPagos() {
+        return numeroPagos;
+    }
+
+    public void setNumeroPagos(BigDecimal numeroPagos) {
+        this.numeroPagos = numeroPagos;
+    }
 
     @Override
     public void reset() {
+
+        plasos = null;
+        dejaCuenta = null;
+        tazaInteres = null;
         idCreditoPk = null;
         idClienteFk = null;
+        numeroPagos = null;
+        montoCredito = null;
+        estatusCredito = null;
         idVentaMenudeo = null;
         idVentaMayoreo = null;
-        idUsuarioCredito = null;
+        fechaFinCredito = null;
         idTipoCreditoFk = null;
-        estatusCredito = null;
+        idUsuarioCredito = null;
+        fechaPromesaPago = null;
         numeroPromesaPago = null;
         fechaInicioCredito = null;
-        fechaFinCredito = null;
-        fechaPromesaPago = null;
-        tazaInteres = null;
-        plasos = null;
+
     }
 
 }

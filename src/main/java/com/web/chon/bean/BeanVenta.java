@@ -4,7 +4,6 @@ import com.web.chon.dominio.Cliente;
 import com.web.chon.dominio.Credito;
 import com.web.chon.dominio.ExistenciaMenudeo;
 import com.web.chon.dominio.MantenimientoPrecios;
-import com.web.chon.dominio.SaldosDeudas;
 import com.web.chon.dominio.Subproducto;
 import com.web.chon.dominio.TipoEmpaque;
 import com.web.chon.dominio.TipoVenta;
@@ -29,46 +28,36 @@ import com.web.chon.util.JsfUtil;
 import com.web.chon.util.NumeroALetra;
 import com.web.chon.util.UtilUpload;
 import com.web.chon.util.TiempoUtil;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
-
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-
 import java.util.Locale;
 import java.util.Map;
-
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
-
+import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.event.ValueChangeEvent;
 import javax.servlet.ServletContext;
-
 import javax.servlet.http.HttpServletResponse;
-
 import net.sf.jasperreports.engine.JREmptyDataSource;
-
 import net.sf.jasperreports.engine.JRExporter;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
-
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import org.primefaces.component.inputtext.InputText;
 import org.primefaces.context.RequestContext;
-
 import org.primefaces.model.StreamedContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -140,19 +129,23 @@ public class BeanVenta implements Serializable, BeanSimple {
 
     private BigDecimal max;
     private BigDecimal min;
+    private BigDecimal dejaACuenta;
     private BigDecimal totalVenta;
     private BigDecimal INTERES_VENTA = new BigDecimal("0.60");
+    private BigDecimal DIAS_PLAZO = new BigDecimal("7");
 
     private int idSucu;
 
     private boolean permisionToEdit;
     private boolean variableInicial;
+    private boolean credito;
 
     @PostConstruct
     public void init() {
 
         max = new BigDecimal(0);
         min = new BigDecimal(0);
+        dejaACuenta = new BigDecimal("0");
 
         context.getFechaSistema();
         usuario = new Usuario();
@@ -167,7 +160,9 @@ public class BeanVenta implements Serializable, BeanSimple {
         usuario.setAmaternoUsuario(usuarioDominio.getUsuMaterno());
 
         lstTipoVenta = ifaceTipoVenta.getAll();
-        cliente = ifaceCatCliente.getClienteById(1);
+        cliente = new Cliente();
+        autoCompleteCliente("");
+        cliente = ifaceCatCliente.getCreditoClienteByIdCliente(new BigDecimal("1"));
 
         permisionToEdit = false;
 
@@ -175,8 +170,9 @@ public class BeanVenta implements Serializable, BeanSimple {
         venta.setIdSucursal(idSucu);
 
         data = new VentaProducto();
+
         data.setIdTipoEmpaqueFk(new BigDecimal(-1));
-        data.setTipoPago(new BigDecimal("1"));
+//        data.setIdTipoVentaFk(new BigDecimal("1"));
 
         lstProducto = new ArrayList<Subproducto>();
         lstTipoEmpaque = ifaceEmpaque.getEmpaques();
@@ -186,11 +182,13 @@ public class BeanVenta implements Serializable, BeanSimple {
         selectedTipoEmpaque();
 
         variableInicial = false;
+        credito = false;
 
         setTitle("Venta de Productos");
         setViewEstate("init");
 
         validaCreditoCliente();
+
     }
 
     public void selectedTipoEmpaque() {
@@ -256,8 +254,13 @@ public class BeanVenta implements Serializable, BeanSimple {
         int idVenta = 0;
         int folioVenta = 0;
         Venta venta = new Venta();
-
+        System.out.println("a dejaACuenta " + dejaACuenta);
+        String mensaje = validaCompraCredito();
         try {
+            if (!mensaje.equals("")) {
+                JsfUtil.addErrorMessage(mensaje);
+                return null;
+            }
             if (!lstVenta.isEmpty() && lstVenta.size() > 0) {
 
                 idVenta = ifaceVenta.getNextVal();
@@ -269,18 +272,11 @@ public class BeanVenta implements Serializable, BeanSimple {
                 venta.setIdSucursal(idSucu);
 
                 int ventaInsertada = ifaceVenta.insertarVenta(venta, folioVenta);
-
+                int productoInsertado = 0;
                 if (ventaInsertada != 0) {
                     for (VentaProducto producto : lstVenta) {
                         if (restarExistencias(producto)) {
-                            if (ifaceVentaProducto.insertarVentaProducto(producto, idVenta) == 1) {
-                                //credito clientes
-                                if (insertaCredito(venta)) {
-                                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info!", "La venta se realizo correctamente."));
-                                } else {
-                                    JsfUtil.addErrorMessage("Error al Realizar la Venta, favor de cancelar la venta y volver a realizarla. Si los problemas persisten contactar al administrado.");
-                                }
-                            }
+                            productoInsertado = ifaceVentaProducto.insertarVentaProducto(producto, idVenta);
 
                         } else {
                             JsfUtil.addErrorMessage("Error al Realizar la Venta, favor de cancelar la venta y volver a realizarla. Si los problemas persisten contactar al administrado.");
@@ -288,10 +284,20 @@ public class BeanVenta implements Serializable, BeanSimple {
                         }
                     }
 
+                    if (productoInsertado == 1) {
+                        if (!data.getIdTipoVentaFk().equals(new BigDecimal("1"))) {
+                            if (insertaCredito(venta)) {
+                                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info!", "La venta se realizo correctamente."));
+                            } else {
+                                JsfUtil.addErrorMessage("Error al Realizar la Venta, favor de cancelar la venta y volver a realizarla. Si los problemas persisten contactar al administrado.");
+                            }
+                        }
+                    }
+
                     setParameterTicket(idVenta, folioVenta);
 
                     generateReport(idVenta, folioVenta);
-                    cancel();
+                    init();
 
                     lstVenta.clear();
                     totalVenta = new BigDecimal(0);
@@ -306,6 +312,7 @@ public class BeanVenta implements Serializable, BeanSimple {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Necesitas agregar al menos un producto para realizar la venta."));
 
             }
+
             return null;
 
         } catch (StackOverflowError ex) {
@@ -363,6 +370,7 @@ public class BeanVenta implements Serializable, BeanSimple {
     }
 
     public void addProducto() {
+        System.out.println("clinete add :" + cliente.toString());
         if (data.getPrecioProducto() != null) {
             if (data.getPrecioProducto().intValue() < min.intValue() || data.getPrecioProducto().intValue() > max.intValue()) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "El precio de venta esta fuera de valores permitidos: Mínimo:" + min + " Máximo: " + max));
@@ -381,24 +389,29 @@ public class BeanVenta implements Serializable, BeanSimple {
                 venta.setKilosVenta(data.getKilosVenta());
                 venta.setNombreProducto(subProducto.getNombreSubproducto());
                 venta.setIdProductoFk(subProducto.getIdSubproductoPk());
+                System.out.println("clinete add 0:" + cliente.toString());
                 venta.setNombreEmpaque(empaque.getNombreEmpaque());
                 venta.setPrecioSinInteres(data.getPrecioSinInteres());
                 venta.setPrecioProducto(data.getPrecioProducto());
                 venta.setTotal(venta.getPrecioProducto().multiply(venta.getCantidadEmpaque()));
 
                 lstVenta.add(venta);
+                System.out.println("clinete add 1:" + cliente.toString());
                 calcularTotalVenta();
+                System.out.println("clinete add 2:" + cliente.toString());
                 data.reset();
 
                 subProducto = new Subproducto();
+                System.out.println("clinete add 4:" + cliente.toString());
                 selectedTipoEmpaque();
+                System.out.println("clinete add 5:" + cliente.toString());
                 variableInicial = false;
             }
 
         } else {
             JsfUtil.addErrorMessage("No se tiene el precio de este prodcuto, favor de contactar al gerente.");
         }
-
+        System.out.println("clinete add 6:" + cliente.toString());
     }
 
     private boolean verificaExistencia() {
@@ -467,6 +480,7 @@ public class BeanVenta implements Serializable, BeanSimple {
 
         paramReport.put("fechaVenta", dateTime);
         paramReport.put("noVenta", Integer.toString(folioVenta));
+        System.out.println("clinete ticket" + cliente.toString());
         paramReport.put("cliente", cliente.getNombreCombleto());
         paramReport.put("vendedor", usuario.getNombreCompletoUsuario());
         paramReport.put("productos", items);
@@ -482,6 +496,7 @@ public class BeanVenta implements Serializable, BeanSimple {
 
     public void editProducto() {
 
+        System.out.println("cliente edit inicio " + cliente.toString());
         subProducto = ifaceSubProducto.getSubProductoById(dataEdit.getIdProductoFk());
 
         autoComplete(dataEdit.getNombreProducto());
@@ -498,6 +513,7 @@ public class BeanVenta implements Serializable, BeanSimple {
         data.setIdProductoFk(dataEdit.getIdProductoFk());
 
         viewEstate = "update";
+        System.out.println("cliente edit fin " + cliente.toString());
 
     }
 
@@ -532,14 +548,6 @@ public class BeanVenta implements Serializable, BeanSimple {
         } else {
             JsfUtil.addErrorMessage("No se tiene el precio de este prodcuto, favor de contactar al gerente.");
         }
-
-    }
-
-    public void cancel() {
-        data.reset();
-        subProducto = new Subproducto();
-        viewEstate = "init";
-        init();
 
     }
 
@@ -607,9 +615,10 @@ public class BeanVenta implements Serializable, BeanSimple {
         if (data.getIdTipoVentaFk().intValue() != 1) {
 
             BigDecimal diasAnio = new BigDecimal(365);
-            BigDecimal numPagos = data.getNumeroPagos() == null ? new BigDecimal("1") : data.getNumeroPagos();
-            BigDecimal totalDiasPagar = numPagos.multiply(data.getTipoPago());
+
+            BigDecimal totalDiasPagar = data.getTipoPago() == null ? DIAS_PLAZO : data.getTipoPago();
             BigDecimal interesDiasPagar = (INTERES_VENTA.divide(diasAnio, 8, RoundingMode.HALF_UP).multiply(totalDiasPagar)).add(new BigDecimal(1));
+            data.setNumeroPagos(totalDiasPagar.divide(DIAS_PLAZO));
             for (VentaProducto dominio : lstVenta) {
 
                 dominio.setPrecioProducto(dominio.getPrecioSinInteres().multiply(interesDiasPagar));
@@ -633,9 +642,8 @@ public class BeanVenta implements Serializable, BeanSimple {
         BigDecimal diasAnio = new BigDecimal(365);
         if (data.getIdTipoVentaFk() != null && data.getIdTipoVentaFk().intValue() != 1) {
 
-            BigDecimal numPagos = data.getNumeroPagos() == null ? new BigDecimal("1") : data.getNumeroPagos();
             BigDecimal totalConInteres = new BigDecimal("0");
-            BigDecimal totalDiasPagar = numPagos.multiply(data.getTipoPago());
+            BigDecimal totalDiasPagar = data.getTipoPago() == null ? new BigDecimal("7") : data.getTipoPago();
             BigDecimal interesDiasPagar = INTERES_VENTA.divide(diasAnio, 8, RoundingMode.HALF_UP).multiply(totalDiasPagar);
             totalConInteres = precioProducto.multiply(interesDiasPagar.add(new BigDecimal("1")));
             totalConInteres = totalConInteres.setScale(2, RoundingMode.HALF_UP);
@@ -647,31 +655,35 @@ public class BeanVenta implements Serializable, BeanSimple {
     }
 
     public void validaCreditoCliente() {
-        System.out.println("cliente.getLimiteCredito() " + cliente.getLimiteCredito());
 
-        cliente = ifaceCatCliente.getClienteCreditoById(cliente.getId_cliente().intValue());
         BigDecimal tipoPago = new BigDecimal("1");
-        if (cliente.getLimiteCredito() == null) {
+        BigDecimal idClienteVenta = new BigDecimal("1");
+        if (cliente.getId_cliente().equals(idClienteVenta)) {
+            credito = false;
+            data.setIdTipoVentaFk(tipoPago);
+        } else if (cliente.getLimiteCredito() == null) {
             JsfUtil.addWarnMessage("El Cliente no tiene Crédito.");
-            data.setTipoPago(tipoPago);
+            data.setIdTipoVentaFk(tipoPago);
+            credito = false;
+        } else if (cliente.getCreditoDisponible().compareTo(new BigDecimal("0")) == 1) {
+            credito = true;
         } else {
-            JsfUtil.addSuccessMessage("El credito del cliente es de :" + cliente.getLimiteCredito() + "Credito Disponible : " + cliente.getCreditoDisponible());
-
+            JsfUtil.addWarnMessage("El cliente no tiene credito disponible :" + cliente.getCreditoDisponible());
+            data.setIdTipoVentaFk(tipoPago);
+            credito = false;
         }
+        calculaPrecioProducto();
+
     }
 
     public void validaPrecioMinimoMaximo(AjaxBehaviorEvent event) {
         InputText input = (InputText) event.getSource();
-        System.out.println("validar");
         if (input.getSubmittedValue() != null && !input.getSubmittedValue().toString().isEmpty()) {
             BigDecimal value = new BigDecimal(input.getSubmittedValue().toString());
             if (value.compareTo(min) == -1) {
-
-                System.out.println("el valor min es mayor");
                 input.setSubmittedValue(min);
 
             } else if (value.compareTo(max) == 1) {
-                System.out.println("el valor value es mayor");
                 input.setSubmittedValue(max);
             } else {
                 input.setSubmittedValue(value);
@@ -684,10 +696,35 @@ public class BeanVenta implements Serializable, BeanSimple {
 
     }
 
+    public void validarNumeroPagos(AjaxBehaviorEvent event) {
+
+        InputText input = (InputText) event.getSource();
+        if (input.getSubmittedValue() != null && !input.getSubmittedValue().toString().isEmpty()) {
+
+            BigDecimal value = new BigDecimal(input.getSubmittedValue().toString());
+            int tipoPago = data.getTipoPago() == null ? 7 : data.getTipoPago().intValue();
+            int resto = (tipoPago % value.intValue());
+
+            if (resto > 0) {
+                input.setSubmittedValue(new BigDecimal(tipoPago).divide(DIAS_PLAZO));
+            } else if (tipoPago < (value.intValue() * DIAS_PLAZO.intValue())) {
+                input.setSubmittedValue(new BigDecimal(tipoPago).divide(DIAS_PLAZO));
+            } else if (tipoPago == value.intValue()) {
+                input.setSubmittedValue(new BigDecimal(tipoPago).divide(DIAS_PLAZO));
+            } else {
+                input.setSubmittedValue(value);
+            }
+        } else {
+            input.setSubmittedValue("");
+
+        }
+
+    }
+
     private boolean insertaCredito(Venta venta) {
         Credito credito = new Credito();
         Date fechaActual = context.getFechaSistema();
-        Date fechaPromesaPago = TiempoUtil.sumarRestarDias(fechaActual, (data.getTipoPago().multiply(data.getNumeroPagos()).intValue()));
+        Date fechaPromesaPago = TiempoUtil.sumarRestarDias(fechaActual, data.getTipoPago().intValue());
 
         credito.setIdClienteFk(venta.getIdClienteFk());
         //folio de la venta de menudeo (es el folio general no el de sucursal)
@@ -706,14 +743,49 @@ public class BeanVenta implements Serializable, BeanSimple {
         credito.setFechaPromesaPago(fechaPromesaPago);
         //el procentaje de interes que se le cobrara al cliente por la compra
         credito.setTazaInteres(INTERES_VENTA);
+        //Lo que el cliente deja a cuenta
+        credito.setDejaCuenta(dejaACuenta);
+        //Estatus si se a cobrado lo que el usuario a dejado a cuenta al momento de la venta es 0 (que no se a cobrado).
+        credito.setStatusACuenta(new BigDecimal("0"));
+
+        /* FIXME: Restar lo que se dejo a cuenta pero sin interes de la venta. */
+        credito.setMontoCredito(totalVenta.subtract(dejaACuenta));
         //Numero de pagos que el cliente debera realizar
-        credito.setPlasos(data.getNumeroPagos());
+        credito.setPlasos(data.getTipoPago());
+        //El numero de dias del plaso
+        credito.setNumeroPagos(data.getNumeroPagos());
 
         if (ifaceCredito.insert(credito) == 1) {
             return true;
         } else {
             return false;
         }
+    }
+
+    private String validaCompraCredito() {
+
+        String mensaje = "";
+        BigDecimal tipoCredito = new BigDecimal("2");
+
+        if (data.getIdTipoVentaFk().equals(tipoCredito)) {
+            for (VentaProducto venProducto : lstVenta) {
+                System.out.println("precio sin interes :" + venProducto.getPrecioSinInteres());
+                System.out.println("precio de venta :" + venProducto.getPrecioProducto());
+            }
+
+            System.out.println("deja a cuenta :" + dejaACuenta);
+            BigDecimal creditoVenta = totalVenta.subtract(dejaACuenta);
+
+            if (totalVenta.compareTo(dejaACuenta) == -1) {
+                return "El monto a cuenta :" + dejaACuenta + " es mayor al total de la venta: " + totalVenta;
+            } else if (cliente.getCreditoDisponible().compareTo(creditoVenta) == -1) {
+
+                return "No tiene el credito necesario para realizar la compra. Credito disponible: $" + cliente.getCreditoDisponible() + ", Compra de Credito :$" + creditoVenta + ", a cuenta :$" + dejaACuenta;
+            }
+        }
+
+        return mensaje;
+
     }
 
     public String getPathFileJasper() {
@@ -914,6 +986,29 @@ public class BeanVenta implements Serializable, BeanSimple {
 
     public void setLstTipoVenta(ArrayList<TipoVenta> lstTipoVenta) {
         this.lstTipoVenta = lstTipoVenta;
+    }
+
+    public boolean isCredito() {
+        return credito;
+    }
+
+    public void setCredito(boolean credito) {
+        this.credito = credito;
+    }
+
+    public BigDecimal getDejaACuenta() {
+        return dejaACuenta;
+    }
+
+    public void setDejaACuenta(BigDecimal dejaACuenta) {
+        this.dejaACuenta = dejaACuenta;
+    }
+
+    public void setDejaACuenta(ValueChangeEvent ev) {
+        BigDecimal valueStr = new BigDecimal(ev.getNewValue().toString());
+        setDejaACuenta(valueStr);
+        // prevent setter being called again during update-model phase
+        ((UIInput) ev.getComponent()).setLocalValueSet(false);
     }
 
 }
