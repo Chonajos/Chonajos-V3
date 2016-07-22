@@ -236,12 +236,9 @@ public class EjbCatCliente implements NegocioCatCliente {
     public List<Object[]> getCreditoClienteByIdCliente(BigDecimal idCliente) {
         try {
 
-            Query query = em.createNativeQuery("select c.ID_CLIENTE, c.NOMBRE ||' '|| c.APELLIDO_PATERNO ||' '|| c.APELLIDO_MATERNO AS NOMBRE_COMPLETO,NVL(c.MONTO_CREDITO,0) AS MONTO_CREDITO "
-                    + " ,NVL((SELECT SUM(VP.TOTAL_VENTA) FROM CREDITO CRE INNER JOIN VENTA V ON CRE.ID_VENTA_MENUDEO = V.ID_VENTA_PK "
-                    + " INNER JOIN VENTA_PRODUCTO VP ON VP.ID_VENTA_FK = V.ID_VENTA_PK WHERE CRE.ID_CLIENTE_FK =c.ID_CLIENTE AND CRE.ESTATUS_CREDITO = 1),0) AS CREDITO_MENUDEO "
-                    + " ,NVL((SELECT SUM(VMP.TOTAL_VENTA) FROM CREDITO CRE INNER JOIN VENTA_MAYOREO VM ON CRE.ID_VENTA_MAYOREO = VM.ID_VENTA_MAYOREO_PK "
-                    + " INNER JOIN VENTAMAYOREOPRODUCTO VMP ON VMP.ID_VENTA_MAYOREO_FK = VM.ID_VENTA_MAYOREO_PK WHERE CRE.ID_CLIENTE_FK =c.ID_CLIENTE AND CRE.ESTATUS_CREDITO = 1),0) AS CREDITO_MAYOREO from CLIENTE c "
-                    + " WHERE C.ID_CLIENTE = ?");
+            Query query = em.createNativeQuery("select c.ID_CLIENTE, c.NOMBRE ||' '|| c.APELLIDO_PATERNO ||' '|| c.APELLIDO_MATERNO AS NOMBRE_COMPLETO,NVL(c.MONTO_CREDITO,0) AS MONTO_CREDITO, "
+                    + " NVL((SELECT SUM(CRE.MONTO_CREDITO) FROM CREDITO CRE WHERE CRE.ID_CLIENTE_FK =c.ID_CLIENTE AND CRE.ESTATUS_CREDITO = 1 ),0) AS CREDITO_UTILIZADO "
+                    + " FROM CLIENTE c WHERE c.ID_CLIENTE= ?");
             query.setParameter(1, idCliente);
 
             Logger.getLogger(EjbCatCliente.class.getName()).log(Level.INFO, query.toString(), query.toString());
