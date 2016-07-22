@@ -95,126 +95,113 @@ public class BeanBuscaCredito implements Serializable {
         } else if (abono.getIdtipoAbonoFk().intValue() == 2) {
             setViewCheque("trans");
 
-        } 
-        else {
+        } else {
             setViewCheque("init");
         }
 
     }
 
     public void abonar() {
-        if(abono.getIdtipoAbonoFk().intValue() != 5)
-        {
+        if (abono.getIdtipoAbonoFk().intValue() != 5) {
 
-        if (bandera != true) 
-        {
-            AbonoCredito ac = new AbonoCredito();
-            ac.setIdAbonoCreditoPk(new BigDecimal(ifaceAbonoCredito.getNextVal()));
-            ac.setIdCreditoFk(dataAbonar.getFolioCredito());
-            ac.setMontoAbono(abono.getMontoAbono());
-            ac.setIdUsuarioFk(usuarioDominio.getIdUsuario()); //aqui poner el usuario looggeado
-            ac.setIdtipoAbonoFk(abono.getIdtipoAbonoFk());
-            if (abono.getIdtipoAbonoFk().intValue() == 3) 
-            {
-                ac.setEstatusAbono(new BigDecimal(2));
-                //Entra a estado 2 Que significa que esta pendiente.
-            } else 
-            {
-                //Quiere decir que se ejecute el abono.
-                ac.setEstatusAbono(new BigDecimal(1));
-            }
+            if (bandera != true) {
+                AbonoCredito ac = new AbonoCredito();
+                ac.setIdAbonoCreditoPk(new BigDecimal(ifaceAbonoCredito.getNextVal()));
+                ac.setIdCreditoFk(dataAbonar.getFolioCredito());
+                ac.setMontoAbono(abono.getMontoAbono());
+                ac.setIdUsuarioFk(usuarioDominio.getIdUsuario()); //aqui poner el usuario looggeado
+                ac.setIdtipoAbonoFk(abono.getIdtipoAbonoFk());
+                if (abono.getIdtipoAbonoFk().intValue() == 3) {
+                    ac.setEstatusAbono(new BigDecimal(2));
+                    //Entra a estado 2 Que significa que esta pendiente.
+                } else {
+                    //Quiere decir que se ejecute el abono.
+                    ac.setEstatusAbono(new BigDecimal(1));
+                }
 
-            ac.setNumeroCheque(abono.getNumeroCheque());
-            ac.setLibrador(abono.getLibrador());
-            ac.setFechaCobro(abono.getFechaCobro());
-            ac.setBanco(abono.getBanco());
-            ac.setFactura(abono.getFactura());
-            ac.setReferencia(abono.getReferencia());
-            ac.setConcepto(abono.getConcepto());
-            ac.setFechaTransferencia(abono.getFechaTransferencia());
-            //Despues sigue sumar 
-            BigDecimal temporal = dataAbonar.getTotalAbonado().add(abono.getMontoAbono(), MathContext.UNLIMITED);
+                ac.setNumeroCheque(abono.getNumeroCheque());
+                ac.setLibrador(abono.getLibrador());
+                ac.setFechaCobro(abono.getFechaCobro());
+                ac.setBanco(abono.getBanco());
+                ac.setFactura(abono.getFactura());
+                ac.setReferencia(abono.getReferencia());
+                ac.setConcepto(abono.getConcepto());
+                ac.setFechaTransferencia(abono.getFechaTransferencia());
+                //Despues sigue sumar 
+                BigDecimal temporal = dataAbonar.getTotalAbonado().add(abono.getMontoAbono(), MathContext.UNLIMITED);
 
-            if ((temporal).compareTo(dataAbonar.getSaldoTotal()) == 1 || (temporal).compareTo(dataAbonar.getSaldoTotal()) == 0) {
+                if ((temporal).compareTo(dataAbonar.getSaldoTotal()) == 1 || (temporal).compareTo(dataAbonar.getSaldoTotal()) == 0) {
 
-                System.out.println("Se liquido Todo cambiar a estatus 2 el credito");
-                ifaceCredito.updateStatus(ac.getIdCreditoFk(), new BigDecimal(2));
-                JsfUtil.addSuccessMessage("Se ha liquidado el crédito exitosamente");
-            }
-            if (ifaceAbonoCredito.insert(ac) == 1) {
-                JsfUtil.addSuccessMessage("Se ha realizado un abono existosamente");
-                searchByIdCliente();
-                abono.reset();
-                dataAbonar.reset();
+                    System.out.println("Se liquido Todo cambiar a estatus 2 el credito");
+                    ifaceCredito.updateStatus(ac.getIdCreditoFk(), new BigDecimal(2));
+                    JsfUtil.addSuccessMessage("Se ha liquidado el crédito exitosamente");
+                }
+                if (ifaceAbonoCredito.insert(ac) == 1) {
+                    JsfUtil.addSuccessMessage("Se ha realizado un abono existosamente");
+                    searchByIdCliente();
+                    abono.reset();
+                    dataAbonar.reset();
+                } else {
+                    JsfUtil.addErrorMessageClean("Ocurrio un error");
+                }
             } else {
-                JsfUtil.addErrorMessageClean("Ocurrio un error");
+
+                for (SaldosDeudas item : modelo) {
+                    BigDecimal AbonoGrande = abono.getMontoAbono();
+                    if (AbonoGrande.compareTo(new BigDecimal(0)) == 1) {
+                        AbonoCredito ac = new AbonoCredito();
+                        ac.setIdAbonoCreditoPk(new BigDecimal(ifaceAbonoCredito.getNextVal()));
+                        ac.setIdCreditoFk(item.getFolioCredito());
+                        AbonoGrande = AbonoGrande.subtract(item.getSaldoLiquidar(), MathContext.UNLIMITED);
+                        ac.setMontoAbono(item.getSaldoLiquidar());
+
+                        ac.setIdUsuarioFk(usuarioDominio.getIdUsuario()); //aqui poner el usuario looggeado
+                        ac.setIdtipoAbonoFk(abono.getIdtipoAbonoFk());
+                        if (abono.getIdtipoAbonoFk().intValue() == 3) {
+                            ac.setEstatusAbono(new BigDecimal(2));
+                            //Entra a estado 2 Que significa que esta pendiente.
+                        } else {
+                            //Quiere decir que se ejecute el abono.
+                            ac.setEstatusAbono(new BigDecimal(1));
+                        }
+                        ac.setNumeroCheque(abono.getNumeroCheque());
+                        ac.setLibrador(abono.getLibrador());
+                        ac.setFechaCobro(abono.getFechaCobro());
+                        ac.setBanco(abono.getBanco());
+                        ac.setFactura(abono.getFactura());
+                        ac.setReferencia(abono.getReferencia());
+                        ac.setConcepto(abono.getConcepto());
+                        ac.setFechaTransferencia(abono.getFechaTransferencia());
+                        BigDecimal temporal = item.getTotalAbonado().add(abono.getMontoAbono(), MathContext.UNLIMITED);
+                        if ((temporal).compareTo(item.getSaldoTotal()) == 1 || (temporal).compareTo(item.getSaldoTotal()) == 0) {
+                            System.out.println("Se liquido Todo cambiar a estatus 2 el credito");
+                            ifaceCredito.updateStatus(ac.getIdCreditoFk(), new BigDecimal(2));
+                            JsfUtil.addSuccessMessageClean("Se ha liquidado el crédito exitosamente");
+                        }
+                        if (ifaceAbonoCredito.insert(ac) == 1) {
+                            JsfUtil.addSuccessMessageClean("Se ha realizado un abono existosamente");
+                            searchByIdCliente();
+                            //abono.reset();
+                            //dataAbonar.reset();
+                        } else {
+                            JsfUtil.addErrorMessageClean("Ocurrio un error");
+                        }
+                    }//fin if
+                }//fin for
+
+                System.out.println("Va a ser un abono moustro");
             }
         } else {
 
-            for (SaldosDeudas item : modelo) 
-            {
-                BigDecimal AbonoGrande = abono.getMontoAbono();
-                if (AbonoGrande.compareTo(new BigDecimal(0)) == 1) 
-                {
-                    AbonoCredito ac = new AbonoCredito();
-                    ac.setIdAbonoCreditoPk(new BigDecimal(ifaceAbonoCredito.getNextVal()));
-                    ac.setIdCreditoFk(item.getFolioCredito());
-                    AbonoGrande = AbonoGrande.subtract(item.getSaldoLiquidar(), MathContext.UNLIMITED);
-                    ac.setMontoAbono(item.getSaldoLiquidar());
-
-                    ac.setIdUsuarioFk(usuarioDominio.getIdUsuario()); //aqui poner el usuario looggeado
-                    ac.setIdtipoAbonoFk(abono.getIdtipoAbonoFk());
-                    if (abono.getIdtipoAbonoFk().intValue() == 3) {
-                        ac.setEstatusAbono(new BigDecimal(2));
-                        //Entra a estado 2 Que significa que esta pendiente.
-                    } else {
-                        //Quiere decir que se ejecute el abono.
-                        ac.setEstatusAbono(new BigDecimal(1));
-                    }
-                    ac.setNumeroCheque(abono.getNumeroCheque());
-                    ac.setLibrador(abono.getLibrador());
-                    ac.setFechaCobro(abono.getFechaCobro());
-                    ac.setBanco(abono.getBanco());
-                    ac.setFactura(abono.getFactura());
-                    ac.setReferencia(abono.getReferencia());
-                    ac.setConcepto(abono.getConcepto());
-                    ac.setFechaTransferencia(abono.getFechaTransferencia());
-                    BigDecimal temporal = item.getTotalAbonado().add(abono.getMontoAbono(), MathContext.UNLIMITED);
-                    if ((temporal).compareTo(item.getSaldoTotal()) == 1 || (temporal).compareTo(item.getSaldoTotal()) == 0) {
-                        System.out.println("Se liquido Todo cambiar a estatus 2 el credito");
-                        ifaceCredito.updateStatus(ac.getIdCreditoFk(), new BigDecimal(2));
-                        JsfUtil.addSuccessMessageClean("Se ha liquidado el crédito exitosamente");
-                    }
-                    if (ifaceAbonoCredito.insert(ac) == 1)
-                    {
-                        JsfUtil.addSuccessMessageClean("Se ha realizado un abono existosamente");
-                        searchByIdCliente();
-                        //abono.reset();
-                        //dataAbonar.reset();
-                    } else {
-                        JsfUtil.addErrorMessageClean("Ocurrio un error");
-                    }
-                }//fin if
-            }//fin for
-
-            System.out.println("Va a ser un abono moustro");
-        }
-        }
-        else
-        {
-            
             Credito c = new Credito();
             c.setIdCreditoPk(dataAbonar.getFolioCredito());
             c.setStatusACuenta(new BigDecimal(1));
-            if(ifaceCredito.updateACuenta(c)==1)
-            {
+            if (ifaceCredito.updateACuenta(c) == 1) {
                 JsfUtil.addSuccessMessageClean("Monto a Cuenta Registrado");
-            }
-            else
-            {
+            } else {
                 JsfUtil.addErrorMessageClean("Ocurrio un problema");
             }
-                    
+
         }
 
 //RequestContext.getCurrentInstance().execute("PF('dlg').show();"); 
@@ -231,6 +218,7 @@ public class BeanBuscaCredito implements Serializable {
         }
 
     }
+
     public ArrayList<Cliente> autoCompleteCliente(String nombreCliente) {
         lstCliente = ifaceCatCliente.getClienteByNombreCompleto(nombreCliente.toUpperCase());
         return lstCliente;

@@ -143,24 +143,26 @@ public class ServiceCredito implements IfaceCredito {
             BigDecimal cantidadPorFecha = new BigDecimal(0);
             credito.setMontoAbonar(credito.getSaldoTotal().divide(credito.getPlazo(), 2, RoundingMode.HALF_UP));
             //int contador = 0;
-            int var = credito.getPlazo().intValue();
+            int var = credito.getNumeroPagos().intValue();
             for (int i = 0; i <= var; i++) {
                 Date auxiliar = fechaVenta;
                 if (auxiliar.compareTo(hoy) == -1) //si auxiliar es menor entra
                 {
                     cantidadPorFecha = cantidadPorFecha.add(credito.getMontoAbonar(), MathContext.UNLIMITED);
+                    System.out.println("Cantidad por Fechar: "+cantidadPorFecha);
+                    System.out.println("credito total abonado: "+credito.getTotalAbonado());
+                    System.out.println("Resta: " +cantidadPorFecha.subtract(credito.getTotalAbonado(), MathContext.UNLIMITED));
 
-                    auxiliar = TiempoUtil.fechaTextoDiaMesAnio(TiempoUtil.getFechaDDMMYYYY(TiempoUtil.sumarRestarDias(fechaVenta, 7)));
+                    auxiliar = TiempoUtil.fechaTextoDiaMesAnio(TiempoUtil.getFechaDDMMYYYY(TiempoUtil.sumarRestarDias(fechaVenta, credito.getPlazo().intValue())));
                     BigDecimal plazoTemp = (cantidadPorFecha.subtract(credito.getTotalAbonado(), MathContext.UNLIMITED)).divide(credito.getMontoAbonar(), 2, RoundingMode.UP);
-                   // contador += contador;
-                   // credito.setPeriodosAtraso(Integer.toString(contador));
-                   double t = Math.ceil(Double.parseDouble(plazoTemp.toString()))+1;
-                   //System.out.println(Math.ceil(2.3);
-                    credito.setPeriodosAtraso(Double.toString(t));
+    
+                    double t= Double.parseDouble(((plazoTemp).subtract(new BigDecimal(1), MathContext.UNLIMITED)).toString());
+                    credito.setPeriodosAtraso(new BigDecimal(Math.ceil(t)));
                     credito.setFechaProximaAbonar(auxiliar);
-                    credito.setSaldoAtrasado(credito.getTotalAbonado().subtract(cantidadPorFecha, MathContext.UNLIMITED));
-
+                    credito.setMinimoPago((cantidadPorFecha.subtract(credito.getTotalAbonado(), MathContext.UNLIMITED)));
+                    credito.setSaldoAtrasado(credito.getMinimoPago().subtract(credito.getMontoAbonar(), MathContext.UNLIMITED));
                 }
+                System.out.println("========================================================================");
 
                 fechaVenta = auxiliar;
             }

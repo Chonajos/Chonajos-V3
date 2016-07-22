@@ -25,7 +25,7 @@ public class SaldosDeudas implements Serializable {
     private Date fechaProximaAbonar;
     private String periodo;
     private BigDecimal plazo;
-    private String periodosAtraso;
+    private BigDecimal periodosAtraso;
     private String diasAtraso;
     private BigDecimal saldoDeudor;
     private BigDecimal saldoAtrasado;
@@ -36,6 +36,8 @@ public class SaldosDeudas implements Serializable {
     private BigDecimal saldoLiquidar;
     private BigDecimal saldoACuenta;
     private BigDecimal statusAcuenta;
+    private BigDecimal minimoPago;
+    private BigDecimal numeroPagos;
 
     public void reset() {
         folioCredito = null;
@@ -55,18 +57,34 @@ public class SaldosDeudas implements Serializable {
         nombreStatus = null;
         saldoTotal = null;
         tipoCredito = null;
-        saldoLiquidar=null;
-        saldoACuenta=null;
-    statusAcuenta=null;
-        
+        saldoLiquidar = null;
+        saldoACuenta = null;
+        statusAcuenta = null;
+        minimoPago = null;
+        numeroPagos = null;
+
     }
 
     @Override
     public String toString() {
-        return "SaldosDeudas{" + "folioCredito=" + folioCredito + ", folioVenta=" + folioVenta + ", montoTotal=" + montoTotal + ", totalAbonado=" + totalAbonado + ", fechaVenta=" + fechaVenta + ", montoAbonar=" + montoAbonar + ", fechaProximaAbonar=" + fechaProximaAbonar + ", periodo=" + periodo + ", plazo=" + plazo + ", periodosAtraso=" + periodosAtraso + ", diasAtraso=" + diasAtraso + ", saldoDeudor=" + saldoDeudor + ", saldoAtrasado=" + saldoAtrasado + ", idEstatus=" + idEstatus + ", nombreStatus=" + nombreStatus + ", saldoTotal=" + saldoTotal + ", tipoCredito=" + tipoCredito + ", saldoLiquidar=" + saldoLiquidar + ", saldoACuenta=" + saldoACuenta + ", statusAcuenta=" + statusAcuenta + '}';
+        return "SaldosDeudas{" + "folioCredito=" + folioCredito + ", folioVenta=" + folioVenta + ", montoTotal=" + montoTotal + ", totalAbonado=" + totalAbonado + ", fechaVenta=" + fechaVenta + ", montoAbonar=" + montoAbonar + ", fechaProximaAbonar=" + fechaProximaAbonar + ", periodo=" + periodo + ", plazo=" + plazo + ", periodosAtraso=" + periodosAtraso + ", diasAtraso=" + diasAtraso + ", saldoDeudor=" + saldoDeudor + ", saldoAtrasado=" + saldoAtrasado + ", idEstatus=" + idEstatus + ", nombreStatus=" + nombreStatus + ", saldoTotal=" + saldoTotal + ", tipoCredito=" + tipoCredito + ", saldoLiquidar=" + saldoLiquidar + ", saldoACuenta=" + saldoACuenta + ", statusAcuenta=" + statusAcuenta + ", minimoPago=" + minimoPago + ", numeroPagos=" + numeroPagos + '}';
     }
-    
-    
+
+    public BigDecimal getNumeroPagos() {
+        return numeroPagos;
+    }
+
+    public void setNumeroPagos(BigDecimal numeroPagos) {
+        this.numeroPagos = numeroPagos;
+    }
+
+    public BigDecimal getMinimoPago() {
+        return minimoPago;
+    }
+
+    public void setMinimoPago(BigDecimal minimoPago) {
+        this.minimoPago = minimoPago;
+    }
 
     public BigDecimal getSaldoACuenta() {
         return saldoACuenta;
@@ -75,7 +93,7 @@ public class SaldosDeudas implements Serializable {
     public void setSaldoACuenta(BigDecimal saldoACuenta) {
         this.saldoACuenta = saldoACuenta;
     }
-    
+
     public BigDecimal getStatusAcuenta() {
         return statusAcuenta;
     }
@@ -83,7 +101,6 @@ public class SaldosDeudas implements Serializable {
     public void setStatusAcuenta(BigDecimal statusAcuenta) {
         this.statusAcuenta = statusAcuenta;
     }
-
 
     public BigDecimal getSaldoLiquidar() {
         return saldoLiquidar;
@@ -189,11 +206,11 @@ public class SaldosDeudas implements Serializable {
         this.plazo = plazo;
     }
 
-    public String getPeriodosAtraso() {
+    public BigDecimal getPeriodosAtraso() {
         return periodosAtraso;
     }
 
-    public void setPeriodosAtraso(String periodosAtraso) {
+    public void setPeriodosAtraso(BigDecimal periodosAtraso) {
         this.periodosAtraso = periodosAtraso;
     }
 
@@ -229,5 +246,4 @@ public class SaldosDeudas implements Serializable {
         this.saldoTotal = saldoTotal;
     }
 
-    
 }

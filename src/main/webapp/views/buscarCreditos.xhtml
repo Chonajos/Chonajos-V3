@@ -195,7 +195,6 @@
                         </p:column>
                         <p:column headerText="Pagos Atrasados" width="30px;" class="alignRight">
                             <h:outputText value="#{model.periodosAtraso}"> 
-                                <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
                         </p:column>
                         <p:column headerText="Saldo Atrasado" width="40px;" class="alignRight">
@@ -203,7 +202,12 @@
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
                         </p:column>
-                        <p:column headerText="Saldo a Cuenta" width="40px;" class="alignRight">
+                        <p:column headerText="Pago Minimo" width="40px;" class="alignRight">
+                            <h:outputText value="#{model.minimoPago}"> 
+                                <f:convertNumber type="currency" currencySymbol="$" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Saldo a Cuenta" width="40px;" class="#{model.statusAcuenta eq 1 ?'statusActivo':'statusInactivo'} alignRight">
                             <h:outputText value="#{model.saldoACuenta}"> 
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
