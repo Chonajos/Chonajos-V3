@@ -20,20 +20,7 @@
                 <p:commandButton value="Si" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
                 <p:commandButton value="No" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
             </p:confirmDialog>
-            <p:dialog header=""  widgetVar="dlg2" modal="true" resizable="false">
-                <h:panelGrid columns="2"  cellpadding="30">
-                    <h:outputLabel for="totalCompra" value="Total Compra:"/>
-                    <h:outputText id="totalCompra" value="#{beanVenta.totalVenta}">
-                        <f:convertNumber currencySymbol="$" type="currency" />
-                    </h:outputText>
-                    <h:outputLabel for="acuenta" value="A cuenta:" />
-                    <p:inputText id="acuenta" value="#{beanVenta.dejaACuenta}" immediate="true" valueChangeListener="#{beanVenta.setDejaACuenta}" />
-                    <f:facet name="footer">
-                        <p:commandButton value="Aceptar" process="@this" ajax="false" immediate="true" update="fregmenDialog" action="#{beanVenta.insert()}"/>
-                        <p:commandButton  value="Cancelar" onclick="PF('dlg2').hide()"/>
-                    </f:facet> 
-                </h:panelGrid>
-            </p:dialog> 
+
             <p:ajaxStatus onsuccess="PF('statusDialog').hide()" oncomplete="PF('statusDialog').hide()" onerror="PF('statusDialog').hide()" />
             <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
                       closable="false" resizable="false" showHeader="false">
@@ -55,9 +42,11 @@
                         </p:fragment> 
                     </div>
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12" align="right">
-                        <p:commandButton value="Agregar" update=":formContent" ajax="true" process="@this comboTipoVenta comboTipoPago txtPrecioVenta txtCantidadEmpaque" action="#{beanVenta.addProducto}" rendered="#{beanVenta.viewEstate =='init'}"/>
-                        <p:commandButton value="Vender" id="vender" ajax="false" immediate="true" rendered="#{beanVenta.viewEstate eq 'init' and beanVenta.data.idTipoVentaFk eq 1}"  action="#{beanVenta.insert()}"/>
-                        <p:commandButton value="Vender" id="venderCredito" ajax="true" immediate="true" rendered="#{beanVenta.viewEstate eq 'init' and beanVenta.data.idTipoVentaFk eq 2 }" onclick="PF('dlg2').show();" />
+                        <p:commandButton value="Agregar" update=":formContent" ajax="true" process="@this comboTipoVenta comboTipoPago txtPrecioVenta txtCantidadEmpaque" onclick="PF('statusDialog').show()" action="#{beanVenta.addProducto}" rendered="#{beanVenta.viewEstate =='init'}"/>
+                        <p:commandButton value="Vender" id="vender" ajax="true" update=":formContent" immediate="true" rendered="#{beanVenta.viewEstate eq 'init'}" actionListener="#{beanVenta.insert()}">
+                            <p:confirm header="Confirmación" message="Estas seguro de Finalizar la Venta?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                        <!--<p:commandButton value="Vender" id="venderCredito" ajax="true" immediate="true" rendered="{beanVenta.viewEstate eq 'init' and beanVenta.data.idTipoVentaFk eq 2 }" />-->
                         <!--<p:commandButton  value="imprimir ticket" id="btonImprimir" ajax="true" rendered="{beanVenta.viewEstate =='init'}"  onclick="window.frames.miFrame.print();" resetValues="true" action="{beanVenta.cancel}"/>-->
                         <p:commandButton value="Aceptar" update=":formContent" ajax="true" action="#{beanVenta.updateProducto}" rendered="#{beanVenta.viewEstate =='update'}"/>
                         <p:commandButton value="Cancelar" update=":formContent" ajax="true" action="#{beanVenta.cancelarModificacion}" immediate="true" resetValues="true" rendered="#{beanVenta.viewEstate =='update'}"/>
@@ -158,10 +147,10 @@
                                                                  requiredMessage="Ingresa un valor para el campo de Kilos."/>
                                                 </div>-->
                     </div>
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <p:dataTable var="model" id="table" value="#{beanVenta.lstVenta}" styleClass="ui-datatable-hor-scroll"  emptyMessage="Productos.">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <p:dataTable var="model" id="table" value="#{beanVenta.lstVenta}" styleClass="ui-datatable-hor-scroll"  emptyMessage="Productos." scrollable="true">
 
-                            <p:column headerText="Producto" width="150px;" class="alignLeft">
+                            <p:column headerText="Producto form" width="150px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreProducto}" />
                             </p:column>
                             <p:column headerText="Empaque" width="150px;" class="alignLeft">
@@ -211,6 +200,37 @@
                             </p:columnGroup>
                         </p:dataTable>
                         <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanVenta.rutaPDF}"/>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <p:fragment rendered="#{beanVenta.data.idTipoVentaFk == 2}">
+                            <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" >
+                                <p:outputLabel class="col-lg-3 col-md-6 col-sm-12 col-xs-12"  for="dejaAcuenta" value ="Deja a Cuenta:" /> 
+                                <p:inputText  id="dejaAcuenta"  required="true" requiredMessage="Ingresa un valor para el campo a Cuenta."
+                                              value="#{beanVenta.dejaACuenta}">
+                                    <p:ajax event="blur"
+                                            listener="#{beanVenta.calculaAhorro}"
+                                            immediate="true" update="@this txtAhorro txtVentaTotal" />
+
+                                    <pe:keyFilter regEx="/[\d.,\-]/" for="txtCantidadEmpaque"/>  
+                                </p:inputText>
+
+
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                <p:outputLabel class="col-lg-6 col-md-6 col-sm-4 col-xs-12"  for="txtAhorro" value ="Usted Ahorra :" /> 
+                                <p:inputText id="txtAhorro"  class=" col-lg-3 col-md-3 col-sm-8 col-xs-12" value="#{beanVenta.descuento}" required="true"
+                                             requiredMessage="Ingresa un valor para el campo Ahorro." disabled="true">
+
+                                </p:inputText>
+                            </div>
+
+                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12" >
+                                <p:outputLabel class="col-lg-8 col-md-8 col-sm-4 col-xs-12" for="txtVentaTotal" value ="Total de la Venta:"  /> 
+                                <p:inputText id="txtVentaTotal" maxlength="10" class=" col-lg-3 col-md-3 col-sm-8 col-xs-12" value="#{beanVenta.totalVentaDescuento}" required="true" 
+                                             requiredMessage="Ingresa un valor para el campo Total de la Vent." />
+                                <pe:keyFilter regEx="/[\d.,\-]/" for="txtCantidadEmpaque"/>  
+                            </div>
+                        </p:fragment>
                     </div>
                 </div>
             </p:panel>

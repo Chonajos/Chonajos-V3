@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-07-21T14:14:56 -->
+<!-- 2016-07-22T15:54:13 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ticket" pageWidth="219" pageHeight="1224" columnWidth="179" leftMargin="20" rightMargin="20" topMargin="4" bottomMargin="20" isIgnorePagination="true" uuid="cce07992-6ec7-4616-8caf-ceb4ee12975b">
 	<property name="ireport.zoom" value="2.5937424601000028"/>
 	<property name="ireport.x" value="0"/>
@@ -213,7 +213,7 @@
 				<textFieldExpression><![CDATA[$P{telefonos}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="280" width="179" height="262" uuid="f07663c3-8b20-402d-9c7f-add307ac5379"/>
+				<reportElement x="-1" y="130" width="179" height="262" uuid="f07663c3-8b20-402d-9c7f-add307ac5379"/>
 				<textFieldExpression><![CDATA["EN ____________________  A _____________________ DE _______________________________ DEL 20__________ POR ESTE PAGARE ME(NOS) OBLIGO(AMOS) A PAGAR INCONDICIONALMENTE EN LA CIUDAD DE MEXICO O EN LA CIUDAD DE ELECCION DEL ACREEDOR A LA ORDEN DE FIDENCIO TORRES REYNOSO EL DIA_____________________________ LA CANTIDAD DE $_______________________________ PAGARE(MOS) ADEMAS EL _________ % DE INTERES MENSUAL POR TODO EL TIEMPO QUE ESTUVIERE INSOLUTA ESTA OBLIGACION, ASI COMO TODOS LOS GASTOS ADICIONALES Y EXTRA JUDICIALES QUE SE EROGUEN PARA EL COBRO DE ESTE DOCUMENTO DESPUES DE SU VENCIMIENTO CONVENGO(MOS) EN QUE LA FALTA DE PAGO DE ESTE DOCUMENTO PRODUCIRA EL EFECTO DE DAR POR VENCIDOS OTROS DOCUMENTOS QUE TUBIERAN(MOS) SUSCRITOS A FAVOR DE FIDENCIO TORRES REYNOSO.  NOMBRE_______________________________________  DIRECCION ________________________________                                                                                                            ___________________                                           NOMBRE Y FIRMA. ACEPTO(MOS)" ]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
@@ -221,15 +221,15 @@
 				<textElement>
 					<font fontName="SansSerif" size="11" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[P A G A R E]]></textFieldExpression>
+				<textFieldExpression><![CDATA["P A G A R E"]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="2" y="80" width="176" height="20" uuid="a64d2dc4-3ae1-4f72-8282-7c5d6b6c0671"/>
+			<staticText>
+				<reportElement x="1" y="90" width="175" height="20" uuid="921c9989-7dd1-41ea-8917-95c4f8088d26"/>
 				<textElement>
-					<font size="8"/>
+					<font size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[DEBO Y PAGARE INCONDICIONALMENTE EL DIA]]></textFieldExpression>
-			</textField>
+				<text><![CDATA[DEBO Y PAGARE INCONDICIONALMENTE EL DIA]]></text>
+			</staticText>
 		</band>
 	</detail>
 </jasperReport>
