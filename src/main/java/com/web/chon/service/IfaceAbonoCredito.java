@@ -23,6 +23,8 @@ public interface IfaceAbonoCredito {
     
     public ArrayList<AbonoCredito> getAll();
     
+    public ArrayList<AbonoCredito> getByIdCredito(BigDecimal idCreditoFk);
+    
     public AbonoCredito getById(BigDecimal idAbonoCredito);
     
     public int getNextVal();

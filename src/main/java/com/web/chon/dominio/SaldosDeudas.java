@@ -38,6 +38,8 @@ public class SaldosDeudas implements Serializable {
     private BigDecimal statusAcuenta;
     private BigDecimal minimoPago;
     private BigDecimal numeroPagos;
+    private BigDecimal statusFechaProxima;
+    private BigDecimal chequesPorCobrar;
 
     public void reset() {
         folioCredito = null;
@@ -62,6 +64,8 @@ public class SaldosDeudas implements Serializable {
         statusAcuenta = null;
         minimoPago = null;
         numeroPagos = null;
+        statusFechaProxima=null;
+        chequesPorCobrar=null;
 
     }
 
@@ -70,9 +74,27 @@ public class SaldosDeudas implements Serializable {
         return "SaldosDeudas{" + "folioCredito=" + folioCredito + ", folioVenta=" + folioVenta + ", montoTotal=" + montoTotal + ", totalAbonado=" + totalAbonado + ", fechaVenta=" + fechaVenta + ", montoAbonar=" + montoAbonar + ", fechaProximaAbonar=" + fechaProximaAbonar + ", periodo=" + periodo + ", plazo=" + plazo + ", periodosAtraso=" + periodosAtraso + ", diasAtraso=" + diasAtraso + ", saldoDeudor=" + saldoDeudor + ", saldoAtrasado=" + saldoAtrasado + ", idEstatus=" + idEstatus + ", nombreStatus=" + nombreStatus + ", saldoTotal=" + saldoTotal + ", tipoCredito=" + tipoCredito + ", saldoLiquidar=" + saldoLiquidar + ", saldoACuenta=" + saldoACuenta + ", statusAcuenta=" + statusAcuenta + ", minimoPago=" + minimoPago + ", numeroPagos=" + numeroPagos + '}';
     }
 
+    public BigDecimal getChequesPorCobrar() {
+        return chequesPorCobrar;
+    }
+
+    public void setChequesPorCobrar(BigDecimal chequesPorCobrar) {
+        this.chequesPorCobrar = chequesPorCobrar;
+    }
+
+    
     public BigDecimal getNumeroPagos() {
         return numeroPagos;
     }
+
+    public BigDecimal getStatusFechaProxima() {
+        return statusFechaProxima;
+    }
+
+    public void setStatusFechaProxima(BigDecimal statusFechaProxima) {
+        this.statusFechaProxima = statusFechaProxima;
+    }
+    
 
     public void setNumeroPagos(BigDecimal numeroPagos) {
         this.numeroPagos = numeroPagos;

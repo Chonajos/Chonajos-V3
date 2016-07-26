@@ -22,7 +22,6 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
 import javax.annotation.PostConstruct;
-import org.primefaces.context.RequestContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -62,6 +61,8 @@ public class BeanBuscaCredito implements Serializable {
     private ArrayList<SaldosDeudas> modelo;
     private ArrayList<TipoAbono> lstTipoAbonos;
     private ArrayList<Cliente> lstCliente;
+    private ArrayList<AbonoCredito> chequesPendientes;
+    private ArrayList<AbonoCredito> selectedchequesPendientes;
     private SaldosDeudas dataAbonar;
     private AbonoCredito abono;
     private Cliente cliente;
@@ -76,12 +77,21 @@ public class BeanBuscaCredito implements Serializable {
         abono = new AbonoCredito();
         usuarioDominio = context.getUsuarioAutenticado();
         dataAbonar = new SaldosDeudas();
-        cliente = ifaceCatCliente.getClienteById(1);
         modelo = new ArrayList<SaldosDeudas>();
+        chequesPendientes = new ArrayList<AbonoCredito>();
+        selectedchequesPendientes = new ArrayList<AbonoCredito>();
         lstTipoAbonos = ifaceTipoAbono.getAll();
         setTitle("Historial de Compras");
         setViewEstate("init");
         setViewCheque("init");
+    }
+
+    public void buscaCheques() {
+
+        chequesPendientes = ifaceAbonoCredito.getByIdCredito(dataAbonar.getFolioCredito());
+
+        setTitle("Cheques por cobrar");
+        setViewEstate("cheques");
     }
 
     public void activaBandera() {
@@ -103,6 +113,7 @@ public class BeanBuscaCredito implements Serializable {
 
     public void abonar() {
         if (abono.getIdtipoAbonoFk().intValue() != 5) {
+            //siginifica que no es un pago a cuenta.
 
             if (bandera != true) {
                 AbonoCredito ac = new AbonoCredito();
@@ -130,7 +141,8 @@ public class BeanBuscaCredito implements Serializable {
                 //Despues sigue sumar 
                 BigDecimal temporal = dataAbonar.getTotalAbonado().add(abono.getMontoAbono(), MathContext.UNLIMITED);
 
-                if ((temporal).compareTo(dataAbonar.getSaldoTotal()) == 1 || (temporal).compareTo(dataAbonar.getSaldoTotal()) == 0) {
+                if ((temporal).compareTo(dataAbonar.getSaldoTotal()) == 1 || (temporal).compareTo(dataAbonar.getSaldoTotal()) == 0
+                        && ac.getEstatusAbono().intValue() == 1) {
 
                     System.out.println("Se liquido Todo cambiar a estatus 2 el credito");
                     ifaceCredito.updateStatus(ac.getIdCreditoFk(), new BigDecimal(2));
@@ -145,7 +157,7 @@ public class BeanBuscaCredito implements Serializable {
                     JsfUtil.addErrorMessageClean("Ocurrio un error");
                 }
             } else {
-
+                System.out.println("Entro a ciclo for");
                 for (SaldosDeudas item : modelo) {
                     BigDecimal AbonoGrande = abono.getMontoAbono();
                     if (AbonoGrande.compareTo(new BigDecimal(0)) == 1) {
@@ -207,8 +219,34 @@ public class BeanBuscaCredito implements Serializable {
 //RequestContext.getCurrentInstance().execute("PF('dlg').show();"); 
     }
 
+    public void pagarCheques() {
+        if (!selectedchequesPendientes.isEmpty()) {
+            for (AbonoCredito abonoCheque : selectedchequesPendientes) {
+                System.out.println("===============================================");
+                System.out.println("Cheque: " + abonoCheque);
+                abonoCheque.setEstatusAbono(new BigDecimal(1));
+                if(ifaceAbonoCredito.update(abonoCheque)==1)
+                {
+                    JsfUtil.addSuccessMessageClean("Cheque Cobrado Existosamente");
+                }
+                else
+                {
+                    JsfUtil.addErrorMessageClean("Ocurrio un problema al cobrar los cheques");
+                }
+            }
+        }
+
+    }
+
+    public void backView() {
+        setTitle("Historial de Compras");
+        setViewEstate("init");
+        setViewCheque("init");
+    }
+
     public void searchByIdCliente() {
-        cliente = ifaceCatCliente.getClienteCreditoById(cliente.getId_cliente().intValue());
+        System.out.println("entro aqui");
+        cliente = ifaceCatCliente.getCreditoClienteByIdCliente(cliente.getId_cliente());
         if (cliente != null && cliente.getId_cliente() != null) {
             modelo = ifaceCredito.getCreditosActivos(cliente.getId_cliente());
         } else {
@@ -383,6 +421,22 @@ public class BeanBuscaCredito implements Serializable {
 
     public void setLstCliente(ArrayList<Cliente> lstCliente) {
         this.lstCliente = lstCliente;
+    }
+
+    public ArrayList<AbonoCredito> getChequesPendientes() {
+        return chequesPendientes;
+    }
+
+    public void setChequesPendientes(ArrayList<AbonoCredito> chequesPendientes) {
+        this.chequesPendientes = chequesPendientes;
+    }
+
+    public ArrayList<AbonoCredito> getSelectedchequesPendientes() {
+        return selectedchequesPendientes;
+    }
+
+    public void setSelectedchequesPendientes(ArrayList<AbonoCredito> selectedchequesPendientes) {
+        this.selectedchequesPendientes = selectedchequesPendientes;
     }
 
 }

@@ -119,7 +119,6 @@ public class ServiceCredito implements IfaceCredito {
         lstObject = ejb.getCreditosActivos(idCliente);
         for (Object[] object : lstObject) {
             SaldosDeudas credito = new SaldosDeudas();
-
             credito.setFolioCredito(object[0] == null ? null : new BigDecimal(object[0].toString()));
             credito.setNombreStatus(object[1] == null ? null : object[1].toString());
             credito.setFechaVenta(object[2] == null ? null : (Date) object[2]);
@@ -129,50 +128,79 @@ public class ServiceCredito implements IfaceCredito {
             credito.setIdEstatus(object[6] == null ? null : new BigDecimal(object[6].toString()));
             credito.setSaldoACuenta(object[7] == null ? null : new BigDecimal(object[7].toString()));
             credito.setStatusAcuenta(object[8] == null ? null : new BigDecimal(object[8].toString()));
-
+            credito.setNumeroPagos(object[9] == null ? null : new BigDecimal(object[9].toString()));
+            credito.setChequesPorCobrar(object[10] == null ? null : new BigDecimal(object[10].toString()));
             Date hoy = context.getFechaSistema();
+            hoy.setHours(0);
+            hoy.setMinutes(0);
+            hoy.setSeconds(0);
             Date fechaVenta = credito.getFechaVenta();
-//            Date temporal = fechaVenta;
-//
-//            while (temporal.compareTo(hoy) == -1) {
-//                temporal = TiempoUtil.fechaTextoDiaMesAnio(TiempoUtil.getFechaDDMMYYYY(TiempoUtil.sumarRestarDias(temporal, 7)));
-//            }
-//            
-//            System.out.println("fecha de siguiente pago ---------------- " + temporal);
-
             BigDecimal cantidadPorFecha = new BigDecimal(0);
-            credito.setMontoAbonar(credito.getSaldoTotal().divide(credito.getPlazo(), 2, RoundingMode.HALF_UP));
+            credito.setMontoAbonar(credito.getSaldoTotal().divide(credito.getNumeroPagos(), 2, RoundingMode.HALF_UP));
             //int contador = 0;
             int var = credito.getNumeroPagos().intValue();
-            for (int i = 0; i <= var; i++) {
+            BigDecimal creditoAtrasado = new BigDecimal(0);
+            int numeroAsumar = credito.getPlazo().intValue() / credito.getNumeroPagos().intValue();
+            ArrayList<Date> fechas_pagos = new ArrayList<Date>();
+            ArrayList<BigDecimal> pagos_por_fecha = new ArrayList<BigDecimal>();
+            for (int i = 0; i < var; i++) {
                 Date auxiliar = fechaVenta;
-                if (auxiliar.compareTo(hoy) == -1) //si auxiliar es menor entra
-                {
-                    cantidadPorFecha = cantidadPorFecha.add(credito.getMontoAbonar(), MathContext.UNLIMITED);
-                    System.out.println("Cantidad por Fechar: "+cantidadPorFecha);
-                    System.out.println("credito total abonado: "+credito.getTotalAbonado());
-                    System.out.println("Resta: " +cantidadPorFecha.subtract(credito.getTotalAbonado(), MathContext.UNLIMITED));
-
-                    auxiliar = TiempoUtil.fechaTextoDiaMesAnio(TiempoUtil.getFechaDDMMYYYY(TiempoUtil.sumarRestarDias(fechaVenta, credito.getPlazo().intValue())));
-                    BigDecimal plazoTemp = (cantidadPorFecha.subtract(credito.getTotalAbonado(), MathContext.UNLIMITED)).divide(credito.getMontoAbonar(), 2, RoundingMode.UP);
-    
-                    double t= Double.parseDouble(((plazoTemp).subtract(new BigDecimal(1), MathContext.UNLIMITED)).toString());
-                    credito.setPeriodosAtraso(new BigDecimal(Math.ceil(t)));
-                    credito.setFechaProximaAbonar(auxiliar);
-                    credito.setMinimoPago((cantidadPorFecha.subtract(credito.getTotalAbonado(), MathContext.UNLIMITED)));
-                    credito.setSaldoAtrasado(credito.getMinimoPago().subtract(credito.getMontoAbonar(), MathContext.UNLIMITED));
-                }
-                System.out.println("========================================================================");
-
-                fechaVenta = auxiliar;
+                auxiliar = TiempoUtil.fechaTextoDiaMesAnio(TiempoUtil.getFechaDDMMYYYY(TiempoUtil.sumarRestarDias(fechaVenta, numeroAsumar)));
+                fechas_pagos.add(auxiliar);
+                pagos_por_fecha.add(credito.getMontoAbonar().multiply(new BigDecimal(i + 1), MathContext.UNLIMITED));
+            fechaVenta = auxiliar;
             }
-
-            credito.setSaldoLiquidar(credito.getSaldoTotal().subtract(credito.getTotalAbonado(), MathContext.UNLIMITED));
+//            for (int j = 0; j < fechas_pagos.size(); j++) {
+//                System.out.println("Fecha: " + fechas_pagos.get(j) + "   Cantidad: " + pagos_por_fecha.get(j).toString());
+//            }
+            int contador_periodos_atrasados = 0;
+            BigDecimal deudas = new BigDecimal(0);
+            System.out.println("=============================================================");
+            for (int x = 0; x < fechas_pagos.size(); x++) 
+            {
+                if (hoy.compareTo(fechas_pagos.get(x)) == 1) 
+                {//si hoy es menor que la fecha 
+                    System.out.println("Hoy: " + hoy);
+                    System.out.println("Fecha Prox: " + fechas_pagos.get(x));
+                    //mientras hoy sea mayor primer fecha de pago entonces hacer calculos
+                    System.out.println("Total Abonado: "+credito.getTotalAbonado() +"  Pago por Fecha: "+ pagos_por_fecha.get(x));
+                    if (credito.getTotalAbonado().compareTo(pagos_por_fecha.get(x)) == -1) 
+                    {
+                        //si lo abonado es menor a la cantidad de esa fecha incrementar el contador de periodos atrasados
+                        contador_periodos_atrasados = contador_periodos_atrasados+1;
+                        deudas =  new BigDecimal(Math.abs(Double.parseDouble((credito.getTotalAbonado().subtract(pagos_por_fecha.get(x), MathContext.UNLIMITED)).toString())));
+                        credito.setFechaProximaAbonar(fechas_pagos.get(x));
+                        
+                    }
+                }
+                else
+                {
+                    System.out.println("Aun no es su fecha de pago");
+                    credito.setFechaProximaAbonar(fechas_pagos.get(x));
+                    //contador_periodos_atrasados = contador_periodos_atrasados+1;
+                    
+                }
+                System.out.println("");
+                
+                credito.setSaldoLiquidar(credito.getSaldoTotal().subtract(credito.getTotalAbonado(), MathContext.UNLIMITED));
+                credito.setPeriodosAtraso(new BigDecimal(contador_periodos_atrasados));
+                credito.setSaldoAtrasado(deudas);
+                if(credito.getFechaProximaAbonar().compareTo(hoy) == 1 || credito.getFechaProximaAbonar().compareTo(hoy) == 0)
+                {
+                    System.out.println("Fecha Proxima a Abonar: "+credito.getFechaProximaAbonar());
+                    credito.setMinimoPago(deudas.add(credito.getMontoAbonar(), MathContext.UNLIMITED));
+                }
+                else
+                {
+                    credito.setMinimoPago(deudas);
+                }
+               
+                System.out.println("Periodos Atrasados: " + contador_periodos_atrasados + "  Cantidad: " + deudas);
+                System.out.println("---------------------------------------------------------------");
+            }
             lstCreditos.add(credito);
         }
-
         return lstCreditos;
-
     }
 
     @Override

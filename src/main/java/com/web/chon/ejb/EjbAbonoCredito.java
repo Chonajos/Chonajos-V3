@@ -61,12 +61,13 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
     public int update(AbonoCredito abonoCredito) {
         try {
 
-            Query query = em.createNativeQuery("UPDATE ABONO_CREDITO SET ID_CREDITO_FK =? ,MONTO_ABONO =? ,FECHA_ABONO =? ,ID_USUARIO_FK =?  WHERE ID_ABONO_CREDITO_PK = ?");
+            Query query = em.createNativeQuery("UPDATE ABONO_CREDITO SET ID_CREDITO_FK =? ,MONTO_ABONO =? ,FECHA_ABONO =? ,ID_USUARIO_FK =? ,ESTATUS=? WHERE ID_ABONO_CREDITO_PK = ?");
             query.setParameter(1, abonoCredito.getIdCreditoFk());
             query.setParameter(2, abonoCredito.getMontoAbono());
             query.setParameter(3, abonoCredito.getFechaAbono());
             query.setParameter(4, abonoCredito.getIdUsuarioFk());
-            query.setParameter(5, abonoCredito.getIdAbonoCreditoPk());
+            query.setParameter(5, abonoCredito.getEstatusAbono());
+            query.setParameter(6, abonoCredito.getIdAbonoCreditoPk());
             return query.executeUpdate();
 
         } catch (Exception ex) {
@@ -128,6 +129,21 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
     public int getNextVal() {
         Query query = em.createNativeQuery("SELECT S_ABONO_CREDITO.nextVal FROM DUAL");
         return Integer.parseInt(query.getSingleResult().toString());
+    }
+
+    @Override
+    public List<Object[]> getByIdCredito(BigDecimal idAbonoCredito) {
+         try {
+            Query query = em.createNativeQuery("select * from ABONO_CREDITO abc\n" +
+"where abc.ESTATUS = 2 and abc.TIPO_ABONO_FK=3 and abc.ID_CREDITO_FK ='"+idAbonoCredito+"'");
+            List<Object[]> resultList = null;
+            resultList = query.getResultList();
+            return resultList;
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbAbonoCredito.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 
 }
