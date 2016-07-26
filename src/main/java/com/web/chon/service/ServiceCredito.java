@@ -107,8 +107,19 @@ public class ServiceCredito implements IfaceCredito {
 
     @Override
     public int insert(Credito credito) {
-        getEjb();
-        return ejb.insert(credito);
+        try {
+            getEjb();
+            int idCredito = ejb.nextVal();
+
+            if (ejb.insert(credito, idCredito) == 0) {
+                return 0;
+            } else {
+                return idCredito;
+            }
+        } catch (Exception ex) {
+            System.out.println("error >" + ex.getMessage().toString());
+            return 0;
+        }
     }
 
     @Override
@@ -148,7 +159,7 @@ public class ServiceCredito implements IfaceCredito {
                 auxiliar = TiempoUtil.fechaTextoDiaMesAnio(TiempoUtil.getFechaDDMMYYYY(TiempoUtil.sumarRestarDias(fechaVenta, numeroAsumar)));
                 fechas_pagos.add(auxiliar);
                 pagos_por_fecha.add(credito.getMontoAbonar().multiply(new BigDecimal(i + 1), MathContext.UNLIMITED));
-            fechaVenta = auxiliar;
+                fechaVenta = auxiliar;
             }
 //            for (int j = 0; j < fechas_pagos.size(); j++) {
 //                System.out.println("Fecha: " + fechas_pagos.get(j) + "   Cantidad: " + pagos_por_fecha.get(j).toString());
@@ -156,45 +167,37 @@ public class ServiceCredito implements IfaceCredito {
             int contador_periodos_atrasados = 0;
             BigDecimal deudas = new BigDecimal(0);
             System.out.println("=============================================================");
-            for (int x = 0; x < fechas_pagos.size(); x++) 
-            {
-                if (hoy.compareTo(fechas_pagos.get(x)) == 1) 
-                {//si hoy es menor que la fecha 
+            for (int x = 0; x < fechas_pagos.size(); x++) {
+                if (hoy.compareTo(fechas_pagos.get(x)) == 1) {//si hoy es menor que la fecha 
                     System.out.println("Hoy: " + hoy);
                     System.out.println("Fecha Prox: " + fechas_pagos.get(x));
                     //mientras hoy sea mayor primer fecha de pago entonces hacer calculos
-                    System.out.println("Total Abonado: "+credito.getTotalAbonado() +"  Pago por Fecha: "+ pagos_por_fecha.get(x));
-                    if (credito.getTotalAbonado().compareTo(pagos_por_fecha.get(x)) == -1) 
-                    {
+                    System.out.println("Total Abonado: " + credito.getTotalAbonado() + "  Pago por Fecha: " + pagos_por_fecha.get(x));
+                    if (credito.getTotalAbonado().compareTo(pagos_por_fecha.get(x)) == -1) {
                         //si lo abonado es menor a la cantidad de esa fecha incrementar el contador de periodos atrasados
-                        contador_periodos_atrasados = contador_periodos_atrasados+1;
-                        deudas =  new BigDecimal(Math.abs(Double.parseDouble((credito.getTotalAbonado().subtract(pagos_por_fecha.get(x), MathContext.UNLIMITED)).toString())));
+                        contador_periodos_atrasados = contador_periodos_atrasados + 1;
+                        deudas = new BigDecimal(Math.abs(Double.parseDouble((credito.getTotalAbonado().subtract(pagos_por_fecha.get(x), MathContext.UNLIMITED)).toString())));
                         credito.setFechaProximaAbonar(fechas_pagos.get(x));
-                        
+
                     }
-                }
-                else
-                {
+                } else {
                     System.out.println("Aun no es su fecha de pago");
                     credito.setFechaProximaAbonar(fechas_pagos.get(x));
                     //contador_periodos_atrasados = contador_periodos_atrasados+1;
-                    
+
                 }
                 System.out.println("");
-                
+
                 credito.setSaldoLiquidar(credito.getSaldoTotal().subtract(credito.getTotalAbonado(), MathContext.UNLIMITED));
                 credito.setPeriodosAtraso(new BigDecimal(contador_periodos_atrasados));
                 credito.setSaldoAtrasado(deudas);
-                if(credito.getFechaProximaAbonar().compareTo(hoy) == 1 || credito.getFechaProximaAbonar().compareTo(hoy) == 0)
-                {
-                    System.out.println("Fecha Proxima a Abonar: "+credito.getFechaProximaAbonar());
+                if (credito.getFechaProximaAbonar().compareTo(hoy) == 1 || credito.getFechaProximaAbonar().compareTo(hoy) == 0) {
+                    System.out.println("Fecha Proxima a Abonar: " + credito.getFechaProximaAbonar());
                     credito.setMinimoPago(deudas.add(credito.getMontoAbonar(), MathContext.UNLIMITED));
-                }
-                else
-                {
+                } else {
                     credito.setMinimoPago(deudas);
                 }
-               
+
                 System.out.println("Periodos Atrasados: " + contador_periodos_atrasados + "  Cantidad: " + deudas);
                 System.out.println("---------------------------------------------------------------");
             }

@@ -22,29 +22,28 @@ public class EjbCredito implements NegocioCredito {
     EntityManager em;
 
     @Override
-    public int insert(Credito credito) {
+    public int insert(Credito credito,int IdCredito) {
 
         try {
 
-            System.out.println("CREDITO ---------------------------------------------- " + credito.toString());
-
             Query query = em.createNativeQuery("INSERT INTO  CREDITO (ID_CREDITO_PK ,ID_CLIENTE_FK ,ID_VENTA_MENUDEO ,ID_VENTA_MAYOREO ,ID_USUARIO_CREDITO  ,ESTATUS_CREDITO ,NUMERO_PROMESA_PAGO ,FECHA_INICIO_CREDITO ,FECHA_FIN_CREDITO ,FECHA_PROMESA_FIN_PAGO ,TAZA_INTERES,PLAZOS,NUMERO_PAGOS,MONTO_CREDITO,ACUENTA,STATUSACUENTA) "
-                    + " VALUES(S_CREDITO.nextval,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-            query.setParameter(1, credito.getIdClienteFk());
-            query.setParameter(2, credito.getIdVentaMenudeo());
-            query.setParameter(3, credito.getIdVentaMayoreo());
-            query.setParameter(4, credito.getIdUsuarioCredito());
-            query.setParameter(5, credito.getEstatusCredito());
-            query.setParameter(6, credito.getNumeroPromesaPago());
-            query.setParameter(7, credito.getFechaInicioCredito());
-            query.setParameter(8, credito.getFechaFinCredito());
-            query.setParameter(9, credito.getFechaPromesaPago());
-            query.setParameter(10, credito.getTazaInteres());
-            query.setParameter(11, credito.getPlasos());
-            query.setParameter(12, credito.getNumeroPagos());
-            query.setParameter(13, credito.getMontoCredito());
-            query.setParameter(14, credito.getDejaCuenta());
-            query.setParameter(15, credito.getStatusACuenta());
+                    + " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            query.setParameter(1, IdCredito);
+            query.setParameter(2, credito.getIdClienteFk());
+            query.setParameter(3, credito.getIdVentaMenudeo());
+            query.setParameter(4, credito.getIdVentaMayoreo());
+            query.setParameter(5, credito.getIdUsuarioCredito());
+            query.setParameter(6, credito.getEstatusCredito());
+            query.setParameter(7, credito.getNumeroPromesaPago());
+            query.setParameter(8, credito.getFechaInicioCredito());
+            query.setParameter(9, credito.getFechaFinCredito());
+            query.setParameter(10, credito.getFechaPromesaPago());
+            query.setParameter(11, credito.getTazaInteres());
+            query.setParameter(12, credito.getPlasos());
+            query.setParameter(13, credito.getNumeroPagos());
+            query.setParameter(14, credito.getMontoCredito());
+            query.setParameter(15, credito.getDejaCuenta());
+            query.setParameter(16, credito.getStatusACuenta());
 
             return query.executeUpdate();
 
@@ -131,22 +130,22 @@ public class EjbCredito implements NegocioCredito {
         }
     }
 
-     @Override
+    @Override
     public List<Object[]> getCreditosActivos(BigDecimal idCliente) {
         try {
 
-            Query query = em.createNativeQuery("select cre.ID_CREDITO_PK as folio,stc.NOMBRE_STATUS,cre.FECHA_INICIO_CREDITO,cre.PLAZOS,cre.MONTO_CREDITO,\n" +
-"(select NVL(sum(ac.MONTO_ABONO),0)from ABONO_CREDITO ac\n" +
-"where ac.ID_CREDITO_FK= cre.ID_CREDITO_PK and ac.ESTATUS=1)\n" +
-"as Total_Abonado,\n" +
-"cre.ESTATUS_CREDITO,cre.ACUENTA,cre.STATUSACUENTA, cre.NUMERO_PAGOS,\n" +
-"(select NVL(sum(ac.MONTO_ABONO),0)from ABONO_CREDITO ac\n" +
-"where ac.ID_CREDITO_FK= cre.ID_CREDITO_PK and ac.ESTATUS=2)\n" +
-"as CHEQUES_PENDIENTES\n" +
-"from credito cre\n" +
-"inner join STATUS_CREDITO stc\n" +
-"on stc.ID_STATUS_CREDITO_PK = cre.ESTATUS_CREDITO\n" +
-"where cre.ESTATUS_CREDITO=1 and cre.ID_CLIENTE_FK ='" + idCliente + "'");
+            Query query = em.createNativeQuery("select cre.ID_CREDITO_PK as folio,stc.NOMBRE_STATUS,cre.FECHA_INICIO_CREDITO,cre.PLAZOS,cre.MONTO_CREDITO,\n"
+                    + "(select NVL(sum(ac.MONTO_ABONO),0)from ABONO_CREDITO ac\n"
+                    + "where ac.ID_CREDITO_FK= cre.ID_CREDITO_PK and ac.ESTATUS=1)\n"
+                    + "as Total_Abonado,\n"
+                    + "cre.ESTATUS_CREDITO,cre.ACUENTA,cre.STATUSACUENTA, cre.NUMERO_PAGOS,\n"
+                    + "(select NVL(sum(ac.MONTO_ABONO),0)from ABONO_CREDITO ac\n"
+                    + "where ac.ID_CREDITO_FK= cre.ID_CREDITO_PK and ac.ESTATUS=2)\n"
+                    + "as CHEQUES_PENDIENTES\n"
+                    + "from credito cre\n"
+                    + "inner join STATUS_CREDITO stc\n"
+                    + "on stc.ID_STATUS_CREDITO_PK = cre.ESTATUS_CREDITO\n"
+                    + "where cre.ESTATUS_CREDITO=1 and cre.ID_CLIENTE_FK ='" + idCliente + "'");
             List<Object[]> resultList = null;
             resultList = query.getResultList();
 
@@ -190,6 +189,17 @@ public class EjbCredito implements NegocioCredito {
             return 0;
         }
 
+    }
+
+    @Override
+    public int nextVal() {
+        try {
+            Query query = em.createNativeQuery("select S_CREDITO.nextval from dual");
+            return Integer.parseInt(query.getSingleResult().toString());
+        } catch (Exception ex) {
+            System.out.println("error >" + ex.getMessage());
+            return 0;
+        }
     }
 
 }

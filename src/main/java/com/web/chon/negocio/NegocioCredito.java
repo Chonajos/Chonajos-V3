@@ -13,7 +13,7 @@ import javax.ejb.Remote;
 @Remote
 public interface NegocioCredito 
 {
-    public int insert(Credito credito);
+    public int insert(Credito credito,int idCredito);
     
     public int update(Credito idCredito);
     
@@ -27,6 +27,8 @@ public interface NegocioCredito
     public List<Object[]> getById(BigDecimal idCredito) ;
     
     public int updateStatus(BigDecimal idCreditoPk, BigDecimal estatus);
+    
+    public int nextVal();
 
     
 }
