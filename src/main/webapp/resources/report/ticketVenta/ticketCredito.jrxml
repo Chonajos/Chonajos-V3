@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-07-22T15:54:13 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ticket" pageWidth="219" pageHeight="1224" columnWidth="179" leftMargin="20" rightMargin="20" topMargin="4" bottomMargin="20" isIgnorePagination="true" uuid="cce07992-6ec7-4616-8caf-ceb4ee12975b">
+<!-- 2016-07-26T13:41:04 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ticketCredito" pageWidth="219" pageHeight="1224" columnWidth="179" leftMargin="20" rightMargin="20" topMargin="4" bottomMargin="20" isIgnorePagination="true" uuid="cce07992-6ec7-4616-8caf-ceb4ee12975b">
 	<property name="ireport.zoom" value="2.5937424601000028"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="69"/>
@@ -27,6 +27,16 @@
 	<parameter name="labelFolio" class="java.lang.String"/>
 	<parameter name="labelSucursal" class="java.lang.String"/>
 	<parameter name="telefonos" class="java.lang.String"/>
+	<parameter name="numeroCliente" class="java.lang.String"/>
+	<parameter name="fechaPromesaPago" class="java.lang.String"/>
+	<parameter name="beneficiario" class="java.lang.String">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+	</parameter>
+	<parameter name="totalCompraDescuento" class="java.lang.String"/>
+	<parameter name="totalDescuentoLetra" class="java.lang.String"/>
+	<parameter name="aCuenta" class="java.lang.String"/>
+	<parameter name="descuentoVenta" class="java.lang.String"/>
+	<parameter name="foliCredito" class="java.lang.String"/>
 	<variable name="fechaVenta" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
@@ -78,11 +88,11 @@
 		</band>
 	</title>
 	<pageHeader>
-		<band height="43" splitType="Stretch">
+		<band height="53" splitType="Stretch">
 			<textField>
-				<reportElement x="43" y="15" width="137" height="14" uuid="11a3db79-a67a-4727-ada1-73b599dac3c4"/>
+				<reportElement x="69" y="15" width="93" height="14" uuid="11a3db79-a67a-4727-ada1-73b599dac3c4"/>
 				<textElement>
-					<font size="8"/>
+					<font size="8" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{cliente}]]></textFieldExpression>
 			</textField>
@@ -94,7 +104,7 @@
 				<text><![CDATA[Cliente:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="68" y="0" width="94" height="14" uuid="f1054343-5398-4da7-bbbd-d49445d7b31b"/>
+				<reportElement x="68" y="0" width="31" height="14" uuid="f1054343-5398-4da7-bbbd-d49445d7b31b"/>
 				<textElement textAlignment="Left">
 					<font size="10" isBold="false" isUnderline="false"/>
 				</textElement>
@@ -120,6 +130,31 @@
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{labelFolio}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="41" y="15" width="28" height="14" uuid="b2f34d36-16b3-4afa-87f2-3895d11e7349"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{numeroCliente}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="100" y="0" width="51" height="14" uuid="e2294e0b-0d53-4fd8-b610-628880b64aae">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Folio Credito:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="151" y="0" width="29" height="14" uuid="f36102cd-cc36-41d5-95bb-aac94707e52a">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{foliCredito}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
@@ -183,7 +218,7 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="542" splitType="Stretch">
+		<band height="133" splitType="Stretch">
 			<textField isStretchWithOverflow="true">
 				<reportElement x="2" y="17" width="177" height="16" uuid="017449dd-3342-408a-ac52-a53e1bbfab8e"/>
 				<textElement>
@@ -206,29 +241,122 @@
 				<text><![CDATA[venta: ]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="2" y="39" width="177" height="14" uuid="910f5e7e-02a1-45fd-b282-7a6834e518c5"/>
+				<reportElement x="2" y="116" width="177" height="14" uuid="910f5e7e-02a1-45fd-b282-7a6834e518c5"/>
 				<textElement textAlignment="Center">
 					<font size="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{telefonos}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="5" y="40" width="54" height="16" uuid="9bee6b3d-5fe9-416f-a5be-fe118f257d39"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Venta ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="5" y="55" width="54" height="16" uuid="2170a26d-e2b3-4257-b52f-86196f99e71b"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Acuenta]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="5" y="69" width="54" height="16" uuid="a7a9de59-4202-4a7b-9f57-27964a2541e3"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Descuento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="5" y="92" width="54" height="16" uuid="8a5d91b5-4e00-489c-956d-cb746f7ee0e7"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Resta]]></text>
+			</staticText>
 			<textField>
-				<reportElement x="-1" y="130" width="179" height="262" uuid="f07663c3-8b20-402d-9c7f-add307ac5379"/>
-				<textFieldExpression><![CDATA["EN ____________________  A _____________________ DE _______________________________ DEL 20__________ POR ESTE PAGARE ME(NOS) OBLIGO(AMOS) A PAGAR INCONDICIONALMENTE EN LA CIUDAD DE MEXICO O EN LA CIUDAD DE ELECCION DEL ACREEDOR A LA ORDEN DE FIDENCIO TORRES REYNOSO EL DIA_____________________________ LA CANTIDAD DE $_______________________________ PAGARE(MOS) ADEMAS EL _________ % DE INTERES MENSUAL POR TODO EL TIEMPO QUE ESTUVIERE INSOLUTA ESTA OBLIGACION, ASI COMO TODOS LOS GASTOS ADICIONALES Y EXTRA JUDICIALES QUE SE EROGUEN PARA EL COBRO DE ESTE DOCUMENTO DESPUES DE SU VENCIMIENTO CONVENGO(MOS) EN QUE LA FALTA DE PAGO DE ESTE DOCUMENTO PRODUCIRA EL EFECTO DE DAR POR VENCIDOS OTROS DOCUMENTOS QUE TUBIERAN(MOS) SUSCRITOS A FAVOR DE FIDENCIO TORRES REYNOSO.  NOMBRE_______________________________________  DIRECCION ________________________________                                                                                                            ___________________                                           NOMBRE Y FIRMA. ACEPTO(MOS)" ]]></textFieldExpression>
+				<reportElement x="80" y="40" width="58" height="16" uuid="f5778419-588e-4fec-b50c-9b1d417419da"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ventaTotal}]]></textFieldExpression>
 			</textField>
+			<textField>
+				<reportElement x="80" y="55" width="58" height="16" uuid="4f853745-4360-4433-ab61-5006703925e8">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$P{aCuenta}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="69" width="58" height="16" uuid="2df45aa8-995d-4b5f-a418-0239e0c4a0b6">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$P{descuentoVenta}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="80" y="77" width="58" height="16" uuid="bd4c81e3-5e21-4be2-be88-a086c130774a">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<text><![CDATA[--------------------]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="80" y="92" width="58" height="16" uuid="3dfc948e-bc67-493e-81c6-4dc5354abd6e">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$P{totalCompraDescuento}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="192">
 			<textField isBlankWhenNull="true">
-				<reportElement x="50" y="60" width="79" height="16" uuid="f4b5f3dd-4254-4909-b55e-dfae13c7aa59"/>
+				<reportElement x="51" y="4" width="79" height="16" uuid="f4b5f3dd-4254-4909-b55e-dfae13c7aa59"/>
 				<textElement>
 					<font fontName="SansSerif" size="11" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["P A G A R E"]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="1" y="90" width="175" height="20" uuid="921c9989-7dd1-41ea-8917-95c4f8088d26"/>
+			<textField>
+				<reportElement x="2" y="34" width="176" height="54" uuid="91e21f35-7aef-4313-a1f7-6900b5a4c471"/>
 				<textElement>
 					<font size="7"/>
 				</textElement>
-				<text><![CDATA[DEBO Y PAGARE INCONDICIONALMENTE EL DIA]]></text>
+				<textFieldExpression><![CDATA["DEBO Y PAGARE INCONDICIONALMENTE EL DIA DE  "+$P{fechaPromesaPago} +" A LA ORDEN DE "+ $P{beneficiario}+" LA CANTIDAD DE " +$P{totalCompraDescuento}+"  ("+$P{totalDescuentoLetra}+")"
+]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="2" y="88" width="176" height="30" uuid="c57e5cd3-70ba-48fc-9052-e7ea993aafbe"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["    --------    EN LA CIUDAD DE MEXICO D.F    -------- VALOR RECIBIDO A NUESTRA ENTERA SATISFACCION. SE ESTIPULA UN INTERES MORATORIO MENSUAL CONFORME A LA LEY SOBRE EL IMPORTE DE ESTE PAGARE."]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="37" y="138" width="89" height="20" uuid="b114cd0e-982a-41aa-b939-d0833913c907"/>
+				<text><![CDATA[______________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="36" y="152" width="89" height="20" uuid="e01f7f17-e600-403f-b6a6-9c2fb45e0405"/>
+				<text><![CDATA[             Firma.]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="31" y="122" width="147" height="14" uuid="18d91916-6aaa-4db5-8797-99be940cb6b7"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{cliente}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="12" y="122" width="17" height="14" uuid="b822a926-920e-4709-8f34-3b53b855b4b7"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[C:]]></text>
 			</staticText>
 		</band>
 	</detail>
