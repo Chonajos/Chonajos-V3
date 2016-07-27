@@ -145,6 +145,8 @@ public class BeanVenta implements Serializable, BeanSimple {
     private boolean variableInicial;
     private boolean credito;
 
+    Date date = new Date();
+
     @PostConstruct
     public void init() {
 
@@ -156,7 +158,7 @@ public class BeanVenta implements Serializable, BeanSimple {
 
         folioCredito = 0;
 
-        context.getFechaSistema();
+        date = context.getFechaSistema();
         usuario = new Usuario();
 
         usuarioDominio = context.getUsuarioAutenticado();
@@ -461,7 +463,6 @@ public class BeanVenta implements Serializable, BeanSimple {
 
         NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
         DecimalFormat df = new DecimalFormat("###.##");
-        Date date = new Date();
 
         ArrayList<String> productos = new ArrayList<String>();
         NumeroALetra numeroLetra = new NumeroALetra();
@@ -484,7 +485,7 @@ public class BeanVenta implements Serializable, BeanSimple {
     }
 
     private void putValues(String dateTime, ArrayList<String> items, String total, String totalVentaStr, int idVenta, int folioVenta, String totalVentaDescuentoStr, String totalDescuento) {
-        DecimalFormat df = new DecimalFormat("###.##");
+        DecimalFormat df = new DecimalFormat("#,###.00");
         paramReport.put("fechaVenta", dateTime);
         paramReport.put("noVenta", Integer.toString(folioVenta));
         //comentado asta nuevo ticket
@@ -500,18 +501,35 @@ public class BeanVenta implements Serializable, BeanSimple {
         paramReport.put("telefonos", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:" + usuarioDominio.getTelefonoSucursal());
         paramReport.put("labelSucursal", usuarioDominio.getNombreSucursal());
 
+        //Se ahregan los campos que se utiliza en el ticket de credito
         if (!data.getIdTipoVentaFk().equals(new BigDecimal(1))) {
 
             paramReport.put("numeroCliente", cliente.getId_cliente().toString());
             paramReport.put("fechaPromesaPago", TiempoUtil.getFechaDDMMYYYY(c.getFechaPromesaPago()));
             paramReport.put("beneficiario", "FIDENCIO TORRES REYNOSO");
-            System.out.println("monto credito "+c.getMontoCredito());
-            
             paramReport.put("totalCompraDescuento", "$" + df.format(c.getMontoCredito()));
             paramReport.put("totalDescuentoLetra", totalVentaDescuentoStr);
-            paramReport.put("aCuenta", "$" + df.format(dejaACuenta));
-            paramReport.put("descuentoVenta", "$" + df.format(descuento));
+            paramReport.put("aCuenta", "-$" + df.format(dejaACuenta));
+            paramReport.put("descuentoVenta", "-$" + df.format(descuento));
             paramReport.put("foliCredito", Integer.toString(folioCredito));
+
+            //Imprime el calendario de pagos
+            Date dateTemp = date;
+            ArrayList calendario = new ArrayList();
+            String montoAbono = df.format(c.getMontoCredito().divide(c.getNumeroPagos(), 2, RoundingMode.UP));
+            String item = "N. Pago   Fecha de Pago   Monto";
+            calendario.add(item);
+
+            int plaso = (c.getPlasos().divide(c.getNumeroPagos())).intValue();
+            int pagos = c.getNumeroPagos().intValue();
+            for (int y = 0; y < pagos; y++) {
+
+                dateTemp = TiempoUtil.sumarRestarDias(dateTemp, plaso);
+                item = "    " + (y + 1) + "            " + TiempoUtil.getFechaDDMMYYYY(dateTemp) + "    $" + montoAbono;
+                calendario.add(item);
+
+            }
+            paramReport.put("calendarioPago", calendario);
         }
     }
 

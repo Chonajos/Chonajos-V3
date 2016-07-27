@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-07-26T13:41:04 -->
+<!-- 2016-07-27T12:15:35 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ticketCredito" pageWidth="219" pageHeight="1224" columnWidth="179" leftMargin="20" rightMargin="20" topMargin="4" bottomMargin="20" isIgnorePagination="true" uuid="cce07992-6ec7-4616-8caf-ceb4ee12975b">
 	<property name="ireport.zoom" value="2.5937424601000028"/>
 	<property name="ireport.x" value="0"/>
@@ -8,6 +8,12 @@
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<subDataset name="dataset1" uuid="98370534-40ba-4932-9815-f4270ac51f8a">
 		<queryString language="SQL">
+			<![CDATA[]]>
+		</queryString>
+		<field name="_THIS" class="java.lang.String"/>
+	</subDataset>
+	<subDataset name="Dataset2" uuid="272695a6-8362-4d6b-a4fd-2ed467dd09b6">
+		<queryString>
 			<![CDATA[]]>
 		</queryString>
 		<field name="_THIS" class="java.lang.String"/>
@@ -37,6 +43,7 @@
 	<parameter name="aCuenta" class="java.lang.String"/>
 	<parameter name="descuentoVenta" class="java.lang.String"/>
 	<parameter name="foliCredito" class="java.lang.String"/>
+	<parameter name="calendarioPago" class="java.util.List"/>
 	<variable name="fechaVenta" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
@@ -159,7 +166,7 @@
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="28" splitType="Stretch">
+		<band height="32" splitType="Stretch">
 			<staticText>
 				<reportElement stretchType="RelativeToBandHeight" x="1" y="0" width="52" height="14" uuid="3de5b056-e0b4-4452-ac39-0490692c29c9"/>
 				<textElement textAlignment="Left">
@@ -184,13 +191,20 @@
 				</textElement>
 				<text><![CDATA[P/U]]></text>
 			</staticText>
+			<staticText>
+				<reportElement x="149" y="-2" width="20" height="14" uuid="0f0f3c84-986f-4f89-8a31-ca6323b8d3b4"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[P/T]]></text>
+			</staticText>
 			<componentElement>
-				<reportElement x="1" y="13" width="178" height="13" uuid="34e1bda9-3863-49ce-966c-80f124711798"/>
+				<reportElement x="1" y="10" width="178" height="20" uuid="34e1bda9-3863-49ce-966c-80f124711798"/>
 				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
 					<datasetRun subDataset="dataset1" uuid="5498b2ef-03e0-466a-9339-949f4a310948">
 						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{productos})]]></dataSourceExpression>
 					</datasetRun>
-					<jr:listContents height="13" width="178">
+					<jr:listContents height="20" width="178">
 						<textField isStretchWithOverflow="true">
 							<reportElement stretchType="RelativeToBandHeight" x="0" y="1" width="178" height="12" uuid="a8c5c589-8d6f-4ebe-965d-41c8e2e0a555"/>
 							<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
@@ -208,13 +222,6 @@
 					</jr:listContents>
 				</jr:list>
 			</componentElement>
-			<staticText>
-				<reportElement x="149" y="-2" width="20" height="14" uuid="0f0f3c84-986f-4f89-8a31-ca6323b8d3b4"/>
-				<textElement>
-					<font size="8"/>
-				</textElement>
-				<text><![CDATA[P/T]]></text>
-			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
@@ -234,11 +241,11 @@
 				<textFieldExpression><![CDATA[$P{ventaTotal}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="108" y="0" width="31" height="16" uuid="8dd11f34-373f-4762-85c0-45742b6d289f"/>
+				<reportElement x="101" y="0" width="47" height="16" uuid="8dd11f34-373f-4762-85c0-45742b6d289f"/>
 				<textElement textAlignment="Left">
 					<font size="8"/>
 				</textElement>
-				<text><![CDATA[venta: ]]></text>
+				<text><![CDATA[Sub total: ]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="2" y="116" width="177" height="14" uuid="910f5e7e-02a1-45fd-b282-7a6834e518c5"/>
@@ -252,14 +259,14 @@
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[Venta ]]></text>
+				<text><![CDATA[Sub total]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="5" y="55" width="54" height="16" uuid="2170a26d-e2b3-4257-b52f-86196f99e71b"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[Acuenta]]></text>
+				<text><![CDATA[A cuenta]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="5" y="69" width="54" height="16" uuid="a7a9de59-4202-4a7b-9f57-27964a2541e3"/>
@@ -273,12 +280,12 @@
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[Resta]]></text>
+				<text><![CDATA[Total]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="80" y="40" width="58" height="16" uuid="f5778419-588e-4fec-b50c-9b1d417419da"/>
-				<textElement>
-					<font size="8"/>
+				<textElement textAlignment="Right">
+					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{ventaTotal}]]></textFieldExpression>
 			</textField>
@@ -289,6 +296,7 @@
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
+				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$P{aCuenta}]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -296,6 +304,7 @@
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
+				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$P{descuentoVenta}]]></textFieldExpression>
 			</textField>
 			<staticText>
@@ -310,6 +319,7 @@
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
+				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$P{totalCompraDescuento}]]></textFieldExpression>
 			</textField>
 		</band>
@@ -326,8 +336,7 @@
 				<textElement>
 					<font size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA["DEBO Y PAGARE INCONDICIONALMENTE EL DIA DE  "+$P{fechaPromesaPago} +" A LA ORDEN DE "+ $P{beneficiario}+" LA CANTIDAD DE " +$P{totalCompraDescuento}+"  ("+$P{totalDescuentoLetra}+")"
-]]></textFieldExpression>
+				<textFieldExpression><![CDATA["DEBO Y PAGARE INCONDICIONALMENTE EL DIA DE  "+$P{fechaPromesaPago} +" A LA ORDEN DE "+ $P{beneficiario}+" LA CANTIDAD DE " +$P{totalCompraDescuento}+"  ("+$P{totalDescuentoLetra}+")"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="2" y="88" width="176" height="30" uuid="c57e5cd3-70ba-48fc-9052-e7ea993aafbe"/>
@@ -341,8 +350,8 @@
 				<text><![CDATA[______________________]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="36" y="152" width="89" height="20" uuid="e01f7f17-e600-403f-b6a6-9c2fb45e0405"/>
-				<text><![CDATA[             Firma.]]></text>
+				<reportElement x="37" y="152" width="89" height="20" uuid="e01f7f17-e600-403f-b6a6-9c2fb45e0405"/>
+				<text><![CDATA[             Firma]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
 				<reportElement x="31" y="122" width="147" height="14" uuid="18d91916-6aaa-4db5-8797-99be940cb6b7"/>
@@ -358,6 +367,32 @@
 				</textElement>
 				<text><![CDATA[C:]]></text>
 			</staticText>
+		</band>
+		<band height="48">
+			<staticText>
+				<reportElement x="32" y="5" width="96" height="20" uuid="2564fda5-d16b-48ee-8ed5-d577529c8276"/>
+				<text><![CDATA[Calendario de Pagos]]></text>
+			</staticText>
+			<componentElement>
+				<reportElement x="1" y="27" width="178" height="20" uuid="a87822aa-f627-4ffe-a6a2-9fd23853c4be">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Dataset2" uuid="ec7c700b-7afb-4ab5-ac4c-92b798de48ec">
+						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{calendarioPago})]]></dataSourceExpression>
+					</datasetRun>
+					<jr:listContents height="20" width="178">
+						<textField isStretchWithOverflow="true">
+							<reportElement x="0" y="1" width="178" height="12" uuid="39010158-ed70-4acf-a01d-555564427031">
+								<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+								<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+							</reportElement>
+							<textFieldExpression><![CDATA[$F{_THIS}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
 		</band>
 	</detail>
 </jasperReport>
