@@ -36,6 +36,7 @@ public class RelacionOperacionesMayoreo implements Serializable{
     private BigDecimal idCancelUser;
     private String comentariosCancel;
     private Date fechaCancelacion;
+    private BigDecimal ganciaVenta;
 
     @Override
     public String toString() {
@@ -214,6 +215,16 @@ public class RelacionOperacionesMayoreo implements Serializable{
     public void setIdTipoVenta(BigDecimal idTipoVenta) {
         this.idTipoVenta = idTipoVenta;
     }
+
+    public BigDecimal getGanciaVenta() {
+        return ganciaVenta;
+    }
+
+    public void setGanciaVenta(BigDecimal ganciaVenta) {
+        this.ganciaVenta = ganciaVenta;
+    }
+    
+    
 
     
 }

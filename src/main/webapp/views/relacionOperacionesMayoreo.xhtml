@@ -38,7 +38,6 @@
                         <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="selectFiltro" value ="Consulta por Fecha:" rendered="#{beanRelOperMayoreo.viewEstate =='init'}"/> 
                             <h:selectOneMenu  id="selectFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanRelOperMayoreo.filtro}" rendered="#{beanRelOperMayoreo.viewEstate =='init'}">
-                                <f:selectItem itemLabel="Seleccione un Filtro" itemValue="-1" />
                                 <f:selectItem itemLabel="Día" itemValue="1"/>
                                 <f:selectItem itemLabel="Mes" itemValue="2"/>
                                 <f:selectItem itemLabel="Año" itemValue="3"/>
@@ -62,7 +61,7 @@
                             <h:selectOneMenu  id="comboTipoVenta" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanRelOperMayoreo.data.idTipoVenta}" rendered="#{beanRelOperMayoreo.viewEstate =='init'}">
                                 <f:selectItem itemLabel="Selecciona un tipo venta" itemValue=""/>
                                 <f:selectItems value="#{beanRelOperMayoreo.lstTipoVenta}" var="tventa" itemLabel="#{tventa.nombreTipoVenta}" itemValue="#{tventa.idTipoVentaPk}"/>
-                            <p:ajax event="change" listener="#{beanRelOperMayoreo.printStatus()}" update=":formContent:table"/>
+                                <p:ajax event="change" listener="#{beanRelOperMayoreo.printStatus()}" update=":formContent:table"/>
                             </h:selectOneMenu>
                         </div>
                         <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
@@ -92,28 +91,33 @@
                                 <h:outputText value="#{model.ventaSucursal}" />
                             </p:column>
 
-                            <p:column headerText="Fecha de venta" width="120px;" class="alignCenter">
+                            <p:column headerText="Fecha de venta" width="115px;" class="alignCenter">
                                 <h:outputText value="#{model.fechaVenta}">
                                     <f:convertDateTime pattern="dd/MM/yyyy"/>
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Hora de venta" width="120px;" class="alignCenter">
+                            <p:column headerText="Hora de venta" width="115px;" class="alignCenter">
                                 <h:outputText value="#{model.fechaVenta}">
                                     <f:convertDateTime pattern="HH:mm" />
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Tipo de Venta" width="120px;" class="alignCenter">
+                            <p:column headerText="Tipo de Venta" width="115px;" class="alignCenter">
                                 <h:outputText value="#{model.nombreTipoVenta}">
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Cliente" width="200px;" class="alignLeft">
+                            <p:column headerText="Cliente" width="190px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreCliente}" />
                             </p:column>
-                            <p:column headerText="Vendedor" width="200px;" class="alignLeft">
+                            <p:column headerText="Vendedor" width="190px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreVendedor}" />
                             </p:column>
-                            <p:column headerText="Total de Venta" width="120px;" class="alignCenter">
+                            <p:column headerText="Total de Venta" width="115px;" class="alignCenter">
                                 <h:outputText value="#{model.totalVenta}">
+                                    <f:convertNumber pattern="#,##0.00" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Utilidad Bruta" width="115px;" class="alignCenter">
+                                <h:outputText value="#{model.ganciaVenta}">
                                     <f:convertNumber pattern="#,##0.00" />
                                 </h:outputText>
                             </p:column>
@@ -122,10 +126,10 @@
                                     <f:setPropertyActionListener value="#{model}" target="#{beanRelOperMayoreo.data}"/>
                                 </p:commandButton>
                             </p:column>
-                            <p:column headerText="Cancelar" width="60px;" class="alignCenter">
+                            <p:column headerText="Cancelar" width="70px;" class="alignCenter">
                                 <p:commandButton id="cancelar" ajax="true" process="@this" action="#{beanRelOperMayoreo.cancelarVenta}" icon="ui-icon-trash" styleClass="ui-priority-primary" update=":formContent">
                                     <f:setPropertyActionListener value="#{model}" target="#{beanRelOperMayoreo.data}"/>
-                                <p:confirm header="Confirmación" message="¿Estás seguro de cancelar la venta?" icon="ui-icon-alert"/>
+                                    <p:confirm header="Confirmación" message="¿Estás seguro de cancelar la venta?" icon="ui-icon-alert"/>
                                 </p:commandButton>
                             </p:column>
                             <p:columnGroup type="footer">
@@ -137,8 +141,20 @@
                                         </h:outputText>
                                     </f:facet>
                                 </p:column>
-                                <p:column colspan="2" ></p:column>
-                                
+                                <p:column colspan="1" >
+                                    <f:facet name="footer">
+                                        <h:outputText value="#{beanRelOperMayoreo.totalUtilidad}">
+                                            <f:convertNumber pattern="#,###.00"/>
+                                        </h:outputText>
+                                    </f:facet>
+                                </p:column>
+                                <p:column colspan="2" >
+                                    <f:facet name="footer">
+                                        <h:outputText value="#{beanRelOperMayoreo.porcentajeUtilidad}%">
+                                        </h:outputText>
+                                    </f:facet>
+                                </p:column>
+
                             </p:columnGroup>
                         </p:dataTable>
 
@@ -171,7 +187,7 @@
                                     <f:convertNumber pattern="#,##0.00"/>
                                 </h:outputText>
                             </p:column>
-                            
+
                             <p:columnGroup type="footer">
                                 <p:row>
                                     <p:column colspan="7" style="text-align:right" footerText="Total de Venta:" />
@@ -182,7 +198,7 @@
                                             </h:outputText>
                                         </f:facet>
                                     </p:column>
-                                    
+
                                 </p:row>
                             </p:columnGroup>
                         </p:dataTable>
