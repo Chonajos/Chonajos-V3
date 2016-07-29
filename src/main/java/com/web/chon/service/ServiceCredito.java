@@ -161,9 +161,9 @@ public class ServiceCredito implements IfaceCredito {
                 pagos_por_fecha.add(credito.getMontoAbonar().multiply(new BigDecimal(i + 1), MathContext.UNLIMITED));
                 fechaVenta = auxiliar;
             }
-            for (int j = 0; j < fechas_pagos.size(); j++) {
-                System.out.println("Fecha: " + fechas_pagos.get(j) + "   Cantidad: " + pagos_por_fecha.get(j).toString());
-            }
+//            for (int j = 0; j < fechas_pagos.size(); j++) {
+//                System.out.println("Fecha: " + fechas_pagos.get(j) + "   Cantidad: " + pagos_por_fecha.get(j).toString());
+//            }
             int contador_periodos_atrasados = 0;
             BigDecimal deudas = new BigDecimal(0);
             System.out.println("=============================================================");

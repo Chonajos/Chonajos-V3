@@ -241,6 +241,7 @@ public class BeanBuscaCredito implements Serializable {
 
     public void abonar() {
         AbonoCredito ac = new AbonoCredito();
+        if(abono.getIdtipoAbonoFk()!=null){
         switch (abono.getIdtipoAbonoFk().intValue()) {
             /*
             ===============
@@ -260,6 +261,11 @@ public class BeanBuscaCredito implements Serializable {
              */
             case 1:
                 System.out.println("Ejecuto Pago de Contado");
+                if(abono.getMontoAbono()==null )
+                 {
+                     JsfUtil.addErrorMessageClean("ingrese un monto de abono");
+                     break;
+                 }
                 ac.setIdAbonoCreditoPk(new BigDecimal(ifaceAbonoCredito.getNextVal()));
                 ac.setIdCreditoFk(dataAbonar.getFolioCredito());
                 ac.setMontoAbono(abono.getMontoAbono());
@@ -271,7 +277,14 @@ public class BeanBuscaCredito implements Serializable {
                   en caso de que sea igual o mayor el temporal al saldo de la cuenta, liberar el credito.
                  */
                 BigDecimal temporal = dataAbonar.getTotalAbonado().add(abono.getMontoAbono(), MathContext.UNLIMITED);
+                
+                System.out.println("===============================");
+                System.out.println("Abonado: "+temporal);
+                System.out.println("Saldo Total: "+dataAbonar.getSaldoTotal());
+                System.out.println("===============================");
+                
                 if ((temporal).compareTo(dataAbonar.getSaldoTotal()) >= 0) {
+                    
                     if (ifaceCredito.updateStatus(ac.getIdCreditoFk(), CREDITOFINALIZADO) == 1) {
                         JsfUtil.addSuccessMessage("Se ha liquidado el crédito total  con el folio: " + ac.getIdCreditoFk() + " exitosamente");
                     } else {
@@ -358,6 +371,7 @@ public class BeanBuscaCredito implements Serializable {
                     dataAbonar.reset();
                     saldoParaLiquidar = new BigDecimal(0);
                     searchByIdCliente();
+                    setViewCheque("init");
 
                     RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
                 } else {
@@ -385,62 +399,8 @@ public class BeanBuscaCredito implements Serializable {
                 }
                 break;
         }
-//        if (abono.getIdtipoAbonoFk().intValue() != 5) 
-//        {
-//            //siginifica que no es un pago a cuenta.
-//
-//            if (bandera != true) 
-//            {
-//                AbonoCredito ac = new AbonoCredito();
-//                ac.setIdAbonoCreditoPk(new BigDecimal(ifaceAbonoCredito.getNextVal()));
-//                ac.setIdCreditoFk(dataAbonar.getFolioCredito());
-//                ac.setMontoAbono(abono.getMontoAbono());
-//                ac.setIdUsuarioFk(usuarioDominio.getIdUsuario()); //aqui poner el usuario looggeado
-//                ac.setIdtipoAbonoFk(abono.getIdtipoAbonoFk());
-//                if (abono.getIdtipoAbonoFk().intValue() == 3) 
-//                { //
-//                    
-//                    //Entra a estado 2 Que significa que esta pendiente. el abono osease es cheque
-//                } else 
-//                {
-//                    //Quiere decir que se ejecute el abono.
-//                    ac.setEstatusAbono(new BigDecimal(1));
-//                }
-//                ac.setNumeroCheque(abono.getNumeroCheque());
-//                ac.setLibrador(abono.getLibrador());
-//                ac.setFechaCobro(abono.getFechaCobro());
-//                ac.setBanco(abono.getBanco());
-//                ac.setFactura(abono.getFactura());
-//                ac.setReferencia(abono.getReferencia());
-//                ac.setConcepto(abono.getConcepto());
-//                ac.setFechaTransferencia(abono.getFechaTransferencia());
-//                //Despues sigue sumar 
-//                BigDecimal temporal = dataAbonar.getTotalAbonado().add(abono.getMontoAbono(), MathContext.UNLIMITED);
-//
-//                if ((temporal).compareTo(dataAbonar.getSaldoTotal()) >= 0 && ac.getEstatusAbono().intValue() == 1) 
-//                {
-//                    System.out.println("////////////////////////////////////////////");
-//                    System.out.println("Status Abono: "+ac.getEstatusAbono());
-//                    System.out.println("Se liquido Todo cambiar a estatus 2 el credito");
-//                    ifaceCredito.updateStatus(ac.getIdCreditoFk(), new BigDecimal(2));
-//                    JsfUtil.addSuccessMessage("Se ha liquidado el crédito exitosamente");
-//                }
-//                if (ifaceAbonoCredito.insert(ac) == 1) 
-//                {
-//                    JsfUtil.addSuccessMessage("Se ha realizado un abono existosamente");
-//                    setParameterTicket(ac, cliente);
-//                    generateReport(ac.getIdAbonoCreditoPk().intValue());
-//                    searchByIdCliente();
-//                    
-//                    abono.reset();
-//                    dataAbonar.reset();
-//                    saldoParaLiquidar = new BigDecimal(0);
-//                    RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
-//                } else {
-//                    JsfUtil.addErrorMessageClean("Ocurrio un error");
-//                }
-//            } else {
-//                System.out.println("*********************************************************");
+        
+
 //                for (SaldosDeudas item : modelo) 
 //                {
 //                    BigDecimal AbonoGrande = abono.getMontoAbono();
@@ -500,9 +460,16 @@ public class BeanBuscaCredito implements Serializable {
 //
 //        }
 
-//RequestContext.getCurrentInstance().execute("PF('dlg').show();"); 
+//RequestContext.getCurrentInstance().execute("PF('dlg').show();");
+        
         saldoParaLiquidar = new BigDecimal(0);
+        abono = new AbonoCredito();
         searchByIdCliente();
+        }
+        else
+        {
+            JsfUtil.addErrorMessageClean("Seleccione un tipo de Abono");
+        }
     }
 
     public void pagarCheques() {

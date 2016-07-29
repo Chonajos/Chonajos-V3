@@ -32,17 +32,22 @@
                                         </h:selectOneMenu>
 
                                         <h:outputLabel for="txtCantidad" value="Importe:" />
-                                        <p:inputText id="txtCantidad"  value="#{beanBuscaCredito.abono.montoAbono}" />
+                                        <p:inputText id="txtCantidad" maxlength="10" value="#{beanBuscaCredito.abono.montoAbono}" >
+                                        <pe:keyFilter regEx="/[0-9_ .]/i"/>
+                                        </p:inputText>
 
                                         <!--Datos para Cheque-->
                                         <p:fragment id="cheques" >
                                             <div class="form-group">
                                                 <h:outputLabel for="txtnCheque" value="N. Cheque:" rendered="#{beanBuscaCredito.viewCheque =='true'}" />
-                                                <p:inputText id="txtnCheque"  value="#{beanBuscaCredito.abono.numeroCheque}" rendered="#{beanBuscaCredito.viewCheque =='true'}" />
+                                                <p:inputText id="txtnCheque" maxlength="15" value="#{beanBuscaCredito.abono.numeroCheque}" rendered="#{beanBuscaCredito.viewCheque =='true'}" >
+                                                
+                                                    <pe:keyFilter regEx="/[0-9_ .]/i"/>
+                                                </p:inputText>
                                             </div>
                                             <div class="form-group">
                                                 <h:outputLabel for="txtLibrador" value="Librador:" rendered="#{beanBuscaCredito.viewCheque =='true'}" />
-                                                <p:inputText id="txtLibrador"  value="#{beanBuscaCredito.abono.librador}" rendered="#{beanBuscaCredito.viewCheque =='true'}" />
+                                                <p:inputText id="txtLibrador"  maxlength="50" value="#{beanBuscaCredito.abono.librador}" rendered="#{beanBuscaCredito.viewCheque =='true'}" />
                                             </div>
                                             <div class="form-group">
                                                 <h:outputLabel  value="Fecha de Cobro:" rendered="#{beanBuscaCredito.viewCheque =='true'}" />
@@ -50,10 +55,20 @@
                                                             placeholder="dd/mm/yyyy" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" 
                                                             showOn="button"  id="popup" value="#{beanBuscaCredito.abono.fechaCobro}" rendered="#{beanBuscaCredito.viewCheque =='true'}" />
                                             </div>
+
                                             <div class="form-group">
-                                                <h:outputLabel for="txtBancoEmisor" value="Banco Emisor:" rendered="#{beanBuscaCredito.viewCheque =='true'}" />
-                                                <p:inputText id="txtBancoEmisor"  value="#{beanBuscaCredito.abono.banco}" rendered="#{beanBuscaCredito.viewCheque =='true'}" />
+                                            <p:outputLabel for="txtBancoEmisor" value="Banco Emisor:" rendered="#{beanBuscaCredito.viewCheque =='true'}"/> 
+                                            <h:selectOneMenu  id="txtBancoEmisor"  value="#{beanBuscaCredito.abono.banco}" rendered="#{beanBuscaCredito.viewCheque =='true'}">
+                                                <f:selectItem  itemLabel="BANAMEX" itemValue="BANAMEX"/>
+                                                <f:selectItem  itemLabel="BANCOMER" itemValue="BANCOMER"/>
+                                                <f:selectItem  itemLabel="SANTANDER" itemValue="SANTANDER"/>
+                                                <f:selectItem  itemLabel="HSBC" itemValue="HSBC"/>
+                                                <f:selectItem  itemLabel="BANORTE" itemValue="BANORTE"/>
+                                                <f:selectItem  itemLabel="SCOTIABANK" itemValue="SCOTIABANK"/>
+                                                <f:selectItem  itemLabel="INBURSA" itemValue="INBURSA"/>
+                                            </h:selectOneMenu>
                                             </div>
+
                                             <div class="form-group">
                                                 <h:outputLabel for="txtFactura" value="N. Factura:" rendered="#{beanBuscaCredito.viewCheque =='true'}" />
                                                 <p:inputText id="txtFactura"  value="#{beanBuscaCredito.abono.factura}" rendered="#{beanBuscaCredito.viewCheque =='true'}" />
@@ -260,8 +275,8 @@
 
                     </div>
                     <div  class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignCenter">
-                       <!-- <p:commandButton value="Abonar a Total" update=":formContent" oncomplete="PF('dlg').show();" ajax="true" action="{beanBuscaCredito.activaBandera()}" />-->
-                   
+                        <!-- <p:commandButton value="Abonar a Total" update=":formContent" oncomplete="PF('dlg').show();" ajax="true" action="{beanBuscaCredito.activaBandera()}" />-->
+
                     </div>
                 </div>
 
