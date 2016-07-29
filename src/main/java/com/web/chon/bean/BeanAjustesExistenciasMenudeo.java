@@ -59,7 +59,8 @@ public class BeanAjustesExistenciasMenudeo implements Serializable {
     private IfaceExistenciaMenudeo ifaceExistenciaMenudeo;
     @Autowired
     private IfaceAjusteExistenciaMenudeo ifaceAjusteExistenciaMenudeo;
-    @Autowired private IfaceMantenimientoPrecio ifaceMantenimientoPrecio;
+    @Autowired
+    private IfaceMantenimientoPrecio ifaceMantenimientoPrecio;
 
     private List<ExistenciaMenudeo> model;
     private ArrayList<Subproducto> lstProducto;
@@ -80,7 +81,7 @@ public class BeanAjustesExistenciasMenudeo implements Serializable {
         usuario = context.getUsuarioAutenticado();
 
         data = new ExistenciaMenudeo();
-        
+
         data.setIdSucursalFk(new BigDecimal(String.valueOf(usuario.getSucId())));
 
         listaSucursales = ifaceCatSucursales.getSucursales();
@@ -94,40 +95,38 @@ public class BeanAjustesExistenciasMenudeo implements Serializable {
     }
 
     public void buscaExistencias() {
-        if(subProducto != null){
-            model = ifaceExistenciaMenudeo.getExistenciasMenudeoByIdSucursalAndIdSubproducto(data.getIdSucursalFk(),subProducto.getIdSubproductoPk());
-        }else{
+        if (subProducto != null) {
+            model = ifaceExistenciaMenudeo.getExistenciasMenudeoByIdSucursalAndIdSubproducto(data.getIdSucursalFk(), subProducto.getIdSubproductoPk());
+        } else {
             model = ifaceExistenciaMenudeo.getExistenciasMenudeoByIdSucursal(data.getIdSucursalFk());
         }
-        
+
     }
 
     public void onRowEdit(RowEditEvent event) {
 
         System.out.println("onrow edit");
-        
+
         ExistenciaMenudeo existenciaMenudeoOld = new ExistenciaMenudeo();
         ExistenciaMenudeo existenciaMenudeoNew = new ExistenciaMenudeo();
         MantenimientoPrecios mantenimientoPrecios = new MantenimientoPrecios();
         ajusteExistenciaMenudeo = new AjusteExistenciaMenudeo();
-        
+
         existenciaMenudeoNew = (ExistenciaMenudeo) event.getObject();
         existenciaMenudeoOld = ifaceExistenciaMenudeo.getExistenciasMenudeoById(existenciaMenudeoNew.getIdExMenPk());
-        
+
         mantenimientoPrecios = ifaceMantenimientoPrecio.getMantenimientoPrecioById(existenciaMenudeoNew.getIdSubProductoPk(), existenciaMenudeoNew.getIdTipoEmpaqueFK().intValue(), existenciaMenudeoNew.getIdSucursalFk().intValue());
-        System.out.println("salidaEntrada: "+existenciaMenudeoNew.getSalidaEntrada());
-        
-        if(existenciaMenudeoNew.getSalidaEntrada().trim().equalsIgnoreCase("Entrada")){
+        System.out.println("salidaEntrada: " + existenciaMenudeoNew.getSalidaEntrada());
+
+        if (existenciaMenudeoNew.getSalidaEntrada().trim().equalsIgnoreCase("Entrada")) {
             existenciaMenudeoNew.setKilos(existenciaMenudeoNew.getKilos().add(existenciaMenudeoNew.getKilosAjustados()));
-        }else{
+        } else {
             existenciaMenudeoNew.setKilos(existenciaMenudeoNew.getKilos().subtract(existenciaMenudeoNew.getKilosAjustados()));
         }
-        
-        
+
         //Se optiene el costo real para modificarlo en mantenimiento de precios se comento se validara si ajuste modifica precios reales
 //        mantenimientoPrecios.setCostoReal((existenciaMenudeoOld.getKilos().multiply(existenciaMenudeoOld.getCostoReal()).divide(existenciaMenudeoNew.getKilos(),2,RoundingMode.HALF_UP)));
 //        ifaceMantenimientoPrecio.updateMantenimientoPrecio(mantenimientoPrecios);
-        
         //Se ajusta la tabla de existencia
         if (ifaceExistenciaMenudeo.updateExistenciaMenudeo(existenciaMenudeoNew) != 0) {
 
@@ -150,8 +149,8 @@ public class BeanAjustesExistenciasMenudeo implements Serializable {
         }
 
         JsfUtil.addSuccessMessage("Se Modifico el Registro Existosamente.");
-        
-        init();
+
+        buscaExistencias();
     }
 
     public void onRowCancel(RowEditEvent event) {
