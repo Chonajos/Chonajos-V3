@@ -204,6 +204,8 @@ public class ServiceAnalisisMercado implements IfaceAnalisisMercado {
                     }
 
                     break;
+                case 3:
+                    break;
 
                 default:
 
@@ -247,7 +249,6 @@ public class ServiceAnalisisMercado implements IfaceAnalisisMercado {
     @Override
     public BigDecimal getRemanente(Date fechaRemanente, String idProducto) {
 
-//        List<Object[]> lstObject = null;
         BigDecimal remanete = new BigDecimal(0);
 
         List<String> lstFecha = TiempoUtil.getintervalWeekDDMMYYYYbyDay(fechaRemanente);

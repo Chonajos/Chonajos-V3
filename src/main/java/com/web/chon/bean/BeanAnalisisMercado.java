@@ -43,6 +43,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
 
     private ArrayList<AnalisisMercado> lstEntradaMercancia;
     private ArrayList<AnalisisMercado> lstEntradaMercanciaSemana;
+    private ArrayList<AnalisisMercado> lstEntradaMercanciaMes;
     private ArrayList<Subproducto> lstProducto;
 
     private UsuarioDominio usuario;
@@ -51,6 +52,8 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
     private BarChartModel chartBarByDias;
     private LineChartModel chartLineBySemana;
     private BarChartModel chartBarBySemana;
+    private LineChartModel chartLineBMes;
+    private BarChartModel chartBarByMes;
 
     private Date filtroFechaInicio;
     private Date filtroFechaFin;
@@ -381,6 +384,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
         try {
             int registrosMostrarDia = 8;
             int registrosMostrarSemana = 32;
+            int registrosMostrarMes = 12;
 
             if (charExpander) {
                 registrosMostrarDia = 40;
@@ -390,6 +394,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
             if (data.getIdProductoFk() != null) {
                 lstEntradaMercancia = ifaceEntradaProductoCentral.getEntradaMercanciaByFiltro(registrosMostrarDia, 1, filtroFechaInicio, data.getIdProductoFk());
                 lstEntradaMercanciaSemana = ifaceEntradaProductoCentral.getEntradaMercanciaByFiltro(registrosMostrarSemana, 2, filtroFechaInicio, data.getIdProductoFk());
+                lstEntradaMercanciaMes =ifaceEntradaProductoCentral.getEntradaMercanciaByFiltro(registrosMostrarMes, 3, filtroFechaInicio, data.getIdProductoFk());
 
                 generateChartLine();
                 generateChartBar();
@@ -398,6 +403,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
             } else {
                 lstEntradaMercancia.clear();
                 lstEntradaMercanciaSemana.clear();
+                lstEntradaMercanciaMes.clear();
 
                 chartLineByDias = null;
                 chartBarByDias = null;
@@ -556,5 +562,23 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
     public void setInsertar(String insertar) {
         this.insertar = insertar;
     }
+
+    public LineChartModel getChartLineBMes() {
+        return chartLineBMes;
+    }
+
+    public void setChartLineBMes(LineChartModel chartLineBMes) {
+        this.chartLineBMes = chartLineBMes;
+    }
+
+    public BarChartModel getChartBarByMes() {
+        return chartBarByMes;
+    }
+
+    public void setChartBarByMes(BarChartModel chartBarByMes) {
+        this.chartBarByMes = chartBarByMes;
+    }
+    
+    
 
 }

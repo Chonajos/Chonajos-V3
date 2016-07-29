@@ -793,7 +793,7 @@ public class BeanVenta implements Serializable, BeanSimple {
         c.setStatusACuenta(new BigDecimal("0"));
 
         //aqui estaba el codigo que calcula el descuento
-        c.setMontoCredito(totalVentaDescuento.subtract(dejaACuenta));
+        c.setMontoCredito(totalVentaDescuento.subtract(dejaACuenta).setScale(2,RoundingMode.UP));
         //Numero de pagos que el cliente debera realizar
         c.setPlasos(data.getTipoPago());
         //El numero de dias del plaso

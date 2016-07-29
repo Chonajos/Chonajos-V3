@@ -19,6 +19,11 @@
                     <p:commandButton  value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
                 </div>
             </p:confirmDialog>
+            <p:ajaxStatus onsuccess="PF('statusDialog').hide()" />
+            <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                      closable="false" resizable="false" showHeader="false">
+                <p:graphicImage value="../resources/img/carga.gif" />
+            </p:dialog>
             <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <!--<p:growl id="messagess" showDetail="true" life="2000" />-->
             <p:panel>
@@ -32,16 +37,16 @@
                             <h:selectOneMenu  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanRelOperMayoreo.data.idSucursal}" rendered="#{beanRelOperMayoreo.viewEstate =='init'}" disabled="#{beanRelOperMayoreo.usuario.perId != 1}">
                                 <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="" />
                                 <f:selectItems value="#{beanRelOperMayoreo.listaSucursales}" var="sucursalita" itemLabel="#{sucursalita.nombreSucursal}" itemValue="#{sucursalita.idSucursalPk}"/>
-                                <p:ajax event="change" listener="#{beanRelOperMayoreo.printStatus()}" update=":formContent:table"/>
+                                <p:ajax event="change" onstart="PF('statusDialog').show()" listener="#{beanRelOperMayoreo.printStatus()}"  update=":formContent:table"/>
                             </h:selectOneMenu>
                         </div>
                         <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="selectFiltro" value ="Consulta por Fecha:" rendered="#{beanRelOperMayoreo.viewEstate =='init'}"/> 
-                            <h:selectOneMenu  id="selectFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanRelOperMayoreo.filtro}" rendered="#{beanRelOperMayoreo.viewEstate =='init'}">
+                            <h:selectOneMenu  id="selectFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanRelOperMayoreo.filtro}" rendered="#{beanRelOperMayoreo.viewEstate =='init'}" >
                                 <f:selectItem itemLabel="Día" itemValue="1"/>
                                 <f:selectItem itemLabel="Mes" itemValue="2"/>
                                 <f:selectItem itemLabel="Año" itemValue="3"/>
-                                <p:ajax event="change" update=":formContent:table formContent:calendarInicio formContent:calendarFin" listener="#{beanRelOperMayoreo.getVentasByIntervalDate()}"/>
+                                <p:ajax event="change" onstart="PF('statusDialog').show()" update=":formContent:table formContent:calendarInicio formContent:calendarFin" listener="#{beanRelOperMayoreo.getVentasByIntervalDate()}"/>
                             </h:selectOneMenu>
                         </div>
 
@@ -85,7 +90,7 @@
 
 
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <p:dataTable id="table" var="model" value="#{beanRelOperMayoreo.model}" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." rendered="#{beanRelOperMayoreo.viewEstate =='init'}">
+                        <p:dataTable id="table" var="model" value="#{beanRelOperMayoreo.model}" scrollable="true" scrollHeight="310px;" emptyMessage="No se encontraron Registros." rendered="#{beanRelOperMayoreo.viewEstate =='init'}">
 
                             <p:column headerText="Folio" class="#{model.idStatus eq 1 ? 'statusPedido': (model.idStatus eq 2 ? 'statusPagado':(model.idStatus eq 3 ? 'statusEntregado':'statusCancelado'))}  alignCenter"  width="60px;" >
                                 <h:outputText value="#{model.ventaSucursal}" />
@@ -133,7 +138,12 @@
                                 </p:commandButton>
                             </p:column>
                             <p:columnGroup type="footer">
-                                <p:column colspan="6" footerText="Total: " style="text-align:right"/>
+                                <p:column colspan="1"/>
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                                <p:column colspan="1" footerText="Total: " style="text-align:right"/>
                                 <p:column colspan="1" >
                                     <f:facet name="footer">
                                         <h:outputText value="#{beanRelOperMayoreo.totalVenta}">
@@ -148,12 +158,13 @@
                                         </h:outputText>
                                     </f:facet>
                                 </p:column>
-                                <p:column colspan="2" >
+                                <p:column colspan="1" >
                                     <f:facet name="footer">
                                         <h:outputText value="#{beanRelOperMayoreo.porcentajeUtilidad}%">
                                         </h:outputText>
                                     </f:facet>
                                 </p:column>
+                                <p:column colspan="1" />
 
                             </p:columnGroup>
                         </p:dataTable>

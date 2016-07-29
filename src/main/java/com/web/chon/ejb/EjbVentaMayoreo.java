@@ -103,6 +103,7 @@ public class EjbVentaMayoreo implements NegocioVentaMayoreo {
         query = em.createNativeQuery(cadena.toString());
 
         try {
+            System.out.println(""+cadena.toString());
             List<Object[]> lstObject = query.getResultList();
             return lstObject;
         } catch (Exception e) {
