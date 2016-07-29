@@ -145,7 +145,7 @@ public class EjbCredito implements NegocioCredito {
                     + "from credito cre\n"
                     + "inner join STATUS_CREDITO stc\n"
                     + "on stc.ID_STATUS_CREDITO_PK = cre.ESTATUS_CREDITO\n"
-                    + "where cre.ESTATUS_CREDITO=1 and cre.ID_CLIENTE_FK ='" + idCliente + "'");
+                    + "where cre.ESTATUS_CREDITO=1 and cre.ID_CLIENTE_FK ='" + idCliente + "' order by cre.FECHA_INICIO_CREDITO");
             List<Object[]> resultList = null;
             resultList = query.getResultList();
 
@@ -162,7 +162,7 @@ public class EjbCredito implements NegocioCredito {
     public int updateStatus(BigDecimal idCreditoPk, BigDecimal estatus) {
         try {
 
-            Query query = em.createNativeQuery("UPDATE CREDITO SET ESTATUS_CREDITO = ? WHERE ID_CREDITO_PK = ?");
+            Query query = em.createNativeQuery("UPDATE CREDITO SET ESTATUS_CREDITO = ?, FECHA_FIN_CREDITO = sysdate WHERE ID_CREDITO_PK = ?");
             query.setParameter(1, estatus);
             query.setParameter(2, idCreditoPk);
             return query.executeUpdate();

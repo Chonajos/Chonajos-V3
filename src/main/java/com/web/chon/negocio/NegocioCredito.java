@@ -22,7 +22,6 @@ public interface NegocioCredito
     public int delete(BigDecimal idCredito);
     
     public List<Object[]> getAll();
-    
     public List<Object[]> getCreditosActivos(BigDecimal idCliente);
     public List<Object[]> getById(BigDecimal idCredito) ;
     

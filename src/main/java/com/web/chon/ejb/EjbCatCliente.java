@@ -31,7 +31,7 @@ public class EjbCatCliente implements NegocioCatCliente {
     public List<Object[]> getClientes() {
         try {
 
-            System.out.println("EJB_GET_CLIENTE");
+            //System.out.println("EJB_GET_CLIENTE");
             Query query = em.createNativeQuery("select c.* ,en.ID_ENTIDAD_PK, en.NOMBRE_ENTIDAD ,en1.ID_ENTIDAD_PK, en1.NOMBRE_ENTIDAD,m.NOMBRE_MUNICIPIO,m1.NOMBRE_MUNICIPIO,cp.NOMBRE_COLONIA,cp.CODIGO_POSTAL,cp1.NOMBRE_COLONIA,cp1.CODIGO_POSTAL,m.ID_MUNICIPIO_PK,m.ID_MUNICIPIO_PK,cp.ID_PK,cp1.ID_PK\n"
                     + "from Cliente c\n"
                     + "INNER JOIN CODIGOS_POSTALES cp\n"
@@ -74,7 +74,7 @@ public class EjbCatCliente implements NegocioCatCliente {
     public int deleteCliente(int idCliente) {
         try {
 
-            System.out.println("Id Cliente a eliminar: " + idCliente);
+            //System.out.println("Id Cliente a eliminar: " + idCliente);
             Query query = em.createNativeQuery("UPDATE ClIENTE  SET STATUS = ? WHERE ID_CLIENTE = ?");
             query.setParameter(1, 2);
             query.setParameter(2, idCliente);
@@ -91,7 +91,7 @@ public class EjbCatCliente implements NegocioCatCliente {
     public int updateCliente(Cliente clie) {
 
         try {
-            System.out.println("Cliente a modificar :" + clie.toString());
+            //System.out.println("Cliente a modificar :" + clie.toString());
             Query query = em.createNativeQuery("UPDATE CLIENTE SET NOMBRE = ?, APELLIDO_PATERNO = ?, APELLIDO_MATERNO = ?, EMPRESA = ?, CALLE = ?, SEXO = ?, FECHA_NACIMIENTO = ?,TELEFONO_MOVIL = ?, TELEFONO_FIJO = ?, EXTENSION = ?, NUM_INT = ? , NUM_EXT = ?, CLAVECELULAR = ?, LADACELULAR = ?, ID_CP= ?,CALLEFISCAL = ?,NUMINTFIS = ?,NUMEXTFIS = ?, ID_CP_FISCAL = ?, NEXTEL = ?,RAZON = ?,RFC = ?, LADAOFICINA = ?,CLAVEOFICINA = ?,NEXTELCLAVE = ?, STATUS =? ,DIAS_CREDITO = ?,MONTO_CREDITO = ? WHERE ID_CLIENTE = ? ");
             query.setParameter(1, clie.getNombre());
             query.setParameter(2, clie.getPaterno());
@@ -139,9 +139,9 @@ public class EjbCatCliente implements NegocioCatCliente {
     @Override
     public int insertCliente(Cliente clie) {
 
-        System.out.println("EJB_INSERTA_CLIENTE");
+        //System.out.println("EJB_INSERTA_CLIENTE");
         try {
-            System.out.println("insert : " + clie.toString());
+            //System.out.println("insert : " + clie.toString());
             Query query = em.createNativeQuery("INSERT INTO CLIENTE (ID_CLIENTE,NOMBRE, APELLIDO_PATERNO, APELLIDO_MATERNO, EMPRESA, CALLE, SEXO, FECHA_NACIMIENTO,TELEFONO_MOVIL, TELEFONO_FIJO, EXTENSION,  NUM_INT, NUM_EXT,  CLAVECELULAR, LADACELULAR,ID_CP,CALLEFISCAL,NUMINTFIS,NUMEXTFIS,ID_CP_FISCAL,NEXTEL,RAZON,RFC,LADAOFICINA,CLAVEOFICINA,NEXTELCLAVE,STATUS,DIAS_CREDITO,MONTO_CREDITO,FECHA_ALTA) "
                     + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,sysdate)");
             query.setParameter(1, clie.getId_cliente());
@@ -222,11 +222,11 @@ public class EjbCatCliente implements NegocioCatCliente {
                     + "group by c.ID_CLIENTE,c.NOMBRE, c.APELLIDO_PATERNO, c.APELLIDO_MATERNO,c.MONTO_CREDITO");
             query.setParameter(1, idCliente);
 
-            System.out.println("Query: " + query);
+            //System.out.println("Query: " + query);
             return query.getResultList();
 
         } catch (Exception ex) {
-            System.out.println("error query :" + ex.toString());
+            //System.out.println("error query :" + ex.toString());
             Logger.getLogger(EjbCatCliente.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
@@ -240,12 +240,10 @@ public class EjbCatCliente implements NegocioCatCliente {
                     + " NVL((SELECT SUM(CRE.MONTO_CREDITO) FROM CREDITO CRE WHERE CRE.ID_CLIENTE_FK =c.ID_CLIENTE AND CRE.ESTATUS_CREDITO = 1 ),0) AS CREDITO_UTILIZADO "
                     + " FROM CLIENTE c WHERE c.ID_CLIENTE= ?");
             query.setParameter(1, idCliente);
-
-            Logger.getLogger(EjbCatCliente.class.getName()).log(Level.INFO, query.toString(), query.toString());
             return query.getResultList();
 
         } catch (Exception ex) {
-            System.out.println("error query :" + ex.toString());
+            
             Logger.getLogger(EjbCatCliente.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
