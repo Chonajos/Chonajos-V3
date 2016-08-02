@@ -13,7 +13,7 @@
             <h3>#{beanVenta.title}</h3>
         </div>
         <script>
-            var hiddenCode = "#{beanVenta.viewEstate}";
+
         </script>
         <h:form id="formContent" >
             <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
@@ -28,28 +28,31 @@
             </p:dialog>
             <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:panel >
+
                 <div class="container-fluid">
-                    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-12" align="right">
-                        <p:fragment id="labelCredito">
-                            <h:outputText  style="font-weight: bold !important" value ="Limite de credito: $" rendered="#{beanVenta.credito}"/> 
-                            <h:outputText  style="font-weight: bold !important" value ="#{beanVenta.cliente.limiteCredito}" rendered="#{beanVenta.credito}"> 
-                                <f:convertNumber pattern="#,###.00"/>
-                            </h:outputText>
-                            <h:outputText  style="font-weight: bold !important" value =". Credito Disponible :$" rendered="#{beanVenta.credito}"/> 
-                            <h:outputText  style="font-weight: bold !important" value ="#{beanVenta.cliente.creditoDisponible}" rendered="#{beanVenta.credito}"> 
-                                <f:convertNumber pattern="#,###.00"/>
-                            </h:outputText>
-                        </p:fragment> 
-                    </div>
-                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12" align="right">
-                        <p:commandButton value="Agregar" update=":formContent" ajax="true" process="@this comboTipoVenta comboTipoPago txtPrecioVenta txtCantidadEmpaque" onclick="PF('statusDialog').show()" action="#{beanVenta.addProducto}" rendered="#{beanVenta.viewEstate =='init'}"/>
-                        <p:commandButton value="Vender" id="vender" ajax="true" update=":formContent" immediate="true" rendered="#{beanVenta.viewEstate eq 'init'}" actionListener="#{beanVenta.insert()}">
-                            <p:confirm header="Confirmación" message="Estas seguro de Finalizar la Venta?" icon="ui-icon-alert" />
-                        </p:commandButton>
-                        <!--<p:commandButton value="Vender" id="venderCredito" ajax="true" immediate="true" rendered="{beanVenta.viewEstate eq 'init' and beanVenta.data.idTipoVentaFk eq 2 }" />-->
-                        <!--<p:commandButton  value="imprimir ticket" id="btonImprimir" ajax="true" rendered="{beanVenta.viewEstate =='init'}"  onclick="window.frames.miFrame.print();" resetValues="true" action="{beanVenta.cancel}"/>-->
-                        <p:commandButton value="Aceptar" update=":formContent" ajax="true" action="#{beanVenta.updateProducto}" rendered="#{beanVenta.viewEstate =='update'}"/>
-                        <p:commandButton value="Cancelar" update=":formContent" ajax="true" action="#{beanVenta.cancelarModificacion}" immediate="true" resetValues="true" rendered="#{beanVenta.viewEstate =='update'}"/>
+                    <div class="form-group">
+                        <div class="col-lg-10 col-md-10 col-sm-10 col-xs-12 form-group" align="right">
+                            <p:fragment id="labelCredito">
+                                <h:outputText  style="font-weight: bold !important" value ="Linea a crédito: $" rendered="#{beanVenta.credito}"/> 
+                                <h:outputText  style="font-weight: bold !important; color: blue !important;" value ="#{beanVenta.cliente.limiteCredito}" rendered="#{beanVenta.credito}"> 
+                                    <f:convertNumber pattern="#,###"/>
+                                </h:outputText>
+                                <h:outputText  style="font-weight: bold !important" value =". Disponible :$" rendered="#{beanVenta.credito}"/> 
+                                <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanVenta.cliente.creditoDisponible}" rendered="#{beanVenta.credito}"> 
+                                    <f:convertNumber pattern="#,###"/>
+                                </h:outputText>
+                            </p:fragment> 
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12" align="right">
+                            <p:commandButton value="Agregar" update=":formContent" ajax="true" process="@this comboTipoVenta comboTipoPago txtPrecioVenta txtCantidadEmpaque" onclick="PF('statusDialog').show()" action="#{beanVenta.addProducto}" rendered="#{beanVenta.viewEstate =='init'}"/>
+                            <p:commandButton value="Vender" id="vender" ajax="true" update=":formContent" immediate="true" rendered="#{beanVenta.viewEstate eq 'init'}" actionListener="#{beanVenta.insert()}">
+                                <p:confirm header="Confirmación" message="Estas seguro de Finalizar la Venta?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <!--<p:commandButton value="Vender" id="venderCredito" ajax="true" immediate="true" rendered="{beanVenta.viewEstate eq 'init' and beanVenta.data.idTipoVentaFk eq 2 }" />-->
+                            <!--<p:commandButton  value="imprimir ticket" id="btonImprimir" ajax="true" rendered="{beanVenta.viewEstate =='init'}"  onclick="window.frames.miFrame.print();" resetValues="true" action="{beanVenta.cancel}"/>-->
+                            <p:commandButton value="Aceptar" update=":formContent" ajax="true" action="#{beanVenta.updateProducto}" rendered="#{beanVenta.viewEstate =='update'}"/>
+                            <p:commandButton value="Cancelar" update=":formContent" ajax="true" action="#{beanVenta.cancelarModificacion}" immediate="true" resetValues="true" rendered="#{beanVenta.viewEstate =='update'}"/>
+                        </div>
                     </div>
 
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
@@ -78,40 +81,44 @@
                         <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
 
                             <p:outputLabel class="col-lg-6 col-md-6 col-sm-4 col-xs-12"  for="comboTipoVenta" value ="Tipo de Venta:" /> 
-                            <h:selectOneMenu  id="comboTipoVenta" class=" col-lg-6 col-md-6 col-sm-8 col-xs-12" value="#{beanVenta.data.idTipoVentaFk}" disabled="#{!beanVenta.credito}">
+                            <h:selectOneMenu  id="comboTipoVenta" class=" col-lg-6 col-md-6 col-sm-8 col-xs-12 tipoVenta" value="#{beanVenta.data.idTipoVentaFk}" disabled="#{!beanVenta.credito}">
                                 <f:selectItems value="#{beanVenta.lstTipoVenta}" var="tventa" itemLabel="#{tventa.nombreTipoVenta}" itemValue="#{tventa.idTipoVentaPk}"/>
                                 <p:ajax event="change" update=":formContent" listener="#{beanVenta.calculaPrecioProducto}"/>
                             </h:selectOneMenu>
                         </div>
-
-                        <p:outputLabel class="col-lg-2 col-md-6 col-sm-4 col-xs-12"  for="comboTipoPago" value ="Plazos:"  rendered="#{beanVenta.data.idTipoVentaFk == 2}"/> 
-                        <h:selectOneMenu  id="comboTipoPago" class=" col-lg-1 col-md-6 col-sm-8 col-xs-12" value="#{beanVenta.data.tipoPago}"  rendered="#{beanVenta.data.idTipoVentaFk == 2}">
-                            <f:selectItem  itemLabel="7" itemValue="7"/>
-                            <f:selectItem  itemLabel="14" itemValue="14"/>
-                            <f:selectItem  itemLabel="21" itemValue="21"/>
-                            <f:selectItem  itemLabel="28" itemValue="28"/>
-                            <f:selectItem  itemLabel="35" itemValue="35"/>
-                            <p:ajax event="change" update=":formContent:table :formContent:txtNumeroPagos" listener="#{beanVenta.calculaPrecioProducto}"/>
-                        </h:selectOneMenu>
+                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-6 col-md-6 col-sm-4 col-xs-12"  for="comboTipoPago" value ="Plazos:"  rendered="#{beanVenta.data.idTipoVentaFk == 2}"/> 
+                            <h:selectOneMenu  id="comboTipoPago" class=" col-lg-6 col-md-6 col-sm-8 col-xs-12" value="#{beanVenta.data.tipoPago}"  rendered="#{beanVenta.data.idTipoVentaFk == 2}">
+                                <f:selectItem  itemLabel="7 dias" itemValue="7"/>
+                                <f:selectItem  itemLabel="14 dias" itemValue="14"/>
+                                <f:selectItem  itemLabel="21 dias" itemValue="21"/>
+                                <f:selectItem  itemLabel="28 dias" itemValue="28"/>
+                                <f:selectItem  itemLabel="35 dias" itemValue="35"/>
+                                <p:ajax event="change" update=":formContent:table :formContent:txtNumeroPagos" listener="#{beanVenta.calculaPrecioProducto}"/>
+                            </h:selectOneMenu>
+                        </div>
 
 
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                        <p:outputLabel class="col-lg-2 col-md-6 col-sm-4 col-xs-12"  for="txtNumeroPagos" value ="Pagos:" rendered="#{beanVenta.data.idTipoVentaFk == 2}"/> 
+                        <p:fragment rendered="#{beanVenta.data.idTipoVentaFk == 2}">
+                            <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12" >
+                                <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="txtNumeroPagos" value ="Pagos:" rendered="#{beanVenta.data.idTipoVentaFk == 2}"/> 
 
-                        <p:inputText id="txtNumeroPagos"  class=" col-lg-1 col-md-6 col-sm-8 col-xs-12" value="#{beanVenta.data.numeroPagos}" required="true"
-                                     requiredMessage="Ingresa un valor para el campo Precio de venta." rendered="#{beanVenta.data.idTipoVentaFk == 2}">
-                            <p:ajax event="blur" update="@this" listener="#{beanVenta.validarNumeroPagos}" immediate="true"/>
-                        </p:inputText>
-
-                        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" >
+                                <p:inputText id="txtNumeroPagos"  class=" col-lg-4 col-md-4 col-sm-4 col-xs-12" value="#{beanVenta.data.numeroPagos}" required="true"
+                                             requiredMessage="Ingresa un valor para el campo Numero de Pagos." rendered="#{beanVenta.data.idTipoVentaFk == 2}">
+                                    <p:ajax event="blur" update="@this" listener="#{beanVenta.validarNumeroPagos}" immediate="true"/>
+                                </p:inputText>
+                            </div>
+                        </p:fragment> 
+                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12 form-group" >
                             <!--                            <p:outputLabel class="col-lg-6 col-md-6 col-sm-4 col-xs-12"  for="txtTipoEmpaque" value ="Tipo de Empaque:" rendered ="false"/> 
                                                         <h:selectOneMenu  id="txtTipoEmpaque" class=" col-lg-6 col-md-6 col-sm-8 col-xs-12" value="{beanVenta.data.idTipoEmpaqueFk}" requiredMessage="Ingresa un valor para el campo Tipo de Empaque." disabled="true" rendered ="false">
                                                             <f:selectItem itemLabel="Seleccione un empaque" itemValue="-1" />
                                                             <f:selectItems value="{beanVenta.lstTipoEmpaque}" var="empaque" itemLabel="{empaque.nombreEmpaque}" itemValue="{empaque.idTipoEmpaquePk}" />
                                                             <p:ajax event="change" update=":formContent:txtPrecioVenta :formContent:labelEmpaque" listener="{beanVenta.selectedTipoEmpaque}"/>
                                                         </h:selectOneMenu>-->
-                            <p:outputLabel class="col-lg-3 col-md-6 col-sm-12 col-xs-12"  for="autocompleteProducto" value ="Producto:" /> 
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="autocompleteProducto" value ="Producto:" /> 
                             <p:autoComplete  placeholder="Seleccione un Producto" id="autocompleteProducto"  required="true" requiredMessage="Ingresa un valor para el campo Producto." styleClass="autocomplete-input-text-media"
                                              value="#{beanVenta.subProducto}" completeMethod="#{beanVenta.autoComplete}" forceSelection="true" var="producto"  inputStyle="width: 180px"
                                              itemLabel="#{producto.nombreSubproducto}"
@@ -122,18 +129,18 @@
                             <pe:keyFilter for="autocompleteProducto" regEx="/[a-z0-9-_Ã±\s]/i" />
 
                         </div>
-                        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-6 col-md-6 col-sm-4 col-xs-12"  for="txtPrecioVenta" value ="Precio de venta:" /> 
-                            <p:inputText id="txtPrecioVenta"  class=" col-lg-3 col-md-3 col-sm-8 col-xs-12" value="#{beanVenta.data.precioProducto}" required="true"
+                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="txtPrecioVenta" value ="Precio de venta:" /> 
+                            <p:inputText id="txtPrecioVenta"   class=" col-lg-3 col-md-3 col-sm-8 col-xs-12" value="#{beanVenta.data.precioProducto}" required="true"
                                          requiredMessage="Ingresa un valor para el campo Precio de venta." disabled="#{beanVenta.permisionToEdit}">
                                 <p:ajax event="blur"
                                         listener="#{beanVenta.validaPrecioMinimoMaximo}"
-                                        immediate="true" update="@this" />
+                                        immediate="true" process="@this" />
                             </p:inputText>
                         </div>
 
-                        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12" >
-                            <p:outputLabel class="col-lg-8 col-md-8 col-sm-4 col-xs-12" id="labelEmpaque" for="txtCantidadEmpaque" value ="Cantidad de #{beanVenta.nombreEmpaque}:"  /> 
+                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12" >
+                            <p:outputLabel class="col-lg-6 col-md-6 col-sm-4 col-xs-12" id="labelEmpaque" for="txtCantidadEmpaque" value ="Kilos:"  /> 
                             <p:inputText id="txtCantidadEmpaque" maxlength="6" class=" col-lg-3 col-md-3 col-sm-8 col-xs-12" value="#{beanVenta.data.cantidadEmpaque}" required="true" 
                                          requiredMessage="Ingresa un valor para el campo Cantidad de Empaques." />
 
@@ -148,9 +155,9 @@
                                                 </div>-->
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                        <p:dataTable var="model" id="table" value="#{beanVenta.lstVenta}" styleClass="ui-datatable-hor-scroll"  emptyMessage="Productos." scrollable="true">
+                        <p:dataTable var="model" id="table" value="#{beanVenta.lstVenta}"  emptyMessage="Productos." >
 
-                            <p:column headerText="Producto form" width="150px;" class="alignLeft">
+                            <p:column headerText="Producto" width="150px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreProducto}" />
                             </p:column>
                             <p:column headerText="Empaque" width="150px;" class="alignLeft">
@@ -187,7 +194,7 @@
                             </p:column>
                             <p:columnGroup type="footer">
                                 <p:row>
-                                    <p:column colspan="4" style="text-align:right" footerText="Total de Venta:" />
+                                    <p:column colspan="4" style="text-align:right" footerText="Total del Pedido:" />
                                     <p:column colspan="1" class="alignRight">
                                         <f:facet name="footer">
                                             <h:outputText value="#{beanVenta.totalVenta}" >

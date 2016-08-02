@@ -150,11 +150,15 @@ public class BeanVenta implements Serializable, BeanSimple {
     @PostConstruct
     public void init() {
 
+        venta = new Venta();
+
         max = new BigDecimal(0);
         min = new BigDecimal(0);
         descuento = new BigDecimal(0);
         dejaACuenta = new BigDecimal(0);
         totalVentaDescuento = new BigDecimal(0);
+        //JavaScript que actualiza el combo de tipo de venta a contado ya que la actualizacion de la vista no lo hace pero en el back si tiene el valor
+        RequestContext.getCurrentInstance().execute("document.getElementsByClassName('tipoVenta')[0][0].setAttribute('selected', 'selected'); document.getElementById('formContent:autocompleteProducto_input').focus();");
 
         folioCredito = 0;
 
@@ -177,13 +181,13 @@ public class BeanVenta implements Serializable, BeanSimple {
 
         permisionToEdit = false;
 
-        venta = new Venta();
         venta.setIdSucursal(idSucu);
 
         data = new VentaProducto();
+        autoComplete("");
 
         data.setIdTipoEmpaqueFk(new BigDecimal(-1));
-//        data.setIdTipoVentaFk(new BigDecimal("1"));
+        data.setIdTipoVentaFk(new BigDecimal("1"));
 
         lstProducto = new ArrayList<Subproducto>();
         lstTipoEmpaque = ifaceEmpaque.getEmpaques();
@@ -352,16 +356,19 @@ public class BeanVenta implements Serializable, BeanSimple {
         mantenimentoPrecio.setPrecioVenta(pc);
 
         int idEmpaque = data.getIdTipoEmpaqueFk() == null ? 0 : data.getIdTipoEmpaqueFk().intValue();
+
         String idSubProducto = subProducto == null ? "" : (subProducto.getIdSubproductoPk() == null ? "" : subProducto.getIdSubproductoPk());
         mantenimentoPrecio = ifaceMantenimientoPrecio.getMantenimientoPrecioById(idSubProducto.trim(), idEmpaque, idSucu);
 
         if (mantenimentoPrecio.getPrecioMinimo() == mantenimentoPrecio.getPrecioMaximo()) {
             permisionToEdit = true;
+
         } else if (mantenimentoPrecio.getPrecioMinimo().intValue() == mantenimentoPrecio.getPrecioMaximo().intValue()) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "El precio de este producto no es Ajustable"));
             max = precioProducto(mantenimentoPrecio.getPrecioMaximo());
             min = precioProducto(mantenimentoPrecio.getPrecioMinimo());
             permisionToEdit = true;
+
         } else {
             max = precioProducto(mantenimentoPrecio.getPrecioMaximo());
             min = precioProducto(mantenimentoPrecio.getPrecioMinimo());
@@ -373,6 +380,7 @@ public class BeanVenta implements Serializable, BeanSimple {
             permisionToEdit = true;
         }
 
+        RequestContext.getCurrentInstance().execute("document.getElementById('formContent:txtPrecioVenta').focus();");
         data.setIdProductoFk(idSubProducto);
         data.setIdTipoEmpaqueFk(new BigDecimal(idEmpaque));
 
@@ -436,10 +444,14 @@ public class BeanVenta implements Serializable, BeanSimple {
 
     private void calcularTotalVenta() {
         setTotalVenta(new BigDecimal(0));
+        totalVentaDescuento = new BigDecimal(0);
         for (VentaProducto venta : lstVenta) {
             setTotalVenta(getTotalVenta().add(venta.getTotal()));
         }
         totalVentaDescuento = getTotalVenta();
+        totalVentaDescuento = totalVentaDescuento.setScale(2, RoundingMode.UP);
+
+        calculaAhorro(null);
     }
 
     private TipoEmpaque getEmpaque(BigDecimal idEmpaque) {
@@ -468,7 +480,6 @@ public class BeanVenta implements Serializable, BeanSimple {
         NumeroALetra numeroLetra = new NumeroALetra();
 
         for (VentaProducto venta : lstVenta) {
-
             String cantidad = venta.getCantidadEmpaque() + " " + venta.getNombreEmpaque();
             productos.add(venta.getNombreProducto().toUpperCase());
             productos.add("                       " + cantidad + "     " + nf.format(venta.getPrecioProducto()) + "    " + nf.format(venta.getTotal()));
@@ -486,6 +497,7 @@ public class BeanVenta implements Serializable, BeanSimple {
 
     private void putValues(String dateTime, ArrayList<String> items, String total, String totalVentaStr, int idVenta, int folioVenta, String totalVentaDescuentoStr, String totalDescuento) {
         DecimalFormat df = new DecimalFormat("#,###.00");
+        paramReport.clear();
         paramReport.put("fechaVenta", dateTime);
         paramReport.put("noVenta", Integer.toString(folioVenta));
         //comentado asta nuevo ticket
@@ -516,9 +528,19 @@ public class BeanVenta implements Serializable, BeanSimple {
             //Imprime el calendario de pagos
             Date dateTemp = date;
             ArrayList calendario = new ArrayList();
-            String montoAbono = df.format(c.getMontoCredito().divide(c.getNumeroPagos(), 2, RoundingMode.UP));
+            String montoAbono = df.format(c.getMontoCredito().divide(c.getNumeroPagos() == null ? BigDecimal.ZERO : c.getNumeroPagos(), 2, RoundingMode.UP));
             String item = "N. Pago   Fecha de Pago   Monto";
             calendario.add(item);
+            if (dejaACuenta.intValue() > 0) {
+                item = "    0            " + TiempoUtil.getFechaDDMMYYYY(date) + "    $" + dejaACuenta;
+                calendario.add(item);
+                
+                paramReport.put("msgAcuenta", "Favor de pasar a caja para su pago inicial de: $" + df.format(dejaACuenta));
+            }else{
+                paramReport.put("msgAcuenta", "");
+            }
+
+            
 
             int plaso = (c.getPlasos().divide(c.getNumeroPagos())).intValue();
             int pagos = c.getNumeroPagos().intValue();
@@ -574,7 +596,7 @@ public class BeanVenta implements Serializable, BeanSimple {
                 dataEdit.setNombreProducto(data.getNombreProducto());
                 dataEdit.setIdProductoFk(data.getIdProductoFk());
                 dataEdit.setNombreEmpaque(empaque.getNombreEmpaque());
-                dataEdit.setPrecioSinInteres(data.getPrecioProducto());
+                dataEdit.setPrecioSinInteres(data.getPrecioSinInteres());
                 dataEdit.setPrecioProducto(data.getPrecioProducto());
                 dataEdit.setTotal(dataEdit.getPrecioProducto().multiply(dataEdit.getCantidadEmpaque()));
 
@@ -608,10 +630,8 @@ public class BeanVenta implements Serializable, BeanSimple {
             }
 
             if (data.getIdTipoVentaFk().equals(new BigDecimal(1))) {
-                System.out.println("reporte de credito contado");
                 pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketVenta" + File.separatorChar + "ticket.jasper";
             } else {
-                System.out.println("reporte de credito ticketCredito");
                 pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketVenta" + File.separatorChar + "ticketCredito.jasper";
             }
 
@@ -740,26 +760,31 @@ public class BeanVenta implements Serializable, BeanSimple {
     }
 
     public void validarNumeroPagos(AjaxBehaviorEvent event) {
-
         InputText input = (InputText) event.getSource();
-        if (input.getSubmittedValue() != null && !input.getSubmittedValue().toString().isEmpty()) {
+        try {
 
-            BigDecimal value = new BigDecimal(input.getSubmittedValue().toString());
-            int tipoPago = data.getTipoPago() == null ? 7 : data.getTipoPago().intValue();
-            int resto = (tipoPago % value.intValue());
+            if (input.getSubmittedValue() != null && !input.getSubmittedValue().toString().isEmpty()) {
 
-            if (resto > 0) {
-                input.setSubmittedValue(new BigDecimal(tipoPago).divide(DIAS_PLAZO));
-            } else if (tipoPago < (value.intValue() * DIAS_PLAZO.intValue())) {
-                input.setSubmittedValue(new BigDecimal(tipoPago).divide(DIAS_PLAZO));
-            } else if (tipoPago == value.intValue()) {
-                input.setSubmittedValue(new BigDecimal(tipoPago).divide(DIAS_PLAZO));
+                BigDecimal value = new BigDecimal(input.getSubmittedValue().toString());
+                int tipoPago = data.getTipoPago() == null ? 7 : data.getTipoPago().intValue();
+                int resto = (tipoPago % value.intValue());
+
+                if (resto > 0) {
+                    input.setSubmittedValue(new BigDecimal(tipoPago).divide(DIAS_PLAZO));
+                } else if (tipoPago < (value.intValue() * DIAS_PLAZO.intValue())) {
+                    input.setSubmittedValue(new BigDecimal(tipoPago).divide(DIAS_PLAZO));
+                } else if (tipoPago == value.intValue()) {
+                    input.setSubmittedValue(new BigDecimal(tipoPago).divide(DIAS_PLAZO));
+                } else {
+                    input.setSubmittedValue(value);
+                }
             } else {
-                input.setSubmittedValue(value);
-            }
-        } else {
-            input.setSubmittedValue("");
+                input.setSubmittedValue("");
 
+            }
+
+        } catch (Exception ex) {
+            input.setSubmittedValue("");
         }
 
     }
@@ -793,7 +818,7 @@ public class BeanVenta implements Serializable, BeanSimple {
         c.setStatusACuenta(new BigDecimal("0"));
 
         //aqui estaba el codigo que calcula el descuento
-        c.setMontoCredito(totalVentaDescuento.subtract(dejaACuenta).setScale(2,RoundingMode.UP));
+        c.setMontoCredito(totalVentaDescuento.subtract(dejaACuenta).setScale(2, RoundingMode.UP));
         //Numero de pagos que el cliente debera realizar
         c.setPlasos(data.getTipoPago());
         //El numero de dias del plaso
@@ -830,8 +855,13 @@ public class BeanVenta implements Serializable, BeanSimple {
     }
 
     public void calculaAhorro(AjaxBehaviorEvent event) {
-        InputText input = (InputText) event.getSource();
-        dejaACuenta = new BigDecimal(input.getSubmittedValue().toString());
+        InputText input;
+
+        if (event != null) {
+            input = (InputText) event.getSource();
+            dejaACuenta = new BigDecimal(input.getSubmittedValue().toString());
+        }
+
         BigDecimal zero = new BigDecimal(0);
         descuento = new BigDecimal(0);
         //Calcula el descuento por dejar a cuenta
@@ -869,7 +899,7 @@ public class BeanVenta implements Serializable, BeanSimple {
                 }
 
             }
-
+            descuento = descuento.setScale(2, RoundingMode.UP);
             setTotalVentaDescuento(totalVenta.subtract(descuento));
 
         }

@@ -29,7 +29,6 @@ public class MantenimientoPrecios extends ValueObject {
     public String toString() {
         return "MantenimientoPrecios{" + "idSubproducto=" + idSubproducto + ", idTipoEmpaquePk=" + idTipoEmpaquePk + ", precioVenta=" + precioVenta + ", precioMinimo=" + precioMinimo + ", precioMaximo=" + precioMaximo + ", idSucursal=" + idSucursal + ", nombreSubProducto=" + nombreSubProducto + ", costoReal=" + costoReal + ", costoMerma=" + costoMerma + ", existenciaKilos=" + existenciaKilos + ", precioSugerido=" + precioSugerido + ", precioMercado=" + precioMercado + ", fechaPrecioMercado=" + fechaPrecioMercado + '}';
     }
-
     
     public Date getFechaPrecioMercado() {
         return fechaPrecioMercado;

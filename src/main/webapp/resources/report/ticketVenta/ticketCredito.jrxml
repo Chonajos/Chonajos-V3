@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-07-27T12:15:35 -->
+<!-- 2016-08-02T12:22:20 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ticketCredito" pageWidth="219" pageHeight="1224" columnWidth="179" leftMargin="20" rightMargin="20" topMargin="4" bottomMargin="20" isIgnorePagination="true" uuid="cce07992-6ec7-4616-8caf-ceb4ee12975b">
 	<property name="ireport.zoom" value="2.5937424601000028"/>
 	<property name="ireport.x" value="0"/>
@@ -44,6 +44,7 @@
 	<parameter name="descuentoVenta" class="java.lang.String"/>
 	<parameter name="foliCredito" class="java.lang.String"/>
 	<parameter name="calendarioPago" class="java.util.List"/>
+	<parameter name="msgAcuenta" class="java.lang.String"/>
 	<variable name="fechaVenta" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
@@ -199,12 +200,15 @@
 				<text><![CDATA[P/T]]></text>
 			</staticText>
 			<componentElement>
-				<reportElement x="1" y="10" width="178" height="20" uuid="34e1bda9-3863-49ce-966c-80f124711798"/>
+				<reportElement x="1" y="10" width="178" height="14" uuid="34e1bda9-3863-49ce-966c-80f124711798">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
 				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
-					<datasetRun subDataset="dataset1" uuid="5498b2ef-03e0-466a-9339-949f4a310948">
+					<datasetRun subDataset="dataset1" uuid="493657a3-a9c7-4c0a-8b74-4bd0a055b276">
 						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{productos})]]></dataSourceExpression>
 					</datasetRun>
-					<jr:listContents height="20" width="178">
+					<jr:listContents height="14" width="178">
 						<textField isStretchWithOverflow="true">
 							<reportElement stretchType="RelativeToBandHeight" x="0" y="1" width="178" height="12" uuid="a8c5c589-8d6f-4ebe-965d-41c8e2e0a555"/>
 							<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
@@ -368,7 +372,7 @@
 				<text><![CDATA[C:]]></text>
 			</staticText>
 		</band>
-		<band height="48">
+		<band height="51">
 			<staticText>
 				<reportElement x="32" y="5" width="96" height="20" uuid="2564fda5-d16b-48ee-8ed5-d577529c8276"/>
 				<text><![CDATA[Calendario de Pagos]]></text>
@@ -393,6 +397,15 @@
 					</jr:listContents>
 				</jr:list>
 			</componentElement>
+		</band>
+		<band height="26">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="0" y="2" width="180" height="24" uuid="249e08e7-03db-4551-9bba-95ad3572dbc9"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{msgAcuenta}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 </jasperReport>
