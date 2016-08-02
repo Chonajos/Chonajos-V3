@@ -3,6 +3,7 @@ package com.web.chon.ejb;
 import com.web.chon.dominio.AbonoCredito;
 import com.web.chon.negocio.NegocioAbonoCredito;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -144,6 +145,25 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
             Logger.getLogger(EjbAbonoCredito.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
+    }
+
+    @Override
+    public List<Object[]> getChequesPendientes(String fechaInicio, String fechaFin) {
+        System.out.println("Fecha fin: "+fechaFin);
+        try {
+            Query query = em.createNativeQuery("select * from ABONO_CREDITO ab WHERE TO_DATE(TO_CHAR(ab.FECHA_COBRO,'dd/mm/yyyy'),'dd/mm/yyyy')\n" +
+"< '"+fechaFin+"' and ab.ESTATUS=2 order by ab.FECHA_COBRO asc");
+            List<Object[]> resultList = null;
+            System.out.println("query:"+query);
+            resultList = query.getResultList();
+
+            return resultList;
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbAbonoCredito.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    
     }
 
 }

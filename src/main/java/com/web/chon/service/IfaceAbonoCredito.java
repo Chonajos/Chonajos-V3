@@ -8,6 +8,7 @@ package com.web.chon.service;
 import com.web.chon.dominio.AbonoCredito;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  *
@@ -24,6 +25,8 @@ public interface IfaceAbonoCredito {
     public ArrayList<AbonoCredito> getAll();
     
     public ArrayList<AbonoCredito> getByIdCredito(BigDecimal idCreditoFk);
+    
+    public ArrayList<AbonoCredito> getChequesPendientes(Date fechaInicio, Date fechaFin);
     
     public AbonoCredito getById(BigDecimal idAbonoCredito);
     

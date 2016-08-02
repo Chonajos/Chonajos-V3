@@ -236,6 +236,22 @@ public class ServiceCredito implements IfaceCredito {
 
     }
 
+    @Override
+    public Credito getTotalAbonado(BigDecimal idCredito) {
+       getEjb();
+        List<Object[]> lstObject = new ArrayList<Object[]>();
+        lstObject = ejb.getTotalAbonado(idCredito);
+        Credito credito = new Credito();
+        for (Object[] object : lstObject) {
+            credito.setIdCreditoPk(object[0] == null ? null : new BigDecimal(object[0].toString()));
+            credito.setMontoCredito(object[1] == null ? null : new BigDecimal(object[1].toString()));
+            credito.setTotalAbonado(object[2] == null ? null : new BigDecimal(object[2].toString()));
+        }
+
+        return credito;
+    
+    }
+
     
 
 }

@@ -28,6 +28,8 @@ public interface NegocioCredito
     public int updateStatus(BigDecimal idCreditoPk, BigDecimal estatus);
     
     public int nextVal();
+    
+    public List<Object[]> getTotalAbonado(BigDecimal idCredito);
 
     
 }
