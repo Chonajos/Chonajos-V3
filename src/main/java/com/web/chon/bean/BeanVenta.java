@@ -532,7 +532,7 @@ public class BeanVenta implements Serializable, BeanSimple {
             String item = "N. Pago   Fecha de Pago   Monto";
             calendario.add(item);
             if (dejaACuenta.intValue() > 0) {
-                item = "    0            " + TiempoUtil.getFechaDDMMYYYY(date) + "    $" + dejaACuenta;
+                item = "    0            " + TiempoUtil.getFechaDDMMYYYY(date) + "    $" +df.format(dejaACuenta);
                 calendario.add(item);
                 
                 paramReport.put("msgAcuenta", "Favor de pasar a caja para su pago inicial de: $" + df.format(dejaACuenta));
