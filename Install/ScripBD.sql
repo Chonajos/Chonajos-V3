@@ -720,6 +720,7 @@ INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.
 
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Créditos', 1,'80','NULL');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Buscar créditos', 0,'80.1','/views/buscarCreditos.xhtml');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Consultar créditos', 0,'80.3','/views/consultaCreditos.xhtml');
 
 
 
@@ -1097,3 +1098,7 @@ CREATE SEQUENCE s_TIPO_ABONO
 INCREMENT BY 1
 START WITH 1
 MINVALUE 0;
+
+
+
+---corres estadisticas a la base EXEC DBMS_UTILITY.analyze_schema('CHONI','COMPUTE');
