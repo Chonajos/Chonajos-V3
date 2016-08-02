@@ -54,6 +54,7 @@ import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
+import org.primefaces.context.RequestContext;
 import org.primefaces.model.StreamedContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -108,7 +109,7 @@ public class BeanEntradaMenudeo implements Serializable {
 
     private BigDecimal kilosEntradaReales;
     private BigDecimal costoMermaInicio;
-    
+
     //variables para PDF
     private Map paramReport = new HashMap();
     private UsuarioDominio usuarioDominio;
@@ -118,7 +119,6 @@ public class BeanEntradaMenudeo implements Serializable {
     private String number;
     private int idSucu;
     private String pathFileJasper = "C:/Users/Juan/Documents/NetBeansProjects/Chonajos-V2/ticket.jasper";
-    
 
     @PostConstruct
     public void init() {
@@ -136,7 +136,7 @@ public class BeanEntradaMenudeo implements Serializable {
 
         usuario = context.getUsuarioAutenticado();
         usuario.setUsuNombre(usuario.getUsuNombre());
-        
+
         if (usuario.getPerId() != 1) {
 
             data.setIdSucursalFk(new BigDecimal(usuario.getSucId()));
@@ -163,10 +163,7 @@ public class BeanEntradaMenudeo implements Serializable {
         folio = ifaceEntradaMenudeo.getFolio(data.getIdSucursalFk());
         entrada_mercancia.setFolio(new BigDecimal(folio + 1));
         entrada_mercancia.setIdUsuario(data.getIdUsuario());
-        setParameterTicket(entrada_mercancia.getFolio().intValue());
-        generateReport(folio);
-        
-        
+
         if (ifaceEntradaMenudeo.insertEntradaMercancia(entrada_mercancia) != 0) {
             System.out.println("Se inserto correctamente");
             for (int i = 0; i < listaMenudeoProducto.size(); i++) {
@@ -194,12 +191,14 @@ public class BeanEntradaMenudeo implements Serializable {
                         existencia.setIdSucursalFk(entrada_mercancia.getIdSucursalFk());
                         existencia.setIdTipoEmpaqueFK(selectedTipoEmpaque());
                         existencia.setKilos(mp.getKilosTotales());
-                        
-                        updatateMantenimiento(mp,entrada_mercancia);
+
+                        updatateMantenimiento(mp, entrada_mercancia);
 
                         if (ifaceExistenciaMenudeo.insertaExistenciaMenudeo(existencia) != 0) {
                             System.out.println("Se inserto correcatemente en existencias");
-                            
+                            setParameterTicket(entrada_mercancia);
+                            generateReport(entrada_mercancia.getFolio().intValue());
+                            RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
                         } else {
                             System.out.println("Ocurrio algun error");
                             JsfUtil.addErrorMessageClean("Ocurrio un problema, contactar al administrador");
@@ -209,14 +208,12 @@ public class BeanEntradaMenudeo implements Serializable {
                         System.out.println("Se encontraron repetidos");
                         ex.setCantidadEmpaque(ex.getCantidadEmpaque().add(mp.getCantidadEmpaque(), MathContext.UNLIMITED));
                         ex.setKilos(ex.getKilos().add(mp.getKilosTotales(), MathContext.UNLIMITED));
-                        
-                        updatateMantenimiento(mp,entrada_mercancia);
-                        if (ifaceExistenciaMenudeo.updateExistenciaMenudeo(ex) != 0) 
-                        {
+
+                        updatateMantenimiento(mp, entrada_mercancia);
+                        if (ifaceExistenciaMenudeo.updateExistenciaMenudeo(ex) != 0) {
                             System.out.println("Se inserto correcatemente en existencias");
-                        
-                        } else 
-                        {
+
+                        } else {
                             JsfUtil.addErrorMessageClean("Ocurrio un problema, contactar al administrador");
 
                             System.out.println("Ocurrio un erro al actualizar producto repetido");
@@ -240,12 +237,11 @@ public class BeanEntradaMenudeo implements Serializable {
 
     }
 
-    public void updatateMantenimiento(EntradaMenudeoProducto mp,EntradaMenudeo entrada_mercancia) {
+    public void updatateMantenimiento(EntradaMenudeoProducto mp, EntradaMenudeo entrada_mercancia) {
         MantenimientoPrecios mant = new MantenimientoPrecios();
         mp.setIdtipoEmpaqueFk(selectedTipoEmpaque());
         mant = ifaceMantenimientoPrecio.getMantenimientoPrecioById(mp.getIdSubproductoFk(), mp.getIdtipoEmpaqueFk().intValue(), entrada_mercancia.getIdSucursalFk().intValue());
-        if (mant.getIdSubproducto() != null) 
-        {
+        if (mant.getIdSubproducto() != null) {
             System.out.println("Ya se encontro un mantenimiento de precios de este producto");
             //buscar las existencias de ese producto
             //sumaras con las nuevas
@@ -255,144 +251,128 @@ public class BeanEntradaMenudeo implements Serializable {
             //Totalexistencias = existencias + nuevas.
             //Costostotales = X+Y
             //CostoRealNuevo = Costostotales/Totalexistencias
-            
+
             mant.setCostoReal(calculaCosto(mant, mp, entrada_mercancia));
             mant.setIdTipoEmpaquePk(selectedTipoEmpaque());
-            
-            System.out.println("Kilos con merma: "+mp.getKilosTotales());
+
+            System.out.println("Kilos con merma: " + mp.getKilosTotales());
             //==============================================================//
-            BigDecimal kilosSinMerma =mp.getKilosTotales().subtract((mp.getPorcentarjeMerma().multiply(mp.getKilosTotales(), MathContext.UNLIMITED)).divide(new BigDecimal(100),2,RoundingMode.HALF_UP));
-            
-            System.out.println("Kilos sin merma: "+kilosSinMerma);
-            
+            BigDecimal kilosSinMerma = mp.getKilosTotales().subtract((mp.getPorcentarjeMerma().multiply(mp.getKilosTotales(), MathContext.UNLIMITED)).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
+
+            System.out.println("Kilos sin merma: " + kilosSinMerma);
+
             BigDecimal tota = mp.getKilosTotales().multiply(mp.getPrecio(), MathContext.UNLIMITED);
-            
-            
-            BigDecimal costoMermaTemporal = tota.divide(kilosSinMerma,2,RoundingMode.HALF_UP);
-            
-            System.out.println("Costo merma Temporal: "+costoMermaTemporal);
+
+            BigDecimal costoMermaTemporal = tota.divide(kilosSinMerma, 2, RoundingMode.HALF_UP);
+
+            System.out.println("Costo merma Temporal: " + costoMermaTemporal);
             mp.setPrecio(costoMermaTemporal);
             mant.setCostoMerma(calculaCostoMerma(mant, mp, entrada_mercancia));
-            
-            
+
             //mp.setKilosTotales(kilosSinMerma);
-            
             //mant.setCostoMerma(calculaCosto(mant, mp, entrada_mercancia));
-            
-            if(ifaceMantenimientoPrecio.updateMantenimientoPrecio(mant)!=0)
-            {
+            if (ifaceMantenimientoPrecio.updateMantenimientoPrecio(mant) != 0) {
                 System.out.println("Se inserto correcatemente en mantenimiento");
                 JsfUtil.addSuccessMessageClean("Entrada de Mercancia Correcto");
-            }
-            else{
+                setParameterTicket(entrada_mercancia);
+                generateReport(entrada_mercancia.getFolio().intValue());
+                RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
+            } else {
                 System.out.println("Ocurrio algun error");
                 JsfUtil.addErrorMessageClean("Ocurrio un problema, contactar al administrador");
             }
-            
-        } else
-        {
-            BigDecimal kilosSinMerma =mp.getKilosTotales().subtract((mp.getPorcentarjeMerma().multiply(mp.getKilosTotales(), MathContext.UNLIMITED)).divide(new BigDecimal(100),2,RoundingMode.HALF_UP));
-            
+
+        } else {
+            BigDecimal kilosSinMerma = mp.getKilosTotales().subtract((mp.getPorcentarjeMerma().multiply(mp.getKilosTotales(), MathContext.UNLIMITED)).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
+
             BigDecimal tota = mp.getKilosTotales().multiply(mp.getPrecio(), MathContext.UNLIMITED);
-            
-            costoMermaInicio = tota.divide(kilosSinMerma,2,RoundingMode.HALF_UP);
-            
-            
-            if (insertaMantenimiento(mp, entrada_mercancia)) 
-            {
-                
+
+            costoMermaInicio = tota.divide(kilosSinMerma, 2, RoundingMode.HALF_UP);
+
+            if (insertaMantenimiento(mp, entrada_mercancia)) {
+
                 System.out.println("Se inserto correcatemente en mantenimiento");
                 JsfUtil.addSuccessMessageClean("Entrada de Mercancia Correcto");
-                costoMermaInicio= new BigDecimal(0);
-            } else 
-            {
+                costoMermaInicio = new BigDecimal(0);
+            } else {
                 System.out.println("Ocurrio algun error");
                 JsfUtil.addErrorMessageClean("Ocurrio un problema, contactar al administrador");
             }
         }
-       
+
     }
-    
-    private BigDecimal calculaCosto(MantenimientoPrecios mant,EntradaMenudeoProducto mp,EntradaMenudeo entrada_mercancia)
-    {
+
+    private BigDecimal calculaCosto(MantenimientoPrecios mant, EntradaMenudeoProducto mp, EntradaMenudeo entrada_mercancia) {
         ExistenciaMenudeo existencia = ifaceExistenciaMenudeo.getExistenciasRepetidasById(mp.getIdSubproductoFk(), entrada_mercancia.getIdSucursalFk());
-            BigDecimal existencias = existencia.getKilos();
-            System.out.println("A: "+existencias);
-            
-            BigDecimal costoReal = mant.getCostoReal();
-            System.out.println("B: "+costoReal);
-            
-            BigDecimal X = existencias.multiply(costoReal, MathContext.UNLIMITED);
-            System.out.println("C: "+X);
-            
-            BigDecimal nuevas = mp.getKilosTotales();
-            System.out.println("D: "+nuevas);
-            
-            BigDecimal precioNuevo = mp.getPrecio();
-            System.out.println("E: "+precioNuevo);
-            
-            BigDecimal y = nuevas.multiply(precioNuevo, MathContext.UNLIMITED);
-             System.out.println("F: "+y);
-            
-            
-            BigDecimal totalExistencias = existencias.add(nuevas);
-            System.out.println("G: "+totalExistencias);
-           
-            
-            BigDecimal costoTotales = X.add(y);
-            System.out.println("H: "+costoTotales);
-            
-            BigDecimal costoRealNuevo = costoTotales.divide(totalExistencias,2,RoundingMode.HALF_UP);
-            System.out.println("========================");
-            System.out.println("I: "+costoRealNuevo);
-            return costoRealNuevo;
-        
+        BigDecimal existencias = existencia.getKilos();
+        System.out.println("A: " + existencias);
+
+        BigDecimal costoReal = mant.getCostoReal();
+        System.out.println("B: " + costoReal);
+
+        BigDecimal X = existencias.multiply(costoReal, MathContext.UNLIMITED);
+        System.out.println("C: " + X);
+
+        BigDecimal nuevas = mp.getKilosTotales();
+        System.out.println("D: " + nuevas);
+
+        BigDecimal precioNuevo = mp.getPrecio();
+        System.out.println("E: " + precioNuevo);
+
+        BigDecimal y = nuevas.multiply(precioNuevo, MathContext.UNLIMITED);
+        System.out.println("F: " + y);
+
+        BigDecimal totalExistencias = existencias.add(nuevas);
+        System.out.println("G: " + totalExistencias);
+
+        BigDecimal costoTotales = X.add(y);
+        System.out.println("H: " + costoTotales);
+
+        BigDecimal costoRealNuevo = costoTotales.divide(totalExistencias, 2, RoundingMode.HALF_UP);
+        System.out.println("========================");
+        System.out.println("I: " + costoRealNuevo);
+        return costoRealNuevo;
+
     }
-    
-    private BigDecimal calculaCostoMerma(MantenimientoPrecios mant,EntradaMenudeoProducto mp,EntradaMenudeo entrada_mercancia)
-    {
+
+    private BigDecimal calculaCostoMerma(MantenimientoPrecios mant, EntradaMenudeoProducto mp, EntradaMenudeo entrada_mercancia) {
         ExistenciaMenudeo existencia = ifaceExistenciaMenudeo.getExistenciasRepetidasById(mp.getIdSubproductoFk(), entrada_mercancia.getIdSucursalFk());
-            BigDecimal existencias = existencia.getKilos();
-            System.out.println("A: "+existencias);
-            
-            BigDecimal costoMerma = mant.getCostoMerma();
-            System.out.println("B: "+costoMerma);
-            
-            BigDecimal X = existencias.multiply(costoMerma, MathContext.UNLIMITED);
-            System.out.println("C: "+X);
-            
-            
-            BigDecimal nuevas = mp.getKilosTotales();
-            System.out.println("D: "+nuevas);
-            
-            BigDecimal precioNuevo = mp.getPrecio();
-            System.out.println("E: "+precioNuevo);
-            
-            BigDecimal y = nuevas.multiply(precioNuevo, MathContext.UNLIMITED);
-            System.out.println("F: "+y);
-            
-             
-            
-            
-            BigDecimal totalExistencias = existencias.add(nuevas);
-            System.out.println("G: "+totalExistencias);
-           
-            
-            BigDecimal costoTotales = X.add(y);
-            System.out.println("H: "+costoTotales);
-            
-            BigDecimal costoRealNuevo = costoTotales.divide(totalExistencias,2,RoundingMode.HALF_UP);
-            System.out.println("========================");
-            System.out.println("I: "+costoRealNuevo);
-            return costoRealNuevo;
-        
+        BigDecimal existencias = existencia.getKilos();
+        System.out.println("A: " + existencias);
+
+        BigDecimal costoMerma = mant.getCostoMerma();
+        System.out.println("B: " + costoMerma);
+
+        BigDecimal X = existencias.multiply(costoMerma, MathContext.UNLIMITED);
+        System.out.println("C: " + X);
+
+        BigDecimal nuevas = mp.getKilosTotales();
+        System.out.println("D: " + nuevas);
+
+        BigDecimal precioNuevo = mp.getPrecio();
+        System.out.println("E: " + precioNuevo);
+
+        BigDecimal y = nuevas.multiply(precioNuevo, MathContext.UNLIMITED);
+        System.out.println("F: " + y);
+
+        BigDecimal totalExistencias = existencias.add(nuevas);
+        System.out.println("G: " + totalExistencias);
+
+        BigDecimal costoTotales = X.add(y);
+        System.out.println("H: " + costoTotales);
+
+        BigDecimal costoRealNuevo = costoTotales.divide(totalExistencias, 2, RoundingMode.HALF_UP);
+        System.out.println("========================");
+        System.out.println("I: " + costoRealNuevo);
+        return costoRealNuevo;
+
     }
 
     public boolean insertaMantenimiento(EntradaMenudeoProducto mp, EntradaMenudeo em) {
         mantenimiento = new MantenimientoPrecios();
         mantenimiento.setCostoMerma(costoMermaInicio);
         mantenimiento.setIdSubproducto(mp.getIdSubproductoFk());
-        
+
         mantenimiento.setIdTipoEmpaquePk(selectedTipoEmpaque());
         mantenimiento.setIdSucursal(em.getIdSucursalFk().intValue());
         mantenimiento.setCostoReal(mp.getPrecio());
@@ -405,12 +385,10 @@ public class BeanEntradaMenudeo implements Serializable {
         }
 
     }
-    
-    public BigDecimal selectedTipoEmpaque() 
-    {
 
-        for (TipoEmpaque empaque : lstTipoEmpaque) 
-        {
+    public BigDecimal selectedTipoEmpaque() {
+
+        for (TipoEmpaque empaque : lstTipoEmpaque) {
             if ((empaque.getNombreEmpaque().equalsIgnoreCase("Kilos"))) {
                 return empaque.getIdTipoEmpaquePk();
             }
@@ -531,90 +509,20 @@ public class BeanEntradaMenudeo implements Serializable {
         }
         return empaque;
     }
-    
-    private void setParameterTicket(int folioVenta) {
 
-        NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
-        DecimalFormat df = new DecimalFormat("###.##");
-        Date date = new Date();
-
-        ArrayList<String> productos = new ArrayList<String>();
-        NumeroALetra numeroLetra = new NumeroALetra();
-//tamaño maximo de nombre de producto 35 caracteres
-        BigDecimal costoTotal = new BigDecimal(0);
-        for (EntradaMenudeoProducto producto : listaMenudeoProducto) {
-            int maximoCaracteres=35;
-
-            StringBuilder nombreProducto =  new StringBuilder(producto.getNombreProducto());
-            int tam = nombreProducto.length(); //17
-            while (maximoCaracteres>tam)
-            {
-                nombreProducto.append(" ");
-                maximoCaracteres--;
-            }
-            String kilosproducto = producto.getKilosTotales().toString();
-            String costounitario = producto.getPrecio().toString();
-            BigDecimal costo = producto.getKilosTotales().multiply(producto.getPrecio(), MathContext.UNLIMITED);
-            
-            String costoMultiplicado = costo.toString();
-            costoTotal = costoTotal.add(costo, MathContext.UNLIMITED);
-            
-            String merma = producto.getPorcentarjeMerma().toString();
-            String cadena = nombreProducto+"  "+kilosproducto+"kg  "+nf.format(producto.getPrecio()).toString()+"  "+nf.format(costo).toString()+"  "+merma+"%";
-            productos.add(cadena);
-            //productos.add("                       " + cantidad + "     " + nf.format(venta.getPrecioProducto()) + "    " + nf.format(venta.getTotal()));
-          
-        }
-
-        String costoLetra = numeroLetra.Convertir(df.format(costoTotal), true);
-        putValues(TiempoUtil.getFechaDDMMYYYYHHMM(date), productos, nf.format(costoTotal), data.getKilosTotales().toString(), data.getKilosProvedor().toString(),costoLetra,folioVenta);
-
-    }
-
-    private void putValues(String dateTime, ArrayList<String> items, String costoTotal,String kilosTotales,String kilosProvedor, String totalLetra, int folioVenta) {
-        Provedor p1 = new Provedor();
-        for(Provedor p:listaProvedores)
-        {
-            System.out.println("fooorrrrr");
-            if(p.getIdProvedorPK().equals(data.getIdProvedorFk()))
-            {
-                System.out.println("Entro");
-                p1.setNombreCompleto(p.getNombreCompleto()+" "+p.getApaternoProve()+" "+p.getAmaternoProve());
-                System.out.println(""+p1.getNombreCompleto());
-            }
-        }
-        System.out.println("p1:" + p1.toString());
-        System.out.println("Fecha: "+dateTime);
-        System.out.println("Folio: "+Integer.toString(folioVenta));
-        System.out.println("Provedor: "+p1.getNombreCompleto());
-        System.out.println("Recibidor: "+usuario.getNombreCompleto());
-        System.out.println("Productos: ");
-        System.out.println("");
-        for(String nombre:items)
-        {
-            System.out.println(nombre);
-        }
-        System.out.println("costoTotal: "+costoTotal);
-        System.out.println("kilosTotales: "+kilosTotales+"kg");
-        System.out.println("kilosProvedor: "+kilosProvedor);
-        System.out.println("totalLetra: "+totalLetra);
-        System.out.println("Telefonos: "+usuario.getTelefonoSucursal());
-        System.out.println("Sucursal: "+usuario.getNombreSucursal());
+    private void setParameterTicket(EntradaMenudeo em) {
         
-        paramReport.put("fecha", dateTime);
-        paramReport.put("folio", Integer.toString(folioVenta));
-        paramReport.put("provedor", p1.getNombreCompleto());
-        paramReport.put("recibidor", usuario.getNombreCompleto());
-        paramReport.put("productos", items);
-        paramReport.put("costoTotal", costoTotal);
-        paramReport.put("KgR",kilosTotales);
-        paramReport.put("kgP", kilosProvedor);
-        paramReport.put("totalLetra", totalLetra);
-        paramReport.put("telefonos", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:" + usuario.getTelefonoSucursal());
-        paramReport.put("labelSucursal", usuario.getNombreSucursal());
+        paramReport.put("nombreSucursal", usuario.getNombreSucursal());
+        paramReport.put("nombreProvedor", em.getNombreProvedor());
+        paramReport.put("kilosProvedor", em.getKilosProvedor().toString());
+        paramReport.put("comentarios", em.getComentarios());
+        paramReport.put("fechaEntrada", TiempoUtil.getFechaDDMMYYYYHHMM(new Date()));
+        paramReport.put("nombreRecibidor", usuario.getNombreCompleto());
+        paramReport.put("folio", em.getFolio().toString());
+        paramReport.put("ID_EMM_FK", em.getIdEmmPk().toString());
 
     }
-    
+
     public void generateReport(int folio) {
         JRExporter exporter = null;
 
@@ -627,7 +535,7 @@ public class BeanEntradaMenudeo implements Serializable {
                 temporal = servletContext.getRealPath("");
             }
 
-            pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "entradaMercancia" + File.separatorChar + "entrada.jasper";
+            pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "entradaMercancia" + File.separatorChar + "ReporteEntradaMenudeo.jasper";
 
             JasperPrint jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport, new JREmptyDataSource());
             outputStream = JasperReportUtil.getOutputStreamFromReport(paramReport, getPathFileJasper());
@@ -638,7 +546,7 @@ public class BeanEntradaMenudeo implements Serializable {
 //            exporter.setParameter(JRPdfExporterParameter.PDF_JAVASCRIPT, "this.print();");
             byte[] bytes = outputStream.toByteArray();
 
-            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf",folio, idSucu);
+            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf", folio, idSucu);
 
         } catch (Exception exception) {
             System.out.println("Error >" + exception.getMessage());
