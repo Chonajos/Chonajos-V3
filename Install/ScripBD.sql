@@ -718,6 +718,12 @@ INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Relación de Operaciones', 0,'90.2','/views/relacionOperacionesMayoreo.xhtml');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Pagar Pedido', 0,'90.3','/views/buscaVentaMayoreo.xhtml');
 
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Créditos', 1,'80','NULL');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Buscar créditos', 0,'80.1','/views/buscarCreditos.xhtml');
+
+
+
+
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(1,1);
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(2,1);
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(3,1);

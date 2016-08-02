@@ -202,4 +202,27 @@ public class EjbCredito implements NegocioCredito {
         }
     }
 
+    @Override
+    public List<Object[]> getTotalAbonado(BigDecimal idCredito) {
+       try {
+
+            Query query = em.createNativeQuery("select c.ID_CREDITO_PK,c.MONTO_CREDITO, sum(ab.MONTO_ABONO) as TotalAbonado from CREDITO c \n" +
+"inner join ABONO_CREDITO ab\n" +
+"on ab.ID_CREDITO_FK = c.ID_CREDITO_PK\n" +
+"where ab.ESTATUS=1 \n" +
+"and c.ID_CREDITO_PK= ?\n" +
+"group by  c.ID_CREDITO_PK,c.MONTO_CREDITO\n");
+            List<Object[]> resultList = null;
+            query.setParameter(1, idCredito);
+            resultList = query.getResultList();
+
+            return resultList;
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbCredito.class
+                    .getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
 }

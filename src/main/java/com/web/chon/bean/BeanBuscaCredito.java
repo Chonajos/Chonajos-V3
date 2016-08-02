@@ -278,10 +278,7 @@ public class BeanBuscaCredito implements Serializable {
                  */
                 BigDecimal temporal = dataAbonar.getTotalAbonado().add(abono.getMontoAbono(), MathContext.UNLIMITED);
                 
-                System.out.println("===============================");
-                System.out.println("Abonado: "+temporal);
-                System.out.println("Saldo Total: "+dataAbonar.getSaldoTotal());
-                System.out.println("===============================");
+   
                 
                 if ((temporal).compareTo(dataAbonar.getSaldoTotal()) >= 0) {
                     
@@ -309,6 +306,11 @@ public class BeanBuscaCredito implements Serializable {
                 break;
             case 2:
                 System.out.println("Ejecuto Transferencia");
+                 if(abono.getMontoAbono()==null || abono.getReferencia() == null || abono.getConcepto()==null  || abono.getFechaTransferencia()==null )
+                 {
+                     JsfUtil.addErrorMessageClean("Ingrese el valor en todos los campos");
+                     break;
+                 }
                 ac.setIdAbonoCreditoPk(new BigDecimal(ifaceAbonoCredito.getNextVal()));
                 ac.setIdCreditoFk(dataAbonar.getFolioCredito());
                 ac.setMontoAbono(abono.getMontoAbono());
@@ -349,6 +351,12 @@ public class BeanBuscaCredito implements Serializable {
                 break;
             case 3:
                 System.out.println("Ejecuto CHEQUE");
+                System.out.println("Ejecuto Transferencia");
+                 if(abono.getMontoAbono()==null || abono.getNumeroCheque() == null || abono.getLibrador()==null || abono.getFechaCobro()==null || abono.getBanco()==null || abono.getFactura()==null )
+                 {
+                     JsfUtil.addErrorMessageClean("Ingrese el valor en todos los campos");
+                     break;
+                 }
                 ac.setIdAbonoCreditoPk(new BigDecimal(ifaceAbonoCredito.getNextVal()));
                 ac.setIdCreditoFk(dataAbonar.getFolioCredito());
                 ac.setMontoAbono(abono.getMontoAbono());

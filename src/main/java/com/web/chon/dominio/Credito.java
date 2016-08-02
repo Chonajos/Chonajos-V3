@@ -26,11 +26,22 @@ public class Credito extends ValueObject {
     private BigDecimal dejaCuenta;
     private BigDecimal montoCredito;
     private BigDecimal numeroPagos;
+    private BigDecimal totalAbonado;
 
     @Override
     public String toString() {
         return "Credito{" + "idCreditoPk=" + idCreditoPk + ", idClienteFk=" + idClienteFk + ", idVentaMenudeo=" + idVentaMenudeo + ", idVentaMayoreo=" + idVentaMayoreo + ", idUsuarioCredito=" + idUsuarioCredito + ", idTipoCreditoFk=" + idTipoCreditoFk + ", estatusCredito=" + estatusCredito + ", numeroPromesaPago=" + numeroPromesaPago + ", fechaInicioCredito=" + fechaInicioCredito + ", fechaFinCredito=" + fechaFinCredito + ", fechaPromesaPago=" + fechaPromesaPago + ", tazaInteres=" + tazaInteres + ", plasos=" + plasos + ", statusACuenta=" + statusACuenta + ", dejaCuenta=" + dejaCuenta + ", montoCredito=" + montoCredito + ", numeroPagos=" + numeroPagos + '}';
     }
+
+    public BigDecimal getTotalAbonado() {
+        return totalAbonado;
+    }
+
+    public void setTotalAbonado(BigDecimal totalAbonado) {
+        this.totalAbonado = totalAbonado;
+    }
+    
+    
 
     public BigDecimal getStatusACuenta() {
         return statusACuenta;

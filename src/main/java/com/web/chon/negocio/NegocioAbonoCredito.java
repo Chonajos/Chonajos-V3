@@ -3,6 +3,8 @@ package com.web.chon.negocio;
 
 import com.web.chon.dominio.AbonoCredito;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Remote;
 
@@ -24,6 +26,8 @@ public interface NegocioAbonoCredito
     public List<Object[]> getById(BigDecimal idAbonoCredito) ;
     
     public List<Object[]> getByIdCredito(BigDecimal idAbonoCredito) ;
+    
+    public List<Object[]> getChequesPendientes(String fechaInicio, String fechaFin);
     
     public int getNextVal();
     
