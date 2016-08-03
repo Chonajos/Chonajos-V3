@@ -36,6 +36,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -43,9 +46,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.sql.DataSource;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 import net.sf.jasperreports.engine.JREmptyDataSource;
@@ -112,7 +121,7 @@ public class BeanEntradaMenudeo implements Serializable {
 
     //variables para PDF
     private Map paramReport = new HashMap();
-    private UsuarioDominio usuarioDominio;
+    
     private String rutaPDF;
     private StreamedContent media;
     private ByteArrayOutputStream outputStream;
@@ -133,15 +142,11 @@ public class BeanEntradaMenudeo implements Serializable {
         dataProducto = new EntradaMenudeoProducto();
         lstTipoEmpaque = ifaceEmpaque.getEmpaques();
         data = new EntradaMenudeo();
-
         usuario = context.getUsuarioAutenticado();
-        usuario.setUsuNombre(usuario.getUsuNombre());
-
-        if (usuario.getPerId() != 1) {
-
-            data.setIdSucursalFk(new BigDecimal(usuario.getSucId()));
-        }
+        System.out.println("Telefono Sucursal: "+usuario.getTelefonoSucursal());
+        data.setIdSucursalFk(new BigDecimal(usuario.getSucId()));
         data.setIdUsuario(usuario.getIdUsuario());
+        
         permisionToGenerate = true;
         permisionToPush = false;
         kilosEntradaReales = new BigDecimal(0);
@@ -511,16 +516,32 @@ public class BeanEntradaMenudeo implements Serializable {
     }
 
     private void setParameterTicket(EntradaMenudeo em) {
-        
+
         paramReport.put("nombreSucursal", usuario.getNombreSucursal());
-        paramReport.put("nombreProvedor", em.getNombreProvedor());
+        paramReport.put("nombreProvedor", getNombreProvedor());
         paramReport.put("kilosProvedor", em.getKilosProvedor().toString());
+        paramReport.put("kilosReales", em.getKilosTotales().toString());
         paramReport.put("comentarios", em.getComentarios());
         paramReport.put("fechaEntrada", TiempoUtil.getFechaDDMMYYYYHHMM(new Date()));
         paramReport.put("nombreRecibidor", usuario.getNombreCompleto());
         paramReport.put("folio", em.getFolio().toString());
         paramReport.put("ID_EMM_FK", em.getIdEmmPk().toString());
+        System.out.println("telefonos =======" +usuario.getTelefonoSucursal());
+        paramReport.put("leyenda", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:" + usuario.getTelefonoSucursal());
+        
 
+    }
+    public String getNombreProvedor() {
+
+        for (Provedor prove : listaProvedores) {
+
+            if (prove.getIdProvedorPK().intValue() == data.getIdProvedorFk().intValue()) {
+                return prove.getNombreProvedor();
+              
+            }
+
+        }
+        return "";
     }
 
     public void generateReport(int folio) {
@@ -537,7 +558,39 @@ public class BeanEntradaMenudeo implements Serializable {
 
             pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "entradaMercancia" + File.separatorChar + "ReporteEntradaMenudeo.jasper";
 
-            JasperPrint jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport, new JREmptyDataSource());
+//            Connection conn=null;
+//            try 
+//            {
+//                Class.forName("oracle.jdbc.OracleDriver");
+//                conn = DriverManager.getConnection("jdbc:oracle:thin:@//192.168.1.77:1521/xe", "choniTest", "choniTest");
+//                System.out.println("Se conecto PERRO !");
+//            } catch (SQLException ex) 
+//            {
+//                ex.getStackTrace();
+//            } catch (ClassNotFoundException ex) {
+//                ex.getStackTrace();
+//            }
+            Context initContext;
+            Connection con = null;
+            try {
+                
+                javax.sql.DataSource datasource = null;
+
+                Context initialContext = new InitialContext();
+
+                // "jdbc/MyDBname" >> is a JNDI Name of DataSource on weblogic
+                datasource = (DataSource) initialContext.lookup("DataChon");
+
+                try {
+                    con = datasource.getConnection();
+                    System.out.println("datsource" + con.toString());
+                } catch (SQLException ex) {
+                    Logger.getLogger(BeanVenta.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } catch (NamingException ex) {
+                Logger.getLogger(BeanVenta.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            JasperPrint jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport, con);
             outputStream = JasperReportUtil.getOutputStreamFromReport(paramReport, getPathFileJasper());
             exporter = new JRPdfExporter();
 
@@ -550,7 +603,7 @@ public class BeanEntradaMenudeo implements Serializable {
 
         } catch (Exception exception) {
             System.out.println("Error >" + exception.getMessage());
-
+            exception.getStackTrace();
         }
 
     }
@@ -711,13 +764,7 @@ public class BeanEntradaMenudeo implements Serializable {
         this.costoMermaInicio = costoMermaInicio;
     }
 
-    public UsuarioDominio getUsuarioDominio() {
-        return usuarioDominio;
-    }
-
-    public void setUsuarioDominio(UsuarioDominio usuarioDominio) {
-        this.usuarioDominio = usuarioDominio;
-    }
+    
 
     public String getRutaPDF() {
         return rutaPDF;
