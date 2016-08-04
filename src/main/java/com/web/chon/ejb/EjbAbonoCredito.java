@@ -26,7 +26,7 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
     public int insert(AbonoCredito abonoCredito) {
 
         try {
-            System.out.println("EJB: =========="+abonoCredito.toString());
+            System.out.println("EJB: ==========" + abonoCredito.toString());
 
             Query query = em.createNativeQuery("INSERT INTO  ABONO_CREDITO (ID_ABONO_CREDITO_PK ,"
                     + "ID_CREDITO_FK "
@@ -42,14 +42,13 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
             query.setParameter(6, abonoCredito.getEstatusAbono());
             query.setParameter(7, abonoCredito.getNumeroCheque());
             query.setParameter(8, abonoCredito.getLibrador());
-            query.setParameter(9, abonoCredito.getFechaCobro()); 
+            query.setParameter(9, abonoCredito.getFechaCobro());
             query.setParameter(10, abonoCredito.getBanco());
             query.setParameter(11, abonoCredito.getFactura());
             query.setParameter(12, abonoCredito.getReferencia());
             query.setParameter(13, abonoCredito.getConcepto());
             query.setParameter(14, abonoCredito.getFechaTransferencia());
-            
-  
+
             return query.executeUpdate();
 
         } catch (Exception ex) {
@@ -134,9 +133,9 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
 
     @Override
     public List<Object[]> getByIdCredito(BigDecimal idAbonoCredito) {
-         try {
-            Query query = em.createNativeQuery("select * from ABONO_CREDITO abc\n" +
-"where abc.ESTATUS = 2 and abc.TIPO_ABONO_FK=3 and abc.ID_CREDITO_FK ='"+idAbonoCredito+"'");
+        try {
+            Query query = em.createNativeQuery("select * from ABONO_CREDITO abc\n"
+                    + "where abc.ESTATUS = 2 and abc.TIPO_ABONO_FK=3 and abc.ID_CREDITO_FK ='" + idAbonoCredito + "'");
             List<Object[]> resultList = null;
             resultList = query.getResultList();
             return resultList;
@@ -148,22 +147,34 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
     }
 
     @Override
-    public List<Object[]> getChequesPendientes(String fechaInicio, String fechaFin) {
-        System.out.println("Fecha fin: "+fechaFin);
+    public List<Object[]> getChequesPendientes(String fechaInicio, String fechaFin, BigDecimal idSucursal) {
+        System.out.println("Fecha fin: " + fechaFin);
+        System.out.println("IdSucursalEJB: " + idSucursal);
+
+        StringBuffer cadena = new StringBuffer("select ab.* from ABONO_CREDITO ab "
+                + "inner join USUARIO u "
+                + "on u.ID_USUARIO_PK = ab.ID_USUARIO_FK "
+                + "WHERE TO_DATE(TO_CHAR(ab.FECHA_COBRO,'dd/mm/yyyy'),'dd/mm/yyyy')< '" + fechaInicio + "' "
+                + "and ab.ESTATUS=2 and ab.TIPO_ABONO_FK=3 ");
+
+        if (idSucursal == null || idSucursal.equals("")) {
+            cadena.append(" order by ab.FECHA_COBRO asc");
+
+        } else {
+            cadena.append(" and u.ID_SUCURSAL_FK='" + idSucursal + "' order by ab.FECHA_COBRO asc");
+        }
+        System.out.println("Query: " + cadena);
+        Query query;
+        query = em.createNativeQuery(cadena.toString());
+
         try {
-            Query query = em.createNativeQuery("select * from ABONO_CREDITO ab WHERE TO_DATE(TO_CHAR(ab.FECHA_COBRO,'dd/mm/yyyy'),'dd/mm/yyyy')\n" +
-"< '"+fechaFin+"' and ab.ESTATUS=2 order by ab.FECHA_COBRO asc");
-            List<Object[]> resultList = null;
-            System.out.println("query:"+query);
-            resultList = query.getResultList();
-
-            return resultList;
-
-        } catch (Exception ex) {
-            Logger.getLogger(EjbAbonoCredito.class.getName()).log(Level.SEVERE, null, ex);
+            List<Object[]> lstObject = query.getResultList();
+            return lstObject;
+        } catch (Exception e) {
+            System.out.println("Error >" + e.getMessage());
             return null;
         }
-    
+
     }
 
 }
