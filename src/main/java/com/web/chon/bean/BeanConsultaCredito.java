@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.web.chon.bean;
 
 import com.web.chon.dominio.AbonoCredito;
@@ -104,6 +99,8 @@ public class BeanConsultaCredito implements Serializable {
     private String number;
     private String rutaPDF;
     private String pathFileJasper = "C:/Users/Juan/Documents/NetBeansProjects/Chonajos-V2/ticket.jasper";
+    
+    private int numFiltro;
 
     //------------variables para generar el ticket----------//
     //---Constantes---//
@@ -126,7 +123,7 @@ public class BeanConsultaCredito implements Serializable {
         selectedchequesPendientes = new ArrayList<AbonoCredito>();
         lstTipoAbonos = ifaceTipoAbono.getAll();
         saldoParaLiquidar = new BigDecimal(0);
-        setTitle("Historial de Compras");
+        setTitle("Consulta de Creditos");
         setViewEstate("init");
         setViewCheque("init");
     }
@@ -214,318 +211,14 @@ public class BeanConsultaCredito implements Serializable {
 
     }
 
-    public void buscaCheques() {
-
-        chequesPendientes = ifaceAbonoCredito.getByIdCredito(dataAbonar.getFolioCredito());
-
-        setTitle("Cheques por cobrar");
-        setViewEstate("cheques");
-    }
-
-    public void activaBandera() {
-        bandera = true;
-    }
-
-    public void addView() {
-
-        if (abono.getIdtipoAbonoFk().intValue() == 3) {
-            setViewCheque("true");
-        } else if (abono.getIdtipoAbonoFk().intValue() == 2) {
-            setViewCheque("trans");
-
-        } else {
-            setViewCheque("init");
-        }
-
-    }
-
-    public void abonar() {
-        AbonoCredito ac = new AbonoCredito();
-        if(abono.getIdtipoAbonoFk()!=null){
-        switch (abono.getIdtipoAbonoFk().intValue()) {
-            /*
-            ===============
-            1.- Contado
-            2.- Transferencia
-            3.- Cheque
-            4.- Deposito 
-            5.- A cuenta
-            ===============
-            Estatus de los Creditos
-            1.- Activo
-            2.- Finalizado
-            ===============
-            Estatus de Abonos
-            1.- Se realizo
-            2.- Esta pendiente (cheques)
-             */
-            case 1:
-                System.out.println("Ejecuto Pago de Contado");
-                if(abono.getMontoAbono()==null )
-                 {
-                     JsfUtil.addErrorMessageClean("ingrese un monto de abono");
-                     break;
-                 }
-                ac.setIdAbonoCreditoPk(new BigDecimal(ifaceAbonoCredito.getNextVal()));
-                ac.setIdCreditoFk(dataAbonar.getFolioCredito());
-                ac.setMontoAbono(abono.getMontoAbono());
-                ac.setIdUsuarioFk(usuarioDominio.getIdUsuario()); //aqui poner el usuario looggeado
-                ac.setIdtipoAbonoFk(abono.getIdtipoAbonoFk());
-                ac.setEstatusAbono(ABONOREALIZADO);
-
-                /*variable temporal creada para sumar el total Abonado y el nuevo abono
-                  en caso de que sea igual o mayor el temporal al saldo de la cuenta, liberar el credito.
-                 */
-                BigDecimal temporal = dataAbonar.getTotalAbonado().add(abono.getMontoAbono(), MathContext.UNLIMITED);
-                
-   
-                
-                if ((temporal).compareTo(dataAbonar.getSaldoTotal()) >= 0) {
-                    
-                    if (ifaceCredito.updateStatus(ac.getIdCreditoFk(), CREDITOFINALIZADO) == 1) {
-                        JsfUtil.addSuccessMessage("Se ha liquidado el crédito total  con el folio: " + ac.getIdCreditoFk() + " exitosamente");
-                    } else {
-                        JsfUtil.addErrorMessageClean("Se ha producido un error al liquidar todo el folio de credito: " + ac.getIdCreditoFk());
-                    }
-
-                }
-                if (ifaceAbonoCredito.insert(ac) == 1) {
-                    JsfUtil.addSuccessMessage("Se ha realizado un abono existosamente");
-                    setParameterTicket(ac, cliente);
-                    generateReport(ac.getIdAbonoCreditoPk().intValue(), "abono.jasper");
-                    abono.reset();
-                    dataAbonar.reset();
-                    saldoParaLiquidar = new BigDecimal(0);
-                    searchByIdCliente();
-
-                    RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
-                } else {
-                    JsfUtil.addErrorMessageClean("Ocurrio un error al intentar registrar el abono con el folio: " + ac.getIdAbonoCreditoPk());
-                }
-
-                break;
-            case 2:
-                System.out.println("Ejecuto Transferencia");
-                 if(abono.getMontoAbono()==null || abono.getReferencia() == null || abono.getConcepto()==null  || abono.getFechaTransferencia()==null )
-                 {
-                     JsfUtil.addErrorMessageClean("Ingrese el valor en todos los campos");
-                     break;
-                 }
-                ac.setIdAbonoCreditoPk(new BigDecimal(ifaceAbonoCredito.getNextVal()));
-                ac.setIdCreditoFk(dataAbonar.getFolioCredito());
-                ac.setMontoAbono(abono.getMontoAbono());
-                ac.setIdUsuarioFk(usuarioDominio.getIdUsuario()); //aqui poner el usuario looggeado
-                ac.setIdtipoAbonoFk(abono.getIdtipoAbonoFk());
-                ac.setEstatusAbono(ABONOREALIZADO);
-                ac.setConcepto(abono.getConcepto());
-                ac.setReferencia(abono.getReferencia());
-                ac.setFechaTransferencia(abono.getFechaTransferencia());
-
-                /*variable temporal creada para sumar el total Abonado y el nuevo abono
-                  en caso de que sea igual o mayor el temporal al saldo de la cuenta, liberar el credito.
-                 */
-                BigDecimal temporal1 = dataAbonar.getTotalAbonado().add(abono.getMontoAbono(), MathContext.UNLIMITED);
-                if ((temporal1).compareTo(dataAbonar.getSaldoTotal()) >= 0) {
-
-                    if (ifaceCredito.updateStatus(ac.getIdCreditoFk(), CREDITOFINALIZADO) == 1) {
-                        JsfUtil.addSuccessMessage("Se ha liquidado el crédito total  con el folio: " + ac.getIdCreditoFk() + " exitosamente");
-                    } else {
-                        JsfUtil.addErrorMessageClean("Se ha producido un error al liquidar todo el folio de credito: " + ac.getIdCreditoFk());
-                    }
-
-                }
-                if (ifaceAbonoCredito.insert(ac) == 1) {
-                    JsfUtil.addSuccessMessage("Se ha realizado un abono existosamente");
-                    setParameterTicket(ac, cliente);
-                    generateReport(ac.getIdAbonoCreditoPk().intValue(), "abonoTransferencia.jasper");
-                    abono.reset();
-                    dataAbonar.reset();
-                    saldoParaLiquidar = new BigDecimal(0);
-                    searchByIdCliente();
-
-                    RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
-                } else {
-                    JsfUtil.addErrorMessageClean("Ocurrio un error al intentar registrar el abono con el folio: " + ac.getIdAbonoCreditoPk());
-                }
-
-                break;
-            case 3:
-                System.out.println("Ejecuto CHEQUE");
-                System.out.println("Ejecuto Transferencia");
-                 if(abono.getMontoAbono()==null || abono.getNumeroCheque() == null || abono.getLibrador()==null || abono.getFechaCobro()==null || abono.getBanco()==null || abono.getFactura()==null )
-                 {
-                     JsfUtil.addErrorMessageClean("Ingrese el valor en todos los campos");
-                     break;
-                 }
-                ac.setIdAbonoCreditoPk(new BigDecimal(ifaceAbonoCredito.getNextVal()));
-                ac.setIdCreditoFk(dataAbonar.getFolioCredito());
-                ac.setMontoAbono(abono.getMontoAbono());
-                ac.setIdUsuarioFk(usuarioDominio.getIdUsuario()); //aqui poner el usuario looggeado
-                ac.setIdtipoAbonoFk(abono.getIdtipoAbonoFk());
-                ac.setEstatusAbono(ABONOPENDIENTE);
-                ac.setNumeroCheque(abono.getNumeroCheque());
-                ac.setLibrador(abono.getLibrador());
-                ac.setFechaCobro(abono.getFechaCobro());
-                ac.setBanco(abono.getBanco());
-                ac.setFactura(abono.getFactura());
-                /*variable temporal creada para sumar el total Abonado y el nuevo abono
-                  en caso de que sea igual o mayor el temporal al saldo de la cuenta, liberar el credito.
-                 */
-                if (ifaceAbonoCredito.insert(ac) == 1) {
-                    JsfUtil.addSuccessMessage("Se ha realizado un abono existosamente");
-                    setParameterTicket(ac, cliente);
-                    generateReport(ac.getIdAbonoCreditoPk().intValue(), "abonoCheque.jasper");
-                    abono.reset();
-                    dataAbonar.reset();
-                    saldoParaLiquidar = new BigDecimal(0);
-                    searchByIdCliente();
-                    setViewCheque("init");
-
-                    RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
-                } else {
-                    JsfUtil.addErrorMessageClean("Ocurrio un error al intentar registrar el abono con el folio: " + ac.getIdAbonoCreditoPk());
-                }
-
-                break;
-            case 4:
-                break;
-            case 5:
-                Credito c = new Credito();
-
-                c.setIdCreditoPk(dataAbonar.getFolioCredito());
-                c.setStatusACuenta(new BigDecimal(1));
-                if (ifaceCredito.updateACuenta(c) == 1) {
-                    JsfUtil.addSuccessMessageClean("Monto a Cuenta Registrado");
-                    ac.setIdCreditoFk(c.getIdCreditoPk());
-                    ac.setMontoAbono(dataAbonar.getSaldoACuenta());
-                    ac.setIdtipoAbonoFk(abono.getIdtipoAbonoFk());
-                    setParameterTicket(ac, cliente);
-                    generateReport(ac.getIdCreditoFk().intValue(), "abonoCuenta.jasper");
-                    RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
-                } else {
-                    JsfUtil.addErrorMessageClean("Ocurrio un problema");
-                }
-                break;
-        }
-        
-
-//                for (SaldosDeudas item : modelo) 
-//                {
-//                    BigDecimal AbonoGrande = abono.getMontoAbono();
-//                    if (AbonoGrande.compareTo(new BigDecimal(0)) == 1) {
-//                        AbonoCredito ac = new AbonoCredito();
-//                        ac.setIdAbonoCreditoPk(new BigDecimal(ifaceAbonoCredito.getNextVal()));
-//                        ac.setIdCreditoFk(item.getFolioCredito());
-//                        AbonoGrande = AbonoGrande.subtract(item.getSaldoLiquidar(), MathContext.UNLIMITED);
-//                        ac.setMontoAbono(item.getSaldoLiquidar());
-//
-//                        ac.setIdUsuarioFk(usuarioDominio.getIdUsuario()); //aqui poner el usuario looggeado
-//                        ac.setIdtipoAbonoFk(abono.getIdtipoAbonoFk());
-//                        if (abono.getIdtipoAbonoFk().intValue() == 3) {
-//                            ac.setEstatusAbono(new BigDecimal(2));
-//                            //Entra a estado 2 Que significa que esta pendiente.
-//                        } else {
-//                            //Quiere decir que se ejecute el abono.
-//                            ac.setEstatusAbono(new BigDecimal(1));
-//                        }
-//                        ac.setNumeroCheque(abono.getNumeroCheque());
-//                        ac.setLibrador(abono.getLibrador());
-//                        ac.setFechaCobro(abono.getFechaCobro());
-//                        ac.setBanco(abono.getBanco());
-//                        ac.setFactura(abono.getFactura());
-//                        ac.setReferencia(abono.getReferencia());
-//                        ac.setConcepto(abono.getConcepto());
-//                        ac.setFechaTransferencia(abono.getFechaTransferencia());
-//                        BigDecimal temporal = item.getTotalAbonado().add(abono.getMontoAbono(), MathContext.UNLIMITED);
-//                        if ((temporal).compareTo(item.getSaldoTotal()) == 1 || (temporal).compareTo(item.getSaldoTotal()) == 0) {
-//                            System.out.println("Se liquido Todo cambiar a estatus 2 el credito");
-//                            ifaceCredito.updateStatus(ac.getIdCreditoFk(), new BigDecimal(2));
-//                            JsfUtil.addSuccessMessageClean("Se ha liquidado el crédito exitosamente");
-//                        }
-//                        if (ifaceAbonoCredito.insert(ac) == 1) {
-//                            JsfUtil.addSuccessMessageClean("Se ha realizado un abono existosamente");
-//                            searchByIdCliente();
-//                            //abono.reset();
-//                            //dataAbonar.reset();
-//                        } else {
-//                            JsfUtil.addErrorMessageClean("Ocurrio un error");
-//                        }
-//                    }//fin if
-//                }//fin for
-//
-//                System.out.println("Va a ser un abono moustro");
-//            }
-//        } else {
-//
-//            Credito c = new Credito();
-//            c.setIdCreditoPk(dataAbonar.getFolioCredito());
-//            c.setStatusACuenta(new BigDecimal(1));
-//            if (ifaceCredito.updateACuenta(c) == 1) {
-//                JsfUtil.addSuccessMessageClean("Monto a Cuenta Registrado");
-//            } else {
-//                JsfUtil.addErrorMessageClean("Ocurrio un problema");
-//            }
-//
-//        }
-
-//RequestContext.getCurrentInstance().execute("PF('dlg').show();");
-        
-        saldoParaLiquidar = new BigDecimal(0);
-        abono = new AbonoCredito();
-        searchByIdCliente();
-        }
-        else
-        {
-            JsfUtil.addErrorMessageClean("Seleccione un tipo de Abono");
-        }
-    }
-
-    public void pagarCheques() {
-        if (!selectedchequesPendientes.isEmpty()) {
-            for (AbonoCredito abonoCheque : selectedchequesPendientes) {
-                System.out.println("===============================================");
-                System.out.println("Cheque: " + abonoCheque);
-                abonoCheque.setEstatusAbono(new BigDecimal(1));
-                BigDecimal totalAbonado = new BigDecimal(0);
-                BigDecimal totalVenta = new BigDecimal(0);
-                if (ifaceAbonoCredito.update(abonoCheque) == 1) {
-                    //enseguida buscar si ya se libero el credito de ese abono.
-                    modelo = ifaceCredito.getCreditosActivos(cliente.getId_cliente());
-                    for (SaldosDeudas sd : modelo) {
-                        if (sd.getFolioCredito().intValue() == abonoCheque.getIdCreditoFk().intValue()) {
-                            totalVenta = sd.getSaldoTotal();
-                            totalAbonado = totalAbonado.add(sd.getTotalAbonado(), MathContext.UNLIMITED);
-                        }
-                    }
-                    if (totalAbonado.compareTo(totalVenta) >= 0) {
-                        ifaceCredito.updateStatus(abonoCheque.getIdCreditoFk(), CREDITOFINALIZADO);
-                        JsfUtil.addSuccessMessageClean("Se ha liquidado el crédito exitosamente");
-                        // Se liquido con un cheque todo ese credito 
-                    }
-                    JsfUtil.addSuccessMessageClean("Cheque Cobrado Existosamente");
-                    chequesPendientes = ifaceAbonoCredito.getByIdCredito(dataAbonar.getFolioCredito());
-                } else {
-                    JsfUtil.addErrorMessageClean("Ocurrio un problema al cobrar los cheques");
-                }
-            }
-            selectedchequesPendientes = new ArrayList<AbonoCredito>();
-            saldoParaLiquidar = new BigDecimal(0);
-            searchByIdCliente();
-        } else {
-            JsfUtil.addErrorMessageClean("No existen cheques activos o no se ha seleccionado ninguno");
-        }
-
-    }
-
     public void backView() {
-        setTitle("Historial de Compras");
+        setTitle("Consulta Crédito");
         setViewEstate("init");
-        setViewCheque("init");
     }
 
-    public void searchByIdCliente() {
-        saldoParaLiquidar= new BigDecimal(0);
-        
+    public void consultaCredito() {
+        saldoParaLiquidar = new BigDecimal(0);
+
         cliente = ifaceCatCliente.getCreditoClienteByIdCliente(cliente.getId_cliente());
         if (cliente != null && cliente.getId_cliente() != null) {
             modelo = ifaceCredito.getCreditosActivos(cliente.getId_cliente());
@@ -537,12 +230,6 @@ public class BeanConsultaCredito implements Serializable {
             modelo = new ArrayList<SaldosDeudas>();
             cliente = new Cliente();
         }
-
-    }
-
-    public ArrayList<Cliente> autoCompleteCliente(String nombreCliente) {
-        lstCliente = ifaceCatCliente.getClienteByNombreCompleto(nombreCliente.toUpperCase());
-        return lstCliente;
 
     }
 
@@ -794,4 +481,13 @@ public class BeanConsultaCredito implements Serializable {
         this.saldoParaLiquidar = saldoParaLiquidar;
     }
 
+    public int getNumFiltro() {
+        return numFiltro;
+    }
+
+    public void setNumFiltro(int numFiltro) {
+        this.numFiltro = numFiltro;
+    }
+
+    
 }

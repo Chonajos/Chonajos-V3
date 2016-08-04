@@ -22,7 +22,7 @@ public class EjbCredito implements NegocioCredito {
     EntityManager em;
 
     @Override
-    public int insert(Credito credito,int IdCredito) {
+    public int insert(Credito credito, int IdCredito) {
 
         try {
 
@@ -204,14 +204,14 @@ public class EjbCredito implements NegocioCredito {
 
     @Override
     public List<Object[]> getTotalAbonado(BigDecimal idCredito) {
-       try {
+        try {
 
-            Query query = em.createNativeQuery("select c.ID_CREDITO_PK,c.MONTO_CREDITO, sum(ab.MONTO_ABONO) as TotalAbonado from CREDITO c \n" +
-"inner join ABONO_CREDITO ab\n" +
-"on ab.ID_CREDITO_FK = c.ID_CREDITO_PK\n" +
-"where ab.ESTATUS=1 \n" +
-"and c.ID_CREDITO_PK= ?\n" +
-"group by  c.ID_CREDITO_PK,c.MONTO_CREDITO\n");
+            Query query = em.createNativeQuery("select c.ID_CREDITO_PK,c.MONTO_CREDITO, sum(ab.MONTO_ABONO) as TotalAbonado from CREDITO c \n"
+                    + "inner join ABONO_CREDITO ab\n"
+                    + "on ab.ID_CREDITO_FK = c.ID_CREDITO_PK\n"
+                    + "where ab.ESTATUS=1 \n"
+                    + "and c.ID_CREDITO_PK= ?\n"
+                    + "group by  c.ID_CREDITO_PK,c.MONTO_CREDITO\n");
             List<Object[]> resultList = null;
             query.setParameter(1, idCredito);
             resultList = query.getResultList();
@@ -221,6 +221,32 @@ public class EjbCredito implements NegocioCredito {
         } catch (Exception ex) {
             Logger.getLogger(EjbCredito.class
                     .getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
+    public List<Object[]> getAllCreditosActivos() {
+        Query query = em.createNativeQuery("SELECT CRE.ID_CREDITO_PK AS FOLIO,STC.NOMBRE_STATUS,CRE.FECHA_INICIO_CREDITO,CRE.PLAZOS,CRE.MONTO_CREDITO, "
+                + " (SELECT NVL(SUM(ac.MONTO_ABONO),0)FROM ABONO_CREDITO AC "
+                + " WHERE AC.ID_CREDITO_FK= CRE.ID_CREDITO_PK AND AC.ESTATUS=1) "
+                + " AS Total_Abonado, "
+                + " CRE.ESTATUS_CREDITO,CRE.ACUENTA,CRE.STATUSACUENTA, CRE.NUMERO_PAGOS, "
+                + " (SELECT NVL(SUM(ac.MONTO_ABONO),0)from ABONO_CREDITO AC "
+                + " WHERE AC.ID_CREDITO_FK= CRE.ID_CREDITO_PK AND AC.ESTATUS=2) "
+                + " AS CHEQUES_PENDIENTES,(C.NOMBRE ||' '||C.APELLIDO_PATERNO||' '||C.APELLIDO_MATERNO)AS NOMBRE_COMPLETO,C.TELEFONO_FIJO,C.TELEFONO_MOVIL, "
+                + " (SELECT COR.CORREO FROM CORREOS COR WHERE COR.ID_CLIENTE_FK =C.ID_CLIENTE AND ROWNUM =1)AS CORREO "
+                + " FROM CREDITO CRE "
+                + " INNER JOIN STATUS_CREDITO STC "
+                + " ON STC.ID_STATUS_CREDITO_PK = CRE.ESTATUS_CREDITO "
+                + " INNER JOIN CLIENTE C ON C.ID_CLIENTE = CRE.ID_CLIENTE_FK "
+                + " WHERE CRE.ESTATUS_CREDITO=1 ORDER BY CRE.FECHA_INICIO_CREDITO");
+
+        try {
+
+            return query.getResultList();
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbCredito.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
     }
