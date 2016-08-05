@@ -133,11 +133,11 @@ public class ServiceAbonoCredito implements IfaceAbonoCredito {
     }
 
     @Override
-    public ArrayList<AbonoCredito> getChequesPendientes(Date fechaInicio, Date fechaFin) {
+    public ArrayList<AbonoCredito> getChequesPendientes(Date fechaInicio, Date fechaFin,BigDecimal idSucursal) {
        getEjb();
         ArrayList<AbonoCredito> lstAbonoCredito = new ArrayList<AbonoCredito>();
         List<Object[]> lstObject = new ArrayList<Object[]>();
-        lstObject = ejb.getChequesPendientes(TiempoUtil.getFechaDDMMYYYY(fechaInicio), TiempoUtil.getFechaDDMMYYYY(fechaFin));
+        lstObject = ejb.getChequesPendientes(TiempoUtil.getFechaDDMMYYYY(fechaInicio), TiempoUtil.getFechaDDMMYYYY(fechaFin),idSucursal);
         for (Object[] object : lstObject) 
         {
             AbonoCredito abonoCredito = new AbonoCredito();

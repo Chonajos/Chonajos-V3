@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-08-03T15:47:18 -->
+<!-- 2016-08-04T12:20:46 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteEntradaMenudeo" pageWidth="228" pageHeight="841" whenNoDataType="BlankPage" columnWidth="188" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Key" uuid="c529158e-78bf-4d20-87a9-f989c5c04179">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="AdaptadorChoni.xml"/>
@@ -112,7 +112,9 @@
 			<parameterDescription><![CDATA[]]></parameterDescription>
 		</parameter>
 		<queryString>
-			<![CDATA[select sub.NOMBRE_SUBPRODUCTO,emp.KILOS_TOTALES,emp.CANTIDAD_EMPACAQUE,emp.PRECIO,emp.PORCENTAJEMERMA,emp.COMENTARIOS from ENTRADAMENUDEOPRODUCTO emp
+			<![CDATA[select sub.NOMBRE_SUBPRODUCTO,emp.KILOS_TOTALES,emp.CANTIDAD_EMPACAQUE,emp.PRECIO,emp.PORCENTAJEMERMA,
+emp.COMENTARIOS,(emp.KILOS_TOTALES*emp.PRECIO) as total
+from ENTRADAMENUDEOPRODUCTO emp
 inner join SUBPRODUCTO sub
 on sub.ID_SUBPRODUCTO_PK = emp.ID_SUBPRODUCTO_FK
 where emp.ID_EMM_FK=$P{Parametro}]]>
@@ -123,6 +125,7 @@ where emp.ID_EMM_FK=$P{Parametro}]]>
 		<field name="PRECIO" class="java.math.BigDecimal"/>
 		<field name="PORCENTAJEMERMA" class="java.math.BigDecimal"/>
 		<field name="COMENTARIOS" class="java.lang.String"/>
+		<field name="TOTAL" class="java.math.BigDecimal"/>
 		<variable name="Variable_1" class="java.math.BigDecimal" calculation="Sum">
 			<variableExpression><![CDATA[$F{PRECIO}]]></variableExpression>
 		</variable>
@@ -135,11 +138,8 @@ where emp.ID_EMM_FK=$P{Parametro}]]>
 		<variable name="costoTotal" class="java.math.BigDecimal">
 			<variableExpression><![CDATA[$F{PRECIO}]]></variableExpression>
 		</variable>
-		<variable name="Variable_2" class="java.lang.Double">
-			<variableExpression><![CDATA[new Double( $V{costoTotal}.doubleValue() * $F{KILOS_TOTALES}.doubleValue() )]]></variableExpression>
-		</variable>
-		<variable name="Variable_3" class="java.math.BigDecimal" calculation="Sum">
-			<variableExpression><![CDATA[$V{Variable_2}]]></variableExpression>
+		<variable name="sumaCostoTotal" class="java.math.BigDecimal" calculation="Sum">
+			<variableExpression><![CDATA[$F{TOTAL}]]></variableExpression>
 		</variable>
 	</subDataset>
 	<parameter name="nombreSucursal" class="java.lang.String">
@@ -302,7 +302,7 @@ where emp.ID_EMM_FK=$P{Parametro}]]>
 	<detail>
 		<band height="119" splitType="Stretch">
 			<componentElement>
-				<reportElement x="0" y="0" width="200" height="89" uuid="a4f8afd8-4f68-4325-8c58-245f1246aed5">
+				<reportElement x="-3" y="0" width="190" height="89" uuid="a4f8afd8-4f68-4325-8c58-245f1246aed5">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table 3_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table 3_CH"/>
@@ -354,11 +354,11 @@ where emp.ID_EMM_FK=$P{Parametro}]]>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="30" uuid="0b34b816-40eb-4548-bae5-e94f1ce2b9ed">
+					<jr:column width="20" uuid="0b34b816-40eb-4548-bae5-e94f1ce2b9ed">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
 						<jr:tableFooter style="Table 3_TH" height="30" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="30" height="30" uuid="21862f5a-2a74-469f-b8ec-ed3573b03ccd"/>
+								<reportElement x="0" y="0" width="20" height="30" uuid="21862f5a-2a74-469f-b8ec-ed3573b03ccd"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="7" isBold="true"/>
 								</textElement>
@@ -367,7 +367,7 @@ where emp.ID_EMM_FK=$P{Parametro}]]>
 						</jr:tableFooter>
 						<jr:columnHeader style="Table 3_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="30" height="30" uuid="0002cc1f-32e1-4262-b445-76d07d5b1cdc"/>
+								<reportElement x="0" y="0" width="20" height="30" uuid="0002cc1f-32e1-4262-b445-76d07d5b1cdc"/>
 								<box>
 									<topPen lineWidth="1.0"/>
 									<leftPen lineWidth="1.0"/>
@@ -377,12 +377,12 @@ where emp.ID_EMM_FK=$P{Parametro}]]>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="7" isBold="true"/>
 								</textElement>
-								<text><![CDATA[CANT.]]></text>
+								<text><![CDATA[CANT]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 3_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="30" height="30" uuid="dcbb6db7-7bdc-4b9c-867d-b74056ade05d"/>
+								<reportElement x="0" y="0" width="20" height="30" uuid="dcbb6db7-7bdc-4b9c-867d-b74056ade05d"/>
 								<box>
 									<bottomPen lineWidth="1.0"/>
 								</box>
@@ -393,9 +393,48 @@ where emp.ID_EMM_FK=$P{Parametro}]]>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="40" uuid="a182be33-0f1e-49fc-ac56-15951ac25003">
+					<jr:column width="30" uuid="a182be33-0f1e-49fc-ac56-15951ac25003">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
 						<jr:tableFooter style="Table 3_TH" height="30" rowSpan="1"/>
+						<jr:columnHeader style="Table 3_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="30" height="30" uuid="4612f6eb-1aad-402f-b278-87329062e802"/>
+								<box>
+									<topPen lineWidth="1.0"/>
+									<leftPen lineWidth="1.0"/>
+									<bottomPen lineWidth="1.0"/>
+									<rightPen lineWidth="1.0"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="7" isBold="true"/>
+								</textElement>
+								<text><![CDATA[KILOS]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table 3_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="30" height="30" uuid="d51ec532-aa19-490b-915a-31deff6556db"/>
+								<box>
+									<bottomPen lineWidth="1.0"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="7"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{KILOS_TOTALES}+"kg"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="40" uuid="5ede1a81-beea-435a-884e-60048195887f">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+						<jr:tableFooter style="Table 3_TH" height="30" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="40" height="30" uuid="fe10bdeb-85e4-4ac9-9fe0-f90786a49146"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="7" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{sumkilos}+"kg"]]></textFieldExpression>
+							</textField>
+						</jr:tableFooter>
 						<jr:columnHeader style="Table 3_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement x="0" y="0" width="40" height="30" uuid="2fb13e3d-b3d5-4e8b-836a-c346dba13a19"/>
@@ -413,46 +452,7 @@ where emp.ID_EMM_FK=$P{Parametro}]]>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 3_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="40" height="30" uuid="d51ec532-aa19-490b-915a-31deff6556db"/>
-								<box>
-									<bottomPen lineWidth="1.0"/>
-								</box>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="7"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$F{KILOS_TOTALES}+"kg"]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
-					<jr:column width="30" uuid="5ede1a81-beea-435a-884e-60048195887f">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
-						<jr:tableFooter style="Table 3_TH" height="30" rowSpan="1">
-							<textField>
-								<reportElement x="0" y="0" width="30" height="30" uuid="fe10bdeb-85e4-4ac9-9fe0-f90786a49146"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="7" isBold="true"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$V{sumkilos}+"kg"]]></textFieldExpression>
-							</textField>
-						</jr:tableFooter>
-						<jr:columnHeader style="Table 3_CH" height="30" rowSpan="1">
-							<staticText>
-								<reportElement x="0" y="0" width="30" height="30" uuid="9434aa32-5b08-415a-aca2-8ec1736512b1"/>
-								<box>
-									<topPen lineWidth="1.0"/>
-									<leftPen lineWidth="1.0"/>
-									<bottomPen lineWidth="1.0"/>
-									<rightPen lineWidth="1.0"/>
-								</box>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="7" isBold="true"/>
-								</textElement>
-								<text><![CDATA[KILOS]]></text>
-							</staticText>
-						</jr:columnHeader>
-						<jr:detailCell style="Table 3_TD" height="30">
-							<textField>
-								<reportElement x="0" y="0" width="30" height="30" uuid="a1262ca7-bae7-43fb-9aea-a58fbda60c14"/>
+								<reportElement x="0" y="0" width="40" height="30" uuid="a1262ca7-bae7-43fb-9aea-a58fbda60c14"/>
 								<box>
 									<bottomPen lineWidth="1.0"/>
 								</box>
@@ -467,11 +467,11 @@ where emp.ID_EMM_FK=$P{Parametro}]]>
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
 						<jr:tableFooter style="Table 3_TH" height="30" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="50" height="30" uuid="15c1f012-1126-47a3-b6fd-9e573a9d7962"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<reportElement x="0" y="0" width="50" height="30" uuid="ef4c6bfb-3489-4306-8877-271c016b6843"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="7" isBold="true"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$V{Variable_2}]]></textFieldExpression>
+								<textFieldExpression><![CDATA["$" +new java.text.DecimalFormat("#,##0.00").format($V{sumaCostoTotal})]]></textFieldExpression>
 							</textField>
 						</jr:tableFooter>
 						<jr:columnHeader style="Table 3_CH" height="30" rowSpan="1">
@@ -491,11 +491,14 @@ where emp.ID_EMM_FK=$P{Parametro}]]>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 3_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="50" height="30" uuid="e73378d2-097d-4ea2-be68-60b98258bfdc"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<reportElement x="0" y="0" width="50" height="30" uuid="6afc84e0-dd7e-407d-aa5e-ff2495c61635"/>
+								<box>
+									<bottomPen lineWidth="1.0"/>
+								</box>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="7"/>
 								</textElement>
-								<textFieldExpression><![CDATA["$"+new Double( $V{costoTotal}.doubleValue() * $F{KILOS_TOTALES}.doubleValue() )]]></textFieldExpression>
+								<textFieldExpression><![CDATA["$" +new java.text.DecimalFormat("#,##0.00").format($F{TOTAL})]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>

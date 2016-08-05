@@ -26,7 +26,7 @@ public interface IfaceAbonoCredito {
     
     public ArrayList<AbonoCredito> getByIdCredito(BigDecimal idCreditoFk);
     
-    public ArrayList<AbonoCredito> getChequesPendientes(Date fechaInicio, Date fechaFin);
+    public ArrayList<AbonoCredito> getChequesPendientes(Date fechaInicio, Date fechaFin,BigDecimal idSucursal);
     
     public AbonoCredito getById(BigDecimal idAbonoCredito);
     

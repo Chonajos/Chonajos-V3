@@ -20,43 +20,54 @@
                     <div class="form-group" align="right">
                         <p:commandButton value="Buscar" update=":formContent" ajax="true" action="#{beanHistEntMenudeo.buscar()}"/>
                     </div>
-                    <div class="col-lg-12 col-md-4 col-sm-12 col-xs-12 ">
+                    <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 ">
                         <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-12 col-md-4 col-sm-4 col-xs-12"  for="sucursalFiltro" value ="Sucursal:" rendered="#{beanHistEntMenudeo.viewEstate =='init'}"/> 
-                            <h:selectOneMenu  id="sucursalFiltro" class=" col-lg-12 col-md-8 col-sm-8 col-xs-12" value="#{beanHistEntMenudeo.data.idSucursalFk}" rendered="#{beanHistEntMenudeo.viewEstate =='init'}" disabled="#{beanHistEntMenudeo.usuario.perId != 1}">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="sucursalFiltro" value ="Sucursal:" rendered="#{beanHistEntMenudeo.viewEstate =='init'}"/> 
+                            <h:selectOneMenu  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanHistEntMenudeo.data.idSucursalFk}" rendered="#{beanHistEntMenudeo.viewEstate =='init'}" disabled="#{beanHistEntMenudeo.usuario.perId != 1}">
                                 <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="" />
                                 <f:selectItems value="#{beanHistEntMenudeo.listaSucursales}" var="sucursal" itemLabel="#{sucursal.nombreSucursal}" itemValue="#{sucursal.idSucursalPk}"/>
                                 <p:ajax event="change" listener="#{beanHistEntMenudeo.getEntradaProductoByIntervalDate}" process="@this" update=":formContent:table"/>
                             </h:selectOneMenu>
                         </div>
-                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-12 col-md-5 col-sm-4 col-xs-12"  for="selectFiltro" value ="Consulta pesonalizada:" rendered="#{beanHistEntMenudeo.viewEstate =='init'}"/> 
-                            <h:selectOneMenu  id="selectFiltro" class="col-lg-12 col-md-7 col-sm-8 col-xs-12" value="#{beanHistEntMenudeo.filtro}" rendered="#{beanHistEntMenudeo.viewEstate =='init'}">
-                                <f:selectItem itemLabel="Consulta por Fecha" itemValue="-1" />
+                        <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-6 col-md-5 col-sm-4 col-xs-12 "  for="selectFiltro" value ="Fecha:" rendered="#{beanHistEntMenudeo.viewEstate =='init'}"/> 
+                            <h:selectOneMenu  id="selectFiltro" class="col-lg-6 col-md-7 col-sm-8 col-xs-12" value="#{beanHistEntMenudeo.filtro}" rendered="#{beanHistEntMenudeo.viewEstate =='init'}">
+                                <f:selectItem itemLabel="Selecciona" itemValue="-1" />
                                 <f:selectItem itemLabel="Día" itemValue="1"/>
                                 <f:selectItem itemLabel="Mes" itemValue="2"/>
                                 <f:selectItem itemLabel="Año" itemValue="3"/>
                                 <p:ajax event="change" update=":formContent:calendarInicio formContent:calendarFin" listener="#{beanHistEntMenudeo.verificarCombo()}"/>
                             </h:selectOneMenu>
                         </div>
-                        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                            <p:outputLabel class="col-lg-12 col-md-4 col-sm-4 col-xs-12 "  for="calendarInicio" value ="Fecha de Inicio:" rendered="#{beanHistEntMenudeo.viewEstate =='init'}"/> 
-                            <p:calendar disabled="#{beanHistEntMenudeo.enableCalendar}" id="calendarInicio" class="col-lg-12 col-md-8 col-sm-8 col-xs-12 calendario alignRight" navigator="true" placeholder="dd/mm/yyyy"
+                        <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12 alignLeft "  for="calendarInicio" value ="Fecha de Inicio:" rendered="#{beanHistEntMenudeo.viewEstate =='init'}"/> 
+                            <p:calendar disabled="#{beanHistEntMenudeo.enableCalendar}" id="calendarInicio" 
+                                        class="col-lg-4 col-md-8 col-sm-8 col-xs-12 
+                                        calendario alignRight" navigator="true" placeholder="dd/mm/yyyy"
                                         value="#{beanHistEntMenudeo.data.fechaFiltroInicio}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button" rendered="#{beanHistEntMenudeo.viewEstate =='init'}">
                               
                             </p:calendar>
                         </div>
-                        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 ">
-                            <p:outputLabel class="col-lg-12 col-md-4 col-sm-4 col-xs-12 "  for="calendarFin" value ="Fecha de Fin:" rendered="#{beanHistEntMenudeo.viewEstate =='init'}"/> 
-                            <p:calendar disabled="#{beanHistEntMenudeo.enableCalendar}" id="calendarFin" class="col-lg-12 col-md-8 col-sm-8 col-xs-12 calendario alignRight" navigator="true" placeholder="dd/mm/yyyy"
+                        <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12 ">
+                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12 " 
+                                           for="calendarFin" value ="Fecha de Fin:" 
+                                           rendered="#{beanHistEntMenudeo.viewEstate =='init'}"/> 
+                            <p:calendar disabled="#{beanHistEntMenudeo.enableCalendar}" 
+                                        id="calendarFin" class="col-lg-6 col-md-8 col-sm-8 
+                                        col-xs-12 calendario alignRight" navigator="true" placeholder="dd/mm/yyyy"
                                         value="#{beanHistEntMenudeo.data.fechaFiltroFin}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button" rendered="#{beanHistEntMenudeo.viewEstate =='init'}">
                                
                             </p:calendar>
                         </div>
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-12 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="autocompletePoducto" value ="Producto:" /> 
-                            <p:autoComplete  placeholder="Seleccione un Producto" id="autocompletePoducto"  required="false" requiredMessage="Ingresa un valor para el campo Producto." styleClass="autocomplete-input-text-media"
-                                             value="#{beanHistEntMenudeo.subProducto}" completeMethod="#{beanHistEntMenudeo.autoComplete}" forceSelection="true" var="producto"  inputStyle="width: 190px"
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignRight"  for="autocompletePoducto" 
+                                           value ="Productoss:" /> 
+                            <p:autoComplete  placeholder="Seleccione un Producto" id="autocompletePoducto"  
+                                             required="false" requiredMessage="Ingresa un valor para el campo Producto."
+                                             styleClass="autocomplete-input-text-media"
+                                             value="#{beanHistEntMenudeo.subProducto}" 
+                                             completeMethod="#{beanHistEntMenudeo.autoComplete}" 
+                                             forceSelection="true" var="producto"  inputStyle="width: 180px"
                                              itemLabel="#{producto.nombreSubproducto}"
                                              itemValue="#{producto.idSubproductoPk}" converter="#{productoConverter}">
                                 <p:ajax event="itemSelect" update="@this"/>
@@ -67,11 +78,16 @@
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <p:dataTable id="table" var="model"
-                                     rowIndexVar="rowIndex" value="#{beanHistEntMenudeo.lstEntradaMercancia}" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." rendered="#{beanHistEntMenudeo.viewEstate =='init'}">
+                                     rowIndexVar="rowIndex" 
+                                     value="#{beanHistEntMenudeo.lstEntradaMercancia}" 
+                                     scrollable="true"
+                                     scrollHeight="300" styleClass="ui-datatable-hor-scroll" 
+                                     emptyMessage="No se encontraron Registros." 
+                                     rendered="#{beanHistEntMenudeo.viewEstate =='init'}">
                             <p:column style="width:16px">
                                 <p:rowToggler />
                             </p:column>
-                            <p:column headerText="Folio" width="90px;" class="alignCenter">
+                            <p:column headerText="Folios" width="90px;" class="alignCenter">
                                 <h:outputText value="#{model.folio}" />
                             </p:column>
                             <p:column headerText="Fecha" width="90px;" class="alignCenter">
