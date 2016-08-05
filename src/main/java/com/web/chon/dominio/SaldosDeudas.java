@@ -41,6 +41,12 @@ public class SaldosDeudas implements Serializable {
     private BigDecimal statusFechaProxima;
     private BigDecimal chequesPorCobrar;
 
+    //Datos para consula de Creditos
+    private int numeroTelefono;
+    private String nombreCompleto;
+    private String correo;
+    private int dias;
+
     public void reset() {
         folioCredito = null;
         folioVenta = null;
@@ -64,14 +70,18 @@ public class SaldosDeudas implements Serializable {
         statusAcuenta = null;
         minimoPago = null;
         numeroPagos = null;
-        statusFechaProxima=null;
-        chequesPorCobrar=null;
+        statusFechaProxima = null;
+        chequesPorCobrar = null;
+        numeroTelefono = 0;
+        nombreCompleto = null;
+        correo = null;
+        dias = 0;
 
     }
 
     @Override
     public String toString() {
-        return "SaldosDeudas{" + "folioCredito=" + folioCredito + ", folioVenta=" + folioVenta + ", montoTotal=" + montoTotal + ", totalAbonado=" + totalAbonado + ", fechaVenta=" + fechaVenta + ", montoAbonar=" + montoAbonar + ", fechaProximaAbonar=" + fechaProximaAbonar + ", periodo=" + periodo + ", plazo=" + plazo + ", periodosAtraso=" + periodosAtraso + ", diasAtraso=" + diasAtraso + ", saldoDeudor=" + saldoDeudor + ", saldoAtrasado=" + saldoAtrasado + ", idEstatus=" + idEstatus + ", nombreStatus=" + nombreStatus + ", saldoTotal=" + saldoTotal + ", tipoCredito=" + tipoCredito + ", saldoLiquidar=" + saldoLiquidar + ", saldoACuenta=" + saldoACuenta + ", statusAcuenta=" + statusAcuenta + ", minimoPago=" + minimoPago + ", numeroPagos=" + numeroPagos + '}';
+        return "SaldosDeudas{" + "folioCredito=" + folioCredito + ", folioVenta=" + folioVenta + ", montoTotal=" + montoTotal + ", totalAbonado=" + totalAbonado + ", fechaVenta=" + fechaVenta + ", montoAbonar=" + montoAbonar + ", fechaProximaAbonar=" + fechaProximaAbonar + ", periodo=" + periodo + ", plazo=" + plazo + ", periodosAtraso=" + periodosAtraso + ", diasAtraso=" + diasAtraso + ", saldoDeudor=" + saldoDeudor + ", saldoAtrasado=" + saldoAtrasado + ", idEstatus=" + idEstatus + ", nombreStatus=" + nombreStatus + ", saldoTotal=" + saldoTotal + ", tipoCredito=" + tipoCredito + ", saldoLiquidar=" + saldoLiquidar + ", saldoACuenta=" + saldoACuenta + ", statusAcuenta=" + statusAcuenta + ", minimoPago=" + minimoPago + ", numeroPagos=" + numeroPagos + ", statusFechaProxima=" + statusFechaProxima + ", chequesPorCobrar=" + chequesPorCobrar + ", numeroTelefono=" + numeroTelefono + ", nombreCompleto=" + nombreCompleto + ", correo=" + correo + '}';
     }
 
     public BigDecimal getChequesPorCobrar() {
@@ -82,7 +92,6 @@ public class SaldosDeudas implements Serializable {
         this.chequesPorCobrar = chequesPorCobrar;
     }
 
-    
     public BigDecimal getNumeroPagos() {
         return numeroPagos;
     }
@@ -94,7 +103,6 @@ public class SaldosDeudas implements Serializable {
     public void setStatusFechaProxima(BigDecimal statusFechaProxima) {
         this.statusFechaProxima = statusFechaProxima;
     }
-    
 
     public void setNumeroPagos(BigDecimal numeroPagos) {
         this.numeroPagos = numeroPagos;
@@ -268,4 +276,37 @@ public class SaldosDeudas implements Serializable {
         this.saldoTotal = saldoTotal;
     }
 
+    public int getNumeroTelefono() {
+        return numeroTelefono;
+    }
+
+    public void setNumeroTelefono(int numeroTelefono) {
+        this.numeroTelefono = numeroTelefono;
+    }
+
+    public String getNombreCompleto() {
+        return nombreCompleto;
+    }
+
+    public void setNombreCompleto(String nombreCompleto) {
+        this.nombreCompleto = nombreCompleto;
+    }
+
+    public String getCorreo() {
+        return correo;
+    }
+
+    public void setCorreo(String correo) {
+        this.correo = correo;
+    }
+
+    public int getDias() {
+        return dias;
+    }
+
+    public void setDias(int dias) {
+        this.dias = dias;
+    }
+
+    
 }

@@ -15,13 +15,13 @@
         <p:messages id="messages"   showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
         <h:form id="formContent">
 
-            <p:panel>
-                <div class="container-fluid">
-                    <div class="form-group">
+            <p:panel style="padding: 0px">
+                <div class="container-fluid" style="padding: 0px">
+                    <div class="form-group" style="padding: 0px">
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                             <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
                                 <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="comboFiltro" value ="Filtro:" /> 
-                                <h:selectOneMenu  id="comboFiltro" class="col-lg-8 col-md-8 col-sm-8 col-xs-12 " value="#{beanConsultaCredito.abono.idtipoAbonoFk}" >
+                                <h:selectOneMenu  id="comboFiltro" class="col-lg-8 col-md-8 col-sm-8 col-xs-12 " value="#{beanConsultaCredito.numFiltro}" >
                                     <f:selectItem  itemLabel="Preventiva" itemValue="1"/>
                                     <f:selectItem  itemLabel="Atrasada" itemValue="2"/>
                                     <f:selectItem  itemLabel="Vencida" itemValue="3"/>
@@ -30,79 +30,83 @@
                             </div>
                             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-6 form-group">
                                 <p:outputLabel class="col-lg-5 col-md-6 col-sm-6 col-xs-12  "  for="txtNumero" value ="N°. dias de :" /> 
-                                <p:inputText id="txtNumero" class=" col-lg-6 col-md-6 col-sm-6 col-xs-12 " value="#{beanConsultaCredito.numFiltro}">
+                                <p:inputText id="txtNumero" class=" col-lg-6 col-md-6 col-sm-6 col-xs-12 " value="#{beanConsultaCredito.numDias}">
                                 </p:inputText>
                             </div>
                             <div class="col-lg-7 col-md-4 col-sm-4 col-xs-12 alignRight">
-                                <p:commandButton value="Buscar" actionListener="#{beanConsultaCredito.consultaCredito()}"/>
+                                <p:commandButton value="Buscar" update="table" actionListener="#{beanConsultaCredito.consultaCredito()}"/>
                             </div>
                         </div>
 
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12   ">
-                            <p:dataTable var="model" value="#{beanConsultaCredito.modelo}" scrollable="true" scrollHeight="150" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron registros.">
-                                <p:column headerText="Folio" width="10px;" class="alignCenter">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding: 0px">
+                            <p:dataTable id="table" var="model" style="width:100%;" value="#{beanConsultaCredito.modelo}"  scrollable="true"  emptyMessage="No se encontraron registros.">
+                                <p:column headerText="Folio" width="6%" class="alignCenter">
                                     <h:outputText value="#{model.folioCredito}" />
                                 </p:column>
-                                <p:column headerText="Fecha de Venta" width="30px;" class="alignCenter">
+                                <p:column headerText="Cliente" width="10%;" class="alignLeft">
+                                    <h:outputText value="#{model.nombreCompleto}" />
+                                </p:column>
+                                <p:column headerText="Teléfono" width="10%;" class="alignLeft">
+                                    <h:outputText value="#{model.numeroTelefono}" />
+                                </p:column>
+                                <p:column headerText="Correo" width="18%;" class="alignLeft">
+                                    <h:outputText value="#{model.correo}" />
+                                </p:column>
+                                <p:column headerText="Fecha de Venta" width="10%;" class="alignCenter">
                                     <h:outputText value="#{model.fechaVenta}" >                             
                                         <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
                                     </h:outputText>
                                 </p:column>
-                                <p:column headerText="Venta" width="15px;" class="alignRight">
-                                    <h:outputText value="#{model.saldoTotal}">
-                                        <f:convertNumber type="currency" currencySymbol="$" />
-                                    </h:outputText>
-                                </p:column>
-                                <p:column headerText="Enganche a Cuenta" width="25px;" class="#{model.statusAcuenta eq 1 ?'statusActivo':'statusInactivo'} alignRight">
-                                    <h:outputText value="#{model.saldoACuenta}"> 
+                                <p:column headerText="Venta" width="10%;" class="alignRight">
+                                    <h:outputText value="#{model.saldoTotal}"> 
                                         <f:convertNumber type="currency" currencySymbol="$" />
                                     </h:outputText>
                                 </p:column>
 
-                                <p:column headerText="N° Pagos" width="20px;" class="alignCenter">
+                                <p:column headerText="N° Pagos" width="9%;" class="alignCenter">
                                     <h:outputText value="#{model.numeroPagos}" />
                                 </p:column>
-                                <p:column headerText="Dias" width="8px;" class="alignCenter">
+                                <p:column headerText="Dias" width="5%" class="alignCenter">
                                     <h:outputText value="#{model.plazo}" />
                                 </p:column>
-                                <p:column headerText="Importe de Abono" width="30px;" class="alignRight">
+                                <p:column headerText="Importe de Abono" width="10%;" class="alignRight">
                                     <h:outputText value="#{model.montoAbonar}"> 
                                         <f:convertNumber type="currency" currencySymbol="$" />
                                     </h:outputText>
                                 </p:column>
 
-                                <p:column headerText="Total Abonado" width="25px;" class="alignRight">
+                                <p:column headerText="Total Abonado" width="9%" class="alignRight">
                                     <h:outputText value="#{model.totalAbonado}"> 
                                         <f:convertNumber type="currency" currencySymbol="$" />
                                     </h:outputText>
                                 </p:column>
-                                <p:column headerText="Cheques no Cobrados" width="35px;" class="alignRight">
-                                    <h:outputText value="#{model.chequesPorCobrar}"> 
-                                        <f:convertNumber type="currency" currencySymbol="$" />
-                                    </h:outputText>
-                                </p:column>
+                  
 
-                                <p:column headerText="Pagos Atrasados" width="30px;" class="alignRight">
+                                <p:column headerText="Pagos Atrasados" width="9%;" class="alignRight">
                                     <h:outputText value="#{model.periodosAtraso}"> 
                                     </h:outputText>
                                 </p:column>
-                                <p:column headerText="Saldo Atrasado" width="40px;" class="alignRight">
+                                    <p:column headerText="Dias de atraso" width="9%;" class="alignRight">
+                                    <h:outputText value="#{model.periodosAtraso}"> 
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="Saldo Atrasado" width="8%;" class="alignRight">
                                     <h:outputText value="#{model.saldoAtrasado}"> 
                                         <f:convertNumber type="currency" currencySymbol="$" />
                                     </h:outputText>
                                 </p:column>
-                                <p:column headerText="Fecha de Próximo Pago" width="40px;" class="#{model.statusFechaProxima eq 1 ? 'statusPedido': (model.statusFechaProxima eq 2 ? 'statusPagado':(model.statusFechaProxima eq 3 ? 'statusEntregado':'statusCancelado'))}  alignCenter">
+                                <p:column headerText="Fecha de Próximo Pago" width="10%;" class="#{model.statusFechaProxima eq 1 ? 'statusPedido': (model.statusFechaProxima eq 2 ? 'statusPagado':(model.statusFechaProxima eq 3 ? 'statusEntregado':'statusCancelado'))}  alignCenter">
                                     <h:outputText value="#{model.fechaProximaAbonar}"> 
                                         <f:convertDateTime pattern="dd/MM/yyyy"/>
                                     </h:outputText>
                                 </p:column>
-                                <p:column headerText="Pago Requerido" width="40px;" class="alignRight">
+                                <p:column headerText="Pago Requerido" width="9%;" class="alignRight">
                                     <h:outputText value="#{model.minimoPago}"> 
                                         <f:convertNumber type="currency" currencySymbol="$" />
                                     </h:outputText>
                                 </p:column>
 
-                                <p:column headerText="Saldo a Liquidar" width="40px;" class="alignRight">
+                                <p:column headerText="Saldo a Liquidar" width="9%;" class="alignRight">
                                     <h:outputText value="#{model.saldoLiquidar}"> 
                                         <f:convertNumber type="currency" currencySymbol="$" />
                                     </h:outputText>

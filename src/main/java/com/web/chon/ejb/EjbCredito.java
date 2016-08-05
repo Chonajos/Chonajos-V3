@@ -246,6 +246,7 @@ public class EjbCredito implements NegocioCredito {
             return query.getResultList();
 
         } catch (Exception ex) {
+            System.out.println("error >"+ex.getMessage());
             Logger.getLogger(EjbCredito.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
