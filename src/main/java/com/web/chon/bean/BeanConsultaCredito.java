@@ -99,8 +99,9 @@ public class BeanConsultaCredito implements Serializable {
     private String number;
     private String rutaPDF;
     private String pathFileJasper = "C:/Users/Juan/Documents/NetBeansProjects/Chonajos-V2/ticket.jasper";
-    
+
     private int numFiltro;
+    private int numDias;
 
     //------------variables para generar el ticket----------//
     //---Constantes---//
@@ -217,19 +218,7 @@ public class BeanConsultaCredito implements Serializable {
     }
 
     public void consultaCredito() {
-        saldoParaLiquidar = new BigDecimal(0);
-
-        cliente = ifaceCatCliente.getCreditoClienteByIdCliente(cliente.getId_cliente());
-        if (cliente != null && cliente.getId_cliente() != null) {
-            modelo = ifaceCredito.getCreditosActivos(cliente.getId_cliente());
-            for (SaldosDeudas sd : modelo) {
-                saldoParaLiquidar = saldoParaLiquidar.add(sd.getSaldoLiquidar(), MathContext.UNLIMITED);
-            }
-        } else {
-            JsfUtil.addWarnMessage("El cliente no cuenta con credito");
-            modelo = new ArrayList<SaldosDeudas>();
-            cliente = new Cliente();
-        }
+        modelo = ifaceCredito.getCreditosByEstatus(numFiltro, numDias);
 
     }
 
@@ -489,5 +478,12 @@ public class BeanConsultaCredito implements Serializable {
         this.numFiltro = numFiltro;
     }
 
-    
+    public int getNumDias() {
+        return numDias;
+    }
+
+    public void setNumDias(int numDias) {
+        this.numDias = numDias;
+    }
+
 }

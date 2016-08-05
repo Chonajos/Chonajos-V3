@@ -30,5 +30,12 @@ public interface IfaceCredito {
     
     public int insert(Credito credito);
     
+    /**
+     * Obtiene creditos por medio de su estatus(Vencido = 3, Atrazado = 2,Preventivo =1)
+     * @param estatus
+     * @return ArrayList<SaldosDeudas>
+     */
+    public ArrayList<SaldosDeudas> getCreditosByEstatus(int estatus,int dias);
+    
     
 }
