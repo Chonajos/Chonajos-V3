@@ -14,33 +14,33 @@
         </div>
         
         <h:form id="formContent">
-            <p:confirmDialog   global="true" showEffect="fade" hideEffect="fade">
+            <div class="form-group" align="right">
+                        <p:commandButton value="Buscar" update=":formContent" ajax="true" action="#{beanRelacionOperaciones.buscar()}"/>
+                    </div>
+           <!-- <p:confirmDialog   global="true" showEffect="fade" hideEffect="fade">
             <div class="alignCenter">
 
                 <p:outputLabel   for="txtcomentarios" value ="Comentarios:" /> 
-                <p:inputText id="txtcomentarios"  value="#{beanRelacionOperaciones.data.comentarioCancel}" required="true">
-                <p:ajax event="change" update="@this" listener="#{beanRelacionOperaciones.addComent()}" ></p:ajax>
-                <p:ajax event="blur" update="@this" listener="#{beanRelacionOperaciones.addComent()}"></p:ajax>
+                <p:inputText id="txtcomentarios"  value="{beanRelacionOperaciones.data.comentarioCancel}" required="true">
+                <p:ajax event="change" update="@this" listener="{beanRelacionOperaciones.addComent()}" ></p:ajax>
+                <p:ajax event="blur" update="@this" listener="{beanRelacionOperaciones.addComent()}"></p:ajax>
                 </p:inputText>
 
                 <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
                 <p:commandButton  value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
                 
             </div>
-        </p:confirmDialog>
+        </p:confirmDialog>-->
             <p:messages id="messages" showDetail="true" showSummary="false" showIcon="false" autoUpdate="true" closable="true" />
             <p:growl id="messagess" showDetail="true" life="2000" />
             <p:panel>
                 <div class="container-fluid">
-                    <div class="form-group" align="right">
-                        <p:commandButton value="Atras" update=":formContent" ajax="true" action="#{beanRelacionOperaciones.cancel}" rendered="#{beanRelacionOperaciones.viewEstate =='searchById'}"/>
-                    </div>
                     <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
                         <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="sucursalFiltro" value ="Sucursal:" rendered="#{beanRelacionOperaciones.viewEstate =='init'}" /> 
-                        <h:selectOneMenu  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanRelacionOperaciones.data.idSucursal}" rendered="#{beanRelacionOperaciones.viewEstate =='init'}" disabled="#{beanRelacionOperaciones.usuario.perId != 1}">
+                        <h:selectOneMenu  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanRelacionOperaciones.idSucursal}" rendered="#{beanRelacionOperaciones.viewEstate =='init'}" disabled="#{beanRelacionOperaciones.usuario.perId != 1}">
                             <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="" />
                             <f:selectItems value="#{beanRelacionOperaciones.listaSucursales}" var="sucursalita" itemLabel="#{sucursalita.nombreSucursal}" itemValue="#{sucursalita.idSucursalPk}"/>
-                            <p:ajax event="change" listener="#{beanRelacionOperaciones.printStatus()}" update=":formContent:table formContent:calendarInicio formContent:calendarFin :formContent:selectFiltro"/>
+                            <!--<p:ajax event="change" listener="{beanRelacionOperaciones.printStatus()}" update=":formContent:table formContent:calendarInicio formContent:calendarFin :formContent:selectFiltro"/>-->
                         </h:selectOneMenu>
                     </div>
                     <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
@@ -50,42 +50,46 @@
                             <f:selectItem itemLabel="Día" itemValue="1"/>
                             <f:selectItem itemLabel="Mes" itemValue="2"/>
                             <f:selectItem itemLabel="Año" itemValue="3"/>
-                            <p:ajax event="change" update=":formContent:table formContent:calendarInicio formContent:calendarFin" listener="#{beanRelacionOperaciones.getVentasByIntervalDate()}"/>
+                           <!-- <p:ajax event="change" update=":formContent:table formContent:calendarInicio formContent:calendarFin" listener="{beanRelacionOperaciones.getVentasByIntervalDate()}"/>-->
                         </h:selectOneMenu>
                     </div>
 
                     <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 form-group">
                         <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="calendarInicio" value ="Fecha de Inicio:" rendered="#{beanRelacionOperaciones.viewEstate =='init'}"/> 
                         <p:calendar id="calendarInicio" class="col-lg-6 col-md-8 col-sm-8 col-xs-12 calendario" navigator="true" placeholder="dd/mm/yyyy"
-                                    value="#{beanRelacionOperaciones.data.fechaFiltroInicio}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button" rendered="#{beanRelacionOperaciones.viewEstate =='init'}">
-                            <p:ajax   event="dateSelect"
-                                      listener="#{beanRelacionOperaciones.setFechaInicioFin(4)}"
-                                      update=":formContent:table formContent:selectFiltro" />
+                                    value="#{beanRelacionOperaciones.fechaFiltroInicio}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button" rendered="#{beanRelacionOperaciones.viewEstate =='init'}">
+                           <!-- <p:ajax   event="dateSelect" listener="{beanRelacionOperaciones.setFechaInicioFin(4)}"
+                                      update=":formContent:table formContent:selectFiltro" />-->
                         </p:calendar>
                     </div>
                     <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
                         <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="calendarFin" value ="Fecha de Fin:" rendered="#{beanRelacionOperaciones.viewEstate =='init'}"/> 
                         <p:calendar id="calendarFin" class="col-lg-6 col-md-8 col-sm-8 col-xs-12 calendario" navigator="true" placeholder="dd/mm/yyyy"
-                                    value="#{beanRelacionOperaciones.data.fechaFiltroFin}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button" rendered="#{beanRelacionOperaciones.viewEstate =='init'}">
-                            <p:ajax event="dateSelect"
-                                    listener="#{beanRelacionOperaciones.setFechaInicioFin(4)}"
-                                    update=":formContent:table formContent:selectFiltro"  />
+                                    value="#{beanRelacionOperaciones.fechaFiltroFin}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button" rendered="#{beanRelacionOperaciones.viewEstate =='init'}">
+                             <!--<p:ajax event="dateSelect"
+                                    listener="{beanRelacionOperaciones.setFechaInicioFin(4)}"
+                                    update=":formContent:table formContent:selectFiltro"  />-->
                         </p:calendar>
                     </div>
 
                     <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
                         <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="statusFiltro" value ="Status de Venta:" rendered="#{beanRelacionOperaciones.viewEstate =='init'}" /> 
-                        <h:selectOneMenu  id="statusFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanRelacionOperaciones.data.idStatus}" rendered="#{beanRelacionOperaciones.viewEstate =='init'}" >
+                        <h:selectOneMenu  id="statusFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanRelacionOperaciones.idStatusVenta}" rendered="#{beanRelacionOperaciones.viewEstate =='init'}" >
                             <f:selectItem itemLabel="Selecciona una status de venta" itemValue="" />
                             <f:selectItems value="#{beanRelacionOperaciones.listaStatusVenta}" var="staditosVenta" itemLabel="#{staditosVenta.status}" itemValue="#{staditosVenta.id_status_pk}"/>
-                            <p:ajax event="change" listener="#{beanRelacionOperaciones.printStatus()}" update=":formContent:table" />
+                            <!--<p:ajax event="change" listener="{beanRelacionOperaciones.printStatus()}" update=":formContent:table" />-->
                         </h:selectOneMenu>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <p:dataTable id="table" var="model" value="#{beanRelacionOperaciones.model}" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." rendered="#{beanRelacionOperaciones.viewEstate =='init'}">
+                        <p:dataTable id="table" var="model" 
+                                     value="#{beanRelacionOperaciones.listaVentas}" 
+                                      scrollable="true"
+                                     scrollHeight="300" styleClass="ui-datatable-hor-scroll" 
+                                     emptyMessage="No se encontraron Registros" 
+                                     rendered="#{beanRelacionOperaciones.viewEstate =='init'}">
 
-                            <p:column headerText="Folio sucursal" class="#{model.idStatus eq 1 ? 'statusPedido': (model.idStatus eq 2 ? 'statusPagado':(model.idStatus eq 3 ? 'statusEntregado':'statusCancelado'))}  alignCenter"  width="60px;" >
-                                <h:outputText value="#{model.folioSucursal}" />
+                            <p:column headerText="Folio sucursal" class="#{beanRelacionOperaciones.idStatusVenta eq 1 ? 'statusPedido': (beanRelacionOperaciones.idStatusVenta eq 2 ? 'statusPagado':(beanRelacionOperaciones.idStatusVenta eq 3 ? 'statusEntregado':'statusCancelado'))}  alignCenter"  width="60px;" >
+                                <h:outputText value="#{model.folio}" />
                             </p:column>
 
                             <p:column headerText="Fecha de venta" width="120px;" class="alignCenter">
@@ -109,22 +113,23 @@
                                     <f:convertNumber type="currency" currencySymbol="$" />
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Ver" width="60px;" class="alignCenter">
-                                <p:commandButton id="editar" ajax="true" process="@this" action="#{beanRelacionOperaciones.detallesVenta}" icon="ui-icon-search" styleClass="ui-priority-primary" update=":formContent">
-                                    <f:setPropertyActionListener value="#{model}" target="#{beanRelacionOperaciones.data}"/>
+                           <!-- <p:column headerText="Ver" width="60px;" class="alignCenter">
+                                <p:commandButton id="editar" ajax="true" process="@this" action="{beanRelacionOperaciones.detallesVenta}" icon="ui-icon-search" styleClass="ui-priority-primary" update=":formContent">
+                                    <f:setPropertyActionListener value="{model}" target="{beanRelacionOperaciones.data}"/>
                                 </p:commandButton>
                             </p:column>
                             <p:column headerText="Imprimir" width="60px;" class="alignCenter">
-                                <p:commandButton id="print" ajax="true" process="@this" action="#{beanRelacionOperaciones.imprimirVenta()}" icon="ui-icon-print" styleClass="ui-priority-primary" update=":formContent" oncomplete="window.frames.miFrame.print();">
-                                    <f:setPropertyActionListener value="#{model}" target="#{beanRelacionOperaciones.data}"/>
+                                <p:commandButton id="print" ajax="true" process="@this" action="{beanRelacionOperaciones.imprimirVenta()}" icon="ui-icon-print" styleClass="ui-priority-primary" update=":formContent" oncomplete="window.frames.miFrame.print();">
+                                    <f:setPropertyActionListener value="{model}" target="{beanRelacionOperaciones.data}"/>
                                 </p:commandButton>
                             </p:column>
                             <p:column headerText="Cancelar" width="60px;" class="alignCenter">
-                                <p:commandButton id="cancel" ajax="true" process="@this" action="#{beanRelacionOperaciones.cancelarVenta()}" icon="ui-icon-trash" styleClass="ui-priority-primary" update=":formContent">
-                                    <f:setPropertyActionListener value="#{model}" target="#{beanRelacionOperaciones.data}"/>
+                                <p:commandButton id="cancel" ajax="true" process="@this" action="{beanRelacionOperaciones.cancelarVenta()}" icon="ui-icon-trash" styleClass="ui-priority-primary" update=":formContent">
+                                    <f:setPropertyActionListener value="{model}" target="{beanRelacionOperaciones.data}"/>
                                     <p:confirm header="Confirmación" message="¿Estás seguro de cancelar la venta?" icon="ui-icon-alert"/>
                                 </p:commandButton>
                             </p:column>
+                           -->
                             <p:columnGroup type="footer">
                                 <p:column colspan="5" footerText="Total: " style="text-align:right"/>
                                 <p:column colspan="1" >
@@ -138,28 +143,28 @@
                             </p:columnGroup>
                         </p:dataTable>
 
-                        <p:dataTable rendered="#{beanRelacionOperaciones.viewEstate =='searchById'}" var="model" value="#{beanRelacionOperaciones.lstVenta}" styleClass="ui-datatable-hor-scroll"  emptyMessage="Productos.">
+                        <!--<p:dataTable rendered="{beanRelacionOperaciones.viewEstate =='searchById'}" var="model" value="{beanRelacionOperaciones.lstVenta}" styleClass="ui-datatable-hor-scroll"  emptyMessage="Productos.">
                             <p:column headerText="Productos" width="150px;" class="alignLeft">
-                                <h:outputText value="#{model.nombreSubproducto}" />
+                                <h:outputText value="{model.nombreSubproducto}" />
                             </p:column>
                             <p:column headerText="Empaque" width="100px;" class="alignCenter">
-                                <h:outputText value="#{model.nombreEmpaque}" />
+                                <h:outputText value="{model.nombreEmpaque}" />
                             </p:column>
                             <p:column headerText="Kilos" width="85px;" class="alignRight">
-                                <h:outputText value="#{model.cantidadEmpaque}" />
+                                <h:outputText value="{model.cantidadEmpaque}" />
                             </p:column>
                             <p:column headerText="Precio de venta" width="90px;" class="alignRight">
-                                <h:outputText value="#{model.precioProducto}">
+                                <h:outputText value="{model.precioProducto}">
                                     <f:convertNumber type="currency" currencySymbol="$" />
                                 </h:outputText>
                             </p:column>
                             <p:column headerText="Total" width="90px;" class="alignCenter">
-                                <h:outputText value="#{model.total}">
+                                <h:outputText value="{model.total}">
                                     <f:convertNumber type="currency" currencySymbol="$" />
                                 </h:outputText>
                             </p:column>
                             <p:column headerText="Status" width="90px;" class="alignCenter">
-                                <h:outputText value="#{model.nombreStatus}"> 
+                                <h:outputText value="{model.nombreStatus}"> 
                                 </h:outputText>
                             </p:column>
                             <p:columnGroup type="footer">
@@ -167,7 +172,7 @@
                                     <p:column colspan="4" style="text-align:right" footerText="Total de Venta:" />
                                     <p:column colspan="1">
                                         <f:facet name="footer">
-                                            <h:outputText value="#{beanRelacionOperaciones.totalVenta}">
+                                            <h:outputText value="{beanRelacionOperaciones.totalVenta}">
                                                 <f:convertNumber for="totalVenta" pattern="#,##0.00"/>
                                             </h:outputText>
                                         </f:facet>
@@ -175,10 +180,10 @@
                                     <p:column colspan="1" />
                                 </p:row>
                             </p:columnGroup>
-                        </p:dataTable>
+                        </p:dataTable>-->
                     </div>
                 </div>
-                <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanRelacionOperaciones.rutaPDF}"/>
+                <!--<iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="{beanRelacionOperaciones.rutaPDF}"/>-->
 
             </p:panel>
         </h:form>

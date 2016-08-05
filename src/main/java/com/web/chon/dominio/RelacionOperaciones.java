@@ -2,6 +2,7 @@ package com.web.chon.dominio;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -27,6 +28,7 @@ public class RelacionOperaciones implements Serializable {
     private int idStatus;
     private String comentarioCancel;
     private int folioSucursal;
+    private ArrayList<BuscaVenta> listaProductos;
 
 
     public RelacionOperaciones() {
@@ -167,6 +169,14 @@ public class RelacionOperaciones implements Serializable {
     @Override
     public String toString() {
         return "RelacionOperaciones{" + "idVentaPk=" + idVentaPk + ", fechaVenta=" + fechaVenta + ", fechaPromesaPago=" + fechaPromesaPago + ", idClienteFk=" + idClienteFk + ", idVendedorFk=" + idVendedorFk + ", nombreCliente=" + nombreCliente + ", nombreVendedor=" + nombreVendedor + ", totalVenta=" + totalVenta + ", estatus=" + estatus + ", fechaPago=" + fechaPago + ", fechaFiltroInicio=" + fechaFiltroInicio + ", fechaFiltroFin=" + fechaFiltroFin + ", idSucursal=" + idSucursal + ", idStatus=" + idStatus + ", comentarioCancel=" + comentarioCancel + ", folioSucursal=" + folioSucursal + '}';
+    }
+
+    public ArrayList<BuscaVenta> getListaProductos() {
+        return listaProductos;
+    }
+
+    public void setListaProductos(ArrayList<BuscaVenta> listaProductos) {
+        this.listaProductos = listaProductos;
     }
       
 }

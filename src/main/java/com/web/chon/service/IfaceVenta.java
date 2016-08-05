@@ -1,7 +1,5 @@
 
 package com.web.chon.service;
-
-import com.web.chon.dominio.RelacionOperaciones;
 import com.web.chon.dominio.Venta;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -33,7 +31,7 @@ public interface IfaceVenta {
      * @param fechaFin
      * @return 
      */
-    public ArrayList<RelacionOperaciones> getVentasByIntervalDate(Date fechaInicio, Date fechaFin,int idSucursal,int idStatusVenta);
+    public ArrayList<Venta> getVentasByIntervalDate(Date fechaInicio, Date fechaFin,BigDecimal idSucursal,BigDecimal idStatusVenta,String idproducto);
     
     
     /**

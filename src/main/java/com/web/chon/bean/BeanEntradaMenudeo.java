@@ -600,7 +600,7 @@ public class BeanEntradaMenudeo implements Serializable {
             byte[] bytes = outputStream.toByteArray();
 
             rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf", folio, idSucu);
-
+con.close();
         } catch (Exception exception) {
             System.out.println("Error >" + exception.getMessage());
             exception.getStackTrace();

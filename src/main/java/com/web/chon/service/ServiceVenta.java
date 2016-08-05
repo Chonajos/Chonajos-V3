@@ -49,26 +49,29 @@ public class ServiceVenta implements IfaceVenta {
     }
 
     @Override
-    public ArrayList<RelacionOperaciones> getVentasByIntervalDate(Date fechaInicio, Date fechaFin, int idSucursal, int idStatusVenta) {
+    public ArrayList<Venta> getVentasByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idStatusVenta,String idProducto) {
         getEjb();
-        ArrayList<RelacionOperaciones> lstVenta = new ArrayList<RelacionOperaciones>();
-        List<Object[]> lstObject = ejb.getVentasByInterval(TiempoUtil.getFechaDDMMYYYY(fechaInicio), TiempoUtil.getFechaDDMMYYYY(fechaFin), idSucursal, idStatusVenta);
-        for (Object[] obj : lstObject) {
+        ArrayList<Venta> lstVenta = new ArrayList<Venta>();
+        List<Object[]> lstObject = ejb.getVentasByInterval(TiempoUtil.getFechaDDMMYYYY(fechaInicio), TiempoUtil.getFechaDDMMYYYY(fechaFin), idSucursal, idStatusVenta,idProducto);
+        for (Object[] obj : lstObject) 
+        {
 
-            RelacionOperaciones venta = new RelacionOperaciones();
+            Venta venta = new Venta();
             venta.setIdVentaPk(new BigDecimal(obj[0].toString()));
             venta.setIdClienteFk(new BigDecimal(obj[1].toString()));
             venta.setIdVendedorFk(new BigDecimal(obj[2].toString()));
             venta.setFechaVenta((Date) obj[3]);
-            //System.out.println("Fecha: "+venta.getFechaVenta());
-            venta.setFechaPromesaPago(obj[4] == null ? null : (Date) obj[4]);
             venta.setIdStatus(Integer.parseInt(obj[5] == null ? "0" : obj[5].toString()));
-            venta.setFechaPago(obj[6] == null ? null : (Date) obj[6]);
-            venta.setIdSucursal(Integer.parseInt(obj[7] == null ? "0" : obj[7].toString()));
-            venta.setNombreCliente(obj[8].toString());
-            venta.setNombreVendedor(obj[9].toString());
-            venta.setTotalVenta(new BigDecimal(obj[10].toString()));
-            venta.setFolioSucursal(Integer.parseInt(obj[11] == null ? "0" : obj[11].toString()));
+       
+//            venta.setIdStatus(Integer.parseInt(obj[5] == null ? "0" : obj[5].toString()));
+//            venta.setFechaPago(obj[6] == null ? null : (Date) obj[6]);
+//            venta.setIdSucursal(Integer.parseInt(obj[7] == null ? "0" : obj[7].toString()));
+//            venta.setNombreCliente(obj[8].toString());
+//            venta.setNombreVendedor(obj[9].toString());
+//            venta.setTotalVenta(new BigDecimal(obj[10].toString()));
+//            venta.setFolioSucursal(Integer.parseInt(obj[11] == null ? "0" : obj[11].toString()));
+            
+            //aqui vamos a llamar para llenar los productos.
             lstVenta.add(venta);
         }
 

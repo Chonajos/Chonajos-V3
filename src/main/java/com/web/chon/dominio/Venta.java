@@ -23,8 +23,14 @@ public class Venta implements Serializable {
     private BigDecimal idClienteFk;
     private int idSucursal;
     private BigDecimal idVendedorFk;
-    private String status;
+    private String nombrestatus;
     private Date fechaPago;
+    private String nombreCliente;
+    private String nombreVendedor;
+    private BigDecimal totalVenta;
+    private BigDecimal folio;
+    private BigDecimal idStatusVenta;
+    
     private ArrayList<VentaProducto> lstVentaProducto;
 
     public Venta()
@@ -39,10 +45,6 @@ public class Venta implements Serializable {
     public void setIdSucursal(int idSucursal) {
         this.idSucursal = idSucursal;
     }
-
-   
-
-    
     
     public Venta(BigDecimal idVentaPk) {
         this.idVentaPk = idVentaPk;
@@ -96,13 +98,7 @@ public class Venta implements Serializable {
         this.lstVentaProducto = lstVentaProducto;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
+ 
 
     public Date getFechaPago() {
         return fechaPago;
@@ -112,10 +108,54 @@ public class Venta implements Serializable {
         this.fechaPago = fechaPago;
     }
 
-    @Override
-    public String toString() {
-        return "Venta{" + "idVentaPk=" + idVentaPk + ", fechaVenta=" + fechaVenta + ", fechaPromesaPago=" + fechaPromesaPago + ", idClienteFk=" + idClienteFk + ", idSucursal=" + idSucursal + ", idVendedorFk=" + idVendedorFk + ", status=" + status + ", fechaPago=" + fechaPago + ", lstVentaProducto=" + lstVentaProducto + '}';
+    public String getNombreCliente() {
+        return nombreCliente;
     }
+
+    public void setNombreCliente(String nombreCliente) {
+        this.nombreCliente = nombreCliente;
+    }
+
+    public String getNombreVendedor() {
+        return nombreVendedor;
+    }
+
+    public void setNombreVendedor(String nombreVendedor) {
+        this.nombreVendedor = nombreVendedor;
+    }
+
+    public BigDecimal getTotalVenta() {
+        return totalVenta;
+    }
+
+    public void setTotalVenta(BigDecimal totalVenta) {
+        this.totalVenta = totalVenta;
+    }
+
+    public BigDecimal getFolio() {
+        return folio;
+    }
+
+    public void setFolio(BigDecimal folio) {
+        this.folio = folio;
+    }
+
+    public String getNombrestatus() {
+        return nombrestatus;
+    }
+
+    public void setNombrestatus(String nombrestatus) {
+        this.nombrestatus = nombrestatus;
+    }
+
+    public BigDecimal getIdStatusVenta() {
+        return idStatusVenta;
+    }
+
+    public void setIdStatusVenta(BigDecimal idStatusVenta) {
+        this.idStatusVenta = idStatusVenta;
+    }
+    
     
   
     
