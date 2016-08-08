@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 import com.web.chon.service.IfaceAnalisisMercado;
 import com.web.chon.service.IfaceSubProducto;
 import com.web.chon.util.TiempoUtil;
+import java.math.RoundingMode;
 
 @Component
 @Scope("view")
@@ -96,8 +97,10 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
         setTitle("Análisis de Mercado");
         actionSearching();
 
-        chartLineByDias = null;
         chartBarByDias = null;
+        chartLineBMes = null;
+        chartBarByMes = null;
+        chartLineByDias = null;
         chartLineBySemana = null;
         chartBarBySemana = null;
 
@@ -380,6 +383,162 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
         return model;
     }
 
+    ///Mes
+    public void generateChartLineMes() {
+
+        chartLineBMes = initChartLineMes();
+        chartLineBMes.setSeriesColors("0404B4,088A08,81BEF7,D0F5A9,FF0040,FFFFFF");
+        chartLineBMes.setTitle("Análisis de Mercado por Mes");
+        chartLineBMes.setLegendPosition("nw");
+        chartLineBMes.setZoom(true);
+        chartLineBMes.setAnimate(true);
+        chartLineBMes.setShowPointLabels(true);
+        chartLineBMes.setBreakOnNull(true);
+        chartLineBMes.setDatatipFormat("%2$d");
+        chartLineBMes.setLegendCols(6);
+        chartLineBMes.getAxes().put(AxisType.X, new CategoryAxis("Mes"));
+        chartLineBMes.getAxis(AxisType.X).setTickAngle(90);
+
+        Axis yAxis = chartLineBMes.getAxis(AxisType.Y);
+
+        yAxis.setLabel("Toneladas");
+        yAxis.setMin(0);
+        yAxis.setTickInterval("150");
+        yAxis.setMax(maxChartValue);
+    }
+
+    private LineChartModel initChartLineMes() {
+
+        LineChartModel model = new LineChartModel();
+        ChartSeries toneladas = new ChartSeries();
+        ChartSeries precio = new ChartSeries();
+
+        ChartSeries toneladasAnt = new ChartSeries();
+        ChartSeries precioAnt = new ChartSeries();
+        ChartSeries remanente = new ChartSeries();
+        ChartSeries salidaMercancia = new ChartSeries();
+
+        BigDecimal zero = new BigDecimal(0);
+        
+        toneladas.setLabel("Toneladas");
+        precio.setLabel("Precio");
+
+        toneladasAnt.setLabel("Toneladas Año Anterior");
+        precioAnt.setLabel("Precio Año Anterior");
+        remanente.setLabel("Remanente");
+        salidaMercancia.setLabel("Salida Mercancia");
+
+        for (AnalisisMercado dominio : lstEntradaMercanciaMes) {
+
+            if (maxChartValue < dominio.getCantidadToneladasAnterior().intValue()) {
+                maxChartValue = dominio.getCantidadToneladasAnterior().intValue();
+            }
+            if (maxChartValue < dominio.getCantidadToneladas().intValue()) {
+                maxChartValue = dominio.getCantidadToneladas().intValue();
+            }
+
+            toneladas.set(dominio.getDescripcionFiltro(), dominio.getCantidadToneladas());
+            precio.set(dominio.getDescripcionFiltro(), dominio.getPrecio());
+            toneladasAnt.set(dominio.getDescripcionFiltro(), dominio.getCantidadToneladasAnterior());
+            precioAnt.set(dominio.getDescripcionFiltro(), dominio.getPrecioAnterior());
+            remanente.set(dominio.getDescripcionFiltro(), dominio.getRemantePorSemana());
+            BigDecimal ventaDia = dominio.getCantidadToneladas().subtract(dominio.getRemantePorSemana());
+            ventaDia =ventaDia.equals(zero) ? ventaDia:ventaDia.divide(dominio.getDiasMes(),0,RoundingMode.UP);
+            salidaMercancia.set(dominio.getDescripcionFiltro(), ventaDia);
+
+        }
+        maxChartValue += 300;
+        
+        model.addSeries(toneladas);
+        model.addSeries(precio);
+        model.addSeries(toneladasAnt);
+        model.addSeries(precioAnt);
+        model.addSeries(remanente);
+        model.addSeries(salidaMercancia);
+
+        return model;
+    }
+
+    public void generateChartBarMes() {
+
+        chartBarByMes = initChartBarMes();
+        chartBarByMes.setSeriesColors("0404B4,088A08,81BEF7,D0F5A9,FF0040,FFFFFF");
+        chartBarByMes.setTitle("Análisis de Mercado por Mes");
+        chartBarByMes.setLegendPosition("nw");
+        chartBarByMes.setZoom(true);
+        chartBarByMes.setAnimate(true);
+        chartBarByMes.setShowPointLabels(true);
+
+        chartBarByMes.setDatatipFormat("%2$d");
+        chartBarByMes.setLegendCols(6);
+        chartBarByMes.getAxes().put(AxisType.X, new CategoryAxis("Mes"));
+        chartBarByMes.getAxis(AxisType.X).setTickAngle(90);
+
+        Axis yAxis = chartBarByMes.getAxis(AxisType.Y);
+
+        yAxis.setLabel("Toneladas");
+        yAxis.setMin(0);
+        yAxis.setTickInterval("150");
+        yAxis.setMax(maxChartValue);
+    }
+
+    private BarChartModel initChartBarMes() {
+
+        BarChartModel model = new BarChartModel();
+        ChartSeries toneladas = new ChartSeries();
+        ChartSeries precio = new ChartSeries();
+
+        BigDecimal zero = new BigDecimal(0);
+        
+        ChartSeries toneladasAnt = new ChartSeries();
+        ChartSeries precioAnt = new ChartSeries();
+        ChartSeries remanente = new ChartSeries();
+        ChartSeries salidaMercancia = new ChartSeries();
+
+        toneladas.setLabel("Toneladas");
+
+        precio.setLabel("Precio");
+
+        toneladasAnt.setLabel("Toneladas Año Anterior");
+        precioAnt.setLabel("Precio Año Anterior");
+        remanente.setLabel("Remanente");
+        salidaMercancia.setLabel("Salida Mercancia");
+        
+        maxChartValue = 300;
+        for (AnalisisMercado dominio : lstEntradaMercanciaMes) {
+
+            if (maxChartValue < dominio.getCantidadToneladasAnterior().intValue()) {
+                maxChartValue = dominio.getCantidadToneladasAnterior().intValue();
+            }
+            if (maxChartValue < dominio.getCantidadToneladas().intValue()) {
+                maxChartValue = dominio.getCantidadToneladas().intValue();
+            }
+
+            toneladas.set(dominio.getDescripcionFiltro(), dominio.getCantidadToneladas());
+            precio.set(dominio.getDescripcionFiltro(), dominio.getPrecio());
+            toneladasAnt.set(dominio.getDescripcionFiltro(), dominio.getCantidadToneladasAnterior());
+            precioAnt.set(dominio.getDescripcionFiltro(), dominio.getPrecioAnterior());
+            remanente.set(dominio.getDescripcionFiltro(), dominio.getRemantePorSemana());
+            
+            BigDecimal ventaDia = dominio.getCantidadToneladas().subtract(dominio.getRemantePorSemana());
+            ventaDia =ventaDia.equals(zero) ? ventaDia:ventaDia.divide(dominio.getDiasMes(),0,RoundingMode.UP);
+            
+            salidaMercancia.set(dominio.getDescripcionFiltro(), ventaDia);
+            salidaMercancia.set(dominio.getDescripcionFiltro(), dominio.getCantidadToneladas().subtract(dominio.getRemantePorSemana()));
+        }
+
+        maxChartValue += 300;
+
+        model.addSeries(toneladas);
+        model.addSeries(precio);
+        model.addSeries(toneladasAnt);
+        model.addSeries(precioAnt);
+        model.addSeries(remanente);
+        model.addSeries(salidaMercancia);
+
+        return model;
+    }
+
     public void filtroPorProducto() {
         try {
             int registrosMostrarDia = 8;
@@ -394,12 +553,15 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
             if (data.getIdProductoFk() != null) {
                 lstEntradaMercancia = ifaceEntradaProductoCentral.getEntradaMercanciaByFiltro(registrosMostrarDia, 1, filtroFechaInicio, data.getIdProductoFk());
                 lstEntradaMercanciaSemana = ifaceEntradaProductoCentral.getEntradaMercanciaByFiltro(registrosMostrarSemana, 2, filtroFechaInicio, data.getIdProductoFk());
-                lstEntradaMercanciaMes =ifaceEntradaProductoCentral.getEntradaMercanciaByFiltro(registrosMostrarMes, 3, filtroFechaInicio, data.getIdProductoFk());
+                lstEntradaMercanciaMes = ifaceEntradaProductoCentral.getEntradaMercanciaByFiltro(registrosMostrarMes, 3, filtroFechaInicio, data.getIdProductoFk());
+                System.out.println("3 bean");
 
                 generateChartLine();
                 generateChartBar();
                 generateChartBarSemana();
                 generateChartLineSemana();
+                generateChartLineMes();
+                generateChartBarMes();
             } else {
                 lstEntradaMercancia.clear();
                 lstEntradaMercanciaSemana.clear();
@@ -409,6 +571,8 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
                 chartBarByDias = null;
                 chartLineBySemana = null;
                 chartBarBySemana = null;
+                chartLineBMes = null;
+                chartBarByMes = null;
 
             }
 
@@ -578,7 +742,5 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
     public void setChartBarByMes(BarChartModel chartBarByMes) {
         this.chartBarByMes = chartBarByMes;
     }
-    
-    
 
 }

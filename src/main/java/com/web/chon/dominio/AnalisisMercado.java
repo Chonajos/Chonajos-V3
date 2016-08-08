@@ -21,6 +21,8 @@ public class AnalisisMercado extends ValueObject implements Serializable {
     private BigDecimal cantidadToneladasAnterior;
     private BigDecimal precioAnterior;
     private BigDecimal remantePorSemana;
+    private BigDecimal remantePorSemanaAnterior;
+    private BigDecimal diasMes;
 
     public BigDecimal getIdEntrada() {
         return idEntrada;
@@ -100,6 +102,23 @@ public class AnalisisMercado extends ValueObject implements Serializable {
         this.remantePorSemana = remantePorSemana;
     }
 
+    public BigDecimal getRemantePorSemanaAnterior() {
+        return remantePorSemanaAnterior;
+    }
+
+    public void setRemantePorSemanaAnterior(BigDecimal remantePorSemanaAnterior) {
+        this.remantePorSemanaAnterior = remantePorSemanaAnterior;
+    }
+
+    public BigDecimal getDiasMes() {
+        return diasMes;
+    }
+
+    public void setDiasMes(BigDecimal diasMes) {
+        this.diasMes = diasMes;
+    }
+
+
   
     @Override
     public void reset() {
@@ -111,6 +130,8 @@ public class AnalisisMercado extends ValueObject implements Serializable {
         cantidadToneladasAnterior = null;
         precioAnterior = null;
         idProductoFk = null;
+        remantePorSemanaAnterior = null;
+        diasMes = null;
 
     }
 

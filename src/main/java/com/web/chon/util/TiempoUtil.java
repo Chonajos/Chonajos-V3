@@ -1,5 +1,6 @@
 package com.web.chon.util;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -20,6 +21,7 @@ public class TiempoUtil {
     private static DateFormat formatoFechaDiaMesAnio = new SimpleDateFormat("dd/MM/yyyy");
     private static DateFormat formatoFechaDiaMesAnioDosDigitos = new SimpleDateFormat("dd/MM/yy");
     private static DateFormat formatFull = new SimpleDateFormat("EEEE dd 'de' MMMM 'del' yyyy");
+    private static DateFormat formatoEneroDiaUno = new SimpleDateFormat("01/01/yyyy");
 
 //    private static String[] diasEspanol = {"Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"};
     private static String[] diasEspanol = {"Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"};
@@ -186,7 +188,7 @@ public class TiempoUtil {
     }
 
     public static Date sumarRestarMeses(Date fecha, int meses) {
-        
+
         Calendar cal = Calendar.getInstance();
         cal.setTime(fecha);
         cal.add(Calendar.MONTH, meses);
@@ -211,7 +213,7 @@ public class TiempoUtil {
      * @return
      */
     public static int getYear(Date fecha) {
-        
+
         Calendar cal = Calendar.getInstance();
         cal.setTime(fecha);
 
@@ -228,7 +230,7 @@ public class TiempoUtil {
      * @return
      */
     public static String getMonthYear(Date fecha) {
-        
+
         int year = 0;
         String month = "";
 
@@ -248,7 +250,7 @@ public class TiempoUtil {
      * @return
      */
     public static String getNameMonth(int month) {
-        
+
         String nameMonth = "Enero";
         switch (month) {
             case 1:
@@ -303,21 +305,21 @@ public class TiempoUtil {
      * @return
      */
     public static String nombreDia(Date fecha) {
-        
+
         GregorianCalendar cal = new GregorianCalendar();
         cal.setTime(fecha);
-        
+
         int numeroDia = cal.get(Calendar.DAY_OF_WEEK);
-        
+
         return diasEspanol[numeroDia - 1];
     }
 
     public static Date getFechaDDMMYYYYDate(Date fecha) {
-        
+
         if (fecha == null) {
             return new Date();
         }
-        
+
         String convertido = formatoFechaDiaMesAnio.format(fecha);
         return fechaTextoDiaMesAnio(convertido);
 
@@ -363,7 +365,7 @@ public class TiempoUtil {
      * @return String fecha en formato DD/MM/YY
      */
     public static String getFechaDDMMYY(Date fecha) {
-        
+
         if (fecha == null) {
             return "";
         }
@@ -373,8 +375,8 @@ public class TiempoUtil {
     }
 
     /**
-     * Metodo que recibe una fecha y regresa un string en formato nombre del
-     * dia , numero del dia , mes y año
+     * Metodo que recibe una fecha y regresa un string en formato nombre del dia
+     * , numero del dia , mes y año
      *
      * @param fecha
      * @return
@@ -388,7 +390,7 @@ public class TiempoUtil {
 
         return dateStr;
     }
-    
+
     //Diferencias entre dos fechas
     //@param fechaInicial La fecha de inicio
     //@param fechaFinal  La fecha de fin
@@ -413,6 +415,35 @@ public class TiempoUtil {
         long diferencia = fechaFinalMs - fechaInicialMs;
         double dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
         return ((int) dias);
+    }
+
+    public static ArrayList<String> obtenerFecgaInicioMesFinMesPorMes(int month, Date fecha) {
+        ArrayList<String> fechas = new ArrayList<String>();
+        month = month + 1;
+        DateFormat formatoEneroDiaUno = new SimpleDateFormat("01/" + month + "/yyyy");
+
+        fechas.add(formatoEneroDiaUno.format(fecha));
+        fechas.add(getFechaDDMMYYYY(sumarRestarDias(sumarRestarMeses(fechaTextoDiaMesAnio(formatoEneroDiaUno.format(fecha)), 1), -1)));
+
+        return fechas;
+    }
+
+    public static Date obtenerUltimoDomingoMes(Date fecha) {
+        Calendar cal = java.util.GregorianCalendar.getInstance();
+        cal.set(fecha.getYear(), fecha.getMonth(), fecha.getDay());
+        
+        cal.set(GregorianCalendar.DAY_OF_WEEK, GregorianCalendar.SUNDAY);
+        cal.set(GregorianCalendar.DAY_OF_WEEK_IN_MONTH, -1);
+        
+        return cal.getTime();
+    }
+    
+     public static BigDecimal obtenerUltimoDiaMes(Date fecha) {
+        Calendar cal = java.util.GregorianCalendar.getInstance();
+        cal.set(fecha.getYear(), fecha.getMonth(), fecha.getDay());
+        
+       return new BigDecimal(cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH));
+        
     }
 
 }
