@@ -188,6 +188,7 @@ public class BeanVenta implements Serializable, BeanSimple {
 
         data.setIdTipoEmpaqueFk(new BigDecimal(-1));
         data.setIdTipoVentaFk(new BigDecimal("1"));
+        data.setTipoPago(new BigDecimal(7));
 
         lstProducto = new ArrayList<Subproducto>();
         lstTipoEmpaque = ifaceEmpaque.getEmpaques();
