@@ -246,6 +246,7 @@ public class ServiceCredito implements IfaceCredito {
         List<Object[]> lstObject = new ArrayList<Object[]>();
         ArrayList<SaldosDeudas> lstSaldoDeuda = new ArrayList<SaldosDeudas>();
         getEjb();
+        
         lstObject = ejb.getAllCreditosActivos();
 
         try {
@@ -272,11 +273,9 @@ public class ServiceCredito implements IfaceCredito {
                 hoy.setMinutes(0);
                 hoy.setSeconds(0);
                 Date fechaVenta = dominio.getFechaVenta();
-                BigDecimal cantidadPorFecha = new BigDecimal(0);
                 dominio.setMontoAbonar(dominio.getSaldoTotal().divide(dominio.getNumeroPagos(), 2, RoundingMode.HALF_UP));
                 //int contador = 0;
                 int var = dominio.getNumeroPagos().intValue();
-                BigDecimal creditoAtrasado = new BigDecimal(0);
                 int numeroAsumar = dominio.getPlazo().intValue() / dominio.getNumeroPagos().intValue();
                 ArrayList<Date> fechas_pagos = new ArrayList<Date>();
                 ArrayList<BigDecimal> pagos_por_fecha = new ArrayList<BigDecimal>();
@@ -287,9 +286,7 @@ public class ServiceCredito implements IfaceCredito {
                     pagos_por_fecha.add(dominio.getMontoAbonar().multiply(new BigDecimal(i + 1), MathContext.UNLIMITED));
                     fechaVenta = auxiliar;
                 }
-//            for (int j = 0; j < fechas_pagos.size(); j++) {
-//                System.out.println("Fecha: " + fechas_pagos.get(j) + "   Cantidad: " + pagos_por_fecha.get(j).toString());
-//            }
+
                 int contador_periodos_atrasados = 0;
                 BigDecimal deudas = new BigDecimal(0);
 
@@ -319,7 +316,6 @@ public class ServiceCredito implements IfaceCredito {
                     dominio.setPeriodosAtraso(new BigDecimal(contador_periodos_atrasados));
                     dominio.setSaldoAtrasado(deudas);
                     if (dominio.getFechaProximaAbonar().compareTo(hoy) == 1 || dominio.getFechaProximaAbonar().compareTo(hoy) == 0) {
-
                         dominio.setMinimoPago(deudas.add(dominio.getMontoAbonar(), MathContext.UNLIMITED));
                     } else {
                         dominio.setMinimoPago(deudas);

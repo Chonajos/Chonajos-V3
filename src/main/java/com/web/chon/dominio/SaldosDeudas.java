@@ -46,6 +46,7 @@ public class SaldosDeudas implements Serializable {
     private String nombreCompleto;
     private String correo;
     private int dias;
+    private int filtro;
 
     public void reset() {
         folioCredito = null;
@@ -76,6 +77,7 @@ public class SaldosDeudas implements Serializable {
         nombreCompleto = null;
         correo = null;
         dias = 0;
+        filtro =0;
 
     }
 
@@ -308,5 +310,14 @@ public class SaldosDeudas implements Serializable {
         this.dias = dias;
     }
 
+    public int getFiltro() {
+        return filtro;
+    }
+
+    public void setFiltro(int filtro) {
+        this.filtro = filtro;
+    }
     
+    
+
 }
