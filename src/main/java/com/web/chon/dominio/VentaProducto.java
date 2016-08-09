@@ -20,6 +20,7 @@ public class VentaProducto implements Serializable {
     private String nombreProducto;
     private String nombreEmpaque;
     private BigDecimal idTipoVentaFk;
+    private BigDecimal count; //
     
     //Variable para venta a Credito
     private BigDecimal numeroPagos;
@@ -48,9 +49,6 @@ public class VentaProducto implements Serializable {
     public void setPrecioProducto(BigDecimal precioProducto) {
         this.precioProducto = precioProducto;
     }
-
-  
-
     public String getIdProductoFk() {
         return idProductoFk;
     }
@@ -140,10 +138,14 @@ public class VentaProducto implements Serializable {
         this.tipoPago = tipoPago;
     }
 
-    
-    
-   
-  
+    public BigDecimal getCount() {
+        return count;
+    }
+
+    public void setCount(BigDecimal count) {
+        this.count = count;
+    }
+
     @Override
     public String toString() {
         return "VentaProducto{" + "idVentaProductoPk=" + idVentaProductoPk + ", precioProducto=" + precioProducto + ", idProductoFk=" + idProductoFk + ", idTipoEmpaqueFk=" + idTipoEmpaqueFk + ", idTipoVentaFk=" + idTipoVentaFk + ", cantidadEmpaque=" + cantidadEmpaque + ", kilosVenta=" + kilosVenta + ", total=" + total + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + '}';

@@ -1,6 +1,7 @@
 package com.web.chon.service;
 
 import com.web.chon.dominio.VentaProducto;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 /**
@@ -15,8 +16,7 @@ public interface IfaceVentaProducto {
      * @param idVenta
      * @return 
      */
-    public ArrayList<VentaProducto> getVentasProductoByIdVenta(int idVenta);
-    
+    public ArrayList<VentaProducto> getVentasProductoByIdVenta(BigDecimal idVenta);
     /**
      * Inserta los productos de la venta
      * @param ventaProducto  

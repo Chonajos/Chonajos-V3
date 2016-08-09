@@ -30,26 +30,16 @@ public class Venta implements Serializable {
     private BigDecimal totalVenta;
     private BigDecimal folio;
     private BigDecimal idStatusVenta;
-    
+    private BigDecimal count;
+    private String nombreSucursal;
+    private String nombreEstatus;
     private ArrayList<VentaProducto> lstVentaProducto;
 
-    public Venta()
-    {
-        
+    @Override
+    public String toString() {
+        return "Venta{" + "idVentaPk=" + idVentaPk + ", fechaVenta=" + fechaVenta + ", fechaPromesaPago=" + fechaPromesaPago + ", idClienteFk=" + idClienteFk + ", idSucursal=" + idSucursal + ", idVendedorFk=" + idVendedorFk + ", nombrestatus=" + nombrestatus + ", fechaPago=" + fechaPago + ", nombreCliente=" + nombreCliente + ", nombreVendedor=" + nombreVendedor + ", totalVenta=" + totalVenta + ", folio=" + folio + ", idStatusVenta=" + idStatusVenta + ", count=" + count + ", nombreSucursal=" + nombreSucursal + ", nombreEstatus=" + nombreEstatus + ", lstVentaProducto=" + lstVentaProducto + '}';
     }
-
-    public int getIdSucursal() {
-        return idSucursal;
-    }
-
-    public void setIdSucursal(int idSucursal) {
-        this.idSucursal = idSucursal;
-    }
-    
-    public Venta(BigDecimal idVentaPk) {
-        this.idVentaPk = idVentaPk;
-    }
-
+ 
     public BigDecimal getIdVentaPk() {
         return idVentaPk;
     }
@@ -82,6 +72,14 @@ public class Venta implements Serializable {
         this.idClienteFk = idClienteFk;
     }
 
+    public int getIdSucursal() {
+        return idSucursal;
+    }
+
+    public void setIdSucursal(int idSucursal) {
+        this.idSucursal = idSucursal;
+    }
+
     public BigDecimal getIdVendedorFk() {
         return idVendedorFk;
     }
@@ -90,15 +88,13 @@ public class Venta implements Serializable {
         this.idVendedorFk = idVendedorFk;
     }
 
-    public ArrayList<VentaProducto> getLstVentaProducto() {
-        return lstVentaProducto;
+    public String getNombrestatus() {
+        return nombrestatus;
     }
 
-    public void setLstVentaProducto(ArrayList<VentaProducto> lstVentaProducto) {
-        this.lstVentaProducto = lstVentaProducto;
+    public void setNombrestatus(String nombrestatus) {
+        this.nombrestatus = nombrestatus;
     }
-
- 
 
     public Date getFechaPago() {
         return fechaPago;
@@ -140,14 +136,6 @@ public class Venta implements Serializable {
         this.folio = folio;
     }
 
-    public String getNombrestatus() {
-        return nombrestatus;
-    }
-
-    public void setNombrestatus(String nombrestatus) {
-        this.nombrestatus = nombrestatus;
-    }
-
     public BigDecimal getIdStatusVenta() {
         return idStatusVenta;
     }
@@ -155,9 +143,38 @@ public class Venta implements Serializable {
     public void setIdStatusVenta(BigDecimal idStatusVenta) {
         this.idStatusVenta = idStatusVenta;
     }
+
+    public BigDecimal getCount() {
+        return count;
+    }
+
+    public void setCount(BigDecimal count) {
+        this.count = count;
+    }
+
+    public String getNombreSucursal() {
+        return nombreSucursal;
+    }
+
+    public void setNombreSucursal(String nombreSucursal) {
+        this.nombreSucursal = nombreSucursal;
+    }
+
+    public String getNombreEstatus() {
+        return nombreEstatus;
+    }
+
+    public void setNombreEstatus(String nombreEstatus) {
+        this.nombreEstatus = nombreEstatus;
+    }
+
+    public ArrayList<VentaProducto> getLstVentaProducto() {
+        return lstVentaProducto;
+    }
+
+    public void setLstVentaProducto(ArrayList<VentaProducto> lstVentaProducto) {
+        this.lstVentaProducto = lstVentaProducto;
+    }
     
-    
-  
-    
-    
+
 }

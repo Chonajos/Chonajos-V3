@@ -8,7 +8,6 @@ import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.dominio.Venta;
 import com.web.chon.dominio.VentaProducto;
 import com.web.chon.security.service.PlataformaSecurityContext;
-import com.web.chon.service.IfaceBuscaVenta;
 import com.web.chon.service.IfaceCatStatusVenta;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceExistenciaMenudeo;
@@ -25,6 +24,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -69,8 +69,10 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     private ArrayList<StatusVenta> listaStatusVenta;
     private ArrayList<VentaProducto> listaProductoCancel;
     private ArrayList<Subproducto> lstProducto;
+    
 
     private UsuarioDominio usuario;
+    private Venta ventaImpresion;
 
     private String title;
     private String viewEstate;
@@ -115,7 +117,9 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
         listaStatusVenta = new ArrayList<StatusVenta>();
         listaSucursales = ifaceCatSucursales.getSucursales();
         listaStatusVenta = ifaceCatStatusVenta.getStatusVentas();
+        ventaImpresion = new Venta();
         filtro = 1;
+        verificarCombo();
         setTitle("Relación de Operaciónes Venta Menudeo");
         setViewEstate("init");
     }
@@ -125,72 +129,66 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
 //        data.setComentarioCancel(data.getComentarioCancel());
 //        System.out.println("Comentarios: " + data.getComentarioCancel());
 //    }
-//    public void generateReport() {
-//        JRExporter exporter = null;
-//
-//        try {
-//            ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-//
-//            String temporal = "";
-//            if (servletContext.getRealPath("") == null) {
-//                temporal = Constantes.PATHSERVER;
-//            } else {
-//                temporal = servletContext.getRealPath("");
-//            }
-//
-//            pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketVenta" + File.separatorChar + "ticket.jasper";
-//            JasperPrint jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport, new JREmptyDataSource());
-//
-//            outputStream = JasperReportUtil.getOutputStreamFromReport(paramReport, getPathFileJasper());
-//            exporter = new JRPdfExporter();
-//            exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
-//            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, outputStream);
-//
-//            byte[] bytes = outputStream.toByteArray();
-//            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf", data.getIdVentaPk().intValue(), idSucursalImpresion.intValue());
-//
-//        } catch (Exception exception) {
-//            System.out.println("Error >" + exception.getMessage());
-//
-//        }
-//
-//    }
-//    private void setParameterTicket(int idVenta) {
-//
-//        NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
-//        DecimalFormat df = new DecimalFormat("###.##");
-//        Date date = new Date();
-//        ArrayList<String> productos = new ArrayList<String>();
-//        NumeroALetra numeroLetra = new NumeroALetra();
-//        for (BuscaVenta venta : lstVenta) {
-//            String cantidad = venta.getCantidadEmpaque() + " " + venta.getNombreEmpaque();
-//            productos.add(venta.getNombreSubproducto().toUpperCase());
-//            productos.add("       " + cantidad + "               " + nf.format(venta.getPrecioProducto()) + "    " + nf.format(venta.getTotal()));
-//        }
-//
-//        String totalVentaStr = numeroLetra.Convertir(df.format(totalVenta), true);
-//
-//        putValues(TiempoUtil.getFechaDDMMYYYYHHMM(date), productos, nf.format(totalVenta), totalVentaStr, idVenta);
-//
-//    }
-//    private void putValues(String dateTime, ArrayList<String> items, String total, String totalVentaStr, int idVenta) {
-//
-//        System.out.println(data.getFechaVenta());
-//
-//        paramReport.put("fechaVenta", TiempoUtil.getFechaDDMMYYYYHHMM(fechaImpresion));
-//        paramReport.put("noVenta", Integer.toString(idVenta));
-//        paramReport.put("cliente", data.getNombreCliente());
-//        paramReport.put("vendedor", data.getNombreVendedor());
-//        paramReport.put("productos", items);
-//        paramReport.put("ventaTotal", total);
-//        paramReport.put("totalLetra", totalVentaStr);
-//        paramReport.put("labelFecha", "Fecha de Pago:");
-//        paramReport.put("labelFolio", "Folio de Venta:");
-//        paramReport.put("estado", statusVentaImpresion);
-//        paramReport.put("labelSucursal", nombreSucursalImpresion);
-//        paramReport.put("telefonos", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:" + usuario.getTelefonoSucursal());
-//
-//    }
+    public void generateReport(Venta v) {
+        JRExporter exporter = null;
+
+        try {
+            ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+
+            String temporal = "";
+            if (servletContext.getRealPath("") == null) {
+                temporal = Constantes.PATHSERVER;
+            } else {
+                temporal = servletContext.getRealPath("");
+            }
+
+            pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketVenta" + File.separatorChar + "ticket.jasper";
+            JasperPrint jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport, new JREmptyDataSource());
+
+            outputStream = JasperReportUtil.getOutputStreamFromReport(paramReport, getPathFileJasper());
+            exporter = new JRPdfExporter();
+            exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
+            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, outputStream);
+
+            byte[] bytes = outputStream.toByteArray();
+            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf", v.getIdVentaPk().intValue(), idSucursalImpresion.intValue());
+
+        } catch (Exception exception) {
+            System.out.println("Error >" + exception.getMessage());
+
+        }
+    }
+    private void setParameterTicket(Venta v) {
+
+        NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
+        DecimalFormat df = new DecimalFormat("###.##");
+        Date date = new Date();
+        ArrayList<String> productos = new ArrayList<String>();
+        NumeroALetra numeroLetra = new NumeroALetra();
+        for (VentaProducto vp : v.getLstVentaProducto()) {
+            String cantidad = vp.getCantidadEmpaque() + " " + vp.getNombreEmpaque();
+            productos.add(vp.getNombreProducto().toUpperCase());
+            productos.add("       " + cantidad + "               " + nf.format(vp.getPrecioProducto()) + "    " + nf.format(vp.getTotal()));
+        }
+
+        String totalVentaStr = numeroLetra.Convertir(df.format(totalVenta), true);
+
+        paramReport.put("fechaVenta", TiempoUtil.getFechaDDMMYYYYHHMM(fechaImpresion));
+        paramReport.put("noVenta", v.getFolio().toString());
+        paramReport.put("cliente",v.getNombreCliente());
+        paramReport.put("vendedor", v.getNombreVendedor());
+        paramReport.put("productos", productos);
+        paramReport.put("ventaTotal", totalVenta.toString());
+        paramReport.put("totalLetra", totalVentaStr);
+        paramReport.put("labelFecha", "Fecha de Pago:");
+        paramReport.put("labelFolio", "Folio de Venta:");
+        paramReport.put("estado", statusVentaImpresion);
+        paramReport.put("labelSucursal", nombreSucursalImpresion);
+        paramReport.put("telefonos", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:" + usuario.getTelefonoSucursal());
+
+        
+    }
+ 
     @Override
     public void searchById() {
         viewEstate = "searchById";
@@ -253,8 +251,6 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     }
     
 
-
-
 //    public void getTotalVentaByInterval() 
 //    {
 //        totalVenta = new BigDecimal(0);
@@ -303,34 +299,35 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
 //
 //        }
 //    }
-//    public void imprimirVenta() {
-//        lstVenta = ifaceBuscaVenta.getVentaById(data.getIdVentaPk().intValue());
-//        idSucursalImpresion = new BigDecimal(data.getIdSucursal());
-//        fechaImpresion = lstVenta.get(0).getFechaVenta();
-//
-//        statusVentaImpresion = lstVenta.get(0).getNombreStatus();
-//        nombreSucursalImpresion = lstVenta.get(0).getNombreSucursal();
-//
-//        //System.out.println("Estatus Venta: "+statusVentaImpresion);
-//        calculatotalVentaDetalle();
-//        setParameterTicket(data.getFolioSucursal());
-//        generateReport();
-//        getTotalVentaByInterval();
-//
-//    }
+    public void imprimirVenta() 
+    {
+        System.out.println("Entro aqui");
+        idSucursalImpresion = new BigDecimal(ventaImpresion.getIdSucursal());
+        fechaImpresion = ventaImpresion.getFechaVenta();
+
+        statusVentaImpresion = ventaImpresion.getNombrestatus();
+        nombreSucursalImpresion = ventaImpresion.getNombreSucursal();
+
+        //System.out.println("Estatus Venta: "+statusVentaImpresion);
+        calculatotalVentaDetalle(ventaImpresion.getLstVentaProducto());
+        setParameterTicket(ventaImpresion);
+        generateReport(ventaImpresion);
+
+
+    }
 //    public void detallesVenta() {
 //        viewEstate = "searchById";
 //        lstVenta = ifaceBuscaVenta.getVentaById(data.getIdVentaPk().intValue());
 //        calculatotalVentaDetalle();
 //
 //    }
-//    public void calculatotalVentaDetalle() {
-//        totalVenta = new BigDecimal(0);
-//
-//        for (BuscaVenta venta : lstVenta) {
-//            totalVenta = totalVenta.add(venta.getTotal());
-//        }
-//    }
+    public void calculatotalVentaDetalle(ArrayList<VentaProducto> vp) {
+        totalVenta = new BigDecimal(0);
+
+        for (VentaProducto item : vp) {
+            totalVenta = totalVenta.add(item.getTotal(), MathContext.UNLIMITED);
+        }
+    }
     @Override
     public String delete() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -561,6 +558,30 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
 
     public void setEnableCalendar(boolean enableCalendar) {
         this.enableCalendar = enableCalendar;
+    }
+
+    public Subproducto getSubProducto() {
+        return subProducto;
+    }
+
+    public void setSubProducto(Subproducto subProducto) {
+        this.subProducto = subProducto;
+    }
+
+    public ArrayList<Subproducto> getLstProducto() {
+        return lstProducto;
+    }
+
+    public void setLstProducto(ArrayList<Subproducto> lstProducto) {
+        this.lstProducto = lstProducto;
+    }
+
+    public Venta getVentaImpresion() {
+        return ventaImpresion;
+    }
+
+    public void setVentaImpresion(Venta ventaImpresion) {
+        this.ventaImpresion = ventaImpresion;
     }
 
     

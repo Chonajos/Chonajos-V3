@@ -13,7 +13,7 @@ import javax.ejb.Remote;
 public interface NegocioVentaProducto {
     
     public List<Object[]> getVentaProductoByIdVenta(BigDecimal idVentaFK);
-   
+    public List<Object[]> getProductosByIdVentaFK(BigDecimal idVentaFK);
     public int insertarVentaProducto(VentaProducto ventaProducto,int idVenta);
     
 

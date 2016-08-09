@@ -37,4 +37,6 @@ public interface NegocioVenta {
      */
     public int getFolioByIdSucursal(int idSucursal);
 
+
+
 }

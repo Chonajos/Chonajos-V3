@@ -39,4 +39,6 @@ public interface IfaceVenta {
      */
     
     public int getFolioByIdSucursal(int idSucursal);
+    
+
 }

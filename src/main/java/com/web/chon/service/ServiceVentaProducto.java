@@ -6,6 +6,7 @@ import com.web.chon.negocio.NegocioVentaProducto;
 import com.web.chon.util.TiempoUtil;
 import com.web.chon.util.Utilidades;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,21 +33,8 @@ public class ServiceVentaProducto implements IfaceVentaProducto {
         }
     }
 
-    @Override
-    public ArrayList<VentaProducto> getVentasProductoByIdVenta(int idVenta) {
-        getEjb();
-        ArrayList<VentaProducto> lstVenta = new ArrayList<VentaProducto>();
-        List<Object[]> lstObject = ejb.getVentaProductoByIdVenta(new BigDecimal(idVenta));
-        for(Object[] obj : lstObject){
-           
-            VentaProducto venta = new VentaProducto();
-            venta.setIdProductoFk(obj[0] == null ? null : obj[0].toString());
-            venta.setKilosVenta(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
-            lstVenta.add(venta);
-        }
-        
-        return lstVenta;
-    }
+
+   
 
     @Override
     public int insertarVentaProducto(VentaProducto ventaProducto,int idVenta) {
@@ -55,6 +43,36 @@ public class ServiceVentaProducto implements IfaceVentaProducto {
         }
         System.out.println("" + ventaProducto.toString());
         return ejb.insertarVentaProducto(ventaProducto, idVenta);
+    }
+
+    @Override
+    public ArrayList<VentaProducto> getVentasProductoByIdVenta(BigDecimal idVenta) {
+       try {
+            ArrayList<VentaProducto> lstProductos = new ArrayList<VentaProducto>();
+           getEjb();
+            List<Object[]> lstObject = ejb.getProductosByIdVentaFK(idVenta);
+                 BigDecimal count = new BigDecimal(0);
+            for (Object[] obj : lstObject) {
+                VentaProducto vp = new VentaProducto();
+                vp.setNombreProducto(obj[0] == null ? "" : obj[0].toString());
+                vp.setCantidadEmpaque(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
+                vp.setPrecioProducto(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
+                
+                vp.setTotal(vp.getCantidadEmpaque().multiply(vp.getPrecioProducto(), MathContext.UNLIMITED));
+                
+                count = count.add(new BigDecimal (1), MathContext.UNLIMITED);
+            vp.setCount(count);
+            
+                lstProductos.add(vp);
+            }
+
+            return lstProductos;
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceVentaProducto.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+
+        }
+
     }
 
 }

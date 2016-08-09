@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-08-04T12:20:46 -->
+<!-- 2016-08-09T09:11:12 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteEntradaMenudeo" pageWidth="228" pageHeight="841" whenNoDataType="BlankPage" columnWidth="188" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Key" uuid="c529158e-78bf-4d20-87a9-f989c5c04179">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="AdaptadorChoni.xml"/>
@@ -193,7 +193,7 @@ where emp.ID_EMM_FK=$P{Parametro}]]>
 	<columnHeader>
 		<band height="76" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="24" width="80" height="12" uuid="36e99677-2703-428f-aba1-d986adceff49">
+				<reportElement x="0" y="24" width="85" height="12" uuid="36e99677-2703-428f-aba1-d986adceff49">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -216,7 +216,7 @@ where emp.ID_EMM_FK=$P{Parametro}]]>
 				<textFieldExpression><![CDATA[$P{nombreProvedor}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="80" y="24" width="60" height="12" uuid="da384f1d-7b1e-468f-a26f-adc31419b90b"/>
+				<reportElement x="85" y="24" width="60" height="12" uuid="da384f1d-7b1e-468f-a26f-adc31419b90b"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
@@ -277,14 +277,14 @@ where emp.ID_EMM_FK=$P{Parametro}]]>
 				<text><![CDATA[Provedor:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="36" width="80" height="12" uuid="1dd67652-b8cb-4dc5-aebf-c329b4a61e75"/>
+				<reportElement x="0" y="36" width="85" height="12" uuid="1dd67652-b8cb-4dc5-aebf-c329b4a61e75"/>
 				<textElement verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
 				<text><![CDATA[Total de Kilos Recibidos:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="80" y="36" width="60" height="12" uuid="4183e6e2-eed8-4b7b-9ad4-f45aa049b0e7"/>
+				<reportElement x="85" y="36" width="60" height="12" uuid="4183e6e2-eed8-4b7b-9ad4-f45aa049b0e7"/>
 				<textElement>
 					<font size="7"/>
 				</textElement>
@@ -354,11 +354,11 @@ where emp.ID_EMM_FK=$P{Parametro}]]>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="20" uuid="0b34b816-40eb-4548-bae5-e94f1ce2b9ed">
+					<jr:column width="30" uuid="0b34b816-40eb-4548-bae5-e94f1ce2b9ed">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
 						<jr:tableFooter style="Table 3_TH" height="30" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="20" height="30" uuid="21862f5a-2a74-469f-b8ec-ed3573b03ccd"/>
+								<reportElement x="0" y="0" width="30" height="30" uuid="21862f5a-2a74-469f-b8ec-ed3573b03ccd"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="7" isBold="true"/>
 								</textElement>
@@ -367,7 +367,7 @@ where emp.ID_EMM_FK=$P{Parametro}]]>
 						</jr:tableFooter>
 						<jr:columnHeader style="Table 3_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="20" height="30" uuid="0002cc1f-32e1-4262-b445-76d07d5b1cdc"/>
+								<reportElement x="0" y="0" width="30" height="30" uuid="0002cc1f-32e1-4262-b445-76d07d5b1cdc"/>
 								<box>
 									<topPen lineWidth="1.0"/>
 									<leftPen lineWidth="1.0"/>
@@ -382,7 +382,7 @@ where emp.ID_EMM_FK=$P{Parametro}]]>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 3_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="20" height="30" uuid="dcbb6db7-7bdc-4b9c-867d-b74056ade05d"/>
+								<reportElement x="0" y="0" width="30" height="30" uuid="dcbb6db7-7bdc-4b9c-867d-b74056ade05d"/>
 								<box>
 									<bottomPen lineWidth="1.0"/>
 								</box>
@@ -437,7 +437,9 @@ where emp.ID_EMM_FK=$P{Parametro}]]>
 						</jr:tableFooter>
 						<jr:columnHeader style="Table 3_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="40" height="30" uuid="2fb13e3d-b3d5-4e8b-836a-c346dba13a19"/>
+								<reportElement x="0" y="0" width="40" height="30" uuid="2fb13e3d-b3d5-4e8b-836a-c346dba13a19">
+									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+								</reportElement>
 								<box>
 									<topPen lineWidth="1.0"/>
 									<leftPen lineWidth="1.0"/>
@@ -447,7 +449,7 @@ where emp.ID_EMM_FK=$P{Parametro}]]>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="7" isBold="true"/>
 								</textElement>
-								<text><![CDATA[COSTO UNITARIO]]></text>
+								<text><![CDATA[C/U]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 3_TD" height="30">
@@ -463,11 +465,11 @@ where emp.ID_EMM_FK=$P{Parametro}]]>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="50" uuid="c85d4fc0-0257-4e0c-bf90-98967e53e91a">
+					<jr:column width="40" uuid="c85d4fc0-0257-4e0c-bf90-98967e53e91a">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
 						<jr:tableFooter style="Table 3_TH" height="30" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="50" height="30" uuid="ef4c6bfb-3489-4306-8877-271c016b6843"/>
+								<reportElement x="0" y="0" width="40" height="30" uuid="ef4c6bfb-3489-4306-8877-271c016b6843"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="7" isBold="true"/>
 								</textElement>
@@ -476,7 +478,7 @@ where emp.ID_EMM_FK=$P{Parametro}]]>
 						</jr:tableFooter>
 						<jr:columnHeader style="Table 3_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="50" height="30" uuid="584206fc-142e-470e-99ac-bf1beb628bd1"/>
+								<reportElement x="0" y="0" width="40" height="30" uuid="584206fc-142e-470e-99ac-bf1beb628bd1"/>
 								<box>
 									<topPen lineWidth="1.0"/>
 									<leftPen lineWidth="1.0"/>
@@ -491,7 +493,7 @@ where emp.ID_EMM_FK=$P{Parametro}]]>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 3_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="50" height="30" uuid="6afc84e0-dd7e-407d-aa5e-ff2495c61635"/>
+								<reportElement x="0" y="0" width="40" height="30" uuid="6afc84e0-dd7e-407d-aa5e-ff2495c61635"/>
 								<box>
 									<bottomPen lineWidth="1.0"/>
 								</box>

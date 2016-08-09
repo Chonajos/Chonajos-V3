@@ -48,15 +48,17 @@ public class EjbVenta implements NegocioVenta {
     public List<Object[]> getVentasByInterval(String fechaInicio, String fechaFin, BigDecimal idSucursal, BigDecimal idStatusVenta,String idProducto) {
         Query query;
         int cont = 0;
+     
         StringBuffer cadena = new StringBuffer("SELECT ven.ID_VENTA_PK,ven.ID_CLIENTE_FK,"
                 + "ven.ID_VENDEDOR_FK, ven.FECHA_VENTA,ven.STATUS_FK,"
-                + " ven.FECHA_PAGO,USU.ID_SUCURSAL_FK,\n"
+                + " USU.ID_SUCURSAL_FK,\n"
                 + " (CLI.NOMBRE||' '||CLI.APELLIDO_PATERNO ||' '||CLI.APELLIDO_MATERNO ) AS CLIENTE, \n"
                 + "(USU.NOMBRE_USUARIO||' '||USU.APATERNO_USUARIO ||' '||USU.AMATERNO_USUARIO ) AS VENDEDOR, "
                 + "(select NVL(sum(VTP.TOTAL_VENTA),0) \n"
                 + "FROM VENTA_PRODUCTO VTP WHERE VTP.ID_VENTA_FK =ven.ID_VENTA_PK) AS TOTAL_VENTA,FOLIO_SUCURSAL FROM VENTA ven \n"
-                + "INNER JOIN CLIENTE CLI ON CLI.ID_CLIENTE = ven.ID_CLIENTE_FK \n"
-                + "INNER JOIN USUARIO USU ON USU.ID_USUARIO_PK = ven.ID_VENDEDOR_FK ");
+                + " INNER JOIN CLIENTE CLI ON CLI.ID_CLIENTE = ven.ID_CLIENTE_FK \n"
+                + " INNER JOIN USUARIO USU ON USU.ID_USUARIO_PK = ven.ID_VENDEDOR_FK"
+                + " INNER JOIN VENTA_PRODUCTO vp on vp.ID_VENTA_FK = ven.ID_VENTA_PK ");
 
         if (!fechaInicio.equals("")) {
             cont++;
@@ -74,7 +76,7 @@ public class EjbVenta implements NegocioVenta {
             cont++;
 
         }
-        if (idStatusVenta.intValue() != 0) {
+        if (idStatusVenta !=null && idStatusVenta.intValue() != 0) {
             if (cont == 0) {
                 cadena.append(" WHERE ");
             } else {
@@ -85,8 +87,25 @@ public class EjbVenta implements NegocioVenta {
             cont++;
 
         }
+        if (idProducto != null && !idProducto.equals("")) 
+        {
+            if (cont == 0) 
+            {
+                cont++;
+                cadena.append(" WHERE ");
+            } else 
+            {
+                cadena.append(" AND ");
+            }
+            
+            cadena.append(" vp.ID_SUBPRODUCTO_FK = '" + idProducto+"'");
+        }
+        
 
         cadena.append(" ORDER BY ven.ID_VENTA_PK");
+        
+        System.out.println("=======================QueryEJB==========================");
+        System.out.println(cadena);
         query = em.createNativeQuery(cadena.toString());
 
         try {

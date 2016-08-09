@@ -101,7 +101,10 @@ public class CustomFilter extends OncePerRequestFilter {
             return;
 
         }
-
+       
+System.out.println("no tiene permisos");
+        System.out.println("url "+url);
+System.out.println(usuario.getNombreCompleto() +" usuario{} "+usuario.getAllowedUrl().toString());
         throw new SecurityAccessException(
                 "No tiene permisos para ver esta Pagina.");
     }

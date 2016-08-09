@@ -61,4 +61,25 @@ public class EjbVentaProducto implements NegocioVentaProducto {
         return query.executeUpdate();
     }
 
+    @Override
+    public List<Object[]> getProductosByIdVentaFK(BigDecimal idVentaFK) {
+        try {
+
+            Query query = em.createNativeQuery("select sub.NOMBRE_SUBPRODUCTO, vp.CANTIDAD_EMPAQUE, vp.PRECIO_PRODUCTO from VENTA_PRODUCTO vp\n" +
+"inner join SUBPRODUCTO sub on sub.ID_SUBPRODUCTO_PK = vp.ID_SUBPRODUCTO_FK\n" +
+"where ID_VENTA_FK = ?");
+            query.setParameter(1, idVentaFK);
+            List<Object[]> resultList = null;
+            
+            resultList = query.getResultList();
+
+            return resultList;
+
+        } catch (Exception ex) 
+        {
+            Logger.getLogger(EjbVentaProducto.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
 }
