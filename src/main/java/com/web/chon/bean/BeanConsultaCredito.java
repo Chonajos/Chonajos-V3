@@ -76,6 +76,8 @@ public class BeanConsultaCredito implements Serializable {
     private BigDecimal totalCreditos;
     private BigDecimal totalAbonado;
 
+    private Date fechaSystema;
+
     private ArrayList<SaldosDeudas> modelo;
     private ArrayList<TipoAbono> lstTipoAbonos;
     private ArrayList<Cliente> lstCliente;
@@ -120,6 +122,7 @@ public class BeanConsultaCredito implements Serializable {
         usuarioDominio = context.getUsuarioAutenticado();
         dataAbonar = new SaldosDeudas();
         modelo = new ArrayList<SaldosDeudas>();
+        fechaSystema = context.getFechaSistema();
         chequesPendientes = new ArrayList<AbonoCredito>();
         selectedchequesPendientes = new ArrayList<AbonoCredito>();
         lstTipoAbonos = ifaceTipoAbono.getAll();
@@ -219,6 +222,33 @@ public class BeanConsultaCredito implements Serializable {
 
     public void consultaCredito() {
         modelo = ifaceCredito.getCreditosByEstatus(numFiltro, numDias);
+        ArrayList<SaldosDeudas> modelTemp = new ArrayList<SaldosDeudas>();
+
+        BigDecimal zero = new BigDecimal(0);
+        for (SaldosDeudas saldos : modelo) {
+            switch (numFiltro) {
+                case 1:
+                    if (saldos.getPeriodosAtraso().equals(zero)) {
+                        modelTemp.add(saldos);
+                        int diasDiferencia = TiempoUtil.diferenciasDeFechas(fechaSystema,saldos.getFechaProximaAbonar());
+                        System.out.println("dias para siguiente pago "+diasDiferencia);
+                    }
+                    break;
+                case 2:
+                    if (saldos.getPeriodosAtraso().compareTo(zero) == 1 && saldos.getPeriodosAtraso().compareTo(saldos.getNumeroPagos()) == -1) {
+                        modelTemp.add(saldos);
+                    }
+                    break;
+                case 3:
+                    if (saldos.getPeriodosAtraso().equals(saldos.getNumeroPagos())) {
+                        modelTemp.add(saldos);
+                    }
+                    break;
+            }
+
+        }
+
+        modelo = modelTemp;
 
     }
 
