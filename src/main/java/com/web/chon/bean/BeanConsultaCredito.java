@@ -229,6 +229,7 @@ public class BeanConsultaCredito implements Serializable {
             switch (numFiltro) {
                 case 1:
                     if (saldos.getPeriodosAtraso().equals(zero)) {
+                                                
                         modelTemp.add(saldos);
                         int diasDiferencia = TiempoUtil.diferenciasDeFechas(fechaSystema,saldos.getFechaProximaAbonar());
                         System.out.println("dias para siguiente pago "+diasDiferencia);
@@ -236,11 +237,14 @@ public class BeanConsultaCredito implements Serializable {
                     break;
                 case 2:
                     if (saldos.getPeriodosAtraso().compareTo(zero) == 1 && saldos.getPeriodosAtraso().compareTo(saldos.getNumeroPagos()) == -1) {
+                        int diasDiferencia = TiempoUtil.diferenciasDeFechas(fechaSystema,saldos.getFechaProximaAbonar());
                         modelTemp.add(saldos);
                     }
                     break;
                 case 3:
                     if (saldos.getPeriodosAtraso().equals(saldos.getNumeroPagos())) {
+                        int diasDiferencia = TiempoUtil.diferenciasDeFechas(fechaSystema,saldos.getFechaPromesaFinPago());
+                        System.out.println("diasDiferencia "+diasDiferencia);
                         modelTemp.add(saldos);
                     }
                     break;

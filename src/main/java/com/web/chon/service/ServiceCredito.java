@@ -267,6 +267,7 @@ public class ServiceCredito implements IfaceCredito {
                 dominio.setNombreCompleto(obj[11] == null ? "" : obj[11].toString());
                 dominio.setNumeroTelefono(obj[12] == null ? (obj[13] == null ? 0 : Integer.parseInt(obj[13].toString())) : Integer.parseInt(obj[12].toString()));
                 dominio.setCorreo(obj[14] == null ? "" : obj[14].toString());
+                dominio.setFechaPromesaFinPago(obj[15] == null ? null:(Date) obj[15]);
 
                 Date hoy = context.getFechaSistema();
                 hoy.setHours(0);

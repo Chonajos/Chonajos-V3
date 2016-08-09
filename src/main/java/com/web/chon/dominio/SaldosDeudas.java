@@ -47,6 +47,7 @@ public class SaldosDeudas implements Serializable {
     private String correo;
     private int dias;
     private int filtro;
+    private Date fechaPromesaFinPago;
 
     public void reset() {
         folioCredito = null;
@@ -77,7 +78,8 @@ public class SaldosDeudas implements Serializable {
         nombreCompleto = null;
         correo = null;
         dias = 0;
-        filtro =0;
+        filtro = 0;
+        fechaPromesaFinPago = null;
 
     }
 
@@ -316,6 +318,14 @@ public class SaldosDeudas implements Serializable {
 
     public void setFiltro(int filtro) {
         this.filtro = filtro;
+    }
+
+    public Date getFechaPromesaFinPago() {
+        return fechaPromesaFinPago;
+    }
+
+    public void setFechaPromesaFinPago(Date fechaPromesaFinPago) {
+        this.fechaPromesaFinPago = fechaPromesaFinPago;
     }
     
     
