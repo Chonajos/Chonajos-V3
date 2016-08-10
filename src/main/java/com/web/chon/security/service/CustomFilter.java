@@ -74,17 +74,15 @@ public class CustomFilter extends OncePerRequestFilter {
             try {
                 hasPermission(url);
             } catch (SecurityAccessException e) {
-                System.out.println("error security");
-//                JsfUtil.addErrorMessage("No tiene permisos para ver esta Pagina.");
                 res.sendRedirect("/error/error.xhtml");
                 return;
             }
 
         }
 
-        if (!urlPrimePush.equals("primepush/notify")) {
-            chain.doFilter(req, res);
-        }
+//        if (!urlPrimePush.equals("primepush/notify")) {
+        chain.doFilter(req, res);
+//        }
     }
 
     private boolean isAjaxRequest(HttpServletRequest request) {
@@ -101,10 +99,10 @@ public class CustomFilter extends OncePerRequestFilter {
             return;
 
         }
-       
-System.out.println("no tiene permisos");
-        System.out.println("url "+url);
-System.out.println(usuario.getNombreCompleto() +" usuario{} "+usuario.getAllowedUrl().toString());
+
+        System.out.println("no tiene permisos");
+        System.out.println("url " + url);
+        System.out.println(usuario.getNombreCompleto() + " usuario{} " + usuario.getAllowedUrl().toString());
         throw new SecurityAccessException(
                 "No tiene permisos para ver esta Pagina.");
     }

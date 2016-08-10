@@ -62,17 +62,17 @@
                     </div>
                 </div>
             </p:panel>
-            <p:remoteCommand name="updateWidgets"
-                             actionListener="#{beanProducto.init}"
-                             update=":formProducto" />
+<!--            <p:remoteCommand name="updateWidgets"
+                             actionListener="{beanProducto.init}"
+                             update=":formProducto" />-->
         </h:form>
-        <p:growl widgetVar="growl" showDetail="true" />
+<!--        <p:growl widgetVar="growl" showDetail="true" />
         <p:socket onMessage="handleMessage" channel="/notify" />
         <script type="text/javascript">
             function handleMessage(data) {
                 updateWidgets();
             }
-        </script>
+        </script>-->
 
 
 

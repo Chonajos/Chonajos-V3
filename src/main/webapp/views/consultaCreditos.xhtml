@@ -12,6 +12,11 @@
         <div>
             <h3>#{beanConsultaCredito.title}</h3>
         </div>
+        <p:ajaxStatus onsuccess="PF('statusDialog').hide()" oncomplete="PF('statusDialog').hide()" onerror="PF('statusDialog').hide()" />
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                  closable="false" resizable="false" showHeader="false">
+            <p:graphicImage value="../resources/img/carga.gif" />
+        </p:dialog>
         <p:messages id="messages"   showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
         <h:form id="formContent">
 
@@ -34,25 +39,25 @@
                                 </p:inputText>
                             </div>
                             <div class="col-lg-7 col-md-4 col-sm-4 col-xs-12 alignRight">
-                                <p:commandButton value="Buscar" update="table" actionListener="#{beanConsultaCredito.consultaCredito()}"/>
+                                <p:commandButton value="Buscar" onclick="PF('statusDialog').show()" update="table" actionListener="#{beanConsultaCredito.consultaCredito()}"/>
                             </div>
                         </div>
 
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding: 0px">
                             <p:dataTable id="table" var="model" style="width:100%;" value="#{beanConsultaCredito.modelo}"  scrollable="true"  emptyMessage="No se encontraron registros.">
-                                <p:column headerText="Folio" width="6%" class="alignCenter">
-                                    <h:outputText value="#{model.folioCredito}" />
+                                <p:column headerText="Folio" width="5%" class="alignCenter">
+                                    <p:commandLink value="#{model.folioCredito}" class="checkedFontColor commandLinkColor" />
                                 </p:column>
                                 <p:column headerText="Cliente" width="10%;" class="alignLeft">
                                     <h:outputText value="#{model.nombreCompleto}" />
                                 </p:column>
-                                <p:column headerText="Teléfono" width="10%;" class="alignLeft">
+                                <p:column headerText="Teléfono" width="9%;" class="alignLeft">
                                     <h:outputText value="#{model.numeroTelefono}" />
                                 </p:column>
-                                <p:column headerText="Correo" width="18%;" class="alignLeft">
+                                <p:column headerText="Correo" width="25%;" class="alignLeft">
                                     <h:outputText value="#{model.correo}" />
                                 </p:column>
-                                <p:column headerText="Fecha de Venta" width="10%;" class="alignCenter">
+                                <p:column headerText="Fecha de Venta" width="8%;" class="alignCenter">
                                     <h:outputText value="#{model.fechaVenta}" >                             
                                         <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
                                     </h:outputText>
@@ -63,7 +68,7 @@
                                     </h:outputText>
                                 </p:column>
 
-                                <p:column headerText="N° Pagos" width="9%;" class="alignCenter">
+                                <p:column headerText="N° Pagos" width="6%;" class="alignCenter">
                                     <h:outputText value="#{model.numeroPagos}" />
                                 </p:column>
                                 <p:column headerText="Dias" width="5%" class="alignCenter">
@@ -75,19 +80,19 @@
                                     </h:outputText>
                                 </p:column>
 
-                                <p:column headerText="Total Abonado" width="9%" class="alignRight">
+                                <p:column headerText="Total Abonado" width="8%" class="alignRight">
                                     <h:outputText value="#{model.totalAbonado}"> 
                                         <f:convertNumber type="currency" currencySymbol="$" />
                                     </h:outputText>
                                 </p:column>
-                  
 
-                                <p:column headerText="Pagos Atrasados" width="9%;" class="alignRight">
+
+                                <p:column headerText="Pagos Atrasados" width="8%;" class="alignRight">
                                     <h:outputText value="#{model.periodosAtraso}"> 
                                     </h:outputText>
                                 </p:column>
-                                    <p:column headerText="Dias de atraso" width="9%;" class="alignRight">
-                                    <h:outputText value="#{model.periodosAtraso}"> 
+                                <p:column headerText="Dias de atraso" width="7%;" class="alignRight">
+                                    <h:outputText value="#{model.diasAtraso}"> 
                                     </h:outputText>
                                 </p:column>
                                 <p:column headerText="Saldo Atrasado" width="8%;" class="alignRight">
@@ -95,7 +100,7 @@
                                         <f:convertNumber type="currency" currencySymbol="$" />
                                     </h:outputText>
                                 </p:column>
-                                <p:column headerText="Fecha de Próximo Pago" width="10%;" class="#{model.statusFechaProxima eq 1 ? 'statusPedido': (model.statusFechaProxima eq 2 ? 'statusPagado':(model.statusFechaProxima eq 3 ? 'statusEntregado':'statusCancelado'))}  alignCenter">
+                                <p:column headerText="Fecha de Próximo Pago" width="9%;" class="#{model.statusFechaProxima eq 1 ? 'statusPedido': (model.statusFechaProxima eq 2 ? 'statusPagado':(model.statusFechaProxima eq 3 ? 'statusEntregado':'statusCancelado'))}  alignCenter">
                                     <h:outputText value="#{model.fechaProximaAbonar}"> 
                                         <f:convertDateTime pattern="dd/MM/yyyy"/>
                                     </h:outputText>
@@ -114,7 +119,6 @@
                             </p:dataTable>
                         </div>
                     </div>
-                    <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanConsultaCredito.rutaPDF}"/>
                 </div>
             </p:panel>
         </h:form>

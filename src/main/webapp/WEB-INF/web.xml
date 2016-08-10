@@ -77,7 +77,7 @@
         <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
    
-    <servlet>
+<!--    <servlet>
         <servlet-name>Push Servlet</servlet-name>
         <servlet-class>org.primefaces.push.PushServlet</servlet-class>
         <async-supported>true</async-supported>
@@ -85,7 +85,7 @@
     <servlet-mapping>
         <servlet-name>Push Servlet</servlet-name>
         <url-pattern>/primepush/*</url-pattern>
-    </servlet-mapping> 
+    </servlet-mapping> -->
     
     <context-param>  
         <param-name>primefaces.THEME</param-name>  

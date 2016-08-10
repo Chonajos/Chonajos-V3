@@ -122,7 +122,7 @@ ul .ui-state-highlight {
     color: blue;
     background-image:linear-gradient(to bottom, #DCDCDC, rgb(208, 209, 212)) !important;
     background-color:#0081c2;
-    
+
 }
 
 .ui-state{
@@ -212,28 +212,41 @@ button span:hover{
 
 /**Boton flotante de abrir y cerrar menu**/
 .flotante {
-        display:scroll;
-        position:fixed;
-        height:10px;
-        width:10px;
-        bottom:5px;
-        right:0px;
-        left:5px;
+    display:scroll;
+    position:fixed;
+    height:10px;
+    width:10px;
+    bottom:5px;
+    right:0px;
+    left:5px;
 }
 .flotante span
 {
-        display:scroll;
-        position:fixed;
-        height:10px;
-        width:10px;
-        bottom:30px;
-        right:0px;
+    display:scroll;
+    position:fixed;
+    height:10px;
+    width:10px;
+    bottom:30px;
+    right:0px;
 }
 
 /*Iconos color negro si se quita esta linea son grices*/
 .ui-widget-content .ui-icon {
     background-image: url("/javax.faces.resource/images/ui-icons_222222_256x240.png.xhtml?ln=primefaces-casablanca") !important;
 }
+
+/* Clase para cambiar color de fuente de un link seleccionado*/
+.checkedFontColor  .ui-state-highlight a, .ui-state-highlight a {
+    color: #2D4DF0 !important;
+    text-decoration: underline !important; 
+}
+
+/* Clase para cambiar color de fuente de un link */
+.commandLinkColor {
+    color: #2D4DF0 !important;
+    text-decoration: underline !important; 
+}
+
 
 /*Pantalla celular*/
 @media ( max-width : 767px) {

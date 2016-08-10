@@ -5,14 +5,10 @@ import com.web.chon.service.IfaceProducto;
 import com.web.chon.util.TiempoUtil;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import org.apache.commons.lang.StringEscapeUtils;
-import org.primefaces.push.EventBus;
-import org.primefaces.push.EventBusFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
