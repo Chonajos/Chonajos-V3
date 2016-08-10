@@ -56,23 +56,30 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
 
     private static final long serialVersionUID = 1L;
 
-    @Autowired private IfaceVenta ifaceVenta;
-    @Autowired private PlataformaSecurityContext context;
-    @Autowired private IfaceCatSucursales ifaceCatSucursales;
-    @Autowired private IfaceCatStatusVenta ifaceCatStatusVenta;
-    @Autowired private IfaceVentaProducto ifaceVentaProducto;
-    @Autowired private IfaceExistenciaMenudeo ifaceExistenciaMenudeo;
-    @Autowired private IfaceSubProducto ifaceSubProducto;
+    @Autowired
+    private IfaceVenta ifaceVenta;
+    @Autowired
+    private PlataformaSecurityContext context;
+    @Autowired
+    private IfaceCatSucursales ifaceCatSucursales;
+    @Autowired
+    private IfaceCatStatusVenta ifaceCatStatusVenta;
+    @Autowired
+    private IfaceVentaProducto ifaceVentaProducto;
+    @Autowired
+    private IfaceExistenciaMenudeo ifaceExistenciaMenudeo;
+    @Autowired
+    private IfaceSubProducto ifaceSubProducto;
 
     private ArrayList<Sucursal> listaSucursales;
     private ArrayList<Venta> listaVentas;
     private ArrayList<StatusVenta> listaStatusVenta;
     private ArrayList<VentaProducto> listaProductoCancel;
     private ArrayList<Subproducto> lstProducto;
-    
 
     private UsuarioDominio usuario;
     private Venta ventaImpresion;
+    private Venta ventaCancelar;
 
     private String title;
     private String viewEstate;
@@ -103,7 +110,8 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     private Date fechaFiltroFin;
     private Date fechaFiltroInicio;
     private boolean enableCalendar;
-    
+    private String comentarioCancelacion;
+
     private Subproducto subProducto;
 
     @PostConstruct
@@ -118,17 +126,15 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
         listaSucursales = ifaceCatSucursales.getSucursales();
         listaStatusVenta = ifaceCatStatusVenta.getStatusVentas();
         ventaImpresion = new Venta();
+        ventaCancelar = new Venta();
         filtro = 1;
+        comentarioCancelacion = "";
+        totalVenta = new BigDecimal(0);
         verificarCombo();
         setTitle("Relación de Operaciónes Venta Menudeo");
         setViewEstate("init");
     }
 
-//    public void addComent() 
-//    {
-//        data.setComentarioCancel(data.getComentarioCancel());
-//        System.out.println("Comentarios: " + data.getComentarioCancel());
-//    }
     public void generateReport(Venta v) {
         JRExporter exporter = null;
 
@@ -158,6 +164,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
 
         }
     }
+
     private void setParameterTicket(Venta v) {
 
         NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
@@ -175,20 +182,19 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
 
         paramReport.put("fechaVenta", TiempoUtil.getFechaDDMMYYYYHHMM(fechaImpresion));
         paramReport.put("noVenta", v.getFolio().toString());
-        paramReport.put("cliente",v.getNombreCliente());
+        paramReport.put("cliente", v.getNombreCliente());
         paramReport.put("vendedor", v.getNombreVendedor());
         paramReport.put("productos", productos);
-        paramReport.put("ventaTotal", totalVenta.toString());
+        paramReport.put("ventaTotal", nf.format(totalVenta).toString());
         paramReport.put("totalLetra", totalVentaStr);
         paramReport.put("labelFecha", "Fecha de Pago:");
         paramReport.put("labelFolio", "Folio de Venta:");
-        paramReport.put("estado", statusVentaImpresion);
-        paramReport.put("labelSucursal", nombreSucursalImpresion);
+        paramReport.put("estado", v.getNombreEstatus());
+        paramReport.put("labelSucursal", v.getNombreSucursal());
         paramReport.put("telefonos", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:" + usuario.getTelefonoSucursal());
 
-        
     }
- 
+
     @Override
     public void searchById() {
         viewEstate = "searchById";
@@ -202,8 +208,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
             fechaFiltroFin = null;
             enableCalendar = false;
         } else {
-            switch (filtro)
-            {
+            switch (filtro) {
                 case 1:
                     fechaFiltroInicio = new Date();
                     fechaFiltroFin = new Date();
@@ -226,21 +231,17 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
             enableCalendar = true;
         }
     }
-    public void buscar()
-    {
-        if(fechaFiltroInicio==null || fechaFiltroFin==null)
-        {
+
+    public void buscar() {
+        if (fechaFiltroInicio == null || fechaFiltroFin == null) {
             JsfUtil.addErrorMessageClean("Favor de ingresar un rango de fechas");
-        }
-        else
-        {
-            if(subProducto==null)
-            {
+        } else {
+            if (subProducto == null) {
                 subProducto = new Subproducto();
                 subProducto.setIdProductoFk("");
             }
-             listaVentas = ifaceVenta.getVentasByIntervalDate(fechaFiltroInicio, fechaFiltroFin, idSucursal, idStatusVenta,subProducto.getIdSubproductoPk());
-           
+            listaVentas = ifaceVenta.getVentasByIntervalDate(fechaFiltroInicio, fechaFiltroFin, idSucursal, idStatusVenta, subProducto.getIdSubproductoPk());
+            getTotalVentaByInterval();
         }
     }
 
@@ -249,70 +250,69 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
         return lstProducto;
 
     }
-    
 
-//    public void getTotalVentaByInterval() 
-//    {
-//        totalVenta = new BigDecimal(0);
-//        for (RelacionOperaciones dominio : model) {
-//            totalVenta = totalVenta.add(dominio.getTotalVenta());
-//        }
-//    }
+    public void getTotalVentaByInterval() {
+        totalVenta = new BigDecimal(0);
+        for (Venta v : listaVentas) {
+            if (v.getIdStatusVenta().intValue() != 4 || v.getIdStatusVenta().intValue() != 5) {
+                totalVenta = totalVenta.add(v.getTotalVenta(), MathContext.UNLIMITED);
+            }
+        }
+    }
 //    public void cancel() 
 //    {
 //        viewEstate = "init";
 //        lstVenta.clear();
 //        getTotalVentaByInterval();
 //    }
-//    public void cancelarVenta() {
-//        if (data.getIdStatus() != 4) {
-//            System.out.println("comentarios: " + data.getComentarioCancel());
-//            if (ifaceBuscaVenta.cancelarVenta(data.getIdVentaPk().intValue(), usuario.getIdUsuario().intValue(), data.getComentarioCancel()) != 0) {
-//
-//                listaProductoCancel = ifaceVentaProducto.getVentasProductoByIdVenta(data.getIdVentaPk().intValue());
-//                for (VentaProducto vp : listaProductoCancel) {
-//
-//                    System.out.println("Bean==========" + vp.toString());
-//                    ExistenciaMenudeo em = new ExistenciaMenudeo();
-//                    em = ifaceExistenciaMenudeo.getExistenciasRepetidasById(vp.getIdProductoFk(), new BigDecimal(data.getIdSucursal()));
-//                    System.out.println("Bean ::::::::::::" + em.toString());
-//                    BigDecimal kilosExistencia = em.getKilos();
-//                    kilosExistencia = kilosExistencia.add(vp.getKilosVenta());
-//                    em.setKilos(kilosExistencia);
-//                    if (ifaceExistenciaMenudeo.updateExistenciaMenudeo(em) != 0) {
-//                        System.out.println("se regresaron existencias con exito");
-//
-//                    } else {
-//                        System.out.println("Ocurrio un problema");
-//                        break;
-//                    }
-//                }
-//                JsfUtil.addSuccessMessageClean("Venta Cancelada");
-//                data.setIdStatus(0);
-//                getVentasByIntervalDate();
-//
-//            } else {
-//                JsfUtil.addErrorMessageClean("Ocurrió un error al intentar cancelar la venta.");
-//            }
-//        } else {
-//            JsfUtil.addErrorMessageClean("No puedes volver a cancelar la venta");
-//
-//        }
-//    }
-    public void imprimirVenta() 
-    {
+
+    public void cancelarVenta() {
+        switch (ventaCancelar.getIdStatusVenta().intValue()) {
+            case 5:
+                JsfUtil.addErrorMessageClean("No puedes cancelar ventas a crédito");
+                break;
+            case 4:
+                JsfUtil.addErrorMessageClean("No puedes volver a cancelar la venta");
+                break;
+            default:
+                if (ifaceVenta.cancelarVenta(ventaCancelar.getIdVentaPk().intValue(), usuario.getIdUsuario().intValue(),
+                        comentarioCancelacion) != 0) {
+                    listaProductoCancel = ifaceVentaProducto.getVentasProductoByIdVenta(ventaCancelar.getIdVentaPk());
+                    for (VentaProducto vp : listaProductoCancel) 
+                    {
+                        System.out.println("Bean==========" + vp.toString());
+                        ExistenciaMenudeo em = new ExistenciaMenudeo();
+                        em = ifaceExistenciaMenudeo.getExistenciasRepetidasById(vp.getIdProductoFk(), new BigDecimal(ventaCancelar.getIdSucursal()));
+                        System.out.println("Bean ::::::::::::" + em.toString());
+                        BigDecimal kilosExistencia = new BigDecimal(0);
+                        kilosExistencia = em.getKilos();
+                        kilosExistencia = kilosExistencia.add(vp.getCantidadEmpaque(), MathContext.UNLIMITED);
+                        em.setKilos(kilosExistencia);
+                        if (ifaceExistenciaMenudeo.updateExistenciaMenudeo(em) != 0) {
+                            System.out.println("se regresaron existencias con exito");
+
+                        } else {
+                            System.out.println("Ocurrio un problema");
+                            break;
+                        }
+                    }
+                    JsfUtil.addSuccessMessageClean("Venta Cancelada, se han regresado existencias");
+                } else {
+                    JsfUtil.addErrorMessageClean("Ocurrió un error al intentar cancelar la venta.");
+                }
+                break;
+
+        }
+    }
+
+    public void imprimirVenta() {
         System.out.println("Entro aqui");
         idSucursalImpresion = new BigDecimal(ventaImpresion.getIdSucursal());
         fechaImpresion = ventaImpresion.getFechaVenta();
-
-        statusVentaImpresion = ventaImpresion.getNombrestatus();
-        nombreSucursalImpresion = ventaImpresion.getNombreSucursal();
-
         //System.out.println("Estatus Venta: "+statusVentaImpresion);
         calculatotalVentaDetalle(ventaImpresion.getLstVentaProducto());
         setParameterTicket(ventaImpresion);
         generateReport(ventaImpresion);
-
 
     }
 //    public void detallesVenta() {
@@ -321,6 +321,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
 //        calculatotalVentaDetalle();
 //
 //    }
+
     public void calculatotalVentaDetalle(ArrayList<VentaProducto> vp) {
         totalVenta = new BigDecimal(0);
 
@@ -328,6 +329,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
             totalVenta = totalVenta.add(item.getTotal(), MathContext.UNLIMITED);
         }
     }
+
     @Override
     public String delete() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -584,5 +586,20 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
         this.ventaImpresion = ventaImpresion;
     }
 
-    
+    public Venta getVentaCancelar() {
+        return ventaCancelar;
+    }
+
+    public void setVentaCancelar(Venta ventaCancelar) {
+        this.ventaCancelar = ventaCancelar;
+    }
+
+    public String getComentarioCancelacion() {
+        return comentarioCancelacion;
+    }
+
+    public void setComentarioCancelacion(String comentarioCancelacion) {
+        this.comentarioCancelacion = comentarioCancelacion;
+    }
+
 }

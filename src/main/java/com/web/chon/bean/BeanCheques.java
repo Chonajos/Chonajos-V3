@@ -29,7 +29,6 @@ import java.math.MathContext;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -75,6 +74,7 @@ public class BeanCheques implements Serializable {
     
     private UsuarioDominio usuario;
     private AbonoCredito abonoCreditoPagar;
+    private AbonoCredito dataAbonar;
     
     private ArrayList<AbonoCredito> selectedchequesPendientes;
     private ArrayList<AbonoCredito> listaAbonosAtrasdos;
@@ -124,6 +124,7 @@ public class BeanCheques implements Serializable {
 //        System.out.println("La semana Empieza en: " + dia);
 //         fechaInicio= new Date();
 //        Date fechaFin=dia;
+dataAbonar = new AbonoCredito();
         listaSucursales = new ArrayList<Sucursal>();
         listaSucursales = ifaceCatSucursales.getSucursales();
         usuario = context.getUsuarioAutenticado();
@@ -474,5 +475,14 @@ public class BeanCheques implements Serializable {
     public String getNameFilePdf() {
         return "reporte_dummy.pdf";
     }
+
+    public AbonoCredito getDataAbonar() {
+        return dataAbonar;
+    }
+
+    public void setDataAbonar(AbonoCredito dataAbonar) {
+        this.dataAbonar = dataAbonar;
+    }
+    
     
 }

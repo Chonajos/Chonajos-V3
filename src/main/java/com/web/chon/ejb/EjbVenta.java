@@ -49,20 +49,24 @@ public class EjbVenta implements NegocioVenta {
         Query query;
         int cont = 0;
      
-        StringBuffer cadena = new StringBuffer("SELECT ven.ID_VENTA_PK,ven.ID_CLIENTE_FK,"
-                + "ven.ID_VENDEDOR_FK, ven.FECHA_VENTA,ven.STATUS_FK,"
-                + " USU.ID_SUCURSAL_FK,\n"
-                + " (CLI.NOMBRE||' '||CLI.APELLIDO_PATERNO ||' '||CLI.APELLIDO_MATERNO ) AS CLIENTE, \n"
-                + "(USU.NOMBRE_USUARIO||' '||USU.APATERNO_USUARIO ||' '||USU.AMATERNO_USUARIO ) AS VENDEDOR, "
-                + "(select NVL(sum(VTP.TOTAL_VENTA),0) \n"
-                + "FROM VENTA_PRODUCTO VTP WHERE VTP.ID_VENTA_FK =ven.ID_VENTA_PK) AS TOTAL_VENTA,FOLIO_SUCURSAL FROM VENTA ven \n"
-                + " INNER JOIN CLIENTE CLI ON CLI.ID_CLIENTE = ven.ID_CLIENTE_FK \n"
-                + " INNER JOIN USUARIO USU ON USU.ID_USUARIO_PK = ven.ID_VENDEDOR_FK"
-                + " INNER JOIN VENTA_PRODUCTO vp on vp.ID_VENTA_FK = ven.ID_VENTA_PK ");
+        StringBuffer cadena = new StringBuffer("SELECT ven.ID_VENTA_PK,ven.ID_CLIENTE_FK,\n" +
+"  ven.ID_VENDEDOR_FK, ven.FECHA_VENTA,ven.STATUS_FK,\n" +
+"  USU.ID_SUCURSAL_FK,\n" +
+"  (CLI.NOMBRE||' '||CLI.APELLIDO_PATERNO ||' '||CLI.APELLIDO_MATERNO ) AS CLIENTE, \n" +
+"  (USU.NOMBRE_USUARIO||' '||USU.APATERNO_USUARIO ||' '||USU.AMATERNO_USUARIO ) AS VENDEDOR, \n" +
+"  (select NVL(sum(VTP.TOTAL_VENTA),0)\n" +
+"FROM VENTA_PRODUCTO VTP WHERE VTP.ID_VENTA_FK =ven.ID_VENTA_PK)\n" +
+"  AS TOTAL_VENTA,FOLIO_SUCURSAL,sucu.NOMBRE_SUCURSAL, sv.NOMBRE_STATUS \n" +
+"FROM VENTA ven \n" +
+"  INNER JOIN CLIENTE CLI ON CLI.ID_CLIENTE = ven.ID_CLIENTE_FK \n" +
+"  INNER JOIN USUARIO USU ON USU.ID_USUARIO_PK = ven.ID_VENDEDOR_FK\n" +
+"  inner join SUCURSAL sucu on sucu.ID_SUCURSAL_PK = ven.ID_SUCURSAL_FK\n" +
+"  inner join STATUS_VENTA sv on sv.ID_STATUS_PK = ven.STATUS_FK\n" +
+"  INNER JOIN VENTA_PRODUCTO vp on vp.ID_VENTA_FK = ven.ID_VENTA_PK ");
 
         if (!fechaInicio.equals("")) {
             cont++;
-            cadena.append("WHERE TO_DATE(TO_CHAR(ven.FECHA_VENTA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "' ");
+            cadena.append(" WHERE TO_DATE(TO_CHAR(ven.FECHA_VENTA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "' ");
         }
 
         if (idSucursal.intValue() != 0) {
@@ -128,6 +132,26 @@ public class EjbVenta implements NegocioVenta {
         } catch (Exception e) {
             System.out.println("Error >" + e.getMessage());
             return 1;
+        }
+    }
+    
+    @Override
+    public int cancelarVenta(int idVenta, int idUsuario, String comentarios) {
+        System.out.println("idVenta: " + idVenta);
+        System.out.println("idUsuario: " + idUsuario);
+        System.out.println("comentarios: " + comentarios);
+        try {
+            Query query = em.createNativeQuery("UPDATE VENTA SET STATUS_FK= ?,ID_CANCEL_USER_FK=?,COMENTARIOS_CANCEL=?,FECHA_CANCELACION=sysdate WHERE ID_VENTA_PK = ? ");
+            query.setParameter(1, 4);
+            query.setParameter(2, idUsuario);
+            query.setParameter(3, comentarios);
+            query.setParameter(4, idVenta);
+            return query.executeUpdate();
+
+        } catch (Exception ex) {
+
+            Logger.getLogger(EjbBuscaVenta.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
         }
     }
 

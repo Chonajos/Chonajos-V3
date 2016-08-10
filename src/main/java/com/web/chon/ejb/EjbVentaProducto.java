@@ -65,9 +65,11 @@ public class EjbVentaProducto implements NegocioVentaProducto {
     public List<Object[]> getProductosByIdVentaFK(BigDecimal idVentaFK) {
         try {
 
-            Query query = em.createNativeQuery("select sub.NOMBRE_SUBPRODUCTO, vp.CANTIDAD_EMPAQUE, vp.PRECIO_PRODUCTO from VENTA_PRODUCTO vp\n" +
+            Query query = em.createNativeQuery("select sub.NOMBRE_SUBPRODUCTO, vp.CANTIDAD_EMPAQUE, vp.PRECIO_PRODUCTO, sub.ID_SUBPRODUCTO_PK from VENTA_PRODUCTO vp\n" +
 "inner join SUBPRODUCTO sub on sub.ID_SUBPRODUCTO_PK = vp.ID_SUBPRODUCTO_FK\n" +
 "where ID_VENTA_FK = ?");
+            System.out.println("***************************************************************");
+            System.out.println(query);
             query.setParameter(1, idVentaFK);
             List<Object[]> resultList = null;
             

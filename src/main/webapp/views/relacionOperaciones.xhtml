@@ -14,25 +14,23 @@
         </div>
 
         <h:form id="formContent">
+            <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <div class="form-group" align="right">
                 <p:commandButton value="Buscar" update=":formContent" ajax="true" action="#{beanRelacionOperaciones.buscar()}"/>
             </div>
-            <!-- <p:confirmDialog   global="true" showEffect="fade" hideEffect="fade">
-             <div class="alignCenter">
- 
-                 <p:outputLabel   for="txtcomentarios" value ="Comentarios:" /> 
-                 <p:inputText id="txtcomentarios"  value="{beanRelacionOperaciones.data.comentarioCancel}" required="true">
-                 <p:ajax event="change" update="@this" listener="{beanRelacionOperaciones.addComent()}" ></p:ajax>
-                 <p:ajax event="blur" update="@this" listener="{beanRelacionOperaciones.addComent()}"></p:ajax>
-                 </p:inputText>
- 
-                 <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-                 <p:commandButton  value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                 
-             </div>
-         </p:confirmDialog>-->
-            <p:messages id="messages" showDetail="false" showSummary="false" showIcon="false" autoUpdate="true" closable="true" />
-            <p:growl id="messagess" showDetail="true" life="2000" />
+            <p:confirmDialog   global="true" showEffect="fade" hideEffect="fade">
+                <div class="alignCenter">
+
+                    <p:outputLabel   for="txtcomentarios" value ="Comentarios:" /> 
+                    <p:inputText id="txtcomentarios"  value="#{beanRelacionOperaciones.comentarioCancelacion}" required="true">
+                    </p:inputText>
+
+                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton  value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+
+                </div>
+            </p:confirmDialog>
+
             <p:panel>
                 <div class="container-fluid">
 
@@ -76,7 +74,7 @@
                         </div>
                         <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignRight"  for="autocompletePoducto" 
-                                           value ="Productoss:" /> 
+                                           value ="Productos:" /> 
                             <p:autoComplete  placeholder="Seleccione un Producto" id="autocompletePoducto"  
                                              required="false" requiredMessage="Ingresa un valor para el campo Producto."
                                              styleClass="autocomplete-input-text-media"
@@ -85,7 +83,7 @@
                                              forceSelection="true" var="producto"  inputStyle="width: 180px"
                                              itemLabel="#{producto.nombreSubproducto}"
                                              itemValue="#{producto.idSubproductoPk}" converter="#{productoConverter}">
-                  
+
                             </p:autoComplete>
                             <pe:keyFilter for="autocompletePoducto" regEx="/[a-z0-9-_Ã±\s]/i" />
                         </div>
@@ -130,32 +128,39 @@
                                     <f:convertNumber type="currency" currencySymbol="$" />
                                 </h:outputText>
                             </p:column>
-                            
-                             <p:column headerText="Imprimir" width="60px;" class="alignCenter">
-                                 <p:commandButton id="print" ajax="true" process="@this" action="#{beanRelacionOperaciones.imprimirVenta()}" 
-                                                  icon="ui-icon-print" styleClass="ui-priority-primary" update=":formContent"
-                                                  oncomplete="window.frames.miFrame.print();">
-                                     <f:setPropertyActionListener value="#{model}" target="#{beanRelacionOperaciones.ventaImpresion}"/>
-                                 </p:commandButton>
-                             </p:column>
-                            <!--
-                             <p:column headerText="Cancelar" width="60px;" class="alignCenter">
-                                 <p:commandButton id="cancel" ajax="true" process="@this" action="{beanRelacionOperaciones.cancelarVenta()}" icon="ui-icon-trash" styleClass="ui-priority-primary" update=":formContent">
-                                     <f:setPropertyActionListener value="{model}" target="{beanRelacionOperaciones.data}"/>
-                                     <p:confirm header="Confirmación" message="¿Estás seguro de cancelar la venta?" icon="ui-icon-alert"/>
-                                 </p:commandButton>
-                             </p:column>
-                            -->
+
+                            <p:column headerText="Imprimir" width="60px;" class="alignCenter">
+                                <p:commandButton id="print" ajax="true" process="@this" action="#{beanRelacionOperaciones.imprimirVenta()}" 
+                                                 icon="ui-icon-print" styleClass="ui-priority-primary" update=":formContent"
+                                                 oncomplete="window.frames.miFrame.print();">
+                                    <f:setPropertyActionListener value="#{model}" target="#{beanRelacionOperaciones.ventaImpresion}"/>
+                                </p:commandButton>
+                            </p:column>
+
+                            <p:column headerText="Cancelar" width="60px;" class="alignCenter">
+                                <p:commandButton id="cancel" ajax="true" process="@this" action="#{beanRelacionOperaciones.cancelarVenta()}" icon="ui-icon-trash" styleClass="ui-priority-primary" update=":formContent">
+                                    <f:setPropertyActionListener value="#{model}" target="#{beanRelacionOperaciones.ventaCancelar}"/>
+                                    <p:confirm header="Confirmación" message="¿Estás seguro de cancelar la venta?" icon="ui-icon-alert"/>
+                                </p:commandButton>
+                            </p:column>
+
                             <p:columnGroup type="footer">
-                                <p:column colspan="5" footerText="Total: " style="text-align:right"/>
+
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                                <p:column colspan="1" footerText="Total: " style="text-align:right"/>
+                                
                                 <p:column colspan="1" >
-                                    <f:facet name="footer">
-                                        <h:outputText value="#{beanRelacionOperaciones.totalVenta}" class="alignRight">
-                                            <f:convertNumber pattern="$#,###.00"/>
-                                        </h:outputText>
-                                    </f:facet>
+                                <f:facet name="footer">
+                                    <h:outputText value="#{beanRelacionOperaciones.totalVenta}" class="alignRight">
+                                        <f:convertNumber type="currency" currencySymbol="$" />
+                                    </h:outputText>
+                                </f:facet>
                                 </p:column>
-                                <p:column colspan="3" />
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
                             </p:columnGroup>
                             <p:rowExpansion>
                                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -178,11 +183,11 @@
                                         </p:column>
                                         <p:column headerText="Total" width="45px;" class="alignRight">
                                             <h:outputText value="#{item.total}">
-                                            <f:convertNumber type="currency" currencySymbol="$" />
+                                                <f:convertNumber type="currency" currencySymbol="$" />
                                             </h:outputText>
                                         </p:column>
                                     </p:dataTable>
-                                    </div>
+                                </div>
                             </p:rowExpansion>
                         </p:dataTable>
                     </div>

@@ -36,6 +36,8 @@ public interface NegocioVenta {
      * @return
      */
     public int getFolioByIdSucursal(int idSucursal);
+    
+    public int cancelarVenta(int idVenta, int idUsuario, String comentarios);
 
 
 

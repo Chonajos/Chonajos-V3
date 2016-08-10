@@ -57,7 +57,7 @@ public class ServiceVentaProducto implements IfaceVentaProducto {
                 vp.setNombreProducto(obj[0] == null ? "" : obj[0].toString());
                 vp.setCantidadEmpaque(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
                 vp.setPrecioProducto(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
-                
+                vp.setIdProductoFk(obj[3] == null ? "" : obj[3].toString());
                 vp.setTotal(vp.getCantidadEmpaque().multiply(vp.getPrecioProducto(), MathContext.UNLIMITED));
                 
                 count = count.add(new BigDecimal (1), MathContext.UNLIMITED);

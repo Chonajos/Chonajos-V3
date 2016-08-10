@@ -67,10 +67,12 @@ public class ServiceVenta implements IfaceVenta {
             venta.setFechaVenta((Date) obj[3]);
             venta.setIdStatusVenta(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
             venta.setIdSucursal(Integer.parseInt(obj[5] == null ? "0" : obj[5].toString()));
-            venta.setNombreCliente(obj[6].toString());
-            venta.setNombreVendedor(obj[7].toString());
+            venta.setNombreCliente(obj[6] == null ? null : obj[6].toString());
+            venta.setNombreVendedor(obj[7] == null ? null : obj[7].toString());
             venta.setTotalVenta(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
             venta.setFolio(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
+            venta.setNombreSucursal(obj[10] == null ? null : obj[10].toString());
+            venta.setNombreEstatus(obj[11] == null ? null : obj[11].toString());
             ArrayList<VentaProducto> listaProductos = new ArrayList<VentaProducto>();
             listaProductos = ifaceVentaProducto.getVentasProductoByIdVenta(venta.getIdVentaPk());
             venta.setLstVentaProducto(listaProductos);
@@ -86,6 +88,12 @@ public class ServiceVenta implements IfaceVenta {
     public int getFolioByIdSucursal(int idSucursal) {
         getEjb();
         return (ejb.getFolioByIdSucursal(idSucursal) + 1);
+    }
+    
+    @Override
+    public int cancelarVenta(int idVenta, int idUsuario, String comentarios) {
+        getEjb();
+        return ejb.cancelarVenta(idVenta, idUsuario, comentarios);
     }
 
 }
