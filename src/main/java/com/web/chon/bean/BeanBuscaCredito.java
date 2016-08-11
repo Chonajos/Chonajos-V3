@@ -8,6 +8,7 @@ package com.web.chon.bean;
 import com.web.chon.dominio.AbonoCredito;
 import com.web.chon.dominio.Cliente;
 import com.web.chon.dominio.Credito;
+import com.web.chon.dominio.Documento;
 import com.web.chon.dominio.SaldosDeudas;
 import com.web.chon.dominio.TipoAbono;
 import com.web.chon.dominio.UsuarioDominio;
@@ -15,6 +16,7 @@ import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceAbonoCredito;
 import com.web.chon.service.IfaceCatCliente;
 import com.web.chon.service.IfaceCredito;
+import com.web.chon.service.IfaceDocumentos;
 import com.web.chon.service.IfaceTipoAbono;
 import com.web.chon.util.Constantes;
 import com.web.chon.util.JasperReportUtil;
@@ -58,16 +60,12 @@ import org.springframework.stereotype.Component;
 public class BeanBuscaCredito implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @Autowired
-    IfaceCatCliente ifaceCatCliente;
-    @Autowired
-    IfaceCredito ifaceCredito;
-    @Autowired
-    IfaceTipoAbono ifaceTipoAbono;
-    @Autowired
-    IfaceAbonoCredito ifaceAbonoCredito;
-    @Autowired
-    private PlataformaSecurityContext context;
+    @Autowired private IfaceCatCliente ifaceCatCliente;
+    @Autowired private IfaceCredito ifaceCredito;
+    @Autowired private IfaceTipoAbono ifaceTipoAbono;
+    @Autowired private IfaceAbonoCredito ifaceAbonoCredito;
+    @Autowired private IfaceDocumentos ifaceDocumentos;
+    @Autowired private PlataformaSecurityContext context;
 
     private BigDecimal idCliente;
     private String nombreCompletoCliente;
@@ -107,10 +105,12 @@ public class BeanBuscaCredito implements Serializable {
 
     //------------variables para generar el ticket----------//
     //---Constantes---//
-    private static BigDecimal CREDITOFINALIZADO = new BigDecimal(2);
-    private static BigDecimal CREDITOACTIVO = new BigDecimal(1);
-    private static BigDecimal ABONOREALIZADO = new BigDecimal(1);
-    private static BigDecimal ABONOPENDIENTE = new BigDecimal(2);
+    private static final BigDecimal CREDITOFINALIZADO = new BigDecimal(2);
+    private static final BigDecimal CREDITOACTIVO = new BigDecimal(1);
+    private static final BigDecimal ABONOREALIZADO = new BigDecimal(1);
+    private static final BigDecimal ABONOPENDIENTE = new BigDecimal(2);
+    private static final BigDecimal DOCUMENTOACTIVO = new BigDecimal(1);
+    private static final BigDecimal DOCUMENTOTIPOCHEQUE = new BigDecimal(1);
     //----Constantes--//
 
     @PostConstruct
@@ -242,7 +242,8 @@ public class BeanBuscaCredito implements Serializable {
     public void abonar() {
         AbonoCredito ac = new AbonoCredito();
         if(abono.getIdtipoAbonoFk()!=null){
-        switch (abono.getIdtipoAbonoFk().intValue()) {
+        switch (abono.getIdtipoAbonoFk().intValue()) 
+        {
             /*
             ===============
             1.- Contado
@@ -362,7 +363,7 @@ public class BeanBuscaCredito implements Serializable {
                 ac.setMontoAbono(abono.getMontoAbono());
                 ac.setIdUsuarioFk(usuarioDominio.getIdUsuario()); //aqui poner el usuario looggeado
                 ac.setIdtipoAbonoFk(abono.getIdtipoAbonoFk());
-                ac.setEstatusAbono(ABONOPENDIENTE);
+                ac.setEstatusAbono(ABONOREALIZADO);
                 ac.setNumeroCheque(abono.getNumeroCheque());
                 ac.setLibrador(abono.getLibrador());
                 ac.setFechaCobro(abono.getFechaCobro());
@@ -373,6 +374,24 @@ public class BeanBuscaCredito implements Serializable {
                  */
                 if (ifaceAbonoCredito.insert(ac) == 1) {
                     JsfUtil.addSuccessMessage("Se ha realizado un abono existosamente");
+                    Documento d = new Documento();
+                    d.setIdDocumentoPk(new BigDecimal(ifaceDocumentos.getNextVal()));
+                    d.setFechaCobro(ac.getFechaCobro());
+                    d.setIdAbonoFk(ac.getIdAbonoCreditoPk());
+                    Credito c = ifaceCredito.getById(ac.getIdCreditoFk());
+                    d.setIdClienteFk(c.getIdClienteFk());
+                    d.setIdStatusFk(DOCUMENTOACTIVO);
+                    d.setIdTipoDocumento(DOCUMENTOTIPOCHEQUE);
+                    d.setMonto(ac.getMontoAbono());
+                    System.out.println("Documento: "+d.toString());
+                    if(ifaceDocumentos.insertarDocumento(d)==1)
+                    {
+                        System.out.println("Se ingreso corractamente el documento por cobrar");
+                    }
+                    else
+                    {
+                        System.out.println("Ocurrio un error al ingresar documento por cobrar");
+                    }
                     setParameterTicket(ac, cliente);
                     generateReport(ac.getIdAbonoCreditoPk().intValue(), "abonoCheque.jasper");
                     abono.reset();

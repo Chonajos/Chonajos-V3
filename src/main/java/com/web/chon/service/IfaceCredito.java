@@ -38,4 +38,5 @@ public interface IfaceCredito {
     public ArrayList<SaldosDeudas> getCreditosByEstatus(int estatus,int dias);
     
     
+    
 }
