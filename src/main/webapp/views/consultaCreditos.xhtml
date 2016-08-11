@@ -46,7 +46,9 @@
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding: 0px">
                             <p:dataTable id="table" var="model" style="width:100%;" value="#{beanConsultaCredito.modelo}"  scrollable="true"  emptyMessage="No se encontraron registros.">
                                 <p:column headerText="Folio" width="5%" class="alignCenter">
-                                    <p:commandLink value="#{model.folioCredito}" class="checkedFontColor commandLinkColor" actionListener="#{beanConsultaCredito.search}" update=":formContent"/>
+                                    <p:commandLink value="#{model.folioCredito}" class="checkedFontColor commandLinkColor" actionListener="#{beanConsultaCredito.search}" update=":formContent">
+                                        <f:setPropertyActionListener value="#{model}" target="#{beanConsultaCredito.data}"/>
+                                    </p:commandLink>
                                 </p:column>
                                 <p:column headerText="Cliente" width="10%;" class="alignLeft">
                                     <h:outputText value="#{model.nombreCompleto}" />
@@ -67,7 +69,6 @@
                                         <f:convertNumber type="currency" currencySymbol="$" />
                                     </h:outputText>
                                 </p:column>
-
                                 <p:column headerText="N° Pagos" width="6%;" class="alignCenter">
                                     <h:outputText value="#{model.numeroPagos}" />
                                 </p:column>
@@ -79,14 +80,11 @@
                                         <f:convertNumber type="currency" currencySymbol="$" />
                                     </h:outputText>
                                 </p:column>
-
                                 <p:column headerText="Total Abonado" width="8%" class="alignRight">
                                     <h:outputText value="#{model.totalAbonado}"> 
                                         <f:convertNumber type="currency" currencySymbol="$" />
                                     </h:outputText>
                                 </p:column>
-
-
                                 <p:column headerText="Pagos Atrasados" width="8%;" class="alignRight">
                                     <h:outputText value="#{model.periodosAtraso}"> 
                                     </h:outputText>
@@ -117,6 +115,62 @@
                                     </h:outputText>
                                 </p:column>
                             </p:dataTable>
+                        </div>
+                    </div>
+                </div>
+            </p:panel>
+            <p:panel style="padding: 0px" rendered="#{beanConsultaCredito.viewEstate =='search'}">
+                <div class="container-fluid" style="padding: 0px">
+                    <div class="form-group" style="padding: 0px">
+                        <div class="form-group alignRight">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight form-group">
+                                <p:commandButton value="Atras" update=":formContent" actionListener="#{beanConsultaCredito.backView}"/>
+                                <p:commandButton value="Guardar" onclick="PF('statusDialog').show()" update=":formContent" actionListener="#{beanConsultaCredito.consultaCredito}"/>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 form-group">
+                                <p:outputLabel class="col-lg-4 col-md-6 col-sm-6 col-xs-12"  for="txtCliente" value ="Cliente:" /> 
+                                <p:inputText id="txtCliente" class=" col-lg-8 col-md-6 col-sm-6 col-xs-12 " value="#{beanConsultaCredito.data.nombreCompleto}" readonly="true">
+                                </p:inputText>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 form-group">
+                                <p:outputLabel class="col-lg-4 col-md-6 col-sm-6 col-xs-12"  for="txtTelefono" value ="Telefono:" /> 
+                                <p:inputText id="txtTelefono" class=" col-lg-4 col-md-6 col-sm-6 col-xs-12 " value="#{beanConsultaCredito.data.numeroTelefono}" readonly="true">
+                                </p:inputText>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 form-group">
+                                <p:outputLabel class="col-lg-4 col-md-6 col-sm-6 col-xs-12"  for="txtCorreo" value ="Correo:" /> 
+                                <p:inputText id="txtCorreo" class=" col-lg-8 col-md-6 col-sm-6 col-xs-12 " value="#{beanConsultaCredito.data.correo}" readonly="true">
+                                </p:inputText>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                <p:outputLabel class="col-lg-4 col-md-6 col-sm-6 col-xs-12"  for="comboGestion" value ="Resultado de Gestion:" /> 
+                                <h:selectOneMenu  id="comboGestion" class="col-lg-6 col-md-6 col-sm-6 col-xs-12 " value="#{beanConsultaCredito.idResultadoGestio}" >
+                                    <f:selectItems  itemLabel="#{lst.descripcion}" var="lst" itemValue="#{lst.idResultadoGestion}" value="#{beanConsultaCredito.lstResultadoGestion}"/>
+                                    <p:ajax event="change" process="@this" update="@this"/>
+                                </h:selectOneMenu>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="comboAcion" value ="Accion de Gestion:" /> 
+                                <h:selectOneMenu  id="comboAcion" class="col-lg-6 col-md-6 col-sm-6 col-xs-12" value="#{beanConsultaCredito.gestionCredito.idAcionGestion}" >
+                                    <f:selectItems  itemLabel="#{lst.descripcion}" itemValue="#{lst.idAcionGestion}" var="lst" value="#{beanConsultaCredito.lstAcionGestion}"/>
+                                    <p:ajax event="change" process="@this" update="@this"/>
+                                </h:selectOneMenu>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="calendar" value ="Reprogramar Fecha de Pago:" /> 
+                                <p:calendar id="calendar" class="col-lg-6 col-md-6 col-sm-6 col-xs-12 calendario" navigator="true" placeholder="dd/mm/yyyy"
+                                            value="#{beanConsultaCredito.reprogramarFecha}" locale="es" pattern="dd/MM/yyyy" showOn="button" >
+                                </p:calendar>
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="observaciones" value ="Observaciones:" /> 
+                                    <p:inputTextarea id="observaciones" class="col-lg-8 col-md-8 col-sm-8 col-xs-12" maxlength="255"
+                                                     value="#{beanConsultaCredito.gestionCredito.observaciones}"/>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -1,15 +1,12 @@
 package com.web.chon.bean;
 
-import com.web.chon.dominio.AbonoCredito;
-import com.web.chon.dominio.Cliente;
+import com.web.chon.dominio.AcionGestion;
+import com.web.chon.dominio.GestionCredito;
+import com.web.chon.dominio.ResultadoGestion;
 import com.web.chon.dominio.SaldosDeudas;
-import com.web.chon.dominio.TipoAbono;
 import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.security.service.PlataformaSecurityContext;
-import com.web.chon.service.IfaceAbonoCredito;
-import com.web.chon.service.IfaceCatCliente;
 import com.web.chon.service.IfaceCredito;
-import com.web.chon.service.IfaceTipoAbono;
 import com.web.chon.util.JsfUtil;
 import com.web.chon.util.TiempoUtil;
 import java.io.Serializable;
@@ -42,8 +39,16 @@ public class BeanConsultaCredito implements Serializable {
     private Date fechaSystema;
 
     private ArrayList<SaldosDeudas> modelo;
+    private ArrayList<AcionGestion> lstAcionGestion;
+    private ArrayList<ResultadoGestion> lstResultadoGestion;
 
+    private SaldosDeudas data;
     private UsuarioDominio usuarioDominio;
+    private GestionCredito gestionCredito;
+    
+    private Date reprogramarFecha;
+    
+    private BigDecimal idResultadoGestio;
 
     private int numDias;
     private int numFiltro;
@@ -51,7 +56,12 @@ public class BeanConsultaCredito implements Serializable {
     @PostConstruct
     public void init() {
 
+        data = new SaldosDeudas();
+        gestionCredito = new GestionCredito();
         modelo = new ArrayList<SaldosDeudas>();
+        lstAcionGestion = new ArrayList<AcionGestion>();
+        lstResultadoGestion = new ArrayList<ResultadoGestion>();
+
         fechaSystema = context.getFechaSistema();
         usuarioDominio = context.getUsuarioAutenticado();
         setTitle("Consulta de Crédito");
@@ -122,8 +132,9 @@ public class BeanConsultaCredito implements Serializable {
         }
 
     }
-    
-    public void search(){
+
+    public void search() {
+        setTitle("Gestion de Credito");
         setViewEstate("search");
     }
 
@@ -174,5 +185,55 @@ public class BeanConsultaCredito implements Serializable {
     public void setNumDias(int numDias) {
         this.numDias = numDias;
     }
+
+    public SaldosDeudas getData() {
+        return data;
+    }
+
+    public void setData(SaldosDeudas data) {
+        this.data = data;
+    }
+
+    public ArrayList<AcionGestion> getLstAcionGestion() {
+        return lstAcionGestion;
+    }
+
+    public void setLstAcionGestion(ArrayList<AcionGestion> lstAcionGestion) {
+        this.lstAcionGestion = lstAcionGestion;
+    }
+
+    public ArrayList<ResultadoGestion> getLstResultadoGestion() {
+        return lstResultadoGestion;
+    }
+
+    public void setLstResultadoGestion(ArrayList<ResultadoGestion> lstResultadoGestion) {
+        this.lstResultadoGestion = lstResultadoGestion;
+    }
+
+    public GestionCredito getGestionCredito() {
+        return gestionCredito;
+    }
+
+    public void setGestionCredito(GestionCredito gestionCredito) {
+        this.gestionCredito = gestionCredito;
+    }
+
+    public Date getReprogramarFecha() {
+        return reprogramarFecha;
+    }
+
+    public void setReprogramarFecha(Date reprogramarFecha) {
+        this.reprogramarFecha = reprogramarFecha;
+    }
+
+    public BigDecimal getIdResultadoGestio() {
+        return idResultadoGestio;
+    }
+
+    public void setIdResultadoGestio(BigDecimal idResultadoGestio) {
+        this.idResultadoGestio = idResultadoGestio;
+    }
+    
+    
 
 }
