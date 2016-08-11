@@ -6,9 +6,6 @@
         <filter-name>springSecurityFilterChain</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
     </filter>
-    <session-config>	
-        <session-timeout>3600</session-timeout>
-    </session-config>
    
     <filter-mapping>
         <filter-name>springSecurityFilterChain</filter-name>
@@ -76,6 +73,9 @@
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
+     <session-config>	
+        <session-timeout>10</session-timeout>
+    </session-config>
    
 <!--    <servlet>
         <servlet-name>Push Servlet</servlet-name>

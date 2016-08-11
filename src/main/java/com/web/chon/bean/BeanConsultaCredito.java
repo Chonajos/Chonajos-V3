@@ -10,6 +10,7 @@ import com.web.chon.service.IfaceAbonoCredito;
 import com.web.chon.service.IfaceCatCliente;
 import com.web.chon.service.IfaceCredito;
 import com.web.chon.service.IfaceTipoAbono;
+import com.web.chon.util.JsfUtil;
 import com.web.chon.util.TiempoUtil;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -30,21 +31,22 @@ public class BeanConsultaCredito implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Autowired IfaceCredito ifaceCredito;
-    @Autowired PlataformaSecurityContext context;
-    
+    @Autowired
+    IfaceCredito ifaceCredito;
+    @Autowired
+    PlataformaSecurityContext context;
+
     private String title;
     private String viewEstate;
-    
+
     private Date fechaSystema;
-    
+
     private ArrayList<SaldosDeudas> modelo;
-    
+
     private UsuarioDominio usuarioDominio;
 
     private int numDias;
     private int numFiltro;
-
 
     @PostConstruct
     public void init() {
@@ -112,8 +114,17 @@ public class BeanConsultaCredito implements Serializable {
 
         }
 
-        modelo = modelTemp;
+        if (modelTemp.isEmpty()) {
+            JsfUtil.addWarnMessage("No se Encontraron Registros.");
+            modelo.clear();
+        } else {
+            modelo = modelTemp;
+        }
 
+    }
+    
+    public void search(){
+        setViewEstate("search");
     }
 
     public String getTitle() {
