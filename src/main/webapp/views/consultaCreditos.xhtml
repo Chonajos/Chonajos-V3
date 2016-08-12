@@ -148,7 +148,7 @@
                                 <p:outputLabel class="col-lg-4 col-md-6 col-sm-6 col-xs-12"  for="comboGestion" value ="Resultado de Gestion:" /> 
                                 <h:selectOneMenu  id="comboGestion" class="col-lg-6 col-md-6 col-sm-6 col-xs-12 " value="#{beanConsultaCredito.idResultadoGestio}" >
                                     <f:selectItems  itemLabel="#{lst.descripcion}" var="lst" itemValue="#{lst.idResultadoGestion}" value="#{beanConsultaCredito.lstResultadoGestion}"/>
-                                    <p:ajax event="change" process="@this" update="@this"/>
+                                    <p:ajax event="change" process="@this" update="@this :formContent:comboAcion" listener="#{beanConsultaCredito.obetenerAcionGestio}"/>
                                 </h:selectOneMenu>
                             </div>
                             <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">

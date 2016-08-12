@@ -6,7 +6,10 @@ import com.web.chon.dominio.ResultadoGestion;
 import com.web.chon.dominio.SaldosDeudas;
 import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.security.service.PlataformaSecurityContext;
+import com.web.chon.service.IfaceAcionGestion;
 import com.web.chon.service.IfaceCredito;
+import com.web.chon.service.IfaceGestionCredito;
+import com.web.chon.service.IfaceResultadoGestion;
 import com.web.chon.util.JsfUtil;
 import com.web.chon.util.TiempoUtil;
 import java.io.Serializable;
@@ -32,6 +35,12 @@ public class BeanConsultaCredito implements Serializable {
     IfaceCredito ifaceCredito;
     @Autowired
     PlataformaSecurityContext context;
+    @Autowired
+    IfaceAcionGestion ifaceAcionGestion;
+    @Autowired
+    IfaceGestionCredito ifaceGestionCredito;
+    @Autowired
+    IfaceResultadoGestion ifaceResultadoGestion;
 
     private String title;
     private String viewEstate;
@@ -45,9 +54,9 @@ public class BeanConsultaCredito implements Serializable {
     private SaldosDeudas data;
     private UsuarioDominio usuarioDominio;
     private GestionCredito gestionCredito;
-    
+
     private Date reprogramarFecha;
-    
+
     private BigDecimal idResultadoGestio;
 
     private int numDias;
@@ -135,7 +144,14 @@ public class BeanConsultaCredito implements Serializable {
 
     public void search() {
         setTitle("Gestion de Credito");
+        lstResultadoGestion = ifaceResultadoGestion.getAll();
+        obetenerAcionGestio();
         setViewEstate("search");
+    }
+    
+    public void obetenerAcionGestio(){
+        System.out.println("idResultadoGestio :"+idResultadoGestio);
+        lstAcionGestion = ifaceAcionGestion.getByIdResultadoGestion(idResultadoGestio);
     }
 
     public String getTitle() {
@@ -233,7 +249,5 @@ public class BeanConsultaCredito implements Serializable {
     public void setIdResultadoGestio(BigDecimal idResultadoGestio) {
         this.idResultadoGestio = idResultadoGestio;
     }
-    
-    
 
 }
