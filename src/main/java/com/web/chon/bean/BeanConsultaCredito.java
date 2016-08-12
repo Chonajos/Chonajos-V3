@@ -98,6 +98,7 @@ public class BeanConsultaCredito implements Serializable {
 
                         if (diasDiferencia <= numDias) {
                             saldos.setDiasAtraso(Integer.toString(0));
+                            saldos.setStatusFechaProxima(new BigDecimal(1));
                             modelTemp.add(saldos);
                         }
 
@@ -113,6 +114,7 @@ public class BeanConsultaCredito implements Serializable {
                         diasDiferencia -= (saldos.getPlazo().divide(saldos.getNumeroPagos())).intValue();
                         if (diasDiferencia <= numDias) {
                             saldos.setDiasAtraso(Integer.toString(diasDiferencia));
+                            saldos.setStatusFechaProxima(new BigDecimal(2));
                             modelTemp.add(saldos);
                         }
 
@@ -124,6 +126,7 @@ public class BeanConsultaCredito implements Serializable {
 
                         if (diasDiferencia <= numDias) {
                             saldos.setDiasAtraso(Integer.toString(diasDiferencia));
+                            saldos.setStatusFechaProxima(new BigDecimal(3));
                             modelTemp.add(saldos);
                         }
 
@@ -145,13 +148,25 @@ public class BeanConsultaCredito implements Serializable {
     public void search() {
         setTitle("Gestion de Credito");
         lstResultadoGestion = ifaceResultadoGestion.getAll();
+        idResultadoGestio = idResultadoGestio == null ? lstResultadoGestion.get(0).getIdResultadoGestion() : idResultadoGestio;
         obetenerAcionGestio();
         setViewEstate("search");
     }
-    
-    public void obetenerAcionGestio(){
-        System.out.println("idResultadoGestio :"+idResultadoGestio);
+
+    public void obetenerAcionGestio() {
+        System.out.println("idResultadoGestio :" + idResultadoGestio);
         lstAcionGestion = ifaceAcionGestion.getByIdResultadoGestion(idResultadoGestio);
+    }
+
+    public void save() {
+        gestionCredito.setIdCredito(data.getFolioCredito());
+        gestionCredito.setIdUsario(usuarioDominio.getIdUsuario());
+        if(ifaceGestionCredito.insert(gestionCredito)==1){
+            JsfUtil.addSuccessMessage("Registro Actualizado Correctamente.");
+            init();
+        }else{
+            JsfUtil.addErrorMessage("Ocurrio un error al insertar el registro.");
+        }
     }
 
     public String getTitle() {
