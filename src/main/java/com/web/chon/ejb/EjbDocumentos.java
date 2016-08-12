@@ -79,5 +79,23 @@ public class EjbDocumentos implements NegocioDocumentos{
             return 0;
         }
     }
+
+    @Override
+    public int updateDocumento(Documento documento) {
+        System.out.println("EJBDOCUMENTOS: "+documento.toString());
+         try {
+            Query query = em.createNativeQuery("UPDATE  "
+                    + "DOCUMENTOS_COBRAR SET ID_STATUS_FK = ? "
+                    + "  WHERE ID_DOCUMENTO_PK = ?");
+           
+            query.setParameter(1, documento.getIdStatusFk());
+            query.setParameter(2, documento.getIdDocumentoPk());
+            return query.executeUpdate();
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbDocumentos.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        }
+    }
    
 }

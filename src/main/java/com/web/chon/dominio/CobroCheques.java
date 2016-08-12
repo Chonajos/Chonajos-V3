@@ -24,6 +24,7 @@ public class CobroCheques implements Serializable {
     private BigDecimal cuentaDeposito;
     private BigDecimal importeDeposito;
     private String observaciones;
+    private BigDecimal folioFicha;
 
     public void reset() {
         idCobroChequePk = null;
@@ -34,12 +35,23 @@ public class CobroCheques implements Serializable {
         cuentaDeposito = null;
         importeDeposito = null;
         observaciones = null;
+        folioFicha=null;
     }
 
     @Override
     public String toString() {
-        return "CobroCheques{" + "idCobroChequePk=" + idCobroChequePk + ", idDocumentoFk=" + idDocumentoFk + ", idTipoCobro=" + idTipoCobro + ", fechaDeposito=" + fechaDeposito + ", bancoDeposito=" + bancoDeposito + ", cuentaDeposito=" + cuentaDeposito + ", importeDeposito=" + importeDeposito + ", observaciones=" + observaciones + '}';
+        return "CobroCheques{" + "idCobroChequePk=" + idCobroChequePk + ", idDocumentoFk=" + idDocumentoFk + ", idTipoCobro=" + idTipoCobro + ", fechaDeposito=" + fechaDeposito + ", bancoDeposito=" + bancoDeposito + ", cuentaDeposito=" + cuentaDeposito + ", importeDeposito=" + importeDeposito + ", observaciones=" + observaciones + ", folioFicha=" + folioFicha + '}';
     }
+
+    
+    public BigDecimal getFolioFicha() {
+        return folioFicha;
+    }
+
+    public void setFolioFicha(BigDecimal folioFicha) {
+        this.folioFicha = folioFicha;
+    }
+
 
     public BigDecimal getIdCobroChequePk() {
         return idCobroChequePk;

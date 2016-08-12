@@ -66,4 +66,11 @@ public class ServiceDocumentos implements IfaceDocumentos {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public int updateDocumentoById(Documento dc) {
+       getEjb();
+       return ejb.updateDocumento(dc);
+    
+    }
+
 }

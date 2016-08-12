@@ -14,65 +14,6 @@
                 <h3>#{beanDocumentosCobrar.title}</h3>
             </div>
             <p:panel  rendered="#{beanDocumentosCobrar.viewEstate=='init'}" >
-                <div class="container-fluid">
-                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                        <div class="form-group" align="right">
-                            <p:dialog  id="dialogw" header="Cobrar Cheque" widgetVar="dlg" resizable="false">
-                                <h:panelGrid columns="1" cellpadding="5">
-                                    <div class="form-group">
-                                        <p:outputLabel for="comboTipoCobro" value="Tipo de Cobro" /> 
-                                        <h:selectOneMenu  id="comboTipoCobro"  value="#{beanDocumentosCobrar.cobroCheque.idTipoCobro}">
-                                            <f:selectItem  itemLabel="DEPÓSITO" itemValue="1"/>
-                                            <f:selectItem  itemLabel="EFECTIVO" itemValue="2"/>
-                                            <f:selectItem  itemLabel="NO COBRADO" itemValue="3"/>
-                                            <p:ajax event="change" listener="#{beanDocumentosCobrar.agregarCampos()}" update=":formContent:datos"/>
-                                        </h:selectOneMenu>
-                                    </div>
-                                    <p:fragment id="datos" >
-                                    <!-- INPUTS PARA FICHA DE DEPOSITO-->
-                                    <div class="form-group">
-                                        <h:outputLabel for="folioFicha" value="Folio de Ficha:"  rendered="#{beanDocumentosCobrar.camposDeposito =='true' || beanDocumentosCobrar.camposEfectivo =='true'}" />
-                                        <p:inputText id="folioFicha"  value="#{beanDocumentosCobrar.cobroCheque.folioFicha}" rendered="#{beanDocumentosCobrar.camposDeposito =='true' || beanDocumentosCobrar.camposEfectivo =='true'}"/>
-                                    </div>
-                                    <div class="form-group">
-                                        <h:outputLabel  value="Fecha de Depósitoo:"  rendered="#{beanDocumentosCobrar.camposDeposito =='true'}"/>
-                                        <p:calendar class="calendario" navigator="true" 
-                                                    placeholder="dd/mm/yyyy" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" 
-                                                    showOn="button"  id="popup" value="#{beanDocumentosCobrar.cobroCheque.fechaDeposito}"  rendered="#{beanDocumentosCobrar.camposDeposito =='true'}" />
-                                    </div>
-                                    <div class="form-group">
-                                        <p:outputLabel for="comboBancoDeposito" value="Banco Emisor:"  rendered="#{beanDocumentosCobrar.camposDeposito =='true'}" /> 
-                                        <h:selectOneMenu  id="comboBancoDeposito"  value="#{beanDocumentosCobrar.cobroCheque.bancoDeposito}"  rendered="#{beanDocumentosCobrar.camposDeposito =='true'}" >
-                                            <f:selectItem  itemLabel="BANAMEX" itemValue="BANAMEX"/>
-                                            <f:selectItem  itemLabel="BANCOMER" itemValue="BANCOMER"/>
-                                            <f:selectItem  itemLabel="SANTANDER" itemValue="SANTANDER"/>
-                                            <f:selectItem  itemLabel="HSBC" itemValue="HSBC"/>
-                                            <f:selectItem  itemLabel="BANORTE" itemValue="BANORTE"/>
-                                            <f:selectItem  itemLabel="SCOTIABANK" itemValue="SCOTIABANK"/>
-                                            <f:selectItem  itemLabel="INBURSA" itemValue="INBURSA"/>
-                                        </h:selectOneMenu>
-                                    </div>
-                                    <div class="form-group">
-                                        <h:outputLabel for="cuentaDeposito" value="Cuenta del depósito:"  rendered="#{beanDocumentosCobrar.camposDeposito =='true'}"/>
-                                        <p:inputText id="cuentaDeposito"  value="#{beanDocumentosCobrar.cobroCheque.cuentaDeposito}"  rendered="#{beanDocumentosCobrar.camposDeposito =='true'}"  />
-                                    </div>
-                                    <div class="form-group">
-                                        <h:outputLabel for="importeDeposito" value="Importe del depósito:"  rendered="#{beanDocumentosCobrar.camposDeposito =='true' || beanDocumentosCobrar.camposEfectivo =='true'}"/>
-                                        <p:inputText id="importeDeposito" readonly="true" value="#{beanDocumentosCobrar.dataAbonar.montoAbono}"  rendered="#{beanDocumentosCobrar.camposDeposito =='true' || beanDocumentosCobrar.camposEfectivo =='true'}" />
-                                    </div>
-                                    <div class="form-group">
-                                        <h:outputLabel for="observaciones" value="Observaciones:" />
-                                        <p:inputText id="observaciones"  value="#{beanDocumentosCobrar.cobroCheque.observaciones}" />
-                                    </div>
-                                    <div class="form-group">
-                                        <p:commandButton value="Registrar" update="formContent" action="#{beanDocumentosCobrar.cobrarCheque()}" oncomplete="PF('dlg').hide();"/>
-                                    </div>
-                                    </p:fragment>
-                                </h:panelGrid>
-                            </p:dialog>
-                        </div>
-                    </div>
-                </div>
             </p:panel>
 
             <p:panel  rendered="#{beanDocumentosCobrar.viewEstate=='init'}" >
@@ -98,11 +39,7 @@
                                      scrollable="true"  
                                      styleClass="ui-datatable-hor-scroll"  
                                      rowKey="#{listaAbonosAtrasdos.idAbonoCreditoPk}"
-
                                      emptyMessage="No se encontraron registros.">
-
-                            <!--                            <p:column selectionMode="multiple" width="10px; !important" class="alignCenter"/>-->
-
                             <p:column headerText="Cliente" width="50px;" class="alignCenter">
                                 <h:outputText value="#{listaAbonosAtrasdos.nombreCliente}" >     
                                 </h:outputText>
@@ -122,7 +59,6 @@
                                 <h:outputText value="#{listaAbonosAtrasdos.factura}"> 
                                 </h:outputText>
                             </p:column>
-
                             <p:column headerText="Importe" width="50px;" class="alignRight">
                                 <h:outputText value="#{listaAbonosAtrasdos.montoAbono}" >
                                     <f:convertNumber type="currency" currencySymbol="$" />
@@ -138,7 +74,6 @@
                                     <f:setPropertyActionListener value="#{listaAbonosAtrasdos}" target="#{beanDocumentosCobrar.dataAbonar}"/>
                                 </p:commandButton>
                             </p:column>
-
                         </p:dataTable>
                     </div>
                 </div>

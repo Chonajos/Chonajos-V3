@@ -55,4 +55,7 @@ public interface NegocioDocumentos {
      * @return
      */
     public int nextVal();
+    
+    
+    public int updateDocumento(Documento dc);
 }

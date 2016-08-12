@@ -48,4 +48,6 @@ public interface IfaceDocumentos {
      */
     public ArrayList<Documento> getDocumentosByIdStatusFk(BigDecimal idStatusFk);
     public int getNextVal();
+    
+    public int updateDocumentoById(Documento dc);
 }

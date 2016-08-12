@@ -151,12 +151,14 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
         System.out.println("Fecha fin: " + fechaFin);
         System.out.println("IdSucursalEJB: " + idSucursal);
 
-        StringBuffer cadena = new StringBuffer("select ab.* from ABONO_CREDITO ab \n" +
+        StringBuffer cadena = new StringBuffer("select ab.*,dc.ID_DOCUMENTO_PK,(CLI.NOMBRE||' '||CLI.APELLIDO_PATERNO ||' '||CLI.APELLIDO_MATERNO ) AS CLIENTE from ABONO_CREDITO ab \n" +
 "inner join USUARIO u \n" +
 "on u.ID_USUARIO_PK = ab.ID_USUARIO_FK \n" +
 "inner join DOCUMENTOS_COBRAR dc\n" +
 "on dc.ID_ABONO_FK = ab.ID_ABONO_CREDITO_PK\n" +
-" WHERE TO_DATE(TO_CHAR(ab.FECHA_COBRO,'dd/mm/yyyy'),'dd/mm/yyyy')<= '" + fechaInicio + "'" +
+"inner join CREDITO cre on cre.ID_CREDITO_PK = ab.ID_CREDITO_FK\n" +
+"inner join cliente cli on cli.ID_CLIENTE = cre.ID_CLIENTE_FK\n" +
+"WHERE TO_DATE(TO_CHAR(ab.FECHA_COBRO,'dd/mm/yyyy'),'dd/mm/yyyy')<= '" + fechaInicio + "'" +
 " and ab.ESTATUS=1 and ab.TIPO_ABONO_FK=3 and dc.ID_STATUS_FK=1");
 
         if (idSucursal == null || idSucursal.equals("")) {

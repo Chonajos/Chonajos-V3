@@ -25,11 +25,33 @@ public class AbonoCredito extends ValueObject {
     private String concepto;
     private Date fechaTransferencia;
     private BigDecimal datoACuenta;
+    private BigDecimal idDocumentoPk;
+    private String nombreCliente;
 
     @Override
     public String toString() {
-        return "AbonoCredito{" + "idAbonoCreditoPk=" + idAbonoCreditoPk + ", idCreditoFk=" + idCreditoFk + ", montoAbono=" + montoAbono + ", fechaAbono=" + fechaAbono + ", idUsuarioFk=" + idUsuarioFk + ", idtipoAbonoFk=" + idtipoAbonoFk + ", estatusAbono=" + estatusAbono + ", numeroCheque=" + numeroCheque + ", librador=" + librador + ", fechaCobro=" + fechaCobro + ", banco=" + banco + ", factura=" + factura + ", referencia=" + referencia + ", concepto=" + concepto + ", fechaTransferencia=" + fechaTransferencia + ", datoACuenta=" + datoACuenta + '}';
+        return "AbonoCredito{" + "idAbonoCreditoPk=" + idAbonoCreditoPk + ", idCreditoFk=" + idCreditoFk + ", montoAbono=" + montoAbono + ", fechaAbono=" + fechaAbono + ", idUsuarioFk=" + idUsuarioFk + ", idtipoAbonoFk=" + idtipoAbonoFk + ", estatusAbono=" + estatusAbono + ", numeroCheque=" + numeroCheque + ", librador=" + librador + ", fechaCobro=" + fechaCobro + ", banco=" + banco + ", factura=" + factura + ", referencia=" + referencia + ", concepto=" + concepto + ", fechaTransferencia=" + fechaTransferencia + ", datoACuenta=" + datoACuenta + ", idDocumentoPk=" + idDocumentoPk + ", nombreCliente=" + nombreCliente + '}';
     }
+
+    
+
+    public String getNombreCliente() {
+        return nombreCliente;
+    }
+
+    public void setNombreCliente(String nombreCliente) {
+        this.nombreCliente = nombreCliente;
+    }
+    
+
+    public BigDecimal getIdDocumentoPk() {
+        return idDocumentoPk;
+    }
+
+    public void setIdDocumentoPk(BigDecimal idDocumentoPk) {
+        this.idDocumentoPk = idDocumentoPk;
+    }
+    
 
     public BigDecimal getDatoACuenta() {
         return datoACuenta;
@@ -58,6 +80,8 @@ public class AbonoCredito extends ValueObject {
         concepto = null;
         datoACuenta=null;
         fechaTransferencia = null;
+        idDocumentoPk=null;
+        nombreCliente=null;
     }
 
     public BigDecimal getEstatusAbono() {
