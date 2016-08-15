@@ -246,6 +246,11 @@ button span:hover{
     color: #2D4DF0 !important;
     text-decoration: underline !important; 
 }
+/*paddin de input*/
+.ui-inputfield{
+    padding:2px !important;
+}
+
 
 
 /*Pantalla celular*/
