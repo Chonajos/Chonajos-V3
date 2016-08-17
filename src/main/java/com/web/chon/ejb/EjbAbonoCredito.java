@@ -147,28 +147,38 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
     }
 
     @Override
-    public List<Object[]> getChequesPendientes(String fechaInicio, String fechaFin, BigDecimal idSucursal) {
+    public List<Object[]> getChequesPendientes(String fechaInicio, String fechaFin, BigDecimal idSucursal, BigDecimal idClienteFk, BigDecimal filtro,BigDecimal filtroStatus) {
         System.out.println("Fecha fin: " + fechaFin);
         System.out.println("IdSucursalEJB: " + idSucursal);
 
-        StringBuffer cadena = new StringBuffer("select ab.*,dc.ID_DOCUMENTO_PK,(CLI.NOMBRE||' '||CLI.APELLIDO_PATERNO ||' '||CLI.APELLIDO_MATERNO ) AS CLIENTE from ABONO_CREDITO ab \n" +
-"inner join USUARIO u \n" +
-"on u.ID_USUARIO_PK = ab.ID_USUARIO_FK \n" +
-"inner join DOCUMENTOS_COBRAR dc\n" +
-"on dc.ID_ABONO_FK = ab.ID_ABONO_CREDITO_PK\n" +
-"inner join CREDITO cre on cre.ID_CREDITO_PK = ab.ID_CREDITO_FK\n" +
-"inner join cliente cli on cli.ID_CLIENTE = cre.ID_CLIENTE_FK\n" +
-"WHERE TO_DATE(TO_CHAR(ab.FECHA_COBRO,'dd/mm/yyyy'),'dd/mm/yyyy')<= '" + fechaInicio + "'" +
-" and ab.ESTATUS=1 and ab.TIPO_ABONO_FK=3 and dc.ID_STATUS_FK=1");
-
-        if (idSucursal == null || idSucursal.equals("")) {
-            cadena.append(" order by ab.FECHA_COBRO asc");
-
-        } else {
-            cadena.append(" and u.ID_SUCURSAL_FK='" + idSucursal + "' order by ab.FECHA_COBRO asc");
+        StringBuffer cadena = new StringBuffer("select ab.*,dc.ID_DOCUMENTO_PK,(CLI.NOMBRE||' '||CLI.APELLIDO_PATERNO "
+                + "||' '||CLI.APELLIDO_MATERNO ) AS CLIENTE, SD.DESCRIPCION, dc.ID_STATUS_FK from ABONO_CREDITO ab inner join USUARIO "
+                + "u on u.ID_USUARIO_PK = ab.ID_USUARIO_FK inner join DOCUMENTOS_COBRAR dc on dc.ID_ABONO_FK "
+                + "= ab.ID_ABONO_CREDITO_PK inner join CREDITO cre on cre.ID_CREDITO_PK = ab.ID_CREDITO_FK inner "
+                + "join cliente cli on cli.ID_CLIENTE = cre.ID_CLIENTE_FK "
+                + "inner join STATUS_DOCUMENTOS SD ON SD.ID_STATUS_DOCUMENTO_PK = DC.ID_STATUS_FK ");
+        if (filtro.intValue() == 1) {
+            cadena.append(" WHERE TO_DATE(TO_CHAR(ab.FECHA_COBRO,'dd/mm/yyyy'),'dd/mm/yyyy')<= '" + fechaInicio + "'");
+        cadena.append(" and ab.ESTATUS=1 and ab.TIPO_ABONO_FK=3 and dc.ID_STATUS_FK='"+filtroStatus+"'");
+        } else if (filtro.intValue() == 2) {
+            cadena.append(" WHERE TO_DATE(TO_CHAR(ab.FECHA_COBRO,'dd/mm/yyyy'),'dd/mm/yyyy')> '" + fechaInicio + "'");
+        cadena.append(" and ab.ESTATUS=1 and ab.TIPO_ABONO_FK=3 and dc.ID_STATUS_FK='"+filtroStatus+"'");
         }
+        else{
+            cadena.append(" where ab.ESTATUS=1 and ab.TIPO_ABONO_FK=3 and dc.ID_STATUS_FK='"+filtroStatus+"'");
+        }
+
+        if (idSucursal != null && !idSucursal.equals("")) {
+            cadena.append(" and u.ID_SUCURSAL_FK='" + idSucursal + "'");
+        }
+        if (idClienteFk != null && !idClienteFk.equals("")) {
+            cadena.append(" and cli.ID_CLIENTE ='" + idClienteFk + "'");
+        }
+
+        cadena.append(" order by ab.FECHA_COBRO asc");
         System.out.println("Query: " + cadena);
         Query query;
+
         query = em.createNativeQuery(cadena.toString());
 
         try {

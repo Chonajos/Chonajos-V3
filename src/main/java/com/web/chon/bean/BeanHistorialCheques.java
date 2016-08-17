@@ -34,7 +34,6 @@ public class BeanHistorialCheques implements Serializable{
          listaChequesEfectivo = new ArrayList<CobroCheques>();
           listaChequesNoCobrados = new ArrayList<CobroCheques>();
         
-        
     }
 
     public ArrayList<CobroCheques> getListaChequesDeposito() {

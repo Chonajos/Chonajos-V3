@@ -719,7 +719,8 @@ INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Pagar Pedido', 0,'90.3','/views/buscaVentaMayoreo.xhtml');
 
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Créditos', 1,'80','NULL');
-INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Buscar créditos', 0,'80.1','/views/buscarCreditos.xhtml');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Pagar  créditos', 0,'80.1','/views/buscarCreditos.xhtml');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Documentos por Cobrar', 0,'80.2','/views/documentosCobrar.xhtml');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Consultar créditos', 0,'80.3','/views/consultaCreditos.xhtml');
 
 
@@ -1132,6 +1133,7 @@ BANCO_DEPOSITO VARCHAR(30),
 CUENTA_DEPOSITO VARCHAR(50),
 IMPORTE_DEPOSITO NUMBER,
 OBSERVACIONES VARCHAR(100),
+FECHA_REGISTRO DATE,
 CONSTRAINT C_CQ_ID_COBRO_CHEQUES_PK PRIMARY KEY(ID_COBRO_CHEQUES_PK),
 CONSTRAINT C_CQ_ID_DOCUMENTO_FK FOREIGN KEY(ID_DOCUMENTO_FK) references DOCUMENTOS_COBRAR (ID_DOCUMENTO_PK)
 );
@@ -1187,4 +1189,43 @@ MINVALUE 0;
 
 
 
+CREATE TABLE STATUS_DOCUMENTOS(
+ID_STATUS_DOCUMENTO_PK NUMBER,
+DESCRIPCION VARCHAR(128),
+CONSTRAINT C_SD_ID_STATUS_DOCUMENTO_PK PRIMARY KEY (ID_STATUS_DOCUMENTO_PK)
+);
+
+CREATE SEQUENCE S_STATUS_DOCUMENTOS
+INCREMENT BY 1
+START WITH 1
+MINVALUE 0;
+
+Insert into STATUS_DOCUMENTOS (ID_STATUS_DOCUMENTO_PK,DESCRIPCION) values (1,'ACTIVO');
+Insert into STATUS_DOCUMENTOS (ID_STATUS_DOCUMENTO_PK,DESCRIPCION) values (2,'FINALIZADO');
+Insert into STATUS_DOCUMENTOS (ID_STATUS_DOCUMENTO_PK,DESCRIPCION) values (3,'DEVUELTO');
+Insert into STATUS_DOCUMENTOS (ID_STATUS_DOCUMENTO_PK,DESCRIPCION) values (4,'CONVENIO');
+
+CREATE TABLE ABONO_DOCUMENTOS(
+ID_ABONO_DOCUMENTO_PK NUMBER,
+ID_DOCUMENTO_FK NUMBER,
+MONTO_ABONO NUMBER,
+FECHA_ABONO DATE,
+ID_TIPO_ABONO_FK NUMBER,
+ESTATUS NUMBER,
+NUMERO_CHEQUE NUMBER,
+LIBRADOR VARCHAR(50),
+FECHA_COBRO DATE,
+BANCO_EMISOR VARCHAR(50),
+NUMERO_FACTURA VARCHAR(50),
+REFERENCIA NUMBER,
+CONCEPTO VARCHAR(50),
+FECHA_TRANSFERENCIA DATE,
+CONSTRAINT C_AD_ID_ABONO_DOCUMENTO_PK PRIMARY KEY (ID_ABONO_DOCUMENTO_PK),
+CONSTRAINT C_AD_ID_DOCUMENTO_FK FOREIGN KEY(ID_DOCUMENTO_FK) REFERENCES DOCUMENTOS_COBRAR(ID_DOCUMENTO_PK)
+);
+
+CREATE SEQUENCE S_ABONO_DOCUMENTOS
+INCREMENT BY 1
+START WITH 1
+MINVALUE 0;
 ---corres estadisticas a la base EXEC DBMS_UTILITY.analyze_schema('CHONI','COMPUTE');

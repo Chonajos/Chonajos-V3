@@ -236,9 +236,13 @@ public class EjbCatCliente implements NegocioCatCliente {
     public List<Object[]> getCreditoClienteByIdCliente(BigDecimal idCliente) {
         try {
 
-            Query query = em.createNativeQuery("select c.ID_CLIENTE, c.NOMBRE ||' '|| c.APELLIDO_PATERNO ||' '|| c.APELLIDO_MATERNO AS NOMBRE_COMPLETO,NVL(c.MONTO_CREDITO,0) AS MONTO_CREDITO, "
-                    + " NVL((SELECT SUM(CRE.MONTO_CREDITO) FROM CREDITO CRE WHERE CRE.ID_CLIENTE_FK =c.ID_CLIENTE AND CRE.ESTATUS_CREDITO = 1 ),0) AS CREDITO_UTILIZADO "
-                    + " FROM CLIENTE c WHERE c.ID_CLIENTE= ?");
+            Query query = em.createNativeQuery("select c.ID_CLIENTE, c.NOMBRE ||' '|| c.APELLIDO_PATERNO ||' '|| c.APELLIDO_MATERNO AS NOMBRE_COMPLETO,NVL(c.MONTO_CREDITO,0) \n" +
+"AS MONTO_CREDITO, \n" +
+"NVL((SELECT SUM(CRE.MONTO_CREDITO) FROM CREDITO CRE WHERE CRE.ID_CLIENTE_FK =c.ID_CLIENTE AND CRE.ESTATUS_CREDITO = 1 ),0)\n" +
+"AS CREDITO_UTILIZADO,\n" +
+"(select sum(dc.monto) as DOCUMENTOS from DOCUMENTOS_COBRAR dc where dc.ID_STATUS_FK=1 and dc.ID_CLIENTE_FK=c.ID_CLIENTE) as Documentos\n" +
+"FROM CLIENTE c \n" +
+"WHERE c.ID_CLIENTE = ?");
             query.setParameter(1, idCliente);
             return query.getResultList();
 

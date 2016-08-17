@@ -27,10 +27,52 @@ public class AbonoCredito extends ValueObject {
     private BigDecimal datoACuenta;
     private BigDecimal idDocumentoPk;
     private String nombreCliente;
+    private String nombreStatus;
+    private BigDecimal idStatusDocumentoFk;
 
     @Override
     public String toString() {
-        return "AbonoCredito{" + "idAbonoCreditoPk=" + idAbonoCreditoPk + ", idCreditoFk=" + idCreditoFk + ", montoAbono=" + montoAbono + ", fechaAbono=" + fechaAbono + ", idUsuarioFk=" + idUsuarioFk + ", idtipoAbonoFk=" + idtipoAbonoFk + ", estatusAbono=" + estatusAbono + ", numeroCheque=" + numeroCheque + ", librador=" + librador + ", fechaCobro=" + fechaCobro + ", banco=" + banco + ", factura=" + factura + ", referencia=" + referencia + ", concepto=" + concepto + ", fechaTransferencia=" + fechaTransferencia + ", datoACuenta=" + datoACuenta + ", idDocumentoPk=" + idDocumentoPk + ", nombreCliente=" + nombreCliente + '}';
+        return "AbonoCredito{" + "idAbonoCreditoPk=" + idAbonoCreditoPk + ", idCreditoFk=" + idCreditoFk + ", montoAbono=" + montoAbono + ", fechaAbono=" + fechaAbono + ", idUsuarioFk=" + idUsuarioFk + ", idtipoAbonoFk=" + idtipoAbonoFk + ", estatusAbono=" + estatusAbono + ", numeroCheque=" + numeroCheque + ", librador=" + librador + ", fechaCobro=" + fechaCobro + ", banco=" + banco + ", factura=" + factura + ", referencia=" + referencia + ", concepto=" + concepto + ", fechaTransferencia=" + fechaTransferencia + ", datoACuenta=" + datoACuenta + ", idDocumentoPk=" + idDocumentoPk + ", nombreCliente=" + nombreCliente + ", nombreStatus=" + nombreStatus + '}';
+    }
+
+    @Override
+    public void reset() {
+        idAbonoCreditoPk = null;
+        idCreditoFk = null;
+        montoAbono = null;
+        fechaAbono = null;
+        idUsuarioFk = null;
+        idtipoAbonoFk = null;
+        estatusAbono = null;
+        numeroCheque = null;
+        librador = null;
+        fechaCobro = null;
+        banco = null;
+        factura = null;
+        referencia = null;
+        concepto = null;
+        datoACuenta=null;
+        fechaTransferencia = null;
+        idDocumentoPk=null;
+        nombreCliente=null;
+        nombreStatus=null;
+    }
+
+    public BigDecimal getIdStatusDocumentoFk() {
+        return idStatusDocumentoFk;
+    }
+
+    public void setIdStatusDocumentoFk(BigDecimal idStatusDocumentoFk) {
+        this.idStatusDocumentoFk = idStatusDocumentoFk;
+    }
+    
+
+    public String getNombreStatus() {
+        return nombreStatus;
+    }
+
+    public void setNombreStatus(String nombreStatus) {
+        this.nombreStatus = nombreStatus;
     }
 
     
@@ -60,30 +102,7 @@ public class AbonoCredito extends ValueObject {
     public void setDatoACuenta(BigDecimal datoACuenta) {
         this.datoACuenta = datoACuenta;
     }
-    
-
-    @Override
-    public void reset() {
-        idAbonoCreditoPk = null;
-        idCreditoFk = null;
-        montoAbono = null;
-        fechaAbono = null;
-        idUsuarioFk = null;
-        idtipoAbonoFk = null;
-        estatusAbono = null;
-        numeroCheque = null;
-        librador = null;
-        fechaCobro = null;
-        banco = null;
-        factura = null;
-        referencia = null;
-        concepto = null;
-        datoACuenta=null;
-        fechaTransferencia = null;
-        idDocumentoPk=null;
-        nombreCliente=null;
-    }
-
+   
     public BigDecimal getEstatusAbono() {
         return estatusAbono;
     }

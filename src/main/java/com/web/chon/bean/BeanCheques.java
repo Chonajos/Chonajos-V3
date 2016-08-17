@@ -134,7 +134,7 @@ dataAbonar = new AbonoCredito();
         listaAbonos = new ArrayList<AbonoCredito>();
         idSucursalFk = new BigDecimal(usuario.getSucId());
         System.out.println("IdSucursal Logueado: " + idSucursalFk);
-        listaAbonosAtrasdos = ifaceAbonoCredito.getChequesPendientes(fechaInicio, fechaFin, idSucursalFk);
+        listaAbonosAtrasdos = ifaceAbonoCredito.getChequesPendientes(fechaInicio, fechaFin, idSucursalFk,null,null,new BigDecimal(1));
         generarQuery();
         setTitle("Documentos por Cobrar");
         setViewEstate("init");
@@ -178,7 +178,7 @@ dataAbonar = new AbonoCredito();
                 }
             }
             selectedchequesPendientes = new ArrayList<AbonoCredito>();
-            listaAbonosAtrasdos = ifaceAbonoCredito.getChequesPendientes(fechaInicio, fechaFin, idSucursalFk);
+            listaAbonosAtrasdos = ifaceAbonoCredito.getChequesPendientes(fechaInicio, fechaFin, idSucursalFk,null,null,new BigDecimal(1));
         } else {
             JsfUtil.addErrorMessageClean("No existen cheques activos o no se ha seleccionado ninguno");
         }
@@ -187,7 +187,7 @@ dataAbonar = new AbonoCredito();
 
     public void buscaCheques() {
         System.out.println("idSucursal: " + idSucursalFk);
-        listaAbonosAtrasdos = ifaceAbonoCredito.getChequesPendientes(fechaInicio, fechaFin, idSucursalFk);
+        listaAbonosAtrasdos = ifaceAbonoCredito.getChequesPendientes(fechaInicio, fechaFin, idSucursalFk,null,null,new BigDecimal(1));
         generarQuery();
         System.out.println("QueryBEAN: " + query);
     }

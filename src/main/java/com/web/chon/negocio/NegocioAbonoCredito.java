@@ -25,7 +25,7 @@ public interface NegocioAbonoCredito
     
     public List<Object[]> getByIdCredito(BigDecimal idAbonoCredito) ;
     
-    public List<Object[]> getChequesPendientes(String fechaInicio, String fechaFin,BigDecimal idSucursal);
+    public List<Object[]> getChequesPendientes(String fechaInicio, String fechaFin,BigDecimal idSucursal,BigDecimal idClienteFk,BigDecimal filtro,BigDecimal filtroStatus);
     
     public int getNextVal();
     

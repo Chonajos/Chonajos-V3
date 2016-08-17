@@ -6,16 +6,20 @@
 package com.web.chon.bean;
 
 import com.web.chon.dominio.AbonoCredito;
+import com.web.chon.dominio.AbonoDocumentos;
 import com.web.chon.dominio.Cliente;
 import com.web.chon.dominio.CobroCheques;
 import com.web.chon.dominio.Documento;
 import com.web.chon.dominio.Sucursal;
+import com.web.chon.dominio.TipoAbono;
 import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceAbonoCredito;
+import com.web.chon.service.IfaceCatCliente;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceCobroCheques;
 import com.web.chon.service.IfaceDocumentos;
+import com.web.chon.service.IfaceTipoAbono;
 import com.web.chon.util.Constantes;
 import com.web.chon.util.JasperReportUtil;
 import com.web.chon.util.JsfUtil;
@@ -61,7 +65,8 @@ import org.springframework.stereotype.Component;
 public class BeanDocumentosCobrar implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    @Autowired
+    private IfaceCatCliente ifaceCatCliente;
     @Autowired
     private IfaceCatSucursales ifaceCatSucursales;
     @Autowired
@@ -72,9 +77,13 @@ public class BeanDocumentosCobrar implements Serializable {
     private IfaceDocumentos ifaceDocumentos;
     @Autowired
     private IfaceCobroCheques ifaceCobroCheques;
+    @Autowired
+    private IfaceTipoAbono ifaceTipoAbono;
 
     private ArrayList<Sucursal> listaSucursales;
     private ArrayList<AbonoCredito> listaAbonosAtrasdos;
+    private ArrayList<Cliente> lstCliente;
+    private ArrayList<TipoAbono> lstTipoAbonos;
     private UsuarioDominio usuario;
     private StringBuffer query;
 
@@ -84,12 +93,14 @@ public class BeanDocumentosCobrar implements Serializable {
     //---Variables de la vista---///
     private String title;
     private String viewEstate;
+    private String leyenda;
     Date fechaInicio;
     Date fechaFin;
     private BigDecimal idSucursalFk;
     private BigDecimal saldoParaLiquidar;
     private Cliente cliente;
     private AbonoCredito dataAbonar;
+    private BigDecimal filtro;
 
     private Map paramReport = new HashMap();
     private String rutaPDF;
@@ -100,6 +111,16 @@ public class BeanDocumentosCobrar implements Serializable {
     private String pathFileJasper = "C:/Users/Juan/Documents/NetBeansProjects/Chonajos-V2/ticket.jasper";
     private boolean camposDeposito;
     private boolean camposEfectivo;
+    private BigDecimal filtroStatus;
+
+    private static final BigDecimal DOCUMENTOACTIVO = new BigDecimal(1);
+    private static final BigDecimal DOCUMENTOFINALIZADO = new BigDecimal(2);
+    private static final BigDecimal DOCUMENTODEVUELTO = new BigDecimal(3);
+    private static final BigDecimal DOCUMENTOCONVENIO = new BigDecimal(4);
+    
+    //Variables para el pago de Documentos
+    private AbonoDocumentos ad;
+    private String viewCheque;
 
     @PostConstruct
     public void init() {
@@ -112,7 +133,9 @@ public class BeanDocumentosCobrar implements Serializable {
         listaAbonosAtrasdos = new ArrayList<AbonoCredito>();
         idSucursalFk = new BigDecimal(usuario.getSucId());
         System.out.println("IdSucursal Logueado: " + idSucursalFk);
-        listaAbonosAtrasdos = ifaceAbonoCredito.getChequesPendientes(fechaInicio, fechaFin, idSucursalFk);
+        filtro = new BigDecimal(1);
+        filtroStatus= DOCUMENTOACTIVO;
+        listaAbonosAtrasdos = ifaceAbonoCredito.getChequesPendientes(fechaInicio, fechaFin, idSucursalFk, null, filtro,filtroStatus);
         generarQuery();
         camposDeposito = true;
         camposEfectivo = false;
@@ -120,6 +143,59 @@ public class BeanDocumentosCobrar implements Serializable {
         setViewEstate("init");
         cobroCheque = new CobroCheques();
         dc = new Documento();
+        ad = new AbonoDocumentos();
+        lstTipoAbonos = ifaceTipoAbono.getAll();
+        
+
+    }
+
+    public void addView() {
+
+        if (ad.getIdTipoAbonoFk().intValue() == 3) {
+            setViewCheque("true");
+        } else if (ad.getIdTipoAbonoFk().intValue() == 2) {
+            setViewCheque("trans");
+
+        } else {
+            setViewCheque("init");
+        }
+
+    }
+    public void abonar()
+    {
+        
+    }
+    public void buscar() {
+        System.out.println("FILTRO: " + filtro);
+        BigDecimal idCliente = null;
+        if (cliente != null) {
+            idCliente = cliente.getId_cliente();
+        }
+        listaAbonosAtrasdos = ifaceAbonoCredito.getChequesPendientes(fechaInicio, fechaFin, idSucursalFk, idCliente, filtro,filtroStatus);
+    }
+
+//    public void comboFiltro()
+//    {
+//        switch(filtro.intValue())
+//        {
+//            //vencidos
+//            //por vencer
+//            //TODOS
+//            case 1:
+//                fechaInicio = new Date();
+//                break;
+//            case 2:
+//                fechaInicio = new Date();
+//                break;
+//            case 3:
+//                break;
+//            
+//        }
+//    }
+    public ArrayList<Cliente> autoCompleteCliente(String nombreCliente) {
+        lstCliente = ifaceCatCliente.getClienteByNombreCompleto(nombreCliente.toUpperCase());
+        return lstCliente;
+
     }
 
     public void agregarCampos() {
@@ -140,40 +216,101 @@ public class BeanDocumentosCobrar implements Serializable {
         }
     }
 
-    public void cobrarCheque() 
-    {
+    public void cobrarCheque() {
         cobroCheque.setIdCobroChequePk(new BigDecimal(ifaceCobroCheques.nextVal()));
         cobroCheque.setImporteDeposito(dataAbonar.getMontoAbono());
         System.out.println("BEAN: CobroCheque: " + cobroCheque);
-        if (ifaceCobroCheques.insertarDocumento(cobroCheque) == 1) {
-            JsfUtil.addSuccessMessageClean("Cobro de Cheque Registrado exitosamente");
-            System.out.println("Se inserto el cobro de cheque exitosamente");
-            if (cobroCheque.getIdTipoCobro().intValue() == 3) {
-                System.out.println("No se cambia el estatus del documento por cobrar");
-            } else {
-                System.out.println("Se actualiza el documento por cobrar");
+        if(dataAbonar.getIdStatusDocumentoFk().intValue()!=2){
+        switch (cobroCheque.getIdTipoCobro().intValue()) 
+        {
+
+            case 1:
+                if (ifaceCobroCheques.insertarDocumento(cobroCheque) == 1) {
+                    JsfUtil.addSuccessMessageClean("Cobro de Cheque Registrado exitosamente");
+                    System.out.println("Se inserto el cobro de cheque exitosamente");
+                    System.out.println("Se actualiza el documento por cobrar");
+                    dc.setIdDocumentoPk(dataAbonar.getIdDocumentoPk());
+                    dc.setIdStatusFk(DOCUMENTOFINALIZADO);
+                    if (ifaceDocumentos.updateDocumentoById(dc) == 1) {
+                        System.out.println("Se actualizo el estado del documento correctamente");
+                        buscar();
+//listaAbonosAtrasdos = ifaceAbonoCredito.getChequesPendientes(fechaInicio, fechaFin, idSucursalFk, cliente.getId_cliente(), filtro);
+                        generarQuery();
+                        cobroCheque.reset();
+                        dataAbonar.reset();
+                    } else {
+                        System.out.println("ocurrio un problema al actualizar el documento");
+                    }
+
+                } else {
+                    JsfUtil.addErrorMessageClean("Ocurrió un problema al ingresar el pago");
+                }
+
+            case 2:
+                if (ifaceCobroCheques.insertarDocumento(cobroCheque) == 1) {
+                    JsfUtil.addSuccessMessageClean("Cobro de Cheque Registrado exitosamente");
+                    System.out.println("Se inserto el cobro de cheque exitosamente");
+                    System.out.println("Se actualiza el documento por cobrar");
+                    dc.setIdDocumentoPk(dataAbonar.getIdDocumentoPk());
+                    dc.setIdStatusFk(DOCUMENTOFINALIZADO);
+                    if (ifaceDocumentos.updateDocumentoById(dc) == 1) {
+                        System.out.println("Se actualizo el estado del documento correctamente");
+                        buscar();
+//listaAbonosAtrasdos = ifaceAbonoCredito.getChequesPendientes(fechaInicio, fechaFin, idSucursalFk, cliente.getId_cliente(), filtro);
+                        generarQuery();
+                        cobroCheque.reset();
+                        dataAbonar.reset();
+                    } else {
+                        System.out.println("ocurrio un problema al actualizar el documento");
+                    }
+
+                } else {
+                    JsfUtil.addErrorMessageClean("Ocurrió un problema al ingresar el pago");
+                }
+                break;
+            case 3:
                 dc.setIdDocumentoPk(dataAbonar.getIdDocumentoPk());
-                dc.setIdStatusFk(new BigDecimal(2));
+                dc.setIdStatusFk(DOCUMENTODEVUELTO);
                 if (ifaceDocumentos.updateDocumentoById(dc) == 1) {
                     System.out.println("Se actualizo el estado del documento correctamente");
-                    listaAbonosAtrasdos = ifaceAbonoCredito.getChequesPendientes(fechaInicio, fechaFin, idSucursalFk);
+                    buscar();
+//listaAbonosAtrasdos = ifaceAbonoCredito.getChequesPendientes(fechaInicio, fechaFin, idSucursalFk, cliente.getId_cliente(), filtro);
                     generarQuery();
                     cobroCheque.reset();
                     dataAbonar.reset();
+                    JsfUtil.addSuccessMessage("El cheque se ha registrado como Devuelto");
                 } else {
                     System.out.println("ocurrio un problema al actualizar el documento");
+                    JsfUtil.addErrorMessageClean("Ocurrió un problema al registrar el cheque como devuelto");
                 }
-            }
-
-        } else {
-            JsfUtil.addErrorMessageClean("Ocurrio un problema");
+                break;
+            case 4:
+                dc.setIdDocumentoPk(dataAbonar.getIdDocumentoPk());
+                dc.setIdStatusFk(DOCUMENTOCONVENIO);
+                if (ifaceDocumentos.updateDocumentoById(dc) == 1) {
+                    System.out.println("Se actualizo el estado del documento correctamente");
+                    buscar();
+//listaAbonosAtrasdos = ifaceAbonoCredito.getChequesPendientes(fechaInicio, fechaFin, idSucursalFk, cliente.getId_cliente(), filtro);
+                    generarQuery();
+                    cobroCheque.reset();
+                    dataAbonar.reset();
+                    JsfUtil.addSuccessMessage("El cobro de cheque se realizará mediante convenio de pagos");
+                } else {
+                    System.out.println("ocurrio un problema al actualizar el documento");
+                    JsfUtil.addErrorMessageClean("Ocurrió un problema al registrar el cheque como convenio de pagos");
+                }
+                break;
         }
-
+        }
+        else
+        {
+           JsfUtil.addErrorMessageClean("No puedes cobrar de nuevo este cheque"); 
+        }
     }
 
     public void buscaCheques() {
         System.out.println("idSucursal: " + idSucursalFk);
-        listaAbonosAtrasdos = ifaceAbonoCredito.getChequesPendientes(fechaInicio, fechaFin, idSucursalFk);
+        //listaAbonosAtrasdos = ifaceAbonoCredito.getChequesPendientes(fechaInicio, fechaFin, idSucursalFk, cliente.getId_cliente(), filtro);
         generarQuery();
         System.out.println("QueryBEAN: " + query);
     }
@@ -493,5 +630,64 @@ public class BeanDocumentosCobrar implements Serializable {
     public void setCamposEfectivo(boolean camposEfectivo) {
         this.camposEfectivo = camposEfectivo;
     }
+
+    public String getLeyenda() {
+        return leyenda;
+    }
+
+    public void setLeyenda(String leyenda) {
+        this.leyenda = leyenda;
+    }
+
+    public BigDecimal getFiltro() {
+        return filtro;
+    }
+
+    public void setFiltro(BigDecimal filtro) {
+        this.filtro = filtro;
+    }
+
+    public ArrayList<Cliente> getLstCliente() {
+        return lstCliente;
+    }
+
+    public void setLstCliente(ArrayList<Cliente> lstCliente) {
+        this.lstCliente = lstCliente;
+    }
+
+    public BigDecimal getFiltroStatus() {
+        return filtroStatus;
+    }
+
+    public void setFiltroStatus(BigDecimal filtroStatus) {
+        this.filtroStatus = filtroStatus;
+    }
+
+    public AbonoDocumentos getAd() {
+        return ad;
+    }
+
+    public void setAd(AbonoDocumentos ad) {
+        this.ad = ad;
+    }
+
+    public ArrayList<TipoAbono> getLstTipoAbonos() {
+        return lstTipoAbonos;
+    }
+
+    public void setLstTipoAbonos(ArrayList<TipoAbono> lstTipoAbonos) {
+        this.lstTipoAbonos = lstTipoAbonos;
+    }
+
+    public String getViewCheque() {
+        return viewCheque;
+    }
+
+    public void setViewCheque(String viewCheque) {
+        this.viewCheque = viewCheque;
+    }
+    
+    
+    
 
 }

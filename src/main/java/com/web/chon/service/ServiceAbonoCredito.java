@@ -133,11 +133,11 @@ public class ServiceAbonoCredito implements IfaceAbonoCredito {
     }
 
     @Override
-    public ArrayList<AbonoCredito> getChequesPendientes(Date fechaInicio, Date fechaFin,BigDecimal idSucursal) {
+    public ArrayList<AbonoCredito> getChequesPendientes(Date fechaInicio, Date fechaFin,BigDecimal idSucursal,BigDecimal idClienteFk,BigDecimal filtro,BigDecimal filtroStatus) {
        getEjb();
         ArrayList<AbonoCredito> lstAbonoCredito = new ArrayList<AbonoCredito>();
         List<Object[]> lstObject = new ArrayList<Object[]>();
-        lstObject = ejb.getChequesPendientes(TiempoUtil.getFechaDDMMYYYY(fechaInicio), TiempoUtil.getFechaDDMMYYYY(fechaFin),idSucursal);
+        lstObject = ejb.getChequesPendientes(TiempoUtil.getFechaDDMMYYYY(fechaInicio), TiempoUtil.getFechaDDMMYYYY(fechaFin),idSucursal,idClienteFk,filtro,filtroStatus);
         for (Object[] object : lstObject) 
         {
             AbonoCredito abonoCredito = new AbonoCredito();
@@ -158,6 +158,8 @@ public class ServiceAbonoCredito implements IfaceAbonoCredito {
             abonoCredito.setFechaTransferencia(object[14] == null ? null : (Date) object[14]);
             abonoCredito.setIdDocumentoPk(object[15] == null ? null : new BigDecimal(object[15].toString()));
             abonoCredito.setNombreCliente(object[16] == null ? "" : object[16].toString());
+            abonoCredito.setNombreStatus(object[17] == null ? "" : object[17].toString());
+            abonoCredito.setIdStatusDocumentoFk(object[18] == null ? null : new BigDecimal(object[18].toString()));
             lstAbonoCredito.add(abonoCredito);
         }
         return lstAbonoCredito;
