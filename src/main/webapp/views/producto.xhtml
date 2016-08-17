@@ -26,10 +26,10 @@
                         <p:column headerText="Id" width="75px; !important" class="alignCenter">
                             <h:outputText value="#{model.idSubproductoPk}" />
                         </p:column>
-                        <p:column headerText="Categoría" width="350px; !important" class="alignLeft">
+                        <p:column headerText="Categoría" filterMaxLength="60" filterBy="#{model.nombreCategoria}" filterMatchMode="contains" width="350px; !important" class="alignLeft">
                             <h:outputText value="#{model.nombreCategoria}" />
                         </p:column>
-                        <p:column headerText="Nombre de Producto" width="350px; !important" class="alignLeft">
+                        <p:column headerText="Nombre de Producto" filterMaxLength="90" filterBy="#{model.nombreSubproducto}" filterMatchMode="contains" width="350px; !important" class="alignLeft">
                             <h:outputText value="#{model.nombreSubproducto}" />
                         </p:column>
                         <p:column headerText="Editar" width="60px; !important" class="alignCenter">

@@ -39,6 +39,7 @@ public interface IfaceCatCliente
      */
     public Cliente getCreditoClienteByIdCliente(BigDecimal idCliente);
     
+    public ArrayList<Cliente> getClientesActivos();
     
     
 }

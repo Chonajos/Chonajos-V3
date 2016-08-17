@@ -32,19 +32,19 @@ public class EjbCatCliente implements NegocioCatCliente {
         try {
 
             //System.out.println("EJB_GET_CLIENTE");
-            Query query = em.createNativeQuery("select c.* ,en.ID_ENTIDAD_PK, en.NOMBRE_ENTIDAD ,en1.ID_ENTIDAD_PK, en1.NOMBRE_ENTIDAD,m.NOMBRE_MUNICIPIO,m1.NOMBRE_MUNICIPIO,cp.NOMBRE_COLONIA,cp.CODIGO_POSTAL,cp1.NOMBRE_COLONIA,cp1.CODIGO_POSTAL,m.ID_MUNICIPIO_PK,m.ID_MUNICIPIO_PK,cp.ID_PK,cp1.ID_PK\n"
-                    + "from Cliente c\n"
-                    + "INNER JOIN CODIGOS_POSTALES cp\n"
-                    + "on c.ID_CP=cp.ID_PK\n"
-                    + "INNER JOIN Municipios m\n"
-                    + "on cp.ID_MUNICIPIO_FK=m.id_municipio_pk\n"
-                    + "INNER JOIN ENTIDAD en\n"
-                    + "on en.ID_ENTIDAD_PK=m.ID_ENTIDAD_FK\n"
-                    + "INNER JOIN CODIGOS_POSTALES cp1\n"
-                    + "on c.ID_CP_FISCAL=cp1.ID_PK\n"
-                    + "INNER JOIN Municipios m1\n"
-                    + "on cp.ID_MUNICIPIO_FK=m1.id_municipio_pk\n"
-                    + "INNER JOIN ENTIDAD en1\n"
+            Query query = em.createNativeQuery("select c.* ,en.ID_ENTIDAD_PK, en.NOMBRE_ENTIDAD ,en1.ID_ENTIDAD_PK, en1.NOMBRE_ENTIDAD,m.NOMBRE_MUNICIPIO,m1.NOMBRE_MUNICIPIO,cp.NOMBRE_COLONIA,cp.CODIGO_POSTAL,cp1.NOMBRE_COLONIA,cp1.CODIGO_POSTAL,m.ID_MUNICIPIO_PK,m.ID_MUNICIPIO_PK,cp.ID_PK,cp1.ID_PK "
+                    + "from Cliente c "
+                    + "INNER JOIN CODIGOS_POSTALES cp "
+                    + "on c.ID_CP=cp.ID_PK "
+                    + "INNER JOIN Municipios m "
+                    + "on cp.ID_MUNICIPIO_FK=m.id_municipio_pk "
+                    + "INNER JOIN ENTIDAD en "
+                    + "on en.ID_ENTIDAD_PK=m.ID_ENTIDAD_FK "
+                    + "INNER JOIN CODIGOS_POSTALES cp1 "
+                    + "on c.ID_CP_FISCAL=cp1.ID_PK "
+                    + "INNER JOIN Municipios m1 "
+                    + "on cp.ID_MUNICIPIO_FK=m1.id_municipio_pk "
+                    + "INNER JOIN ENTIDAD en1 "
                     + "on en1.ID_ENTIDAD_PK=m1.ID_ENTIDAD_FK");
             List<Object[]> resultList = null;
             resultList = query.getResultList();
@@ -194,7 +194,7 @@ public class EjbCatCliente implements NegocioCatCliente {
 
     @Override
     public List<Object[]> getClienteByNombreCompleto(String nombreCliente) {
-        Query query = em.createNativeQuery("SELECT * FROM CLIENTE WHERE UPPER(NOMBRE ||' '|| APELLIDO_PATERNO ||' '|| APELLIDO_MATERNO )  LIKE UPPER('%" + nombreCliente + "%')");
+        Query query = em.createNativeQuery("SELECT * FROM CLIENTE WHERE UPPER(NOMBRE ||' '|| APELLIDO_PATERNO ||' '|| APELLIDO_MATERNO )  LIKE UPPER('%" + nombreCliente + "%') and STATUS =1");
 
         return query.getResultList();
     }
@@ -238,7 +238,7 @@ public class EjbCatCliente implements NegocioCatCliente {
 
             Query query = em.createNativeQuery("select c.ID_CLIENTE, c.NOMBRE ||' '|| c.APELLIDO_PATERNO ||' '|| c.APELLIDO_MATERNO AS NOMBRE_COMPLETO,NVL(c.MONTO_CREDITO,0) AS MONTO_CREDITO, "
                     + " NVL((SELECT SUM(CRE.MONTO_CREDITO) FROM CREDITO CRE WHERE CRE.ID_CLIENTE_FK =c.ID_CLIENTE AND CRE.ESTATUS_CREDITO = 1 ),0) AS CREDITO_UTILIZADO "
-                    + " FROM CLIENTE c WHERE c.ID_CLIENTE= ?");
+                    + " FROM CLIENTE c WHERE c.ID_CLIENTE= ? AND c.STATUS =1");
             query.setParameter(1, idCliente);
             return query.getResultList();
 
@@ -248,5 +248,34 @@ public class EjbCatCliente implements NegocioCatCliente {
             return null;
         }
     }
+    
+     @Override
+    public List<Object[]> getClientesActivos() {
+        try {
+
+            //System.out.println("EJB_GET_CLIENTE");
+            Query query = em.createNativeQuery("select c.* ,en.ID_ENTIDAD_PK, en.NOMBRE_ENTIDAD ,en1.ID_ENTIDAD_PK, en1.NOMBRE_ENTIDAD,m.NOMBRE_MUNICIPIO,m1.NOMBRE_MUNICIPIO,cp.NOMBRE_COLONIA,cp.CODIGO_POSTAL,cp1.NOMBRE_COLONIA,cp1.CODIGO_POSTAL,m.ID_MUNICIPIO_PK,m.ID_MUNICIPIO_PK,cp.ID_PK,cp1.ID_PK "
+                    + "from Cliente c "
+                    + "INNER JOIN CODIGOS_POSTALES cp "
+                    + "on c.ID_CP=cp.ID_PK "
+                    + "INNER JOIN Municipios m "
+                    + "on cp.ID_MUNICIPIO_FK=m.id_municipio_pk "
+                    + "INNER JOIN ENTIDAD en "
+                    + "on en.ID_ENTIDAD_PK=m.ID_ENTIDAD_FK "
+                    + "INNER JOIN CODIGOS_POSTALES cp1 "
+                    + "on c.ID_CP_FISCAL=cp1.ID_PK "
+                    + "INNER JOIN Municipios m1 "
+                    + "on cp.ID_MUNICIPIO_FK=m1.id_municipio_pk "
+                    + "INNER JOIN ENTIDAD en1 "
+                    + "on en1.ID_ENTIDAD_PK=m1.ID_ENTIDAD_FK AND c.STATUS =1");
+            List<Object[]> resultList = null;
+            resultList = query.getResultList();
+            return resultList;
+        } catch (Exception ex) {
+            Logger.getLogger(EjbCatCliente.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
 
 }

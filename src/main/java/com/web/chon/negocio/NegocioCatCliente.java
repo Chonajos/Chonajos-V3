@@ -35,6 +35,7 @@ public interface NegocioCatCliente {
     
     public List<Object[]> getCreditoClienteByIdCliente(BigDecimal idCliente);  
     
+    public List<Object[]> getClientesActivos();
     
   
 }

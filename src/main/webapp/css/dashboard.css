@@ -252,7 +252,17 @@ button span:hover{
 }
 
 
+/*Se quitarin padin de selecOneMenu*/
+.ui-selectonemenu {
 
+    padding-right: 1em !important; 
+    padding-left: 0em;
+
+}
+/*Se alinean las etiquetas de los componente selecOnemenu a la izquierda*/
+.ui-selectonemenu label{
+    text-align: left !important;
+}
 /*Pantalla celular*/
 @media ( max-width : 767px) {
     .navbar {

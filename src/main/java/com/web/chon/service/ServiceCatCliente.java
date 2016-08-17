@@ -256,4 +256,72 @@ public class ServiceCatCliente implements IfaceCatCliente {
 
         }
     }
+    
+     @Override
+    public ArrayList<Cliente> getClientesActivos() {
+        try {
+            ArrayList<Cliente> lista_clientes = new ArrayList<Cliente>();
+            ejb = (NegocioCatCliente) Utilidades.getEJBRemote("ejbCatCliente", NegocioCatCliente.class.getName());
+            List<Object[]> lstObject = ejb.getClientes();
+
+            for (Object[] obj : lstObject) {
+                Cliente cliente = new Cliente();
+                cliente.setId_cliente(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+                cliente.setNombre(obj[1] == null ? "" : obj[1].toString());
+                cliente.setPaterno(obj[2] == null ? "" : obj[2].toString());
+                cliente.setMaterno(obj[3] == null ? "" : obj[3].toString());
+                cliente.setEmpresa(obj[4] == null ? "" : obj[4].toString());
+                cliente.setCalle(obj[5] == null ? "" : obj[5].toString());
+                String auxiliar_sexo = obj[6] == null ? "M" : obj[6].toString();
+                cliente.setSexo(auxiliar_sexo.charAt(0));
+                cliente.setFecha_nacimiento((Date) obj[7]);
+                cliente.setTel_movil(Integer.parseInt(obj[8].toString()));
+                cliente.setTel_fijo(Integer.parseInt(obj[9].toString()));
+                cliente.setExt(Integer.parseInt(obj[10].toString()));
+                cliente.setNum_int(Integer.parseInt(obj[11].toString()));
+                cliente.setNum_ext(Integer.parseInt(obj[12].toString()));
+                cliente.setClavecelular(Integer.parseInt(obj[13].toString()));
+                cliente.setLadacelular(Integer.parseInt(obj[14] == null ? "0" : obj[14].toString()));
+                cliente.setID_CP(Integer.parseInt(obj[15] == null ? "100000" : obj[15].toString()));//
+                cliente.setCalleFiscal(obj[16] == null ? "" : obj[16].toString());
+                cliente.setNum_int_fiscal(Integer.parseInt(obj[17] == null ? "0" : obj[17].toString()));
+                cliente.setNum_ext_fiscal(Integer.parseInt(obj[18] == null ? "0" : obj[18].toString()));
+                cliente.setID_CP_FISCAL(Integer.parseInt(obj[19] == null ? "100000" : obj[19].toString()));
+                cliente.setNextel(obj[20] == null ? "" : obj[20].toString());
+                cliente.setRazon_social(obj[21] == null ? "" : obj[21].toString());
+                cliente.setRfcFiscal(obj[22] == null ? "" : obj[22].toString());
+                cliente.setLadaoficina(obj[23] == null ? 0 : Integer.parseInt(obj[23].toString()));
+                cliente.setClaveoficina(obj[24] == null ? 0 : Integer.parseInt(obj[24].toString()));
+                cliente.setNextelclave(obj[25] == null ? "" : obj[25].toString());
+                cliente.setStatus_cliente(Integer.parseInt(obj[26] == null ? "0" : obj[26].toString()));
+                cliente.setStatusClienteBoolean(obj[26].toString().equals("1"));
+//Hasta aqui terminan los datos de la tabla clientes.
+                //Los siguientes datos son para obtener las direcciones y los correos.
+                cliente.setFecha_alta((Date) obj[27]);
+                cliente.setDiasCredito(obj[28] == null ? null : new BigDecimal(obj[28].toString()));
+                cliente.setLimiteCredito(obj[29] == null ? null : new BigDecimal(obj[29].toString()));
+                cliente.setEstado(obj[30] == null ? "" : (obj[30].toString()));
+                //agregamos fecha de alta.
+                cliente.setNombreEstado(obj[31] == null ? "" : (obj[31].toString()));
+                cliente.setEstadoFiscal(obj[32] == null ? "" : (obj[32].toString()));
+                cliente.setNombreEstadoFiscal(obj[33] == null ? "" : (obj[33].toString()));
+                cliente.setNombreDelegacionMunicipio(obj[34] == null ? "" : (obj[34].toString()));
+                cliente.setNombreDeleMunFiscal(obj[35] == null ? "" : (obj[35].toString()));
+                cliente.setColonia(obj[36] == null ? "" : (obj[36].toString()));
+                cliente.setCodigoPostal(obj[37] == null ? "" : (obj[37].toString()));
+                cliente.setColoniaFiscal(obj[38] == null ? "" : (obj[38].toString()));
+                cliente.setCodigoPostalFiscal(obj[39] == null ? "" : (obj[39].toString()));
+                cliente.setMunicipio(obj[40] == null ? "" : (obj[40].toString()));
+                cliente.setMunicipioFiscal(obj[41] == null ? "" : (obj[41].toString()));
+
+                lista_clientes.add(cliente);
+
+            }
+            return lista_clientes;
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceCatCliente.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+
+        }
+    }
 }
