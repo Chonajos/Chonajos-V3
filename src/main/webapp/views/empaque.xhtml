@@ -24,7 +24,7 @@
                         <p:column headerText="Id" width="60px;" class="alignCenter">
                             <h:outputText value="#{model.idTipoEmpaquePk}" />
                         </p:column>
-                        <p:column headerText="Nombre de Empaque" width="420px;" class="alignLeft">
+                        <p:column headerText="Nombre de Empaque" filterBy="#{model.nombreEmpaque}" filterMatchMode="contains" filterMaxLength="90" width="420px;" class="alignLeft">
                             <h:outputText value="#{model.nombreEmpaque}" />
                         </p:column>
                         <p:column headerText="Editar" width="60px;" class="alignCenter">

@@ -1,6 +1,7 @@
 package com.web.chon.bean;
 
 import com.web.chon.dominio.AcionGestion;
+import com.web.chon.dominio.Credito;
 import com.web.chon.dominio.GestionCredito;
 import com.web.chon.dominio.ResultadoGestion;
 import com.web.chon.dominio.SaldosDeudas;
@@ -61,6 +62,7 @@ public class BeanConsultaCredito implements Serializable {
 
     private int numDias;
     private int numFiltro;
+    private int UNO = 1;
 
     @PostConstruct
     public void init() {
@@ -98,21 +100,23 @@ public class BeanConsultaCredito implements Serializable {
 
                         if (diasDiferencia <= numDias) {
                             saldos.setDiasAtraso(Integer.toString(0));
+                            saldos.setStatusFechaProxima(new BigDecimal(UNO));
                             modelTemp.add(saldos);
                         }
 
                     }
                     break;
                 case 2:
-                    if (saldos.getPeriodosAtraso().compareTo(zero) == 1 && saldos.getPeriodosAtraso().compareTo(saldos.getNumeroPagos()) == -1) {
+                    if (saldos.getPeriodosAtraso().compareTo(zero) == UNO && saldos.getPeriodosAtraso().compareTo(saldos.getNumeroPagos()) == -UNO) {
                         diasDiferencia = TiempoUtil.diferenciasDeFechas(fechaSystema, saldos.getFechaProximaAbonar());
-                        diasDiferencia = (saldos.getPeriodosAtraso().intValue() - 1) * (saldos.getPlazo().divide(saldos.getNumeroPagos())).intValue();
+                        diasDiferencia = (saldos.getPeriodosAtraso().intValue() - UNO) * (saldos.getPlazo().divide(saldos.getNumeroPagos())).intValue();
 
                         fechaTemporal = TiempoUtil.sumarRestarDias(saldos.getFechaVenta(), diasDiferencia);
                         diasDiferencia = TiempoUtil.diferenciasDeFechas(fechaTemporal, fechaSystema) + diasDiferencia;
                         diasDiferencia -= (saldos.getPlazo().divide(saldos.getNumeroPagos())).intValue();
                         if (diasDiferencia <= numDias) {
                             saldos.setDiasAtraso(Integer.toString(diasDiferencia));
+                            saldos.setStatusFechaProxima(new BigDecimal(2));
                             modelTemp.add(saldos);
                         }
 
@@ -120,10 +124,11 @@ public class BeanConsultaCredito implements Serializable {
                     break;
                 case 3:
                     if (saldos.getPeriodosAtraso().equals(saldos.getNumeroPagos())) {
-                        diasDiferencia = TiempoUtil.diferenciasDeFechas(fechaSystema, saldos.getFechaPromesaFinPago());
+                        diasDiferencia = TiempoUtil.diferenciasDeFechas(saldos.getFechaPromesaFinPago(), fechaSystema);
 
                         if (diasDiferencia <= numDias) {
                             saldos.setDiasAtraso(Integer.toString(diasDiferencia));
+                            saldos.setStatusFechaProxima(new BigDecimal(4));
                             modelTemp.add(saldos);
                         }
 
@@ -145,13 +150,50 @@ public class BeanConsultaCredito implements Serializable {
     public void search() {
         setTitle("Gestion de Credito");
         lstResultadoGestion = ifaceResultadoGestion.getAll();
+        idResultadoGestio = idResultadoGestio == null ? lstResultadoGestion.get(0).getIdResultadoGestion() : idResultadoGestio;
         obetenerAcionGestio();
         setViewEstate("search");
     }
-    
-    public void obetenerAcionGestio(){
-        System.out.println("idResultadoGestio :"+idResultadoGestio);
+
+    public void obetenerAcionGestio() {
+        System.out.println("idResultadoGestio :" + idResultadoGestio);
         lstAcionGestion = ifaceAcionGestion.getByIdResultadoGestion(idResultadoGestio);
+    }
+
+    public void save() {
+        BigDecimal tres = new BigDecimal(3);
+        int tresInt = 3;
+        try {
+            gestionCredito.setIdCredito(data.getFolioCredito());
+            gestionCredito.setIdUsario(usuarioDominio.getIdUsuario());
+            if (ifaceGestionCredito.insert(gestionCredito) == UNO) {
+                if (reprogramarFecha != null && numFiltro == tresInt) {
+                    Credito credito = new Credito();
+
+                    //Se optiene el credito para modificar la fecha promesa de pago
+                    System.out.println("data.getFolioCredito() "+data.getFolioCredito());
+                    credito = ifaceCredito.getById(data.getFolioCredito());
+                    System.out.println("credito :"+credito.toString());
+                    credito.setFechaPromesaPago(reprogramarFecha);
+                    credito.setNumeroPromesaPago(credito.getNumeroPromesaPago().add(new BigDecimal(UNO)));
+
+                    if (ifaceCredito.update(credito) == UNO) {
+                        JsfUtil.addSuccessMessage("Registro Actualizado Correctamente.");
+
+                    } else {
+                        JsfUtil.addErrorMessage("Ocurrio un error al intentar modificar la fecha proxima de pago.");
+                    }
+                } else {
+                    JsfUtil.addSuccessMessage("Registro Actualizado Correctamente.");
+                }
+
+                init();
+            } else {
+                JsfUtil.addErrorMessage("Ocurrio un error al insertar el registro.");
+            }
+        } catch (Exception ex) {
+            JsfUtil.addErrorMessage("Ocurrio un error al insertar el registro. " + ex.toString());
+        }
     }
 
     public String getTitle() {

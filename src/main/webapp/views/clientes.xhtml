@@ -33,7 +33,7 @@
                                                     <h:outputText value="#{model.id_cliente}" />
                                                 </p:column>-->
 
-                        <p:column headerText="Nombre" class="#{model.status_cliente eq 1 ?'statusActivo':'statusInactivo'} alignLeft" style="width:400px;">
+                        <p:column headerText="Nombre" filterBy="#{model.nombre} #{model.paterno} #{model.materno}" filterMatchMode="contains" filterMaxLength="120" class="#{model.status_cliente eq 1 ?'statusActivo':'statusInactivo'} alignLeft" style="width:400px;">
                             <h:outputText value="#{model.nombre} #{model.paterno} #{model.materno}" />
                         </p:column>
 

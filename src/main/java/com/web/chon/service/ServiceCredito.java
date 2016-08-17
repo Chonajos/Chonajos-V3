@@ -61,7 +61,7 @@ public class ServiceCredito implements IfaceCredito {
             credito.setFechaFinCredito(object[8] == null ? null : (Date) object[8]);
             credito.setFechaPromesaPago(object[9] == null ? null : (Date) object[9]);
             credito.setTazaInteres(object[10] == null ? null : new BigDecimal(object[10].toString()));
-            credito.setTazaInteres(object[11] == null ? null : new BigDecimal(object[11].toString()));
+            credito.setPlasos(object[11] == null ? null : new BigDecimal(object[11].toString()));
 
             lstCredito.add(credito);
         }
@@ -73,7 +73,7 @@ public class ServiceCredito implements IfaceCredito {
     public Credito getById(BigDecimal idCredito) {
         getEjb();
         List<Object[]> lstObject = new ArrayList<Object[]>();
-        lstObject = ejb.getAll();
+        lstObject = ejb.getById(idCredito);
         Credito credito = new Credito();
         for (Object[] object : lstObject) {
 
@@ -89,7 +89,7 @@ public class ServiceCredito implements IfaceCredito {
             credito.setFechaFinCredito(object[8] == null ? null : (Date) object[8]);
             credito.setFechaPromesaPago(object[9] == null ? null : (Date) object[9]);
             credito.setTazaInteres(object[10] == null ? null : new BigDecimal(object[10].toString()));
-            credito.setTazaInteres(object[11] == null ? null : new BigDecimal(object[11].toString()));
+            credito.setPlasos(object[11] == null ? null : new BigDecimal(object[11].toString()));
         }
 
         return credito;
@@ -332,7 +332,6 @@ public class ServiceCredito implements IfaceCredito {
                     switch (hoy.compareTo(fechas_pagos.get(x))) {
                         //Compara la fecha de hoy con la primer fecha de pago 
                         case 1:
-                            System.out.println("Case 1: " + " Hoy: " + hoy + " Fecha: " + fechas_pagos.get(x));
 
                             if (dominio.getTotalAbonado().compareTo(pagos_por_fecha.get(x)) == -1) {
                                 contador_periodos_atrasados = contador_periodos_atrasados + 1;
@@ -348,7 +347,6 @@ public class ServiceCredito implements IfaceCredito {
 
                         case -1:
 
-                            System.out.println("Case -1: " + " Hoy: " + hoy + " Fecha: " + fechas_pagos.get(x));
                             if (fechaPagoMayoraHoy == false) {
                                 dominio.setFechaProximaAbonar(fechas_pagos.get(x));
                                 dominio.setStatusFechaProxima(CREDITONOATRASADO);
@@ -359,14 +357,12 @@ public class ServiceCredito implements IfaceCredito {
                             //revisar que este al corriente con su primer pago  si no aumentar el periodo atrasado
                             break;
                         case 0:
-                            System.out.println("Case 0: " + " Hoy: " + hoy + " Fecha: " + fechas_pagos.get(x));
                             if (fechaPagoMayoraHoy == false) {
                                 dominio.setFechaProximaAbonar(fechas_pagos.get(x));
                                 dominio.setStatusFechaProxima(CREDITONOATRASADO);
                                 fechaPagoMayoraHoy = true;
                             }
                         default:
-                            System.out.println("entro aqui");
                             break;
                     }
 

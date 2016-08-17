@@ -246,8 +246,23 @@ button span:hover{
     color: #2D4DF0 !important;
     text-decoration: underline !important; 
 }
+/*paddin de input*/
+.ui-inputfield{
+    padding:2px !important;
+}
 
 
+/*Se quitarin padin de selecOneMenu*/
+.ui-selectonemenu {
+
+    padding-right: 1em !important; 
+    padding-left: 0em;
+
+}
+/*Se alinean las etiquetas de los componente selecOnemenu a la izquierda*/
+.ui-selectonemenu label{
+    text-align: left !important;
+}
 /*Pantalla celular*/
 @media ( max-width : 767px) {
     .navbar {
