@@ -4,6 +4,7 @@ import com.web.chon.dominio.Rol;
 import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.Usuario;
 import com.web.chon.dominio.UsuarioDominio;
+import com.web.chon.security.service.PasswordEncoderChonajos;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.security.service.PlataformaUserDetailsService;
 import com.web.chon.security.service.PlataformaUserDetailsServiceImpl;
@@ -35,6 +36,8 @@ public class BeanCambioContrasena implements BeanSimple {
     private IfaceCatUsuario ifaceCatUsuario;
     @Autowired
     private PlataformaSecurityContext context;
+    @Autowired
+    private PasswordEncoderChonajos passwordEncoder;
 
     private UsuarioDominio usuario;
 
@@ -42,11 +45,11 @@ public class BeanCambioContrasena implements BeanSimple {
     private String title;
     private String contrasenaActual;
     private String contrasenaActualComfirmacion;
-    
+
     @PostConstruct
     public void init() {
         try {
-            
+
             usuario = context.getUsuarioAutenticado();
             data = new Usuario();
             data = ifaceCatUsuario.getUsuariosById(usuario.getIdUsuario().intValue());
@@ -74,14 +77,17 @@ public class BeanCambioContrasena implements BeanSimple {
     @Override
     public String update() {
         try {
-            System.out.println("contraseña actual :"+contrasenaActual +"Contraseña Actual "+contrasenaActual);
-            if (contrasenaActualComfirmacion.equals(contrasenaActual)) {
+            System.out.println("contraseña actual :" + contrasenaActual + "Contraseña Actual " + contrasenaActual);
+            //Se codifica la contraseña del usuario
+            CharSequence encoder = passwordEncoder.encode(contrasenaActualComfirmacion).toString().toUpperCase();
+            if (encoder.toString().equals(contrasenaActual)) {
+                data.setContrasenaUsuario(passwordEncoder.encode(data.getContrasenaUsuario()).toString().toUpperCase());
                 if (ifaceCatUsuario.updateUsuario(data) == 1) {
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Contraseña modificada."));
                 } else {
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar modificar la Contraseña :" + data.getNombreUsuario() + "."));
                 }
-            }else{
+            } else {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "La Contraseña Escrita no es la Correcta.Vuelva a Escribir la Contraseña Actual."));
             }
 
@@ -92,22 +98,22 @@ public class BeanCambioContrasena implements BeanSimple {
         return "cambioContrasena";
     }
 
-    public void cancel(){
+    public void cancel() {
         contrasenaActualComfirmacion = "";
         data.setConfirmaUsuario("");
         data.setContrasenaUsuario("");
     }
-    
-    public void getUserByClave(){
-        
-        data = ifaceCatUsuario.getUsuarioByClave(data.getClaveUsuario(),0);
+
+    public void getUserByClave() {
+
+        data = ifaceCatUsuario.getUsuarioByClave(data.getClaveUsuario(), 0);
         contrasenaActual = data.getContrasenaUsuario();
-        
-        if(data.getClaveUsuario() == null){
+
+        if (data.getClaveUsuario() == null) {
             JsfUtil.addErrorMessage("No se Encontraron Registros.");
         }
     }
-    
+
     @Override
     public void searchById() {
 
@@ -144,5 +150,5 @@ public class BeanCambioContrasena implements BeanSimple {
     public void setContrasenaActualComfirmacion(String contrasenaActualComfirmacion) {
         this.contrasenaActualComfirmacion = contrasenaActualComfirmacion;
     }
-    
+
 }

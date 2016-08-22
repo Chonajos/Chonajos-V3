@@ -6,18 +6,22 @@
 package com.web.chon.bean;
 
 import com.web.chon.dominio.Cliente;
+import com.web.chon.dominio.Credito;
 import com.web.chon.dominio.EntradaMercancia;
 import com.web.chon.dominio.ExistenciaProducto;
 import com.web.chon.dominio.Subproducto;
 import com.web.chon.dominio.TipoVenta;
 import com.web.chon.dominio.Usuario;
 import com.web.chon.dominio.UsuarioDominio;
+import com.web.chon.dominio.Venta;
 import com.web.chon.dominio.VentaMayoreo;
+import com.web.chon.dominio.VentaProducto;
 import com.web.chon.dominio.VentaProductoMayoreo;
 import com.web.chon.security.service.PlataformaSecurityContext;
 
 import com.web.chon.service.IfaceCatCliente;
 import com.web.chon.service.IfaceCatUsuario;
+import com.web.chon.service.IfaceCredito;
 import com.web.chon.service.IfaceNegocioExistencia;
 import com.web.chon.service.IfaceSubProducto;
 import com.web.chon.service.IfaceTipoVenta;
@@ -34,6 +38,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -43,7 +48,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.AjaxBehaviorEvent;
 import javax.servlet.ServletContext;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRExporter;
@@ -51,6 +58,7 @@ import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
+import org.primefaces.component.inputtext.InputText;
 import org.primefaces.context.RequestContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -82,6 +90,8 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     private PlataformaSecurityContext context;
     @Autowired
     private IfaceVentaMayoreoProducto ifaceVentaMayoreoProducto;
+    @Autowired
+    private IfaceCredito ifaceCredito;
 
     private ArrayList<TipoVenta> lstTipoVenta;
     private ArrayList<Cliente> lstCliente;
@@ -95,6 +105,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
     private Cliente cliente;
     private Usuario usuario;
+    private Credito c;
     private Subproducto subProducto;
     private VentaProductoMayoreo data;
     private EntradaMercancia entradaMercancia;
@@ -113,7 +124,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     private String viewEstate = "";
     private String ventaRapidaButton = "";
 
-    private BigDecimal TotalVentaGeneral;
+    private BigDecimal totalVentaGeneral;
 
     //Variables para Generar el pdf
     private String rutaPDF;
@@ -126,7 +137,6 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     private String ventaRapida;
 
     private boolean permisionVentaRapida;
-    private boolean ventaRapidaCheck;
 
     private BigDecimal recibido;
     private BigDecimal cambio;
@@ -134,25 +144,45 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     private boolean pruaba;
     private boolean charLine = true;
 
+    private BigDecimal max;
+    private BigDecimal min;
+    private BigDecimal descuento;
+    private BigDecimal dejaACuenta;
+    ;
+    private BigDecimal totalVentaDescuento;
+    private BigDecimal INTERES_VENTA = new BigDecimal("0.60");
+    private BigDecimal DIAS_PLAZO = new BigDecimal("7");
+
+    private int folioCredito = 0;
+
+    private boolean permisionToEdit;
+    private boolean variableInicial;
+    private boolean credito;
+
+    private Date date;
+
     @PostConstruct
     public void init() {
 
 //        pruaba = false;
         ventaRapida = "0";
+        credito = false;
+        date = context.getFechaSistema();
         cliente = new Cliente();
         cliente = ifaceCatCliente.getClienteById(1);
         ventaGeneral = new VentaMayoreo();
         usuario = new Usuario();
         usuarioDominio = context.getUsuarioAutenticado();
         idSucu = new BigDecimal(usuarioDominio.getSucId());
+        
         usuario.setIdUsuarioPk(usuarioDominio.getIdUsuario());
         usuario.setIdSucursal(idSucu.intValue());
         usuario.setIdRolFk(new BigDecimal(usuarioDominio.getPerId()));
-
         usuario.setNombreUsuario(usuarioDominio.getUsuNombre());
         usuario.setApaternoUsuario(usuarioDominio.getUsuPaterno());
         usuario.setAmaternoUsuario(usuarioDominio.getUsuMaterno());
-        TotalVentaGeneral = new BigDecimal(0);
+        
+        totalVentaGeneral = new BigDecimal(0);
         data = new VentaProductoMayoreo();
         setTitle("Venta Mayoreo");
         setViewEstate("viewAddProducto");
@@ -161,37 +191,33 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         permisionToWrite = true;
         totalProductoTemporal = null;
 
+        data.setIdTipoVenta(new BigDecimal("1"));
+        data.setTipoPago(new BigDecimal(7));
+        max = new BigDecimal(0);
+        min = new BigDecimal(0);
+        descuento = new BigDecimal(0);
+        dejaACuenta = new BigDecimal(0);
+        totalVentaDescuento = new BigDecimal(0);
+        permisionToEdit = false;
+
         ventaRapida = (usuario.getIdRolFk()).toString();
-        System.out.println("Venta Rapida: " + ventaRapida);
+
         if (ventaRapida.equals("4")) {
 
             lstExistencias = ifaceNegocioExistencia.getExistencias(idSucu, null, null, null, null, null, null);
             ventaRapidaButton = "Rapida";
             permisionVentaRapida = false;
-            ventaRapidaCheck = true;
 
         } else {
             ventaRapida = "2";
             permisionVentaRapida = true;
-            ventaRapidaCheck = false;
+            lstExistencias = new ArrayList<ExistenciaProducto>();
         }
 
     }
 
     public void calculaCambio() {
-        cambio = recibido.subtract(TotalVentaGeneral, MathContext.UNLIMITED);
-    }
-
-    public void changeVentaRapida() {
-        if (ventaRapidaCheck) {
-            ventaRapidaButton = "Rapida";
-            lstExistencias = ifaceNegocioExistencia.getExistencias(idSucu, null, null, null, null, null, null);
-
-        } else {
-            ventaRapidaButton = "";
-            lstExistencias = new ArrayList<ExistenciaProducto>();
-        }
-
+        cambio = recibido.subtract(totalVentaGeneral, MathContext.UNLIMITED);
     }
 
     public void habilitarBotones() {
@@ -200,6 +226,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     }
 
     public void calculaTotalTemporal() {
+
         totalProductoTemporal = data.getKilosVendidos().multiply(data.getPrecioProducto(), MathContext.UNLIMITED);
     }
 
@@ -215,84 +242,107 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         permisionToWrite = true;
         cliente = ifaceCatCliente.getClienteById(1);
         totalProductoTemporal = null;
-        TotalVentaGeneral = new BigDecimal(0);
+        totalVentaGeneral = new BigDecimal(0);
         JsfUtil.addWarnMessage("Venta Cancelada");
-        changeVentaRapida();
+        init();
 
     }
 
-    public void inserts() {
-        if (lstVenta.isEmpty()) {
+    public String inserts() {
+        int idVenta = 0;
 
-            JsfUtil.addErrorMessageClean("Tu pedido se encuentra vacío favor de agregar productos");
-        } else if (usuario.getIdUsuarioPk() == null) {
-            changeView();
-            JsfUtil.addErrorMessageClean("Favor de Seleccionar un vendedor");
+        String mensaje = validaCompraCredito();
+        try {
+            if (!mensaje.equals("")) {
+                JsfUtil.addErrorMessage(mensaje);
+                return null;
+            }
+            if (lstVenta.isEmpty()) {
 
-        } else if (cliente == null) {
-            changeView();
-            JsfUtil.addErrorMessageClean("Favor de Seleccionar un cliente");
-        } else if (idTipoVenta == null) {
-            changeView();
-            JsfUtil.addErrorMessageClean("Favor de Seleccionar un tipo de venta");
-        } else {
-            BigDecimal idVentaInsert = new BigDecimal(ifaceVentaMayoreo.getNextVal());
-            ventaGeneral.setIdVentaMayoreoPk(idVentaInsert);
-            ventaGeneral.setIdtipoVentaFk(idTipoVenta);
-            ventaGeneral.setIdClienteFk(cliente.getId_cliente());
-            ventaGeneral.setIdSucursalFk(idSucu);
-            ventaGeneral.setIdVendedorFK(usuario.getIdUsuarioPk());
-            int temp = ifaceVentaMayoreo.getVentaSucursal(idSucu);
+                JsfUtil.addErrorMessageClean("Tu pedido se encuentra vacío favor de agregar productos");
+            } else if (usuario.getIdUsuarioPk() == null) {
+                changeView();
+                JsfUtil.addErrorMessageClean("Favor de Seleccionar un vendedor");
 
-            ventaGeneral.setVentaSucursal(new BigDecimal(temp + 1));
+            } else if (cliente == null) {
+                changeView();
+                JsfUtil.addErrorMessageClean("Favor de Seleccionar un cliente");
+            } else if (data.getIdTipoVenta() == null) {
+                changeView();
+                JsfUtil.addErrorMessageClean("Favor de Seleccionar un tipo de venta");
+            } else {
+                BigDecimal idVentaInsert = new BigDecimal(ifaceVentaMayoreo.getNextVal());
+                ventaGeneral.setIdVentaMayoreoPk(idVentaInsert);
+                ventaGeneral.setIdtipoVentaFk(data.getIdTipoVenta());
+                ventaGeneral.setIdClienteFk(cliente.getId_cliente());
+                ventaGeneral.setIdSucursalFk(idSucu);
+                ventaGeneral.setIdVendedorFK(usuario.getIdUsuarioPk());
+                int temp = ifaceVentaMayoreo.getVentaSucursal(idSucu);
 
-            //System.out.println("Venta General: " + ventaGeneral.toString());
-            if (ifaceVentaMayoreo.insertarVenta(ventaGeneral) != 0) {
-                //si la venta se ingreso el siguiente paso es ingresar los productos.
-                for (VentaProductoMayoreo producto : lstVenta) {
-                    producto.setIdVentaMayoreoFk(idVentaInsert);
-                    BigDecimal idVentaProducto = new BigDecimal(ifaceVentaMayoreoProducto.getNextVal());
-                    //System.out.println("IdVentaProducto: " + idVentaProducto);
-                    producto.setIdVentaMayProdPk(idVentaProducto);
+                ventaGeneral.setVentaSucursal(new BigDecimal(temp + 1));
 
-                    //System.out.println("Producto: " + producto.toString());
-                    if (ifaceVentaMayoreoProducto.insertarVentaMayoreoProducto(producto) != 0) {
+                //System.out.println("Venta General: " + ventaGeneral.toString());
+                if (ifaceVentaMayoreo.insertarVenta(ventaGeneral) != 0) {
+                    //si la venta se ingreso el siguiente paso es ingresar los productos.
+                    for (VentaProductoMayoreo producto : lstVenta) {
+                        producto.setIdVentaMayoreoFk(idVentaInsert);
+                        BigDecimal idVentaProducto = new BigDecimal(ifaceVentaMayoreoProducto.getNextVal());
+                        //System.out.println("IdVentaProducto: " + idVentaProducto);
+                        producto.setIdVentaMayProdPk(idVentaProducto);
 
-                        List<ExistenciaProducto> lista = ifaceNegocioExistencia.getExistenciaById(producto.getIdExistenciaFk());
-                        ExistenciaProducto existencia = new ExistenciaProducto();
-                        existencia = lista.get(0);
-                        ExistenciaProducto existencia_actualizada = new ExistenciaProducto();
-                        existencia_actualizada.setIdExistenciaProductoPk(existencia.getIdExistenciaProductoPk());
-                        existencia_actualizada.setCantidadPaquetes(existencia.getCantidadPaquetes().subtract(producto.getCantidadEmpaque(), MathContext.UNLIMITED));
-                        existencia_actualizada.setKilosTotalesProducto(existencia.getKilosTotalesProducto().subtract(producto.getKilosVendidos(), MathContext.UNLIMITED));
-                        if (ifaceNegocioExistencia.updateExistenciaProducto(existencia_actualizada) != 0) {
+                        //System.out.println("Producto: " + producto.toString());
+                        if (ifaceVentaMayoreoProducto.insertarVentaMayoreoProducto(producto) != 0) {
 
-                            JsfUtil.addSuccessMessageClean("Venta de Productos finalizada");
+                            List<ExistenciaProducto> lista = ifaceNegocioExistencia.getExistenciaById(producto.getIdExistenciaFk());
+                            ExistenciaProducto existencia = new ExistenciaProducto();
+                            existencia = lista.get(0);
+                            ExistenciaProducto existencia_actualizada = new ExistenciaProducto();
+                            existencia_actualizada.setIdExistenciaProductoPk(existencia.getIdExistenciaProductoPk());
+                            existencia_actualizada.setCantidadPaquetes(existencia.getCantidadPaquetes().subtract(producto.getCantidadEmpaque(), MathContext.UNLIMITED));
+                            existencia_actualizada.setKilosTotalesProducto(existencia.getKilosTotalesProducto().subtract(producto.getKilosVendidos(), MathContext.UNLIMITED));
+                            if (ifaceNegocioExistencia.updateExistenciaProducto(existencia_actualizada) != 0) {
+
+                                if (!data.getIdTipoVenta().equals(new BigDecimal("1"))) {
+                                    if (insertaCredito(ventaGeneral)) {
+                                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info!", "La venta se realizo correctamente."));
+                                    } else {
+                                        JsfUtil.addErrorMessage("Error al Realizar la Venta, favor de cancelar la venta y volver a realizarla. Si los problemas persisten contactar al administrado.");
+                                    }
+                                }
+//                                JsfUtil.addSuccessMessageClean("Venta de Productos finalizada");
+                            } else {
+                                JsfUtil.addErrorMessageClean("Error actualizando existencia de producto: " + producto.getNombreProducto());
+                            }
                         } else {
-                            JsfUtil.addErrorMessageClean("Error actualizando existencia de producto: " + producto.getNombreProducto());
+                            JsfUtil.addErrorMessage("Ocurrio un error");
                         }
-                    } else {
-                        JsfUtil.addErrorMessage("Ocurrio un error");
+
                     }
+                    setParameterTicket(ventaGeneral.getVentaSucursal().intValue(), ventaGeneral.getVentaSucursal().intValue());
+                    generateReport(ventaGeneral.getVentaSucursal().intValue());
+                    selectedExistencia = new ExistenciaProducto();
+                    lstExistencias = new ArrayList<ExistenciaProducto>();
+                    lstVenta = new ArrayList<VentaProductoMayoreo>();
+                    data.reset();
+                    subProducto = new Subproducto();
+                    setViewEstate("viewAddProducto");
+                    idTipoVenta = null;
+                    totalProductoTemporal = null;
+                    totalVentaGeneral = new BigDecimal(0);
+                    init();
 
                 }
-                setParameterTicket(ventaGeneral.getVentaSucursal().intValue());
-                generateReport(ventaGeneral.getVentaSucursal().intValue());
-                selectedExistencia = new ExistenciaProducto();
-                lstExistencias = new ArrayList<ExistenciaProducto>();
-                lstVenta = new ArrayList<VentaProductoMayoreo>();
-                data.reset();
-                subProducto = new Subproducto();
-                setViewEstate("viewAddProducto");
-                idTipoVenta = null;
-                totalProductoTemporal = null;
-                TotalVentaGeneral = new BigDecimal(0);
+                RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
 
-                //cliente=new Cliente();
-                changeVentaRapida();
             }
-            RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
+            return null;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", ex.toString()));
+            return null;
+
         }
+
     }
 
     public void changeViewToAddProducto() {
@@ -304,10 +354,10 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     }
 
     public void buscaExistencias() {
-        //lstExistencias.clear();
         BigDecimal idEntrada;
+        lstExistencias = new ArrayList<ExistenciaProducto>();
+
         if (entradaMercancia == null) {
-            //lstExistencias.clear();
             idEntrada = null;
         } else {
             idEntrada = entradaMercancia.getIdEmPK();
@@ -338,14 +388,13 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
             if (ventaRapida.equals("4")) {
 
                 lstExistencias = ifaceNegocioExistencia.getExistencias(idSucu, null, null, null, null, null, null);
-            }
-            else
-            {
+            } else {
                 lstExistencias.clear();
             }
 
-
         }
+
+        setPrecioInteres();
 
     }
 
@@ -367,10 +416,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                 JsfUtil.addErrorMessage("Cantidad de Empaque insuficiente");
             } else if (data.getKilosVendidos().intValue() > selectedExistencia.getKilosTotalesProducto().intValue()) {
                 JsfUtil.addErrorMessage("Cantidad de Kilos insuficiente");
-            } //        else if (selectedExistencia.isEstatusBloqueo()) {
-            //            JsfUtil.addErrorMessage("Producto Bloqueado, contactar al administrador");
-            //        } 
-            else if (lstVenta.isEmpty()) {
+            } else if (lstVenta.isEmpty()) {
 
                 add();
                 limpia();
@@ -386,16 +432,18 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                         BigDecimal kilossuma = kilosnelista.add(data.getKilosVendidos(), MathContext.UNLIMITED);
 
                         if (suma.intValue() > totalexistencia.intValue() || kilossuma.intValue() > kilostotalexistencia.intValue()) {
-                            //System.out.println("No alcanzan existencias");
+
                             JsfUtil.addErrorMessage("Producto repetido, no alcanzan las existencias.\n Cantidad: " + selectedExistencia.getCantidadPaquetes() + "\nKilos: " + selectedExistencia.getKilosTotalesProducto());
                         } else {
                             lstVenta.remove(i);
-                            TotalVentaGeneral = TotalVentaGeneral.subtract(productoRepetido.getTotalVenta(), MathContext.UNLIMITED);
+                            totalVentaGeneral = totalVentaGeneral.subtract(productoRepetido.getTotalVenta(), MathContext.UNLIMITED);
 
                             productoRepetido.setCantidadEmpaque(suma);
                             productoRepetido.setKilosVendidos(kilossuma);
                             productoRepetido.setTotalVenta(productoRepetido.getPrecioProducto().multiply(productoRepetido.getKilosVendidos(), MathContext.UNLIMITED));
-                            TotalVentaGeneral = TotalVentaGeneral.add(productoRepetido.getTotalVenta(), MathContext.UNLIMITED);
+                            productoRepetido.setPrecioSinInteres(data.getPrecioSinInteres());
+
+                            totalVentaGeneral = totalVentaGeneral.add(productoRepetido.getTotalVenta(), MathContext.UNLIMITED);
                             lstVenta.add(productoRepetido);
                             limpia();
                             //System.out.println("Existencias suficientes, producto actualizado");
@@ -404,7 +452,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                     } else {
                         System.out.println("No encontro repetidos");
                         if (selectedExistencia.getIdExistenciaProductoPk() != null) {
-                            //System.out.println("producto Agregado");
+
                             add();
                             limpia();
                         }
@@ -414,7 +462,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
                 }
             }
-        changeVentaRapida();
+
     }
 
     public void add() {
@@ -425,8 +473,11 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         data.setNombreEmpaque(selectedExistencia.getNombreEmpaque());
         data.setNombreProducto(selectedExistencia.getNombreProducto());
         data.setClave(selectedExistencia.getIdentificador());
+        data.setPrecioSinInteres(selectedExistencia.getPrecioSinIteres());
         data.setTotalVenta(data.getPrecioProducto().multiply(data.getKilosVendidos(), MathContext.UNLIMITED));
+
         VentaProductoMayoreo productoTemporal = new VentaProductoMayoreo();
+
         productoTemporal.setIdEntradaMercanciaFk(data.getIdEntradaMercanciaFk());
         productoTemporal.setIdTipoEmpaqueFk(data.getIdTipoEmpaqueFk());
         productoTemporal.setIdSubProductofk(data.getIdSubProductofk());
@@ -434,13 +485,14 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         productoTemporal.setNombreProducto(data.getNombreProducto());
         productoTemporal.setCantidadEmpaque(data.getCantidadEmpaque());
         productoTemporal.setPrecioProducto(data.getPrecioProducto());
+        productoTemporal.setPrecioSinInteres(data.getPrecioSinInteres());
         productoTemporal.setClave(data.getClave());
         productoTemporal.setTotalVenta(data.getTotalVenta());
         productoTemporal.setKilosVendidos(data.getKilosVendidos());
         productoTemporal.setIdExistenciaFk(data.getIdExistenciaFk());
-        TotalVentaGeneral = TotalVentaGeneral.add(productoTemporal.getTotalVenta(), MathContext.UNLIMITED);
+
+        totalVentaGeneral = totalVentaGeneral.add(productoTemporal.getTotalVenta(), MathContext.UNLIMITED);
         lstVenta.add(productoTemporal);
-        System.out.println("ProductoTemporal: " + productoTemporal.toString());
 
     }
 
@@ -469,7 +521,13 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                 temporal = servletContext.getRealPath("");
             }
 
-            pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketVenta" + File.separatorChar + "ticket.jasper";
+            if (data.getIdTipoVenta().equals(new BigDecimal(1))) {
+                pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketVenta" + File.separatorChar + "ticket.jasper";
+            } else {
+                pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketVenta" + File.separatorChar + "ticketCredito.jasper";
+            }
+
+//            pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketVenta" + File.separatorChar + "ticket.jasper";
             JasperPrint jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport, new JREmptyDataSource());
 
             outputStream = JasperReportUtil.getOutputStreamFromReport(paramReport, getPathFileJasper());
@@ -478,7 +536,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
             exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, outputStream);
 
             byte[] bytes = outputStream.toByteArray();
-            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf",folio,usuarioDominio.getSucId());
+            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf", folio, usuarioDominio.getSucId());
 
         } catch (Exception exception) {
             System.out.println("Error >" + exception.getMessage());
@@ -487,27 +545,67 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
     }
 
-    private void setParameterTicket(int idVenta) {
+//    private void setParameterTicket(int idVenta) {
+//
+//        NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
+//        DecimalFormat df = new DecimalFormat("###.##");
+//        Date date = new Date();
+//        ArrayList<String> productos = new ArrayList<String>();
+//        NumeroALetra numeroLetra = new NumeroALetra();
+//        for (VentaProductoMayoreo venta : lstVenta) {
+//            String cantidad = venta.getCantidadEmpaque() + " " + venta.getNombreEmpaque();
+//            productos.add(venta.getNombreProducto().toUpperCase());
+//            productos.add("       " + cantidad + "               " + nf.format(venta.getPrecioProducto()) + "    " + nf.format(venta.getTotalVenta()));
+//        }
+//
+//        String totalVentaStr = numeroLetra.Convertir(df.format(totalVentaGeneral), true);
+//
+//        putValues(TiempoUtil.getFechaDDMMYYYYHHMM(date), productos, nf.format(totalVentaGeneral), totalVentaStr, idVenta);
+//
+//    }
+    private void setParameterTicket(int idVenta, int folioVenta) {
 
         NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
         DecimalFormat df = new DecimalFormat("###.##");
-        Date date = new Date();
+
         ArrayList<String> productos = new ArrayList<String>();
         NumeroALetra numeroLetra = new NumeroALetra();
+
         for (VentaProductoMayoreo venta : lstVenta) {
             String cantidad = venta.getCantidadEmpaque() + " " + venta.getNombreEmpaque();
             productos.add(venta.getNombreProducto().toUpperCase());
             productos.add("       " + cantidad + "               " + nf.format(venta.getPrecioProducto()) + "    " + nf.format(venta.getTotalVenta()));
         }
 
-        String totalVentaStr = numeroLetra.Convertir(df.format(TotalVentaGeneral), true);
+        String totalVentaDescuentoStr = "";
+        String totalVentaStr = numeroLetra.Convertir(df.format(totalVentaGeneral), true);
+        if (data.getIdTipoVenta().equals(new BigDecimal(2))) {
+            totalVentaDescuentoStr = numeroLetra.Convertir(df.format(c.getMontoCredito()), true);
+        }
 
-        putValues(TiempoUtil.getFechaDDMMYYYYHHMM(date), productos, nf.format(TotalVentaGeneral), totalVentaStr, idVenta);
+        putValues(TiempoUtil.getFechaDDMMYYYYHHMM(context.getFechaSistema()), productos, nf.format(totalVentaGeneral), totalVentaStr, idVenta, folioVenta, totalVentaDescuentoStr, nf.format(totalVentaDescuento));
 
     }
 
-    private void putValues(String dateTime, ArrayList<String> items, String total, String totalVentaStr, int idVenta) {
-
+//    private void putValues(String dateTime, ArrayList<String> items, String total, String totalVentaStr, int idVenta) {
+//
+//        paramReport.put("fechaVenta", dateTime);
+//        paramReport.put("noVenta", Integer.toString(idVenta));
+//        paramReport.put("cliente", cliente.getNombreCombleto());
+//        paramReport.put("vendedor", usuario.getNombreCompletoUsuario());
+//        paramReport.put("productos", items);
+//        paramReport.put("ventaTotal", total);
+//        paramReport.put("totalLetra", totalVentaStr);
+//        paramReport.put("estado", "PEDIDO MARCADO");
+//        paramReport.put("labelFecha", "Fecha de Venta:");
+//        paramReport.put("labelFolio", "Folio de Venta:");
+//        paramReport.put("telefonos", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:" + usuarioDominio.getTelefonoSucursal());
+//        paramReport.put("labelSucursal", usuarioDominio.getNombreSucursal());
+//
+//    }
+    private void putValues(String dateTime, ArrayList<String> items, String total, String totalVentaStr, int idVenta, int folioVenta, String totalVentaDescuentoStr, String totalDescuento) {
+        DecimalFormat df = new DecimalFormat("#,###.00");
+        paramReport.clear();
         paramReport.put("fechaVenta", dateTime);
         paramReport.put("noVenta", Integer.toString(idVenta));
         paramReport.put("cliente", cliente.getNombreCombleto());
@@ -518,9 +616,47 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         paramReport.put("estado", "PEDIDO MARCADO");
         paramReport.put("labelFecha", "Fecha de Venta:");
         paramReport.put("labelFolio", "Folio de Venta:");
-        paramReport.put("telefonos", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:"+usuarioDominio.getTelefonoSucursal());
+        paramReport.put("telefonos", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:" + usuarioDominio.getTelefonoSucursal());
         paramReport.put("labelSucursal", usuarioDominio.getNombreSucursal());
 
+        //Se agregan los campos que se utiliza en el ticket de credito
+        if (!data.getIdTipoVenta().equals(new BigDecimal(1))) {
+
+            paramReport.put("numeroCliente", cliente.getId_cliente().toString());
+            paramReport.put("fechaPromesaPago", TiempoUtil.getFechaDDMMYYYY(c.getFechaPromesaPago()));
+            paramReport.put("beneficiario", "FIDENCIO TORRES REYNOSO");
+            paramReport.put("totalCompraDescuento", "$" + df.format(c.getMontoCredito()));
+            paramReport.put("totalDescuentoLetra", totalVentaDescuentoStr);
+            paramReport.put("aCuenta", "-$" + df.format(dejaACuenta));
+            paramReport.put("descuentoVenta", "-$" + df.format(descuento));
+            paramReport.put("foliCredito", Integer.toString(folioCredito));
+
+            //Imprime el calendario de pagos
+            Date dateTemp = date;
+            ArrayList calendario = new ArrayList();
+            String montoAbono = df.format(c.getMontoCredito().divide(c.getNumeroPagos() == null ? BigDecimal.ZERO : c.getNumeroPagos(), 2, RoundingMode.UP));
+            String item = "N. Pago   Fecha de Pago   Monto";
+            calendario.add(item);
+            if (dejaACuenta.intValue() > 0) {
+                item = "    0            " + TiempoUtil.getFechaDDMMYYYY(date) + "    $" + df.format(dejaACuenta);
+                calendario.add(item);
+
+                paramReport.put("msgAcuenta", "Favor de pasar a caja para su pago inicial de: $" + df.format(dejaACuenta));
+            } else {
+                paramReport.put("msgAcuenta", "");
+            }
+
+            int plaso = (c.getPlasos().divide(c.getNumeroPagos())).intValue();
+            int pagos = c.getNumeroPagos().intValue();
+            for (int y = 0; y < pagos; y++) {
+
+                dateTemp = TiempoUtil.sumarRestarDias(dateTemp, plaso);
+                item = "    " + (y + 1) + "            " + TiempoUtil.getFechaDDMMYYYY(dateTemp) + "    $" + montoAbono;
+                calendario.add(item);
+
+            }
+            paramReport.put("calendarioPago", calendario);
+        }
     }
 
     public ArrayList<TipoVenta> getLstTipoVenta() {
@@ -552,9 +688,9 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         dataEdit.setPrecioProducto(data.getPrecioProducto());
         setViewEstate("viewCarrito");
         JsfUtil.addSuccessMessage("Producto Modificado Correctamente");
-        TotalVentaGeneral = new BigDecimal(0);
+        totalVentaGeneral = new BigDecimal(0);
         for (VentaProductoMayoreo producto : lstVenta) {
-            TotalVentaGeneral = TotalVentaGeneral.add(producto.getTotalVenta(), MathContext.UNLIMITED);
+            totalVentaGeneral = totalVentaGeneral.add(producto.getTotalVenta(), MathContext.UNLIMITED);
 
         }
         selectedExistencia = null;
@@ -564,16 +700,280 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         setViewEstate("viewAddProducto");
 
         totalProductoTemporal = null;
-        //TotalVentaGeneral = new BigDecimal(0);
-
-        changeVentaRapida();
 
     }
 
     public void remove() {
-        TotalVentaGeneral = TotalVentaGeneral.subtract(dataRemove.getTotalVenta(), MathContext.UNLIMITED);
+        totalVentaGeneral = totalVentaGeneral.subtract(dataRemove.getTotalVenta(), MathContext.UNLIMITED);
         lstVenta.remove(dataRemove);
 
+    }
+
+    public void validaCreditoCliente() {
+
+        BigDecimal tipoPago = new BigDecimal("1");
+        BigDecimal idClienteVenta = new BigDecimal("1");
+        if (cliente.getId_cliente().equals(idClienteVenta)) {
+            credito = false;
+            data.setIdTipoVenta(tipoPago);
+        } else if (cliente.getLimiteCredito() == null) {
+            JsfUtil.addWarnMessage("El Cliente no tiene Crédito.");
+            data.setIdTipoVenta(tipoPago);
+            credito = false;
+        } else if (cliente.getCreditoDisponible().compareTo(new BigDecimal("0")) == 1) {
+            credito = true;
+        } else {
+            JsfUtil.addWarnMessage("El cliente no tiene credito disponible :" + cliente.getCreditoDisponible());
+            data.setIdTipoVenta(tipoPago);
+            credito = false;
+        }
+        calculaPrecioProducto();
+
+    }
+
+    //Calcula los precios de cada producto cuando es una venta de credito
+    public void calculaPrecioProducto() {
+
+        if (data.getIdTipoVenta().intValue() != 1) {
+
+            BigDecimal diasAnio = new BigDecimal(365);
+
+            BigDecimal totalDiasPagar = data.getTipoPago() == null ? DIAS_PLAZO : data.getTipoPago();
+            data.setNumeroPagos(totalDiasPagar.divide(DIAS_PLAZO));
+        }
+
+        for (VentaProductoMayoreo dominio : lstVenta) {
+
+            dominio.setPrecioProducto(precioProducto(dominio.getPrecioSinInteres()));
+            dominio.setTotalVenta(dominio.getPrecioProducto().multiply(dominio.getKilosVendidos()));
+        }
+        for (ExistenciaProducto dominio : lstExistencias) {
+
+            dominio.setPrecioVenta(precioProducto(dominio.getPrecioSinIteres()));
+
+        }
+
+        calcularTotalVenta();
+    }
+
+    private void calcularTotalVenta() {
+        setTotalVentaGeneral(new BigDecimal(0));
+        totalVentaDescuento = new BigDecimal(0);
+        for (VentaProductoMayoreo dominio : lstVenta) {
+            setTotalVentaGeneral(getTotalVentaGeneral().add(dominio.getTotalVenta()));
+        }
+        totalVentaDescuento = getTotalVentaGeneral();
+        totalVentaDescuento = totalVentaDescuento.setScale(2, RoundingMode.UP);
+
+        calculaAhorro(null);
+    }
+
+    public void calculaAhorro(AjaxBehaviorEvent event) {
+        InputText input;
+
+        if (event != null) {
+            input = (InputText) event.getSource();
+            dejaACuenta = new BigDecimal(input.getSubmittedValue().toString());
+        }
+
+        BigDecimal zero = new BigDecimal(0);
+        descuento = new BigDecimal(0);
+        //Calcula el descuento por dejar a cuenta
+        if (dejaACuenta.compareTo(zero) == 1) {
+            BigDecimal tempDejaAcuenta = dejaACuenta;
+
+            for (VentaProductoMayoreo dominio : lstVenta) {
+
+                //Si lo que se dejo a cuenta es igual o menor a 0 se sale del for
+                if (tempDejaAcuenta.compareTo(zero) <= 0) {
+                    break;
+                }
+
+                BigDecimal kiloCompra = new BigDecimal(0);
+                BigDecimal totalCompraSinInteres = dominio.getKilosVendidos().multiply(dominio.getPrecioSinInteres());
+                int compareDejaAcuenta = totalCompraSinInteres.compareTo(tempDejaAcuenta);
+
+                if (compareDejaAcuenta == -1) {
+
+                    kiloCompra = dominio.getKilosVendidos();
+                    descuento = descuento.add(kiloCompra.multiply(dominio.getPrecioProducto()).subtract(kiloCompra.multiply(dominio.getPrecioSinInteres())));
+                    tempDejaAcuenta = tempDejaAcuenta.subtract(kiloCompra.multiply(dominio.getPrecioSinInteres()));
+
+                } else if (compareDejaAcuenta == 1) {
+
+                    kiloCompra = tempDejaAcuenta.divide(dominio.getPrecioSinInteres(), 2, RoundingMode.UP);
+                    tempDejaAcuenta = zero;
+                    descuento = descuento.add(kiloCompra.multiply(dominio.getPrecioProducto()).subtract(kiloCompra.multiply(dominio.getPrecioSinInteres())));
+
+                } else {
+
+                    tempDejaAcuenta = zero;
+                    kiloCompra = dominio.getKilosVendidos();
+                    descuento = descuento.add(kiloCompra.multiply(dominio.getPrecioProducto()).subtract(kiloCompra.multiply(dominio.getPrecioSinInteres())));
+                }
+
+            }
+
+            descuento = descuento.setScale(2, RoundingMode.UP);
+            setTotalVentaDescuento(totalVentaGeneral.subtract(descuento));
+
+        }
+    }
+
+    public void validaPrecioMinimoMaximo(AjaxBehaviorEvent event) {
+        InputText input = (InputText) event.getSource();
+        if (input.getSubmittedValue() != null && !input.getSubmittedValue().toString().isEmpty()) {
+            BigDecimal value = new BigDecimal(input.getSubmittedValue().toString());
+            if (value.compareTo(min) == -1) {
+                input.setSubmittedValue(min);
+
+            } else if (value.compareTo(max) == 1) {
+                input.setSubmittedValue(max);
+            } else {
+                input.setSubmittedValue(value);
+            }
+
+        } else {
+            input.setSubmittedValue("");
+
+        }
+
+        if (data.getKilosVendidos() != null && data.getPrecioProducto() != null) {
+            calculaTotalTemporal();
+        }
+
+    }
+
+    public void validarNumeroPagos(AjaxBehaviorEvent event) {
+        InputText input = (InputText) event.getSource();
+        try {
+
+            if (input.getSubmittedValue() != null && !input.getSubmittedValue().toString().isEmpty()) {
+
+                BigDecimal value = new BigDecimal(input.getSubmittedValue().toString());
+                int tipoPago = data.getTipoPago() == null ? 7 : data.getTipoPago().intValue();
+                int resto = (tipoPago % value.intValue());
+
+                if (resto > 0) {
+                    input.setSubmittedValue(new BigDecimal(tipoPago).divide(DIAS_PLAZO));
+                } else if (tipoPago < (value.intValue() * DIAS_PLAZO.intValue())) {
+                    input.setSubmittedValue(new BigDecimal(tipoPago).divide(DIAS_PLAZO));
+                } else if (tipoPago == value.intValue()) {
+                    input.setSubmittedValue(new BigDecimal(tipoPago).divide(DIAS_PLAZO));
+                } else {
+                    input.setSubmittedValue(value);
+                }
+            } else {
+                input.setSubmittedValue("");
+
+            }
+
+        } catch (Exception ex) {
+            input.setSubmittedValue("");
+        }
+
+    }
+
+    private void setPrecioInteres() {
+
+        for (ExistenciaProducto dominio : lstExistencias) {
+
+            dominio.setPrecioVenta(precioProducto(dominio.getPrecioVenta()));
+
+        }
+
+    }
+
+    private BigDecimal precioProducto(BigDecimal precioProducto) {
+
+        BigDecimal diasAnio = new BigDecimal(365);
+
+        if ((data.getIdTipoVenta() != null && data.getIdTipoVenta().intValue() != 1) && precioProducto != null) {
+            BigDecimal totalConInteres = new BigDecimal("0");
+            BigDecimal totalDiasPagar = data.getTipoPago() == null ? new BigDecimal("7") : data.getTipoPago();
+            BigDecimal interesDiasPagar = INTERES_VENTA.divide(diasAnio, 8, RoundingMode.HALF_UP).multiply(totalDiasPagar);
+            totalConInteres = precioProducto.multiply(interesDiasPagar.add(new BigDecimal("1")));
+            totalConInteres = totalConInteres.setScale(0, RoundingMode.HALF_UP);
+            return totalConInteres;
+        } else {
+            return precioProducto;
+        }
+
+    }
+
+    private String validaCompraCredito() {
+
+        String mensaje = "";
+        BigDecimal tipoCredito = new BigDecimal("2");
+
+        if (data.getIdTipoVenta().equals(tipoCredito)) {
+
+            BigDecimal creditoVenta = totalVentaGeneral.subtract(dejaACuenta);
+
+            if (totalVentaGeneral.compareTo(dejaACuenta) == -1) {
+                return "El monto a cuenta :" + dejaACuenta + " es mayor al total de la venta: " + totalVenta;
+            } else if (cliente.getCreditoDisponible().compareTo(creditoVenta) == -1) {
+
+                return "No tiene el credito necesario para realizar la compra. Credito disponible: $" + cliente.getCreditoDisponible() + ", Compra de Credito :$" + creditoVenta + ", a cuenta :$" + dejaACuenta;
+            }
+        }
+
+        return mensaje;
+
+    }
+
+    private boolean insertaCredito(VentaMayoreo venta) {
+        c = new Credito();
+        Date fechaActual = date;
+        Date fechaPromesaPago = TiempoUtil.sumarRestarDias(fechaActual, data.getTipoPago().intValue());
+
+        c.setIdClienteFk(venta.getIdClienteFk());
+        //folio de la venta de menudeo (es el folio general no el de sucursal)
+        c.setIdVentaMayoreo(venta.getIdVentaMayoreoPk());
+        //Uusuario que realiza la venta
+        c.setIdUsuarioCredito(venta.getIdVendedorFK());
+        //tipo de pago semanal, mensual etc
+        c.setIdTipoCreditoFk(data.getTipoPago());
+        //estatus de credito en activo =1
+        c.setEstatusCredito(new BigDecimal("1"));
+        //Numero de veces que el cliente a prometido pagar, al realizar la venta seria la primera promesa
+        c.setNumeroPromesaPago(new BigDecimal("1"));
+        //el dia de la compra a credito
+        c.setFechaInicioCredito(fechaActual);
+        // Fecha en la que el cliente promete liquidar los pagos del credito
+        c.setFechaPromesaPago(fechaPromesaPago);
+        //el procentaje de interes que se le cobrara al cliente por la compra
+        c.setTazaInteres(INTERES_VENTA);
+        //Lo que el cliente deja a cuenta
+        c.setDejaCuenta(dejaACuenta);
+        //Estatus si se a cobrado lo que el usuario a dejado a cuenta al momento de la venta es 0 (que no se a cobrado).
+        c.setStatusACuenta(new BigDecimal("0"));
+
+        if (dejaACuenta == null || dejaACuenta.intValue() == 0) {
+            c.setMontoCredito(totalVentaGeneral.setScale(2, RoundingMode.UP));
+        } else {
+            c.setMontoCredito(totalVentaDescuento.subtract(dejaACuenta).setScale(2, RoundingMode.UP));
+        }
+        //Numero de pagos que el cliente debera realizar
+        c.setPlasos(data.getTipoPago());
+        //El numero de dias del plaso
+        c.setNumeroPagos(data.getNumeroPagos());
+
+        folioCredito = ifaceCredito.insert(c);
+
+        if (folioCredito != 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public BigDecimal getTotalVentaDescuento() {
+        return totalVentaDescuento;
+    }
+
+    public void setTotalVentaDescuento(BigDecimal totalVentaDescuento) {
+        this.totalVentaDescuento = totalVentaDescuento;
     }
 
     public VentaProductoMayoreo getDataRemove() {
@@ -619,11 +1019,11 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     }
 
     public BigDecimal getTotalVentaGeneral() {
-        return TotalVentaGeneral;
+        return totalVentaGeneral;
     }
 
-    public void setTotalVentaGeneral(BigDecimal TotalVentaGeneral) {
-        this.TotalVentaGeneral = TotalVentaGeneral;
+    public void setTotalVentaGeneral(BigDecimal totalVentaGeneral) {
+        this.totalVentaGeneral = totalVentaGeneral;
     }
 
     public ArrayList<ExistenciaProducto> getLstExistencias() {
@@ -878,17 +1278,6 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         this.permisionVentaRapida = permisionVentaRapida;
     }
 
-    public boolean isVentaRapidaCheck() {
-        return ventaRapidaCheck;
-    }
-
-    public void setVentaRapidaCheck(boolean ventaRapidaCheck) {
-
-        this.ventaRapidaCheck = ventaRapidaCheck;
-        System.out.println("Check: " + ventaRapidaCheck);
-//changeVentaRapida();
-    }
-
     public BigDecimal getRecibido() {
         return recibido;
     }
@@ -916,14 +1305,43 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     }
 
     public boolean isCharLine() {
-        System.out.println("isChar:" + charLine);
         return charLine;
     }
 
     public void setCharLine(boolean charLine) {
-        System.out.println("thisChar:" + this.charLine);
-        System.out.println("Char:" + charLine);
         this.charLine = charLine;
+    }
+
+    public boolean isCredito() {
+        return credito;
+    }
+
+    public void setCredito(boolean credito) {
+        this.credito = credito;
+    }
+
+    public boolean isPermisionToEdit() {
+        return permisionToEdit;
+    }
+
+    public void setPermisionToEdit(boolean permisionToEdit) {
+        this.permisionToEdit = permisionToEdit;
+    }
+
+    public BigDecimal getDescuento() {
+        return descuento;
+    }
+
+    public void setDescuento(BigDecimal descuento) {
+        this.descuento = descuento;
+    }
+
+    public BigDecimal getDejaACuenta() {
+        return dejaACuenta;
+    }
+
+    public void setDejaACuenta(BigDecimal dejaACuenta) {
+        this.dejaACuenta = dejaACuenta;
     }
 
 }

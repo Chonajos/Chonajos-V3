@@ -44,6 +44,9 @@ public class ExistenciaProducto implements Serializable {
     private BigDecimal convenio;
     private BigDecimal carroSucursal;
     private BigDecimal idEntradaMercanciaProductoFK;
+    
+    //variables de venta por credito
+    private BigDecimal precioSinIteres;
 
     public void reset() {
         idSucursal = null;
@@ -57,6 +60,8 @@ public class ExistenciaProducto implements Serializable {
         precioMaximo = null;
         estatusBloqueo = true;
         carroSucursal = null;
+        
+        precioSinIteres = null;
     }
 
     @Override
@@ -297,6 +302,14 @@ public class ExistenciaProducto implements Serializable {
 
     public void setConvenio(BigDecimal convenio) {
         this.convenio = convenio;
+    }
+
+    public BigDecimal getPrecioSinIteres() {
+        return precioSinIteres;
+    }
+
+    public void setPrecioSinIteres(BigDecimal precioSinIteres) {
+        this.precioSinIteres = precioSinIteres;
     }
     
     

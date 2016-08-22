@@ -31,7 +31,7 @@
     <beans:bean id="customAuthenticationProvider"
                 class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
         <beans:property name="userDetailsService" ref="userDetailsService" />
-        <!--<beans:property name="passwordEncoder" ref="passwordEncoder" />-->
+        <beans:property name="passwordEncoder" ref="passwordEncoder" />
         
     </beans:bean>
 

@@ -28,8 +28,12 @@ public class VentaProductoMayoreo implements Serializable {
     private String nombreProducto;
     private String nombreEmpaque;
     private BigDecimal idExistenciaFk;
-    private BigDecimal idTipoVentaFK;
     
+    //Variables para credito
+    private BigDecimal idTipoVenta;
+    private BigDecimal tipoPago;
+    private BigDecimal numeroPagos;
+    private BigDecimal precioSinInteres;
 
 
     public VentaProductoMayoreo()
@@ -53,23 +57,39 @@ public class VentaProductoMayoreo implements Serializable {
         nombreProducto = null;
         nombreEmpaque = null;
         idExistenciaFk=null;
-        idTipoVentaFK=null;
+
     }
 
     @Override
     public String toString() {
-        return "VentaProductoMayoreo{" + "idVentaMayProdPk=" + idVentaMayProdPk + ", idVentaMayoreoFk=" + idVentaMayoreoFk + ", idSubProductofk=" + idSubProductofk + ", precioProducto=" + precioProducto + ", kilosVendidos=" + kilosVendidos + ", cantidadEmpaque=" + cantidadEmpaque + ", totalVenta=" + totalVenta + ", idTipoEmpaqueFk=" + idTipoEmpaqueFk + ", idEntradaMercanciaFk=" + idEntradaMercanciaFk + ", clave=" + clave + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + ", idExistenciaFk=" + idExistenciaFk + ", idTipoVentaFK=" + idTipoVentaFK + '}';
+        return "VentaProductoMayoreo{" + "idVentaMayProdPk=" + idVentaMayProdPk + ", idVentaMayoreoFk=" + idVentaMayoreoFk + ", idSubProductofk=" + idSubProductofk + ", precioProducto=" + precioProducto + ", kilosVendidos=" + kilosVendidos + ", cantidadEmpaque=" + cantidadEmpaque + ", totalVenta=" + totalVenta + ", idTipoEmpaqueFk=" + idTipoEmpaqueFk + ", idEntradaMercanciaFk=" + idEntradaMercanciaFk + ", clave=" + clave + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + ", idExistenciaFk=" + idExistenciaFk + ", idTipoVenta=" + idTipoVenta + '}';
     }
 
+    public BigDecimal getTipoPago() {
+        return tipoPago;
+    }
+
+    public void setTipoPago(BigDecimal tipoPago) {
+        this.tipoPago = tipoPago;
+    }
+
+    public BigDecimal getPrecioSinInteres() {
+        return precioSinInteres;
+    }
+
+    public void setPrecioSinInteres(BigDecimal precioSinInteres) {
+        this.precioSinInteres = precioSinInteres;
+    }
+
+    public BigDecimal getIdTipoVenta() {
+        return idTipoVenta;
+    }
+
+    public void setIdTipoVenta(BigDecimal idTipoVenta) {
+        this.idTipoVenta = idTipoVenta;
+    }
     
-
-    public BigDecimal getIdTipoVentaFK() {
-        return idTipoVentaFK;
-    }
-
-    public void setIdTipoVentaFK(BigDecimal idTipoVentaFK) {
-        this.idTipoVentaFK = idTipoVentaFK;
-    }
+    
     public BigDecimal getIdExistenciaFk() {
         return idExistenciaFk;
     }
@@ -78,7 +98,14 @@ public class VentaProductoMayoreo implements Serializable {
         this.idExistenciaFk = idExistenciaFk;
     }
 
-    
+    public BigDecimal getNumeroPagos() {
+        return numeroPagos;
+    }
+
+    public void setNumeroPagos(BigDecimal numeroPagos) {
+        this.numeroPagos = numeroPagos;
+    }
+
     
     public String getClave() {
         return clave;

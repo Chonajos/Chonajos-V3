@@ -427,7 +427,7 @@ public class Cliente implements Serializable
 
     public String getNombreCombleto() {
         
-        return this.nombreCombleto == null ? (nombre.trim() +" "+(paterno == null ?"": paterno)+" "+(materno == null ? "":materno )):this.nombreCombleto;
+        return this.nombreCombleto == null ? ((nombre == null ? "":nombre.trim()) +" "+(paterno == null ? "": paterno.trim())+" "+(materno == null ? "":materno.trim() )):this.nombreCombleto;
     }
 
     public void setNombreCombleto(String nombreCombleto) {

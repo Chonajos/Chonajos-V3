@@ -129,7 +129,7 @@ ul .ui-state-highlight {
     background-color:#00acd6  !important;  
 }
 /*Color azul a los botones*/
-.ui-button-text{
+/*.ui-button-text{
     background:#0081c2;
     background-image:-webkit-linear-gradient(top, #2399e5, #239ce5);
     color: white;
@@ -139,7 +139,8 @@ ul .ui-state-highlight {
 .ui-state-error{
     color: black !important;
     background:none !important;
-}
+}*/
+/*Color azul a los botones*/
 /*Label a la derecha*/
 div label{
     text-align: right !important;
@@ -175,12 +176,14 @@ div label:hover{
     white-space:initial;
 }*/
 /*cortar label*/
-/*Letra mas chica en combos*/
-button span:hover{
+
+/*Botones*/
+/*button span:hover{
     font-weight: bold;
     color:#0088cc;
     background-image:-webkit-linear-gradient(top, #FFFFFF, #FFFFFF);
-}
+}*/
+/*Botones*/
 
 /*alinght left*/
 .alignLeft{
@@ -231,9 +234,9 @@ button span:hover{
 }
 
 /*Iconos color negro si se quita esta linea son grices*/
-.ui-widget-content .ui-icon {
+/*.ui-widget-content .ui-icon {
     background-image: url("/javax.faces.resource/images/ui-icons_222222_256x240.png.xhtml?ln=primefaces-casablanca") !important;
-}
+}*/
 
 /* Clase para cambiar color de fuente de un link seleccionado*/
 .checkedFontColor  .ui-state-highlight a, .ui-state-highlight a {

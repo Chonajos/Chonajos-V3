@@ -3,6 +3,7 @@ package com.web.chon.bean;
 import com.web.chon.dominio.Rol;
 import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.Usuario;
+import com.web.chon.security.service.PasswordEncoderChonajos;
 import com.web.chon.service.IfaceCatRol;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceCatUsuario;
@@ -13,6 +14,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+
 import org.springframework.stereotype.Component;
 
 /**
@@ -25,19 +27,23 @@ public class BeanCatUsuario implements BeanSimple {
 
     private static final long serialVersionUID = 1L;
 
-    @Autowired private IfaceCatRol ifaceCatRol;
-    @Autowired private IfaceCatUsuario ifaceCatUsuario;
-    @Autowired private IfaceCatSucursales ifaceCatSucursales;
+    @Autowired
+    private IfaceCatRol ifaceCatRol;
+    @Autowired
+    private IfaceCatUsuario ifaceCatUsuario;
+    @Autowired
+    private IfaceCatSucursales ifaceCatSucursales;
+    @Autowired
+    private PasswordEncoderChonajos passwordEncoder;
 
     private List<Rol> lstRol;
     private ArrayList<Usuario> model;
     private List<Sucursal> lstSucursal;
     private ArrayList<Usuario> selectedUsuario;
-   
+
     private Usuario data;
     private String title;
     private String viewEstate;
-    
 
     @PostConstruct
     public void init() {
@@ -77,14 +83,17 @@ public class BeanCatUsuario implements BeanSimple {
     @Override
     public String insert() {
         try {
-            data.setContrasenaUsuario(data.getClaveUsuario());
+
+            //Se codifica la contraseña del usuario
+            CharSequence encoder = passwordEncoder.encode(data.getClaveUsuario()).toString().toUpperCase();
+            data.setContrasenaUsuario(encoder.toString());
             if (ifaceCatUsuario.insertarUsuarios(data) == 0) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "La clave del usuario " + data.getClaveUsuario() + " ya existe. Intenta con otra clave diferente"));
                 return null;
             } else {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro insertado."));
             }
-            
+
         } catch (Exception ex) {
             System.out.println("error" + ex.getMessage());
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar insertar el registro :" + data.getNombreUsuario() + "."));
@@ -96,7 +105,10 @@ public class BeanCatUsuario implements BeanSimple {
     @Override
     public String update() {
         try {
-            data.setContrasenaUsuario(data.getClaveUsuario());
+            //Se codifica la contraseña del usuario
+            CharSequence encoder = passwordEncoder.encode(data.getClaveUsuario()).toString().toUpperCase();
+            data.setContrasenaUsuario(encoder.toString());
+                    
             if (ifaceCatUsuario.updateUsuario(data) == 1) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro modificado."));
             } else {

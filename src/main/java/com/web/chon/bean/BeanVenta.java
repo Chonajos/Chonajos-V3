@@ -483,7 +483,7 @@ public class BeanVenta implements Serializable, BeanSimple {
         for (VentaProducto venta : lstVenta) {
             String cantidad = venta.getCantidadEmpaque() + " " + venta.getNombreEmpaque();
             productos.add(venta.getNombreProducto().toUpperCase());
-            productos.add("                       " + cantidad + "     " + nf.format(venta.getPrecioProducto()) + "    " + nf.format(venta.getTotal()));
+            productos.add("                     " + cantidad + "     " + nf.format(venta.getPrecioProducto()) + "    " + nf.format(venta.getTotal()));
 
         }
         String totalVentaDescuentoStr = "";
@@ -501,8 +501,6 @@ public class BeanVenta implements Serializable, BeanSimple {
         paramReport.clear();
         paramReport.put("fechaVenta", dateTime);
         paramReport.put("noVenta", Integer.toString(folioVenta));
-        //comentado asta nuevo ticket
-//        System.out.println("clinete ticket" + cliente.toString());
         paramReport.put("cliente", cliente.getNombreCombleto());
         paramReport.put("vendedor", usuario.getNombreCompletoUsuario());
         paramReport.put("productos", items);
