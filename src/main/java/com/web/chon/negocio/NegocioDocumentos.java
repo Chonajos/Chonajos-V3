@@ -6,6 +6,7 @@
 package com.web.chon.negocio;
 
 import com.web.chon.dominio.Documento;
+import com.web.chon.util.TiempoUtil;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.ejb.Remote;
@@ -58,4 +59,9 @@ public interface NegocioDocumentos {
     
     
     public int updateDocumento(Documento dc);
+    
+    public List<Object[]> getDocumentos(String fechaInicio, String fechaFin,BigDecimal idSucursal,BigDecimal idClienteFk,BigDecimal filtro,BigDecimal filtroStatus,BigDecimal filtroFecha);
+
+    public int cambiarFormaPago(Documento d);
+    
 }

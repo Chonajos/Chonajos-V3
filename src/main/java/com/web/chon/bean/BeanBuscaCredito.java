@@ -375,13 +375,18 @@ public class BeanBuscaCredito implements Serializable {
                         JsfUtil.addSuccessMessage("Se ha realizado un abono existosamente");
                         Documento d = new Documento();
                         d.setIdDocumentoPk(new BigDecimal(ifaceDocumentos.getNextVal()));
-                        d.setFechaCobro(ac.getFechaCobro());
                         d.setIdAbonoFk(ac.getIdAbonoCreditoPk());
+                        d.setFechaCobro(ac.getFechaCobro());
                         Credito c = ifaceCredito.getById(ac.getIdCreditoFk());
                         d.setIdClienteFk(c.getIdClienteFk());
                         d.setIdStatusFk(DOCUMENTOACTIVO);
                         d.setIdTipoDocumento(DOCUMENTOTIPOCHEQUE);
                         d.setMonto(ac.getMontoAbono());
+                        d.setNumeroCheque(ac.getNumeroCheque());
+                        d.setFactura(ac.getFactura());
+                        d.setBanco(ac.getBanco());
+                        d.setLibrador(ac.getLibrador());
+                        d.setIdFormaCobroFk(new BigDecimal(1));
                         System.out.println("Documento: " + d.toString());
                         BigDecimal temporal2 = dataAbonar.getTotalAbonado().add(abono.getMontoAbono(), MathContext.UNLIMITED);
                         if ((temporal2).compareTo(dataAbonar.getSaldoTotal()) >= 0) {

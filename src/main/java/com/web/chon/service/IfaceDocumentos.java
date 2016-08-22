@@ -8,6 +8,7 @@ package com.web.chon.service;
 import com.web.chon.dominio.Documento;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Interfaz para el Servicio de Documentos por Cobrar
@@ -46,8 +47,15 @@ public interface IfaceDocumentos {
      * @param idStatusFk
      * @return
      */
+    
     public ArrayList<Documento> getDocumentosByIdStatusFk(BigDecimal idStatusFk);
+    
     public int getNextVal();
     
     public int updateDocumentoById(Documento dc);
+    
+    public ArrayList<Documento> getDocumentos(Date fechaInicio,Date fechaFin,BigDecimal idSucursalFk,BigDecimal idClienteFk,BigDecimal idFormaPagoFk, BigDecimal idStatusFk,BigDecimal filtroFecha);
+
+    public int cambiarFormaPago(Documento d);
+
 }

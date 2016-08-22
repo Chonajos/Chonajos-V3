@@ -29,11 +29,14 @@ public class AbonoCredito extends ValueObject {
     private String nombreCliente;
     private String nombreStatus;
     private BigDecimal idStatusDocumentoFk;
+    private BigDecimal idClienteFk;
 
     @Override
     public String toString() {
-        return "AbonoCredito{" + "idAbonoCreditoPk=" + idAbonoCreditoPk + ", idCreditoFk=" + idCreditoFk + ", montoAbono=" + montoAbono + ", fechaAbono=" + fechaAbono + ", idUsuarioFk=" + idUsuarioFk + ", idtipoAbonoFk=" + idtipoAbonoFk + ", estatusAbono=" + estatusAbono + ", numeroCheque=" + numeroCheque + ", librador=" + librador + ", fechaCobro=" + fechaCobro + ", banco=" + banco + ", factura=" + factura + ", referencia=" + referencia + ", concepto=" + concepto + ", fechaTransferencia=" + fechaTransferencia + ", datoACuenta=" + datoACuenta + ", idDocumentoPk=" + idDocumentoPk + ", nombreCliente=" + nombreCliente + ", nombreStatus=" + nombreStatus + '}';
+        return "AbonoCredito{" + "idAbonoCreditoPk=" + idAbonoCreditoPk + ", idCreditoFk=" + idCreditoFk + ", montoAbono=" + montoAbono + ", fechaAbono=" + fechaAbono + ", idUsuarioFk=" + idUsuarioFk + ", idtipoAbonoFk=" + idtipoAbonoFk + ", estatusAbono=" + estatusAbono + ", numeroCheque=" + numeroCheque + ", librador=" + librador + ", fechaCobro=" + fechaCobro + ", banco=" + banco + ", factura=" + factura + ", referencia=" + referencia + ", concepto=" + concepto + ", fechaTransferencia=" + fechaTransferencia + ", datoACuenta=" + datoACuenta + ", idDocumentoPk=" + idDocumentoPk + ", nombreCliente=" + nombreCliente + ", nombreStatus=" + nombreStatus + ", idStatusDocumentoFk=" + idStatusDocumentoFk + ", idClienteFk=" + idClienteFk + '}';
     }
+
+    
 
     @Override
     public void reset() {
@@ -56,8 +59,18 @@ public class AbonoCredito extends ValueObject {
         idDocumentoPk=null;
         nombreCliente=null;
         nombreStatus=null;
+        idClienteFk=null;
     }
 
+    public BigDecimal getIdClienteFk() {
+        return idClienteFk;
+    }
+
+    public void setIdClienteFk(BigDecimal idClienteFk) {
+        this.idClienteFk = idClienteFk;
+    }
+
+    
     public BigDecimal getIdStatusDocumentoFk() {
         return idStatusDocumentoFk;
     }

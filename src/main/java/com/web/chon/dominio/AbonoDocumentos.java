@@ -14,6 +14,7 @@ import java.util.Date;
  * @author JesusAlfredo
  */
 public class AbonoDocumentos implements Serializable {
+
     private static final long serialVersionUID = 1L;
     private BigDecimal idAbonoDocumentoPk;
     private BigDecimal idDocumentoFk;
@@ -25,12 +26,88 @@ public class AbonoDocumentos implements Serializable {
     private String librador;
     private Date fechaCobro;
     private String banco;
-    private String  numeroFactura;
+    private String numeroFactura;
     private BigDecimal referencia;
     private String concepto;
     private Date fechaTransferencia;
+    private BigDecimal idUsuarioFk;
+    private String nombreCliente;
+    private String nombreStatus;
+    private BigDecimal idStatusDocumento;
+    private BigDecimal idClienteFk;
+
+    public void reset() {
+        idAbonoDocumentoPk = null;
+        idDocumentoFk = null;
+        montoAbono = null;
+        fechaAbono = null;
+        idTipoAbonoFk = null;
+        estatus = null;
+        numeroCheque = null;
+        librador = null;
+        fechaCobro = null;
+        banco = null;
+        numeroFactura = null;
+        referencia = null;
+        concepto = null;
+        idUsuarioFk = null;
+        fechaTransferencia = null;
+        nombreCliente = null;
+        nombreStatus = null;
+        idStatusDocumento = null;
+        idClienteFk=null;
+    }
+
+    @Override
+    public String toString() {
+        return "AbonoDocumentos{" + "idAbonoDocumentoPk=" + idAbonoDocumentoPk + ", idDocumentoFk=" + idDocumentoFk + ", montoAbono=" + montoAbono + ", fechaAbono=" + fechaAbono + ", idTipoAbonoFk=" + idTipoAbonoFk + ", estatus=" + estatus + ", numeroCheque=" + numeroCheque + ", librador=" + librador + ", fechaCobro=" + fechaCobro + ", banco=" + banco + ", numeroFactura=" + numeroFactura + ", referencia=" + referencia + ", concepto=" + concepto + ", fechaTransferencia=" + fechaTransferencia + ", idUsuarioFk=" + idUsuarioFk + ", nombreCliente=" + nombreCliente + ", nombreStatus=" + nombreStatus + ", idStatusDocumento=" + idStatusDocumento + ", idClienteFk=" + idClienteFk + '}';
+    }
 
     
+    public BigDecimal getIdClienteFk() {
+        return idClienteFk;
+    }
+
+    public void setIdClienteFk(BigDecimal idClienteFk) {
+        this.idClienteFk = idClienteFk;
+    }
+
+    
+
+    public String getNombreCliente() {
+        return nombreCliente;
+    }
+
+    public void setNombreCliente(String nombreCliente) {
+        this.nombreCliente = nombreCliente;
+    }
+
+    public String getNombreStatus() {
+        return nombreStatus;
+    }
+
+    public void setNombreStatus(String nombreStatus) {
+        this.nombreStatus = nombreStatus;
+    }
+
+    public BigDecimal getIdStatusDocumento() {
+        return idStatusDocumento;
+    }
+
+    public void setIdStatusDocumento(BigDecimal idStatusDocumento) {
+        this.idStatusDocumento = idStatusDocumento;
+    }
+
+  
+
+    public BigDecimal getIdUsuarioFk() {
+        return idUsuarioFk;
+    }
+
+    public void setIdUsuarioFk(BigDecimal idUsuarioFk) {
+        this.idUsuarioFk = idUsuarioFk;
+    }
+
     public BigDecimal getIdAbonoDocumentoPk() {
         return idAbonoDocumentoPk;
     }
@@ -142,6 +219,5 @@ public class AbonoDocumentos implements Serializable {
     public void setFechaTransferencia(Date fechaTransferencia) {
         this.fechaTransferencia = fechaTransferencia;
     }
-    
-    
+
 }

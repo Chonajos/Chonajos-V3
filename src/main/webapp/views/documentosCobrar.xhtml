@@ -17,15 +17,31 @@
                 <div class="container-fluid">
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                         <div class="form-group" align="right">
-                            <p:dialog  id="dialogw" header="Cobrar Cheque" widgetVar="dlg" resizable="false">
+                            <p:dialog  id="dialogoCambioPago" header="Cambiar Forma de Cobro de Cheque" widgetVar="dlg" resizable="false">
                                 <h:panelGrid columns="1" cellpadding="5">
                                     <div class="form-group">
-                                        <p:outputLabel for="comboTipoCobro" value="Tipo de Cobro" /> 
-                                        <h:selectOneMenu  id="comboTipoCobro"  value="#{beanDocumentosCobrar.cobroCheque.idTipoCobro}">
+                                        <p:outputLabel for="comboTipoCobro" value="Forma de Cobro:" /> 
+                                        <h:selectOneMenu  id="comboTipoCobro"  value="#{beanDocumentosCobrar.documentoData.idFormaCobroFk}">
+                                            <f:selectItem  itemLabel="NORMAL" itemValue="1"/>
+                                            <f:selectItem  itemLabel="DEVUELTO" itemValue="2"/>
+                                            <f:selectItem  itemLabel="CONVENIO DE COBRO" itemValue="3"/>
+                                        </h:selectOneMenu>
+                                    </div>
+                                    <div class="form-group">
+                                        <p:commandButton value="Actualizar" update="formContent:tabla" action="#{beanDocumentosCobrar.cambiarFormaPago()}" oncomplete="PF('dlg').hide();"/>
+                                    </div>
+                                </h:panelGrid>
+                            </p:dialog> 
+                            <!-- El dialog siguiente es para cobrar el cheque en efectivo,transferencia,o con otro cheque-->
+
+                            <p:dialog  id="dialogoCobroCheque" header="COBRO DE CHEQUE" widgetVar="dlg1" resizable="false">
+                                <h:panelGrid columns="1" cellpadding="5">
+                                    <div class="form-group">
+                                        <p:outputLabel for="TipoCobro" value="Tipo de Cobro" /> 
+                                        <h:selectOneMenu  id="TipoCobro"  value="#{beanDocumentosCobrar.cobroCheque.idTipoCobro}">
                                             <f:selectItem  itemLabel="DEPÓSITO" itemValue="1"/>
                                             <f:selectItem  itemLabel="EFECTIVO" itemValue="2"/>
-                                            <f:selectItem  itemLabel="DEVUELTO" itemValue="3"/>
-                                            <f:selectItem  itemLabel="CONVENIO DE COBRO" itemValue="4"/>
+
                                             <p:ajax event="change" listener="#{beanDocumentosCobrar.agregarCampos()}" update=":formContent:datos"/>
                                         </h:selectOneMenu>
                                     </div>
@@ -46,7 +62,7 @@
                                                         showOn="button"  id="popup" value="#{beanDocumentosCobrar.cobroCheque.fechaDeposito}"  rendered="#{beanDocumentosCobrar.camposDeposito =='true'}" />
                                         </div>
                                         <div class="form-group">
-                                            <p:outputLabel for="comboBancoDeposito" value="Banco Emisor:"  rendered="#{beanDocumentosCobrar.camposDeposito =='true'}" /> 
+                                            <p:outputLabel for="comboBancoDeposito" value="Banco Destino:"  rendered="#{beanDocumentosCobrar.camposDeposito =='true'}" /> 
                                             <h:selectOneMenu  id="comboBancoDeposito"  value="#{beanDocumentosCobrar.cobroCheque.bancoDeposito}"  rendered="#{beanDocumentosCobrar.camposDeposito =='true'}" >
                                                 <f:selectItem  itemLabel="BANAMEX" itemValue="BANAMEX"/>
                                                 <f:selectItem  itemLabel="BANCOMER" itemValue="BANCOMER"/>
@@ -66,35 +82,32 @@
                                         </div>
                                         <div class="form-group">
                                             <h:outputLabel for="importeDeposito" value="Importe del depósito:"  rendered="#{beanDocumentosCobrar.camposDeposito =='true' || beanDocumentosCobrar.camposEfectivo =='true'}"/>
-                                            <p:inputText id="importeDeposito" readonly="true" value="#{beanDocumentosCobrar.dataAbonar.montoAbono}"  rendered="#{beanDocumentosCobrar.camposDeposito =='true' || beanDocumentosCobrar.camposEfectivo =='true'}" />
+                                            <p:inputText id="importeDeposito" readonly="true" value="#{beanDocumentosCobrar.documentoData.monto}"  rendered="#{beanDocumentosCobrar.camposDeposito =='true' || beanDocumentosCobrar.camposEfectivo =='true'}" />
                                         </div>
                                         <div class="form-group">
                                             <h:outputLabel for="observaciones" value="Observaciones:" />
                                             <p:inputText id="observaciones" maxlength="50" value="#{beanDocumentosCobrar.cobroCheque.observaciones}" />
                                         </div>
                                         <div class="form-group">
-                                            <p:commandButton value="Registrar" update="formContent" action="#{beanDocumentosCobrar.cobrarCheque()}" oncomplete="PF('dlg').hide();"/>
+                                            <p:commandButton value="Registrar" update="formContent:tabla" action="#{beanDocumentosCobrar.cobrarCheque()}" oncomplete="PF('dlg1').hide();"/>
                                         </div>
                                     </p:fragment>
                                 </h:panelGrid>
                             </p:dialog>
 
-
-                            <!--- El siguiente Dialogo es para hacer los abonos a los cheques devueltos o con convenio de cobro-->
-                            <p:dialog  id="dialogw2" header="Registrar Abono de Documento" widgetVar="dlg1" resizable="false">
+                            <p:dialog  id="dialog2" header="Abono a Cheques" widgetVar="dlg2" resizable="false">
                                 <h:panelGrid columns="1" cellpadding="5">
-                                    <h:outputLabel for="folioCredito" value="idDocumento:" />
-                                    <p:inputText id="folioCredito"  value="#{beanDocumentosCobrar.dataAbonar.idDocumentoPk}" />
-
+                                    <h:outputLabel for="folioCredito" value="ID Cheque:" />
+                                    <p:inputText id="folioCredito"  value="#{beanDocumentosCobrar.documentoData.idDocumentoPk}"  readonly="true"/>
                                     <p:outputLabel class="col-lg-12 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="comboTipoAbono" value ="Tipo de Abono:" /> 
-                                    <h:selectOneMenu  id="comboTipoAbono" class="col-lg-12 col-md-8 col-sm-8 col-xs-12 " value="#{beanDocumentosCobrar.ad.idTipoAbonoFk}" >
+                                    <h:selectOneMenu  id="comboTipoAbono" class="col-lg-12 col-md-8 col-sm-8 col-xs-12 " value="#{beanDocumentosCobrar.dataAbonar.idTipoAbonoFk}" >
                                         <f:selectItem itemLabel="Selecciona" itemValue="" />
                                         <f:selectItems value="#{beanDocumentosCobrar.lstTipoAbonos}" var="tipoAbono" itemLabel="#{tipoAbono.nombreTipoAbono}" itemValue="#{tipoAbono.idTipoAbono}"/>
                                         <p:ajax event="change" listener="#{beanDocumentosCobrar.addView}" update=":formContent:cheques"/>
                                     </h:selectOneMenu>
 
                                     <h:outputLabel for="txtCantidad" value="Importe:" />
-                                    <p:inputText id="txtCantidad" maxlength="10" value="#{beanDocumentosCobrar.ad.montoAbono}" >
+                                    <p:inputText id="txtCantidad" maxlength="10" value="#{beanDocumentosCobrar.dataAbonar.montoAbono}" >
                                         <pe:keyFilter regEx="/[0-9_ .]/i"/>
                                     </p:inputText>
 
@@ -102,25 +115,24 @@
                                     <p:fragment id="cheques" >
                                         <div class="form-group">
                                             <h:outputLabel for="txtnCheque" value="N. Cheque:" rendered="#{beanDocumentosCobrar.viewCheque =='true'}" />
-                                            <p:inputText id="txtnCheque" maxlength="15" value="#{beanDocumentosCobrar.ad.numeroCheque}" rendered="#{beanDocumentosCobrar.viewCheque =='true'}" >
-
+                                            <p:inputText id="txtnCheque" maxlength="15" value="#{beanDocumentosCobrar.dataAbonar.numeroCheque}" rendered="#{beanDocumentosCobrar.viewCheque =='true'}" >
                                                 <pe:keyFilter regEx="/[0-9_ .]/i"/>
                                             </p:inputText>
                                         </div>
                                         <div class="form-group">
                                             <h:outputLabel for="txtLibrador" value="Librador:" rendered="#{beanDocumentosCobrar.viewCheque =='true'}" />
-                                            <p:inputText id="txtLibrador"  maxlength="50" value="#{beanDocumentosCobrar.ad.librador}" rendered="#{beanDocumentosCobrar.viewCheque =='true'}" />
+                                            <p:inputText id="txtLibrador"  maxlength="50" value="#{beanDocumentosCobrar.dataAbonar.librador}" rendered="#{beanDocumentosCobrar.viewCheque =='true'}" />
                                         </div>
                                         <div class="form-group">
                                             <h:outputLabel  value="Fecha de Cobro:" rendered="#{beanDocumentosCobrar.viewCheque =='true'}" />
                                             <p:calendar class="calendario" navigator="true" 
                                                         placeholder="dd/mm/yyyy" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" 
-                                                        showOn="button"  id="popup1" value="#{beanDocumentosCobrar.ad.fechaCobro}" rendered="#{beanDocumentosCobrar.viewCheque =='true'}" />
+                                                        showOn="button"  id="popup1" value="#{beanDocumentosCobrar.dataAbonar.fechaCobro}" rendered="#{beanDocumentosCobrar.viewCheque =='true'}" />
                                         </div>
 
                                         <div class="form-group">
                                             <p:outputLabel for="txtBancoEmisor" value="Banco Emisor:" rendered="#{beanDocumentosCobrar.viewCheque =='true'}"/> 
-                                            <h:selectOneMenu  id="txtBancoEmisor"  value="#{beanDocumentosCobrar.ad.banco}" rendered="#{beanDocumentosCobrar.viewCheque =='true'}">
+                                            <h:selectOneMenu  id="txtBancoEmisor"  value="#{beanDocumentosCobrar.dataAbonar.banco}" rendered="#{beanDocumentosCobrar.viewCheque =='true'}">
                                                 <f:selectItem  itemLabel="BANAMEX" itemValue="BANAMEX"/>
                                                 <f:selectItem  itemLabel="BANCOMER" itemValue="BANCOMER"/>
                                                 <f:selectItem  itemLabel="SANTANDER" itemValue="SANTANDER"/>
@@ -133,49 +145,46 @@
 
                                         <div class="form-group">
                                             <h:outputLabel for="txtFactura" value="N. Factura:" rendered="#{beanDocumentosCobrar.viewCheque =='true'}" />
-                                            <p:inputText id="txtFactura"  value="#{beanDocumentosCobrar.ad.numeroFactura}" rendered="#{beanDocumentosCobrar.viewCheque =='true'}" />
+                                            <p:inputText id="txtFactura"  value="#{beanDocumentosCobrar.dataAbonar.numeroFactura}" rendered="#{beanDocumentosCobrar.viewCheque =='true'}" />
                                         </div>
                                         <!--Datos para Transferencia-->
                                         <div class="form-group">
                                             <h:outputLabel for="txtReferencia" value="N. Referencia:" rendered="#{beanDocumentosCobrar.viewCheque =='trans'}"/>
-                                            <p:inputText id="txtReferencia"  value="#{beanDocumentosCobrar.ad.referencia}" rendered="#{beanDocumentosCobrar.viewCheque =='trans'}"/>
+                                            <p:inputText id="txtReferencia"  value="#{beanDocumentosCobrar.dataAbonar.referencia}" rendered="#{beanDocumentosCobrar.viewCheque =='trans'}"/>
                                         </div>
 
                                         <div class="form-group">
                                             <h:outputLabel for="txtConcepto" value="Concepto:" rendered="#{beanDocumentosCobrar.viewCheque =='trans'}"/>
-                                            <p:inputText id="txtConcepto"  value="#{beanDocumentosCobrar.ad.concepto}" rendered="#{beanDocumentosCobrar.viewCheque =='trans'}"/>
+                                            <p:inputText id="txtConcepto"  value="#{beanDocumentosCobrar.dataAbonar.concepto}" rendered="#{beanDocumentosCobrar.viewCheque =='trans'}"/>
                                         </div>
 
                                         <div class="form-group">
                                             <h:outputLabel  value="Fecha de Transferencia:" rendered="#{beanDocumentosCobrar.viewCheque =='trans'}" />
                                             <p:calendar class="calendario" navigator="true" 
                                                         placeholder="dd/mm/yyyy" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" 
-                                                        showOn="button"  id="popup2" value="#{beanDocumentosCobrar.ad.fechaTransferencia}" rendered="#{beanDocumentosCobrar.viewCheque =='trans'}" />
+                                                        showOn="button"  id="popup2" value="#{beanDocumentosCobrar.dataAbonar.fechaTransferencia}" rendered="#{beanDocumentosCobrar.viewCheque =='trans'}" />
                                         </div>
                                         <!--Fin Datos para Transferencia-->
                                         <!--Datos para A CUENTA-->
                                         <!--FIN Datos A CUENTA -->
                                     </p:fragment>
                                     <f:facet name="footer">
-                                        <p:commandButton value="Registrar" update="formContent" action="#{beanDocumentosCobrar.abonar()}" oncomplete="PF('dlg1').hide();"/>
+                                        <p:commandButton value="Registrar" update="formContent:tabla" action="#{beanDocumentosCobrar.abonar()}" oncomplete="PF('dlg2').hide();"/>
                                     </f:facet> 
                                     <!--Fin Datos para Cheque-->
                                 </h:panelGrid>
                             </p:dialog>
-                            <!--- El siguiente Dialogo es para hacer los abonos a los cheques devueltos o con convenio de cobro-->
+
 
 
 
                         </div>
                     </div>
                 </div>
-                <!--            </p:panel>
-                
-                            <p:panel  rendered="{beanDocumentosCobrar.viewEstate=='init'}" >-->
                 <div class="container-fluid">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                        <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 alignRight ">
-                            <p:commandButton value="Buscar" update=":formContent" ajax="true" action="#{beanDocumentosCobrar.buscar()}"/>       
+                        <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 alignRight form-group ">
+                            <p:commandButton value="Buscar" update=":formContent:tabla" ajax="true" action="#{beanDocumentosCobrar.buscar()}"/>       
                             <p:commandButton value="Descargar" update=":formContent" ajax="true" action="#{beanDocumentosCobrar.descargar()}" icon="ui-icon-check" />
                         </div>
                         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 alignLeft ">
@@ -192,93 +201,110 @@
                             </p:autoComplete>
                             <pe:keyFilter for="autocompleteCliente" regEx="/[a-z0-9-_Ã±\s]/i" />
                         </div>
+                        
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12 ">
-                            <p:outputLabel class="col-lg-5 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="comboSucursal" value ="Sucursal:" /> 
-                            <h:selectOneMenu  id="comboSucursal" class="col-lg-7 col-md-8 col-sm-8 col-xs-12 " value="#{beanDocumentosCobrar.idSucursalFk}" disabled="#{beanDocumentosCobrar.usuario.perId != 1}" >
-                                <f:selectItem itemLabel="Selecciona" itemValue="" />
-                                <f:selectItems value="#{beanDocumentosCobrar.listaSucursales}" var="sucursalita" itemLabel="#{sucursalita.nombreSucursal}" itemValue="#{sucursalita.idSucursalPk}"/>
-
-                            </h:selectOneMenu>
-                        </div>
-                        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12 ">
-                            <p:outputLabel for="comboFiltro" value="Filtro:"   /> 
-                            <h:selectOneMenu  id="comboFiltro"  value="#{beanDocumentosCobrar.filtro}">
+                            <p:outputLabel for="comboFiltro" value="Fecha de Cobro:"   /> 
+                            <h:selectOneMenu  id="comboFiltro"  value="#{beanDocumentosCobrar.filtroFecha}">
                                 <f:selectItem  itemLabel="VENCIDOS" itemValue="1"/>
                                 <f:selectItem  itemLabel="POR VENCER" itemValue="2"/>
                                 <f:selectItem  itemLabel="TODOS" itemValue="3"/>
                             </h:selectOneMenu>
                         </div>
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12 ">
-                            <p:outputLabel for="comboFiltroStatus" value="Filtro:"   /> 
+                            <p:outputLabel for="comboFiltroStatus" value="Forma de Cobro:"   /> 
+                            <h:selectOneMenu  id="comboFormaPago"  value="#{beanDocumentosCobrar.filtroFormaPago}">
+                                <f:selectItem  itemLabel="TODOS" itemValue=""/>
+                                <f:selectItem  itemLabel="NORMAL" itemValue="1"/>
+                                <f:selectItem  itemLabel="DEVUELTO" itemValue="2"/>
+                                <f:selectItem  itemLabel="CONVENIO DE PAGO" itemValue="2"/>
+                            </h:selectOneMenu>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12 ">
+                            <p:outputLabel for="comboFiltroStatus" value="Estatus:"   /> 
                             <h:selectOneMenu  id="comboFiltroStatus"  value="#{beanDocumentosCobrar.filtroStatus}">
-                                <f:selectItem  itemLabel="ACTIVOS" itemValue="1"/>
+                                <f:selectItem  itemLabel="TODOS" itemValue=""/>
+                                <f:selectItem  itemLabel="PENDIENTES" itemValue="1"/>
                                 <f:selectItem  itemLabel="FINALIZADOS" itemValue="2"/>
-                                <f:selectItem  itemLabel="DEVUELTOS" itemValue="3"/>
-                                <f:selectItem  itemLabel="CONVENIO DE PAGO" itemValue="4"/>
                             </h:selectOneMenu>
                         </div>
 
                     </div>
                     <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <p:dataTable id="tabla" var="listaAbonosAtrasdos" value="#{beanDocumentosCobrar.listaAbonosAtrasdos}" 
-                                     scrollable="true"  
+                        <p:dataTable id="tabla" var="model" value="#{beanDocumentosCobrar.listaDocumentos}" 
+                                     scrollable="true" scrollHeight="300"
                                      styleClass="ui-datatable-hor-scroll"  
-                                     rowKey="#{listaAbonosAtrasdos.idAbonoCreditoPk}"
+                                     rowKey="#{model.idDocumentoPk}"
                                      emptyMessage="No se encontraron registros.">
                             <p:column headerText="Cliente" width="50px;" class="alignCenter">
-                                <h:outputText value="#{listaAbonosAtrasdos.nombreCliente}" >     
+                                <h:outputText value="#{model.nombreCliente}" >     
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="Forma de Cobro" width="50px;" class="alignCenter">
+                                <h:outputText value="#{model.nombreFormaCobro}" >     
                                 </h:outputText>
                             </p:column>
 
                             <p:column headerText="Estatus" width="50px;" class="alignCenter">
-                                <h:outputText value="#{listaAbonosAtrasdos.nombreStatus}" >     
+                                <h:outputText value="#{model.nombreStatus}" >     
                                 </h:outputText>
                             </p:column>
 
                             <p:column headerText="N° Cheque" width="50px;" class="alignCenter">
-                                <h:outputText value="#{listaAbonosAtrasdos.numeroCheque}" />
+                                <h:outputText value="#{model.numeroCheque}" />
                             </p:column>
                             <p:column headerText="Banco" width="50px;" class="alignCenter">
-                                <h:outputText value="#{listaAbonosAtrasdos.banco}" >     
+                                <h:outputText value="#{model.banco}" >     
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Librador" width="100px;" class="alignLeft">
-                                <h:outputText value="#{listaAbonosAtrasdos.librador}">
+                            <p:column headerText="Librador" width="70px;" class="alignLeft">
+                                <h:outputText value="#{model.librador}">
                                 </h:outputText>
                             </p:column>
                             <p:column headerText="N° Factura" width="50px;" class="alignCenter">
-                                <h:outputText value="#{listaAbonosAtrasdos.factura}"> 
+                                <h:outputText value="#{model.factura}"> 
                                 </h:outputText>
                             </p:column>
 
                             <p:column headerText="Importe" width="50px;" class="alignRight">
-                                <h:outputText value="#{listaAbonosAtrasdos.montoAbono}" >
+                                <h:outputText value="#{model.monto}" >
                                     <f:convertNumber type="currency" currencySymbol="$" />
                                 </h:outputText>
                             </p:column>
                             <p:column headerText="Fecha de Cobro" width="50px;" class="alignCenter">
-                                <h:outputText value="#{listaAbonosAtrasdos.fechaCobro}" >
-                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+                                <h:outputText value="#{model.fechaCobro}" >
+                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Cobrar >" width="30px;" class="alignCenter">
+                             <p:column headerText="Total Abonado" width="50px;" class="alignRight">
+                                <h:outputText value="#{model.totalAbonado}" >
+                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Cobrar" width="30px;" class="alignCenter">
+                                <p:commandButton ajax="true" rendered="#{model.idFormaCobroFk.intValue() == 1}"
+                                                 disabled="#{model.idStatusFk != 1}"           
+                                                 oncomplete="PF('dlg1').show();" update =":formContent:dialogoCobroCheque" icon="ui-icon-triangle-1-e" styleClass="ui-priority-primary" >
+                                    <f:setPropertyActionListener value="#{model}" target="#{beanDocumentosCobrar.documentoData}"/>
+                                </p:commandButton>
+                                <p:commandButton ajax="true"   rendered="#{model.idFormaCobroFk.intValue() == 2 || model.idFormaCobroFk.intValue() == 3}"
+                                                 oncomplete="PF('dlg2').show();" 
+                                                 update =":formContent:dialog2" icon="ui-icon-triangle-1-e" styleClass="ui-priority-primary" >
+                                    <f:setPropertyActionListener value="#{model}" target="#{beanDocumentosCobrar.documentoData}"/>
+                                </p:commandButton>
+                            </p:column>
+                            <p:column headerText="Cambiar Forma de Cobro" width="50px;" class="alignCenter">
                                 <p:commandButton ajax="true"  
-                                                 disabled="#{listaAbonosAtrasdos.idStatusDocumentoFk.intValue() != 1}"
-                                                 oncomplete="PF('dlg').show();" update =":formContent:dialogw:" icon="ui-icon-triangle-1-e" styleClass="ui-priority-primary" >
-                                    <f:setPropertyActionListener value="#{listaAbonosAtrasdos}" target="#{beanDocumentosCobrar.dataAbonar}"/>
+                                                 disabled="#{model.idFormaCobroFk.intValue() != 1 || model.idStatusFk != 1}"             
+                                                 oncomplete="PF('dlg').show();" update =":formContent" icon="ui-icon-triangle-1-e" styleClass="ui-priority-primary" >
+                                    <f:setPropertyActionListener value="#{model}" target="#{beanDocumentosCobrar.documentoData}"/>
                                 </p:commandButton>
                             </p:column>
-                            <p:column headerText="Abonar" width="30px;" class="alignCenter">
-                                <p:commandButton 
-                                    
-                                   ajax="true"  oncomplete="PF('dlg1').show();" update =":formContent:dialogw:" icon="ui-icon-triangle-1-e" styleClass="ui-priority-primary" >
-                                    <f:setPropertyActionListener value="#{listaAbonosAtrasdos}" target="#{beanDocumentosCobrar.dataAbonar}"/>
-                                </p:commandButton>
-                            </p:column>
-
                         </p:dataTable>
                     </div>
+
                 </div>
+
             </p:panel>
 
         </h:form>

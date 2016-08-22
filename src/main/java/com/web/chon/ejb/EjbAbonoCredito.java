@@ -152,7 +152,7 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
         System.out.println("IdSucursalEJB: " + idSucursal);
 
         StringBuffer cadena = new StringBuffer("select ab.*,dc.ID_DOCUMENTO_PK,(CLI.NOMBRE||' '||CLI.APELLIDO_PATERNO "
-                + "||' '||CLI.APELLIDO_MATERNO ) AS CLIENTE, SD.DESCRIPCION, dc.ID_STATUS_FK from ABONO_CREDITO ab inner join USUARIO "
+                + "||' '||CLI.APELLIDO_MATERNO ) AS CLIENTE, SD.DESCRIPCION, dc.ID_STATUS_FK,cre.ID_CLIENTE_FK from ABONO_CREDITO ab inner join USUARIO "
                 + "u on u.ID_USUARIO_PK = ab.ID_USUARIO_FK inner join DOCUMENTOS_COBRAR dc on dc.ID_ABONO_FK "
                 + "= ab.ID_ABONO_CREDITO_PK inner join CREDITO cre on cre.ID_CREDITO_PK = ab.ID_CREDITO_FK inner "
                 + "join cliente cli on cli.ID_CLIENTE = cre.ID_CLIENTE_FK "
