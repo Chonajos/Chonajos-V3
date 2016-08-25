@@ -14,7 +14,7 @@
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
     </filter>
     <session-config>	
-        <session-timeout>480</session-timeout>
+        <session-timeout>7200</session-timeout>
     </session-config>
    
     <filter-mapping>
@@ -177,8 +177,8 @@
         <servlet-name>Push Servlet</servlet-name>
         <url-pattern>/primepush/*</url-pattern>
     </servlet-mapping> -->
-<!--    
-    <context-param>  
+    
+<!--    <context-param>  
         <param-name>primefaces.THEME</param-name>  
         <param-value>casablanca</param-value>  
     </context-param> 
