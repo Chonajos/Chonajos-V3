@@ -93,9 +93,48 @@ public class beanTransferenciaMerca implements Serializable {
     }
 
     public void transferir() {
+        try {
+            ArrayList<ExistenciaProducto> lstExistenciaProductoExistente = null;
+            ExistenciaProducto existenciaProductoTemp = new ExistenciaProducto();
+            if (validaTransferencia()) {
+                lstExistenciaProductoExistente = ifaceNegocioExistencia.getExistenciaProductoRepetidos(data.getIdSucursalOrigen(), existenciaProducto.getIdSubProductoFK(), existenciaProducto.getIdTipoEmpaqueFK(), data.getIdBodegaDestino(), existenciaProducto.getIdProvedor(), existenciaProducto.getIdEmFK(), existenciaProducto.getIdTipoConvenio());
 
-        if (validaTransferencia()) {
-            ifaceNegocioExistencia.insertExistenciaProducto(existenciaProducto);
+                if (lstExistenciaProductoExistente != null && !lstExistenciaProductoExistente.isEmpty()) {
+
+                    existenciaProductoTemp = lstExistenciaProductoExistente.get(0);
+                    existenciaProductoTemp.setCantidadPaquetes(data.getCantidadMovida().add(existenciaProductoTemp.getCantidadPaquetes()));
+                    existenciaProductoTemp.setKilosTotalesProducto(data.getKilosMovios().add(existenciaProductoTemp.getKilosTotalesProducto()));
+
+                    if (ifaceNegocioExistencia.updateExistenciaProducto(existenciaProductoTemp) == 1) {
+
+                        existenciaProducto.setCantidadPaquetes(existenciaProducto.getCantidadPaquetes().subtract(data.getCantidadMovida()));
+                        existenciaProducto.setKilosTotalesProducto(existenciaProducto.getKilosTotalesProducto().subtract(data.getKilosMovios()));
+                        ifaceNegocioExistencia.updateExistenciaProducto(existenciaProducto);
+                        data.setIdUsuarioFK(usuarioDominio.getIdUsuario());
+                        ifaceNegocioTransferenciaMercancia.insertTransferenciaMercancia(data);
+
+                        JsfUtil.addSuccessMessage("Transferencia Realizada Correctamente.");
+                    }
+                } else {
+                    existenciaProductoTemp = existenciaProducto;
+                    existenciaProductoTemp.setCantidadPaquetes(data.getCantidadMovida());
+                    existenciaProductoTemp.setKilosTotalesProducto(data.getKilosMovios());
+                    if (ifaceNegocioExistencia.insertExistenciaProducto(existenciaProductoTemp) == 1) {
+
+                        existenciaProducto.setCantidadPaquetes(existenciaProducto.getCantidadPaquetes().subtract(data.getCantidadMovida()));
+                        existenciaProducto.setKilosTotalesProducto(existenciaProducto.getKilosTotalesProducto().subtract(data.getKilosMovios()));
+                        ifaceNegocioExistencia.updateExistenciaProducto(existenciaProducto);
+                        data.setIdUsuarioFK(usuarioDominio.getIdUsuario());
+                        ifaceNegocioTransferenciaMercancia.insertTransferenciaMercancia(data);
+
+                        JsfUtil.addSuccessMessage("Transferencia Realizada Correctamente.");
+                    }
+                }
+
+            }
+        } catch (Exception ex) {
+            JsfUtil.addErrorMessage("Error > " + ex.getMessage().toString());
+            ex.printStackTrace();
         }
 
     }
