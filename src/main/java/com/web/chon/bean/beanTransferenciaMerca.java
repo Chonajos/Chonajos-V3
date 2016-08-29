@@ -9,6 +9,7 @@ import com.web.chon.dominio.TipoEmpaque;
 import com.web.chon.dominio.TransferenciaMercancia;
 import com.web.chon.dominio.Usuario;
 import com.web.chon.dominio.UsuarioDominio;
+import com.web.chon.dominio.VentaProductoMayoreo;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceCatBodegas;
 import com.web.chon.service.IfaceCatProvedores;
@@ -20,8 +21,11 @@ import com.web.chon.service.IfaceTransferenciaMercancia;
 import com.web.chon.util.JsfUtil;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import javax.annotation.PostConstruct;
+import javax.faces.event.AjaxBehaviorEvent;
+import org.primefaces.component.inputtext.InputText;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -69,13 +73,17 @@ public class beanTransferenciaMerca implements Serializable {
 
     private boolean permisionToWrite;
 
+    private BigDecimal BIGDECIMAL_UNO = new BigDecimal(1);
+    private BigDecimal BIGDECIMAL_ZERO = new BigDecimal(0);
+    private int INT_UNO = 1;
+
     @PostConstruct
     public void init() {
         usuarioDominio = context.getUsuarioAutenticado();
         data = new TransferenciaMercancia();
 
         lstSucursal = ifaceCatSucursales.getSucursales();
-        data.setIdSucursalNuevaFK(new BigDecimal(usuarioDominio.getSucId()));
+        data.setIdSucursalOrigen(new BigDecimal(usuarioDominio.getSucId()));
         searchBodega();
 
         setTitle("Transferencia de Mercancia");
@@ -86,6 +94,50 @@ public class beanTransferenciaMerca implements Serializable {
 
     public void transferir() {
 
+        if (validaTransferencia()) {
+            ifaceNegocioExistencia.insertExistenciaProducto(existenciaProducto);
+        }
+
+    }
+
+    public boolean validaTransferencia() {
+
+        //Se valida que no se vallan nulos los datos
+        if (data.getKilosMovios() == null || data.getCantidadMovida() == null || data.getKilosMovios().compareTo(BIGDECIMAL_UNO) == -INT_UNO || data.getCantidadMovida().compareTo(BIGDECIMAL_UNO) == -INT_UNO) {
+            JsfUtil.addErrorMessage("Kilos a mover o Empaques van vacios.");
+            return false;
+
+        }
+
+        //se valida que no se pueda transferir kilos y empaques mayores a los existentes
+        if (data.getKilosMovios().compareTo(existenciaProducto.getKilosTotalesProducto()) <= 0 && data.getCantidadMovida().compareTo(existenciaProducto.getCantidadPaquetes()) <= 0) {
+            return true;
+        } else {
+            JsfUtil.addErrorMessage("No se puede transferir. Cantidad empaque o cantidad de kilos a mover es mayor al existente.");
+            return false;
+        }
+
+    }
+
+    public void setKilosPromedio(AjaxBehaviorEvent event) {
+
+        InputText input;
+        BigDecimal empaques = new BigDecimal(0);
+
+        if (event != null) {
+            input = (InputText) event.getSource();
+            empaques = new BigDecimal(input.getSubmittedValue().toString());
+
+            if (empaques.compareTo(BIGDECIMAL_ZERO) == 1) {
+                if (empaques.compareTo(existenciaProducto.getCantidadPaquetes()) == 0) {
+
+                    data.setKilosMovios(existenciaProducto.getKilosTotalesProducto());
+                } else {
+                    data.setKilosMovios((existenciaProducto.getKilosTotalesProducto().divide(existenciaProducto.getCantidadPaquetes(), 2, RoundingMode.UP)).multiply(empaques));
+                }
+            }
+
+        }
     }
 
     public void clean() {
@@ -95,16 +147,16 @@ public class beanTransferenciaMerca implements Serializable {
     }
 
     public void searchBodega() {
-        lstBodega = ifaceCatBodegas.getBodegaByIdSucursal(data.getIdSucursalNuevaFK());
+        lstBodega = ifaceCatBodegas.getBodegaByIdSucursal(data.getIdSucursalOrigen());
         if (lstBodega != null && !lstBodega.isEmpty()) {
-            data.setIdBodegaNueva(lstBodega.get(0).getIdBodegaPK());
+            data.setIdBodegaOrigen(lstBodega.get(0).getIdBodegaPK());
         }
 
         searchEcistencia();
     }
 
     public void searchEcistencia() {
-        lstExistenciaProducto = ifaceNegocioExistencia.getExistencias(data.getIdSucursalNuevaFK(), data.getIdBodegaNueva(), null, null, null, null, null);
+        lstExistenciaProducto = ifaceNegocioExistencia.getExistencias(data.getIdSucursalOrigen(), data.getIdBodegaOrigen(), null, null, null, null, null);
     }
 
     public ArrayList<Subproducto> autoComplete(String nombreProducto) {

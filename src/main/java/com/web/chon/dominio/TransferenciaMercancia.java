@@ -1,18 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.web.chon.dominio;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 
 /**
  *
- * @author marcogante
+ * @author Juan de la cruz
  */
 public class TransferenciaMercancia extends ValueObject implements Serializable {
 
@@ -22,13 +16,16 @@ public class TransferenciaMercancia extends ValueObject implements Serializable 
     private BigDecimal kilos;
     private BigDecimal cantidadMovida;
     private BigDecimal kilosMovios;
-    private BigDecimal idBodegaNueva;
-    private BigDecimal idSucursalNuevaFK;
+    private BigDecimal idBodegaOrigen;
+    private BigDecimal idSucursalOrigen;
     private Date fechaTransferencia;
     private BigDecimal idUsuarioFK;
     private String nombreSucursalNueva;
     private String nombreBodegaNueva;
     private BigDecimal idCarro;
+    private BigDecimal idBodegaDestino;
+    private BigDecimal idSucursalDestino;
+    private String comentarios;
 
     @Override
     public void reset() {
@@ -39,18 +36,21 @@ public class TransferenciaMercancia extends ValueObject implements Serializable 
         kilos = null;
         cantidadMovida = null;
         kilosMovios = null;
-        idBodegaNueva = null;
-        idSucursalNuevaFK = null;
+        idBodegaOrigen = null;
+        idSucursalOrigen = null;
+        idBodegaDestino = null;
+        idSucursalDestino = null;
         fechaTransferencia = null;
         idUsuarioFK = null;
-        nombreBodegaNueva=null;
-        nombreSucursalNueva=null;
+        nombreBodegaNueva = null;
+        nombreSucursalNueva = null;
+        comentarios = null;
 
     }
 
     @Override
     public String toString() {
-        return "TransferenciaMercancia{" + "idTransferenciaPK=" + idTransferenciaPK + ", idExistenciaProductoFK=" + idExistenciaProductoFK + ", cantidad=" + cantidad + ", kilos=" + kilos + ", cantidadMovida=" + cantidadMovida + ", kilosMovios=" + kilosMovios + ", idBodegaNueva=" + idBodegaNueva + ", idSucursalNuevaFK=" + idSucursalNuevaFK + ", fechaTransferencia=" + fechaTransferencia + ", idUsuarioFK=" + idUsuarioFK + ", nombreSucursalNueva=" + nombreSucursalNueva + ", nombreBodegaNueva=" + nombreBodegaNueva + '}';
+        return "TransferenciaMercancia{" + "idTransferenciaPK=" + idTransferenciaPK + ", idExistenciaProductoFK=" + idExistenciaProductoFK + ", cantidad=" + cantidad + ", kilos=" + kilos + ", cantidadMovida=" + cantidadMovida + ", kilosMovios=" + kilosMovios + ", idBodegaOrigen=" + idBodegaOrigen + ", idSucursalOrigen=" + idSucursalOrigen + ", fechaTransferencia=" + fechaTransferencia + ", idUsuarioFK=" + idUsuarioFK + ", nombreSucursalNueva=" + nombreSucursalNueva + ", nombreBodegaNueva=" + nombreBodegaNueva + ", idCarro=" + idCarro + ", idBodegaDestino=" + idBodegaDestino + ", idSucursalDestino=" + idSucursalDestino + '}';
     }
 
     public BigDecimal getIdCarro() {
@@ -60,19 +60,47 @@ public class TransferenciaMercancia extends ValueObject implements Serializable 
     public void setIdCarro(BigDecimal idCarro) {
         this.idCarro = idCarro;
     }
-    
 
-    public BigDecimal getIdSucursalNuevaFK() {
-        return idSucursalNuevaFK;
+    public String getComentarios() {
+        return comentarios;
     }
 
-    public void setIdSucursalNuevaFK(BigDecimal idSucursalNuevaFK) {
-        this.idSucursalNuevaFK = idSucursalNuevaFK;
+    public void setComentarios(String comentarios) {
+        this.comentarios = comentarios;
     }
 
-    
-    
-    
+    public BigDecimal getIdBodegaOrigen() {
+        return idBodegaOrigen;
+    }
+
+    public void setIdBodegaOrigen(BigDecimal idBodegaOrigen) {
+        this.idBodegaOrigen = idBodegaOrigen;
+    }
+
+    public BigDecimal getIdSucursalOrigen() {
+        return idSucursalOrigen;
+    }
+
+    public void setIdSucursalOrigen(BigDecimal idSucursalOrigen) {
+        this.idSucursalOrigen = idSucursalOrigen;
+    }
+
+    public BigDecimal getIdBodegaDestino() {
+        return idBodegaDestino;
+    }
+
+    public void setIdBodegaDestino(BigDecimal idBodegaDestino) {
+        this.idBodegaDestino = idBodegaDestino;
+    }
+
+    public BigDecimal getIdSucursalDestino() {
+        return idSucursalDestino;
+    }
+
+    public void setIdSucursalDestino(BigDecimal idSucursalDestino) {
+        this.idSucursalDestino = idSucursalDestino;
+    }
+
     public String getNombreSucursalNueva() {
         return nombreSucursalNueva;
     }
@@ -88,8 +116,6 @@ public class TransferenciaMercancia extends ValueObject implements Serializable 
     public void setNombreBodegaNueva(String nombreBodegaNueva) {
         this.nombreBodegaNueva = nombreBodegaNueva;
     }
-
-    
 
     public BigDecimal getIdTransferenciaPK() {
         return idTransferenciaPK;
@@ -139,15 +165,6 @@ public class TransferenciaMercancia extends ValueObject implements Serializable 
         this.kilosMovios = kilosMovios;
     }
 
-    public BigDecimal getIdBodegaNueva() {
-        return idBodegaNueva;
-    }
-
-    public void setIdBodegaNueva(BigDecimal idBodegaNueva) {
-        this.idBodegaNueva = idBodegaNueva;
-    }
-
-   
     public Date getFechaTransferencia() {
         return fechaTransferencia;
     }
@@ -164,7 +181,4 @@ public class TransferenciaMercancia extends ValueObject implements Serializable 
         this.idUsuarioFK = idUsuarioFK;
     }
 
-   
-
-    
 }

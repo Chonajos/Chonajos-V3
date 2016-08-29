@@ -36,8 +36,8 @@ public class EjbTransferenciaMercancia implements NegocioTransferenciaMercancia 
             query.setParameter(3, tm.getKilos());
             query.setParameter(4, tm.getCantidadMovida());
             query.setParameter(5, tm.getKilosMovios());
-            query.setParameter(6, tm.getIdBodegaNueva());
-            query.setParameter(7, tm.getIdSucursalNuevaFK());
+            query.setParameter(6, tm.getIdBodegaDestino());
+            query.setParameter(7, tm.getIdSucursalDestino());
             //fecha
             //query.setParameter(8, tm.getIdUsuarioFK()));
             

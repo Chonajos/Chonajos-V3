@@ -22,21 +22,21 @@
 
                         <div class="col-lg-5 col-md-6 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="comboSucursalNueva" value ="Sucursal:"/> 
-                            <p:selectOneMenu  id="comboSucursalNueva" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanTransferenciaMerca.data.idSucursalNuevaFK}" disabled="#{beanTransferenciaMerca.usuarioDominio.perId != 1}"  requiredMessage="Selecciona una sucursal">
+                            <p:selectOneMenu  id="comboSucursalNueva" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanTransferenciaMerca.data.idSucursalOrigen}" disabled="#{beanTransferenciaMerca.usuarioDominio.perId != 1}"  requiredMessage="Selecciona una sucursal">
                                 <f:selectItems value="#{beanTransferenciaMerca.lstSucursal}" var="sucursalita" itemLabel="#{sucursalita.nombreSucursal}" itemValue="#{sucursalita.idSucursalPk}"/>
                                 <p:ajax event="change" update="@this :formContent" listener="#{beanTransferenciaMerca.searchBodega}"/>
                             </p:selectOneMenu>
                         </div>
                         <div class="col-lg-5 col-md-6 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="comboBodegaNueva" value ="Bodega:" /> 
-                            <p:selectOneMenu  id="comboBodegaNueva" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanTransferenciaMerca.data.idBodegaNueva}"  requiredMessage="Selecciona una bodega Nueva">
+                            <p:selectOneMenu  id="comboBodegaNueva" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanTransferenciaMerca.data.idBodegaOrigen}"  requiredMessage="Selecciona una bodega Nueva">
                                 <f:selectItems value="#{beanTransferenciaMerca.lstBodega}" var="bode" itemLabel="#{bode.nombreBodega}" itemValue="#{bode.idBodegaPK}" />
                                 <p:ajax event="change" update="@this :formContent" listener="#{beanTransferenciaMerca.searchEcistencia}"/>
                             </p:selectOneMenu>
                         </div>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <p:dataTable id="table" var="model" value="#{beanTransferenciaMerca.lstExistenciaProducto}" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." rendered="#{beanTransferenciaMerca.viewEstate =='init'}">
+                        <p:dataTable id="table" var="model" value="#{beanTransferenciaMerca.lstExistenciaProducto}" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." rendered="#{beanTransferenciaMerca.viewEstate =='init'}" scrollable="true" scrollHeight="280">
 
                             <p:column  headerText="Carro" width="40px;" class="alignCenter">
                                 <h:outputText value="#{model.idEmFK}">
@@ -65,12 +65,43 @@
                                 <h:outputText value="#{model.nombreBodega}" />
                             </p:column>
                             <p:column headerText="Transferir"  width="60px;" class="alignCenter">
-                                <p:commandButton icon="ui-icon-transferthick-e-w"/>
+                                <p:commandButton icon="ui-icon-transferthick-e-w" onclick ="PF('dlg').show();">
+                                    <f:setPropertyActionListener target="#{beanTransferenciaMerca.existenciaProducto}" value="${model}"/>
+                                </p:commandButton>
                             </p:column>
                         </p:dataTable>
                     </div>
                 </div>
             </p:panel>
+            <p:dialog  id="dialogw" header="Transferir" widgetVar="dlg" resizable="false">
+                <h:panelGrid columns="1" cellpadding="5">
+                    <f:facet name="header">
+                        <div class="form-group alignRight">
+                            <p:commandButton value="Transferir" update="formContent" action="#{beanTransferenciaMerca.transferir}" oncomplete="PF('dlg').hide();"/>
+                        </div>
+                    </f:facet> 
+
+
+
+                    <p:outputLabel  for="comboTipoAbono" value ="Bodega Destino:" /> 
+                    <h:selectOneMenu  id="comboTipoAbono" style="height: 100%" value="#{beanTransferenciaMerca.data.idBodegaDestino}" >
+                        <f:selectItems value="#{beanTransferenciaMerca.lstBodega}" var="lst" itemLabel="#{lst.nombreBodega}" itemValue="#{lst.idBodegaPK}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel for="cantMover" value="Empaques a Mover:" />
+                    <p:inputText id="cantMover" maxlength="10" value="#{beanTransferenciaMerca.data.cantidadMovida}" >
+                        <p:ajax event="blur"
+                                listener="#{beanTransferenciaMerca.setKilosPromedio}"
+                                immediate="true" update="txtKilos"/>
+                    </p:inputText>
+                    <h:outputLabel for="txtKilos" value="Kilos a Mover:" />
+                    <p:inputText id="txtKilos" maxlength="10" value="#{beanTransferenciaMerca.data.kilosMovios}" >
+                        <pe:keyFilter regEx="/[0-9_ .]/i"/>
+                    </p:inputText>
+                    <h:outputLabel for="txtcomentario" value="Comentarios:" />
+                    <p:inputText id="txtcomentario" maxlength="255" value="#{beanTransferenciaMerca.data.comentarios}" />
+
+                </h:panelGrid>
+            </p:dialog>
         </h:form>
     </ui:define>
 </ui:composition>

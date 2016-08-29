@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-08-09T09:09:16 -->
+<!-- 2016-08-25T15:12:52 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ticketCredito" pageWidth="219" pageHeight="1224" whenNoDataType="BlankPage" columnWidth="179" leftMargin="20" rightMargin="20" topMargin="4" bottomMargin="20" isIgnorePagination="true" uuid="cce07992-6ec7-4616-8caf-ceb4ee12975b">
 	<property name="ireport.zoom" value="2.5937424601000028"/>
 	<property name="ireport.x" value="0"/>
@@ -249,7 +249,7 @@
 				<textElement textAlignment="Left">
 					<font size="8"/>
 				</textElement>
-				<text><![CDATA[Sub total: ]]></text>
+				<text><![CDATA[Total: ]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="2" y="116" width="177" height="14" uuid="910f5e7e-02a1-45fd-b282-7a6834e518c5"/>
@@ -259,21 +259,21 @@
 				<textFieldExpression><![CDATA[$P{telefonos}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="5" y="40" width="54" height="16" uuid="9bee6b3d-5fe9-416f-a5be-fe118f257d39"/>
+				<reportElement x="5" y="40" width="63" height="16" uuid="9bee6b3d-5fe9-416f-a5be-fe118f257d39"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[Sub total]]></text>
+				<text><![CDATA[Venta]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="5" y="55" width="54" height="16" uuid="2170a26d-e2b3-4257-b52f-86196f99e71b"/>
+				<reportElement x="5" y="55" width="63" height="16" uuid="2170a26d-e2b3-4257-b52f-86196f99e71b"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[A cuenta]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="5" y="69" width="54" height="16" uuid="a7a9de59-4202-4a7b-9f57-27964a2541e3"/>
+				<reportElement x="5" y="69" width="63" height="16" uuid="a7a9de59-4202-4a7b-9f57-27964a2541e3"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
@@ -340,7 +340,7 @@
 				<textElement>
 					<font size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA["DEBO Y PAGARE INCONDICIONALMENTE EL DIA DE  "+$P{fechaPromesaPago} +" A LA ORDEN DE "+ $P{beneficiario}+" LA CANTIDAD DE " +$P{totalCompraDescuento}+"  ("+$P{totalDescuentoLetra}+")"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["DEBO Y PAGARE INCONDICIONALMENTE HASTA EL DIA  "+$P{fechaPromesaPago} +" A LA ORDEN DE "+ $P{beneficiario}+" LA CANTIDAD DE " +$P{totalCompraDescuento}+"  ("+$P{totalDescuentoLetra}+")"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="2" y="88" width="176" height="30" uuid="c57e5cd3-70ba-48fc-9052-e7ea993aafbe"/>
@@ -374,7 +374,7 @@
 		</band>
 		<band height="51">
 			<staticText>
-				<reportElement x="32" y="5" width="96" height="20" uuid="2564fda5-d16b-48ee-8ed5-d577529c8276"/>
+				<reportElement x="32" y="5" width="116" height="20" uuid="2564fda5-d16b-48ee-8ed5-d577529c8276"/>
 				<text><![CDATA[Calendario de Pagos]]></text>
 			</staticText>
 			<componentElement>
