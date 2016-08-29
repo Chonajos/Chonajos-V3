@@ -7,6 +7,7 @@ package com.web.chon.dominio;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -21,8 +22,6 @@ public class EntradaMercancia extends ValueObject implements Serializable {
     private Date fecha;
     private String remision;
     private BigDecimal idSucursalFK;
-    private Date fechaFiltroInicio;
-    private Date fechaFiltroFin;
     private Date fechaRemision;
     private String comentariosGenerales;
     private String abreviacion;
@@ -34,13 +33,15 @@ public class EntradaMercancia extends ValueObject implements Serializable {
     private String nombreSucursal;
     private String nombreProvedor;
     private BigDecimal idUsuario;
+    private Date fechaFiltroInicio;
+    private Date fechaFiltroFin;
+    private ArrayList<EntradaMercanciaProducto> listaProductos;
 
     @Override
     public String toString() {
-        return "EntradaMercancia{" + "idEmPK=" + idEmPK + ", idProvedorFK=" + idProvedorFK + ", movimiento=" + movimiento + ", fecha=" + fecha + ", remision=" + remision + ", idSucursalFK=" + idSucursalFK + ", fechaFiltroInicio=" + fechaFiltroInicio + ", fechaFiltroFin=" + fechaFiltroFin + ", fechaRemision=" + fechaRemision + ", comentariosGenerales=" + comentariosGenerales + ", abreviacion=" + abreviacion + ", folio=" + folio + ", idStatusFk=" + idStatusFk + ", kilosTotales=" + kilosTotales + ", kilosTotalesProvedor=" + kilosTotalesProvedor + ", idCarroSucursal=" + idCarroSucursal + ", nombreSucursal=" + nombreSucursal + ", nombreProvedor=" + nombreProvedor + '}';
+        return "EntradaMercancia{" + "idEmPK=" + idEmPK + ", idProvedorFK=" + idProvedorFK + ", movimiento=" + movimiento + ", fecha=" + fecha + ", remision=" + remision + ", idSucursalFK=" + idSucursalFK + ", fechaRemision=" + fechaRemision + ", comentariosGenerales=" + comentariosGenerales + ", abreviacion=" + abreviacion + ", folio=" + folio + ", idStatusFk=" + idStatusFk + ", kilosTotales=" + kilosTotales + ", kilosTotalesProvedor=" + kilosTotalesProvedor + ", idCarroSucursal=" + idCarroSucursal + ", nombreSucursal=" + nombreSucursal + ", nombreProvedor=" + nombreProvedor + ", idUsuario=" + idUsuario + ", listaProductos=" + listaProductos + '}';
     }
 
-    
 
     @Override
     public void reset() {
@@ -50,8 +51,6 @@ public class EntradaMercancia extends ValueObject implements Serializable {
         fecha = null;
         remision = null;
         //idSucursalFK = new BigDecimal(-1);
-        fechaFiltroFin = null;
-        fechaFiltroInicio = null;
         abreviacion = null;
         folio = null;
         idStatusFk = null;
@@ -66,6 +65,14 @@ public class EntradaMercancia extends ValueObject implements Serializable {
 
     }
 
+    public ArrayList<EntradaMercanciaProducto> getListaProductos() {
+        return listaProductos;
+    }
+
+    public void setListaProductos(ArrayList<EntradaMercanciaProducto> listaProductos) {
+        this.listaProductos = listaProductos;
+    }
+    
     public BigDecimal getIdUsuario() {
         return idUsuario;
     }
@@ -152,22 +159,6 @@ public class EntradaMercancia extends ValueObject implements Serializable {
         this.abreviacion = abreviacion;
     }
 
-    public Date getFechaFiltroInicio() {
-        return fechaFiltroInicio;
-    }
-
-    public void setFechaFiltroInicio(Date fechaFiltroInicio) {
-        this.fechaFiltroInicio = fechaFiltroInicio;
-    }
-
-    public Date getFechaFiltroFin() {
-        return fechaFiltroFin;
-    }
-
-    public void setFechaFiltroFin(Date fechaFiltroFin) {
-        this.fechaFiltroFin = fechaFiltroFin;
-    }
-
     public BigDecimal getIdEmPK() {
         return idEmPK;
     }
@@ -223,6 +214,24 @@ public class EntradaMercancia extends ValueObject implements Serializable {
     public void setNombreProvedor(String nombreProvedor) {
         this.nombreProvedor = nombreProvedor;
     }
+
+    public Date getFechaFiltroInicio() {
+        return fechaFiltroInicio;
+    }
+
+    public void setFechaFiltroInicio(Date fechaFiltroInicio) {
+        this.fechaFiltroInicio = fechaFiltroInicio;
+    }
+
+    public Date getFechaFiltroFin() {
+        return fechaFiltroFin;
+    }
+
+    public void setFechaFiltroFin(Date fechaFiltroFin) {
+        this.fechaFiltroFin = fechaFiltroFin;
+    }
+
+   
     
     
 

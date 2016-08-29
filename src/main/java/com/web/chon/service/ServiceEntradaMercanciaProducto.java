@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,8 @@ import org.springframework.stereotype.Service;
 public class ServiceEntradaMercanciaProducto implements IfaceEntradaMercanciaProducto {
 
     NegocioEntradaMercanciaProducto ejb;
+    @Autowired IfaceCatBodegas ifaceCatBodegas;
+    @Autowired IfaceSubProducto ifaceSubProducto;
 
     public void getEjb() {
         if (ejb == null) {
@@ -70,7 +73,8 @@ public class ServiceEntradaMercanciaProducto implements IfaceEntradaMercanciaPro
 
     @Override
     public int update(EntradaMercanciaProducto dominio) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       getEjb();
+        return ejb.updateEntradaMercanciaProducto(dominio);
     }
 
     @Override
@@ -116,19 +120,58 @@ public class ServiceEntradaMercanciaProducto implements IfaceEntradaMercanciaPro
             dominio.setComentarios(obj[6] == null ? "" : obj[6].toString());
 
             dominio.setIdBodegaFK(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
-//            dominio.setIdTipoConvenio(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
+            dominio.setIdTipoConvenio(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
+            dominio.setPrecio(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
             dominio.setNombreProducto(obj[11] == null ? "" : obj[11].toString());
             dominio.setNombreEmpaque(obj[12] == null ? "" : obj[12].toString());
             dominio.setNombreBodega(obj[13] == null ? "" : obj[13].toString());
             dominio.setNombreTipoConvenio(obj[14] == null ? "" : obj[14].toString());
+            dominio.setIdSucursalFk(obj[15] == null ? null : new BigDecimal(obj[15].toString()));
             dominio.setNumeroMovimiento(numeroMovimiento);
-
+            dominio.setListaBodegas(ifaceCatBodegas.getBodegaByIdSucursal(dominio.getIdSucursalFk()));
+            dominio.setSubProducto(ifaceSubProducto.getSubProductoById(dominio.getIdSubProductoFK()));
             lstEntradaMercanciaProducto.add(dominio);
 
         }
 
         return lstEntradaMercanciaProducto;
 
+    }
+
+    @Override
+    public int deleteEntradaMercanciaProducto(EntradaMercanciaProducto ep) {
+       getEjb();
+        return ejb.deleteEntradaProducto(ep);
+    }
+
+    @Override
+    public BigDecimal getTotalVentasByIdEMP(BigDecimal idEmP) {
+       getEjb();
+        return ejb.getTotalVentasByIdEMP(idEmP);
+    }
+
+    @Override
+    public EntradaMercanciaProducto getEntradaMercanciaProductoByIdEmpPk(BigDecimal idEmpPk) {
+       getEjb();
+        try {
+            getEjb();
+            List<Object[]> lstObject = new ArrayList<Object[]>();
+            lstObject = ejb.getEntradaMercanciaProductoByIdEmpPk(idEmpPk);
+            EntradaMercanciaProducto entradaProducto = new EntradaMercanciaProducto();
+            for (Object[] object : lstObject) {
+                entradaProducto.setIdEmpPK(object[0] == null ? null : new BigDecimal(object[0].toString()));
+                entradaProducto.setCantidadPaquetes(object[1] == null ? null : new BigDecimal(object[1].toString()));
+                entradaProducto.setKilosTotalesProducto(object[2] == null ? null : new BigDecimal(object[2].toString()));
+                
+            }
+            return entradaProducto;
+        }
+        catch (Exception ex) 
+        {
+            Logger.getLogger(ServiceNegocioExistencia.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    
     }
 
 }

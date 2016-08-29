@@ -143,4 +143,17 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
         return Integer.parseInt(query.getSingleResult().toString());
         
     }
+    @Override
+    public int deleteEntradaMercancia(EntradaMercancia entrada) {
+        System.out.println("EJB_DELETE EntradaMercancia");
+        try 
+        {
+            Query query = em.createNativeQuery("delete from ENTRADAMERCANCIA em where em.ID_EM_PK =?");
+            query.setParameter(1, entrada.getIdEmPK());
+            return query.executeUpdate();
+        } catch (Exception ex) {
+            Logger.getLogger(EjbEntradaMercancia.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        }
+    }
 }

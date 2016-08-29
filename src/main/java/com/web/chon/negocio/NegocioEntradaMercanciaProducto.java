@@ -18,4 +18,12 @@ public interface NegocioEntradaMercanciaProducto {
     public int getNextVal();
 
     public List<Object[]> getEntradaProductoByIdEM(BigDecimal idEntradaProducto);
+    
+    public int deleteEntradaProducto(EntradaMercanciaProducto ep);
+    
+    public  BigDecimal getTotalVentasByIdEMP(BigDecimal idEmP);
+    
+    public List<Object[]> getEntradaMercanciaProductoByIdEmpPk(BigDecimal idEmpPk);
+    
+    public int updateEntradaMercanciaProducto(EntradaMercanciaProducto producto);
 }

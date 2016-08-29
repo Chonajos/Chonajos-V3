@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
 
+    @Autowired IfaceEntradaMercanciaProducto ifaceEntradaMercanciaProducto;
     NegocioEntradaMercancia ejb;
 
     public void getEjb() {
@@ -77,7 +79,6 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
         lstObject = ejb.getEntradaProductoByIntervalDate(fechaInicio, fechaFin, idSucursal, idProvedor);
 
         for (Object[] obj : lstObject) {
-
             EntradaMercancia dominio = new EntradaMercancia();
             dominio.setIdEmPK(new BigDecimal(obj[0].toString()));
             dominio.setIdProvedorFK(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
@@ -91,6 +92,7 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
             dominio.setNombreProvedor(obj[12] == null ? "" : obj[12].toString());
             dominio.setNombreSucursal(obj[13] == null ? "" : obj[13].toString());
             dominio.setIdCarroSucursal(obj[14] == null ? null : new BigDecimal(obj[14].toString()));
+            dominio.setListaProductos(ifaceEntradaMercanciaProducto.getEntradaProductoByIdEM(dominio.getIdEmPK()));
             lstEntradaMercancia2.add(dominio);
         }
 
@@ -179,7 +181,17 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
        getEjb();
         try {
             return ejb.getCarroSucursal(idSucursal);
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceEntradaMercancia.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        }
+    }
 
+    @Override
+    public int deleteEntradaMercancia(EntradaMercancia entrada) {
+        getEjb();
+        try {
+            return ejb.deleteEntradaMercancia(entrada);
         } catch (Exception ex) {
             Logger.getLogger(ServiceEntradaMercancia.class.getName()).log(Level.SEVERE, null, ex);
             return 0;

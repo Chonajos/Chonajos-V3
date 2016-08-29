@@ -28,5 +28,11 @@ public interface IfaceEntradaMercanciaProducto extends PaginacionService<Entrada
      * @return
      */
     public ArrayList<EntradaMercanciaProducto> getEntradaProductoByIdEM(BigDecimal idEntradaMercancia);
+    
+    public int deleteEntradaMercanciaProducto(EntradaMercanciaProducto ep);
+    
+    public EntradaMercanciaProducto getEntradaMercanciaProductoByIdEmpPk(BigDecimal idEmpPk);
+    
+    public  BigDecimal getTotalVentasByIdEMP(BigDecimal idEmP);
 
 }

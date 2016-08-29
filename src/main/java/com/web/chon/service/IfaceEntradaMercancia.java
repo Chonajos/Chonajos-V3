@@ -37,4 +37,6 @@ public interface IfaceEntradaMercancia extends PaginacionService<EntradaMercanci
     public ArrayList<EntradaMercancia> getEntradaProductoByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idProvedor);
 
     public ArrayList<EntradaMercancia> getSubEntradaByNombre(String nombre);
+    
+    public int deleteEntradaMercancia(EntradaMercancia entrada);
 }

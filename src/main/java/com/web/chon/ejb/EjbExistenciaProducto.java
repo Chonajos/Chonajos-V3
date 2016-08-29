@@ -258,4 +258,33 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
             return null;
         }
     }
+        @Override
+    public int deleteExistenciaProducto(ExistenciaProducto exp) {
+       try {
+           System.out.println("===============================");
+           System.out.println(exp.toString());
+            Query query = em.createNativeQuery("delete from EXISTENCIA_PRODUCTO exp where exp.ID_EMP_FK = ?");
+            query.setParameter(1, exp.getIdEntradaMercanciaProductoFK());
+            return query.executeUpdate();
+        } catch (Exception ex) {
+            Logger.getLogger(EjbExistenciaProducto.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        }
+    
+    }
+
+    @Override
+    public List<Object[]> getExistenciaByIdEmpFk(BigDecimal idEmpFk) {
+       try {
+            Query query = em.createNativeQuery("select exp.ID_EXP_PK,exp.CANTIDAD_EMPACAQUE,exp.KILOS_TOTALES from EXISTENCIA_PRODUCTO exp where exp.ID_EMP_FK =?");
+            query.setParameter(1, idEmpFk);
+            System.out.println(query);
+            return query.getResultList();
+        } catch (Exception ex) {
+            System.out.println("Encontro null ejb");
+            Logger.getLogger(EjbExistenciaProducto.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    
+    }
 }

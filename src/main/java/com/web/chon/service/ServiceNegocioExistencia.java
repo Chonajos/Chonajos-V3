@@ -161,7 +161,7 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
     
     }
 
-    
+   
 
     @Override
     public ArrayList<ExistenciaProducto> getExistenciasCancelar(BigDecimal idExistencia) {
@@ -183,12 +183,35 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
         } catch (Exception ex) {
             Logger.getLogger(ServiceNegocioExistencia.class.getName()).log(Level.SEVERE, null, ex);
             return null;
-
         }
-        
-        
-        
-        
-        
+    }
+        @Override
+    public int deleteExistenciaProducto(ExistenciaProducto ep) {
+        getEjb();
+        return ejb.deleteExistenciaProducto(ep);
+    }
+
+    @Override
+    public ExistenciaProducto getExistenciaByIdEmpFk(BigDecimal idEmpFk) 
+    {
+        getEjb();
+        try {
+            getEjb();
+            List<Object[]> lstObject = new ArrayList<Object[]>();
+            lstObject = ejb.getExistenciaByIdEmpFk(idEmpFk);
+            ExistenciaProducto existencia = new ExistenciaProducto();
+            for (Object[] object : lstObject) {
+                existencia.setIdExistenciaProductoPk(object[0] == null ? null : new BigDecimal(object[0].toString()));
+                existencia.setCantidadPaquetes(object[1] == null ? null : new BigDecimal(object[1].toString()));
+                existencia.setKilosTotalesProducto(object[2] == null ? null : new BigDecimal(object[2].toString()));
+                
+            }
+            return existencia;
+        }
+        catch (Exception ex) 
+        {
+            Logger.getLogger(ServiceNegocioExistencia.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 }

@@ -7,6 +7,7 @@ package com.web.chon.dominio;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 /**
  *
@@ -32,12 +33,18 @@ public class EntradaMercanciaProducto extends ValueObject implements Serializabl
     private int numeroMovimiento;
     private BigDecimal pesoTara;
     private BigDecimal pesoNeto;
+    private BigDecimal idSucursalFk;
+    private ArrayList<Bodega> listaBodegas;
+    
+    private Subproducto subProducto;
+    private ArrayList<EntradaMercanciaProductoPaquete> listaPaquetes;
 
     @Override
     public String toString() {
-        return "EntradaMercanciaProducto{" + "idEmpPK=" + idEmpPK + ", idEmFK=" + idEmFK + ", idSubProductoFK=" + idSubProductoFK + ", idTipoEmpaqueFK=" + idTipoEmpaqueFK + ", cantidadPaquetes=" + cantidadPaquetes + ", kilosTotalesProducto=" + kilosTotalesProducto + ", comentarios=" + comentarios + ", precio=" + precio + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + ", idTipoConvenio=" + idTipoConvenio + ", idBodegaFK=" + idBodegaFK + ", nombreTipoConvenio=" + nombreTipoConvenio + ", nombreBodega=" + nombreBodega + ", kilospromprod=" + kilospromprod + ", numeroMovimiento=" + numeroMovimiento + ", pesoTara=" + pesoTara + ", pesoNeto=" + pesoNeto + '}';
+        return "EntradaMercanciaProducto{" + "idEmpPK=" + idEmpPK + ", idEmFK=" + idEmFK + ", idSubProductoFK=" + idSubProductoFK + ", idTipoEmpaqueFK=" + idTipoEmpaqueFK + ", cantidadPaquetes=" + cantidadPaquetes + ", kilosTotalesProducto=" + kilosTotalesProducto + ", comentarios=" + comentarios + ", precio=" + precio + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + ", idTipoConvenio=" + idTipoConvenio + ", idBodegaFK=" + idBodegaFK + ", nombreTipoConvenio=" + nombreTipoConvenio + ", nombreBodega=" + nombreBodega + ", kilospromprod=" + kilospromprod + ", numeroMovimiento=" + numeroMovimiento + ", pesoTara=" + pesoTara + ", pesoNeto=" + pesoNeto + ", idSucursalFk=" + idSucursalFk + ", listaBodegas=" + listaBodegas + '}';
     }
-
+    
+   
     @Override
     public void reset() {
        idEmFK = null;
@@ -55,8 +62,28 @@ public class EntradaMercanciaProducto extends ValueObject implements Serializabl
        nombreBodega  = null;
        pesoTara=null;
        pesoNeto=null;
+       idSucursalFk=null;
+       subProducto=null;
     }
 
+    public ArrayList<EntradaMercanciaProductoPaquete> getListaPaquetes() {
+        return listaPaquetes;
+    }
+
+    public void setListaPaquetes(ArrayList<EntradaMercanciaProductoPaquete> listaPaquetes) {
+        this.listaPaquetes = listaPaquetes;
+    }
+
+    public Subproducto getSubProducto() {
+        return subProducto;
+    }
+
+    public void setSubProducto(Subproducto subProducto) {
+        System.out.println("set Subproducto "+subProducto.toString());
+        this.subProducto = subProducto;
+    }
+
+    
     public BigDecimal getPesoNeto() {
         return pesoNeto;
     }
@@ -224,6 +251,23 @@ public class EntradaMercanciaProducto extends ValueObject implements Serializabl
         this.numeroMovimiento = numeroMovimiento;
     }
 
+    public ArrayList<Bodega> getListaBodegas() {
+        return listaBodegas;
+    }
+
+    public void setListaBodegas(ArrayList<Bodega> listaBodegas) {
+        this.listaBodegas = listaBodegas;
+    }
+
+    public BigDecimal getIdSucursalFk() {
+        return idSucursalFk;
+    }
+
+    public void setIdSucursalFk(BigDecimal idSucursalFk) {
+        this.idSucursalFk = idSucursalFk;
+    }
+
+    
     
     
 }

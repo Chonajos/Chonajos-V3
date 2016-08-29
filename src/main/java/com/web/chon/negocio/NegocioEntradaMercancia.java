@@ -32,5 +32,7 @@ public interface NegocioEntradaMercancia {
     
     public List<Object[]>  getEntradaById(BigDecimal id);
     
+    public int deleteEntradaMercancia(EntradaMercancia em);
+    
     
 }
