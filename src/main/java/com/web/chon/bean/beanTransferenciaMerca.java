@@ -2,14 +2,10 @@ package com.web.chon.bean;
 
 import com.web.chon.dominio.Bodega;
 import com.web.chon.dominio.ExistenciaProducto;
-import com.web.chon.dominio.Provedor;
 import com.web.chon.dominio.Subproducto;
 import com.web.chon.dominio.Sucursal;
-import com.web.chon.dominio.TipoEmpaque;
 import com.web.chon.dominio.TransferenciaMercancia;
-import com.web.chon.dominio.Usuario;
 import com.web.chon.dominio.UsuarioDominio;
-import com.web.chon.dominio.VentaProductoMayoreo;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceCatBodegas;
 import com.web.chon.service.IfaceCatProvedores;
@@ -95,8 +91,9 @@ public class beanTransferenciaMerca implements Serializable {
     public void transferir() {
         try {
             ArrayList<ExistenciaProducto> lstExistenciaProductoExistente = null;
-            ExistenciaProducto existenciaProductoTemp = new ExistenciaProducto();
+            ExistenciaProducto existenciaProductoTemp = null;
             if (validaTransferencia()) {
+                
                 lstExistenciaProductoExistente = ifaceNegocioExistencia.getExistenciaProductoRepetidos(data.getIdSucursalOrigen(), existenciaProducto.getIdSubProductoFK(), existenciaProducto.getIdTipoEmpaqueFK(), data.getIdBodegaDestino(), existenciaProducto.getIdProvedor(), existenciaProducto.getIdEmFK(), existenciaProducto.getIdTipoConvenio());
 
                 if (lstExistenciaProductoExistente != null && !lstExistenciaProductoExistente.isEmpty()) {
@@ -116,10 +113,23 @@ public class beanTransferenciaMerca implements Serializable {
                         JsfUtil.addSuccessMessage("Transferencia Realizada Correctamente.");
                     }
                 } else {
-                    existenciaProductoTemp = existenciaProducto;
+                    
+                    existenciaProductoTemp = new ExistenciaProducto(existenciaProducto.getIdExistenciaProductoPk(), existenciaProducto.getIdEmFK(), existenciaProducto.getIdSubProductoFK(), existenciaProducto.getIdTipoEmpaqueFK(), existenciaProducto.getCantidadPaquetes(), existenciaProducto.getKilosTotalesProducto(), existenciaProducto.getComentarios(), existenciaProducto.getPrecio(), existenciaProducto.getNombreProducto(), existenciaProducto.getNombreEmpaque(), existenciaProducto.getIdTipoConvenio(), existenciaProducto.getIdBodegaFK(), existenciaProducto.getNombreTipoConvenio(), existenciaProducto.getNombreBodega(), existenciaProducto.getKilospromprod(), existenciaProducto.getNumeroMovimiento(), existenciaProducto.getPesoTara(), existenciaProducto.getIdSucursal(), existenciaProducto.getIdProvedor(), existenciaProducto.getNombreProvedorCompleto(), existenciaProducto.getIdentificador(), existenciaProducto.getNombreSucursal(), existenciaProducto.getPrecioMinimo(), existenciaProducto.getPrecioVenta(), existenciaProducto.getPrecioMaximo(), existenciaProducto.isEstatusBloqueo(), existenciaProducto.getConvenio(), existenciaProducto.getCarroSucursal(), existenciaProducto.getIdEntradaMercanciaProductoFK(), existenciaProducto.getPrecioSinIteres());
                     existenciaProductoTemp.setCantidadPaquetes(data.getCantidadMovida());
                     existenciaProductoTemp.setKilosTotalesProducto(data.getKilosMovios());
-                    if (ifaceNegocioExistencia.insertExistenciaProducto(existenciaProductoTemp) == 1) {
+                    existenciaProductoTemp.setIdBodegaFK(data.getIdBodegaDestino());
+
+                    //Si se tranfiere todos los paquetes solo se modifica el id de bodega
+                    if (existenciaProductoTemp.getCantidadPaquetes().compareTo(existenciaProducto.getCantidadPaquetes()) == 0) {
+                        
+                        existenciaProducto.setIdBodegaFK(data.getIdBodegaDestino());
+                        ifaceNegocioExistencia.updateExistenciaProducto(existenciaProducto);
+                        
+                        JsfUtil.addSuccessMessage("Transferencia Realizada Correctamente.");
+                        clean();
+
+                        //de lo contrario se genera un nuevo registro de existencia y se resta la existencia actual de lo tranferido.
+                    } else if (ifaceNegocioExistencia.insertExistenciaProducto(existenciaProductoTemp) == 1) {
 
                         existenciaProducto.setCantidadPaquetes(existenciaProducto.getCantidadPaquetes().subtract(data.getCantidadMovida()));
                         existenciaProducto.setKilosTotalesProducto(existenciaProducto.getKilosTotalesProducto().subtract(data.getKilosMovios()));
@@ -128,6 +138,7 @@ public class beanTransferenciaMerca implements Serializable {
                         ifaceNegocioTransferenciaMercancia.insertTransferenciaMercancia(data);
 
                         JsfUtil.addSuccessMessage("Transferencia Realizada Correctamente.");
+                        clean();
                     }
                 }
 
@@ -150,7 +161,12 @@ public class beanTransferenciaMerca implements Serializable {
 
         //se valida que no se pueda transferir kilos y empaques mayores a los existentes
         if (data.getKilosMovios().compareTo(existenciaProducto.getKilosTotalesProducto()) <= 0 && data.getCantidadMovida().compareTo(existenciaProducto.getCantidadPaquetes()) <= 0) {
-            return true;
+            if (data.getIdBodegaDestino().compareTo(data.getIdBodegaOrigen()) == 0) {
+                JsfUtil.addErrorMessage("No se puede transferir a la misma bodega de origen.");
+                return false;
+            } else {
+                return true;
+            }
         } else {
             JsfUtil.addErrorMessage("No se puede transferir. Cantidad empaque o cantidad de kilos a mover es mayor al existente.");
             return false;
@@ -181,6 +197,7 @@ public class beanTransferenciaMerca implements Serializable {
 
     public void clean() {
 
+        existenciaProducto.reset();
         data.reset();
 
     }

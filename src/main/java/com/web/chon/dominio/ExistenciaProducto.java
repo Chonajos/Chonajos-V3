@@ -313,7 +313,42 @@ public class ExistenciaProducto implements Serializable {
     public void setPrecioSinIteres(BigDecimal precioSinIteres) {
         this.precioSinIteres = precioSinIteres;
     }
-    
+
+    public ExistenciaProducto(BigDecimal idExistenciaProductoPk, BigDecimal idEmFK, String idSubProductoFK, BigDecimal idTipoEmpaqueFK, BigDecimal cantidadPaquetes, BigDecimal kilosTotalesProducto, String comentarios, BigDecimal precio, String nombreProducto, String nombreEmpaque, BigDecimal idTipoConvenio, BigDecimal idBodegaFK, String nombreTipoConvenio, String nombreBodega, BigDecimal kilospromprod, int numeroMovimiento, BigDecimal pesoTara, BigDecimal idSucursal, BigDecimal idProvedor, String nombreProvedorCompleto, String identificador, String nombreSucursal, BigDecimal precioMinimo, BigDecimal precioVenta, BigDecimal precioMaximo, boolean estatusBloqueo, BigDecimal convenio, BigDecimal carroSucursal, BigDecimal idEntradaMercanciaProductoFK, BigDecimal precioSinIteres) {
+        this.idExistenciaProductoPk = idExistenciaProductoPk;
+        this.idEmFK = idEmFK;
+        this.idSubProductoFK = idSubProductoFK;
+        this.idTipoEmpaqueFK = idTipoEmpaqueFK;
+        this.cantidadPaquetes = cantidadPaquetes;
+        this.kilosTotalesProducto = kilosTotalesProducto;
+        this.comentarios = comentarios;
+        this.precio = precio;
+        this.nombreProducto = nombreProducto;
+        this.nombreEmpaque = nombreEmpaque;
+        this.idTipoConvenio = idTipoConvenio;
+        this.idBodegaFK = idBodegaFK;
+        this.nombreTipoConvenio = nombreTipoConvenio;
+        this.nombreBodega = nombreBodega;
+        this.kilospromprod = kilospromprod;
+        this.numeroMovimiento = numeroMovimiento;
+        this.pesoTara = pesoTara;
+        this.idSucursal = idSucursal;
+        this.idProvedor = idProvedor;
+        this.nombreProvedorCompleto = nombreProvedorCompleto;
+        this.identificador = identificador;
+        this.nombreSucursal = nombreSucursal;
+        this.precioMinimo = precioMinimo;
+        this.precioVenta = precioVenta;
+        this.precioMaximo = precioMaximo;
+        this.estatusBloqueo = estatusBloqueo;
+        this.convenio = convenio;
+        this.carroSucursal = carroSucursal;
+        this.idEntradaMercanciaProductoFK = idEntradaMercanciaProductoFK;
+        this.precioSinIteres = precioSinIteres;
+    }
+
+    public ExistenciaProducto() {
+    }
     
 
 }

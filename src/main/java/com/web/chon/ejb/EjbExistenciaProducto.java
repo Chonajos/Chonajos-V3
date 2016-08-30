@@ -88,14 +88,17 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
         System.out.println("EJBUPDATEPRODUCTO:--------------------"+e.toString());
         try {
 
-            Query query = em.createNativeQuery("update EXISTENCIA_PRODUCTO SET CANTIDAD_EMPACAQUE=?, KILOS_TOTALES=? WHERE ID_EXP_PK=?");
+            Query query = em.createNativeQuery("update EXISTENCIA_PRODUCTO SET CANTIDAD_EMPACAQUE=?, KILOS_TOTALES=?,ID_BODEGA_FK =? WHERE ID_EXP_PK=?");
             query.setParameter(1, e.getCantidadPaquetes());
             query.setParameter(2, e.getKilosTotalesProducto());
-            query.setParameter(3, e.getIdExistenciaProductoPk());
+            query.setParameter(3, e.getIdBodegaFK());
+            query.setParameter(4, e.getIdExistenciaProductoPk());
+            
 
             return query.executeUpdate();
 
         } catch (Exception ex) {
+            System.out.println("error 0"+ex.getMessage().toUpperCase());
             Logger.getLogger(EjbExistenciaProducto.class.getName()).log(Level.SEVERE, null, ex);
 
             return 0;
@@ -113,7 +116,7 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
 "  ex.CANTIDAD_EMPACAQUE,ex.KILOS_TOTALES,tc.DESCRIPCION_TIPO,\n" +
 "  prove.nombre_provedor ||' '|| prove.A_PATERNO_PROVE || ' ' || prove.A_MATERNO_PROVE as nombreProvedor,\n" +
 "  sucu.NOMBRE_SUCURSAL,bod.NOMBRE, ex.PRECIO_MINIMO, ex.PRECIO_VENTA, ex.PRECIO_MAXIMO,\n" +
-"  ex.ESTATUS_BLOQUEO,ex.ID_SUBPRODUCTO_FK,ex.ID_TIPO_EMPAQUE_FK,bod.ID_BD_PK,ex.CONVENIO,em.CARROSUCURSAL\n" +
+"  ex.ESTATUS_BLOQUEO,ex.ID_SUBPRODUCTO_FK,ex.ID_TIPO_EMPAQUE_FK,bod.ID_BD_PK,ex.CONVENIO,em.CARROSUCURSAL, ex.ID_EMP_FK,ex.COMENTARIOS,ex.ID_EM_FK,ex.ID_TIPO_CONVENIO_FK,ex.KILOSPROMPROD,ex.ID_SUCURSAL_FK" +
 " from EXISTENCIA_PRODUCTO ex\n" +
 " join ENTRADAMERCANCIAPRODUCTO emp\n" +
 " on emp.ID_EMP_PK = ex.ID_EMP_FK\n" +
