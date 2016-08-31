@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import javax.annotation.PostConstruct;
 import javax.faces.event.AjaxBehaviorEvent;
 import org.primefaces.component.inputtext.InputText;
+import org.primefaces.context.RequestContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -93,7 +94,7 @@ public class beanTransferenciaMerca implements Serializable {
             ArrayList<ExistenciaProducto> lstExistenciaProductoExistente = null;
             ExistenciaProducto existenciaProductoTemp = null;
             if (validaTransferencia()) {
-                
+
                 lstExistenciaProductoExistente = ifaceNegocioExistencia.getExistenciaProductoRepetidos(data.getIdSucursalOrigen(), existenciaProducto.getIdSubProductoFK(), existenciaProducto.getIdTipoEmpaqueFK(), data.getIdBodegaDestino(), existenciaProducto.getIdProvedor(), existenciaProducto.getIdEmFK(), existenciaProducto.getIdTipoConvenio());
 
                 if (lstExistenciaProductoExistente != null && !lstExistenciaProductoExistente.isEmpty()) {
@@ -110,10 +111,9 @@ public class beanTransferenciaMerca implements Serializable {
                         data.setIdUsuarioFK(usuarioDominio.getIdUsuario());
                         ifaceNegocioTransferenciaMercancia.insertTransferenciaMercancia(data);
 
-                        JsfUtil.addSuccessMessage("Transferencia Realizada Correctamente.");
                     }
                 } else {
-                    
+
                     existenciaProductoTemp = new ExistenciaProducto(existenciaProducto.getIdExistenciaProductoPk(), existenciaProducto.getIdEmFK(), existenciaProducto.getIdSubProductoFK(), existenciaProducto.getIdTipoEmpaqueFK(), existenciaProducto.getCantidadPaquetes(), existenciaProducto.getKilosTotalesProducto(), existenciaProducto.getComentarios(), existenciaProducto.getPrecio(), existenciaProducto.getNombreProducto(), existenciaProducto.getNombreEmpaque(), existenciaProducto.getIdTipoConvenio(), existenciaProducto.getIdBodegaFK(), existenciaProducto.getNombreTipoConvenio(), existenciaProducto.getNombreBodega(), existenciaProducto.getKilospromprod(), existenciaProducto.getNumeroMovimiento(), existenciaProducto.getPesoTara(), existenciaProducto.getIdSucursal(), existenciaProducto.getIdProvedor(), existenciaProducto.getNombreProvedorCompleto(), existenciaProducto.getIdentificador(), existenciaProducto.getNombreSucursal(), existenciaProducto.getPrecioMinimo(), existenciaProducto.getPrecioVenta(), existenciaProducto.getPrecioMaximo(), existenciaProducto.isEstatusBloqueo(), existenciaProducto.getConvenio(), existenciaProducto.getCarroSucursal(), existenciaProducto.getIdEntradaMercanciaProductoFK(), existenciaProducto.getPrecioSinIteres());
                     existenciaProductoTemp.setCantidadPaquetes(data.getCantidadMovida());
                     existenciaProductoTemp.setKilosTotalesProducto(data.getKilosMovios());
@@ -121,12 +121,9 @@ public class beanTransferenciaMerca implements Serializable {
 
                     //Si se tranfiere todos los paquetes solo se modifica el id de bodega
                     if (existenciaProductoTemp.getCantidadPaquetes().compareTo(existenciaProducto.getCantidadPaquetes()) == 0) {
-                        
+
                         existenciaProducto.setIdBodegaFK(data.getIdBodegaDestino());
                         ifaceNegocioExistencia.updateExistenciaProducto(existenciaProducto);
-                        
-                        JsfUtil.addSuccessMessage("Transferencia Realizada Correctamente.");
-                        clean();
 
                         //de lo contrario se genera un nuevo registro de existencia y se resta la existencia actual de lo tranferido.
                     } else if (ifaceNegocioExistencia.insertExistenciaProducto(existenciaProductoTemp) == 1) {
@@ -137,10 +134,17 @@ public class beanTransferenciaMerca implements Serializable {
                         data.setIdUsuarioFK(usuarioDominio.getIdUsuario());
                         ifaceNegocioTransferenciaMercancia.insertTransferenciaMercancia(data);
 
-                        JsfUtil.addSuccessMessage("Transferencia Realizada Correctamente.");
-                        clean();
                     }
                 }
+
+                //Ejecuta script para ocultar el dialog
+                RequestContext.getCurrentInstance().execute("PF('dlg').hide();");
+                //ejecuta un update al formulario con el id :formContent
+                RequestContext.getCurrentInstance().update("formContent");
+                System.out.println("actualiza formulario");
+                JsfUtil.addSuccessMessage("Transferencia Realizada Correctamente.");
+                clean();
+                searchExistencia();
 
             }
         } catch (Exception ex) {
@@ -208,10 +212,10 @@ public class beanTransferenciaMerca implements Serializable {
             data.setIdBodegaOrigen(lstBodega.get(0).getIdBodegaPK());
         }
 
-        searchEcistencia();
+        searchExistencia();
     }
 
-    public void searchEcistencia() {
+    public void searchExistencia() {
         lstExistenciaProducto = ifaceNegocioExistencia.getExistencias(data.getIdSucursalOrigen(), data.getIdBodegaOrigen(), null, null, null, null, null);
     }
 

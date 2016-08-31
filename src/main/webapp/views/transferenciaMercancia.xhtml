@@ -31,7 +31,7 @@
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="comboBodegaNueva" value ="Bodega:" /> 
                             <p:selectOneMenu  id="comboBodegaNueva" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanTransferenciaMerca.data.idBodegaOrigen}"  requiredMessage="Selecciona una bodega Nueva">
                                 <f:selectItems value="#{beanTransferenciaMerca.lstBodega}" var="bode" itemLabel="#{bode.nombreBodega}" itemValue="#{bode.idBodegaPK}" />
-                                <p:ajax event="change" update="@this :formContent" listener="#{beanTransferenciaMerca.searchEcistencia}"/>
+                                <p:ajax event="change" update="@this :formContent" listener="#{beanTransferenciaMerca.searchExistencia}"/>
                             </p:selectOneMenu>
                         </div>
                     </div>
@@ -77,12 +77,9 @@
                 <h:panelGrid columns="1" cellpadding="5">
                     <f:facet name="header">
                         <div class="form-group alignRight">
-                            <p:commandButton value="Transferir" update="formContent" action="#{beanTransferenciaMerca.transferir}" oncomplete="PF('dlg').hide();"/>
+                            <p:commandButton value="Transferir" action="#{beanTransferenciaMerca.transferir}" />
                         </div>
                     </f:facet> 
-
-
-
                     <p:outputLabel  for="comboTipoAbono" value ="Bodega Destino:" /> 
                     <h:selectOneMenu  id="comboTipoAbono" style="height: 100%" value="#{beanTransferenciaMerca.data.idBodegaDestino}" >
                         <f:selectItems value="#{beanTransferenciaMerca.lstBodega}" var="lst" itemLabel="#{lst.nombreBodega}" itemValue="#{lst.idBodegaPK}"/>
