@@ -278,6 +278,7 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
        try {
             Query query = em.createNativeQuery("select exp.ID_EXP_PK,exp.CANTIDAD_EMPACAQUE,exp.KILOS_TOTALES from EXISTENCIA_PRODUCTO exp where exp.ID_EMP_FK =?");
             query.setParameter(1, idEmpFk);
+            System.out.println("Parametro: "+idEmpFk);
             System.out.println(query);
             return query.getResultList();
         } catch (Exception ex) {

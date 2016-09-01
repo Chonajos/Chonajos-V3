@@ -87,11 +87,13 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
             dominio.setRemision(obj[4] == null ? null : obj[4].toString());
             dominio.setIdSucursalFK(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
             dominio.setFolio(obj[6] == null ? null : obj[6].toString());
+            dominio.setIdStatusFk(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
             dominio.setKilosTotales(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
             dominio.setKilosTotalesProvedor(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
-            dominio.setNombreProvedor(obj[12] == null ? "" : obj[12].toString());
-            dominio.setNombreSucursal(obj[13] == null ? "" : obj[13].toString());
+            dominio.setNombreProvedor(obj[12] == null ? " " : obj[12].toString());
+            dominio.setNombreSucursal(obj[13] == null ? " " : obj[13].toString());
             dominio.setIdCarroSucursal(obj[14] == null ? null : new BigDecimal(obj[14].toString()));
+            dominio.setComentariosGenerales(obj[15] == null ? " " : obj[15].toString());
             dominio.setListaProductos(ifaceEntradaMercanciaProducto.getEntradaProductoByIdEM(dominio.getIdEmPK()));
             lstEntradaMercancia2.add(dominio);
         }
@@ -133,9 +135,18 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
     }
 
     @Override
-        public int update(EntradaMercancia dominio) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+        public int update(EntradaMercancia dominio) 
+        {
+        getEjb();
+        try {
+            return ejb.updateEntradaMercancia(dominio);
+
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceEntradaMercancia.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        }
+        
+        }
 
     @Override
         public List<EntradaMercancia> getAll() {

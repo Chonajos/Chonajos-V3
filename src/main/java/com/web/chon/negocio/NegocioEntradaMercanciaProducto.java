@@ -21,7 +21,7 @@ public interface NegocioEntradaMercanciaProducto {
     
     public int deleteEntradaProducto(EntradaMercanciaProducto ep);
     
-    public  BigDecimal getTotalVentasByIdEMP(BigDecimal idEmP);
+    public List<Object[]> getTotalVentasByIdEMP(BigDecimal idEmP);
     
     public List<Object[]> getEntradaMercanciaProductoByIdEmpPk(BigDecimal idEmpPk);
     

@@ -1,7 +1,6 @@
 package com.web.chon.bean;
 
 import com.web.chon.dominio.Bodega;
-import com.web.chon.dominio.EntradaMenudeoProducto;
 import com.web.chon.dominio.EntradaMercancia;
 import com.web.chon.dominio.EntradaMercanciaProducto;
 import com.web.chon.dominio.EntradaMercanciaProductoPaquete;
@@ -12,29 +11,51 @@ import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.TipoConvenio;
 import com.web.chon.dominio.TipoEmpaque;
 import com.web.chon.dominio.UsuarioDominio;
+import com.web.chon.dominio.VentaProductoMayoreo;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceCatBodegas;
 import com.web.chon.service.IfaceCatProvedores;
-import com.web.chon.service.IfaceCatStatusVenta;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceEmpaque;
+import com.web.chon.service.IfaceEntMerProPaq;
 import com.web.chon.service.IfaceEntradaMercancia;
 import com.web.chon.service.IfaceEntradaMercanciaProducto;
 import com.web.chon.service.IfaceNegocioExistencia;
-import com.web.chon.service.IfaceProducto;
 import com.web.chon.service.IfaceSubProducto;
 import com.web.chon.service.IfaceTipoCovenio;
+import com.web.chon.util.Constantes;
+import com.web.chon.util.JasperReportUtil;
 import com.web.chon.util.JsfUtil;
 import com.web.chon.util.TiempoUtil;
+import com.web.chon.util.UtilUpload;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.math.MathContext;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
-import org.primefaces.event.CellEditEvent;
+import javax.faces.context.FacesContext;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.servlet.ServletContext;
+import javax.sql.DataSource;
+import net.sf.jasperreports.engine.JRExporter;
+import net.sf.jasperreports.engine.JRExporterParameter;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.RowEditEvent;
+import org.primefaces.model.StreamedContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -69,6 +90,8 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     private IfaceCatBodegas ifaceCatBodegas;
     @Autowired
     private IfaceSubProducto ifaceSubProducto;
+    @Autowired
+    private IfaceEntMerProPaq ifaceEntMerProPaq;
 
     private ArrayList<Provedor> lstProvedor;
     private ArrayList<Sucursal> listaSucursales;
@@ -77,14 +100,17 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     private ArrayList<TipoEmpaque> lstTipoEmpaque;
     private ArrayList<Bodega> listaBodegas;
     private ArrayList<Subproducto> lstProducto;
+    
 
     private EntradaMercancia data;
     private EntradaMercanciaProducto dataProducto;
+    private EntradaMercanciaProducto dataProductoAutoAjuste;
     private EntradaMercanciaProducto dataProductoNuevo;
     private EntradaMercanciaProducto dataProductEdit;
     private UsuarioDominio usuario;
     private Subproducto subProducto;
     private EntradaMercanciaProductoPaquete dataPaquete;
+    private EntradaMercanciaProductoPaquete dataPaqueteEliminar;
 
     private String title;
     private String viewEstate;
@@ -102,6 +128,15 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     private int filtro;
     private Provedor provedor;
 
+    //---Variables de Impresión----//
+    private Map paramReport = new HashMap();
+    private String rutaPDF;
+    private StreamedContent media;
+    private ByteArrayOutputStream outputStream;
+    private String number;
+    private int idSucu;
+    private String pathFileJasper = "";
+
     @PostConstruct
     public void init() {
 
@@ -118,6 +153,8 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         buscar();
 
         dataPaquete = new EntradaMercanciaProductoPaquete();
+        dataPaqueteEliminar = new EntradaMercanciaProductoPaquete();
+        dataProductoAutoAjuste = new EntradaMercanciaProducto();
 
         /*Validacion de perfil administrador*/
 //        if (usuario.getPerId() != 1) {
@@ -131,6 +168,139 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         setTitle("Relación de Operaciónes Entrada de Mercancia Mayoreo");
         setViewEstate("init");
         dataProductoNuevo = new EntradaMercanciaProducto();
+        lstProvedor = ifaceCatProvedores.getProvedores();
+
+    }
+    public void cerrarEntrada()
+    {
+        data.setIdStatusFk(new BigDecimal(2));
+        if(ifaceEntradaMercancia.update(data)==1)
+        {
+            JsfUtil.addSuccessMessageClean("Carro Cerrado con Éxito");
+        }
+        else
+        {
+            JsfUtil.addErrorMessageClean("Ocurrió un problema el cerrar el caro");
+        }
+
+    }
+    
+    public void imprimirEntrada() {
+        setParameterTicket(data);
+        generateReport(data.getIdCarroSucursal().intValue());
+        RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
+    }
+    
+    private void setParameterTicket(EntradaMercancia em) {
+
+        paramReport.put("nombreSucursal", usuario.getNombreSucursal());
+        paramReport.put("carro", em.getIdCarroSucursal().toString());
+        paramReport.put("fecha", TiempoUtil.getFechaDDMMYYYYHHMM(em.getFecha()));
+        paramReport.put("folio", em.getFolio());
+        paramReport.put("provedor", em.getNombreProvedor());
+        paramReport.put("kilosProvedor", em.getKilosTotalesProvedor().toString());
+        paramReport.put("kilosBodega", em.getKilosTotales().toString());
+        paramReport.put("comentariosGenerales", em.getComentariosGenerales());
+        paramReport.put("nombreRecibidor", usuario.getNombreCompleto());
+        paramReport.put("ID_EM_PK", em.getIdEmPK().toString());
+        System.out.println("=================="+em.getIdEmPK());
+        paramReport.put("leyenda", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:" + usuario.getTelefonoSucursal());
+     
+    }
+    public String getNombreProvedor(EntradaMercancia em) {
+
+        for (Provedor prove : lstProvedor) {
+
+            if (prove.getIdProvedorPK().intValue() == em.getIdProvedorFK().intValue()) {
+                return prove.getNombreProvedor();
+            }
+
+        }
+        return "";
+    }
+
+    public void generateReport(int folio) {
+        JRExporter exporter = null;
+
+        try {
+            ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+            String temporal = "";
+            if (servletContext.getRealPath("") == null) {
+                temporal = Constantes.PATHSERVER;
+            } else {
+                temporal = servletContext.getRealPath("");
+            }
+            pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "entradaMayoreo" + File.separatorChar + "EntradaMayoreoV1.jasper";
+            Context initContext;
+            Connection con = null;
+            try {
+                javax.sql.DataSource datasource = null;
+
+                Context initialContext = new InitialContext();
+
+                // "jdbc/MyDBname" >> is a JNDI Name of DataSource on weblogic
+                datasource = (DataSource) initialContext.lookup("DataChon");
+
+                try {
+                    con = datasource.getConnection();
+                    System.out.println("datsource" + con.toString());
+                } catch (SQLException ex) {
+                    Logger.getLogger(BeanVenta.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } catch (NamingException ex) {
+                Logger.getLogger(BeanVenta.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            JasperPrint jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport, con);
+            outputStream = JasperReportUtil.getOutputStreamFromReport(paramReport, getPathFileJasper());
+            exporter = new JRPdfExporter();
+            exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
+            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, outputStream);
+//            exporter.setParameter(JRPdfExporterParameter.PDF_JAVASCRIPT, "this.print();");
+            byte[] bytes = outputStream.toByteArray();
+            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf", folio, idSucu);
+            con.close();
+        } catch (Exception exception) {
+            System.out.println("Error >" + exception.getMessage());
+            exception.getStackTrace();
+        }
+
+    }
+
+    public void autoAjustar() {
+        //1.- Ajustar Existencias con los Paquetes nuevos
+        
+        System.out.println("DataAjuste: "+dataProductoAutoAjuste);
+        ExistenciaProducto exis = ifaceNegocioExistencia.getExistenciaByIdEmpFk(dataProductoAutoAjuste.getIdEmpPK());
+        exis.setCantidadPaquetes(dataProductoAutoAjuste.getCantPaquetes());
+        exis.setKilosTotalesProducto(dataProductoAutoAjuste.getKilosPaquetes());
+        System.out.println("-------------------------------------------------");
+        System.out.println(exis.toString());
+        if (ifaceNegocioExistencia.updateExistenciaProducto(exis) == 1) 
+        {
+            dataProductoAutoAjuste.setKilosTotalesProducto(dataProductoAutoAjuste.getKilosReales());
+            dataProductoAutoAjuste.setCantidadPaquetes(dataProductoAutoAjuste.getCantidadReales());
+            if (ifaceEntradaMercanciaProducto.update(dataProductoAutoAjuste) == 1) 
+            {
+                ifaceEntMerProPaq.updatePaquete(dataProductoAutoAjuste.getIdEmpPK());
+                buscar();
+                JsfUtil.addSuccessMessageClean("Se han actualizado los inventarios correctamente con auto-ajuste");
+            } else {
+                JsfUtil.addErrorMessageClean("Ha ocurriod un error al actualizar entrada de mercancia con auto-ajuste");
+            }
+        } else {
+            JsfUtil.addErrorMessageClean("Ha ocurrido un error al actualizar inventarios con auto-ajuste");
+        }
+
+    }
+
+    public void cancelarPaquete() {
+        System.out.println("DataPaqueteEliminar: " + dataPaqueteEliminar.toString());
+        if (ifaceEntMerProPaq.eliminarPaquete(dataPaqueteEliminar.getIdEmPP()) == 1) {
+            JsfUtil.addSuccessMessageClean("Paquete Eliminado con Éxito");
+            buscar();
+        } else {
+            JsfUtil.addErrorMessageClean("Ocurrió un error");
+        }
 
     }
 
@@ -178,7 +348,29 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     }
 
     public void registrarPaquete() {
+        dataPaquete.setIdEmPP(new BigDecimal(ifaceEntMerProPaq.getNextVal()));
+        dataPaquete.setIdEmpFK(dataProducto.getIdEmpPK());
+        if (ifaceEntMerProPaq.insertPaquete(dataPaquete) == 1) {
+            JsfUtil.addSuccessMessageClean("Paquete agregado correctamente");
+            buscar();
+        } else {
+            JsfUtil.addErrorMessageClean("Ocurrió un problema al agregar el paquete");
+        }
 
+    }
+
+    public void calculaPesoNetoPaquete() {
+        if (dataPaquete.getKilos() != null && dataPaquete.getTara() != null) {
+
+            BigDecimal h = dataPaquete.getKilos().subtract(dataPaquete.getTara(), MathContext.UNLIMITED);
+            //dataProducto.setPesoNeto(dataProducto.getKilosTotalesProducto().subtract(dataProducto.getPesoTara(), MathContext.UNLIMITED));
+            int t = h.compareTo(new BigDecimal(0));
+            if (t == 0 || t < 0) {
+                JsfUtil.addErrorMessageClean("Cantidad en kilos igual a cero o negativo");
+            } else {
+                dataPaquete.setPesoNeto(h);
+            }
+        }
     }
 
     public void calculaPesoNeto() {
@@ -232,9 +424,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         }
     }
 
-    public void imprimirEntrada() {
-
-    }
+    
 
     public void editarProducto() {
 
@@ -250,7 +440,10 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         //Primero eliminamos la existencia:
         ExistenciaProducto ep = new ExistenciaProducto();
         ep.setIdEntradaMercanciaProductoFK(dataProducto.getIdEmpPK());
-        if (ifaceEntradaMercanciaProducto.getTotalVentasByIdEMP(dataProducto.getIdEmpPK()).intValue() == 0) {
+
+        VentaProductoMayoreo venta = new VentaProductoMayoreo();
+        venta = ifaceEntradaMercanciaProducto.getTotalVentasByIdEMP(dataProducto.getIdEmpPK());
+        if (venta.getTotalVenta().intValue() == 0) {
             if (ifaceNegocioExistencia.deleteExistenciaProducto(ep) == 1) {
                 System.out.println("Se elimino la existencia producto");
                 if (ifaceEntradaMercanciaProducto.deleteEntradaMercanciaProducto(dataProducto) == 1) {
@@ -273,7 +466,9 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
             for (EntradaMercanciaProducto items : data.getListaProductos()) {
                 ExistenciaProducto ep = new ExistenciaProducto();
                 ep.setIdEntradaMercanciaProductoFK(items.getIdEmpPK());
-                if (ifaceEntradaMercanciaProducto.getTotalVentasByIdEMP(items.getIdEmpPK()).intValue() == 0) {
+                VentaProductoMayoreo venta = new VentaProductoMayoreo();
+                venta = ifaceEntradaMercanciaProducto.getTotalVentasByIdEMP(items.getIdEmpPK());
+                if (venta.getTotalVenta().intValue() == 0) {
                     if (ifaceNegocioExistencia.deleteExistenciaProducto(ep) == 1) {
                         System.out.println("Se elimino la existencia producto");
                         if (ifaceEntradaMercanciaProducto.deleteEntradaMercanciaProducto(items) == 1) {
@@ -329,7 +524,10 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         }
         boolean totalVentas = false;
         if (cambioProducto == true) {
-            if (ifaceEntradaMercanciaProducto.getTotalVentasByIdEMP(dataProductEdit.getIdEmpPK()).intValue() == 0) {
+            VentaProductoMayoreo venta = new VentaProductoMayoreo();
+            venta = ifaceEntradaMercanciaProducto.getTotalVentasByIdEMP(dataProductEdit.getIdEmpPK());
+
+            if (venta.getTotalVenta().intValue() == 0) {
                 totalVentas = false;
                 System.out.println("No existen ventas");
             } else {
@@ -348,6 +546,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
                 ep.setIdBodegaFK(dataProductEdit.getIdBodegaFK());
                 ep.setIdTipoConvenio(dataProductEdit.getIdTipoConvenio());
                 ep.setIdEntradaMercanciaProductoFK(dataProductEdit.getIdEmpPK());
+
                 System.out.println("Entrada Anterior kilos: " + kilosAnterior);
                 System.out.println("Entrada Anterior Cantidad: " + cantidadAnterior);
                 System.out.println("Entrada Nueva kilos: " + dataProductEdit.getKilosTotalesProducto());
@@ -359,7 +558,11 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
                 e.setCantidadPaquetes(e.getCantidadPaquetes().subtract((cantidadAnterior.subtract(dataProductEdit.getCantidadPaquetes(), MathContext.UNLIMITED)), MathContext.UNLIMITED));
                 System.out.println("Existencia Nueovs kilos: " + e.getKilosTotalesProducto());
                 System.out.println("Existencia Nuevos Cantidad: " + e.getCantidadPaquetes());
-
+                ep.setKilosTotalesProducto(e.getKilosTotalesProducto());
+                ep.setCantidadPaquetes(e.getCantidadPaquetes());
+                ep.setIdExistenciaProductoPk(e.getIdExistenciaProductoPk());
+                System.out.println("--------------Existencia Actualizar------------");
+                System.out.println(ep.toString());
                 if (ifaceNegocioExistencia.updateExistenciaProducto(ep) == 1) {
                     JsfUtil.addSuccessMessageClean("Actualización de datos correcta");
                 } else {
@@ -645,4 +848,78 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         this.fechaFiltroInicio = fechaFiltroInicio;
     }
 
+    public EntradaMercanciaProductoPaquete getDataPaqueteEliminar() {
+        return dataPaqueteEliminar;
+    }
+
+    public void setDataPaqueteEliminar(EntradaMercanciaProductoPaquete dataPaqueteEliminar) {
+        this.dataPaqueteEliminar = dataPaqueteEliminar;
+    }
+
+    public EntradaMercanciaProducto getDataProductoAutoAjuste() {
+        return dataProductoAutoAjuste;
+    }
+
+    public void setDataProductoAutoAjuste(EntradaMercanciaProducto dataProductoAutoAjuste) {
+        this.dataProductoAutoAjuste = dataProductoAutoAjuste;
+    }
+
+    public String getRutaPDF() {
+        return rutaPDF;
+    }
+
+    public void setRutaPDF(String rutaPDF) {
+        this.rutaPDF = rutaPDF;
+    }
+
+    public StreamedContent getMedia() {
+        return media;
+    }
+
+    public void setMedia(StreamedContent media) {
+        this.media = media;
+    }
+
+    public ByteArrayOutputStream getOutputStream() {
+        return outputStream;
+    }
+
+    public void setOutputStream(ByteArrayOutputStream outputStream) {
+        this.outputStream = outputStream;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public int getIdSucu() {
+        return idSucu;
+    }
+
+    public void setIdSucu(int idSucu) {
+        this.idSucu = idSucu;
+    }
+
+    public String getPathFileJasper() {
+        return pathFileJasper;
+    }
+
+    public void setPathFileJasper(String pathFileJasper) {
+        this.pathFileJasper = pathFileJasper;
+    }
+
+    public Map getParamReport() {
+        return paramReport;
+    }
+
+    public void setParamReport(Map paramReport) {
+        this.paramReport = paramReport;
+    }
+    
+
+    
 }

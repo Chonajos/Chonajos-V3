@@ -16,16 +16,38 @@
             <p:messages id="messages" showDetail="true" showSummary="false" showIcon="false" autoUpdate="true" closable="true" />
             <p:panel>
                 <div class="container-fluid">
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                        <p:commandButton value="Si" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                        <p:commandButton value="No" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                    </p:confirmDialog>
                     <p:dialog  id="dialogw" header="Agregar Tarima" widgetVar="dlg" resizable="false">
                         <h:panelGrid columns="1" cellpadding="5">
                             <h:outputLabel for="Cantidad" value="Cantidad:" />
                             <p:inputText id="Cantidad"  value="#{beanRelOperEntradaMercancia.dataPaquete.paquetes}"/>
 
                             <h:outputLabel for="kilos" value="Kilos:" />
-                            <p:inputText id="kilos"  value="#{beanRelOperEntradaMercancia.dataPaquete.kilos}"/>
+                            <p:inputText id="kilos"  value="#{beanRelOperEntradaMercancia.dataPaquete.kilos}">
+                                <p:ajax event="blur" update=":formContent:fragmentoPesoNetoPaquete" listener ="#{beanRelOperEntradaMercancia.calculaPesoNetoPaquete()}"/>
+                            </p:inputText>
 
                             <h:outputLabel for="tara" value="Tara(kg):" />
-                            <p:inputText id="tara"  value="#{beanRelOperEntradaMercancia.dataPaquete.tara}"/>
+                            <p:inputText id="tara"  value="#{beanRelOperEntradaMercancia.dataPaquete.tara}">
+                                <p:ajax event="blur" update=":formContent:fragmentoPesoNetoPaquete" 
+                                        listener ="#{beanRelOperEntradaMercancia.calculaPesoNetoPaquete()}"/>
+                            </p:inputText>
+
+
+                            <p:fragment id="fragmentoPesoNetoPaquete" >
+                                <div class="form-group">
+                                    <h:outputLabel for="neto" value="Peso Neto(kg):" />
+                                </div>
+                                <div class="form-group">
+                                    <p:inputText id="neto" readonly="true" value="#{beanRelOperEntradaMercancia.dataPaquete.pesoNeto}" />
+                                </div>
+                            </p:fragment>
+
+
+
                             <p:commandButton value="Registrar" update="formContent" 
                                              action="#{beanRelOperEntradaMercancia.registrarPaquete()}" oncomplete="PF('dlg').hide();"/>
                         </h:panelGrid>
@@ -98,16 +120,32 @@
                     </p:dialog>
                     <p:dialog  id="dialogoAutoAjustar" header="Auto Ajustar Entrada de Mercancia" widgetVar="dlg3" resizable="false">
                         <h:panelGrid columns="1" cellpadding="5">
-                            <h:outputLabel for="pruebas: " value="Cantidad de Cajas Vendidas" />
-                            <p:inputText id="pruebas"  value="#{beanRelOperEntradaMercancia.dataPaquete.paquetes}"/>
+                            <h:outputLabel for="pruebas" value="Cantidad de Cajas Vendidas" />
+                            <p:inputText id="pruebas" readonly="true" value="#{beanRelOperEntradaMercancia.dataProductoAutoAjuste.cantidadVendida}"/>
 
-                            <h:outputLabel for="kilosVendidos" value="Kilos Vendidos:" />
-                            <p:inputText id="kilosVendidos"  value="#{beanRelOperEntradaMercancia.dataPaquete.kilos}"/>
+                            <h:outputLabel for="kilosVendidos"  value="Kilos Vendidos:" />
+                            <p:inputText id="kilosVendidos" readonly="true" value="#{beanRelOperEntradaMercancia.dataProductoAutoAjuste.kilosVendidos}"/>
 
+
+                            <h:outputLabel for="totalCajasIngresadas" value="Tota de Cajas Ingresadas" />
+                            <p:inputText id="totalCajasIngresadas" readonly="true" value="#{beanRelOperEntradaMercancia.dataProductoAutoAjuste.cantPaquetes}"/>
+
+                            <h:outputLabel for="totalKilosIngresados"  value="Total de Kilos Ingresados:" />
+                            <p:inputText id="totalKilosIngresados" readonly="true" value="#{beanRelOperEntradaMercancia.dataProductoAutoAjuste.kilosPaquetes}"/>
+
+
+                            <h:outputLabel for="totalCajasReales" value="Tota de Cajas Reales" />
+                            <p:inputText id="totalCajasReales" readonly="true" value="#{beanRelOperEntradaMercancia.dataProductoAutoAjuste.cantidadReales}"/>
+
+                            <h:outputLabel for="totalKilosReales"  value="Total de Kilos Reales:" />
+                            <p:inputText id="totalKilosReales" readonly="true" value="#{beanRelOperEntradaMercancia.dataProductoAutoAjuste.kilosReales}"/>
 
                             <p:commandButton value="Auto Ajustar" update="formContent" 
-                                             action="#{beanRelOperEntradaMercancia.registrarPaquete()}" 
-                                             oncomplete="PF('dl3').hide();"/>
+                                             action="#{beanRelOperEntradaMercancia.autoAjustar()}" 
+                                             oncomplete="PF('dl3').hide();">
+                            <p:confirm header="Confirmación" message="¿Estas seguro de Ajustar este Producto?" icon="ui-icon-alert" />
+                                            
+                            </p:commandButton>
                         </h:panelGrid>
                     </p:dialog>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -200,15 +238,19 @@
                             </p:column>
                             <p:column headerText="Agregar" width="70px;" class="alignCenter">
                                 <p:commandButton id="agregarProducto"  
+                                                 disabled="#{model.idStatusFk.intValue() != 1}"   
                                                  ajax="true"  oncomplete="PF('dlg2').show();" update =":formContent:dialogoProducto:"
                                                  icon="ui-icon-plus" styleClass="ui-priority-primary">
                                     <f:setPropertyActionListener value="#{model}" target="#{beanRelOperEntradaMercancia.data}"/>
                                 </p:commandButton>
                             </p:column>
                             <p:column headerText="Cancelar" width="70px;" class="alignCenter">
-                                <p:commandButton id="Cancelar" ajax="true" process="@this" action="#{beanRelOperEntradaMercancia.cancelarEntrada()}" 
+                                <p:commandButton id="Cancelar" ajax="true" process="@this" action="#{beanRelOperEntradaMercancia.cancelarEntrada()}"
+                                                 disabled="#{model.idStatusFk.intValue() != 1}" 
                                                  icon="ui-icon-trash" styleClass="ui-priority-primary" update=":formContent">
                                     <f:setPropertyActionListener value="#{model}" target="#{beanRelOperEntradaMercancia.data}"/>
+                                <p:confirm header="Confirmación" message="¿Estas seguro de cancelar la entrada de Mercancia?" icon="ui-icon-alert" />
+                                            
                                 </p:commandButton>
                             </p:column>
                             <p:column headerText="Imprimir" width="70px;" class="alignCenter">
@@ -217,12 +259,21 @@
                                     <f:setPropertyActionListener value="#{model}" target="#{beanRelOperEntradaMercancia.data}"/>
                                 </p:commandButton>
                             </p:column>
+                            <p:column headerText="Cerrar Entrada" width="70px;" class="alignCenter">
+                                <p:commandButton id="cerrar" ajax="true" process="@this" action="#{beanRelOperEntradaMercancia.cerrarEntrada()}" 
+                                                 disabled="#{model.idStatusFk.intValue() != 1}" 
+                                                 icon=" ui-icon-check" styleClass="ui-priority-primary" update=":formContent">
+                                    <f:setPropertyActionListener value="#{model}" target="#{beanRelOperEntradaMercancia.data}"/>
+                                <p:confirm header="Confirmación" message="¿Estas seguro de cerrar este carro?" icon="ui-icon-alert" />
+                             
+                                </p:commandButton>
+                            </p:column>
                             <p:rowExpansion>
                                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                     <p:dataTable id="tabla2" var="item" 
                                                  value="#{model.listaProductos}" 
                                                  scrollable="true"
-                                                 scrollHeight="300" 
+                                                 scrollHeight="100" 
                                                  editable="true" styleClass="seconTable"  
                                                  emptyMessage="No se encontraron Registros">
                                         <p:ajax event="rowEdit" listener="#{beanRelOperEntradaMercancia.onRowEdit}" update=":formContent:table"/>
@@ -231,7 +282,6 @@
                                         <p:column style="width:16px">
                                             <p:rowToggler />
                                         </p:column>
-
 
                                         <p:column headerText="N°" width="40px;" class="alignCenter">
                                             <h:outputText value="#{item.numeroMovimiento}" />
@@ -278,7 +328,7 @@
                                             <p:cellEditor>
                                                 <f:facet name="output">
                                                     <h:outputText value="#{item.cantidadPaquetes}" >
-                                                        <f:convertNumber type="currency" currencySymbol="$" />
+
                                                     </h:outputText>
                                                 </f:facet>
                                                 <f:facet name="input">
@@ -354,37 +404,61 @@
                                         </p:column>
                                         <p:column headerText="Agregar Paquete" width="70px;" class="alignCenter">
                                             <p:commandButton id="agregarProducto" 
+                                                             disabled="#{model.idStatusFk.intValue() != 1}" 
                                                              ajax="true"  oncomplete="PF('dlg').show();" update =":formContent:dialogw:"
                                                              icon="ui-icon-plus" styleClass="ui-priority-primary">
-                                                <f:setPropertyActionListener value="#{model}" target="#{beanRelOperEntradaMercancia.data}"/>
+                                                <f:setPropertyActionListener value="#{item}" target="#{beanRelOperEntradaMercancia.dataProducto}"/>
                                             </p:commandButton>
                                         </p:column>
                                         <p:column width="60px;" class="alignCenter" headerText="Editar">
-                                            <p:rowEditor/>
+                                            <p:rowEditor rendered="#{model.idStatusFk.intValue() == 1}" />
                                         </p:column>
                                         <p:column headerText="Remover" width="75px;" class="alignCenter">
                                             <p:commandButton id="Remover" ajax="true" process="@this" action="#{beanRelOperEntradaMercancia.cancelarProducto()}" 
+                                                             disabled="#{model.idStatusFk.intValue() != 1}" 
                                                              icon="ui-icon-closethick" styleClass="ui-priority-primary" update=":formContent:table">
                                                 <f:setPropertyActionListener value="#{item}" target="#{beanRelOperEntradaMercancia.dataProducto}"/>
+                                            <p:confirm header="Confirmación" message="¿Estas seguro de Eliminar este Producto?" icon="ui-icon-alert" />
+                                            
                                             </p:commandButton>
                                         </p:column>
                                         <p:column headerText="Auto-Ajuste" width="70px;" class="alignCenter">
                                             <p:commandButton id="autoAjuste" ajax="true" 
+                                                             disabled="#{model.idStatusFk.intValue() != 1}" 
                                                              oncomplete="PF('dlg3').show();" update =":formContent:dialogoAutoAjustar"
                                                              icon="ui-icon-wrench" styleClass="ui-priority-primary">
-                                                <f:setPropertyActionListener value="#{model}" target="#{beanRelOperEntradaMercancia.data}"/>
-                                            </p:commandButton>
+                                                <f:setPropertyActionListener value="#{item}" target="#{beanRelOperEntradaMercancia.dataProductoAutoAjuste}"/>
+                                                </p:commandButton>
                                         </p:column>
                                         <p:rowExpansion>
-                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <div class="col-lg-4 col-md-10 col-md-12 col-xs-12 col-lg-offset-0 col-md-offset-1">
                                                 <p:dataTable id="tabla4" var="paquete" 
                                                              value="#{item.listaPaquetes}" 
                                                              scrollable="true"
-                                                             scrollHeight="30" 
+                                                             scrollHeight="60" 
                                                              editable="true" styleClass="seconTable"  
                                                              emptyMessage="No se encontraron Registros">
                                                     <p:column headerText="N°" width="30px;" class="alignCenter">
-                                                        <h:outputText value="#{paquete.idEmPP}" />
+                                                        <h:outputText value="#{paquete.folio}" />
+                                                    </p:column>
+                                                    <p:column headerText="Cantidad " width="40px;" class="alignCenter">
+                                                        <h:outputText value="#{paquete.paquetes}"/>
+                                                    </p:column>
+                                                    <p:column headerText="Kilos " width="60px;" class="alignCenter">
+                                                        <h:outputText value="#{paquete.kilos}Kg" />
+                                                    </p:column>
+                                                    <p:column headerText="Tara" width="30px;" class="alignCenter">
+                                                        <h:outputText value="#{paquete.tara}Kg" />
+                                                    </p:column>
+                                                    <p:column headerText="Peso Neto " width="80px;" class="alignCenter">
+                                                        <h:outputText value="#{paquete.pesoNeto} Kg" />
+                                                    </p:column>
+                                                    <p:column headerText="Eliminar" width="60px;" class="alignCenter">
+                                                        <p:commandButton id="eli" ajax="true" process="@this" action="#{beanRelOperEntradaMercancia.cancelarPaquete()}" 
+                                                                         icon="ui-icon-closethick" styleClass="ui-priority-primary" update=":formContent:table">
+                                                            <f:setPropertyActionListener value="#{paquete}" target="#{beanRelOperEntradaMercancia.dataPaqueteEliminar}"/>
+                                                        
+                                                        </p:commandButton>
                                                     </p:column>
                                                 </p:dataTable>
                                             </div>
@@ -395,6 +469,8 @@
                         </p:dataTable>
                     </div>
                 </div>
+                <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanRelOperEntradaMercancia.rutaPDF}"/>
+
             </p:panel>
         </h:form>
     </ui:define>

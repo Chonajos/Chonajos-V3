@@ -38,6 +38,15 @@ public class EntradaMercanciaProducto extends ValueObject implements Serializabl
     
     private Subproducto subProducto;
     private ArrayList<EntradaMercanciaProductoPaquete> listaPaquetes;
+    
+    //---variables para autoajuste----//
+    private BigDecimal kilosVendidos;
+    private BigDecimal cantidadVendida;
+    private BigDecimal kilosReales;
+    private BigDecimal cantidadReales;
+    private BigDecimal kilosPaquetes;
+    private BigDecimal cantPaquetes;
+    
 
     @Override
     public String toString() {
@@ -267,6 +276,56 @@ public class EntradaMercanciaProducto extends ValueObject implements Serializabl
         this.idSucursalFk = idSucursalFk;
     }
 
+    public BigDecimal getKilosVendidos() {
+        return kilosVendidos;
+    }
+
+    public void setKilosVendidos(BigDecimal kilosVendidos) {
+        this.kilosVendidos = kilosVendidos;
+    }
+
+    public BigDecimal getCantidadVendida() {
+        return cantidadVendida;
+    }
+
+    public void setCantidadVendida(BigDecimal cantidadVendida) {
+        this.cantidadVendida = cantidadVendida;
+    }
+
+    public BigDecimal getKilosReales() {
+        return kilosReales;
+    }
+
+    public void setKilosReales(BigDecimal kilosReales) {
+        this.kilosReales = kilosReales;
+    }
+
+    public BigDecimal getCantidadReales() {
+        return cantidadReales;
+    }
+
+    public void setCantidadReales(BigDecimal cantidadReales) {
+        this.cantidadReales = cantidadReales;
+    }
+
+    public BigDecimal getKilosPaquetes() {
+        return kilosPaquetes;
+    }
+
+    public void setKilosPaquetes(BigDecimal kilosPaquetes) {
+        this.kilosPaquetes = kilosPaquetes;
+    }
+
+    public BigDecimal getCantPaquetes() {
+        return cantPaquetes;
+    }
+
+    public void setCantPaquetes(BigDecimal cantPaquetes) {
+        this.cantPaquetes = cantPaquetes;
+    }
+
+    
+    
     
     
     

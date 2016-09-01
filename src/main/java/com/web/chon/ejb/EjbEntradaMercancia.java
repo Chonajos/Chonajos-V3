@@ -85,7 +85,7 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
         int cont = 0;
         StringBuffer query = new StringBuffer("SELECT EMA.ID_EM_PK,EMA.ID_PROVEDOR_FK,EMA.MOVIMIENTO,EMA.FECHA,EMA.REMISION,EMA.ID_SUCURSAL_FK,EMA.IDENTIFICADOR,\n" +
 "EMA.ID_STATUS_FK,EMA.KILOSTOTALES,EMA.KILOSTOTALESPROVEDOR,EMA.COMENTARIOS,EMA.FECHAREMISION,PRO.NOMBRE_PROVEDOR ||' '|| PRO.A_PATERNO_PROVE ||' '|| \n" +
-"PRO.A_MATERNO_PROVE AS NOMBRE_PROVEDOR, SUC.NOMBRE_SUCURSAL,EMA.CARROSUCURSAL FROM ENTRADAMERCANCIA EMA \n" +
+"PRO.A_MATERNO_PROVE AS NOMBRE_PROVEDOR, SUC.NOMBRE_SUCURSAL,EMA.CARROSUCURSAL,EMA.COMENTARIOS FROM ENTRADAMERCANCIA EMA \n" +
 "LEFT JOIN PROVEDORES PRO \n" +
 "ON EMA.ID_PROVEDOR_FK = PRO.ID_PROVEDOR_PK\n" +
 "LEFT JOIN SUCURSAL SUC \n" +
@@ -155,5 +155,27 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
             Logger.getLogger(EjbEntradaMercancia.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
+    }
+
+    @Override
+    public int updateEntradaMercancia(EntradaMercancia entrada) {
+        
+        System.out.println("EJB_UPDATE_ENTRADAMERCANCIA");
+        try {
+            System.out.println("Entrada: " + entrada);
+            Query query = em.createNativeQuery("UPDATE ENTRADAMERCANCIA SET ID_STATUS_FK = ?  WHERE ID_EM_PK = ?");
+            query.setParameter(1, entrada.getIdStatusFk());
+            query.setParameter(2, entrada.getIdEmPK());
+            
+
+            return query.executeUpdate();
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbCatSucursales.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        }
+        
+        
+    
     }
 }

@@ -19,19 +19,66 @@ public class EntradaMercanciaProductoPaquete implements Serializable {
     private BigDecimal kilos;
     private BigDecimal paquetes;
     private BigDecimal tara;
+    private BigDecimal pesoNeto;
+    private BigDecimal idEmpFK;
+    private BigDecimal folio;
+    private BigDecimal idStatusFk;
 
+    @Override
+    public String toString() {
+        return "EntradaMercanciaProductoPaquete{" + "idEmPP=" + idEmPP + ", kilos=" + kilos + ", paquetes=" + paquetes + ", tara=" + tara + ", pesoNeto=" + pesoNeto + ", idEmpFK=" + idEmpFK + ", folio=" + folio + ", idStatusFk=" + idStatusFk + '}';
+    }
+
+    
+    
     public void reset() {
         idEmPP = null;
         kilos = null;
         paquetes = null;
         tara = null;
+        pesoNeto=null;
+        idEmpFK=null;
+        folio = null;
+        idStatusFk=null;
     }
 
-    @Override
-    public String toString() {
-        return "EntradaMercanciaProductoPaquete{" + "idEmPP=" + idEmPP + ", kilos=" + kilos + ", paquetes=" + paquetes + ", tara=" + tara + '}';
+    public BigDecimal getIdStatusFk() {
+        return idStatusFk;
     }
 
+    public void setIdStatusFk(BigDecimal idStatusFk) {
+        this.idStatusFk = idStatusFk;
+    }
+
+
+    
+    public BigDecimal getFolio() {
+        return folio;
+    }
+
+    public void setFolio(BigDecimal folio) {
+        this.folio = folio;
+    }
+
+    
+    public BigDecimal getIdEmpFK() {
+        return idEmpFK;
+    }
+
+    public void setIdEmpFK(BigDecimal idEmpFK) {
+        this.idEmpFK = idEmpFK;
+    }
+    
+    
+    public BigDecimal getPesoNeto() {
+        return pesoNeto;
+    }
+
+    public void setPesoNeto(BigDecimal pesoNeto) {
+        this.pesoNeto = pesoNeto;
+    }
+
+    
     public BigDecimal getIdEmPP() {
         return idEmPP;
     }

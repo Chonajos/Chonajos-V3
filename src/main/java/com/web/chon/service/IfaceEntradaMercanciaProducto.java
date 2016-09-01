@@ -7,8 +7,10 @@ package com.web.chon.service;
 
 import com.web.chon.core.service.PaginacionService;
 import com.web.chon.dominio.EntradaMercanciaProducto;
+import com.web.chon.dominio.VentaProductoMayoreo;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -33,6 +35,6 @@ public interface IfaceEntradaMercanciaProducto extends PaginacionService<Entrada
     
     public EntradaMercanciaProducto getEntradaMercanciaProductoByIdEmpPk(BigDecimal idEmpPk);
     
-    public  BigDecimal getTotalVentasByIdEMP(BigDecimal idEmP);
+    public VentaProductoMayoreo getTotalVentasByIdEMP(BigDecimal idEmP);
 
 }

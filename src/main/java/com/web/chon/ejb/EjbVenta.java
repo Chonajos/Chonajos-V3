@@ -61,25 +61,45 @@ public class EjbVenta implements NegocioVenta {
 "  INNER JOIN CLIENTE CLI ON CLI.ID_CLIENTE = ven.ID_CLIENTE_FK \n" +
 "  INNER JOIN USUARIO USU ON USU.ID_USUARIO_PK = ven.ID_VENDEDOR_FK\n" +
 "  inner join SUCURSAL sucu on sucu.ID_SUCURSAL_PK = ven.ID_SUCURSAL_FK\n" +
-"  inner join STATUS_VENTA sv on sv.ID_STATUS_PK = ven.STATUS_FK\n" +
-"  INNER JOIN VENTA_PRODUCTO vp on vp.ID_VENTA_FK = ven.ID_VENTA_PK ");
+"  inner join STATUS_VENTA sv on sv.ID_STATUS_PK = ven.STATUS_FK\n");
 
-        if (!fechaInicio.equals("")) {
+        if (idProducto != null && !idProducto.equals("")) 
+        {
+            if (cont == 0) 
+            {
+                cont++;
+                cadena.append(" INNER JOIN VENTA_PRODUCTO vp on vp.ID_VENTA_FK = ven.ID_VENTA_PK WHERE  vp.ID_SUBPRODUCTO_FK = '" + idProducto+"'");
+            } 
+            
+        }
+        
+        if (!fechaInicio.equals("")) 
+        {
+            if (cont == 0) 
+            {
+                cadena.append(" WHERE TO_DATE(TO_CHAR(ven.FECHA_VENTA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "' ");
+            }
+            else 
+            {
+                cadena.append(" AND TO_DATE(TO_CHAR(ven.FECHA_VENTA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "' ");
+            }
             cont++;
-            cadena.append(" WHERE TO_DATE(TO_CHAR(ven.FECHA_VENTA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "' ");
         }
 
-        if (idSucursal.intValue() != 0) {
+         
+        if (idSucursal.intValue() != 0) 
+        {
             if (cont == 0) {
                 cadena.append(" WHERE ");
-            } else {
+            } else 
+            {
                 cadena.append(" AND ");
             }
-
             cadena.append("ven.ID_SUCURSAL_FK = '" + idSucursal + "' ");
             cont++;
-
         }
+        
+        
         if (idStatusVenta !=null && idStatusVenta.intValue() != 0) {
             if (cont == 0) {
                 cadena.append(" WHERE ");
@@ -91,19 +111,7 @@ public class EjbVenta implements NegocioVenta {
             cont++;
 
         }
-        if (idProducto != null && !idProducto.equals("")) 
-        {
-            if (cont == 0) 
-            {
-                cont++;
-                cadena.append(" WHERE ");
-            } else 
-            {
-                cadena.append(" AND ");
-            }
-            
-            cadena.append(" vp.ID_SUBPRODUCTO_FK = '" + idProducto+"'");
-        }
+        
         
 
         cadena.append(" ORDER BY ven.ID_VENTA_PK");
