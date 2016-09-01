@@ -38,8 +38,6 @@ public class TransferenciaMercancia extends ValueObject implements Serializable 
         kilosAnterior = null;
         cantidadMovida = null;
         kilosMovios = null;
-        idBodegaOrigen = null;
-        idSucursalOrigen = null;
         idBodegaDestino = null;
         idSucursalDestino = null;
         fechaTransferencia = null;

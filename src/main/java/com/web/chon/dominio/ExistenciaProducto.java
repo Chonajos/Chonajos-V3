@@ -44,32 +44,46 @@ public class ExistenciaProducto implements Serializable {
     private BigDecimal convenio;
     private BigDecimal carroSucursal;
     private BigDecimal idEntradaMercanciaProductoFK;
-    
+
     //variables de venta por credito
     private BigDecimal precioSinIteres;
 
     public void reset() {
-        idSucursal = null;
-        idBodegaFK = null;
-        idProvedor = null;
+        idExistenciaProductoPk = null;
+        idEmFK = null;
+        idSubProductoFK = null;
         idTipoEmpaqueFK = null;
+        cantidadPaquetes = null;
+        kilosTotalesProducto = null;
+        comentarios = null;
+        precio = null;
+        nombreProducto = null;
+        nombreEmpaque = null;
         idTipoConvenio = null;
-
+        idBodegaFK = null;
+        nombreTipoConvenio = null;
+        nombreBodega = null;
+        kilospromprod = null;
+        numeroMovimiento = 0;
+        pesoTara = null;
+        idSucursal = null;
+        idProvedor = null;
+        nombreProvedorCompleto = null;
+        identificador = null;
+        nombreSucursal = null;
         precioMinimo = null;
         precioVenta = null;
         precioMaximo = null;
-        estatusBloqueo = true;
+        estatusBloqueo = false;
+        convenio = null;
         carroSucursal = null;
-        
-        precioSinIteres = null;
+        idEntradaMercanciaProductoFK = null;
     }
 
     @Override
     public String toString() {
         return "ExistenciaProducto{" + "idExistenciaProductoPk=" + idExistenciaProductoPk + ", idEmFK=" + idEmFK + ", idSubProductoFK=" + idSubProductoFK + ", idTipoEmpaqueFK=" + idTipoEmpaqueFK + ", cantidadPaquetes=" + cantidadPaquetes + ", kilosTotalesProducto=" + kilosTotalesProducto + ", comentarios=" + comentarios + ", precio=" + precio + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + ", idTipoConvenio=" + idTipoConvenio + ", idBodegaFK=" + idBodegaFK + ", nombreTipoConvenio=" + nombreTipoConvenio + ", nombreBodega=" + nombreBodega + ", kilospromprod=" + kilospromprod + ", numeroMovimiento=" + numeroMovimiento + ", pesoTara=" + pesoTara + ", idSucursal=" + idSucursal + ", idProvedor=" + idProvedor + ", nombreProvedorCompleto=" + nombreProvedorCompleto + ", identificador=" + identificador + ", nombreSucursal=" + nombreSucursal + ", precioMinimo=" + precioMinimo + ", precioVenta=" + precioVenta + ", precioMaximo=" + precioMaximo + ", estatusBloqueo=" + estatusBloqueo + ", convenio=" + convenio + ", carroSucursal=" + carroSucursal + ", idEntradaMercanciaProductoFK=" + idEntradaMercanciaProductoFK + ", precioSinIteres=" + precioSinIteres + '}';
     }
-
-  
 
     public BigDecimal getIdEntradaMercanciaProductoFK() {
         return idEntradaMercanciaProductoFK;
@@ -79,7 +93,6 @@ public class ExistenciaProducto implements Serializable {
         this.idEntradaMercanciaProductoFK = idEntradaMercanciaProductoFK;
     }
 
-    
     public BigDecimal getCarroSucursal() {
         return carroSucursal;
     }
@@ -87,8 +100,6 @@ public class ExistenciaProducto implements Serializable {
     public void setCarroSucursal(BigDecimal carroSucursal) {
         this.carroSucursal = carroSucursal;
     }
-
-    
 
     public String getNombreSucursal() {
         return nombreSucursal;
@@ -313,7 +324,41 @@ public class ExistenciaProducto implements Serializable {
     public void setPrecioSinIteres(BigDecimal precioSinIteres) {
         this.precioSinIteres = precioSinIteres;
     }
-    
-    
+
+    public ExistenciaProducto(BigDecimal idExistenciaProductoPk, BigDecimal idEmFK, String idSubProductoFK, BigDecimal idTipoEmpaqueFK, BigDecimal cantidadPaquetes, BigDecimal kilosTotalesProducto, String comentarios, BigDecimal precio, String nombreProducto, String nombreEmpaque, BigDecimal idTipoConvenio, BigDecimal idBodegaFK, String nombreTipoConvenio, String nombreBodega, BigDecimal kilospromprod, int numeroMovimiento, BigDecimal pesoTara, BigDecimal idSucursal, BigDecimal idProvedor, String nombreProvedorCompleto, String identificador, String nombreSucursal, BigDecimal precioMinimo, BigDecimal precioVenta, BigDecimal precioMaximo, boolean estatusBloqueo, BigDecimal convenio, BigDecimal carroSucursal, BigDecimal idEntradaMercanciaProductoFK, BigDecimal precioSinIteres) {
+        this.idExistenciaProductoPk = idExistenciaProductoPk;
+        this.idEmFK = idEmFK;
+        this.idSubProductoFK = idSubProductoFK;
+        this.idTipoEmpaqueFK = idTipoEmpaqueFK;
+        this.cantidadPaquetes = cantidadPaquetes;
+        this.kilosTotalesProducto = kilosTotalesProducto;
+        this.comentarios = comentarios;
+        this.precio = precio;
+        this.nombreProducto = nombreProducto;
+        this.nombreEmpaque = nombreEmpaque;
+        this.idTipoConvenio = idTipoConvenio;
+        this.idBodegaFK = idBodegaFK;
+        this.nombreTipoConvenio = nombreTipoConvenio;
+        this.nombreBodega = nombreBodega;
+        this.kilospromprod = kilospromprod;
+        this.numeroMovimiento = numeroMovimiento;
+        this.pesoTara = pesoTara;
+        this.idSucursal = idSucursal;
+        this.idProvedor = idProvedor;
+        this.nombreProvedorCompleto = nombreProvedorCompleto;
+        this.identificador = identificador;
+        this.nombreSucursal = nombreSucursal;
+        this.precioMinimo = precioMinimo;
+        this.precioVenta = precioVenta;
+        this.precioMaximo = precioMaximo;
+        this.estatusBloqueo = estatusBloqueo;
+        this.convenio = convenio;
+        this.carroSucursal = carroSucursal;
+        this.idEntradaMercanciaProductoFK = idEntradaMercanciaProductoFK;
+        this.precioSinIteres = precioSinIteres;
+    }
+
+    public ExistenciaProducto() {
+    }
 
 }

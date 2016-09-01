@@ -48,7 +48,7 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
 
     }
 
-    @Override
+     @Override
     public ArrayList<ExistenciaProducto> getExistencias(BigDecimal idSucursal, BigDecimal idBodega, BigDecimal idProvedor, String idProducto, BigDecimal idEmpaque, BigDecimal idConvenio, BigDecimal idEmpPK) {
         getEjb();
 
@@ -79,6 +79,13 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
                 expro.setConvenio(obj[18] == null ? null : new BigDecimal(obj[18].toString()));
                 expro.setCarroSucursal(obj[19] == null ? null : new BigDecimal(obj[19].toString()));
                 expro.setPrecioSinIteres(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
+                expro.setIdEntradaMercanciaProductoFK(obj[20] == null ? null : new BigDecimal(obj[20].toString()));
+                expro.setComentarios(obj[21] == null ? null :  obj[21].toString());
+                expro.setIdEmFK(obj[22] == null ? null : new BigDecimal(obj[22].toString()));
+                expro.setIdTipoConvenio(obj[23] == null ? null : new BigDecimal(obj[23].toString()));
+                expro.setKilospromprod(obj[24] == null ? null : new BigDecimal(obj[24].toString()));
+                expro.setIdSucursal(obj[25] == null ? null : new BigDecimal(obj[25].toString()));
+
                 
                 lista.add(expro);
             }
@@ -93,7 +100,7 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
 
     @Override
     public ArrayList<ExistenciaProducto> getExistenciaProductoRepetidos(BigDecimal idSucursal, String idSubproductoFk, BigDecimal idTipoEmpaqueFk, BigDecimal idBodegaFk, BigDecimal idProvedorFk, BigDecimal idEMFK, BigDecimal idTipoConvenio) {
-
+        System.out.println("service existencia "+idSucursal +" "+idSubproductoFk+" " +idTipoEmpaqueFk+" " +idBodegaFk+" " +idProvedorFk+" "+idEMFK +"  "+idTipoConvenio);
         getEjb();
 
         try {
