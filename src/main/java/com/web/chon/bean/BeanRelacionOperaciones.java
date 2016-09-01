@@ -1,5 +1,6 @@
 package com.web.chon.bean;
 
+import com.web.chon.dominio.Caja;
 import com.web.chon.dominio.ExistenciaMenudeo;
 import com.web.chon.dominio.StatusVenta;
 import com.web.chon.dominio.Subproducto;
@@ -8,6 +9,7 @@ import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.dominio.Venta;
 import com.web.chon.dominio.VentaProducto;
 import com.web.chon.security.service.PlataformaSecurityContext;
+import com.web.chon.service.IfaceCaja;
 import com.web.chon.service.IfaceCatStatusVenta;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceExistenciaMenudeo;
@@ -70,6 +72,8 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     private IfaceExistenciaMenudeo ifaceExistenciaMenudeo;
     @Autowired
     private IfaceSubProducto ifaceSubProducto;
+    @Autowired
+    private IfaceCaja ifaceCaja;
 
     private ArrayList<Sucursal> listaSucursales;
     private ArrayList<Venta> listaVentas;
@@ -80,6 +84,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     private UsuarioDominio usuario;
     private Venta ventaImpresion;
     private Venta ventaCancelar;
+    private Caja caja;
 
     private String title;
     private String viewEstate;
@@ -113,13 +118,13 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     private String comentarioCancelacion;
 
     private Subproducto subProducto;
+    private static final BigDecimal TIPO = new BigDecimal(1);
 
     @PostConstruct
     public void init() {
         usuario = context.getUsuarioAutenticado();
         /*Validacion de perfil administrador*/
         idSucursal = new BigDecimal(usuario.getSucId());
-
         listaVentas = new ArrayList<Venta>();
         listaSucursales = new ArrayList<Sucursal>();
         listaStatusVenta = new ArrayList<StatusVenta>();
@@ -131,8 +136,16 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
         comentarioCancelacion = "";
         totalVenta = new BigDecimal(0);
         verificarCombo();
+
         setTitle("Relación de Operaciónes Venta Menudeo");
         setViewEstate("init");
+        caja = new Caja();
+        reloadCaja();
+    }
+
+    public void reloadCaja() {
+        caja = new Caja();
+        caja = ifaceCaja.getCajaByIdSucuTipo(idSucursal, TIPO);
     }
 
     public void generateReport(Venta v) {
@@ -278,8 +291,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
                 if (ifaceVenta.cancelarVenta(ventaCancelar.getIdVentaPk().intValue(), usuario.getIdUsuario().intValue(),
                         comentarioCancelacion) != 0) {
                     listaProductoCancel = ifaceVentaProducto.getVentasProductoByIdVenta(ventaCancelar.getIdVentaPk());
-                    for (VentaProducto vp : listaProductoCancel) 
-                    {
+                    for (VentaProducto vp : listaProductoCancel) {
                         System.out.println("Bean==========" + vp.toString());
                         ExistenciaMenudeo em = new ExistenciaMenudeo();
                         em = ifaceExistenciaMenudeo.getExistenciasRepetidasById(vp.getIdProductoFk(), new BigDecimal(ventaCancelar.getIdSucursal()));
@@ -288,15 +300,27 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
                         kilosExistencia = em.getKilos();
                         kilosExistencia = kilosExistencia.add(vp.getCantidadEmpaque(), MathContext.UNLIMITED);
                         em.setKilos(kilosExistencia);
-                        if (ifaceExistenciaMenudeo.updateExistenciaMenudeo(em) != 0) {
+                        if (ifaceExistenciaMenudeo.updateExistenciaMenudeo(em) != 0) 
+                        {
                             System.out.println("se regresaron existencias con exito");
+                            
+                            caja.setMonto(caja.getMonto().subtract(ventaCancelar.getTotalVenta(), MathContext.UNLIMITED));
+                            if(ifaceCaja.updateMontoCaja(caja)==1)
+                            {
+                                JsfUtil.addSuccessMessageClean("Venta Cancelada, se han regresado existencias y dinero en caja correctamente");
+                            }
+                            else
+                            {
+                                JsfUtil.addErrorMessageClean("Ocurrió un error al regresar el dinero de caja");
+                            }
+                            reloadCaja();
 
                         } else {
                             System.out.println("Ocurrio un problema");
                             break;
                         }
                     }
-                    JsfUtil.addSuccessMessageClean("Venta Cancelada, se han regresado existencias");
+                    
                 } else {
                     JsfUtil.addErrorMessageClean("Ocurrió un error al intentar cancelar la venta.");
                 }

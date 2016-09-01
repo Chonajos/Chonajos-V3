@@ -1,10 +1,12 @@
 package com.web.chon.bean;
 
 import com.web.chon.dominio.BuscaVenta;
+import com.web.chon.dominio.Caja;
 import com.web.chon.dominio.Usuario;
 import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceBuscaVenta;
+import com.web.chon.service.IfaceCaja;
 import com.web.chon.service.IfaceCatUsuario;
 import com.web.chon.util.Constantes;
 import com.web.chon.util.JasperReportUtil;
@@ -17,6 +19,7 @@ import java.io.File;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -46,17 +49,18 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
 
     private static final long serialVersionUID = 1L;
     
-    @Autowired IfaceCatUsuario ifaceCatUsuario;
+    @Autowired private IfaceCatUsuario ifaceCatUsuario;
     @Autowired private PlataformaSecurityContext context;
     @Autowired private IfaceBuscaVenta ifaceBuscaVenta;
+    @Autowired private IfaceCaja ifaceCaja;
     
     private ArrayList<BuscaVenta> model;
     private ArrayList<BuscaVenta> selectedVenta;
-    private ArrayList<BuscaVenta> dataModel; //Modelo con un solo Objeto
     
     private BuscaVenta data;
     private Usuario usuario;
     private UsuarioDominio usuarioDominio;
+    private Caja caja;
     
     private StreamedContent media;
     private ByteArrayOutputStream outputStream;
@@ -74,12 +78,13 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
     private boolean statusButtonPagar;
     
     private int idVentaTemporal; //utilizado para comprobacion de venta 
+    private static final BigDecimal TIPO = new BigDecimal(1);
 
     @PostConstruct
-    public void init() {
+    public void init() 
+    {
         data = new BuscaVenta();
         model = new ArrayList<BuscaVenta>();
-
         usuario = new Usuario();
         usuarioDominio = context.getUsuarioAutenticado();
         usuario.setIdUsuarioPk(usuarioDominio.getIdUsuario());
@@ -87,10 +92,11 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
         usuario.setNombreUsuario(usuarioDominio.getUsuNombre());
         usuario.setApaternoUsuario(usuarioDominio.getUsuPaterno());
         usuario.setAmaternoUsuario(usuarioDominio.getUsuMaterno());
-
-        setTitle("Búsqueda de Ventas");
+        setTitle("Búsqueda de Ventas de Menudeo");
         setViewEstate("init");
+        caja = new Caja();
         statusButtonPagar = true;
+        reloadCaja();
     }
 
     public void generateReport() {
@@ -204,12 +210,15 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public void updateVenta() {
-        if (data.getStatusFK() == 2) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "La venta :" + data.getFolioSucursal() + " Ya se encuentra pagada."));
-
-        } else if (data.getIdVenta().intValue() != idVentaTemporal) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "No coincide el numero de venta  :" + data.getFolioSucursal() + " con la búsqueda."));
+    public void updateVenta() 
+    {
+        if (data.getStatusFK() == 2) 
+        {
+            JsfUtil.addErrorMessageClean("Error la venta con el folio: "+data.getFolioSucursal()+" Ya se encuentra pagada");
+          
+        } else if (data.getIdVenta().intValue() != idVentaTemporal) 
+        {
+           JsfUtil.addErrorMessageClean("Error!, No coincide el numero de venta  :" + data.getFolioSucursal() + " con la búsqueda.");
 
         } else if (data.getStatusFK() == 4)
         {
@@ -220,10 +229,13 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
 
                 ifaceBuscaVenta.updateVenta(data.getIdVenta().intValue(), usuario.getIdUsuarioPk().intValue());
                 searchById();
-
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Venta Pagada"));
+                JsfUtil.addSuccessMessageClean("La venta se ha pagado exitosamente");
+                caja.setMonto(caja.getMonto().add(totalVenta, MathContext.UNLIMITED));
+                ifaceCaja.updateMontoCaja(caja);
+                reloadCaja();
+                
+                
                 setParameterTicket(data.getIdVenta().intValue(),data.getFolioSucursal().intValue());
-
                 generateReport();
             } catch (Exception ex) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar pagar la venta con el folio:" + data.getIdVenta() + "."));
@@ -232,6 +244,12 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
         }
 
         //return "buscaVentas";
+    }
+    
+    public void reloadCaja()
+    {
+        caja = new Caja();
+        caja = ifaceCaja.getCajaByIdSucuTipo(new BigDecimal(usuario.getIdSucursal()),TIPO);
     }
 
     @Override
