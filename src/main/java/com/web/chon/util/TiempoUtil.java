@@ -430,20 +430,22 @@ public class TiempoUtil {
 
     public static Date obtenerUltimoDomingoMes(Date fecha) {
         Calendar cal = java.util.GregorianCalendar.getInstance();
+
         cal.set(fecha.getYear(), fecha.getMonth(), fecha.getDay());
-        
+
         cal.set(GregorianCalendar.DAY_OF_WEEK, GregorianCalendar.SUNDAY);
         cal.set(GregorianCalendar.DAY_OF_WEEK_IN_MONTH, -1);
-        
+
         return cal.getTime();
     }
-    
-     public static BigDecimal obtenerUltimoDiaMes(Date fecha) {
+
+    public static BigDecimal obtenerUltimoDiaMes(Date fecha) {
+
         Calendar cal = java.util.GregorianCalendar.getInstance();
-        cal.set(fecha.getYear(), fecha.getMonth(), fecha.getDay());
-        
-       return new BigDecimal(cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH));
-        
+        cal.set(fecha.getYear(), fecha.getMonth()+1, 0);
+
+        return new BigDecimal(cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH));
+
     }
 
 }
