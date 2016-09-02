@@ -21,6 +21,7 @@ import com.web.chon.service.IfaceMantenimientoPrecio;
 import com.web.chon.service.IfaceSubProducto;
 import com.web.chon.service.IfaceTipoVenta;
 import com.web.chon.service.IfaceVenta;
+import com.web.chon.service.IfaceVentaMayoreo;
 import com.web.chon.service.IfaceVentaProducto;
 import com.web.chon.util.Constantes;
 import com.web.chon.util.JasperReportUtil;
@@ -96,6 +97,7 @@ public class BeanVenta implements Serializable, BeanSimple {
     private IfaceExistenciaMenudeo ifaceExistenciaMenudeo;
     @Autowired
     private IfaceMantenimientoPrecio ifaceMantenimientoPrecio;
+    @Autowired private IfaceVentaMayoreo ifaceVentaMayoreo;
 
     private ArrayList<Usuario> lstUsuario;
     private ArrayList<Cliente> lstCliente;
@@ -270,6 +272,7 @@ public class BeanVenta implements Serializable, BeanSimple {
         int idVenta = 0;
         int folioVenta = 0;
         Venta venta = new Venta();
+        int folioVentaMayoreo= 0;
         String mensaje = validaCompraCredito();
 
         try {
@@ -281,6 +284,13 @@ public class BeanVenta implements Serializable, BeanSimple {
 
                 idVenta = ifaceVenta.getNextVal();
                 folioVenta = ifaceVenta.getFolioByIdSucursal(idSucu);
+                folioVentaMayoreo  = ifaceVentaMayoreo.getVentaSucursal(new BigDecimal(idSucu));
+                
+                if(folioVentaMayoreo>folioVenta)
+                {
+                    folioVenta = folioVentaMayoreo;
+                }
+               folioVenta = folioVenta +1;
 
                 venta.setIdVentaPk(new BigDecimal(idVenta));
                 venta.setIdClienteFk(cliente.getId_cliente());

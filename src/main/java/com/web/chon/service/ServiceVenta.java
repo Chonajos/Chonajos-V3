@@ -87,7 +87,7 @@ public class ServiceVenta implements IfaceVenta {
     @Override
     public int getFolioByIdSucursal(int idSucursal) {
         getEjb();
-        return (ejb.getFolioByIdSucursal(idSucursal) + 1);
+        return (ejb.getFolioByIdSucursal(idSucursal));
     }
     
     @Override

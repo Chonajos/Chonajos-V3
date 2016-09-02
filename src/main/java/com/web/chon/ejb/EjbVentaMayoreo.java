@@ -115,7 +115,7 @@ public class EjbVentaMayoreo implements NegocioVentaMayoreo {
 
     @Override
     public int getVentaSucursal(BigDecimal idSucursal) {
-        Query query = em.createNativeQuery("select count(*) from VENTA_MAYOREO where ID_SUCURSAL_FK=?");
+        Query query = em.createNativeQuery("select NVL(max(VENTASUCURSAL),0) from VENTA_MAYOREO where ID_SUCURSAL_FK=?");
         query.setParameter(1, idSucursal);
         return Integer.parseInt(query.getSingleResult().toString());
     }
