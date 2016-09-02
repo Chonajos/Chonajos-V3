@@ -37,6 +37,13 @@ public interface IfaceCredito {
      */
     public ArrayList<SaldosDeudas> getCreditosByEstatus(int estatus,int dias);
     
+    /**
+     * Obtiene el credito por medio del id de venta de menudeo
+     * @param idVenta
+     * @return 
+     */
+     public Credito getCreditosByIdVentaMenudeo(BigDecimal idVenta);
+    
     
     
 }

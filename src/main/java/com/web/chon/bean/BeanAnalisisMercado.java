@@ -419,7 +419,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
         ChartSeries salidaMercancia = new ChartSeries();
 
         BigDecimal zero = new BigDecimal(0);
-        
+
         toneladas.setLabel("Toneladas");
         precio.setLabel("Precio");
 
@@ -427,7 +427,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
         precioAnt.setLabel("Precio Año Anterior");
         remanente.setLabel("Remanente");
         salidaMercancia.setLabel("Salida Mercancia");
-
+        AnalisisMercado analisisMercadoTemp = null;
         for (AnalisisMercado dominio : lstEntradaMercanciaMes) {
 
             if (maxChartValue < dominio.getCantidadToneladasAnterior().intValue()) {
@@ -442,13 +442,28 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
             toneladasAnt.set(dominio.getDescripcionFiltro(), dominio.getCantidadToneladasAnterior());
             precioAnt.set(dominio.getDescripcionFiltro(), dominio.getPrecioAnterior());
             remanente.set(dominio.getDescripcionFiltro(), dominio.getRemantePorSemana());
-            BigDecimal ventaDia = dominio.getCantidadToneladas().subtract(dominio.getRemantePorSemana());
-            ventaDia =ventaDia.equals(zero) ? ventaDia:ventaDia.divide(dominio.getDiasMes(),0,RoundingMode.UP);
+            BigDecimal ventaDia = null;
+            if (analisisMercadoTemp != null) {
+                
+                ventaDia = dominio.getCantidadToneladas().subtract(dominio.getRemantePorSemana()).add(analisisMercadoTemp.getRemantePorSemana());
+                System.out.println(dominio.getDescripcionFiltro() +" dominio.getCantidadToneladas() "+dominio.getCantidadToneladas()+" menos dominio.getRemantePorSemana() "+dominio.getRemantePorSemana()+"mas analisisMercadoTemp.getRemantePorSemana()"+analisisMercadoTemp.getRemantePorSemana());
+                System.out.println("total venta dia "+ventaDia);
+            } else {
+                ventaDia = dominio.getCantidadToneladas().subtract(dominio.getRemantePorSemana());
+                
+            }
+
+            ventaDia = ventaDia.equals(zero) ? ventaDia : ventaDia.divide(dominio.getDiasMes(), 1, RoundingMode.UP);
+            System.out.println("dominio.getDiasMes() "+dominio.getDiasMes());
+            System.out.println("venta final "+ventaDia);
+            System.out.println("-------------------------------------------------------");
             salidaMercancia.set(dominio.getDescripcionFiltro(), ventaDia);
+
+            analisisMercadoTemp = dominio;
 
         }
         maxChartValue += 300;
-        
+
         model.addSeries(toneladas);
         model.addSeries(precio);
         model.addSeries(toneladasAnt);
@@ -489,7 +504,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
         ChartSeries precio = new ChartSeries();
 
         BigDecimal zero = new BigDecimal(0);
-        
+
         ChartSeries toneladasAnt = new ChartSeries();
         ChartSeries precioAnt = new ChartSeries();
         ChartSeries remanente = new ChartSeries();
@@ -503,8 +518,9 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
         precioAnt.setLabel("Precio Año Anterior");
         remanente.setLabel("Remanente");
         salidaMercancia.setLabel("Salida Mercancia");
-        
+
         maxChartValue = 300;
+        AnalisisMercado analisisMercadoTemp = null;
         for (AnalisisMercado dominio : lstEntradaMercanciaMes) {
 
             if (maxChartValue < dominio.getCantidadToneladasAnterior().intValue()) {
@@ -519,12 +535,20 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
             toneladasAnt.set(dominio.getDescripcionFiltro(), dominio.getCantidadToneladasAnterior());
             precioAnt.set(dominio.getDescripcionFiltro(), dominio.getPrecioAnterior());
             remanente.set(dominio.getDescripcionFiltro(), dominio.getRemantePorSemana());
-            
-            BigDecimal ventaDia = dominio.getCantidadToneladas().subtract(dominio.getRemantePorSemana());
-            ventaDia =ventaDia.equals(zero) ? ventaDia:ventaDia.divide(dominio.getDiasMes(),0,RoundingMode.UP);
-            
+
+            BigDecimal ventaDia = null;
+            if (analisisMercadoTemp != null) {
+                ventaDia = dominio.getCantidadToneladas().subtract(dominio.getRemantePorSemana()).add(analisisMercadoTemp.getRemantePorSemana());
+            } else {
+                ventaDia = dominio.getCantidadToneladas().subtract(dominio.getRemantePorSemana());
+            }
+
+            ventaDia = ventaDia.equals(zero) ? ventaDia : ventaDia.divide(dominio.getDiasMes(), 1, RoundingMode.UP);
+
             salidaMercancia.set(dominio.getDescripcionFiltro(), ventaDia);
             salidaMercancia.set(dominio.getDescripcionFiltro(), dominio.getCantidadToneladas().subtract(dominio.getRemantePorSemana()));
+
+            analisisMercadoTemp = dominio;
         }
 
         maxChartValue += 300;
