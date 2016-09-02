@@ -25,6 +25,7 @@ import com.web.chon.service.IfaceCredito;
 import com.web.chon.service.IfaceNegocioExistencia;
 import com.web.chon.service.IfaceSubProducto;
 import com.web.chon.service.IfaceTipoVenta;
+import com.web.chon.service.IfaceVenta;
 import com.web.chon.service.IfaceVentaMayoreo;
 import com.web.chon.service.IfaceVentaMayoreoProducto;
 import com.web.chon.util.Constantes;
@@ -74,6 +75,8 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
     private static final long serialVersionUID = 1L;
 
+    @Autowired
+    private IfaceVenta ifaceVenta;
     @Autowired
     private IfaceVentaMayoreo ifaceVentaMayoreo;
     @Autowired
@@ -277,9 +280,20 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                 ventaGeneral.setIdClienteFk(cliente.getId_cliente());
                 ventaGeneral.setIdSucursalFk(idSucu);
                 ventaGeneral.setIdVendedorFK(usuario.getIdUsuarioPk());
-                int temp = ifaceVentaMayoreo.getVentaSucursal(idSucu);
+                int folioMayoreo = 0;
+                int folioMenudeo =0;
+                folioMayoreo = ifaceVentaMayoreo.getVentaSucursal(idSucu);
+                folioMenudeo = ifaceVenta.getFolioByIdSucursal(idSucu.intValue());
+             
+                
+                if(folioMenudeo>folioMayoreo)
+                {
+                    folioMayoreo = folioMenudeo;
+                }
+               
 
-                ventaGeneral.setVentaSucursal(new BigDecimal(temp + 1));
+                ventaGeneral.setVentaSucursal(new BigDecimal(folioMayoreo + 1));
+                
 
                 //System.out.println("Venta General: " + ventaGeneral.toString());
                 if (ifaceVentaMayoreo.insertarVenta(ventaGeneral) != 0) {
