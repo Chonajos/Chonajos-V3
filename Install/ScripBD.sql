@@ -724,6 +724,10 @@ INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Consultar créditos', 0,'80.3','/views/consultaCreditos.xhtml');
 
 
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Caja', 1,'90','NULL');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Caja', 0,'90.1','/views/caja.xhtml');
+
+
 
 
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(1,1);
@@ -1317,6 +1321,9 @@ NOMBRE VARCHAR(100),
 DESCRIPCION VARCHAR(200),
 CONSTRAINT C_CES_ID_CONCEPTO_PK PRIMARY KEY (ID_CONCEPTO_PK)
 );
+INSERT INTO CONCEPTOS_ENTRADA_SALIDA(ID_CONCEPTO_PK,NOMBRE,DESCRIPCION) VALUES (1,'PAGO DE SERVICIOS','MULTIPLES SERVICIOS');
+INSERT INTO CONCEPTOS_ENTRADA_SALIDA(ID_CONCEPTO_PK,NOMBRE,DESCRIPCION) VALUES (2,'TRANSFERENCIA','SE MANDA DINERO A OTRA CAJA');
+INSERT INTO CONCEPTOS_ENTRADA_SALIDA(ID_CONCEPTO_PK,NOMBRE,DESCRIPCION) VALUES (3,'PAGO A PROVEDORES ','PAGOS A PROVEDORES');
 
 CREATE SEQUENCE S_CONCEPTOS_ENTRADA_SALIDA
 INCREMENT BY 1

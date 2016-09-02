@@ -303,7 +303,6 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                         BigDecimal idVentaProducto = new BigDecimal(ifaceVentaMayoreoProducto.getNextVal());
                         //System.out.println("IdVentaProducto: " + idVentaProducto);
                         producto.setIdVentaMayProdPk(idVentaProducto);
-
                         //System.out.println("Producto: " + producto.toString());
                         if (ifaceVentaMayoreoProducto.insertarVentaMayoreoProducto(producto) != 0) {
 
@@ -314,6 +313,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                             existencia_actualizada.setIdExistenciaProductoPk(existencia.getIdExistenciaProductoPk());
                             existencia_actualizada.setCantidadPaquetes(existencia.getCantidadPaquetes().subtract(producto.getCantidadEmpaque(), MathContext.UNLIMITED));
                             existencia_actualizada.setKilosTotalesProducto(existencia.getKilosTotalesProducto().subtract(producto.getKilosVendidos(), MathContext.UNLIMITED));
+                            existencia_actualizada.setIdBodegaFK(existencia.getIdBodegaFK());
                             if (ifaceNegocioExistencia.updateExistenciaProducto(existencia_actualizada) != 0) {
 
                                 if (!data.getIdTipoVenta().equals(new BigDecimal("1"))) {

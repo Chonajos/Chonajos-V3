@@ -413,4 +413,31 @@ public class ServiceCredito implements IfaceCredito {
         return credito;
     }
 
+    @Override
+    public Credito getCreditosByIdVentaMayoreo(BigDecimal idVentaMayoreo) {
+         getEjb();
+        Credito credito = new Credito();
+        List<Object[]> lstObject = new ArrayList<Object[]>();
+        lstObject = ejb.getCreditosByIdVentaMenudeo(idVentaMayoreo);
+        for (Object[] object : lstObject) {
+            credito.setIdCreditoPk(object[0] == null ? null : new BigDecimal(object[0].toString()));
+            credito.setIdClienteFk(object[1] == null ? null : new BigDecimal(object[1].toString()));
+            credito.setIdVentaMenudeo(object[2] == null ? null : new BigDecimal(object[2].toString()));
+            credito.setIdVentaMayoreo(object[3] == null ? null : new BigDecimal(object[3].toString()));
+            credito.setIdUsuarioCredito(object[4] == null ? null : new BigDecimal(object[4].toString()));
+//            credito.setIdTipoCreditoFk(object[5] == null ? null : new BigDecimal(object[5].toString()));
+            credito.setEstatusCredito(object[5] == null ? null : new BigDecimal(object[5].toString()));
+            credito.setNumeroPromesaPago(object[6] == null ? null : new BigDecimal(object[6].toString()));
+            credito.setFechaInicioCredito(object[7] == null ? null : (Date) object[7]);
+            credito.setFechaFinCredito(object[8] == null ? null : (Date) object[8]);
+            credito.setFechaPromesaPago(object[9] == null ? null : (Date) object[9]);
+            credito.setTazaInteres(object[10] == null ? null : new BigDecimal(object[10].toString()));
+            credito.setPlasos(object[11] == null ? null : new BigDecimal(object[11].toString()));
+        }
+
+        return credito;
+    
+    
+    }
+
 }

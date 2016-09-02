@@ -43,6 +43,8 @@ public interface IfaceCredito {
      * @return 
      */
      public Credito getCreditosByIdVentaMenudeo(BigDecimal idVenta);
+     
+     public Credito getCreditosByIdVentaMayoreo(BigDecimal idVentaMayoreo);
     
     
     

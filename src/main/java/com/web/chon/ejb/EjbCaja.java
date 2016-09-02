@@ -46,7 +46,7 @@ public class EjbCaja implements NegocioCaja {
 
         } catch (Exception ex) {
 
-            Logger.getLogger(EjbBuscaVenta.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(EjbCaja.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
 
@@ -54,7 +54,17 @@ public class EjbCaja implements NegocioCaja {
 
     @Override
     public List<Object[]> getCajas(BigDecimal idSucursalFk, BigDecimal tipo) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       try {
+            Query query = em.createNativeQuery("select * from caja c where c.ID_SUCURSAL_FK = ? and TIPO = ?");
+            query.setParameter(1, idSucursalFk);
+            query.setParameter(2, tipo);
+            return query.getResultList();
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbCaja.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    
     }
 
     @Override

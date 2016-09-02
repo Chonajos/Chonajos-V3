@@ -271,5 +271,19 @@ public class EjbCredito implements NegocioCredito {
             return null;
         }
     }
+     @Override
+    public List<Object[]> getCreditosByIdVentaMayoreo(BigDecimal idVentaMayoreo) 
+    {
+        try {
+            Query query = em.createNativeQuery("SELECT ID_CREDITO_PK,ID_CLIENTE_FK,ID_VENTA_MENUDEO,ID_VENTA_MAYOREO,ID_USUARIO_CREDITO,ESTATUS_CREDITO,NUMERO_PROMESA_PAGO,FECHA_INICIO_CREDITO,FECHA_FIN_CREDITO,FECHA_PROMESA_FIN_PAGO,TAZA_INTERES,PLAZOS  FROM CREDITO WHERE ID_VENTA_MAYOREO = ?");
+            List<Object[]> resultList = null;
+            query.setParameter(1, idVentaMayoreo);
+            resultList = query.getResultList();
+            return resultList;
+        } catch (Exception ex) {
+            Logger.getLogger(EjbCredito.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
 
 }

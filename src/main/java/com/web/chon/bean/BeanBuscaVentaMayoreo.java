@@ -1,11 +1,13 @@
 package com.web.chon.bean;
 
 import com.web.chon.dominio.BuscaVenta;
+import com.web.chon.dominio.Caja;
 import com.web.chon.dominio.Usuario;
 import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.dominio.VentaProducto;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceBuscaVenta;
+import com.web.chon.service.IfaceCaja;
 import com.web.chon.service.IfaceCatUsuario;
 import com.web.chon.util.Constantes;
 import com.web.chon.util.JasperReportUtil;
@@ -53,8 +55,10 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     private PlataformaSecurityContext context;
     @Autowired
     IfaceCatUsuario ifaceCatUsuario;
+    @Autowired private IfaceCaja ifaceCaja;
     private ArrayList<BuscaVenta> model;
     private Usuario usuario;
+    private Caja caja;
 
     private String title;
     private String viewEstate;
@@ -73,6 +77,8 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     private ArrayList<BuscaVenta> selectedVenta;
     private BigDecimal recibido;
     private BigDecimal cambio;
+    
+    private static final BigDecimal TIPO = new BigDecimal(1);
 
     @PostConstruct
     public void init() {
@@ -93,6 +99,8 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
         setTitle("Búsqueda de Ventas al Mayoreo");
         setViewEstate("init");
         statusButtonPagar = true;
+        caja = new Caja();
+        reloadCaja();
     }
 
     public void calculaCambio() {
@@ -163,7 +171,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
         paramReport.put("labelFecha", "Fecha de Pago:");
         paramReport.put("labelFolio", "Folio de Venta:");
         paramReport.put("estado", "PEDIDO PAGADO");
-        paramReport.put("telefonos", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:"+usuarioDominio.getTelefonoSucursal());
+        paramReport.put("telefonos", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:" + usuarioDominio.getTelefonoSucursal());
         paramReport.put("labelSucursal", usuarioDominio.getNombreSucursal());
 
     }
@@ -207,39 +215,56 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     }
 
     public void updateVenta() {
-        System.out.println("Status Venta :"+data.getStatusFK());
+        System.out.println("Status Venta :" + data.getStatusFK());
         if (data.getStatusFK() == 2) {
             JsfUtil.addErrorMessageClean("Error, la venta ya se encuentra pagada");
         } else if (data.getIdVenta().intValue() != idVentaTemporal) {
             JsfUtil.addErrorMessageClean("No coincide el numero de venta");
-        } else {
-            try {
-                ifaceBuscaVenta.updateStatusVentaMayoreo(data.getIdVenta().intValue(), usuario.getIdUsuarioPk().intValue());
-                //searchById();
-                setParameterTicket(data.getFolioSucursal().intValue());
-                generateReport();
-                data.setNombreCliente("");
-                data.setNombreVendedor("");
-                data.setIdVenta(new BigDecimal(0));
-                statusButtonPagar = true;
-                data.reset();
-                model = null;
-                totalVenta = null;
-
-                JsfUtil.addSuccessMessageClean("Venta Pagada");
-            } catch (Exception ex) {
-                JsfUtil.addErrorMessageClean("Ocurrió un error al realizar el pago");
+        } else 
+        {
+                if(ifaceBuscaVenta.updateStatusVentaMayoreo(data.getIdVenta().intValue(), usuario.getIdUsuarioPk().intValue())==1)
+                {
+                    System.out.println("Se cambió el estatus");
+                    caja.setMonto(caja.getMonto().add(totalVenta, MathContext.UNLIMITED));
+                    System.out.println("Caja: "+caja.toString());
+                    if (ifaceCaja.updateMontoCaja(caja) == 1) 
+                    {
+                        System.out.println("Venta pagada y dinero en caja");
+                        JsfUtil.addSuccessMessageClean("Venta Pagada y Dinero en Caja");
+                        reloadCaja();
+                    } else {
+                        System.out.println("Ocurrio un error");
+                        JsfUtil.addErrorMessageClean("Ocurrió un error al ingresar el dinero a caja");
+                    }
+                    setParameterTicket(data.getFolioSucursal().intValue());
+                    generateReport();
+                    data.setNombreCliente("");
+                    data.setNombreVendedor("");
+                    data.setIdVenta(new BigDecimal(0));
+                    statusButtonPagar = true;
+                    data.reset();
+                    model = null;
+                    totalVenta = null;
+                }
+                else
+                {
+                    System.out.println("Error al cambiar estaus de la venta");
                 }
         }
 
         //return "buscaVentas";
+    }
+    public void reloadCaja()
+    {
+        caja = new Caja();
+        caja = ifaceCaja.getCajaByIdSucuTipo(new BigDecimal(usuario.getIdSucursal()),TIPO);
     }
 
     @Override
     public void searchById() {
         statusButtonPagar = false;
 
-        model = ifaceBuscaVenta.getVentaMayoreoByIdBuscaVenta(data.getFolioSucursal().intValue(),usuario.getIdSucursal());
+        model = ifaceBuscaVenta.getVentaMayoreoByIdBuscaVenta(data.getFolioSucursal().intValue(), usuario.getIdSucursal());
         if (model.isEmpty()) {
             data.setNombreCliente("");
             data.setNombreVendedor("");
@@ -258,7 +283,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
             data.setIdSucursalFk(model.get(0).getIdSucursalFk());
             data.setNombreStatus(model.get(0).getNombreStatus());
             idVentaTemporal = data.getIdVenta().intValue();
-            
+
             calculatotalVenta();
             if (data.getStatusFK() == 2) {
                 statusButtonPagar = true;

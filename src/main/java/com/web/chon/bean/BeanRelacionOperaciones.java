@@ -1,6 +1,7 @@
 package com.web.chon.bean;
 
 import com.web.chon.dominio.Caja;
+import com.web.chon.dominio.Credito;
 import com.web.chon.dominio.ExistenciaMenudeo;
 import com.web.chon.dominio.StatusVenta;
 import com.web.chon.dominio.Subproducto;
@@ -12,6 +13,7 @@ import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceCaja;
 import com.web.chon.service.IfaceCatStatusVenta;
 import com.web.chon.service.IfaceCatSucursales;
+import com.web.chon.service.IfaceCredito;
 import com.web.chon.service.IfaceExistenciaMenudeo;
 import com.web.chon.service.IfaceSubProducto;
 import com.web.chon.service.IfaceVenta;
@@ -74,6 +76,8 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     private IfaceSubProducto ifaceSubProducto;
     @Autowired
     private IfaceCaja ifaceCaja;
+    @Autowired
+    private IfaceCredito ifaceCredito;
 
     private ArrayList<Sucursal> listaSucursales;
     private ArrayList<Venta> listaVentas;
@@ -281,15 +285,15 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
 
     public void cancelarVenta() {
         switch (ventaCancelar.getIdStatusVenta().intValue()) {
-            case 5:
-                JsfUtil.addErrorMessageClean("No puedes cancelar ventas a crédito");
-                break;
             case 4:
                 JsfUtil.addErrorMessageClean("No puedes volver a cancelar la venta");
                 break;
             default:
-                if (ifaceVenta.cancelarVenta(ventaCancelar.getIdVentaPk().intValue(), usuario.getIdUsuario().intValue(),
-                        comentarioCancelacion) != 0) {
+                boolean bandera = false;
+                Credito c = new Credito();
+                c = ifaceCredito.getCreditosByIdVentaMenudeo(totalVenta);
+                if (c == null || c.getIdCreditoPk() == null) 
+                {
                     listaProductoCancel = ifaceVentaProducto.getVentasProductoByIdVenta(ventaCancelar.getIdVentaPk());
                     for (VentaProducto vp : listaProductoCancel) {
                         System.out.println("Bean==========" + vp.toString());
@@ -303,28 +307,34 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
                         if (ifaceExistenciaMenudeo.updateExistenciaMenudeo(em) != 0) 
                         {
                             System.out.println("se regresaron existencias con exito");
-                            
-                            caja.setMonto(caja.getMonto().subtract(ventaCancelar.getTotalVenta(), MathContext.UNLIMITED));
-                            if(ifaceCaja.updateMontoCaja(caja)==1)
-                            {
-                                JsfUtil.addSuccessMessageClean("Venta Cancelada, se han regresado existencias y dinero en caja correctamente");
-                            }
-                            else
-                            {
-                                JsfUtil.addErrorMessageClean("Ocurrió un error al regresar el dinero de caja");
-                            }
-                            reloadCaja();
-
                         } else {
-                            System.out.println("Ocurrio un problema");
+                            System.out.println("Ocurrio un problema al regresas existencias");
+                            bandera = true;
                             break;
                         }
                     }
-                    
+                    if (ifaceVenta.cancelarVenta(ventaCancelar.getIdVentaPk().intValue(), usuario.getIdUsuario().intValue(),
+                            comentarioCancelacion) != 0 && bandera == false) 
+                    {
+                        caja.setMonto(caja.getMonto().subtract(totalVenta, MathContext.UNLIMITED));
+                        if (ifaceCaja.updateMontoCaja(caja) == 1) 
+                        {
+                            JsfUtil.addSuccessMessageClean("Venta Cancelada, se han regresado existencias y dinero en caja correctamente");
+                        } else 
+                        {
+                            System.out.println("Ocurrió un error al regresar dinero");
+                            JsfUtil.addErrorMessageClean("Ocurrió un error al cancelar la venta");
+                        }
+                        reloadCaja();
+
+                    } else
+                    {
+                        JsfUtil.addErrorMessageClean("Ocurrió un error al intentar cancelar la venta.");
+                    }
+                    break;
                 } else {
-                    JsfUtil.addErrorMessageClean("Ocurrió un error al intentar cancelar la venta.");
+                    JsfUtil.addSuccessMessageClean("La venta es de crédito, por el momento no se puede cancelar");
                 }
-                break;
 
         }
     }

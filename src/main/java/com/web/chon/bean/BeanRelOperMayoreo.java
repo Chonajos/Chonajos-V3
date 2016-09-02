@@ -4,10 +4,10 @@
  * and open the template in the editor.
  */
 package com.web.chon.bean;
-
 import com.web.chon.dominio.BuscaVenta;
+import com.web.chon.dominio.Caja;
+import com.web.chon.dominio.Credito;
 import com.web.chon.dominio.ExistenciaProducto;
-import com.web.chon.dominio.RelacionOperaciones;
 import com.web.chon.dominio.RelacionOperacionesMayoreo;
 import com.web.chon.dominio.StatusVenta;
 import com.web.chon.dominio.Sucursal;
@@ -15,8 +15,10 @@ import com.web.chon.dominio.TipoVenta;
 import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceBuscaVenta;
+import com.web.chon.service.IfaceCaja;
 import com.web.chon.service.IfaceCatStatusVenta;
 import com.web.chon.service.IfaceCatSucursales;
+import com.web.chon.service.IfaceCredito;
 import com.web.chon.service.IfaceNegocioExistencia;
 import com.web.chon.service.IfaceTipoVenta;
 import com.web.chon.service.IfaceVentaMayoreo;
@@ -57,6 +59,8 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
     private IfaceTipoVenta ifaceTipoVenta;
     @Autowired
     private PlataformaSecurityContext context;
+    @Autowired private IfaceCaja ifaceCaja;
+    @Autowired private IfaceCredito ifaceCredito;
     private UsuarioDominio usuario;
     private ArrayList<BuscaVenta> lstVenta;
     private ArrayList<TipoVenta> lstTipoVenta;
@@ -73,6 +77,9 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
     private BigDecimal totalUtilidad;
     private BigDecimal totalVentaDetalle;
     private BigDecimal porcentajeUtilidad;
+    private Caja caja;
+    private static final BigDecimal TIPO = new BigDecimal(1);
+
 
     @PostConstruct
     public void init() {
@@ -93,7 +100,14 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
         setTitle("Relación de Operaciónes Venta Mayoreo");
         setViewEstate("init");
         getVentasByIntervalDate();
+        caja = new Caja();
+        reloadCaja();
 
+    }
+    public void reloadCaja()
+    {
+        caja = new Caja();
+        caja = ifaceCaja.getCajaByIdSucuTipo( new BigDecimal(usuario.getSucId()),TIPO);
     }
 
     public void setFechaInicioFin(int filter) {
@@ -171,48 +185,70 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
     }
 
     public void cancelarVenta() {
-        if (data.getIdStatus().intValue() != 4) {
+        Credito c = new Credito();
+        c=ifaceCredito.getCreditosByIdVentaMenudeo(totalVenta);
+        if(c==null || c.getIdCreditoPk()==null)
+        { 
+        if (data.getIdStatus().intValue() != 4) 
+        {
+            boolean banderaError= false;
             lstVenta = ifaceBuscaVenta.buscaVentaCancelar(data.getVentaSucursal().intValue(), data.getIdSucursal().intValue());
-            for (BuscaVenta producto : lstVenta) {
+            for (BuscaVenta producto : lstVenta) 
+            {
                 BigDecimal cantidad = producto.getCantidadEmpaque();
                 BigDecimal kilos = producto.getKilosVendidos();
                 BigDecimal idExistencia = producto.getIdExistenciaFk();
-
+                BigDecimal idBodega = producto.getIdBodega();
                 //Obtenemos la existencia real del producto.
-
                 ArrayList<ExistenciaProducto> exis = new ArrayList<ExistenciaProducto>();
-
                 //public ArrayList<ExistenciaProducto> getExistencias(BigDecimal idSucursal, BigDecimal idBodega, BigDecimal idProvedor,String idProducto, BigDecimal idEmpaque, BigDecimal idConvenio,BigDecimal idEmPK);
                 exis = ifaceNegocioExistencia.getExistenciasCancelar(idExistencia);
                 //Primero obtenemos la cantidad de kilos y paquetes en Existencias
                 //sumamos los kilos y paquetes al nuevo update.
                 cantidad = cantidad.add(exis.get(0).getCantidadPaquetes(), MathContext.UNLIMITED);
                 kilos = kilos.add(exis.get(0).getKilosTotalesProducto(), MathContext.UNLIMITED);
-
                 //Creamos el nuevo objeto para hacer el update
                 ExistenciaProducto ep = new ExistenciaProducto();
                 ep.setCantidadPaquetes(cantidad);
                 ep.setKilosTotalesProducto(kilos);
                 ep.setIdExistenciaProductoPk(idExistencia);
-
-                if (ifaceNegocioExistencia.updateExistenciaProducto(ep) == 1) {
+                ep.setIdBodegaFK(idBodega);
+                if (ifaceNegocioExistencia.updateExistenciaProducto(ep) == 1) 
+                {
                     System.out.println("Regreso Producto Correctamente");
+                }
+                else
+                {
+                    banderaError = true;
                 }
 
             }
 
-            if (ifaceBuscaVenta.cancelarVentaMayoreo(data.getIdVentaPk().intValue(), usuario.getIdUsuario().intValue(), data.getComentariosCancel()) != 0) {
-                JsfUtil.addSuccessMessageClean("Venta Cancelada");
+            if (ifaceBuscaVenta.cancelarVentaMayoreo(data.getIdVentaPk().intValue(), usuario.getIdUsuario().intValue(), data.getComentariosCancel()) != 0 && banderaError==false) 
+            {
+                caja.setMonto(caja.getMonto().add(totalVenta, MathContext.UNLIMITED));
+                if (ifaceCaja.updateMontoCaja(caja) == 1) {
+                    JsfUtil.addSuccessMessageClean("Venta Cancelada, existencias regresadas y dinero en caja devuelto");
+                reloadCaja();
+                } else {
+                    JsfUtil.addErrorMessageClean("Ocurrió un error al ingresar el dinero a caja");
+                }
                 data.setIdStatus(null);
                 lstVenta.clear();
                 getVentasByIntervalDate();
 
-            } else {
+            } else 
+            {
                 JsfUtil.addErrorMessageClean("Ocurrió un error al intentar cancelar la venta.");
             }
         } else {
             JsfUtil.addErrorMessageClean("No puedes volver a cancelar la venta");
 
+        }
+        }
+        else
+        {
+            JsfUtil.addErrorMessageClean("Venta de Crédito por el momento no se puede cancelar");
         }
     }
 

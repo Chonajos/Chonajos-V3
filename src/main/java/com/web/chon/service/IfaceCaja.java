@@ -7,6 +7,7 @@ package com.web.chon.service;
 
 import com.web.chon.dominio.Caja;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,7 +18,7 @@ public interface IfaceCaja {
     public int insertCaja(Caja c);
     public int updateCaja(Caja c);
     public int updateMontoCaja(Caja c);
-    public List<Caja> getCajas(BigDecimal idSucursalFk,BigDecimal tipo);
+    public ArrayList<Caja> getCajas(BigDecimal idSucursalFk,BigDecimal tipo);
     public Caja getCajaByIdSucuTipo(BigDecimal idSucursalFk,BigDecimal tipo);
-    public List<Caja> getCajasByIdPk(BigDecimal idCajaPk);
+    public ArrayList<Caja> getCajasByIdPk(BigDecimal idCajaPk);
 }
