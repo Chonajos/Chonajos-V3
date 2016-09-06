@@ -51,9 +51,12 @@ public class SerivceEntradaSalida implements IfaceEntradaSalida {
             ent.setIdConceptoFk(object[4] == null ? null : new BigDecimal(object[4].toString()));
             ent.setComentarios(object[5] == null ? null : object[5].toString());
             ent.setMonto(object[6] == null ? null : new BigDecimal(object[6].toString()));
+            ent.setIdCajaOrigen(object[7] == null ? null : new BigDecimal(object[7].toString()));
+            ent.setIdCajaDestino(object[8] == null ? null : new BigDecimal(object[8].toString()));
             ent.setNumero(count = count.add(new BigDecimal(1), MathContext.UNLIMITED));
-            ent.setNombreCaja(object[7] == null ? null : object[7].toString());
-            ent.setNombreConcepto(object[8] == null ? null : object[8].toString());
+            ent.setNombreCaja(object[9] == null ? null : object[9].toString());
+            ent.setNombreConcepto(object[10] == null ? null : object[10].toString());
+            ent.setNombreOperacion(object[11] == null ? null : object[11].toString());
             lstmovimientos.add(ent);
         }
 

@@ -3,18 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.web.chon.negocio;
+package com.web.chon.service;
 
+import com.web.chon.dominio.TipoOperacion;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
-import javax.ejb.Remote;
 
 /**
  *
  * @author JesusAlfredo
  */
-@Remote
-public interface NegocioConceptos {
-    public List<Object[]> getConceptosByTipoOperacion(BigDecimal idTipoOperacionFk);
-    
+public interface IfaceTiposOperacion {
+    public ArrayList<TipoOperacion> getOperaciones();
 }

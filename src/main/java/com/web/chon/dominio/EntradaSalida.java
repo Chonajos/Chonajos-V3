@@ -27,6 +27,10 @@ public class EntradaSalida implements Serializable {
     private String nombreConcepto;
     private String nombreES;
     private BigDecimal numero;
+    private BigDecimal idTipoOperacionFk;
+    private String nombreOperacion;
+    private BigDecimal idCajaOrigen;
+    private BigDecimal idCajaDestino;
 
     public void reset() {
         idEntradaSalidaPk = null;
@@ -40,13 +44,55 @@ public class EntradaSalida implements Serializable {
         nombreConcepto = null;
         nombreES = null;
         numero = null;
+        idTipoOperacionFk=null;
+        nombreOperacion=null;
+        idCajaOrigen=null;
+        idCajaDestino=null;
     }
 
     @Override
     public String toString() {
-        return "EntradaSalida{" + "idEntradaSalidaPk=" + idEntradaSalidaPk + ", idCajaFk=" + idCajaFk + ", tipoES=" + tipoES + ", fecha=" + fecha + ", idConceptoFk=" + idConceptoFk + ", comentarios=" + comentarios + ", monto=" + monto + ", nombreCaja=" + nombreCaja + ", nombreConcepto=" + nombreConcepto + ", nombreES=" + nombreES + ", numero=" + numero + '}';
+        return "EntradaSalida{" + "idEntradaSalidaPk=" + idEntradaSalidaPk + ", idCajaFk=" + idCajaFk + ", tipoES=" + tipoES + ", fecha=" + fecha + ", idConceptoFk=" + idConceptoFk + ", comentarios=" + comentarios + ", monto=" + monto + ", nombreCaja=" + nombreCaja + ", nombreConcepto=" + nombreConcepto + ", nombreES=" + nombreES + ", numero=" + numero + ", idTipoOperacionFk=" + idTipoOperacionFk + ", nombreOperacion=" + nombreOperacion + ", idCajaOrigen=" + idCajaOrigen + ", idCajaDestino=" + idCajaDestino + '}';
     }
 
+    
+    public BigDecimal getIdCajaOrigen() {
+        return idCajaOrigen;
+    }
+
+    public void setIdCajaOrigen(BigDecimal idCajaOrigen) {
+        this.idCajaOrigen = idCajaOrigen;
+    }
+
+    public BigDecimal getIdCajaDestino() {
+        return idCajaDestino;
+    }
+
+    public void setIdCajaDestino(BigDecimal idCajaDestino) {
+        this.idCajaDestino = idCajaDestino;
+    }
+
+   
+
+    public String getNombreOperacion() {
+        return nombreOperacion;
+    }
+
+    public void setNombreOperacion(String nombreOperacion) {
+        this.nombreOperacion = nombreOperacion;
+    }
+
+    
+    
+    public BigDecimal getIdTipoOperacionFk() {
+        return idTipoOperacionFk;
+    }
+
+    public void setIdTipoOperacionFk(BigDecimal idTipoOperacionFk) {
+        this.idTipoOperacionFk = idTipoOperacionFk;
+    }
+
+    
     public String getNombreCaja() {
         return nombreCaja;
     }
@@ -134,5 +180,6 @@ public class EntradaSalida implements Serializable {
     public void setMonto(BigDecimal monto) {
         this.monto = monto;
     }
+    
 
 }
