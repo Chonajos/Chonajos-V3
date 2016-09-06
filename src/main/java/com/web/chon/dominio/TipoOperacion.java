@@ -12,34 +12,25 @@ import java.math.BigDecimal;
  *
  * @author JesusAlfredo
  */
-public class ConceptosES implements Serializable {
+public class TipoOperacion implements Serializable{
     private static final long serialVersionUID = 1L;
-    private BigDecimal idConceptoPk;
-    private BigDecimal idTipoOperacionFk;
+    private BigDecimal idTipoOperacionPk;
     private String nombre;
     private String descripcion;
 
     @Override
     public String toString() {
-        return "ConceptosES{" + "idConceptoPk=" + idConceptoPk + ", nombre=" + nombre + ", descripcion=" + descripcion + '}';
-    }
-
-    public BigDecimal getIdTipoOperacionFk() {
-        return idTipoOperacionFk;
-    }
-
-    public void setIdTipoOperacionFk(BigDecimal idTipoOperacionFk) {
-        this.idTipoOperacionFk = idTipoOperacionFk;
+        return "TipoOperacion{" + "idTipoOperacionPk=" + idTipoOperacionPk + ", nombre=" + nombre + ", descripcion=" + descripcion + '}';
     }
 
     
     
-    public BigDecimal getIdConceptoPk() {
-        return idConceptoPk;
+    public BigDecimal getIdTipoOperacionPk() {
+        return idTipoOperacionPk;
     }
 
-    public void setIdConceptoPk(BigDecimal idConceptoPk) {
-        this.idConceptoPk = idConceptoPk;
+    public void setIdTipoOperacionPk(BigDecimal idTipoOperacionPk) {
+        this.idTipoOperacionPk = idTipoOperacionPk;
     }
 
     public String getNombre() {
@@ -57,7 +48,6 @@ public class ConceptosES implements Serializable {
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
-    
     
     
 }

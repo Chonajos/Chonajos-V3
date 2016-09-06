@@ -5,8 +5,7 @@
  */
 package com.web.chon.ejb;
 
-import com.web.chon.negocio.NegocioConceptos;
-import java.math.BigDecimal;
+import com.web.chon.negocio.NegocioTiposOperacion;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -17,16 +16,14 @@ import javax.persistence.Query;
  *
  * @author JesusAlfredo
  */
-@Stateless(mappedName = "ejbConceptos")
-public class EjbConceptos implements NegocioConceptos{
+@Stateless(mappedName = "ejbTipoOperacion")
+public class EjbTipoOperacion  implements NegocioTiposOperacion{
     @PersistenceContext(unitName = "persistenceJR")
     EntityManager em;
 
     @Override
-    public List<Object[]> getConceptosByTipoOperacion(BigDecimal idTipoOperacionFk)
-    {
-        Query query = em.createNativeQuery("select * from CONCEPTOS where ID_TIPO_OPERACION_FK = ?");
-        query.setParameter(1, idTipoOperacionFk);
+    public List<Object[]> getOperaciones() {
+       Query query = em.createNativeQuery("select * from TIPOS_OPERACION");
         return query.getResultList();
     }
 }

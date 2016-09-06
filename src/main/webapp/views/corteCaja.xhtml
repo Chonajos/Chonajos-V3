@@ -18,17 +18,16 @@
                 <p:commandButton value="Generar Corte" update=":formContent" ajax="true" actionListener="#{beanCorteCaja.generarCorte()}"/>
             </div>
             <p:panel>
-
                 <div class="container-fluid">
-                    <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 ">
-                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                    <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 form-group">
+                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="sucursalFiltro" value ="Sucursal:" rendered="#{beanCorteCaja.viewEstate =='init'}"/> 
                             <h:selectOneMenu  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanCorteCaja.idSucursalBean}" rendered="#{beanCorteCaja.viewEstate =='init'}" disabled="#{beanCorteCaja.usuario.perId != 1}">
                                 <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="" />
                                 <f:selectItems value="#{beanCorteCaja.listaSucursales}" var="sucursal" itemLabel="#{sucursal.nombreSucursal}" itemValue="#{sucursal.idSucursalPk}"/>
                             </h:selectOneMenu>
                         </div>
-                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="cajaFiltro" value ="Caja:" rendered="#{beanCorteCaja.viewEstate =='init'}" /> 
                             <h:selectOneMenu  id="cajaFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanCorteCaja.idCajaBean}" rendered="#{beanCorteCaja.viewEstate =='init'}" disabled="#{beanCorteCaja.usuario.perId != 1}" >
                                 <f:selectItem itemLabel="Selecciona" itemValue="" />
@@ -36,7 +35,7 @@
                                 <!--<p:ajax event="change" listener="{beanCorteCaja.printStatus()}" update=":formContent:table" />-->
                             </h:selectOneMenu>
                         </div>
-                        <div class="col-lg-4 col-md-3 col-sm-6 col-xs-12">
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft "  for="calendarInicio" 
                                            value ="Fecha:"
                                            /> 
@@ -50,49 +49,58 @@
                         </div>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"   for="txtSaldoAnterior" value ="Saldo Anterior:" /> 
-                            <p:inputText id="txtSaldoAnterior"  readonly="true" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCorteCaja.data.saldoAnterior}">
-                            </p:inputText>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                                <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"   for="txtSaldoAnterior" value ="Saldo Anterior:" /> 
+                                <p:inputText id="txtSaldoAnterior"  readonly="true" class=" col-lg-2 col-md-4 col-sm-8 col-xs-6" value="#{beanCorteCaja.data.saldoAnterior}">
+                                </p:inputText>
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                                <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"   for="txtAbonosCreditos" value ="Abonos Créditos:" /> 
+                                <p:inputText id="txtAbonosCreditos"  readonly="true" class=" col-lg-2 col-md-4 col-sm-8 col-xs-6" value="#{beanCorteCaja.data.abonosCreditos}">
+                                </p:inputText>
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                                <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"   for="txtVentasMayoreo" value ="Ventas Mayoreo:" /> 
+                                <p:inputText id="txtVentasMayoreo"  readonly="true" class=" col-lg-2 col-md-4 col-sm-8 col-xs-6" value="#{beanCorteCaja.data.ventasMayoreo}">
+                                </p:inputText>
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                                <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"   for="txtVentasMenudeo" value ="Ventas Menudeo:" /> 
+                                <p:inputText id="txtVentasMenudeo"  readonly="true" class=" col-lg-2 col-md-4 col-sm-8 col-xs-6" value="#{beanCorteCaja.data.ventasMenudeo}">
+                                </p:inputText>
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                                <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"   for="txtTransferenciasIN" value ="Transferencias IN" /> 
+                                <p:inputText id="txtTransferenciasIN"  readonly="true" class=" col-lg-2 col-md-4 col-sm-8 col-xs-6" value="#{beanCorteCaja.data.transferenciasIN}">
+                                </p:inputText>
+                            </div>
                         </div>
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"   for="txtAbonosCreditos" value ="Abonos Créditos:" /> 
-                            <p:inputText id="txtAbonosCreditos"  readonly="true" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCorteCaja.data.abonosCreditos}">
-                            </p:inputText>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                                <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"   for="txtTransferenciasOUT" value ="Transferencias OUT:" /> 
+                                <p:inputText id="txtTransferenciasOUT"  readonly="true" class=" col-lg-2 col-md-4 col-sm-8 col-xs-6" value="#{beanCorteCaja.data.transferenciasOUT}">
+                                </p:inputText>
+                            </div>
+
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                                <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"   for="txtServicios" value ="Servicios:" /> 
+                                <p:inputText id="txtServicios"  readonly="true" class=" col-lg-5 col-md-2 col-sm-8 col-xs-6" value="#{beanCorteCaja.data.servicios}">
+                                </p:inputText>
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                                <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"   for="txtProvedores" value ="Pagos a Provedores:" /> 
+                                <p:inputText id="txtProvedores"  readonly="true" class=" col-lg-5 col-md-2 col-sm-8 col-xs-6" value="#{beanCorteCaja.data}">
+                                </p:inputText>
+                            </div>
                         </div>
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"   for="txtVentasMayoreo" value ="Ventas Mayoreo:" /> 
-                            <p:inputText id="txtVentasMayoreo"  readonly="true" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCorteCaja.data.ventasMayoreo}">
-                            </p:inputText>
-                        </div>
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"   for="txtVentasMenudeo" value ="Ventas Menudeo:" /> 
-                            <p:inputText id="txtVentasMenudeo"  readonly="true" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCorteCaja.data.ventasMenudeo}">
-                            </p:inputText>
-                        </div>
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"   for="txtTransferenciasIN" value ="Transferencias IN" /> 
-                            <p:inputText id="txtTransferenciasIN"  readonly="true" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCorteCaja.data.transferenciasIN}">
-                            </p:inputText>
-                        </div>
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"   for="txtTransferenciasOUT" value ="Transferencias OUT:" /> 
-                            <p:inputText id="txtTransferenciasOUT"  readonly="true" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCorteCaja.data.transferenciasOUT}">
-                            </p:inputText>
-                        </div>
-                        
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"   for="txtServicios" value ="Servicios:" /> 
-                            <p:inputText id="txtServicios"  readonly="true" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCorteCaja.data.servicios}">
-                            </p:inputText>
-                        </div>
-                        
-                        
+
+
 
                     </div>
 
                 </div>
-              
+
             </p:panel>
         </h:form>
     </ui:define>

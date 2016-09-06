@@ -35,17 +35,18 @@ public class ServiceConceptos implements IfaceConceptos {
     }
     
     @Override
-    public ArrayList<ConceptosES> getConceptos() {
+    public ArrayList<ConceptosES> getConceptosByTipoOperacion(BigDecimal idTipoOperacionFk) {
         
         getEjb();
         ArrayList<ConceptosES> lstConceptos= new ArrayList<ConceptosES>();
         List<Object[]> lstObject = new ArrayList<Object[]>();
-        lstObject = ejb.getConceptos();
+        lstObject = ejb.getConceptosByTipoOperacion(idTipoOperacionFk);
         for (Object[] object : lstObject) {
             ConceptosES c = new ConceptosES();
             c.setIdConceptoPk(object[0] == null ? null : new BigDecimal(object[0].toString()));
-            c.setNombre(object[1] == null ? null : object[1].toString());
-            c.setDescripcion(object[2] == null ? null : object[2].toString());
+            c.setIdConceptoPk(object[1] == null ? null : new BigDecimal(object[1].toString()));
+            c.setNombre(object[2] == null ? null : object[2].toString());
+            c.setDescripcion(object[3] == null ? null : object[3].toString());
             lstConceptos.add(c);
         }
         return lstConceptos;

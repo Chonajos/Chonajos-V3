@@ -6,6 +6,7 @@
 package com.web.chon.service;
 
 import com.web.chon.dominio.ConceptosES;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 /**
@@ -13,5 +14,5 @@ import java.util.ArrayList;
  * @author JesusAlfredo
  */
 public interface IfaceConceptos {
-    public ArrayList<ConceptosES> getConceptos();
+    public ArrayList<ConceptosES> getConceptosByTipoOperacion(BigDecimal idTipoOperacionFk);
 }

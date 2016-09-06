@@ -72,8 +72,18 @@ public class EjbCaja implements NegocioCaja {
     }
 
     @Override
-    public List<Object[]> getCajasByIdPk(BigDecimal idCajaPk) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Object[]> getCajaByIdPk(BigDecimal idCajaPk)
+    {
+        try {
+            Query query = em.createNativeQuery("select * from caja c where c.ID_CAJA_PK = ? ");
+            query.setParameter(1, idCajaPk);
+            return query.getResultList();
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbCaja.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    
     }
 
     @Override

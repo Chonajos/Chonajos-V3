@@ -5,16 +5,14 @@
  */
 package com.web.chon.negocio;
 
-import java.math.BigDecimal;
 import java.util.List;
 import javax.ejb.Remote;
 
 /**
  *
  * @author JesusAlfredo
- */
+  */
 @Remote
-public interface NegocioConceptos {
-    public List<Object[]> getConceptosByTipoOperacion(BigDecimal idTipoOperacionFk);
-    
+public interface NegocioTiposOperacion {
+    public List<Object[]> getOperaciones();
 }

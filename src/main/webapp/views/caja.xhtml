@@ -22,20 +22,41 @@
                 <p:dialog  id="dialogoSalida" header="Generar Salida" widgetVar="dlg" resizable="false">
                     <h:panelGrid columns="1" cellpadding="5">
                         <div class="form-group">
-                            <p:outputLabel for="comboTipo" value="Selecciona un Concepto:" /> 
-                            <h:selectOneMenu  id="comboTipo" value="#{beanCaja.data.idConceptoFk}" rendered="#{beanCaja.viewEstate =='init'}" disabled="#{beanCaja.usuario.perId != 1}">
+                            <p:outputLabel for="comboTipo" value="Selecciona un tipo de Operacion:" /> 
+                            <h:selectOneMenu  id="comboTipo" value="#{beanCaja.data.idTipoOperacionFk}" rendered="#{beanCaja.viewEstate =='init'}" disabled="#{beanCaja.usuario.perId != 1}">
                                 <f:selectItem itemLabel="Selecciona una opción" itemValue="" />
-                                <f:selectItems value="#{beanCaja.listaConceptos}" var="concepto" itemLabel="#{concepto.nombre}" itemValue="#{concepto.idConceptoPk}"/>
+                                <f:selectItems value="#{beanCaja.listaOperaciones}" var="opera" itemLabel="#{opera.nombre}" itemValue="#{opera.idTipoOperacionPk}"/>
+                                <p:ajax event="change" listener="#{beanCaja.changeCombo()}" update=":formContent:fragmento1"/>
                             </h:selectOneMenu>
                         </div>
+                        <p:fragment id="fragmento1" >
+                            <div class="form-group">
+                                <p:outputLabel for="comboConcepto" value="Selecciona un Concepto:" rendered="#{beanCaja.verCajas =='false'}"/> 
+                            </div>
+                            <div class="form-group">
+                                <h:selectOneMenu  id="comboConcepto" value="#{beanCaja.data.idConceptoFk}" rendered="#{beanCaja.verCajas =='false'}" >
+                                    <f:selectItem itemLabel="Selecciona una opción" itemValue="" />
+                                    <f:selectItems value="#{beanCaja.listaConceptos}" var="concepto" itemLabel="#{concepto.nombre}" itemValue="#{concepto.idConceptoPk}"/>
+                                </h:selectOneMenu>
+                            </div>
+                            <div class="form-group">
+                                <p:outputLabel for="comboCajas" value="Selecciona un caja Destino:" rendered="#{beanCaja.verCajas =='true'}" /> 
+                            </div>
+                            <div class="form-group">
+                                <h:selectOneMenu  id="comboCajas" value="#{beanCaja.data.idCajaDestino}" rendered="#{beanCaja.verCajas =='true'}">
+                                    <f:selectItem itemLabel="Selecciona una opción" itemValue="" />
+                                    <f:selectItems value="#{beanCaja.listaCajas}" var="cajita" itemLabel="#{cajita.nombre}" itemValue="#{cajita.idCajaPk}"/>
+                                </h:selectOneMenu>
+                            </div>
+                        </p:fragment>
                         <div class="form-group">
                             <h:outputLabel for="comentarios" value="Comentarios:" />
                             <p:inputText maxlength="50" id="comentarios"  value="#{beanCaja.data.comentarios}">
-                        </p:inputText>
-                        <h:outputLabel for="monto" value="monto:" />
-                        <p:inputText maxlength="8" id="monto"  value="#{beanCaja.data.monto}">
-                            <pe:keyFilter regEx="/[0-9_]/i"/>
-                        </p:inputText>
+                            </p:inputText>
+                            <h:outputLabel for="Monto" value="monto:" />
+                            <p:inputText maxlength="8" id="monto"  value="#{beanCaja.data.monto}">
+                                <pe:keyFilter regEx="/[0-9_]/i"/>
+                            </p:inputText>
                         </div>
                         <div class="form-group">
                             <p:commandButton value="Registrar" update=":formContent:tabla" action="#{beanCaja.generarSalida()}" oncomplete="PF('dlg').hide();"/>
@@ -74,7 +95,11 @@
                             <p:column headerText="Nombre Caja" width="150px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreCaja}" />
                             </p:column>
-                            <p:column headerText="Nombre Concepto" width="120px;" class="alignCenter">
+                            <p:column headerText="Operacion" width="120px;" class="alignCenter">
+                                <h:outputText value="#{model.nombreOperacion}">
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Concepto" width="120px;" class="alignCenter">
                                 <h:outputText value="#{model.nombreConcepto}">
                                 </h:outputText>
                             </p:column>
@@ -86,7 +111,7 @@
                                     <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
                                 </h:outputText>
                             </p:column>
-                           
+
                             <p:column headerText="Comentarios" width="120px;" class="alignCenter">
                                 <h:outputText value="#{model.comentarios}">
                                 </h:outputText>

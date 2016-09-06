@@ -65,8 +65,11 @@ public class BeanCorteCaja {
     public void generarCorte()
     {
         TiempoUtil.getFechaDDMMYYYY(fecha);
-        BigDecimal totalVentasMenudeo =  ifaceVenta.getTotalVentasByDay(TiempoUtil.getFechaDDMMYYYY(fecha));
-        System.out.println("Total Menudeo: "+totalVentasMenudeo);
+        Caja c = new Caja();
+        c = ifaceCaja.getCajaByIdUsuarioPk(usuario.getIdUsuario(), new BigDecimal(1));
+        System.out.println("Total Menudeo: "+c.getMontoMenudeo());
+        System.out.println("Total Mayoreo: "+c.getMontoMayoreo());
+        System.out.println("Total Abonos a Creditos: "+c.getMontoCredito());
     }
 
     public ArrayList<Sucursal> getListaSucursales() {

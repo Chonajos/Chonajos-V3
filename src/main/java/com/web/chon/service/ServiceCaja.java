@@ -75,8 +75,24 @@ public class ServiceCaja implements IfaceCaja {
     }
 
     @Override
-    public ArrayList<Caja> getCajasByIdPk(BigDecimal idCajaPk) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Caja getCajaByIdPk(BigDecimal idCajaPk) {
+        getEjb();
+        List<Object[]> object = ejb.getCajaByIdPk(idCajaPk);
+        Caja caja = new Caja();
+        for (Object[] obj : object) {
+            caja.setIdCajaPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+            caja.setIdSucursalFk(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
+            caja.setNombre(obj[2] == null ? "" : obj[2].toString());
+            caja.setTipo(obj[3] == null ? null : new BigDecimal(obj[3].toString()));
+            caja.setCuenta(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
+            caja.setMonto(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
+            caja.setIdUsuarioFK(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
+            caja.setMontoMenudeo(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
+            caja.setMontoMayoreo(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
+            caja.setMontoCredito(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
+        }
+        return caja;
+    
     }
 
     @Override
