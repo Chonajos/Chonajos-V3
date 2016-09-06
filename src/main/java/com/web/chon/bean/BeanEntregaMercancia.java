@@ -5,9 +5,12 @@ import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceCatSucursales;
+import com.web.chon.service.IfaceEntregaMercancia;
 import com.web.chon.util.JsfUtil;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import javax.annotation.PostConstruct;
 import javax.faces.event.AjaxBehaviorEvent;
@@ -29,6 +32,8 @@ public class BeanEntregaMercancia implements Serializable {
     private PlataformaSecurityContext context;
     @Autowired
     private IfaceCatSucursales ifaceCatSucursales;
+    @Autowired
+    private IfaceEntregaMercancia ifaceEntregaMercancia;
 
     private ArrayList<Sucursal> lstSucursal;
 
@@ -36,21 +41,26 @@ public class BeanEntregaMercancia implements Serializable {
     private EntregaMercancia entregaMercancia;
     private ArrayList<EntregaMercancia> model;
     private ArrayList<EntregaMercancia> lstEntregaMercanciaSelected;
-    
 
     private String title = "";
     private String viewEstate = "";
-
+    private String observaciones = "";
     private UsuarioDominio usuarioDominio;
 
     private BigDecimal BIGDECIMAL_UNO = new BigDecimal(1);
     private BigDecimal BIGDECIMAL_ZERO = new BigDecimal(0);
+    private BigDecimal ESTATUS_PAGADO = new BigDecimal(2);
+    private BigDecimal ESTATUS_VENDIDO = new BigDecimal(1);
+    private BigDecimal TIPO_VENTA_CREDITO = new BigDecimal(2);
+    private BigDecimal kilosEntregados;
+    private BigDecimal empaquesEntregados;
+    private boolean permisosEntrega;
     private int INT_UNO = 1;
 
     @PostConstruct
     public void init() {
         usuarioDominio = context.getUsuarioAutenticado();
-        
+        permisosEntrega = false;
         data = new EntregaMercancia();
         entregaMercancia = new EntregaMercancia();
         model = new ArrayList<EntregaMercancia>();
@@ -73,7 +83,39 @@ public class BeanEntregaMercancia implements Serializable {
     }
 
     public void buscaFolioVenta() {
-        System.out.println("busca folio" + data.getIdFolioVenta());
+
+        BigDecimal folioVenta = data.getIdFolioVenta();
+        model = ifaceEntregaMercancia.getByIdSucursalAndFolioSucursal(new BigDecimal(usuarioDominio.getSucId()), data.getIdFolioVenta());
+
+        if (model == null || model.isEmpty()) {
+            data.reset();
+            data.setIdFolioVenta(folioVenta);
+            JsfUtil.addWarnMessage("No se han encontrado registros.");
+            permisosEntrega = false;
+        } else {
+
+            data.setNombreCliente(model.get(0).getNombreCliente());
+            data.setTotalVenta(model.get(0).getTotalVenta());
+            data.setTipoVenta(model.get(0).getTipoVenta());
+            data.setEstatusVenta(model.get(0).getEstatusVenta());
+            data.setIdEstatus(model.get(0).getIdEstatus());
+            data.setIdTipoVenta(model.get(0).getIdTipoVenta());
+            data.setNombreTipoVenta(model.get(0).getNombreTipoVenta());
+            
+            System.out.println("data idestatus "+data.getIdEstatus());
+            System.out.println("ESTATUS_PAGADO "+ESTATUS_PAGADO);
+            if(data.getIdEstatus().equals(ESTATUS_PAGADO)){
+                permisosEntrega = true;
+                System.out.println("entregar 1");
+            }else if(data.getIdEstatus().equals(ESTATUS_VENDIDO) && data.getIdTipoVenta().equals(TIPO_VENTA_CREDITO)){
+                permisosEntrega = true;
+                System.out.println("entregar 2");
+            }else{
+                permisosEntrega = false;
+                System.out.println(" no entregar");
+                JsfUtil.addWarnMessage("No se puede entregar esta mercancia.");
+            }
+        }
 
     }
 
@@ -81,10 +123,11 @@ public class BeanEntregaMercancia implements Serializable {
 
     }
 
-    public void setKilosPromedio(AjaxBehaviorEvent event){
-        
+    public void setKilosPromedio(AjaxBehaviorEvent event) {
+        System.out.println("entregaMercancia " + entregaMercancia.toString());
+
     }
-    
+
     public String getTitle() {
         return title;
     }
@@ -140,7 +183,37 @@ public class BeanEntregaMercancia implements Serializable {
     public void setEntregaMercancia(EntregaMercancia entregaMercancia) {
         this.entregaMercancia = entregaMercancia;
     }
-    
-    
+
+    public BigDecimal getKilosEntregados() {
+        return kilosEntregados;
+    }
+
+    public void setKilosEntregados(BigDecimal kilosEntregados) {
+        this.kilosEntregados = kilosEntregados;
+    }
+
+    public BigDecimal getEmpaquesEntregados() {
+        return empaquesEntregados;
+    }
+
+    public void setEmpaquesEntregados(BigDecimal empaquesEntregados) {
+        this.empaquesEntregados = empaquesEntregados;
+    }
+
+    public String getObservaciones() {
+        return observaciones;
+    }
+
+    public void setObservaciones(String observaciones) {
+        this.observaciones = observaciones;
+    }
+
+    public boolean isPermisosEntrega() {
+        return permisosEntrega;
+    }
+
+    public void setPermisosEntrega(boolean permisosEntrega) {
+        this.permisosEntrega = permisosEntrega;
+    }
 
 }
