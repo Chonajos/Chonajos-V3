@@ -38,10 +38,14 @@ public class EjbCaja implements NegocioCaja {
 
     @Override
     public int updateMontoCaja(Caja c) {
+        System.out.println("Caja: "+c);
         try {
-            Query query = em.createNativeQuery("UPDATE CAJA SET MONTO = ? WHERE ID_CAJA_PK = ? ");
+            Query query = em.createNativeQuery("UPDATE CAJA SET MONTO = ?, MONTO_MENUDEO = ?, MONTO_MAYOREO = ?, MONTO_CREDITOS = ? WHERE ID_CAJA_PK = ? ");
             query.setParameter(1, c.getMonto());
-            query.setParameter(2, c.getIdCajaPk());
+            query.setParameter(2, c.getMontoMenudeo());
+            query.setParameter(3, c.getMontoMayoreo());
+            query.setParameter(4, c.getMontoCredito());
+            query.setParameter(5, c.getIdCajaPk());
             return query.executeUpdate();
 
         } catch (Exception ex) {
@@ -73,10 +77,10 @@ public class EjbCaja implements NegocioCaja {
     }
 
     @Override
-    public List<Object[]> getCaja(BigDecimal idSucursalFk, BigDecimal tipo) {
+    public List<Object[]> getCajaByIdUsuarioPk(BigDecimal idUsuarioPk, BigDecimal tipo) {
         try {
-            Query query = em.createNativeQuery("select * from caja c where c.ID_SUCURSAL_FK = ? and TIPO = ?");
-            query.setParameter(1, idSucursalFk);
+            Query query = em.createNativeQuery("select * from caja c where c.ID_USER_FK = ? and TIPO = ?");
+            query.setParameter(1, idUsuarioPk);
             query.setParameter(2, tipo);
             return query.getResultList();
 

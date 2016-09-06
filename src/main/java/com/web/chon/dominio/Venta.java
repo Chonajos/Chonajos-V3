@@ -34,6 +34,7 @@ public class Venta implements Serializable {
     private String nombreSucursal;
     private String nombreEstatus;
     private ArrayList<VentaProducto> lstVentaProducto;
+    private BigDecimal tipoVenta;
 
     @Override
     public String toString() {
@@ -175,6 +176,15 @@ public class Venta implements Serializable {
     public void setLstVentaProducto(ArrayList<VentaProducto> lstVentaProducto) {
         this.lstVentaProducto = lstVentaProducto;
     }
+
+    public BigDecimal getTipoVenta() {
+        return tipoVenta;
+    }
+
+    public void setTipoVenta(BigDecimal tipoVenta) {
+        this.tipoVenta = tipoVenta;
+    }
+    
     
 
 }

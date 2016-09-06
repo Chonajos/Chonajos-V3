@@ -80,9 +80,9 @@ public class ServiceCaja implements IfaceCaja {
     }
 
     @Override
-    public Caja getCajaByIdSucuTipo(BigDecimal idSucursalFk, BigDecimal tipo) {
+    public Caja getCajaByIdUsuarioPk(BigDecimal idUsuarioPk, BigDecimal tipo) {
         getEjb();
-        List<Object[]> object = ejb.getCaja(idSucursalFk, tipo);
+        List<Object[]> object = ejb.getCajaByIdUsuarioPk(idUsuarioPk, tipo);
         Caja caja = new Caja();
         for (Object[] obj : object) {
             caja.setIdCajaPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
@@ -91,7 +91,10 @@ public class ServiceCaja implements IfaceCaja {
             caja.setTipo(obj[3] == null ? null : new BigDecimal(obj[3].toString()));
             caja.setCuenta(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
             caja.setMonto(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
-
+            caja.setIdUsuarioFK(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
+            caja.setMontoMenudeo(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
+            caja.setMontoMayoreo(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
+            caja.setMontoCredito(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
         }
         return caja;
 

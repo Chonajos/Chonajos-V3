@@ -107,7 +107,7 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
     public void reloadCaja()
     {
         caja = new Caja();
-        caja = ifaceCaja.getCajaByIdSucuTipo( new BigDecimal(usuario.getSucId()),TIPO);
+        caja = ifaceCaja.getCajaByIdUsuarioPk(usuario.getIdUsuario(),TIPO);
     }
 
     public void setFechaInicioFin(int filter) {
@@ -227,7 +227,9 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
             if (ifaceBuscaVenta.cancelarVentaMayoreo(data.getIdVentaPk().intValue(), usuario.getIdUsuario().intValue(), data.getComentariosCancel()) != 0 && banderaError==false) 
             {
                 caja.setMonto(caja.getMonto().add(totalVenta, MathContext.UNLIMITED));
-                if (ifaceCaja.updateMontoCaja(caja) == 1) {
+                caja.setMontoMayoreo(caja.getMontoMayoreo().subtract(totalVenta, MathContext.UNLIMITED));
+                if (ifaceCaja.updateMontoCaja(caja) == 1)
+                {
                     JsfUtil.addSuccessMessageClean("Venta Cancelada, existencias regresadas y dinero en caja devuelto");
                 reloadCaja();
                 } else {

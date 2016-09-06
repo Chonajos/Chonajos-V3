@@ -23,13 +23,62 @@ public class EntradaSalida implements Serializable {
     private BigDecimal idConceptoFk;
     private String comentarios;
     private BigDecimal monto;
+    private String nombreCaja;
+    private String nombreConcepto;
+    private String nombreES;
+    private BigDecimal numero;
+
+    public void reset() {
+        idEntradaSalidaPk = null;
+        idCajaFk = null;
+        tipoES = null;
+        fecha = null;
+        idConceptoFk = null;
+        comentarios = null;
+        monto = null;
+        nombreCaja = null;
+        nombreConcepto = null;
+        nombreES = null;
+        numero = null;
+    }
 
     @Override
     public String toString() {
-        return "EntrasaSalida{" + "idEntradaSalidaPk=" + idEntradaSalidaPk + ", idCajaFk=" + idCajaFk + ", tipoES=" + tipoES + ", fecha=" + fecha + ", idConceptoFk=" + idConceptoFk + ", comentarios=" + comentarios + ", monto=" + monto + '}';
+        return "EntradaSalida{" + "idEntradaSalidaPk=" + idEntradaSalidaPk + ", idCajaFk=" + idCajaFk + ", tipoES=" + tipoES + ", fecha=" + fecha + ", idConceptoFk=" + idConceptoFk + ", comentarios=" + comentarios + ", monto=" + monto + ", nombreCaja=" + nombreCaja + ", nombreConcepto=" + nombreConcepto + ", nombreES=" + nombreES + ", numero=" + numero + '}';
     }
 
-    
+    public String getNombreCaja() {
+        return nombreCaja;
+    }
+
+    public void setNombreCaja(String nombreCaja) {
+        this.nombreCaja = nombreCaja;
+    }
+
+    public String getNombreConcepto() {
+        return nombreConcepto;
+    }
+
+    public void setNombreConcepto(String nombreConcepto) {
+        this.nombreConcepto = nombreConcepto;
+    }
+
+    public String getNombreES() {
+        return nombreES;
+    }
+
+    public void setNombreES(String nombreES) {
+        this.nombreES = nombreES;
+    }
+
+    public BigDecimal getNumero() {
+        return numero;
+    }
+
+    public void setNumero(BigDecimal numero) {
+        this.numero = numero;
+    }
+
     public BigDecimal getIdEntradaSalidaPk() {
         return idEntradaSalidaPk;
     }

@@ -28,13 +28,14 @@ public class EjbVenta implements NegocioVenta {
 
     @Override
     public int insertarVenta(Venta venta,int folioVenta) {
-        Query query = em.createNativeQuery("INSERT INTO VENTA(ID_VENTA_PK,FECHA_VENTA,ID_CLIENTE_FK,ID_VENDEDOR_FK,STATUS_FK,ID_SUCURSAL_FK,FOLIO_SUCURSAL) VALUES(?,sysdate,?,?,1,?,?)");
+        Query query = em.createNativeQuery("INSERT INTO VENTA(ID_VENTA_PK,FECHA_VENTA,ID_CLIENTE_FK,ID_VENDEDOR_FK,STATUS_FK,ID_SUCURSAL_FK,FOLIO_SUCURSAL,TIPO_VENTA) VALUES(?,sysdate,?,?,1,?,?,?)");
         System.out.println("venta ejb :" + venta.toString());
         query.setParameter(1, venta.getIdVentaPk());
         query.setParameter(2, venta.getIdClienteFk());
         query.setParameter(3, venta.getIdVendedorFk());
         query.setParameter(4, venta.getIdSucursal());
         query.setParameter(5, folioVenta);
+        query.setParameter(6, venta.getTipoVenta());
         return query.executeUpdate();
     }
 
@@ -162,5 +163,14 @@ public class EjbVenta implements NegocioVenta {
             return 0;
         }
     }
+
+    @Override
+    public BigDecimal getTotalVentasByDay(String fecha) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+   
+    
+    
 
 }

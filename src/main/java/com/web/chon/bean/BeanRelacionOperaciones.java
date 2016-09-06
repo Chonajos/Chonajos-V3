@@ -149,7 +149,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
 
     public void reloadCaja() {
         caja = new Caja();
-        caja = ifaceCaja.getCajaByIdSucuTipo(idSucursal, TIPO);
+        caja = ifaceCaja.getCajaByIdUsuarioPk(usuario.getIdUsuario(), TIPO);
     }
 
     public void generateReport(Venta v) {
@@ -316,6 +316,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
                     if (ifaceVenta.cancelarVenta(ventaCancelar.getIdVentaPk().intValue(), usuario.getIdUsuario().intValue(),
                             comentarioCancelacion) != 0 && bandera == false) 
                     {
+                        caja.setMontoMenudeo(caja.getMontoMenudeo().subtract(totalVenta, MathContext.UNLIMITED));
                         caja.setMonto(caja.getMonto().subtract(totalVenta, MathContext.UNLIMITED));
                         if (ifaceCaja.updateMontoCaja(caja) == 1) 
                         {

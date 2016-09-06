@@ -96,4 +96,11 @@ public class ServiceVenta implements IfaceVenta {
         return ejb.cancelarVenta(idVenta, idUsuario, comentarios);
     }
 
+    @Override
+    public BigDecimal getTotalVentasByDay(String fecha) {
+        getEjb();
+        return ejb.getTotalVentasByDay(fecha);
+    
+    }
+
 }

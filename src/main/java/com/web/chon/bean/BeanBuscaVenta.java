@@ -38,6 +38,7 @@ import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
+import org.primefaces.context.RequestContext;
 import org.primefaces.model.StreamedContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -230,13 +231,13 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
                 ifaceBuscaVenta.updateVenta(data.getIdVenta().intValue(), usuario.getIdUsuarioPk().intValue());
                 searchById();
                 JsfUtil.addSuccessMessageClean("La venta se ha pagado exitosamente");
+                caja.setMontoMenudeo(caja.getMontoMenudeo().add(totalVenta, MathContext.UNLIMITED));
                 caja.setMonto(caja.getMonto().add(totalVenta, MathContext.UNLIMITED));
                 ifaceCaja.updateMontoCaja(caja);
                 reloadCaja();
-                
-                
                 setParameterTicket(data.getIdVenta().intValue(),data.getFolioSucursal().intValue());
                 generateReport();
+                RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
             } catch (Exception ex) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar pagar la venta con el folio:" + data.getIdVenta() + "."));
             }
@@ -249,13 +250,12 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
     public void reloadCaja()
     {
         caja = new Caja();
-        caja = ifaceCaja.getCajaByIdSucuTipo(new BigDecimal(usuario.getIdSucursal()),TIPO);
+        caja = ifaceCaja.getCajaByIdUsuarioPk(usuario.getIdUsuarioPk(),TIPO);
     }
 
     @Override
     public void searchById() {
         statusButtonPagar = false;
-
         System.out.println("id de folio"+data.getFolioSucursal());
         System.out.println("id de sucursal"+usuario.getIdSucursal());
         model = ifaceBuscaVenta.getVentaByfolioAndIdSuc(data.getFolioSucursal().intValue(), usuario.getIdSucursal());
@@ -264,7 +264,6 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
             data.setNombreVendedor("");
             data.setIdVenta(new BigDecimal(0));
             statusButtonPagar = true;
-
             JsfUtil.addWarnMessage("No se encontraron Registros.");
 
         } else {
@@ -287,7 +286,6 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
                 JsfUtil.addWarnMessage("No puedes cobrar el folio de otra sucursal.");
                 statusButtonPagar = true;
             }
-
         }
 
     }

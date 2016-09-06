@@ -296,6 +296,7 @@ public class BeanVenta implements Serializable, BeanSimple {
                 venta.setIdClienteFk(cliente.getId_cliente());
                 venta.setIdVendedorFk(usuario.getIdUsuarioPk());
                 venta.setIdSucursal(idSucu);
+                venta.setTipoVenta(data.getIdTipoVentaFk());
 
                 int ventaInsertada = ifaceVenta.insertarVenta(venta, folioVenta);
                 int productoInsertado = 0;

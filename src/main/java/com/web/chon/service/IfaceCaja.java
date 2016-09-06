@@ -19,6 +19,6 @@ public interface IfaceCaja {
     public int updateCaja(Caja c);
     public int updateMontoCaja(Caja c);
     public ArrayList<Caja> getCajas(BigDecimal idSucursalFk,BigDecimal tipo);
-    public Caja getCajaByIdSucuTipo(BigDecimal idSucursalFk,BigDecimal tipo);
+    public Caja getCajaByIdUsuarioPk(BigDecimal idUsuarioPk,BigDecimal tipo);
     public ArrayList<Caja> getCajasByIdPk(BigDecimal idCajaPk);
 }

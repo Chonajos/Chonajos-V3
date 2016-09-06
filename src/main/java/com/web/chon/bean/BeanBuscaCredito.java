@@ -6,6 +6,7 @@
 package com.web.chon.bean;
 
 import com.web.chon.dominio.AbonoCredito;
+import com.web.chon.dominio.Caja;
 import com.web.chon.dominio.Cliente;
 import com.web.chon.dominio.Credito;
 import com.web.chon.dominio.Documento;
@@ -14,6 +15,7 @@ import com.web.chon.dominio.TipoAbono;
 import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceAbonoCredito;
+import com.web.chon.service.IfaceCaja;
 import com.web.chon.service.IfaceCatCliente;
 import com.web.chon.service.IfaceCredito;
 import com.web.chon.service.IfaceDocumentos;
@@ -70,8 +72,10 @@ public class BeanBuscaCredito implements Serializable {
     private IfaceAbonoCredito ifaceAbonoCredito;
     @Autowired
     private IfaceDocumentos ifaceDocumentos;
-    @Autowired private PlataformaSecurityContext context;
-
+    @Autowired
+    private PlataformaSecurityContext context;
+    @Autowired
+    IfaceCaja ifaceCaja;
 
     private BigDecimal idCliente;
     private String nombreCompletoCliente;
@@ -90,10 +94,12 @@ public class BeanBuscaCredito implements Serializable {
     private ArrayList<Cliente> lstCliente;
     private ArrayList<AbonoCredito> chequesPendientes;
     private ArrayList<AbonoCredito> selectedchequesPendientes;
+
     private SaldosDeudas dataAbonar;
     private AbonoCredito abono;
     private Cliente cliente;
     private String viewCheque;
+    private Caja caja;
 
     private UsuarioDominio usuarioDominio;
     private boolean bandera;
@@ -117,10 +123,13 @@ public class BeanBuscaCredito implements Serializable {
     private static final BigDecimal ABONOPENDIENTE = new BigDecimal(2);
     private static final BigDecimal DOCUMENTOACTIVO = new BigDecimal(1);
     private static final BigDecimal DOCUMENTOTIPOCHEQUE = new BigDecimal(1);
+
     //----Constantes--//
+    private static final BigDecimal TIPO = new BigDecimal(1);
 
     @PostConstruct
     public void init() {
+        caja = new Caja();
         minimoPago = new BigDecimal(0);
         bandera = false;
         fechaMasProximaPago = new Date();
@@ -132,9 +141,15 @@ public class BeanBuscaCredito implements Serializable {
         selectedchequesPendientes = new ArrayList<AbonoCredito>();
         lstTipoAbonos = ifaceTipoAbono.getAll();
         saldoParaLiquidar = new BigDecimal(0);
-        setTitle("Historial de Compras");
+        setTitle("Abono de Créditos");
         setViewEstate("init");
         setViewCheque("init");
+        reloadCaja();
+    }
+
+    public void reloadCaja() {
+        caja = new Caja();
+        caja = ifaceCaja.getCajaByIdUsuarioPk(usuarioDominio.getIdUsuario(), TIPO);
     }
 
     private void setParameterTicket(AbonoCredito ac, Cliente c) {
@@ -294,6 +309,12 @@ public class BeanBuscaCredito implements Serializable {
                     }
                     if (ifaceAbonoCredito.insert(ac) == 1) {
                         JsfUtil.addSuccessMessage("Se ha realizado un abono existosamente");
+                        reloadCaja();
+                        caja.setMontoCredito(caja.getMontoCredito().add(ac.getMontoAbono(), MathContext.UNLIMITED));
+                        caja.setMonto(caja.getMonto().add(ac.getMontoAbono(), MathContext.UNLIMITED));
+                        ifaceCaja.updateMontoCaja(caja);
+                        reloadCaja();
+                        
                         setParameterTicket(ac, cliente);
                         generateReport(ac.getIdAbonoCreditoPk().intValue(), "abono.jasper");
                         abono.reset();
@@ -548,18 +569,16 @@ public class BeanBuscaCredito implements Serializable {
         setViewCheque("init");
     }
 
-    public void searchByIdCliente() 
-    {
+    public void searchByIdCliente() {
         saldoParaLiquidar = new BigDecimal(0);
 
         cliente = ifaceCatCliente.getCreditoClienteByIdCliente(cliente.getId_cliente());
-       if (cliente != null && cliente.getId_cliente() != null) {
+        if (cliente != null && cliente.getId_cliente() != null) {
             modelo = ifaceCredito.getCreditosActivos(cliente.getId_cliente());
-            for (SaldosDeudas sd : modelo) 
-            {
+            for (SaldosDeudas sd : modelo) {
                 saldoParaLiquidar = saldoParaLiquidar.add(sd.getSaldoLiquidar(), MathContext.UNLIMITED);
             }
-            
+
         } else {
             JsfUtil.addWarnMessage("El cliente no cuenta con creditos activos");
             modelo = new ArrayList<SaldosDeudas>();

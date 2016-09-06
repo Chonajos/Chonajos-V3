@@ -21,6 +21,10 @@ public class Caja implements Serializable {
     private BigDecimal tipo;
     private BigDecimal cuenta;
     private BigDecimal monto;
+    private BigDecimal montoMenudeo;
+    private BigDecimal montoMayoreo;
+    private BigDecimal montoCredito;
+    private BigDecimal idUsuarioFK;
 
     @Override
     public String toString() {
@@ -37,6 +41,16 @@ public class Caja implements Serializable {
         cuenta = null;
         monto = null;
     }
+
+    public BigDecimal getIdUsuarioFK() {
+        return idUsuarioFK;
+    }
+
+    public void setIdUsuarioFK(BigDecimal idUsuarioFK) {
+        this.idUsuarioFK = idUsuarioFK;
+    }
+    
+    
 
     public BigDecimal getIdCajaPk() {
         return idCajaPk;
@@ -85,5 +99,31 @@ public class Caja implements Serializable {
     public void setMonto(BigDecimal monto) {
         this.monto = monto;
     }
+
+    public BigDecimal getMontoMenudeo() {
+        return montoMenudeo;
+    }
+
+    public void setMontoMenudeo(BigDecimal montoMenudeo) {
+        this.montoMenudeo = montoMenudeo;
+    }
+
+    public BigDecimal getMontoMayoreo() {
+        return montoMayoreo;
+    }
+
+    public void setMontoMayoreo(BigDecimal montoMayoreo) {
+        this.montoMayoreo = montoMayoreo;
+    }
+
+    public BigDecimal getMontoCredito() {
+        return montoCredito;
+    }
+
+    public void setMontoCredito(BigDecimal montoCredito) {
+        this.montoCredito = montoCredito;
+    }
+    
+    
 
 }

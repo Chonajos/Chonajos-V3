@@ -225,6 +225,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
                 if(ifaceBuscaVenta.updateStatusVentaMayoreo(data.getIdVenta().intValue(), usuario.getIdUsuarioPk().intValue())==1)
                 {
                     System.out.println("Se cambió el estatus");
+                    caja.setMontoMayoreo(caja.getMontoMayoreo().add(totalVenta, MathContext.UNLIMITED));
                     caja.setMonto(caja.getMonto().add(totalVenta, MathContext.UNLIMITED));
                     System.out.println("Caja: "+caja.toString());
                     if (ifaceCaja.updateMontoCaja(caja) == 1) 
@@ -257,7 +258,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     public void reloadCaja()
     {
         caja = new Caja();
-        caja = ifaceCaja.getCajaByIdSucuTipo(new BigDecimal(usuario.getIdSucursal()),TIPO);
+        caja = ifaceCaja.getCajaByIdUsuarioPk(usuario.getIdUsuarioPk(),TIPO);
     }
 
     @Override

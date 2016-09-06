@@ -42,5 +42,7 @@ public interface IfaceVenta {
     
     public int cancelarVenta(int idVenta,int idUsuario,String comentarios);
     
+    
+    public BigDecimal getTotalVentasByDay(String fecha);
 
 }

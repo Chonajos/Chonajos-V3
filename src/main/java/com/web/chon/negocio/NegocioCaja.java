@@ -22,6 +22,6 @@ public interface NegocioCaja
     public int updateMontoCaja(Caja c);
     public List<Object[]> getCajas(BigDecimal idSucursalFk,BigDecimal tipo);
     public List<Object[]> getCajasByIdPk(BigDecimal idCajaPk);
-    public List<Object[]> getCaja(BigDecimal idSucursalFk,BigDecimal tipo);
+    public List<Object[]> getCajaByIdUsuarioPk(BigDecimal idUsuarioPk,BigDecimal tipo);
     
 }
