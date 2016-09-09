@@ -6,6 +6,7 @@
 package com.web.chon.negocio;
 
 import com.web.chon.dominio.CorteCaja;
+import java.math.BigDecimal;
 import java.util.List;
 import javax.ejb.Remote;
 
@@ -15,7 +16,10 @@ import javax.ejb.Remote;
  */
 @Remote
 public interface NegocioCorteCaja {
-    public  List<Object[]> getCorteByFecha(String fecha);
+    public  List<Object[]> getCorteBy(BigDecimal idCajaFk, String fechaInicio, String fechaFin, BigDecimal idUserFk, BigDecimal idStatusFk);
     public int insertCorte(CorteCaja cc);
+    public int updateCorte(CorteCaja cc);
+    public List<Object[]> getCortesByIdPk(BigDecimal idDestinoFK);
+    public int getNextVal();
     
 }

@@ -5,7 +5,7 @@
  */
 package com.web.chon.service;
 
-import com.web.chon.dominio.EntradaSalida;
+import com.web.chon.dominio.OperacionesCaja;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
  * @author JesusAlfredo
  */
 public interface IfaceEntradaSalida {
-    public ArrayList<EntradaSalida> getMovimientosByIdCaja(BigDecimal idCaja, String fechaInicio,String fechaFin);
-    public int insertaMovimiento(EntradaSalida es);
+    public ArrayList<OperacionesCaja> getMovimientosByIdCaja(BigDecimal idCaja, String fechaInicio,String fechaFin);
+    public int insertaMovimiento(OperacionesCaja es);
     public int getNextVal();
 }

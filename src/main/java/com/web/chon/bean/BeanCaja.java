@@ -7,7 +7,7 @@ package com.web.chon.bean;
 
 import com.web.chon.dominio.Caja;
 import com.web.chon.dominio.ConceptosES;
-import com.web.chon.dominio.EntradaSalida;
+import com.web.chon.dominio.OperacionesCaja;
 import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.TipoOperacion;
 import com.web.chon.dominio.UsuarioDominio;
@@ -51,12 +51,12 @@ public class BeanCaja implements Serializable {
     private IfaceTiposOperacion ifaceTiposOperacion;
 
     private UsuarioDominio usuario;
-    private EntradaSalida data;
+    private OperacionesCaja data;
     private Caja caja;
 
     private ArrayList<Sucursal> listaSucursales;
     private ArrayList<Caja> listaCajas;
-    private ArrayList<EntradaSalida> listaMovimientosSalidas;
+    private ArrayList<OperacionesCaja> listaMovimientosSalidas;
     private ArrayList<ConceptosES> listaConceptos;
     private ArrayList<TipoOperacion> listaOperaciones;
 
@@ -67,17 +67,21 @@ public class BeanCaja implements Serializable {
     private BigDecimal idCajaBean;
     private Date hoy;
     private boolean verCajas;
+    private BigDecimal saldoCaja;
 
     @PostConstruct
     public void init() {
+
         usuario = context.getUsuarioAutenticado();
+        saldoCaja = new BigDecimal(0);
         hoy = new Date();
         caja = new Caja();
         caja = ifaceCaja.getCajaByIdUsuarioPk(usuario.getIdUsuario(), new BigDecimal(1));
+        saldoCaja = caja.getMonto();
         listaSucursales = ifaceCatSucursales.getSucursales();
         listaCajas = ifaceCaja.getCajas(new BigDecimal(usuario.getSucId()), new BigDecimal(1));
         idSucursalBean = new BigDecimal(usuario.getSucId());
-        listaMovimientosSalidas = new ArrayList<EntradaSalida>();
+        listaMovimientosSalidas = new ArrayList<OperacionesCaja>();
         listaMovimientosSalidas = ifaceEntradaSalida.getMovimientosByIdCaja(caja.getIdCajaPk(), TiempoUtil.getFechaDDMMYYYY(hoy), TiempoUtil.getFechaDDMMYYYY(hoy));
         listaConceptos = new ArrayList<ConceptosES>();
         listaOperaciones = new ArrayList<TipoOperacion>();
@@ -85,9 +89,14 @@ public class BeanCaja implements Serializable {
         //listaConceptos = ifaceConceptos.getConceptos();
         idCajaBean = caja.getIdCajaPk();
         verCajas = false;
-        data = new EntradaSalida();
+        data = new OperacionesCaja();
         setTitle("Operaciones de Caja");
         setViewEstate("init");
+    }
+
+    public void reloadCaja() {
+        caja = ifaceCaja.getCajaByIdUsuarioPk(usuario.getIdUsuario(), new BigDecimal(1));
+        saldoCaja = caja.getMonto();
     }
 
     public void changeCombo() {
@@ -102,21 +111,26 @@ public class BeanCaja implements Serializable {
 
     public void getMovimientos() {
         listaMovimientosSalidas = ifaceEntradaSalida.getMovimientosByIdCaja(caja.getIdCajaPk(), TiempoUtil.getFechaDDMMYYYY(hoy), TiempoUtil.getFechaDDMMYYYY(hoy));
+
     }
 
     public void generarSalida() {
         data.setIdEntradaSalidaPk(new BigDecimal(ifaceEntradaSalida.getNextVal()));
         data.setIdCajaFk(caja.getIdCajaPk());
         data.setTipoES(new BigDecimal(1));
-
+        System.out.println("======================================================");
+        System.out.println("Data: "+data.toString());
+        System.out.println("======================================================");
+        if(data.getMonto().compareTo(caja.getApertura())<0)
+        {
         switch (data.getIdTipoOperacionFk().intValue()) {
             case 1:
+                System.out.println("Ejecuto Pago de Servicios");
                 caja.setMonto(caja.getMonto().subtract(data.getMonto(), MathContext.UNLIMITED));
-                if (ifaceCaja.updateMontoCaja(caja) == 1) 
-                {
+                caja.setServicios(caja.getServicios().add(data.getMonto(), MathContext.UNLIMITED));
+                if (ifaceCaja.updateMontoCaja(caja) == 1) {
                     //System.out.println("Entrada Salida: " + data.toString());
-                    if (ifaceEntradaSalida.insertaMovimiento(data) == 1) 
-                    {
+                    if (ifaceEntradaSalida.insertaMovimiento(data) == 1) {
                         JsfUtil.addSuccessMessageClean("Movimiento Registrado con exito");
                         getMovimientos();
                         data.reset();
@@ -134,10 +148,12 @@ public class BeanCaja implements Serializable {
                 System.out.println("1.-Caja: " + caja);
                 //Descontar de caja:
                 caja.setMonto(caja.getMonto().subtract(data.getMonto(), MathContext.UNLIMITED));
+                caja.setTransferencias_OUT(caja.getTransferencias_OUT().add(data.getMonto(), MathContext.UNLIMITED));
                 Caja cajaDestino = new Caja();
                 cajaDestino = ifaceCaja.getCajaByIdPk(data.getIdCajaDestino());
                 System.out.println("1.-Caja Destino: " + cajaDestino);
                 cajaDestino.setMonto(cajaDestino.getMonto().add(data.getMonto(), MathContext.UNLIMITED));
+                cajaDestino.setTransferencias_IN(cajaDestino.getTransferencias_IN().add(data.getMonto(), MathContext.UNLIMITED));
                 System.out.println("2.-Caja: " + caja);
                 System.out.println("2.-Caja Destino: " + cajaDestino);
                 if (ifaceCaja.updateMontoCaja(caja) == 1) {
@@ -165,9 +181,63 @@ public class BeanCaja implements Serializable {
 
                 break;
             case 3:
+                caja.setMonto(caja.getMonto().subtract(data.getMonto(), MathContext.UNLIMITED));
+                caja.setProvedores(caja.getProvedores().add(data.getMonto(), MathContext.UNLIMITED));
+                if (ifaceCaja.updateMontoCaja(caja) == 1) {
+                    //System.out.println("Entrada Salida: " + data.toString());
+                    if (ifaceEntradaSalida.insertaMovimiento(data) == 1) {
+                        JsfUtil.addSuccessMessageClean("Movimiento Registrado con exito");
+                        getMovimientos();
+                        data.reset();
+
+                    } else {
+                        JsfUtil.addErrorMessageClean("Ocurrio un error al ingresar nuevo movimiento");
+                    }
+                } else {
+                    JsfUtil.addErrorMessageClean("Ocurrio un error al actualizar saldo en caja");
+                }
+                break;
+            case 4:
+                System.out.println("Ejecuto Faltante de Dinero");
+                caja.setMonto(caja.getMonto().subtract(data.getMonto(), MathContext.UNLIMITED));
+                caja.setFaltante(caja.getFaltante().add(data.getMonto(), MathContext.UNLIMITED));
+                data.setTipoES(new BigDecimal(2));
+                if (ifaceCaja.updateMontoCaja(caja) == 1) {
+                    if (ifaceEntradaSalida.insertaMovimiento(data) == 1) {
+                        JsfUtil.addSuccessMessageClean("Movimiento Registrado con exito");
+                        getMovimientos();
+                        data.reset();
+                    } else {
+                        JsfUtil.addErrorMessageClean("Ocurrio un error al ingresar nuevo movimiento");
+                    }
+                } else {
+                    JsfUtil.addErrorMessageClean("Ocurrio un error al actualizar saldo en caja");
+                }
+                break;
+            case 5:
+                System.out.println("Ejecuto Sobrante de Dinero");
+                caja.setMonto(caja.getMonto().add(data.getMonto(), MathContext.UNLIMITED));
+                caja.setSobrante(caja.getSobrante().add(data.getMonto(), MathContext.UNLIMITED));
+                if (ifaceCaja.updateMontoCaja(caja) == 1) {
+                    if (ifaceEntradaSalida.insertaMovimiento(data) == 1) {
+                        JsfUtil.addSuccessMessageClean("Movimiento Registrado con exito");
+                        getMovimientos();
+                        data.reset();
+
+                    } else {
+                        JsfUtil.addErrorMessageClean("Ocurrio un error al ingresar nuevo movimiento");
+                    }
+                } else {
+                    JsfUtil.addErrorMessageClean("Ocurrio un error al actualizar saldo en caja");
+                }
                 break;
         }
-
+        }
+        else
+        {
+            JsfUtil.addErrorMessageClean("No puedes dejar la caja con menos de : $"+caja.getApertura());
+        }
+        reloadCaja();
     }
 
     public ArrayList<Caja> getListaCajas() {
@@ -226,19 +296,19 @@ public class BeanCaja implements Serializable {
         this.idCajaBean = idCajaBean;
     }
 
-    public ArrayList<EntradaSalida> getListaMovimientosSalidas() {
+    public ArrayList<OperacionesCaja> getListaMovimientosSalidas() {
         return listaMovimientosSalidas;
     }
 
-    public void setListaMovimientosSalidas(ArrayList<EntradaSalida> listaMovimientosSalidas) {
+    public void setListaMovimientosSalidas(ArrayList<OperacionesCaja> listaMovimientosSalidas) {
         this.listaMovimientosSalidas = listaMovimientosSalidas;
     }
 
-    public EntradaSalida getData() {
+    public OperacionesCaja getData() {
         return data;
     }
 
-    public void setData(EntradaSalida data) {
+    public void setData(OperacionesCaja data) {
         this.data = data;
     }
 
@@ -280,6 +350,14 @@ public class BeanCaja implements Serializable {
 
     public void setVerCajas(boolean verCajas) {
         this.verCajas = verCajas;
+    }
+
+    public BigDecimal getSaldoCaja() {
+        return saldoCaja;
+    }
+
+    public void setSaldoCaja(BigDecimal saldoCaja) {
+        this.saldoCaja = saldoCaja;
     }
 
 }

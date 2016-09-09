@@ -44,7 +44,7 @@ public class ServiceConceptos implements IfaceConceptos {
         for (Object[] object : lstObject) {
             ConceptosES c = new ConceptosES();
             c.setIdConceptoPk(object[0] == null ? null : new BigDecimal(object[0].toString()));
-            c.setIdConceptoPk(object[1] == null ? null : new BigDecimal(object[1].toString()));
+            c.setIdTipoOperacionFk(object[1] == null ? null : new BigDecimal(object[1].toString()));
             c.setNombre(object[2] == null ? null : object[2].toString());
             c.setDescripcion(object[3] == null ? null : object[3].toString());
             lstConceptos.add(c);

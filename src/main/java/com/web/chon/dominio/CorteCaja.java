@@ -13,42 +13,42 @@ import java.util.Date;
  *
  * @author JesusAlfredo
  */
-public class CorteCaja implements Serializable{
+public class CorteCaja implements Serializable {
+
     private BigDecimal idCorteCajaPk;
     private BigDecimal idCajaFk;
-    private BigDecimal ventasMayoreo;
-    private BigDecimal ventasMenudeo;
-    private BigDecimal abonosCreditos;
-    private BigDecimal anticipos;
-    private BigDecimal cantCheques;
-    private BigDecimal montoCheques;
-    private BigDecimal transferenciasIN;
-    private BigDecimal transferenciasOUT;
-    private BigDecimal servicios;
-    private BigDecimal prestamos;
-    private BigDecimal saldoAnterior;
-    private BigDecimal saldoNuevo;
-    private BigDecimal idUserFk;
-    private String comentarios;
     private Date fecha;
+    private BigDecimal cantChequesAnt;
+    private BigDecimal montoChequesAnt;
+    private BigDecimal saldoAnterior;
+    private BigDecimal cantChequesNuevos;
+    private BigDecimal montoChequesNuevos;
+    private BigDecimal saldoNuevo;
+    private String comentarios;
+    private BigDecimal idUserFk;
+    private BigDecimal idStatusFk;
 
     @Override
     public String toString() {
-        return "CorteCaja{" + "idCorteCajaPk=" + idCorteCajaPk + ", idCajaFk=" + idCajaFk + ", ventasMayoreo=" + ventasMayoreo + ", ventasMenudeo=" + ventasMenudeo + ", abonosCreditos=" + abonosCreditos + ", anticipos=" + anticipos + ", cantCheques=" + cantCheques + ", montoCheques=" + montoCheques + ", transferenciasIN=" + transferenciasIN + ", transferenciasOUT=" + transferenciasOUT + ", servicios=" + servicios + ", prestamos=" + prestamos + ", saldoAnterior=" + saldoAnterior + ", saldoNuevo=" + saldoNuevo + ", idUserFk=" + idUserFk + ", comentarios=" + comentarios + '}';
+        return "CorteCaja{" + "idCorteCajaPk=" + idCorteCajaPk + ", idCajaFk=" + idCajaFk + ", fecha=" + fecha + ", cantChequesAnt=" + cantChequesAnt + ", montoChequesAnt=" + montoChequesAnt + ", saldoAnterior=" + saldoAnterior + ", cantChequesNuevos=" + cantChequesNuevos + ", montoChequesNuevos=" + montoChequesNuevos + ", saldoNuevo=" + saldoNuevo + ", comentarios=" + comentarios + ", idUserFk=" + idUserFk + ", idStatusFk=" + idStatusFk + '}';
     }
 
-    public Date getFecha() {
-        return fecha;
+    public void reset() {
+        idCorteCajaPk = null;
+        idCajaFk = null;
+        fecha = null;
+        cantChequesAnt = null;
+        montoChequesAnt = null;
+        saldoAnterior = null;
+        cantChequesNuevos = null;
+        montoChequesNuevos = null;
+        saldoNuevo = null;
+        comentarios = null;
+        idUserFk = null;
+        idStatusFk = null;
+
     }
 
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
-    }
-    
-   
-
-    
-    
     public BigDecimal getIdCorteCajaPk() {
         return idCorteCajaPk;
     }
@@ -65,84 +65,28 @@ public class CorteCaja implements Serializable{
         this.idCajaFk = idCajaFk;
     }
 
-    public BigDecimal getVentasMayoreo() {
-        return ventasMayoreo;
+    public Date getFecha() {
+        return fecha;
     }
 
-    public void setVentasMayoreo(BigDecimal ventasMayoreo) {
-        this.ventasMayoreo = ventasMayoreo;
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
     }
 
-    public BigDecimal getVentasMenudeo() {
-        return ventasMenudeo;
+    public BigDecimal getCantChequesAnt() {
+        return cantChequesAnt;
     }
 
-    public void setVentasMenudeo(BigDecimal ventasMenudeo) {
-        this.ventasMenudeo = ventasMenudeo;
+    public void setCantChequesAnt(BigDecimal cantChequesAnt) {
+        this.cantChequesAnt = cantChequesAnt;
     }
 
-    public BigDecimal getAbonosCreditos() {
-        return abonosCreditos;
+    public BigDecimal getMontoChequesAnt() {
+        return montoChequesAnt;
     }
 
-    public void setAbonosCreditos(BigDecimal abonosCreditos) {
-        this.abonosCreditos = abonosCreditos;
-    }
-
-    public BigDecimal getAnticipos() {
-        return anticipos;
-    }
-
-    public void setAnticipos(BigDecimal anticipos) {
-        this.anticipos = anticipos;
-    }
-
-    public BigDecimal getCantCheques() {
-        return cantCheques;
-    }
-
-    public void setCantCheques(BigDecimal cantCheques) {
-        this.cantCheques = cantCheques;
-    }
-
-    public BigDecimal getMontoCheques() {
-        return montoCheques;
-    }
-
-    public void setMontoCheques(BigDecimal montoCheques) {
-        this.montoCheques = montoCheques;
-    }
-
-    public BigDecimal getTransferenciasIN() {
-        return transferenciasIN;
-    }
-
-    public void setTransferenciasIN(BigDecimal transferenciasIN) {
-        this.transferenciasIN = transferenciasIN;
-    }
-
-    public BigDecimal getTransferenciasOUT() {
-        return transferenciasOUT;
-    }
-
-    public void setTransferenciasOUT(BigDecimal transferenciasOUT) {
-        this.transferenciasOUT = transferenciasOUT;
-    }
-
-    public BigDecimal getServicios() {
-        return servicios;
-    }
-
-    public void setServicios(BigDecimal servicios) {
-        this.servicios = servicios;
-    }
-
-    public BigDecimal getPrestamos() {
-        return prestamos;
-    }
-
-    public void setPrestamos(BigDecimal prestamos) {
-        this.prestamos = prestamos;
+    public void setMontoChequesAnt(BigDecimal montoChequesAnt) {
+        this.montoChequesAnt = montoChequesAnt;
     }
 
     public BigDecimal getSaldoAnterior() {
@@ -153,12 +97,36 @@ public class CorteCaja implements Serializable{
         this.saldoAnterior = saldoAnterior;
     }
 
+    public BigDecimal getCantChequesNuevos() {
+        return cantChequesNuevos;
+    }
+
+    public void setCantChequesNuevos(BigDecimal cantChequesNuevos) {
+        this.cantChequesNuevos = cantChequesNuevos;
+    }
+
+    public BigDecimal getMontoChequesNuevos() {
+        return montoChequesNuevos;
+    }
+
+    public void setMontoChequesNuevos(BigDecimal montoChequesNuevos) {
+        this.montoChequesNuevos = montoChequesNuevos;
+    }
+
     public BigDecimal getSaldoNuevo() {
         return saldoNuevo;
     }
 
     public void setSaldoNuevo(BigDecimal saldoNuevo) {
         this.saldoNuevo = saldoNuevo;
+    }
+
+    public String getComentarios() {
+        return comentarios;
+    }
+
+    public void setComentarios(String comentarios) {
+        this.comentarios = comentarios;
     }
 
     public BigDecimal getIdUserFk() {
@@ -169,13 +137,11 @@ public class CorteCaja implements Serializable{
         this.idUserFk = idUserFk;
     }
 
-    public String getComentarios() {
-        return comentarios;
+    public BigDecimal getIdStatusFk() {
+        return idStatusFk;
     }
 
-    public void setComentarios(String comentarios) {
-        this.comentarios = comentarios;
+    public void setIdStatusFk(BigDecimal idStatusFk) {
+        this.idStatusFk = idStatusFk;
     }
-    
-    
 }

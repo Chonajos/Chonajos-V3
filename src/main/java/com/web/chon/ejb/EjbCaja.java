@@ -40,12 +40,25 @@ public class EjbCaja implements NegocioCaja {
     public int updateMontoCaja(Caja c) {
         System.out.println("Caja: "+c);
         try {
-            Query query = em.createNativeQuery("UPDATE CAJA SET MONTO = ?, MONTO_MENUDEO = ?, MONTO_MAYOREO = ?, MONTO_CREDITOS = ? WHERE ID_CAJA_PK = ? ");
+            Query query = em.createNativeQuery("UPDATE CAJA SET MONTO = ?, MONTO_MENUDEO = ?, "
+                    + " MONTO_MAYOREO = ?, MONTO_CREDITOS = ? ,MONTO_CHEQUES=?, "
+                    + " CANT_CHEQUES=? ,ANTICIPOS = ?,TRANSFERENCIAS_IN = ?, TRANSFERENCIAS_OUT=?, "
+                    + " SERVICIOS = ?, PROVEDORES= ?, FALTANTE=?, SOBRANTE = ?"
+                    + " WHERE ID_CAJA_PK = ? ");
             query.setParameter(1, c.getMonto());
             query.setParameter(2, c.getMontoMenudeo());
             query.setParameter(3, c.getMontoMayoreo());
             query.setParameter(4, c.getMontoCredito());
-            query.setParameter(5, c.getIdCajaPk());
+            query.setParameter(5, c.getMontoCheques());
+            query.setParameter(6, c.getCantCheques());
+            query.setParameter(7, c.getMontoAnticipos());
+            query.setParameter(8, c.getTransferencias_IN());
+            query.setParameter(9, c.getTransferencias_OUT());
+            query.setParameter(10, c.getServicios());
+            query.setParameter(11, c.getProvedores());
+            query.setParameter(12, c.getFaltante());
+            query.setParameter(13, c.getSobrante());
+            query.setParameter(14, c.getIdCajaPk());
             return query.executeUpdate();
 
         } catch (Exception ex) {
@@ -59,6 +72,7 @@ public class EjbCaja implements NegocioCaja {
     @Override
     public List<Object[]> getCajas(BigDecimal idSucursalFk, BigDecimal tipo) {
        try {
+           System.out.println("Datos: "+idSucursalFk +tipo );
             Query query = em.createNativeQuery("select * from caja c where c.ID_SUCURSAL_FK = ? and TIPO = ?");
             query.setParameter(1, idSucursalFk);
             query.setParameter(2, tipo);

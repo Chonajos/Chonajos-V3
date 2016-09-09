@@ -9,6 +9,7 @@ import com.web.chon.dominio.CorteCaja;
 import com.web.chon.negocio.NegocioCorteCaja;
 import com.web.chon.util.Utilidades;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -59,6 +60,8 @@ public class ServiceCorteCaja implements IfaceCorteCaja{
             corte.setSaldoNuevo(object[14] == null ? null : new BigDecimal(object[14].toString()));
             corte.setComentarios(object[15] == null ? null : object[15].toString());
             corte.setIdUserFk(object[16] == null ? null : new BigDecimal(object[16].toString()));
+            corte.setFaltante(object[17] == null ? null : new BigDecimal(object[17].toString()));
+            corte.setSobrante(object[18] == null ? null : new BigDecimal(object[18].toString()));
         }
 
         return corte;
@@ -68,6 +71,47 @@ public class ServiceCorteCaja implements IfaceCorteCaja{
     public int insertCorte(CorteCaja cc) {
         getEjb();
         return ejb.insertCorte(cc);
+    }
+
+    @Override
+    public ArrayList<CorteCaja> getCortesByIdDestinoFk(BigDecimal idDestinoFK) {
+        getEjb();
+        ArrayList<CorteCaja> lstCortes= new ArrayList<CorteCaja>();
+        List<Object[]> lstObject = new ArrayList<Object[]>();
+        lstObject = ejb.getCortesByIdDestinoFk(idDestinoFK);
+        BigDecimal count = new BigDecimal(1);
+        for (Object[] object : lstObject) 
+        {
+            CorteCaja corte = new CorteCaja();
+            corte.setIdCorteCajaPk(object[0] == null ? null : new BigDecimal(object[0].toString()));
+            corte.setIdCajaFk(object[1] == null ? null : new BigDecimal(object[1].toString()));
+            corte.setFecha(object[2] == null ? null : (Date) object[2]);
+            corte.setVentasMenudeo(object[3] == null ? null : new BigDecimal(object[3].toString()));
+            corte.setVentasMenudeo(object[4] == null ? null : new BigDecimal(object[4].toString()));
+            corte.setAbonosCreditos(object[5] == null ? null : new BigDecimal(object[5].toString()));
+            corte.setAnticipos(object[6] == null ? null : new BigDecimal(object[6].toString()));
+            corte.setCantCheques(object[7] == null ? null : new BigDecimal(object[7].toString()));
+            corte.setMontoCheques(object[8] == null ? null : new BigDecimal(object[8].toString()));
+            corte.setTransferenciasIN(object[9] == null ? null : new BigDecimal(object[9].toString()));
+            corte.setServicios(object[10] == null ? null : new BigDecimal(object[10].toString()));
+            corte.setPrestamos(object[11] == null ? null : new BigDecimal(object[11].toString()));
+            corte.setTransferenciasOUT(object[12] == null ? null : new BigDecimal(object[12].toString()));
+            corte.setSaldoAnterior(object[13] == null ? null : new BigDecimal(object[13].toString()));
+            corte.setSaldoNuevo(object[14] == null ? null : new BigDecimal(object[14].toString()));
+            corte.setComentarios(object[15] == null ? null : object[15].toString());
+            corte.setIdUserFk(object[16] == null ? null : new BigDecimal(object[16].toString()));
+            corte.setFaltante(object[17] == null ? null : new BigDecimal(object[17].toString()));
+            corte.setSobrante(object[18] == null ? null : new BigDecimal(object[18].toString()));
+            corte.setIdStatusFk(object[19] == null ? null : new BigDecimal(object[19].toString()));
+            corte.setIdCajaDestinoFk(object[20] == null ? null : new BigDecimal(object[20].toString()));
+            corte.setNombreCajaOrigen(object[21] == null ? null : object[21].toString());
+            corte.setNumero(count);
+            count = count.add(new BigDecimal(1), MathContext.UNLIMITED);
+            lstCortes.add(corte);
+        }
+        return lstCortes;
+    
+    
     }
     
 }

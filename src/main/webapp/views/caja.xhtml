@@ -16,14 +16,22 @@
         <h:form id="formContent">
             <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <div class="form-group" align="right">
-                <p:commandButton value="Generar Salida" update=":formContent:tabla" ajax="true" oncomplete="PF('dlg').show();" />
+                <div>
+                <h:outputText  style="font-weight: bold !important" value ="Saldo Actual en Caja: $"/> 
+                <h:outputText  style="font-weight: bold !important; color: blue !important;" value ="#{beanCaja.saldoCaja}"> 
+                    <f:convertNumber pattern="#,###"/>
+                </h:outputText>
+                </div>
+                <div>
+                <p:commandButton value="Generar Salida" update=":formContent" ajax="true" oncomplete="PF('dlg').show();" />
+                </div>
             </div>
             <p:panel>
                 <p:dialog  id="dialogoSalida" header="Generar Salida" widgetVar="dlg" resizable="false">
                     <h:panelGrid columns="1" cellpadding="5">
                         <div class="form-group">
                             <p:outputLabel for="comboTipo" value="Selecciona un tipo de Operacion:" /> 
-                            <h:selectOneMenu  id="comboTipo" value="#{beanCaja.data.idTipoOperacionFk}" rendered="#{beanCaja.viewEstate =='init'}" disabled="#{beanCaja.usuario.perId != 1}">
+                            <h:selectOneMenu  id="comboTipo" value="#{beanCaja.data.idTipoOperacionFk}" rendered="#{beanCaja.viewEstate =='init'}" >
                                 <f:selectItem itemLabel="Selecciona una opción" itemValue="" />
                                 <f:selectItems value="#{beanCaja.listaOperaciones}" var="opera" itemLabel="#{opera.nombre}" itemValue="#{opera.idTipoOperacionPk}"/>
                                 <p:ajax event="change" listener="#{beanCaja.changeCombo()}" update=":formContent:fragmento1"/>
@@ -37,6 +45,7 @@
                                 <h:selectOneMenu  id="comboConcepto" value="#{beanCaja.data.idConceptoFk}" rendered="#{beanCaja.verCajas =='false'}" >
                                     <f:selectItem itemLabel="Selecciona una opción" itemValue="" />
                                     <f:selectItems value="#{beanCaja.listaConceptos}" var="concepto" itemLabel="#{concepto.nombre}" itemValue="#{concepto.idConceptoPk}"/>
+                                    <p:ajax event="change"  update="@this"/>
                                 </h:selectOneMenu>
                             </div>
                             <div class="form-group">
@@ -50,16 +59,16 @@
                             </div>
                         </p:fragment>
                         <div class="form-group">
-                            <h:outputLabel for="comentarios" value="Comentarios:" />
-                            <p:inputText maxlength="50" id="comentarios"  value="#{beanCaja.data.comentarios}">
-                            </p:inputText>
-                            <h:outputLabel for="Monto" value="monto:" />
+                            <h:outputLabel for="monto" value="Monto :" />
                             <p:inputText maxlength="8" id="monto"  value="#{beanCaja.data.monto}">
                                 <pe:keyFilter regEx="/[0-9_]/i"/>
                             </p:inputText>
+                            <h:outputLabel for="comentarios" value="Comentarios:" />
+                            <p:inputText maxlength="50" id="comentarios"  value="#{beanCaja.data.comentarios}">
+                            </p:inputText>
                         </div>
                         <div class="form-group">
-                            <p:commandButton value="Registrar" update=":formContent:tabla" action="#{beanCaja.generarSalida()}" oncomplete="PF('dlg').hide();"/>
+                            <p:commandButton value="Registrar" update=":formContent" action="#{beanCaja.generarSalida()}" oncomplete="PF('dlg').hide();"/>
                         </div>
                     </h:panelGrid>
                 </p:dialog> 

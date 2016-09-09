@@ -314,7 +314,7 @@ public class BeanBuscaCredito implements Serializable {
                         caja.setMonto(caja.getMonto().add(ac.getMontoAbono(), MathContext.UNLIMITED));
                         ifaceCaja.updateMontoCaja(caja);
                         reloadCaja();
-                        
+
                         setParameterTicket(ac, cliente);
                         generateReport(ac.getIdAbonoCreditoPk().intValue(), "abono.jasper");
                         abono.reset();
@@ -417,9 +417,13 @@ public class BeanBuscaCredito implements Serializable {
                             } else {
                                 JsfUtil.addErrorMessageClean("Se ha producido un error al liquidar todo el folio de credito: " + ac.getIdCreditoFk());
                             }
-
                         }
                         if (ifaceDocumentos.insertarDocumento(d) == 1) {
+                            reloadCaja();
+                            caja.setCantCheques(caja.getCantCheques().add(new BigDecimal(1), MathContext.UNLIMITED));
+                            caja.setMontoCheques(caja.getMontoCheques().add(ac.getMontoAbono(), MathContext.UNLIMITED));
+                            ifaceCaja.updateMontoCaja(caja);
+                            reloadCaja();
                             System.out.println("Se ingreso corractamente el documento por cobrar");
                         } else {
                             System.out.println("Ocurrio un error al ingresar documento por cobrar");
@@ -447,6 +451,11 @@ public class BeanBuscaCredito implements Serializable {
                     c.setStatusACuenta(new BigDecimal(1));
                     if (ifaceCredito.updateACuenta(c) == 1) {
                         JsfUtil.addSuccessMessageClean("Monto a Cuenta Registrado");
+                        reloadCaja();
+                        caja.setMontoCredito(caja.getMontoCredito().add(ac.getMontoAbono(), MathContext.UNLIMITED));
+                        caja.setMonto(caja.getMonto().add(ac.getMontoAbono(), MathContext.UNLIMITED));
+                        ifaceCaja.updateMontoCaja(caja);
+                        reloadCaja();
                         ac.setIdCreditoFk(c.getIdCreditoPk());
                         ac.setMontoAbono(dataAbonar.getSaldoACuenta());
                         ac.setIdtipoAbonoFk(abono.getIdtipoAbonoFk());

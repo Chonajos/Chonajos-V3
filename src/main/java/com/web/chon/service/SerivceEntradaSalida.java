@@ -5,8 +5,7 @@
  */
 package com.web.chon.service;
 
-import com.web.chon.dominio.EntradaSalida;
-import com.web.chon.negocio.NegocioEntradaSalida;
+import com.web.chon.dominio.OperacionesCaja;
 import com.web.chon.util.Utilidades;
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -16,6 +15,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.stereotype.Service;
+import com.web.chon.negocio.NegocioOperacionesCaja;
 
 /**
  *
@@ -23,12 +23,12 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class SerivceEntradaSalida implements IfaceEntradaSalida {
-    NegocioEntradaSalida ejb;
+    NegocioOperacionesCaja ejb;
     private void getEjb() 
     {
         if (ejb == null) {
             try {
-                ejb = (NegocioEntradaSalida) Utilidades.getEJBRemote("ejbEntradaSalida", NegocioEntradaSalida.class.getName());
+                ejb = (NegocioOperacionesCaja) Utilidades.getEJBRemote("ejbEntradaSalida", NegocioOperacionesCaja.class.getName());
             } catch (Exception ex) {
                 Logger.getLogger(SerivceEntradaSalida.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -36,14 +36,14 @@ public class SerivceEntradaSalida implements IfaceEntradaSalida {
     }
 
     @Override
-    public ArrayList<EntradaSalida> getMovimientosByIdCaja(BigDecimal idCaja, String fechaInicio, String fechaFin) {
+    public ArrayList<OperacionesCaja> getMovimientosByIdCaja(BigDecimal idCaja, String fechaInicio, String fechaFin) {
          getEjb();
-        ArrayList<EntradaSalida> lstmovimientos = new ArrayList<EntradaSalida>();
+        ArrayList<OperacionesCaja> lstmovimientos = new ArrayList<OperacionesCaja>();
         List<Object[]> lstObject = new ArrayList<Object[]>();
         lstObject = ejb.getMovimientosByIdCaja(idCaja, fechaInicio, fechaFin);
         BigDecimal count= new BigDecimal(0);
         for (Object[] object : lstObject) {
-            EntradaSalida ent = new EntradaSalida();
+            OperacionesCaja ent = new OperacionesCaja();
             ent.setIdEntradaSalidaPk(object[0] == null ? null : new BigDecimal(object[0].toString()));
             ent.setIdCajaFk(object[1] == null ? null : new BigDecimal(object[1].toString()));
             ent.setTipoES(object[2] == null ? null : new BigDecimal(object[2].toString()));
@@ -67,7 +67,7 @@ public class SerivceEntradaSalida implements IfaceEntradaSalida {
     }
 
     @Override
-    public int insertaMovimiento(EntradaSalida es) {
+    public int insertaMovimiento(OperacionesCaja es) {
       getEjb();
       return ejb.insertaMovimiento(es);
     
