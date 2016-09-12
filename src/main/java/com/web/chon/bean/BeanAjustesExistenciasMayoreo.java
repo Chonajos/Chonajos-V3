@@ -1,22 +1,34 @@
 package com.web.chon.bean;
 
 import com.web.chon.dominio.AjusteExistenciaMenudeo;
+import com.web.chon.dominio.Bodega;
+import com.web.chon.dominio.EntradaMercancia;
 import com.web.chon.dominio.ExistenciaMenudeo;
+import com.web.chon.dominio.ExistenciaProducto;
 import com.web.chon.dominio.MantenimientoPrecios;
+import com.web.chon.dominio.Provedor;
 import com.web.chon.dominio.Subproducto;
 import com.web.chon.dominio.Sucursal;
+import com.web.chon.dominio.TipoConvenio;
 import com.web.chon.dominio.TipoEmpaque;
 import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceAjusteExistenciaMenudeo;
+import com.web.chon.service.IfaceCatBodegas;
+import com.web.chon.service.IfaceCatProvedores;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceEmpaque;
+import com.web.chon.service.IfaceEntradaMercancia;
 import com.web.chon.service.IfaceExistenciaMenudeo;
 import com.web.chon.service.IfaceMantenimientoPrecio;
+import com.web.chon.service.IfaceNegocioExistencia;
 import com.web.chon.service.IfaceSubProducto;
+import com.web.chon.service.IfaceTipoCovenio;
 import com.web.chon.util.JsfUtil;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -31,7 +43,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Scope("view")
-public class BeanAjustesExistenciasMenudeo implements Serializable {
+public class BeanAjustesExistenciasMayoreo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

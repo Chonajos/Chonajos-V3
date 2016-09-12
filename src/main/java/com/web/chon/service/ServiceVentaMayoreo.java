@@ -24,41 +24,41 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
-    
+
     NegocioVentaMayoreo ejb;
-    
+
     private void getEjb() {
         try {
             if (ejb == null) {
                 ejb = (NegocioVentaMayoreo) Utilidades.getEJBRemote("ejbVentaMayoreo", NegocioVentaMayoreo.class.getName());
             }
-            
+
         } catch (Exception ex) {
             Logger.getLogger(ServiceVentaMayoreo.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     @Override
     public int insertarVenta(VentaMayoreo venta) {
         getEjb();
         return ejb.insertarVenta(venta);
     }
-    
+
     @Override
     public int getNextVal() {
         getEjb();
         return ejb.getNextVal();
     }
-    
+
     @Override
     public ArrayList<RelacionOperacionesMayoreo> getVentasByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idStatusVenta, BigDecimal idTipoVenta) {
-        
+
         getEjb();
         ArrayList<RelacionOperacionesMayoreo> lstVenta = new ArrayList<RelacionOperacionesMayoreo>();
         List<Object[]> lstObject = ejb.getVentasByInterval(TiempoUtil.getFechaDDMMYYYY(fechaInicio), TiempoUtil.getFechaDDMMYYYY(fechaFin), idSucursal, idStatusVenta, idTipoVenta);
         BigDecimal ganacias = new BigDecimal(0);
         for (Object[] obj : lstObject) {
-            
+
             RelacionOperacionesMayoreo venta = new RelacionOperacionesMayoreo();
             venta.setIdVentaPk(new BigDecimal(obj[0].toString()));
             venta.setIdClienteFk(new BigDecimal(obj[1].toString()));
@@ -82,14 +82,22 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
             venta.setGanciaVenta(venta.getTotalVenta().subtract(ganacias));
             lstVenta.add(venta);
         }
-        
+
         return lstVenta;
     }
-    
+
     @Override
     public int getVentaSucursal(BigDecimal idSucursal) {
         getEjb();
         return ejb.getVentaSucursal(idSucursal);
     }
-    
+
+    @Override
+    public int updateEstatusVentaByFolioSucursalAndIdSucursal(BigDecimal folioSucursal, BigDecimal idSucursal, BigDecimal estatusVenta) {
+        getEjb();
+
+        return ejb.updateEstatusVentaByFolioSucursalAndIdSucursal(folioSucursal, idSucursal, estatusVenta);
+
+    }
+
 }

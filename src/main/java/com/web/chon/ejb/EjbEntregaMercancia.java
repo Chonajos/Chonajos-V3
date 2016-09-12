@@ -27,11 +27,17 @@ public class EjbEntregaMercancia implements NegocioEntregaMercancia {
     @Override
     public int insertar(EntregaMercancia entregaMercancia) {
         try {
-//            System.out.println("insert : " + producto.getNombreProducto() + " " + producto.getDescripcionProducto());
-            Query query = em.createNativeQuery("insert into PRODUCTO (ID_PRODUCTO_PK,NOMBRE_PRODUCTO,DESCRIPCION_PRODUCTO) values(?,?,?)");
-//            query.setParameter(1, producto.getIdProductoPk());
-//            query.setParameter(2, producto.getNombreProducto());
-//            query.setParameter(3, producto.getDescripcionProducto());
+            System.out.println("insert : " + entregaMercancia.toString());
+            Query query = em.createNativeQuery("INSERT INTO ENTREGA_MERCANCIA"
+                    + " (ID_ENTREGA_MERCANCIA_PK,ID_VP_MENUDEO_FK,ID_VP_MAYOREO_FK,ID_USUARIO_FK,FECHA,EMPAQUES_ENTREGADOS,KILOS_ENTREGADOS,OBSERVACIONES) "
+                    + "VALUES(S_ENTREGA_MERCANCIA.NextVal,?,?,?,SYSDATE,?,?,?)");
+
+            query.setParameter(1, entregaMercancia.getIdVPMenudeo());
+            query.setParameter(2, entregaMercancia.getIdVPMayoreo());
+            query.setParameter(3, entregaMercancia.getIdUsuario());
+            query.setParameter(4, entregaMercancia.getEmpaquesEntregar());
+            query.setParameter(5, entregaMercancia.getKilosEntregar());
+            query.setParameter(6, entregaMercancia.getObservaciones());
 
             return query.executeUpdate();
 
@@ -68,13 +74,14 @@ public class EjbEntregaMercancia implements NegocioEntregaMercancia {
                     + "                                        SV.NOMBRE_STATUS ,VM.ID_SUCURSAL_FK, "
                     + "                                        (SELECT NVL(SUM(EM.EMPAQUES_ENTREGADOS),0) FROM ENTREGA_MERCANCIA EM WHERE EM.ID_VP_MAYOREO_FK =VMP.ID_V_M_P_PK) AS EMPAQUES_ENTREGADOS, "
                     + "                                        (SELECT NVL(SUM(EM.KILOS_ENTREGADOS),0) FROM ENTREGA_MERCANCIA EM WHERE EM.ID_VP_MAYOREO_FK =VMP.ID_V_M_P_PK) AS KILOS_ENTREGADOS,VM.ID_TIPO_VENTA_FK,TV.NOMBRE_TIPO_VENTA "
+                    +"                                          ,VMP.CANTIDAD_EMPAQUE-(SELECT NVL(SUM(EM.EMPAQUES_ENTREGADOS),0) FROM ENTREGA_MERCANCIA EM WHERE EM.ID_VP_MAYOREO_FK =VMP.ID_V_M_P_PK) AS EMPAQUES_RESTANTES "
                     + "                                        FROM VENTAMAYOREOPRODUCTO VMP "
                     + "                                        INNER JOIN SUBPRODUCTO SP ON SP.ID_SUBPRODUCTO_PK = VMP.ID_SUBPRODUCTO_FK "
                     + "                                        INNER JOIN VENTA_MAYOREO VM ON VM.ID_VENTA_MAYOREO_PK = VMP.ID_VENTA_MAYOREO_FK AND VM.VENTASUCURSAL =? AND VM.ID_SUCURSAL_FK = ? "
                     + "                                        INNER JOIN CLIENTE C ON C.ID_CLIENTE = VM.ID_CLIENTE_FK "
                     + "                                        INNER JOIN STATUS_VENTA SV ON SV.ID_STATUS_PK = VM.ID_STATUS_FK "
                     + "                                        INNER JOIN TIPO_EMPAQUE TE ON TE.ID_TIPO_EMPAQUE_PK =VMP.ID_TIPO_EMPAQUE_FK "
-                    + "                                        INNER JOIN TIPO_VENTA TV ON TV.ID_TIPO_VENTA_PK = VM.ID_TIPO_VENTA_FK ");
+                    + "                                        INNER JOIN TIPO_VENTA TV ON TV.ID_TIPO_VENTA_PK = VM.ID_TIPO_VENTA_FK ORDER BY EMPAQUES_RESTANTES DESC");
 
             query.setParameter(1, idFolioSucursal);
             query.setParameter(2, idSucursal);
@@ -86,6 +93,26 @@ public class EjbEntregaMercancia implements NegocioEntregaMercancia {
             return null;
         }
 
+    }
+
+    @Override
+    public List<Object[]> getByIdVentaMayoreoProducto(BigDecimal idVentaMayoreoProducto) {
+
+        try {
+
+            Query query = em.createNativeQuery("select ID_ENTREGA_MERCANCIA_PK, ID_VP_MENUDEO_FK, ID_VP_MAYOREO_FK, ID_USUARIO_FK, FECHA, EMPAQUES_ENTREGADOS, KILOS_ENTREGADOS, OBSERVACIONES, "
+                    + "(U.NOMBRE_USUARIO || ' ' || U.APATERNO_USUARIO || ' ' || U.AMATERNO_USUARIO) AS NOMBRE_USUARIO "
+                    + "        from ENTREGA_MERCANCIA EM INNER JOIN USUARIO U ON U.ID_USUARIO_PK = EM.ID_USUARIO_FK "
+                    + "        WHERE ID_VP_MAYOREO_FK = ?");
+
+            query.setParameter(1, idVentaMayoreoProducto);
+
+            return query.getResultList();
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbEntregaMercancia.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 
 }

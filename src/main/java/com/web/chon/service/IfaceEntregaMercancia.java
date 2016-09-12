@@ -30,4 +30,11 @@ public interface IfaceEntregaMercancia {
      * @return 
      */
     public int insert(EntregaMercancia entregaMercancia);
+    
+    /**
+     * Obtiene los datos de las entregas de mercancia por medio del id de venta 
+     * @param idVentaMayoreoProducto
+     * @return 
+     */
+    public ArrayList<EntregaMercancia> getByIdVentaMayoreoProducto(BigDecimal idVentaMayoreoProducto);
 }

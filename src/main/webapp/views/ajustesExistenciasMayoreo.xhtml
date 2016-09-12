@@ -1,0 +1,175 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="./../templates/main.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content">
+
+        <h:form id="formContent">
+            <div>
+                <h3>#{beanAjustesExistenciasMenudeo.title}</h3>
+            </div>
+            <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
+            <p:panel rendered="#{beanAjustesExistenciasMenudeo.viewEstate =='init'}">
+                <div class="container-fluid">
+                    <div class="form-group">
+
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="sucursalFiltro" value ="Sucursal:"/> 
+                            <h:selectOneMenu  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanAjustesExistenciasMenudeo.data.idSucursalFk}" disabled="#{beanAjustesExistenciasMenudeo.usuario.getPerId() != 1}">
+                                <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="" />
+                                <f:selectItems value="#{beanAjustesExistenciasMenudeo.listaSucursales}" var="sucursalita" itemLabel="#{sucursalita.nombreSucursal}" itemValue="#{sucursalita.idSucursalPk}"/>
+                                <p:ajax event="change" update=":formContent:table" listener="#{beanAjustesExistenciasMenudeo.buscaExistencias()}" />
+                            </h:selectOneMenu>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="autocompletePoducto" value ="Producto:" /> 
+                            <p:autoComplete  placeholder="Seleccione un Producto" id="autocompletePoducto"   styleClass="autocomplete-input-text-media"
+                                             value="#{beanAjustesExistenciasMenudeo.subProducto}" completeMethod="#{beanAjustesExistenciasMenudeo.autoComplete}" forceSelection="true" var="producto"  inputStyle="width: 200px"
+                                             itemLabel="#{producto.nombreSubproducto}"
+                                             itemValue="#{producto.idSubproductoPk}" converter="#{productoConverter}">
+                                <p:ajax event="itemSelect" update=":formContent:table" listener="#{beanAjustesExistenciasMenudeo.buscaExistencias()}"/>
+                                <p:ajax event="change" update=":formContent:table" listener="#{beanAjustesExistenciasMenudeo.buscaExistencias()}"/>
+                            </p:autoComplete>
+                            <pe:keyFilter for="autocompletePoducto" regEx="/[a-z0-9-_Ã±\s]/i" />
+                        </div>
+
+                        <!--                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="txtTipoEmpaque" value ="Empaque:"/> 
+                                                    <h:selectOneMenu  id="txtTipoEmpaque" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanAjustesExistenciasMenudeo.data.idTipoEmpaqueFK}" >
+                                                        <f:selectItem itemLabel="Seleccione un empaque" itemValue="" />
+                                                        <f:selectItems value="#{beanAjustesExistenciasMenudeo.lstTipoEmpaque}" var="empaque" itemLabel="#{empaque.nombreEmpaque}" itemValue="#{empaque.idTipoEmpaquePk}"/>
+                                                        <p:ajax event="change" update=":formContent:table" listener="#{beanAjustesExistenciasMenudeo.buscaExistencias()}"/>
+                                                    </h:selectOneMenu>
+                                                </div>-->
+                    </div>
+
+                    <div class="col-lg-11 col-md-12 col-sm-12 col-xs-12">
+                        <p:dataTable id="table" var="model" value="#{beanAjustesExistenciasMenudeo.model}" editable="true" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." >
+                            <p:ajax event="rowEdit" listener="#{beanAjustesExistenciasMenudeo.onRowEdit}" update="table" />
+                            <p:ajax event="rowEditCancel" listener="#{beanAjustesExistenciasMenudeo.onRowCancel}" update="table" />
+                            <p:column headerText="Clave del Producto"   width="75px;" class="alignCenter">
+                                <h:outputText value="#{model.idSubProductoPk}"/>
+                            </p:column>
+
+                            <p:column headerText="Producto" width="120px;" class="alignLeft">
+                                <h:outputText value="#{model.nombreProducto}" >
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Empaque" width="120px;" class="alignLeft" rendered="false">
+                                <h:outputText value="#{model.nombreEmpaque}" />
+                            </p:column>
+                            <p:column headerText="Cantidad Empaque" width="80px;" class="alignLeft" rendered="false">
+                                <p:cellEditor>
+                                    <f:facet name="output" class="alignRight">
+                                        <h:outputText value="#{model.cantidadEmpaque}" >
+                                            <f:convertNumber pattern="#,##0.00" />
+                                        </h:outputText>
+                                    </f:facet>
+                                    <f:facet name="input" class="alignRight">
+                                        <p:inputText id="empaqueIn" value="#{model.cantidadEmpaque}" maxlength="7" style="width:100%">
+                                            <f:convertNumber pattern="#,##0.00" />
+                                        </p:inputText>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Existencia(Kg.)" width="80px;" class="alignRight">
+                                <h:outputText value="#{model.kilos}" style="align-content: center" class="alignRight">
+                                    <f:convertNumber pattern="#,##0.00" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Entrada/Salida" width="125px;" class="alignLeft">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{model.salidaEntrada}" />
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneRadio value="#{model.salidaEntrada}">
+                                            <f:selectItem itemLabel="Entrada" itemValue="entrada"/>
+                                            <f:selectItem itemLabel="Salida" itemValue="salida" />
+                                            <p:ajax event="change" update="@this"/>
+                                        </p:selectOneRadio>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Kg. a Ajustar" width="55px;" class="alignRight">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{model.kilosAjustados}" >
+                                            <f:convertNumber pattern="#,##0.00" />
+                                        </h:outputText>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText id="kiloAjustadossIn" value="#{model.kilosAjustados}" maxlength="7" style="width:100%" required="true">
+                                            <f:convertNumber pattern="#,##0.00" />
+                                        </p:inputText>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Motivo de Ajuste" width="85px;" class="alignLeft">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText id="outputMotivo" value="Selecciona" style="width:100%"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <h:selectOneMenu  id="comboMotivoOupuInput" class="col-lg-12 col-md-8 col-sm-8 col-xs-12 " value="#{model.motivoAjuste}"  required="true">
+                                            <f:selectItem itemLabel="Deshidratación" itemValue="1" />
+                                            <f:selectItem itemLabel="Empaque" itemValue="2" />
+                                            <f:selectItem itemLabel="Desecho o basura" itemValue="3" />
+                                            <f:selectItem itemLabel="Robo" itemValue="4" />
+                                            <f:selectItem itemLabel="Mercancia no Registrada" itemValue="5" />
+                                            <f:selectItem itemLabel="Otro" itemValue="6" />
+                                        </h:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Observaciones" width="105px;" class="alignLeft">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{model.observaciones}" />
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText id="observacionesIn" value="#{model.observaciones}" maxlength="249" style="width:100%"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column width="40px;" headerText="Editar" class="alignCenter" rendered="#{beanAjustesExistenciasMenudeo.usuario.perId == 1}">
+                                <p:rowEditor/>
+                            </p:column>
+
+
+                            <!--                            <p:columnGroup type="footer">
+                                                            <p:row>
+                                                                <p:column colspan="4" style="text-align:right" footerText="Totales:" />
+                                                                <p:column colspan="1">
+                                                                    <f:facet name="footer">
+                                                                        <h:outputText value="{beanAjustesExistenciasMenudeo.totalCajas}">
+                                                                            <f:convertNumber for="totalVenta" pattern="#,##0.00"/>
+                                                                        </h:outputText>
+                                                                    </f:facet>
+                                                                </p:column>
+                                                                <p:column colspan="1">
+                                                                    <f:facet name="footer">
+                                                                        <h:outputText value="{beanAjustesExistenciasMenudeo.totalKilos}">
+                                                                            <f:convertNumber for="totalVenta" pattern="#,##0.00"/>
+                                                                        </h:outputText>
+                                                                    </f:facet>
+                                                                </p:column>
+                                                                <p:column colspan="4" />
+                                                            </p:row>
+                                                        </p:columnGroup>-->
+                        </p:dataTable>
+                    </div>
+                </div>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>
+

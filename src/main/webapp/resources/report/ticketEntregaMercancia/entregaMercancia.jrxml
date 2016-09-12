@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
+<!-- 2016-09-12T09:55:17 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="entregaMercancia" pageWidth="219" pageHeight="1224" columnWidth="179" leftMargin="20" rightMargin="20" topMargin="4" bottomMargin="20" isIgnorePagination="true" uuid="cce07992-6ec7-4616-8caf-ceb4ee12975b">
+	<property name="ireport.zoom" value="2.5937424601000028"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="69"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<subDataset name="dataset1" uuid="98370534-40ba-4932-9815-f4270ac51f8a">
+		<queryString language="SQL">
+			<![CDATA[]]>
+		</queryString>
+		<field name="_THIS" class="java.lang.String"/>
+	</subDataset>
+	<parameter name="fechaEntrega" class="java.lang.String">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+	</parameter>
+	<parameter name="folioVenta" class="java.lang.String"/>
+	<parameter name="cliente" class="java.lang.String"/>
+	<parameter name="usuarioEntrega" class="java.lang.String"/>
+	<parameter name="productos" class="java.util.List"/>
+	<parameter name="nombreTicket" class="java.lang.String"/>
+	<parameter name="labelFecha" class="java.lang.String"/>
+	<parameter name="labelFolio" class="java.lang.String"/>
+	<parameter name="labelSucursal" class="java.lang.String"/>
+	<parameter name="telefonos" class="java.lang.String"/>
+	<parameter name="totalSalida" class="java.lang.String"/>
+	<parameter name="totalRemanente" class="java.lang.String"/>
+	<parameter name="totalEmpaques" class="java.lang.String"/>
+	<parameter name="comentarios" class="java.lang.String"/>
+	<variable name="fechaVenta" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="91" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="17" width="179" height="16" uuid="2992a9dd-f9dd-4e9d-bf14-8b1d06b0f593"/>
+				<textElement textAlignment="Center">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[COMERCIALIZADORA Y EXPORTADORA CHONAJOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="2" y="30" width="177" height="14" uuid="edba9a9e-5224-4f6c-bf53-21aff6c666ec"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[S DE RL DE CV]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="68" y="77" width="83" height="14" uuid="6e57c4b1-dfa7-4eba-a047-8b089afdeb7c"/>
+				<textElement textAlignment="Left">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fechaEntrega}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="0" y="55" width="179" height="14" uuid="05d247b4-4f8c-41f7-aac5-8462936538c4"/>
+				<textElement textAlignment="Center">
+					<font size="10" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nombreTicket}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1" y="77" width="68" height="14" uuid="c2180276-be42-419b-bbd2-140cc6030216"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{labelFecha}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="2" y="43" width="177" height="14" uuid="aaea60dc-87cb-4ea6-b2cb-40ae00112a02"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{labelSucursal}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="43" splitType="Stretch">
+			<textField>
+				<reportElement x="38" y="15" width="137" height="14" uuid="11a3db79-a67a-4727-ada1-73b599dac3c4"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{cliente}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="15" width="41" height="14" uuid="7025e223-a60e-4254-b109-d888be23e7fa"/>
+				<textElement textAlignment="Left">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Cliente:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="68" y="0" width="94" height="14" uuid="f1054343-5398-4da7-bbbd-d49445d7b31b"/>
+				<textElement textAlignment="Left">
+					<font size="10" isBold="false" isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{folioVenta}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="29" width="52" height="14" uuid="a517a38f-6e75-4b3a-8359-49bff4a73fff"/>
+				<textElement textAlignment="Left">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Entrega:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="39" y="29" width="127" height="14" uuid="3bd7f144-80fc-4206-9455-03272186d135"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{usuarioEntrega}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1" y="0" width="68" height="14" uuid="6a2ab568-f51e-4c1f-911d-13ce7bdcc253"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{labelFolio}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="28" splitType="Stretch">
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="1" y="0" width="84" height="14" uuid="3de5b056-e0b4-4452-ac39-0490692c29c9"/>
+				<textElement textAlignment="Left">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[PRODUCTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="85" y="0" width="60" height="14" uuid="1fd357bf-c36e-4cc6-b93f-93d4955f97b7"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[REMANENTE]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="11" width="179" height="1" uuid="23ea086d-93f9-4078-a46f-2093a5a5bea2"/>
+			</line>
+			<staticText>
+				<reportElement x="145" y="0" width="29" height="14" uuid="154e5d4f-f2e1-4322-acc4-c7f05c4fc108"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[SALIDA]]></text>
+			</staticText>
+			<componentElement>
+				<reportElement x="1" y="13" width="178" height="13" uuid="34e1bda9-3863-49ce-966c-80f124711798"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="dataset1" uuid="5498b2ef-03e0-466a-9339-949f4a310948">
+						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{productos})]]></dataSourceExpression>
+					</datasetRun>
+					<jr:listContents height="13" width="178">
+						<textField isStretchWithOverflow="true">
+							<reportElement stretchType="RelativeToBandHeight" x="0" y="1" width="178" height="12" uuid="a8c5c589-8d6f-4ebe-965d-41c8e2e0a555"/>
+							<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+								<pen lineWidth="0.25" lineStyle="Dotted" lineColor="#000000"/>
+								<topPen lineWidth="0.25" lineStyle="Dotted" lineColor="#000000"/>
+								<leftPen lineWidth="0.25" lineStyle="Dotted" lineColor="#000000"/>
+								<bottomPen lineWidth="0.25" lineStyle="Dotted" lineColor="#000000"/>
+								<rightPen lineWidth="0.25" lineStyle="Dotted" lineColor="#000000"/>
+							</box>
+							<textElement markup="none">
+								<font size="8" isBold="true"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{_THIS}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="73" splitType="Stretch">
+			<textField>
+				<reportElement x="2" y="51" width="177" height="14" uuid="910f5e7e-02a1-45fd-b282-7a6834e518c5"/>
+				<textElement textAlignment="Center">
+					<font size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{telefonos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="145" y="0" width="35" height="13" uuid="ba14b9a0-6241-490a-a3a6-0d74835220da">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$P{totalSalida}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="94" y="0" width="45" height="13" uuid="9e07d8da-f5c3-49c1-89be-c52e89d85e50">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$P{totalRemanente}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="2" y="16" width="177" height="14" isPrintWhenDetailOverflows="true" uuid="90415edd-f6d0-485e-9584-4907ec2d6ef5">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Cajas/Bultos totales: "+$P{totalEmpaques}+" Cajas/Bultos restantes: "+$P{totalRemanente}+""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="2" y="34" width="177" height="14" uuid="83f04e89-9f12-4a73-867d-031f53a48096"/>
+				<textElement textAlignment="Center">
+					<font size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{comentarios}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
