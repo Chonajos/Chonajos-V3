@@ -1,7 +1,6 @@
 
 package com.web.chon.service;
 
-import com.web.chon.dominio.GestionCredito;
 import com.web.chon.dominio.ResultadoGestion;
 import java.math.BigDecimal;
 import java.util.ArrayList;

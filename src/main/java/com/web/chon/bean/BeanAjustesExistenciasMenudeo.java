@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
 
 /**
  *
- * @author freddy
+ * @author juan de la cruz
  */
 @Component
 @Scope("view")
@@ -93,8 +93,6 @@ public class BeanAjustesExistenciasMenudeo implements Serializable {
 
     public void onRowEdit(RowEditEvent event) {
 
-        System.out.println("onrow edit");
-
         ExistenciaMenudeo existenciaMenudeoOld = new ExistenciaMenudeo();
         ExistenciaMenudeo existenciaMenudeoNew = new ExistenciaMenudeo();
         MantenimientoPrecios mantenimientoPrecios = new MantenimientoPrecios();
@@ -104,7 +102,6 @@ public class BeanAjustesExistenciasMenudeo implements Serializable {
         existenciaMenudeoOld = ifaceExistenciaMenudeo.getExistenciasMenudeoById(existenciaMenudeoNew.getIdExMenPk());
 
         mantenimientoPrecios = ifaceMantenimientoPrecio.getMantenimientoPrecioById(existenciaMenudeoNew.getIdSubProductoPk(), existenciaMenudeoNew.getIdTipoEmpaqueFK().intValue(), existenciaMenudeoNew.getIdSucursalFk().intValue());
-        System.out.println("salidaEntrada: " + existenciaMenudeoNew.getSalidaEntrada());
 
         if (existenciaMenudeoNew.getSalidaEntrada().trim().equalsIgnoreCase("Entrada")) {
             existenciaMenudeoNew.setKilos(existenciaMenudeoNew.getKilos().add(existenciaMenudeoNew.getKilosAjustados()));
@@ -136,7 +133,7 @@ public class BeanAjustesExistenciasMenudeo implements Serializable {
             }
         }
 
-        JsfUtil.addSuccessMessage("Se Modifico el Registro Existosamente.");
+        JsfUtil.addSuccessMessage("Se Modifico el Registro Exitosamente.");
 
         buscaExistencias();
     }

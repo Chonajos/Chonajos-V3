@@ -25,6 +25,8 @@ html{
     margin-right: 0px;
 }
 
+
+
 .calendario input 
 {
     width:105px;
@@ -163,6 +165,25 @@ div label{
 /*Letra mas chica en combos*/
 select{
     font-size: 0.8em !important;
+}
+
+.selects .ui-selectonemenu-list-item {
+	width: 99px !important;
+	font-size: 10px !important;
+	font-family: Verdana, sans-serif;
+}
+
+.selects .ui-state-highlight, .ui-widget-content .ui-state-highlight,
+	.ui-widget-header .ui-state-highlight {
+	color: #3A3232;
+	width: auto !important;
+	background-image: linear-gradient(to bottom, #EDECED, #EDECED);
+}
+
+.selects .ui-widget-content .ui-state-hover {
+	color: #3A3232;
+	width: auto !important;
+	background-image: linear-gradient(to bottom, #EDECED, #EDECED);
 }
 /*cortar label */
 /*div label { 

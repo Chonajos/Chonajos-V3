@@ -39,7 +39,7 @@ import org.springframework.stereotype.Component;
 
 /**
  *
- * @author freddy
+ * @author Juan de la Cruz
  */
 @Component
 @Scope("view")
