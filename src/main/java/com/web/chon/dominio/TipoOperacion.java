@@ -15,16 +15,33 @@ import java.math.BigDecimal;
 public class TipoOperacion implements Serializable{
     private static final long serialVersionUID = 1L;
     private BigDecimal idTipoOperacionPk;
+    private int numero;
     private String nombre;
     private String descripcion;
+    private BigDecimal montoTotal;
 
     @Override
     public String toString() {
         return "TipoOperacion{" + "idTipoOperacionPk=" + idTipoOperacionPk + ", nombre=" + nombre + ", descripcion=" + descripcion + '}';
     }
 
+    public int getNumero() {
+        return numero;
+    }
+
+    public void setNumero(int numero) {
+        this.numero = numero;
+    }
+
     
-    
+    public BigDecimal getMontoTotal() {
+        return montoTotal;
+    }
+
+    public void setMontoTotal(BigDecimal montoTotal) {
+        this.montoTotal = montoTotal;
+    }
+
     public BigDecimal getIdTipoOperacionPk() {
         return idTipoOperacionPk;
     }

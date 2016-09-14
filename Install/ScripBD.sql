@@ -733,8 +733,8 @@ INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Pago de Servicios', 0,'90.7','/views/pagoServicios.xhtml');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Ajuste de Caja', 0,'90.8','/views/ajusteCaja.xhtml');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Transferencias', 0,'90.9','/views/transferencias.xhtml');
-INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Depósitos Bancarios', 0,'90.10','/depositosBancarios/.xhtml');
-
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Depósitos Bancarios', 0,'90.10','/views/depositosBancarios.xhtml');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Recibir Transferencias', 0,'90.11','/views/recibirTransferencias.xhtml');
 
 
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(1,1);

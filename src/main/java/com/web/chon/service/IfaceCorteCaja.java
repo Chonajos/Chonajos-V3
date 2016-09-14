@@ -20,5 +20,6 @@ public interface IfaceCorteCaja {
     public int getNextVal();
     public ArrayList<CorteCaja> getCortesByIdCajaFk(BigDecimal idDestinoFK,String fechaIni,String fechaFin);
     public  CorteCaja getCorteByidPk(BigDecimal idPk);
+    public CorteCaja getLastCorteByCaja(BigDecimal idCajaPk);
     
 }

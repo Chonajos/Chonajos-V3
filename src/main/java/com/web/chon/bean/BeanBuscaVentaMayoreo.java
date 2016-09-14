@@ -62,7 +62,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     private IfaceCaja ifaceCaja;
     @Autowired
     private IfaceOperacionesCaja ifaceOperacionesCaja;
-    
+
     private ArrayList<BuscaVenta> model;
     private Usuario usuario;
     private Caja caja;
@@ -231,32 +231,37 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     }
 
     public void updateVenta() {
-        System.out.println("Status Venta :" + data.getStatusFK());
-        if (data.getStatusFK() == 2) {
-            JsfUtil.addErrorMessageClean("Error, la venta ya se encuentra pagada");
-        } else if (data.getIdVenta().intValue() != idVentaTemporal) {
-            JsfUtil.addErrorMessageClean("No coincide el numero de venta");
-        } else if (ifaceBuscaVenta.updateStatusVentaMayoreo(data.getIdVenta().intValue(), usuario.getIdUsuarioPk().intValue()) == 1) {
-            System.out.println("Se cambió el estatus");
+        if (opcaja.getIdCajaFk() != null) {
 
-            opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
-            opcaja.setMonto(totalVenta);
-            if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
-                setParameterTicket(data.getFolioSucursal().intValue());
-                generateReport();
-                data.setNombreCliente("");
-                data.setNombreVendedor("");
-                data.setIdVenta(new BigDecimal(0));
-                statusButtonPagar = true;
-                data.reset();
-                model = null;
-                totalVenta = null;
-                RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
+            System.out.println("Status Venta :" + data.getStatusFK());
+            if (data.getStatusFK() == 2) {
+                JsfUtil.addErrorMessageClean("Error, la venta ya se encuentra pagada");
+            } else if (data.getIdVenta().intValue() != idVentaTemporal) {
+                JsfUtil.addErrorMessageClean("No coincide el numero de venta");
+            } else if (ifaceBuscaVenta.updateStatusVentaMayoreo(data.getIdVenta().intValue(), usuario.getIdUsuarioPk().intValue()) == 1) {
+                System.out.println("Se cambió el estatus");
+
+                opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
+                opcaja.setMonto(totalVenta);
+                if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
+                    setParameterTicket(data.getFolioSucursal().intValue());
+                    generateReport();
+                    data.setNombreCliente("");
+                    data.setNombreVendedor("");
+                    data.setIdVenta(new BigDecimal(0));
+                    statusButtonPagar = true;
+                    data.reset();
+                    model = null;
+                    totalVenta = null;
+                    RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
+                } else {
+                    JsfUtil.addErrorMessageClean("Ocurrió un error al registrar el pago de la venta");
+                }
             } else {
-                JsfUtil.addErrorMessageClean("Ocurrió un error al registrar el pago de la venta");
+                System.out.println("Error al cambiar estaus de la venta");
             }
         } else {
-            System.out.println("Error al cambiar estaus de la venta");
+            JsfUtil.addErrorMessageClean("Su usuario no cuenta con caja asignada, no se puede realizar el cobro");
         }
 
         //return "buscaVentas";

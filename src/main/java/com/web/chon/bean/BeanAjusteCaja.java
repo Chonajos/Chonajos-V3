@@ -92,7 +92,7 @@ public class BeanAjusteCaja  implements Serializable{
 
             JsfUtil.addSuccessMessageClean("Ajuste de Caja Registrado Correctamente");
         } else {
-            JsfUtil.addErrorMessageClean("Ocurrió un error al reslizar el ajuste de caja");
+            JsfUtil.addErrorMessageClean("Ocurrió un error al reslizar el ajuste de Caja");
         }
         }
         else

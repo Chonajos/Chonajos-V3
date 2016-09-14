@@ -6,10 +6,8 @@
 package com.web.chon.bean;
 
 import com.web.chon.dominio.Caja;
-import com.web.chon.dominio.ConceptosES;
 import com.web.chon.dominio.OperacionesCaja;
 import com.web.chon.dominio.Sucursal;
-import com.web.chon.dominio.TipoOperacion;
 import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceCaja;
@@ -18,11 +16,9 @@ import com.web.chon.service.IfaceConceptos;
 import com.web.chon.service.IfaceOperacionesCaja;
 import com.web.chon.service.IfaceTiposOperacion;
 import com.web.chon.util.JsfUtil;
-import com.web.chon.util.TiempoUtil;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -34,7 +30,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Scope("view")
-public class BeanTransferencias implements Serializable {
+public class BeanRecibirTransferencias implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Autowired
@@ -42,23 +38,16 @@ public class BeanTransferencias implements Serializable {
     @Autowired
     private IfaceOperacionesCaja ifaceOperacionesCaja;
     @Autowired
-    private IfaceCatSucursales ifaceCatSucursales;
-    @Autowired
     private PlataformaSecurityContext context;
-    @Autowired
-    private IfaceTiposOperacion ifaceTiposOperacion;
-    @Autowired
-    private IfaceConceptos ifaceConceptos;
 
-    private OperacionesCaja data;
     private UsuarioDominio usuario;
 
-    private ArrayList<Sucursal> listaSucursales;
-    private ArrayList<Caja> listaCajas;
-
     private Caja caja;
-    private OperacionesCaja opcajaOrigen;
+    private OperacionesCaja opcaja;
     private OperacionesCaja opcajaDestino;
+    private OperacionesCaja data;
+
+    private ArrayList<OperacionesCaja> lstTransferenciasEntrantes;
 
     private String title;
     private String viewEstate;
@@ -73,50 +62,43 @@ public class BeanTransferencias implements Serializable {
 
     private static final BigDecimal entrada = new BigDecimal(1);
     private static final BigDecimal salida = new BigDecimal(2);
-    private static final BigDecimal statusOperacion = new BigDecimal(2);
+    private static final BigDecimal statusOperacion = new BigDecimal(1);
     private static final BigDecimal idConcepto = new BigDecimal(5);
 
     @PostConstruct
     public void init() {
         usuario = context.getUsuarioAutenticado();
-        setTitle("Transferencias entre Cajas");
+        setTitle("Recibir Transferencias de Caja");
         setViewEstate("init");
         caja = new Caja();
         caja = ifaceCaja.getCajaByIdUsuarioPk(usuario.getIdUsuario());
-        listaCajas = ifaceCaja.getCajas();
-        opcajaOrigen = new OperacionesCaja();
-        opcajaOrigen.setIdCajaFk(caja.getIdCajaPk());
-        opcajaOrigen.setIdUserFk(usuario.getIdUsuario());
-        opcajaOrigen.setEntradaSalida(salida);
-        opcajaOrigen.setIdStatusFk(statusOperacion);
-        
+        opcaja = new OperacionesCaja();
+        opcaja.setIdCajaFk(caja.getIdCajaPk());
+        opcaja.setIdUserFk(usuario.getIdUsuario());
+        opcaja.setIdStatusFk(statusOperacion);
+        opcaja.setEntradaSalida(entrada);
+        data = new OperacionesCaja();
+        lstTransferenciasEntrantes = new ArrayList<OperacionesCaja>();
+        lstTransferenciasEntrantes = ifaceOperacionesCaja.getTransferenciasEntrantes(opcaja.getIdCajaFk());
     }
 
-    public void transferir() {
-        opcajaOrigen.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
-        opcajaOrigen.setMonto(monto);
-        opcajaOrigen.setComentarios(comentarios);
-        opcajaOrigen.setIdConceptoFk(idConcepto);
-        opcajaOrigen.setIdCajaDestinoFk(idCajaDestinoBean);
+    public void aceptar() {
 
         if (caja.getIdCajaPk() != null) {
-            if (ifaceOperacionesCaja.insertaOperacion(opcajaOrigen) == 1) 
-            {
-                JsfUtil.addSuccessMessageClean("Pago de Servicio Registrado Correctamente");
+            opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
+            opcaja.setMonto(data.getMonto());
+            opcaja.setIdConceptoFk(idConcepto);
+            if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
+
+                ifaceOperacionesCaja.updateStatus(data.getIdOperacionesCajaPk(), statusOperacion);
+                lstTransferenciasEntrantes = ifaceOperacionesCaja.getTransferenciasEntrantes(opcaja.getIdCajaFk());
+                JsfUtil.addSuccessMessageClean("Transferencia Recibida Correctamente");
             } else {
-                JsfUtil.addErrorMessageClean("Ocurrió un error al registrar el pago de servicio");
+                JsfUtil.addErrorMessageClean("Ocurrió un error al recibir la transferencia");
             }
         } else {
             JsfUtil.addErrorMessageClean("Su usuario no cuenta con caja registrada para realizar el pago de servicios");
         }
-    }
-
-    public OperacionesCaja getData() {
-        return data;
-    }
-
-    public void setData(OperacionesCaja data) {
-        this.data = data;
     }
 
     public UsuarioDominio getUsuario() {
@@ -127,20 +109,28 @@ public class BeanTransferencias implements Serializable {
         this.usuario = usuario;
     }
 
-    public ArrayList<Sucursal> getListaSucursales() {
-        return listaSucursales;
+    public Caja getCaja() {
+        return caja;
     }
 
-    public void setListaSucursales(ArrayList<Sucursal> listaSucursales) {
-        this.listaSucursales = listaSucursales;
+    public void setCaja(Caja caja) {
+        this.caja = caja;
     }
 
-    public ArrayList<Caja> getListaCajas() {
-        return listaCajas;
+    public OperacionesCaja getOpcaja() {
+        return opcaja;
     }
 
-    public void setListaCajas(ArrayList<Caja> listaCajas) {
-        this.listaCajas = listaCajas;
+    public void setOpcaja(OperacionesCaja opcaja) {
+        this.opcaja = opcaja;
+    }
+
+    public OperacionesCaja getOpcajaDestino() {
+        return opcajaDestino;
+    }
+
+    public void setOpcajaDestino(OperacionesCaja opcajaDestino) {
+        this.opcajaDestino = opcajaDestino;
     }
 
     public String getTitle() {
@@ -215,28 +205,20 @@ public class BeanTransferencias implements Serializable {
         this.idCajaDestinoBean = idCajaDestinoBean;
     }
 
-    public Caja getCaja() {
-        return caja;
+    public ArrayList<OperacionesCaja> getLstTransferenciasEntrantes() {
+        return lstTransferenciasEntrantes;
     }
 
-    public void setCaja(Caja caja) {
-        this.caja = caja;
+    public void setLstTransferenciasEntrantes(ArrayList<OperacionesCaja> lstTransferenciasEntrantes) {
+        this.lstTransferenciasEntrantes = lstTransferenciasEntrantes;
     }
 
-    public OperacionesCaja getOpcajaOrigen() {
-        return opcajaOrigen;
+    public OperacionesCaja getData() {
+        return data;
     }
 
-    public void setOpcajaOrigen(OperacionesCaja opcajaOrigen) {
-        this.opcajaOrigen = opcajaOrigen;
-    }
-
-    public OperacionesCaja getOpcajaDestino() {
-        return opcajaDestino;
-    }
-
-    public void setOpcajaDestino(OperacionesCaja opcajaDestino) {
-        this.opcajaDestino = opcajaDestino;
+    public void setData(OperacionesCaja data) {
+        this.data = data;
     }
 
 }
