@@ -718,6 +718,7 @@ INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Relación de Operaciones', 0,'90.2','/views/relacionOperacionesMayoreo.xhtml');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Pagar Pedido', 0,'90.3','/views/buscaVentaMayoreo.xhtml');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Entrega de Mercancia', 0,'40.5','/views/entregaMercancia.xhtml');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Ajuste de Existencias', 0,'40.6','/views/ajustesExistenciasMayoreo.xhtml');
 
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Créditos', 1,'80','NULL');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Pagar  créditos', 0,'80.1','/views/buscarCreditos.xhtml');
@@ -1188,6 +1189,10 @@ INCREMENT BY 1
 START WITH 1
 MINVALUE 0;
 
+//insert de prueba 
+INSERT INTO RESULTADO_GESTION(ID_RESULTADO_GESTION_PK,DESCRIPCION) VALUES(S_RESULTADO_GESTION.NextVal,'No se encontro al cliente');
+INSERT INTO ACION_GESTION(ID_ACION_GESTION_PK,DESCRIPCION,ID_RESULTADO_GESTION_FK) VALUES(S_ACION_GESTION.NextVal,'Se volvera a llamar',1);
+
 CREATE TABLE GESTION_CREDITO(
 ID_GESTION_CREDITO_PK NUMBER,
 ID_ACION_GESTION_FK NUMBER,
@@ -1437,7 +1442,30 @@ START WITH 1
 MINVALUE 0;
 
 
+--TABLA FR AJUSTE EXISTENCIAS MAYOREO
+CREATE TABLE AJUSTE_EXISTENCIA_MAYOREO(
+ID_AJUSTE_MAYOREO_PK NUMBER NOT NULL,
+ID_EXP_FK NUMBER,
+ID_USUARIO_AJUSTE_FK NUMBER,
+ID_USUARIO_APRUEBA_FK NUMBER,
+FECHA_AJUSTE DATE,
+EMPAQUE_ANTERIOR NUMBER(13,4),
+EMPAQUE_AJUSTADOS NUMBER(13,4),
+KILOS_ANTERIOR NUMBER(13,6),
+KILOS_AJUSTADOS NUMBER (13,6),
+OBSERVACIONES VARCHAR(255),
+MOTIVO_AJUSTE CHAR(1),
 
+CONSTRAINT c_AJUSTE_MAYOREO_PK PRIMARY KEY (ID_AJUSTE_MAYOREO_PK),
+CONSTRAINT c_AEMA_EXP FOREIGN KEY(ID_EXP_FK) references EXISTENCIA_PRODUCTO(ID_EXP_PK),
+CONSTRAINT c_AEMA_USUARIO_AJUSTE_FK FOREIGN KEY(ID_USUARIO_AJUSTE_FK) references usuario(id_usuario_pk),
+CONSTRAINT c_AEMA_USUARIO_APRUEBA_FK FOREIGN KEY(ID_USUARIO_APRUEBA_FK) references usuario(id_usuario_pk)
+);
+
+CREATE SEQUENCE s_AJUSTE_EXISTENCIA_MAYOREO
+INCREMENT BY 1
+START WITH 1
+MINVALUE 0;
 
 
 ---corres estadisticas a la base EXEC DBMS_UTILITY.analyze_schema('CHONI','COMPUTE');

@@ -14,7 +14,7 @@
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
     </filter>
     <session-config>	
-        <session-timeout>7200</session-timeout>
+        <session-timeout>0</session-timeout>
     </session-config>
    
     <filter-mapping>

@@ -6,14 +6,33 @@ import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceEntregaMercancia;
+import com.web.chon.service.IfaceVentaMayoreo;
+import com.web.chon.util.Constantes;
+import com.web.chon.util.JasperReportUtil;
 import com.web.chon.util.JsfUtil;
+import com.web.chon.util.TiempoUtil;
+import com.web.chon.util.UtilUpload;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.text.DecimalFormat;
+import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
+import javax.servlet.ServletContext;
+import net.sf.jasperreports.engine.JREmptyDataSource;
+import net.sf.jasperreports.engine.JRExporter;
+import net.sf.jasperreports.engine.JRExporterParameter;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
+import org.primefaces.component.inputtext.InputText;
+import org.primefaces.context.RequestContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -34,50 +53,113 @@ public class BeanEntregaMercancia implements Serializable {
     private IfaceCatSucursales ifaceCatSucursales;
     @Autowired
     private IfaceEntregaMercancia ifaceEntregaMercancia;
+    @Autowired
+    private IfaceVentaMayoreo ifaceVentaMayoreo;
 
     private ArrayList<Sucursal> lstSucursal;
 
     private EntregaMercancia data;
     private EntregaMercancia entregaMercancia;
     private ArrayList<EntregaMercancia> model;
-    private ArrayList<EntregaMercancia> lstEntregaMercanciaSelected;
+    private ArrayList<EntregaMercancia> lstEntregaMercancia;
 
     private String title = "";
     private String viewEstate = "";
     private String observaciones = "";
+    private BigDecimal empaquesEntregar;
+    private BigDecimal kilosEntrega;
+    private BigDecimal totalRemanente;
+    private BigDecimal totalEntregar;
+    private BigDecimal totalEmpaques;
+
+    private Date date;
+
     private UsuarioDominio usuarioDominio;
 
     private BigDecimal BIGDECIMAL_UNO = new BigDecimal(1);
     private BigDecimal BIGDECIMAL_ZERO = new BigDecimal(0);
+    private BigDecimal ESTATUS_ENTREGADO = new BigDecimal(3);
     private BigDecimal ESTATUS_PAGADO = new BigDecimal(2);
     private BigDecimal ESTATUS_VENDIDO = new BigDecimal(1);
     private BigDecimal TIPO_VENTA_CREDITO = new BigDecimal(2);
-    private BigDecimal kilosEntregados;
-    private BigDecimal empaquesEntregados;
+
+    private Map paramReport = new HashMap();
+
     private boolean permisosEntrega;
+    private boolean validaEmpaques;
     private int INT_UNO = 1;
+
+    private String pathFileJasper = "";
+    private String rutaPDF;
+    private ByteArrayOutputStream outputStream;
 
     @PostConstruct
     public void init() {
         usuarioDominio = context.getUsuarioAutenticado();
         permisosEntrega = false;
+        validaEmpaques = false;
         data = new EntregaMercancia();
         entregaMercancia = new EntregaMercancia();
         model = new ArrayList<EntregaMercancia>();
         lstSucursal = ifaceCatSucursales.getSucursales();
+        date = context.getFechaSistema();
 
         setTitle("Entrega Mercancia");
         setViewEstate("init");
 
     }
 
-    public void entregar() {
-        try {
-            System.out.println("entrega");
+    public void print() {
 
-        } catch (Exception ex) {
-            JsfUtil.addErrorMessage("Error > " + ex.getMessage().toString());
-            ex.printStackTrace();
+        int insertEntregaMercancia = 0;
+
+        boolean validaEntregaTotal = true;
+
+        for (EntregaMercancia dominio : model) {
+            if (dominio.getEmpaquesEntregar() != null && dominio.getEmpaquesEntregar().compareTo(BIGDECIMAL_ZERO) != 0) {
+                if (dominio.getEmpaquesRemanente().compareTo(dominio.getEmpaquesEntregar().add(dominio.getEmpaquesEntregados())) == -1) {
+                    JsfUtil.addErrorMessage("La cantidad de paquetes o de kilos a entregar es mayor a la de la venta.");
+                    return;
+
+                } else {
+
+                    if (dominio.getEmpaquesRemanente().compareTo(dominio.getEmpaquesEntregar().add(dominio.getEmpaquesEntregados())) == 0 && validaEntregaTotal) {
+                        validaEntregaTotal = true;
+                    } else {
+                        validaEntregaTotal = false;
+                    }
+
+                    dominio.setIdUsuario(usuarioDominio.getIdUsuario());
+                    insertEntregaMercancia = ifaceEntregaMercancia.insert(dominio);
+                    if (insertEntregaMercancia == 1) {
+                        JsfUtil.addSuccessMessage("Se entrego correctamente.");
+                        //ejecuta un update al formulario con el id :formContent
+
+                        dominio.getEmpaquesEntregados().add(dominio.getEmpaquesEntregar());
+
+                    } else {
+                        JsfUtil.addErrorMessage("Ocurrio un error al hacer la entrega.");
+                    }
+
+                }
+            } else if (dominio.getEmpaquesRemanente().compareTo(dominio.getEmpaquesEntregados()) != 0) {
+                validaEntregaTotal = false;
+
+            }
+
+        }
+
+        if (validaEntregaTotal) {
+            ifaceVentaMayoreo.updateEstatusVentaByFolioSucursalAndIdSucursal(data.getIdFolioVenta(), new BigDecimal(usuarioDominio.getSucId()), ESTATUS_ENTREGADO);
+        }
+
+        if (insertEntregaMercancia == 1) {
+
+            setParameterTicket(data.getIdFolioVenta().intValue());
+            generateReport(data.getIdFolioVenta().intValue());
+
+            RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
+            buscaFolioVenta();
         }
 
     }
@@ -101,31 +183,172 @@ public class BeanEntregaMercancia implements Serializable {
             data.setIdEstatus(model.get(0).getIdEstatus());
             data.setIdTipoVenta(model.get(0).getIdTipoVenta());
             data.setNombreTipoVenta(model.get(0).getNombreTipoVenta());
-            
-            System.out.println("data idestatus "+data.getIdEstatus());
-            System.out.println("ESTATUS_PAGADO "+ESTATUS_PAGADO);
-            if(data.getIdEstatus().equals(ESTATUS_PAGADO)){
-                permisosEntrega = true;
-                System.out.println("entregar 1");
-            }else if(data.getIdEstatus().equals(ESTATUS_VENDIDO) && data.getIdTipoVenta().equals(TIPO_VENTA_CREDITO)){
-                permisosEntrega = true;
-                System.out.println("entregar 2");
-            }else{
-                permisosEntrega = false;
-                System.out.println(" no entregar");
-                JsfUtil.addWarnMessage("No se puede entregar esta mercancia.");
-            }
+
+            validaEntregaMercancia();
+
         }
 
     }
 
-    public void clean() {
+    private void validaEntregaMercancia() {
+
+        switch (data.getIdEstatus().intValue()) {
+            case 1:
+                if (data.getIdTipoVenta().equals(TIPO_VENTA_CREDITO)) {
+                    permisosEntrega = true;
+                } else {
+                    permisosEntrega = false;
+                    JsfUtil.addWarnMessage("No se puede entregar el pedido , necesita pasar a caja para pagarlo.");
+                }
+                break;
+            case 2:
+                permisosEntrega = true;
+                break;
+            case 3:
+                JsfUtil.addWarnMessage("El pedido ya fue entregado.");
+                permisosEntrega = false;
+                break;
+            case 4:
+                JsfUtil.addWarnMessage("La venta esta cancelada.");
+                permisosEntrega = false;
+                break;
+            default:
+                permisosEntrega = false;
+                break;
+        }
 
     }
 
     public void setKilosPromedio(AjaxBehaviorEvent event) {
-        System.out.println("entregaMercancia " + entregaMercancia.toString());
 
+        InputText input = (InputText) event.getSource();
+        if (input.getSubmittedValue() != null && !input.getSubmittedValue().toString().isEmpty()) {
+            BigDecimal value = new BigDecimal(input.getSubmittedValue().toString());
+            BigDecimal valueTemp = entregaMercancia.getEmpaquesEntregados().add(value);
+            BigDecimal kilosPromedio = entregaMercancia.getKilosRemanente().divide(entregaMercancia.getEmpaquesRemanente(), 2, RoundingMode.UP);
+
+            if (valueTemp.compareTo(entregaMercancia.getEmpaquesRemanente()) == 1) {
+                JsfUtil.addWarnMessage("No se puden entregar mas paquetes que los de la venta.");
+                validaEmpaques = false;
+            } else if (entregaMercancia.getEmpaquesRemanente().compareTo(value) == 0) {
+
+                kilosEntrega = entregaMercancia.getKilosRemanente().subtract(entregaMercancia.getKilosEntregados());
+                validaEmpaques = true;
+            } else {
+                kilosEntrega = kilosPromedio.multiply(value);
+                validaEmpaques = true;
+            }
+
+        } else {
+            input.setSubmittedValue("");
+            kilosEntrega = BIGDECIMAL_ZERO;
+
+        }
+
+    }
+
+    public void generateReport(int folioVenta) {
+        JRExporter exporter = null;
+
+        try {
+            ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+            String temporal = "";
+            if (servletContext.getRealPath("") == null) {
+                temporal = Constantes.PATHSERVER;
+            } else {
+                temporal = servletContext.getRealPath("");
+            }
+
+            pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketEntregaMercancia" + File.separatorChar + "entregaMercancia.jasper";
+
+            JasperPrint jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport, new JREmptyDataSource());
+            outputStream = JasperReportUtil.getOutputStreamFromReport(paramReport, getPathFileJasper());
+            exporter = new JRPdfExporter();
+
+            exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
+            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, outputStream);
+            byte[] bytes = outputStream.toByteArray();
+
+            rutaPDF = UtilUpload.saveFileTemp(bytes, "entregaMercancia", folioVenta, usuarioDominio.getSucId());
+
+        } catch (Exception exception) {
+            System.out.println("Error >" + exception.getMessage());
+            JsfUtil.addErrorMessage("Error al Generar el Ticket de salida mercancia.");
+        }
+
+    }
+
+    private void setParameterTicket(int folioVenta) {
+
+        ArrayList<String> productos = new ArrayList<String>();
+        totalRemanente = BIGDECIMAL_ZERO;
+        totalEntregar = BIGDECIMAL_ZERO;
+        totalEmpaques = BIGDECIMAL_ZERO;
+        for (EntregaMercancia dominio : model) {
+
+            dominio.setEmpaquesEntregar(dominio.getEmpaquesEntregar() == null ? BIGDECIMAL_ZERO : dominio.getEmpaquesEntregar());
+
+            totalEmpaques = totalEmpaques.add(dominio.getEmpaquesRemanente());
+            totalRemanente = totalRemanente.add(dominio.getEmpaquesRemanente()).subtract(dominio.getEmpaquesEntregados());
+            if (dominio.getEmpaquesEntregar() != null) {
+                totalEntregar = totalEntregar.add(dominio.getEmpaquesEntregar());
+            }
+
+            dominio.setEmpaquesEntregar(dominio.getEmpaquesEntregar() == null ? BIGDECIMAL_ZERO : dominio.getEmpaquesEntregar());
+            productos.add(dominio.getNombreProducto().toUpperCase() + " " + dominio.getNombreEmpaque().toUpperCase());
+
+            BigDecimal remanenteProducto = dominio.getEmpaquesRemanente().subtract(dominio.getEmpaquesEntregar());
+            remanenteProducto = remanenteProducto.subtract(dominio.getEmpaquesEntregados());
+            
+            productos.add("                                         " + remanenteProducto + "                     " + dominio.getEmpaquesEntregar());
+
+        }
+
+        putValues(TiempoUtil.getFechaDDMMYYYYHHMM(date), productos, folioVenta);
+
+    }
+
+    private void putValues(String dateTime, ArrayList<String> items, int folioVenta) {
+
+        paramReport.clear();
+
+        paramReport.put("fechaEntrega", dateTime);
+        paramReport.put("folioVenta", Integer.toString(folioVenta));
+        paramReport.put("cliente", data.getNombreCliente());
+        paramReport.put("usuarioEntrega", usuarioDominio.getNombreCompleto());
+        paramReport.put("productos", items);
+        paramReport.put("nombreTicket", "ENTREGA DE MERCANCIA");
+        paramReport.put("labelFecha", "Fecha de Entrega:");
+        paramReport.put("labelFolio", "Folio de Venta:");
+        paramReport.put("telefonos", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:" + usuarioDominio.getTelefonoSucursal());
+        paramReport.put("labelSucursal", usuarioDominio.getNombreSucursal());
+
+        paramReport.put("totalRemanente", (totalRemanente.subtract(totalEntregar)).toString());
+        paramReport.put("totalSalida", totalEntregar.toString());
+        paramReport.put("totalEmpaques", totalEmpaques.toString());
+        paramReport.put("comentarios", observaciones);
+
+    }
+
+    public void agregarEntrega() {
+
+        if (validaEmpaques) {
+            entregaMercancia.setEmpaquesEntregar(empaquesEntregar);
+            entregaMercancia.setKilosEntregar(kilosEntrega);
+            entregaMercancia.setObservaciones(observaciones);
+            RequestContext.getCurrentInstance().execute("PF('dlg').hide();");
+            empaquesEntregar = null;
+            kilosEntrega = null;
+            observaciones = null;
+        }
+
+    }
+
+    public void setValues() {
+
+        empaquesEntregar = entregaMercancia.getEmpaquesEntregar();
+        kilosEntrega = entregaMercancia.getKilosEntregar();
+        observaciones = entregaMercancia.getObservaciones();
     }
 
     public String getTitle() {
@@ -168,12 +391,12 @@ public class BeanEntregaMercancia implements Serializable {
         this.model = model;
     }
 
-    public ArrayList<EntregaMercancia> getLstEntregaMercanciaSelected() {
-        return lstEntregaMercanciaSelected;
+    public ArrayList<EntregaMercancia> getLstEntregaMercancia() {
+        return lstEntregaMercancia;
     }
 
-    public void setLstEntregaMercanciaSelected(ArrayList<EntregaMercancia> lstEntregaMercanciaSelected) {
-        this.lstEntregaMercanciaSelected = lstEntregaMercanciaSelected;
+    public void setLstEntregaMercancia(ArrayList<EntregaMercancia> lstEntregaMercancia) {
+        this.lstEntregaMercancia = lstEntregaMercancia;
     }
 
     public EntregaMercancia getEntregaMercancia() {
@@ -182,22 +405,6 @@ public class BeanEntregaMercancia implements Serializable {
 
     public void setEntregaMercancia(EntregaMercancia entregaMercancia) {
         this.entregaMercancia = entregaMercancia;
-    }
-
-    public BigDecimal getKilosEntregados() {
-        return kilosEntregados;
-    }
-
-    public void setKilosEntregados(BigDecimal kilosEntregados) {
-        this.kilosEntregados = kilosEntregados;
-    }
-
-    public BigDecimal getEmpaquesEntregados() {
-        return empaquesEntregados;
-    }
-
-    public void setEmpaquesEntregados(BigDecimal empaquesEntregados) {
-        this.empaquesEntregados = empaquesEntregados;
     }
 
     public String getObservaciones() {
@@ -214,6 +421,38 @@ public class BeanEntregaMercancia implements Serializable {
 
     public void setPermisosEntrega(boolean permisosEntrega) {
         this.permisosEntrega = permisosEntrega;
+    }
+
+    public BigDecimal getEmpaquesEntregar() {
+        return empaquesEntregar;
+    }
+
+    public void setEmpaquesEntregar(BigDecimal empaquesEntregar) {
+        this.empaquesEntregar = empaquesEntregar;
+    }
+
+    public BigDecimal getKilosEntrega() {
+        return kilosEntrega;
+    }
+
+    public void setKilosEntrega(BigDecimal kilosEntrega) {
+        this.kilosEntrega = kilosEntrega;
+    }
+
+    public String getRutaPDF() {
+        return rutaPDF;
+    }
+
+    public void setRutaPDF(String rutaPDF) {
+        this.rutaPDF = rutaPDF;
+    }
+
+    public String getPathFileJasper() {
+        return pathFileJasper;
+    }
+
+    public void setPathFileJasper(String pathFileJasper) {
+        this.pathFileJasper = pathFileJasper;
     }
 
 }

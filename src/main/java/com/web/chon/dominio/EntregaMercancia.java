@@ -2,6 +2,7 @@ package com.web.chon.dominio;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -24,8 +25,8 @@ public class EntregaMercancia implements Serializable {
     private String idProducto;
     private String nombreProducto;
     private BigDecimal precioProducto;
-    private BigDecimal cantidadKilos;
-    private BigDecimal cantidaPaquetes;
+    private BigDecimal kilosRemanente;
+    private BigDecimal empaquesRemanente;
     private BigDecimal totalVenta;
     private BigDecimal idTipoEmpaque;
     private String nombreEmpaque;
@@ -37,10 +38,15 @@ public class EntregaMercancia implements Serializable {
     private BigDecimal idSucursal;
     private BigDecimal idTipoVenta;
     private String nombreTipoVenta;
-    
+    private BigDecimal kilosEntregar;
+    private BigDecimal empaquesEntregar;
     private BigDecimal idFolioVenta;
     private String tipoVenta;
     private String marcaCliente;
+    private String nombreUsuarioEntrega;
+    private String fechaStr;
+    
+    private ArrayList<EntregaMercancia> lstEntregaMercancia;
     
 
     public void reset() {
@@ -60,19 +66,25 @@ public class EntregaMercancia implements Serializable {
         tipoVenta = null;
         estatusVenta = null;
         marcaCliente = null;
-        cantidaPaquetes = null;
-        cantidadKilos = null;
+        empaquesRemanente = null;
+        kilosRemanente = null;
+        empaquesEntregar = null;
+        kilosEntregar = null;
         nombreProducto = null;
         idTipoVenta = null;
         nombreTipoVenta = null;
+        lstEntregaMercancia = null;
+        nombreUsuarioEntrega = null;
+        fechaStr = null;
 
     }
 
     @Override
     public String toString() {
-        return "EntregaMercancia{" + "idEntregaMercanciaPk=" + idEntregaMercanciaPk + ", idVPMayoreo=" + idVPMayoreo + ", idVPMenudeo=" + idVPMenudeo + ", idUsuario=" + idUsuario + ", empaquesEntregados=" + empaquesEntregados + ", kilosEntregados=" + kilosEntregados + ", observaciones=" + observaciones + ", idProducto=" + idProducto + ", nombreProducto=" + nombreProducto + ", precioProducto=" + precioProducto + ", cantidadKilos=" + cantidadKilos + ", cantidaPaquetes=" + cantidaPaquetes + ", totalVenta=" + totalVenta + ", idTipoEmpaque=" + idTipoEmpaque + ", nombreEmpaque=" + nombreEmpaque + ", idCliente=" + idCliente + ", nombreCliente=" + nombreCliente + ", fechaVenta=" + fechaVenta + ", idEstatus=" + idEstatus + ", estatusVenta=" + estatusVenta + ", idSucursal=" + idSucursal + ", idFolioVenta=" + idFolioVenta + ", tipoVenta=" + tipoVenta + ", marcaCliente=" + marcaCliente + '}';
+        return "EntregaMercancia{" + "idEntregaMercanciaPk=" + idEntregaMercanciaPk + ", idVPMayoreo=" + idVPMayoreo + ", idVPMenudeo=" + idVPMenudeo + ", idUsuario=" + idUsuario + ", empaquesEntregados=" + empaquesEntregados + ", kilosEntregados=" + kilosEntregados + ", observaciones=" + observaciones + ", idProducto=" + idProducto + ", nombreProducto=" + nombreProducto + ", precioProducto=" + precioProducto + ", kilosRemanente=" + kilosRemanente + ", empaquesRemanente=" + empaquesRemanente + ", totalVenta=" + totalVenta + ", idTipoEmpaque=" + idTipoEmpaque + ", nombreEmpaque=" + nombreEmpaque + ", idCliente=" + idCliente + ", nombreCliente=" + nombreCliente + ", fechaVenta=" + fechaVenta + ", idEstatus=" + idEstatus + ", estatusVenta=" + estatusVenta + ", idSucursal=" + idSucursal + ", idTipoVenta=" + idTipoVenta + ", nombreTipoVenta=" + nombreTipoVenta + ", kilosEntregar=" + kilosEntregar + ", empaquesEntregar=" + empaquesEntregar + ", idFolioVenta=" + idFolioVenta + ", tipoVenta=" + tipoVenta + ", marcaCliente=" + marcaCliente + ", nombreUsuarioEntrega=" + nombreUsuarioEntrega + ", fechaStr=" + fechaStr + ", lstEntregaMercancia=" + lstEntregaMercancia + '}';
     }
 
+  
 
     public BigDecimal getIdEntregaMercanciaPk() {
         return idEntregaMercanciaPk;
@@ -178,21 +190,38 @@ public class EntregaMercancia implements Serializable {
         this.marcaCliente = marcaCliente;
     }
 
-    public BigDecimal getCantidaPaquetes() {
-        return cantidaPaquetes;
+    public BigDecimal getKilosRemanente() {
+        return kilosRemanente;
     }
 
-    public void setCantidaPaquetes(BigDecimal cantidaPaquetes) {
-        this.cantidaPaquetes = cantidaPaquetes;
+    public void setKilosRemanente(BigDecimal kilosRemanente) {
+        this.kilosRemanente = kilosRemanente;
     }
 
-    public BigDecimal getCantidadKilos() {
-        return cantidadKilos;
+    public BigDecimal getEmpaquesRemanente() {
+        return empaquesRemanente;
     }
 
-    public void setCantidadKilos(BigDecimal cantidadKilos) {
-        this.cantidadKilos = cantidadKilos;
+    public void setEmpaquesRemanente(BigDecimal empaquesRemanente) {
+        this.empaquesRemanente = empaquesRemanente;
     }
+
+    public BigDecimal getKilosEntregar() {
+        return kilosEntregar;
+    }
+
+    public void setKilosEntregar(BigDecimal kilosEntregar) {
+        this.kilosEntregar = kilosEntregar;
+    }
+
+    public BigDecimal getEmpaquesEntregar() {
+        return empaquesEntregar;
+    }
+
+    public void setEmpaquesEntregar(BigDecimal empaquesEntregar) {
+        this.empaquesEntregar = empaquesEntregar;
+    }
+
 
     public String getNombreProducto() {
         return nombreProducto;
@@ -281,6 +310,32 @@ public class EntregaMercancia implements Serializable {
     public void setNombreTipoVenta(String nombreTipoVenta) {
         this.nombreTipoVenta = nombreTipoVenta;
     }
+
+    public ArrayList<EntregaMercancia> getLstEntregaMercancia() {
+        return lstEntregaMercancia;
+    }
+
+    public void setLstEntregaMercancia(ArrayList<EntregaMercancia> lstEntregaMercancia) {
+        this.lstEntregaMercancia = lstEntregaMercancia;
+    }
+
+    public String getNombreUsuarioEntrega() {
+        return nombreUsuarioEntrega;
+    }
+
+    public void setNombreUsuarioEntrega(String nombreUsuarioEntrega) {
+        this.nombreUsuarioEntrega = nombreUsuarioEntrega;
+    }
+
+    public String getFechaStr() {
+        return fechaStr;
+    }
+
+    public void setFechaStr(String fechaStr) {
+        this.fechaStr = fechaStr;
+    }
+    
+    
     
     
     

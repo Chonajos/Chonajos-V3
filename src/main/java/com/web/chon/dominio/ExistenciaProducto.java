@@ -47,6 +47,13 @@ public class ExistenciaProducto implements Serializable {
 
     //variables de venta por credito
     private BigDecimal precioSinIteres;
+    
+    //Ajuste de inventario
+    private String salidaEntrada;
+    private String motivoAjuste;
+    private String observaciones;
+    private BigDecimal kilosAjustar;
+    private BigDecimal empaquesAjustar;
 
     public void reset() {
         idExistenciaProductoPk = null;
@@ -78,6 +85,12 @@ public class ExistenciaProducto implements Serializable {
         convenio = null;
         carroSucursal = null;
         idEntradaMercanciaProductoFK = null;
+        
+        salidaEntrada = null;
+        motivoAjuste = null;
+        observaciones = null;
+        empaquesAjustar = null;
+        kilosAjustar = null;
     }
 
     @Override
@@ -324,6 +337,50 @@ public class ExistenciaProducto implements Serializable {
     public void setPrecioSinIteres(BigDecimal precioSinIteres) {
         this.precioSinIteres = precioSinIteres;
     }
+
+    public String getSalidaEntrada() {
+        return salidaEntrada;
+    }
+
+    public void setSalidaEntrada(String salidaEntrada) {
+        this.salidaEntrada = salidaEntrada;
+    }
+
+    public String getMotivoAjuste() {
+        return motivoAjuste;
+    }
+
+    public void setMotivoAjuste(String motivoAjuste) {
+        this.motivoAjuste = motivoAjuste;
+    }
+
+    public String getObservaciones() {
+        return observaciones;
+    }
+
+    public void setObservaciones(String observaciones) {
+        this.observaciones = observaciones;
+    }
+
+    public BigDecimal getKilosAjustar() {
+        return kilosAjustar;
+    }
+
+    public void setKilosAjustar(BigDecimal kilosAjustar) {
+        this.kilosAjustar = kilosAjustar;
+    }
+
+    public BigDecimal getEmpaquesAjustar() {
+        return empaquesAjustar;
+    }
+
+    public void setEmpaquesAjustar(BigDecimal empaquesAjustar) {
+        this.empaquesAjustar = empaquesAjustar;
+    }
+    
+    
+    
+    
 
     public ExistenciaProducto(BigDecimal idExistenciaProductoPk, BigDecimal idEmFK, String idSubProductoFK, BigDecimal idTipoEmpaqueFK, BigDecimal cantidadPaquetes, BigDecimal kilosTotalesProducto, String comentarios, BigDecimal precio, String nombreProducto, String nombreEmpaque, BigDecimal idTipoConvenio, BigDecimal idBodegaFK, String nombreTipoConvenio, String nombreBodega, BigDecimal kilospromprod, int numeroMovimiento, BigDecimal pesoTara, BigDecimal idSucursal, BigDecimal idProvedor, String nombreProvedorCompleto, String identificador, String nombreSucursal, BigDecimal precioMinimo, BigDecimal precioVenta, BigDecimal precioMaximo, boolean estatusBloqueo, BigDecimal convenio, BigDecimal carroSucursal, BigDecimal idEntradaMercanciaProductoFK, BigDecimal precioSinIteres) {
         this.idExistenciaProductoPk = idExistenciaProductoPk;

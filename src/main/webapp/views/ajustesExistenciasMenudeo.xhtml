@@ -21,13 +21,13 @@
 
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="sucursalFiltro" value ="Sucursal:"/> 
-                            <h:selectOneMenu  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanAjustesExistenciasMenudeo.data.idSucursalFk}" disabled="#{beanAjustesExistenciasMenudeo.usuario.getPerId() != 1}">
+                            <p:selectOneMenu  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanAjustesExistenciasMenudeo.data.idSucursalFk}" disabled="#{beanAjustesExistenciasMenudeo.usuario.getPerId() != 1}" panelStyleClass="selects" style="width:60% !important;">
                                 <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="" />
                                 <f:selectItems value="#{beanAjustesExistenciasMenudeo.listaSucursales}" var="sucursalita" itemLabel="#{sucursalita.nombreSucursal}" itemValue="#{sucursalita.idSucursalPk}"/>
                                 <p:ajax event="change" update=":formContent:table" listener="#{beanAjustesExistenciasMenudeo.buscaExistencias()}" />
-                            </h:selectOneMenu>
+                            </p:selectOneMenu>
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="autocompletePoducto" value ="Producto:" /> 
@@ -119,14 +119,14 @@
                                         <h:outputText id="outputMotivo" value="Selecciona" style="width:100%"/>
                                     </f:facet>
                                     <f:facet name="input">
-                                        <h:selectOneMenu  id="comboMotivoOupuInput" class="col-lg-12 col-md-8 col-sm-8 col-xs-12 " value="#{model.motivoAjuste}"  required="true">
+                                        <p:selectOneMenu  id="comboMotivoOupuInput" class="col-lg-12 col-md-8 col-sm-8 col-xs-12 " value="#{model.motivoAjuste}"  required="true" panelStyleClass="selects" style="width:100% !important;">
                                             <f:selectItem itemLabel="Deshidratación" itemValue="1" />
                                             <f:selectItem itemLabel="Empaque" itemValue="2" />
                                             <f:selectItem itemLabel="Desecho o basura" itemValue="3" />
                                             <f:selectItem itemLabel="Robo" itemValue="4" />
                                             <f:selectItem itemLabel="Mercancia no Registrada" itemValue="5" />
                                             <f:selectItem itemLabel="Otro" itemValue="6" />
-                                        </h:selectOneMenu>
+                                        </p:selectOneMenu>
                                     </f:facet>
                                 </p:cellEditor>
                             </p:column>

@@ -32,6 +32,13 @@ public interface NegocioEntregaMercancia {
      * @return List<Object[]>
      */
     public List<Object[]> getByIdSucursalAndIdFolioSucursal(BigDecimal idSucursal,BigDecimal idFolioSucursal);
+    
+    /**
+     * 
+     * @param idVentaMayoreoProducto
+     * @return 
+     */
+    public List<Object[]> getByIdVentaMayoreoProducto(BigDecimal idVentaMayoreoProducto);
 
 
 

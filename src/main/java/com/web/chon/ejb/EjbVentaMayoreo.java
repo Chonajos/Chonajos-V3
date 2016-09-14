@@ -13,6 +13,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import org.jboss.logging.Logger;
 
 /**
  *
@@ -75,7 +76,6 @@ public class EjbVentaMayoreo implements NegocioVentaMayoreo {
 
         }
 
-
         if (idTipoVenta != null && idTipoVenta.intValue() != 0) {
             if (cont == 0) {
                 cadena.append(" WHERE ");
@@ -103,7 +103,7 @@ public class EjbVentaMayoreo implements NegocioVentaMayoreo {
         query = em.createNativeQuery(cadena.toString());
 
         try {
-            System.out.println(""+cadena.toString());
+            System.out.println("" + cadena.toString());
             List<Object[]> lstObject = query.getResultList();
             return lstObject;
         } catch (Exception e) {
@@ -118,6 +118,26 @@ public class EjbVentaMayoreo implements NegocioVentaMayoreo {
         Query query = em.createNativeQuery("select NVL(max(VENTASUCURSAL),0) from VENTA_MAYOREO where ID_SUCURSAL_FK=?");
         query.setParameter(1, idSucursal);
         return Integer.parseInt(query.getSingleResult().toString());
+    }
+
+    @Override
+    public int updateEstatusVentaByFolioSucursalAndIdSucursal(BigDecimal folioSucursal, BigDecimal idSucursal, BigDecimal estatusVenta) {
+        try {
+            Query query = em.createNativeQuery("UPDATE VENTA_MAYOREO SET ID_STATUS_FK = ? WHERE ID_SUCURSAL_FK = ? AND VENTASUCURSAL =?");
+            
+            query.setParameter(1, estatusVenta);
+            query.setParameter(2, idSucursal);
+            query.setParameter(3, folioSucursal);
+            
+
+            return query.executeUpdate();
+
+        } catch (Exception ex) {
+            System.out.println("Error >" + ex.getMessage());
+            Logger.getLogger(EjbVentaMayoreo.class).log(Logger.Level.FATAL, ex);
+            return 0;
+
+        }
     }
 
 }
