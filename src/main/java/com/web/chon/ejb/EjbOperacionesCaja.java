@@ -40,9 +40,10 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
 
     @Override
     public int insertaOperacion(OperacionesCaja es) {
+        System.out.println("=================================================ejb insert" + es.toString());
+            
         try {
-            System.out.println("ejb insert" + es.toString());
-            Query query = em.createNativeQuery("INSERT INTO OPERACIONES_CAJA (ID_OPERACIONES_CAJA_PK,ID_CORTE_CAJA_FK,ID_CAJA_DESTINO_FK,ID_CONCEPTO_FK,FECHA,ID_STATUS_FK,ID_USER_FK,COMENTARIOS,MONTO) values(?,?,?,?,sysdate,?,?,?,?,?)");
+            Query query = em.createNativeQuery("INSERT INTO OPERACIONES_CAJA (ID_OPERACIONES_CAJA_PK,ID_CORTE_CAJA_FK,ID_CAJA_FK,ID_CAJA_DESTINO_FK,ID_CONCEPTO_FK,FECHA,ID_STATUS_FK,ID_USER_FK,COMENTARIOS,MONTO,E_S) values(?,?,?,?,?,sysdate,?,?,?,?,?)");
             query.setParameter(1, es.getIdOperacionesCajaPk());
             query.setParameter(2, es.getIdCorteCajaFk());
             query.setParameter(3, es.getIdCajaFk());
@@ -52,6 +53,7 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
             query.setParameter(7, es.getIdUserFk());
             query.setParameter(8, es.getComentarios());
             query.setParameter(9, es.getMonto());
+            query.setParameter(10, es.getEntradaSalida());
             return query.executeUpdate();
 
         } catch (Exception ex) {
@@ -95,7 +97,12 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
 
     @Override
     public List<Object[]> getOperacionesBy(BigDecimal idCorteCajaFk, BigDecimal idCajaFk, BigDecimal idCajaDestinoFk, BigDecimal idConceptoFk, String fechaInicio, String fechaFin, BigDecimal idStatusFk, BigDecimal idUserFk) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Query query = em.createNativeQuery("select opc.*,cj.NOMBRE,con.NOMBRE as concepto,tio.NOMBRE as Operacion,u.NOMBRE_USUARIO from OPERACIONES_CAJA opc\n" +
+"inner join caja cj on cj.ID_CAJA_PK = opc.ID_CAJA_FK\n" +
+"inner join CONCEPTOS con on con.ID_CONCEPTOS_PK = opc.ID_CONCEPTO_FK\n" +
+"inner join TIPOS_OPERACION tio on tio.ID_TIPO_OPERACION_PK = con.ID_TIPO_OPERACION_FK\n" +
+"inner join USUARIO u on u.ID_USUARIO_PK = opc.ID_USER_FK");
+        return query.getResultList();
     }
 
 }

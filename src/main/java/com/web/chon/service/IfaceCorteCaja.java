@@ -15,7 +15,10 @@ import java.util.List;
  * @author JesusAlfredo
  */
 public interface IfaceCorteCaja {
-    public  CorteCaja getCorteByFecha(String fecha);
     public int insertCorte(CorteCaja cc);
-    public ArrayList<CorteCaja> getCortesByIdDestinoFk(BigDecimal idDestinoFK);
+    public int updateCorte(CorteCaja cc);
+    public int getNextVal();
+    public ArrayList<CorteCaja> getCortesByIdCajaFk(BigDecimal idDestinoFK,String fechaIni,String fechaFin);
+    public  CorteCaja getCorteByidPk(BigDecimal idPk);
+    
 }

@@ -17,8 +17,7 @@ import java.util.List;
 public interface IfaceCaja {
     public int insertCaja(Caja c);
     public int updateCaja(Caja c);
-    public int updateMontoCaja(Caja c);
-    public ArrayList<Caja> getCajas(BigDecimal idSucursalFk,BigDecimal tipo);
-    public Caja getCajaByIdUsuarioPk(BigDecimal idUsuarioPk,BigDecimal tipo);
+    public Caja getCajaByIdUsuarioPk(BigDecimal idUsuarioPk);
+    public ArrayList<Caja> getCajas();
     public Caja getCajaByIdPk(BigDecimal idCajaPk);
 }

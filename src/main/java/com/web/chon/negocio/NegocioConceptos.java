@@ -16,5 +16,6 @@ import javax.ejb.Remote;
 @Remote
 public interface NegocioConceptos {
     public List<Object[]> getConceptosByTipoOperacion(BigDecimal idTipoOperacionFk);
+    public List<Object[]> getConceptos();
     
 }

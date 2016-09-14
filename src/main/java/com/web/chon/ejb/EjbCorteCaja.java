@@ -9,6 +9,8 @@ import com.web.chon.dominio.CorteCaja;
 import com.web.chon.negocio.NegocioCorteCaja;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -46,10 +48,7 @@ public class EjbCorteCaja implements NegocioCorteCaja {
 
     }
 
-    @Override
-    public List<Object[]> getCorteBy(BigDecimal idCajaFk, String fechaInicio, String fechaFin, BigDecimal idUserFk, BigDecimal idStatusFk) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+   
 
     @Override
     public int updateCorte(CorteCaja cc) {
@@ -70,10 +69,7 @@ public class EjbCorteCaja implements NegocioCorteCaja {
         return query.executeUpdate();
     }
 
-    @Override
-    public List<Object[]> getCortesByIdPk(BigDecimal idDestinoFK) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+   
 
     @Override
     public int getNextVal() {
@@ -83,6 +79,39 @@ public class EjbCorteCaja implements NegocioCorteCaja {
         } catch (Exception ex) {
             System.out.println("error >" + ex.getMessage());
             return 0;
+        }
+    }
+
+    @Override
+    public List<Object[]> getCortesByIdCajaFk(BigDecimal idCajaFK, String fechaIni, String fechaFin) {
+        try {
+            Query query = em.createNativeQuery("select cj.*,c.NOMBRE,u.NOMBRE_USUARIO from corte_caja cj\n" +
+"inner join caja c on c.ID_CAJA_PK = cj.ID_CORTE_CAJA_PK\n" +
+"inner join usuario u on u.ID_USUARIO_PK = cj.ID_USER_FK\n" +
+"WHERE TO_DATE(TO_CHAR(cj.FECHA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '"+fechaIni+"' AND ''"+fechaFin+"'\n" +
+"and cj.ID_CAJA_FK=?");
+            query.setParameter(1, idCajaFK);
+            System.out.println("Query: "+query);
+            return query.getResultList();
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbCorteCaja.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+        
+
+    }
+
+    @Override
+    public List<Object[]> getCorteByidPk(BigDecimal idPk) {
+       try {
+            Query query = em.createNativeQuery("select * from corte_caja c where c.ID_CORTE_CAJA_PK = ? ");
+            query.setParameter(1, idPk);
+            return query.getResultList();
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbCorteCaja.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
     }
 

@@ -2,6 +2,7 @@ package com.web.chon.bean;
 
 import com.web.chon.dominio.BuscaVenta;
 import com.web.chon.dominio.Caja;
+import com.web.chon.dominio.OperacionesCaja;
 import com.web.chon.dominio.Usuario;
 import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.dominio.VentaProducto;
@@ -9,6 +10,7 @@ import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceBuscaVenta;
 import com.web.chon.service.IfaceCaja;
 import com.web.chon.service.IfaceCatUsuario;
+import com.web.chon.service.IfaceOperacionesCaja;
 import com.web.chon.util.Constantes;
 import com.web.chon.util.JasperReportUtil;
 import com.web.chon.util.JsfUtil;
@@ -39,6 +41,7 @@ import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
+import org.primefaces.context.RequestContext;
 import org.primefaces.model.StreamedContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -55,10 +58,15 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     private PlataformaSecurityContext context;
     @Autowired
     IfaceCatUsuario ifaceCatUsuario;
-    @Autowired private IfaceCaja ifaceCaja;
+    @Autowired
+    private IfaceCaja ifaceCaja;
+    @Autowired
+    private IfaceOperacionesCaja ifaceOperacionesCaja;
+    
     private ArrayList<BuscaVenta> model;
     private Usuario usuario;
     private Caja caja;
+    private OperacionesCaja opcaja;
 
     private String title;
     private String viewEstate;
@@ -77,8 +85,10 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     private ArrayList<BuscaVenta> selectedVenta;
     private BigDecimal recibido;
     private BigDecimal cambio;
-    
-    private static final BigDecimal TIPO = new BigDecimal(1);
+
+    private static final BigDecimal entradaSalida = new BigDecimal(1);
+    private static final BigDecimal statusOperacion = new BigDecimal(1);
+    private static final BigDecimal concepto = new BigDecimal(9);
 
     @PostConstruct
     public void init() {
@@ -100,7 +110,13 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
         setViewEstate("init");
         statusButtonPagar = true;
         caja = new Caja();
-        reloadCaja();
+        caja = ifaceCaja.getCajaByIdUsuarioPk(usuario.getIdUsuarioPk());
+        opcaja = new OperacionesCaja();
+        opcaja.setIdCajaFk(caja.getIdCajaPk());
+        opcaja.setIdConceptoFk(concepto);
+        opcaja.setIdUserFk(usuario.getIdUsuarioPk());
+        opcaja.setEntradaSalida(entradaSalida);
+        opcaja.setIdStatusFk(statusOperacion);
     }
 
     public void calculaCambio() {
@@ -220,45 +236,30 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
             JsfUtil.addErrorMessageClean("Error, la venta ya se encuentra pagada");
         } else if (data.getIdVenta().intValue() != idVentaTemporal) {
             JsfUtil.addErrorMessageClean("No coincide el numero de venta");
-        } else 
-        {
-                if(ifaceBuscaVenta.updateStatusVentaMayoreo(data.getIdVenta().intValue(), usuario.getIdUsuarioPk().intValue())==1)
-                {
-                    System.out.println("Se cambió el estatus");
-                    caja.setMontoMayoreo(caja.getMontoMayoreo().add(totalVenta, MathContext.UNLIMITED));
-                    caja.setMonto(caja.getMonto().add(totalVenta, MathContext.UNLIMITED));
-                    System.out.println("Caja: "+caja.toString());
-                    if (ifaceCaja.updateMontoCaja(caja) == 1) 
-                    {
-                        System.out.println("Venta pagada y dinero en caja");
-                        JsfUtil.addSuccessMessageClean("Venta Pagada y Dinero en Caja");
-                        reloadCaja();
-                    } else {
-                        System.out.println("Ocurrio un error");
-                        JsfUtil.addErrorMessageClean("Ocurrió un error al ingresar el dinero a caja");
-                    }
-                    setParameterTicket(data.getFolioSucursal().intValue());
-                    generateReport();
-                    data.setNombreCliente("");
-                    data.setNombreVendedor("");
-                    data.setIdVenta(new BigDecimal(0));
-                    statusButtonPagar = true;
-                    data.reset();
-                    model = null;
-                    totalVenta = null;
-                }
-                else
-                {
-                    System.out.println("Error al cambiar estaus de la venta");
-                }
+        } else if (ifaceBuscaVenta.updateStatusVentaMayoreo(data.getIdVenta().intValue(), usuario.getIdUsuarioPk().intValue()) == 1) {
+            System.out.println("Se cambió el estatus");
+
+            opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
+            opcaja.setMonto(totalVenta);
+            if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
+                setParameterTicket(data.getFolioSucursal().intValue());
+                generateReport();
+                data.setNombreCliente("");
+                data.setNombreVendedor("");
+                data.setIdVenta(new BigDecimal(0));
+                statusButtonPagar = true;
+                data.reset();
+                model = null;
+                totalVenta = null;
+                RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
+            } else {
+                JsfUtil.addErrorMessageClean("Ocurrió un error al registrar el pago de la venta");
+            }
+        } else {
+            System.out.println("Error al cambiar estaus de la venta");
         }
 
         //return "buscaVentas";
-    }
-    public void reloadCaja()
-    {
-        caja = new Caja();
-        caja = ifaceCaja.getCajaByIdUsuarioPk(usuario.getIdUsuarioPk(),TIPO);
     }
 
     @Override

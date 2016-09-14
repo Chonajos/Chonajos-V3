@@ -29,4 +29,10 @@ public class EjbConceptos implements NegocioConceptos{
         query.setParameter(1, idTipoOperacionFk);
         return query.getResultList();
     }
+
+    @Override
+    public List<Object[]> getConceptos() {
+       Query query = em.createNativeQuery("select * from CONCEPTOS");
+        return query.getResultList();
+    }
 }

@@ -18,20 +18,13 @@ public class ConceptosES implements Serializable {
     private BigDecimal idTipoOperacionFk;
     private String nombre;
     private String descripcion;
-    private BigDecimal E_S;
 
     @Override
     public String toString() {
-        return "ConceptosES{" + "idConceptoPk=" + idConceptoPk + ", nombre=" + nombre + ", descripcion=" + descripcion + '}';
+        return "ConceptosES{" + "idConceptoPk=" + idConceptoPk + ", idTipoOperacionFk=" + idTipoOperacionFk + ", nombre=" + nombre + ", descripcion=" + descripcion + '}';
     }
 
-    public BigDecimal getE_S() {
-        return E_S;
-    }
-
-    public void setE_S(BigDecimal E_S) {
-        this.E_S = E_S;
-    }
+   
     
     public BigDecimal getIdTipoOperacionFk() {
         return idTipoOperacionFk;

@@ -28,10 +28,17 @@ public class CorteCaja implements Serializable {
     private BigDecimal idUserFk;
     private BigDecimal idStatusFk;
 
+    private String nombreCaja;
+    private String nombreUsuario;
+    private String nombreStatus;
+
     @Override
     public String toString() {
-        return "CorteCaja{" + "idCorteCajaPk=" + idCorteCajaPk + ", idCajaFk=" + idCajaFk + ", fecha=" + fecha + ", cantChequesAnt=" + cantChequesAnt + ", montoChequesAnt=" + montoChequesAnt + ", saldoAnterior=" + saldoAnterior + ", cantChequesNuevos=" + cantChequesNuevos + ", montoChequesNuevos=" + montoChequesNuevos + ", saldoNuevo=" + saldoNuevo + ", comentarios=" + comentarios + ", idUserFk=" + idUserFk + ", idStatusFk=" + idStatusFk + '}';
+        return "CorteCaja{" + "idCorteCajaPk=" + idCorteCajaPk + ", idCajaFk=" + idCajaFk + ", fecha=" + fecha + ", cantChequesAnt=" + cantChequesAnt + ", montoChequesAnt=" + montoChequesAnt + ", saldoAnterior=" + saldoAnterior + ", cantChequesNuevos=" + cantChequesNuevos + ", montoChequesNuevos=" + montoChequesNuevos + ", saldoNuevo=" + saldoNuevo + ", comentarios=" + comentarios + ", idUserFk=" + idUserFk + ", idStatusFk=" + idStatusFk + ", nombreCaja=" + nombreCaja + ", nombreUsuario=" + nombreUsuario + ", nombreStatus=" + nombreStatus + '}';
     }
+
+    
+    
 
     public void reset() {
         idCorteCajaPk = null;
@@ -46,8 +53,37 @@ public class CorteCaja implements Serializable {
         comentarios = null;
         idUserFk = null;
         idStatusFk = null;
+        nombreCaja = null;
+        nombreUsuario = null;
+        nombreStatus = null;
 
     }
+
+    public String getNombreCaja() {
+        return nombreCaja;
+    }
+
+    public void setNombreCaja(String nombreCaja) {
+        this.nombreCaja = nombreCaja;
+    }
+
+    public String getNombreUsuario() {
+        return nombreUsuario;
+    }
+
+    public void setNombreUsuario(String nombreUsuario) {
+        this.nombreUsuario = nombreUsuario;
+    }
+
+    public String getNombreStatus() {
+        return nombreStatus;
+    }
+
+    public void setNombreStatus(String nombreStatus) {
+        this.nombreStatus = nombreStatus;
+    }
+    
+    
 
     public BigDecimal getIdCorteCajaPk() {
         return idCorteCajaPk;

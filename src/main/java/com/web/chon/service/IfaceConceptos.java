@@ -15,4 +15,5 @@ import java.util.ArrayList;
  */
 public interface IfaceConceptos {
     public ArrayList<ConceptosES> getConceptosByTipoOperacion(BigDecimal idTipoOperacionFk);
+    public ArrayList<ConceptosES> getConceptos();
 }

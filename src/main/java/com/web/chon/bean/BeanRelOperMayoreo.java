@@ -77,7 +77,6 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
     private BigDecimal totalUtilidad;
     private BigDecimal totalVentaDetalle;
     private BigDecimal porcentajeUtilidad;
-    private Caja caja;
     private static final BigDecimal TIPO = new BigDecimal(1);
 
 
@@ -100,15 +99,10 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
         setTitle("Relación de Operaciónes Venta Mayoreo");
         setViewEstate("init");
         getVentasByIntervalDate();
-        caja = new Caja();
-        reloadCaja();
+        
 
     }
-    public void reloadCaja()
-    {
-        caja = new Caja();
-        caja = ifaceCaja.getCajaByIdUsuarioPk(usuario.getIdUsuario(),TIPO);
-    }
+    
 
     public void setFechaInicioFin(int filter) {
 
@@ -226,15 +220,7 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
 
             if (ifaceBuscaVenta.cancelarVentaMayoreo(data.getIdVentaPk().intValue(), usuario.getIdUsuario().intValue(), data.getComentariosCancel()) != 0 && banderaError==false) 
             {
-                caja.setMonto(caja.getMonto().add(totalVenta, MathContext.UNLIMITED));
-                caja.setMontoMayoreo(caja.getMontoMayoreo().subtract(totalVenta, MathContext.UNLIMITED));
-                if (ifaceCaja.updateMontoCaja(caja) == 1)
-                {
-                    JsfUtil.addSuccessMessageClean("Venta Cancelada, existencias regresadas y dinero en caja devuelto");
-                reloadCaja();
-                } else {
-                    JsfUtil.addErrorMessageClean("Ocurrió un error al ingresar el dinero a caja");
-                }
+                
                 data.setIdStatus(null);
                 lstVenta.clear();
                 getVentasByIntervalDate();

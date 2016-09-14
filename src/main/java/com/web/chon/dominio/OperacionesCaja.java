@@ -30,7 +30,20 @@ public class OperacionesCaja implements Serializable {
     private String nombreCaja;
     private String nombreCajaDestino;
     private String nombreStatus;
+    private String nombreConcepto;
+    private String nombreOperacion;
+    private BigDecimal idTipoOperacionFk;
+    private BigDecimal entradaSalida;
+    private String nombreEntradaSalida;
+    private int numero;
 
+    @Override
+    public String toString() {
+        return "OperacionesCaja{" + "idOperacionesCajaPk=" + idOperacionesCajaPk + ", idCorteCajaFk=" + idCorteCajaFk + ", idCajaFk=" + idCajaFk + ", idCajaDestinoFk=" + idCajaDestinoFk + ", idConceptoFk=" + idConceptoFk + ", fecha=" + fecha + ", idStatusFk=" + idStatusFk + ", idUserFk=" + idUserFk + ", comentarios=" + comentarios + ", monto=" + monto + ", nombreUsuario=" + nombreUsuario + ", nombreCaja=" + nombreCaja + ", nombreCajaDestino=" + nombreCajaDestino + ", nombreStatus=" + nombreStatus + ", nombreConcepto=" + nombreConcepto + ", nombreOperacion=" + nombreOperacion + ", idTipoOperacionFk=" + idTipoOperacionFk + ", entradaSalida=" + entradaSalida + ", nombreEntradaSalida=" + nombreEntradaSalida + ", numero=" + numero + '}';
+    }
+
+    
+    
     public void reset() {
         idOperacionesCajaPk = null;
         idCorteCajaFk = null;
@@ -46,13 +59,69 @@ public class OperacionesCaja implements Serializable {
         nombreCaja = null;
         nombreCajaDestino = null;
         nombreStatus = null;
+        entradaSalida=null;
+        nombreConcepto=null;
+        nombreOperacion=null;
+        idTipoOperacionFk=null;
+        nombreEntradaSalida=null;
+        
     }
 
-    @Override
-    public String toString() {
-        return "OperacionesCaja{" + "idOperacionesCajaPk=" + idOperacionesCajaPk + ", idCorteCajaFk=" + idCorteCajaFk + ", idCajaFk=" + idCajaFk + ", idCajaDestinoFk=" + idCajaDestinoFk + ", idConceptoFk=" + idConceptoFk + ", fecha=" + fecha + ", idStatusFk=" + idStatusFk + ", idUserFk=" + idUserFk + ", comentarios=" + comentarios + ", monto=" + monto + ", nombreUsuario=" + nombreUsuario + ", nombreCaja=" + nombreCaja + ", nombreCajaDestino=" + nombreCajaDestino + ", nombreStatus=" + nombreStatus + '}';
+    public int getNumero() {
+        return numero;
     }
 
+    public void setNumero(int numero) {
+        this.numero = numero;
+    }
+
+    
+    public String getNombreEntradaSalida() {
+        return nombreEntradaSalida;
+    }
+
+    public void setNombreEntradaSalida(String nombreEntradaSalida) {
+        this.nombreEntradaSalida = nombreEntradaSalida;
+    }
+
+    
+    public String getNombreOperacion() {
+        return nombreOperacion;
+    }
+
+    public void setNombreOperacion(String nombreOperacion) {
+        this.nombreOperacion = nombreOperacion;
+    }
+
+    public BigDecimal getIdTipoOperacionFk() {
+        return idTipoOperacionFk;
+    }
+
+    public void setIdTipoOperacionFk(BigDecimal idTipoOperacionFk) {
+        this.idTipoOperacionFk = idTipoOperacionFk;
+    }
+
+
+    
+    
+    public String getNombreConcepto() {
+        return nombreConcepto;
+    }
+
+    public void setNombreConcepto(String nombreConcepto) {
+        this.nombreConcepto = nombreConcepto;
+    }
+
+    
+    public BigDecimal getEntradaSalida() {
+        return entradaSalida;
+    }
+
+    public void setEntradaSalida(BigDecimal entradaSalida) {
+        this.entradaSalida = entradaSalida;
+    }
+
+    
     public BigDecimal getIdConceptoFk() {
         return idConceptoFk;
     }

@@ -143,13 +143,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
 
         setTitle("Relación de Operaciónes Venta Menudeo");
         setViewEstate("init");
-        caja = new Caja();
-        reloadCaja();
-    }
 
-    public void reloadCaja() {
-        caja = new Caja();
-        caja = ifaceCaja.getCajaByIdUsuarioPk(usuario.getIdUsuario(), TIPO);
     }
 
     public void generateReport(Venta v) {
@@ -292,8 +286,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
                 boolean bandera = false;
                 Credito c = new Credito();
                 c = ifaceCredito.getCreditosByIdVentaMenudeo(totalVenta);
-                if (c == null || c.getIdCreditoPk() == null) 
-                {
+                if (c == null || c.getIdCreditoPk() == null) {
                     listaProductoCancel = ifaceVentaProducto.getVentasProductoByIdVenta(ventaCancelar.getIdVentaPk());
                     for (VentaProducto vp : listaProductoCancel) {
                         System.out.println("Bean==========" + vp.toString());
@@ -304,8 +297,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
                         kilosExistencia = em.getKilos();
                         kilosExistencia = kilosExistencia.add(vp.getCantidadEmpaque(), MathContext.UNLIMITED);
                         em.setKilos(kilosExistencia);
-                        if (ifaceExistenciaMenudeo.updateExistenciaMenudeo(em) != 0) 
-                        {
+                        if (ifaceExistenciaMenudeo.updateExistenciaMenudeo(em) != 0) {
                             System.out.println("se regresaron existencias con exito");
                         } else {
                             System.out.println("Ocurrio un problema al regresas existencias");
@@ -314,22 +306,11 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
                         }
                     }
                     if (ifaceVenta.cancelarVenta(ventaCancelar.getIdVentaPk().intValue(), usuario.getIdUsuario().intValue(),
-                            comentarioCancelacion) != 0 && bandera == false) 
-                    {
-                        caja.setMontoMenudeo(caja.getMontoMenudeo().subtract(totalVenta, MathContext.UNLIMITED));
-                        caja.setMonto(caja.getMonto().subtract(totalVenta, MathContext.UNLIMITED));
-                        if (ifaceCaja.updateMontoCaja(caja) == 1) 
-                        {
-                            JsfUtil.addSuccessMessageClean("Venta Cancelada, se han regresado existencias y dinero en caja correctamente");
-                        } else 
-                        {
-                            System.out.println("Ocurrió un error al regresar dinero");
-                            JsfUtil.addErrorMessageClean("Ocurrió un error al cancelar la venta");
-                        }
-                        reloadCaja();
+                            comentarioCancelacion) != 0 && bandera == false) {
 
-                    } else
-                    {
+                        JsfUtil.addSuccessMessageClean("Venta Cancelada, se han regresado existencias y dinero en caja correctamente");
+
+                    } else {
                         JsfUtil.addErrorMessageClean("Ocurrió un error al intentar cancelar la venta.");
                     }
                     break;
