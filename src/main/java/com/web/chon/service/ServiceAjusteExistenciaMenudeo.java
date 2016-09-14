@@ -48,12 +48,12 @@ public class ServiceAjusteExistenciaMenudeo implements IfaceAjusteExistenciaMenu
     }
 
     @Override
-    public List<ExistenciaMenudeo> getAll() {
+    public List<AjusteExistenciaMenudeo> getAll() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<ExistenciaMenudeo> getAllByIdSucursal(BigDecimal idSucursal) {
+    public List<AjusteExistenciaMenudeo> getAllByIdSucursal(BigDecimal idSucursal) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

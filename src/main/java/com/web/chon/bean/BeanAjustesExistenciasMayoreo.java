@@ -1,11 +1,10 @@
 package com.web.chon.bean;
 
-import com.web.chon.dominio.AjusteExistenciaMenudeo;
+import com.web.chon.dominio.AjusteExistenciaMayoreo;
 import com.web.chon.dominio.Bodega;
 import com.web.chon.dominio.EntradaMercancia;
 import com.web.chon.dominio.ExistenciaMenudeo;
 import com.web.chon.dominio.ExistenciaProducto;
-import com.web.chon.dominio.MantenimientoPrecios;
 import com.web.chon.dominio.Provedor;
 import com.web.chon.dominio.Subproducto;
 import com.web.chon.dominio.Sucursal;
@@ -13,24 +12,19 @@ import com.web.chon.dominio.TipoConvenio;
 import com.web.chon.dominio.TipoEmpaque;
 import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.security.service.PlataformaSecurityContext;
-import com.web.chon.service.IfaceAjusteExistenciaMenudeo;
+import com.web.chon.service.IfaceAjusteExistenciaMayoreo;
 import com.web.chon.service.IfaceCatBodegas;
 import com.web.chon.service.IfaceCatProvedores;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceEmpaque;
 import com.web.chon.service.IfaceEntradaMercancia;
-import com.web.chon.service.IfaceExistenciaMenudeo;
-import com.web.chon.service.IfaceMantenimientoPrecio;
 import com.web.chon.service.IfaceNegocioExistencia;
 import com.web.chon.service.IfaceSubProducto;
 import com.web.chon.service.IfaceTipoCovenio;
 import com.web.chon.util.JsfUtil;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.PostConstruct;
 import org.primefaces.event.RowEditEvent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,113 +44,129 @@ public class BeanAjustesExistenciasMayoreo implements Serializable {
     @Autowired
     private IfaceEmpaque ifaceEmpaque;
     @Autowired
-    private PlataformaSecurityContext context;
+    private IfaceTipoCovenio ifaceCovenio;
+    @Autowired
+    private IfaceCatBodegas ifaceCatBodegas;
     @Autowired
     private IfaceSubProducto ifaceSubProducto;
     @Autowired
+    private PlataformaSecurityContext context;
+    @Autowired
+    private IfaceCatProvedores ifaceCatProvedores;
+    @Autowired
     private IfaceCatSucursales ifaceCatSucursales;
     @Autowired
-    private IfaceExistenciaMenudeo ifaceExistenciaMenudeo;
+    private IfaceEntradaMercancia ifaceEntradaMercancia;
     @Autowired
-    private IfaceAjusteExistenciaMenudeo ifaceAjusteExistenciaMenudeo;
+    private IfaceNegocioExistencia ifaceNegocioExistencia;
     @Autowired
-    private IfaceMantenimientoPrecio ifaceMantenimientoPrecio;
+    private IfaceAjusteExistenciaMayoreo ifaceAjusteExistenciaMayoreo;
 
-    private List<ExistenciaMenudeo> model;
+    private ArrayList<Bodega> listaBodegas;
     private ArrayList<Subproducto> lstProducto;
+    private ArrayList<ExistenciaProducto> model;
     private ArrayList<Sucursal> listaSucursales;
+    private ArrayList<Provedor> listaProvedores;
     private ArrayList<TipoEmpaque> lstTipoEmpaque;
+    private ArrayList<TipoConvenio> listaTiposConvenio;
+    private ArrayList<EntradaMercancia> lstEntradaMercancia;
 
-    private ExistenciaMenudeo data;
     private UsuarioDominio usuario;
+    private ExistenciaProducto data;
     private Subproducto subProducto;
-    private AjusteExistenciaMenudeo ajusteExistenciaMenudeo;
+    private ExistenciaProducto dataEdit;
+    private EntradaMercancia entradaMercancia;
+    private AjusteExistenciaMayoreo ajusteExistenciaMayoreo;
+    private ExistenciaProducto existenciaProductoNew;
+    private ExistenciaProducto existenciaProductoOld;
 
     private String title = "";
     private String viewEstate = "";
+
+    private BigDecimal totalKilos;
+    private BigDecimal totalCajas;
+
+    private int filtro;
 
     @PostConstruct
     public void init() {
 
         usuario = context.getUsuarioAutenticado();
 
-        data = new ExistenciaMenudeo();
+        listaBodegas = new ArrayList<Bodega>();
+        listaSucursales = new ArrayList<Sucursal>();
+        listaProvedores = new ArrayList<Provedor>();
+        listaTiposConvenio = new ArrayList<TipoConvenio>();
 
-        data.setIdSucursalFk(new BigDecimal(String.valueOf(usuario.getSucId())));
+        data = new ExistenciaProducto();
+        subProducto = new Subproducto();
+        entradaMercancia = new EntradaMercancia();
 
         listaSucursales = ifaceCatSucursales.getSucursales();
+        listaProvedores = ifaceCatProvedores.getProvedores();
 
-        model = ifaceExistenciaMenudeo.getExistenciasMenudeoByIdSucursal(data.getIdSucursalFk());
+        model = ifaceNegocioExistencia.getExistencias(new BigDecimal(usuario.getSucId()), null, null, null, null, null, null);
+        getTotalCajasKilos();
 
+        data.setIdSucursal(new BigDecimal(usuario.getSucId()));
+
+        listaBodegas = ifaceCatBodegas.getBodegaByIdSucursal(data.getIdSucursal());
         lstTipoEmpaque = ifaceEmpaque.getEmpaques();
+        listaTiposConvenio = ifaceCovenio.getTipos();
 
         setViewEstate("init");
-        setTitle("Ajuste de Existencias Menudeo");
+        setTitle("Existencias");
+
+        filtro = 1;
     }
 
     public void buscaExistencias() {
-        if (subProducto != null) {
-            model = ifaceExistenciaMenudeo.getExistenciasMenudeoByIdSucursalAndIdSubproducto(data.getIdSucursalFk(), subProducto.getIdSubproductoPk());
+        BigDecimal idEntrada;
+        if (entradaMercancia == null) {
+            idEntrada = null;
         } else {
-            model = ifaceExistenciaMenudeo.getExistenciasMenudeoByIdSucursal(data.getIdSucursalFk());
-        }
-
-    }
-
-    public void onRowEdit(RowEditEvent event) {
-
-        System.out.println("onrow edit");
-
-        ExistenciaMenudeo existenciaMenudeoOld = new ExistenciaMenudeo();
-        ExistenciaMenudeo existenciaMenudeoNew = new ExistenciaMenudeo();
-        MantenimientoPrecios mantenimientoPrecios = new MantenimientoPrecios();
-        ajusteExistenciaMenudeo = new AjusteExistenciaMenudeo();
-
-        existenciaMenudeoNew = (ExistenciaMenudeo) event.getObject();
-        existenciaMenudeoOld = ifaceExistenciaMenudeo.getExistenciasMenudeoById(existenciaMenudeoNew.getIdExMenPk());
-
-        mantenimientoPrecios = ifaceMantenimientoPrecio.getMantenimientoPrecioById(existenciaMenudeoNew.getIdSubProductoPk(), existenciaMenudeoNew.getIdTipoEmpaqueFK().intValue(), existenciaMenudeoNew.getIdSucursalFk().intValue());
-        System.out.println("salidaEntrada: " + existenciaMenudeoNew.getSalidaEntrada());
-
-        if (existenciaMenudeoNew.getSalidaEntrada().trim().equalsIgnoreCase("Entrada")) {
-            existenciaMenudeoNew.setKilos(existenciaMenudeoNew.getKilos().add(existenciaMenudeoNew.getKilosAjustados()));
-        } else {
-            existenciaMenudeoNew.setKilos(existenciaMenudeoNew.getKilos().subtract(existenciaMenudeoNew.getKilosAjustados()));
-        }
-
-        //Se optiene el costo real para modificarlo en mantenimiento de precios se comento se validara si ajuste modifica precios reales
-//        mantenimientoPrecios.setCostoReal((existenciaMenudeoOld.getKilos().multiply(existenciaMenudeoOld.getCostoReal()).divide(existenciaMenudeoNew.getKilos(),2,RoundingMode.HALF_UP)));
-//        ifaceMantenimientoPrecio.updateMantenimientoPrecio(mantenimientoPrecios);
-        //Se ajusta la tabla de existencia
-        if (ifaceExistenciaMenudeo.updateExistenciaMenudeo(existenciaMenudeoNew) != 0) {
-
-            ajusteExistenciaMenudeo.setEmpaqueAjustados(existenciaMenudeoNew.getCantidadEmpaque());
-            ajusteExistenciaMenudeo.setEmpaqueAnterior(existenciaMenudeoOld.getCantidadEmpaque());
-            ajusteExistenciaMenudeo.setFechaAjuste(context.getFechaSistema());
-            ajusteExistenciaMenudeo.setIdExistenciaMenudeoFK(existenciaMenudeoNew.getIdExMenPk());
-            ajusteExistenciaMenudeo.setIdSucursalFK(existenciaMenudeoNew.getIdSucursalFk());
-            ajusteExistenciaMenudeo.setIdTipoEmpaqueFK(existenciaMenudeoNew.getIdTipoEmpaqueFK());
-            ajusteExistenciaMenudeo.setIdUsuarioAjusteFK(usuario.getIdUsuario());
-            ajusteExistenciaMenudeo.setKilosAjustados(existenciaMenudeoNew.getKilos());
-            ajusteExistenciaMenudeo.setKilosAnteior(existenciaMenudeoOld.getKilos());
-            ajusteExistenciaMenudeo.setObservaciones(existenciaMenudeoNew.getObservaciones());
-            ajusteExistenciaMenudeo.setMotivoAjuste(existenciaMenudeoNew.getMotivoAjuste());
-
-            if (ifaceAjusteExistenciaMenudeo.insert(ajusteExistenciaMenudeo) == 0) {
-                ifaceMantenimientoPrecio.updateMantenimientoPrecio(mantenimientoPrecios);
-                JsfUtil.addErrorMessage("Error al Modificar el Registro.");
+            idEntrada = entradaMercancia.getIdEmPK();
+            if (idEntrada != null) {
+                subProducto = null;
             }
         }
 
-        JsfUtil.addSuccessMessage("Se Modifico el Registro Existosamente.");
+        String idproductito = subProducto == null ? null : subProducto.getIdSubproductoPk();
+        model = ifaceNegocioExistencia.getExistencias(data.getIdSucursal(), data.getIdBodegaFK(), data.getIdProvedor(), idproductito, data.getIdTipoEmpaqueFK(), data.getIdTipoConvenio(), idEntrada);
+        getTotalCajasKilos();
 
-        buscaExistencias();
     }
 
-    public void onRowCancel(RowEditEvent event) {
+    public String updatePrecio() {
+        if (validateMaxMin()) {
+            if (ifaceNegocioExistencia.updatePrecio(dataEdit) == 1) {
+                JsfUtil.addSuccessMessage("Actualización Exitosa.");
+                return "existencias";
+            } else {
+                JsfUtil.addSuccessMessage("Error al Realizar la Operaión.");
+                return null;
+            }
+        } else {
+            JsfUtil.addErrorMessage("Error en la Validación de Datos Minimo : " + dataEdit.getPrecioMinimo() + " Maximo: " + dataEdit.getPrecioMaximo());
+            return null;
+        }
 
-        JsfUtil.addWarnMessage("Se Cancelo la Modificación.");
+    }
 
+    private boolean validateMaxMin() {
+
+        if (dataEdit.getPrecioVenta().doubleValue() > (dataEdit.getPrecioMaximo().doubleValue())) {
+            return false;
+        } else if (dataEdit.getPrecioVenta().doubleValue() < dataEdit.getPrecioMinimo().doubleValue()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public ArrayList<EntradaMercancia> autoCompleteMercancia(String clave) {
+        lstEntradaMercancia = ifaceEntradaMercancia.getSubEntradaByNombre(clave.toUpperCase());
+        return lstEntradaMercancia;
     }
 
     public ArrayList<Subproducto> autoComplete(String nombreProducto) {
@@ -165,12 +175,109 @@ public class BeanAjustesExistenciasMayoreo implements Serializable {
 
     }
 
-    public List<ExistenciaMenudeo> getModel() {
-        return model;
+    public void searchById() {
+        setViewEstate("search");
+        setTitle("Mantenimiento de Precio");
     }
 
-    public void setModel(List<ExistenciaMenudeo> model) {
-        this.model = model;
+    public void cancel() {
+        init();
+    }
+
+    public void onRowEdit(RowEditEvent event) {
+
+        ExistenciaProducto existenciaMayoreoOld = new ExistenciaProducto();
+        ExistenciaProducto existenciaProductoNew = new ExistenciaProducto();
+        ArrayList<ExistenciaProducto> lstExistenciaProducto = new ArrayList<ExistenciaProducto>();
+
+        System.out.println("inicializadas las variables.");
+
+        ajusteExistenciaMayoreo = new AjusteExistenciaMayoreo();
+
+        existenciaProductoNew = (ExistenciaProducto) event.getObject();
+        lstExistenciaProducto = ifaceNegocioExistencia.getExistenciaById(existenciaProductoNew.getIdExistenciaProductoPk());
+        System.out.println("se hace consulta para traer existencia productopro id existenciaproducto. " + existenciaProductoNew.getIdExistenciaProductoPk());
+        if (lstExistenciaProducto != null && !lstExistenciaProducto.isEmpty()) {
+            System.out.println("se encontro existencia. ");
+            existenciaProductoOld = lstExistenciaProducto.get(0);
+        }
+
+        if (existenciaProductoNew.getSalidaEntrada().trim().equalsIgnoreCase("Entrada")) {
+            System.out.println("entrada. ");
+            existenciaProductoNew.setKilosTotalesProducto(existenciaProductoNew.getKilosTotalesProducto().add(existenciaProductoNew.getKilosAjustar()));
+            existenciaProductoNew.setCantidadPaquetes(existenciaProductoNew.getCantidadPaquetes().add(existenciaProductoNew.getEmpaquesAjustar()));
+        } else {
+            System.out.println("salida. ");
+            existenciaProductoNew.setKilosTotalesProducto(existenciaProductoNew.getKilosTotalesProducto().subtract(existenciaProductoNew.getKilosAjustar()));
+            existenciaProductoNew.setCantidadPaquetes(existenciaProductoNew.getCantidadPaquetes().subtract(existenciaProductoNew.getEmpaquesAjustar()));
+        }
+
+        if (ifaceNegocioExistencia.updateExistenciaProducto(existenciaProductoNew) != 0) {
+
+            ajusteExistenciaMayoreo.setEmpaqueAjustados(existenciaProductoNew.getCantidadPaquetes());
+            ajusteExistenciaMayoreo.setEmpaqueAnterior(existenciaMayoreoOld.getCantidadPaquetes());
+            ajusteExistenciaMayoreo.setFechaAjuste(context.getFechaSistema());
+            ajusteExistenciaMayoreo.setIdExpFk(existenciaProductoNew.getIdExistenciaProductoPk());
+            ajusteExistenciaMayoreo.setIdUsuarioAjusteFK(usuario.getIdUsuario());
+            ajusteExistenciaMayoreo.setKilosAjustados(existenciaProductoNew.getKilosTotalesProducto());
+            ajusteExistenciaMayoreo.setKilosAnteior(existenciaMayoreoOld.getKilosTotalesProducto());
+            ajusteExistenciaMayoreo.setObservaciones(existenciaProductoNew.getObservaciones());
+            ajusteExistenciaMayoreo.setMotivoAjuste(existenciaProductoNew.getMotivoAjuste());
+            System.out.println("ajusteExistenciaMayoreo. " + ajusteExistenciaMayoreo.toString());
+            if (ifaceAjusteExistenciaMayoreo.insert(ajusteExistenciaMayoreo) == 0) {
+                System.out.println("Incercion. " );
+                JsfUtil.addErrorMessage("Error al Modificar el Registro.");
+            }
+        }
+
+        JsfUtil.addSuccessMessage("Se Modifico el Registro Exitosamente.");
+
+        buscaExistencias();
+
+    }
+
+    public void onRowCancel(RowEditEvent event) {
+        System.out.println("cancel");
+
+    }
+
+    public void resetValuesFilter() {
+
+        if (usuario.getPerId() == 1) {
+            data.setIdSucursal(null);
+        }
+
+        listaBodegas = ifaceCatBodegas.getBodegas();
+
+        data.setIdBodegaFK(null);
+        data.setIdProvedor(null);
+        data.setIdTipoEmpaqueFK(null);
+        data.setIdTipoConvenio(null);
+
+        entradaMercancia = new EntradaMercancia();
+        buscaExistencias();
+
+    }
+
+    public void getTotalCajasKilos() {
+
+        totalCajas = new BigDecimal(0);
+        totalKilos = new BigDecimal(0);
+
+        for (ExistenciaProducto dominio : model) {
+
+            totalCajas = totalCajas.add(dominio.getCantidadPaquetes());
+            totalKilos = totalKilos.add(dominio.getKilosTotalesProducto());
+
+        }
+    }
+
+    public ArrayList<Bodega> getListaBodegas() {
+        return listaBodegas;
+    }
+
+    public void setListaBodegas(ArrayList<Bodega> listaBodegas) {
+        this.listaBodegas = listaBodegas;
     }
 
     public ArrayList<Subproducto> getLstProducto() {
@@ -181,12 +288,28 @@ public class BeanAjustesExistenciasMayoreo implements Serializable {
         this.lstProducto = lstProducto;
     }
 
+    public ArrayList<ExistenciaProducto> getModel() {
+        return model;
+    }
+
+    public void setModel(ArrayList<ExistenciaProducto> model) {
+        this.model = model;
+    }
+
     public ArrayList<Sucursal> getListaSucursales() {
         return listaSucursales;
     }
 
     public void setListaSucursales(ArrayList<Sucursal> listaSucursales) {
         this.listaSucursales = listaSucursales;
+    }
+
+    public ArrayList<Provedor> getListaProvedores() {
+        return listaProvedores;
+    }
+
+    public void setListaProvedores(ArrayList<Provedor> listaProvedores) {
+        this.listaProvedores = listaProvedores;
     }
 
     public ArrayList<TipoEmpaque> getLstTipoEmpaque() {
@@ -197,20 +320,28 @@ public class BeanAjustesExistenciasMayoreo implements Serializable {
         this.lstTipoEmpaque = lstTipoEmpaque;
     }
 
-    public ExistenciaMenudeo getData() {
+    public ArrayList<TipoConvenio> getListaTiposConvenio() {
+        return listaTiposConvenio;
+    }
+
+    public void setListaTiposConvenio(ArrayList<TipoConvenio> listaTiposConvenio) {
+        this.listaTiposConvenio = listaTiposConvenio;
+    }
+
+    public ArrayList<EntradaMercancia> getLstEntradaMercancia() {
+        return lstEntradaMercancia;
+    }
+
+    public void setLstEntradaMercancia(ArrayList<EntradaMercancia> lstEntradaMercancia) {
+        this.lstEntradaMercancia = lstEntradaMercancia;
+    }
+
+    public ExistenciaProducto getData() {
         return data;
     }
 
-    public void setData(ExistenciaMenudeo data) {
+    public void setData(ExistenciaProducto data) {
         this.data = data;
-    }
-
-    public UsuarioDominio getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(UsuarioDominio usuario) {
-        this.usuario = usuario;
     }
 
     public Subproducto getSubProducto() {
@@ -219,6 +350,14 @@ public class BeanAjustesExistenciasMayoreo implements Serializable {
 
     public void setSubProducto(Subproducto subProducto) {
         this.subProducto = subProducto;
+    }
+
+    public EntradaMercancia getEntradaMercancia() {
+        return entradaMercancia;
+    }
+
+    public void setEntradaMercancia(EntradaMercancia entradaMercancia) {
+        this.entradaMercancia = entradaMercancia;
     }
 
     public String getTitle() {
@@ -235,6 +374,38 @@ public class BeanAjustesExistenciasMayoreo implements Serializable {
 
     public void setViewEstate(String viewEstate) {
         this.viewEstate = viewEstate;
+    }
+
+    public int getFiltro() {
+        return filtro;
+    }
+
+    public void setFiltro(int filtro) {
+        this.filtro = filtro;
+    }
+
+    public UsuarioDominio getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(UsuarioDominio usuario) {
+        this.usuario = usuario;
+    }
+
+    public BigDecimal getTotalKilos() {
+        return totalKilos;
+    }
+
+    public void setTotalKilos(BigDecimal totalKilos) {
+        this.totalKilos = totalKilos;
+    }
+
+    public BigDecimal getTotalCajas() {
+        return totalCajas;
+    }
+
+    public void setTotalCajas(BigDecimal totalCajas) {
+        this.totalCajas = totalCajas;
     }
 
 }
