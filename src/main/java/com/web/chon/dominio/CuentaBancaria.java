@@ -17,9 +17,13 @@ public class CuentaBancaria implements Serializable {
     private static final long serialVersionUID = 1L;
     private BigDecimal idCuentaBancariaPk;
     private String nombreBanco;
-    private String benificiario;
-    private String claveInterbancaria;
+    private BigDecimal cuenta;
 
+    @Override
+    public String toString() {
+        return "CuentaBancaria{" + "idCuentaBancariaPk=" + idCuentaBancariaPk + ", nombreBanco=" + nombreBanco + ", cuenta=" + cuenta + '}';
+    }
+    
     public BigDecimal getIdCuentaBancariaPk() {
         return idCuentaBancariaPk;
     }
@@ -36,21 +40,19 @@ public class CuentaBancaria implements Serializable {
         this.nombreBanco = nombreBanco;
     }
 
-    public String getBenificiario() {
-        return benificiario;
+    public BigDecimal getCuenta() {
+        return cuenta;
     }
 
-    public void setBenificiario(String benificiario) {
-        this.benificiario = benificiario;
+    public void setCuenta(BigDecimal cuenta) {
+        this.cuenta = cuenta;
     }
+    
+    
+    
 
-    public String getClaveInterbancaria() {
-        return claveInterbancaria;
-    }
 
-    public void setClaveInterbancaria(String claveInterbancaria) {
-        this.claveInterbancaria = claveInterbancaria;
-    }
+    
     
     
 

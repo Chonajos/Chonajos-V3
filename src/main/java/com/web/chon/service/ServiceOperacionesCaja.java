@@ -23,7 +23,7 @@ import java.util.List;
  * @author JesusAlfredo
  */
 @Service
-public class SerivceOperacionesCaja implements IfaceOperacionesCaja {
+public class ServiceOperacionesCaja implements IfaceOperacionesCaja {
     NegocioOperacionesCaja ejb;
     private void getEjb() 
     {
@@ -31,7 +31,7 @@ public class SerivceOperacionesCaja implements IfaceOperacionesCaja {
             try {
                 ejb = (NegocioOperacionesCaja) Utilidades.getEJBRemote("ejbOperacionesCaja", NegocioOperacionesCaja.class.getName());
             } catch (Exception ex) {
-                Logger.getLogger(SerivceOperacionesCaja.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ServiceOperacionesCaja.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -215,6 +215,34 @@ public class SerivceOperacionesCaja implements IfaceOperacionesCaja {
     public int updateCorte(BigDecimal idOperacionPk, BigDecimal idCorteFk) {
         getEjb();
         return ejb.updateCorteCaja(idOperacionPk, idCorteFk);
+    
+    }
+
+    @Override
+    public ArrayList<OperacionesCaja> getCheques(BigDecimal idCajaFk, BigDecimal idUserFk,BigDecimal idINOUT) {
+       getEjb();
+       int i = 1;
+        ArrayList<OperacionesCaja> listaOperaciones = new ArrayList<OperacionesCaja>();
+        List<Object[]> lstObject = ejb.getCheques(idCajaFk, idUserFk,idINOUT);
+        for (Object[] obj : lstObject) 
+        {
+            OperacionesCaja op = new OperacionesCaja();
+            op.setIdOperacionesCajaPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+            op.setIdCorteCajaFk(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
+            op.setIdCajaFk(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
+            op.setIdCajaDestinoFk(obj[3] == null ? null : new BigDecimal(obj[3].toString()));
+            op.setIdConceptoFk(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
+            op.setFecha(obj[5] == null ? null : (Date)obj[5]);
+            op.setIdStatusFk(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
+            op.setIdUserFk(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
+            op.setComentarios(obj[8] == null ? null : obj[8].toString());
+            op.setMonto(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
+            op.setEntradaSalida(obj[10] == null ? null : new BigDecimal(obj[10].toString()));
+            op.setNumero(i);
+            i +=1;
+            listaOperaciones.add(op);
+        }
+        return listaOperaciones;
     
     }
 

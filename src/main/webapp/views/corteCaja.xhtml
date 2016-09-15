@@ -14,9 +14,7 @@
         </div>
         <h:form id="formContent">
             <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
-           
-            <p:panel>
-            <div class="form-group" align="right">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight form-group">
                 <div>
                     <h:outputText  style="font-weight: bold !important" value ="Saldo Anterior :$" /> 
                     <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanCorteCaja.saldoAnterior}"> 
@@ -25,20 +23,27 @@
                 </div>
                 <div>
                     <p:commandButton value="Generar Corte" update=":formContent" ajax="true" action="#{beanCorteCaja.generarCorte()}"/>
-
+                </div>
+                <div>
+                    <h:outputText  style="font-weight: bold !important" value ="Saldo Nuevo :$" /> 
+                    <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanCorteCaja.nuevoSaldo}"> 
+                        <f:convertNumber pattern="#,###"/>
+                    </h:outputText>
                 </div>
             </div>
-                </p:panel>
             <p:panel> 
                 <div class="container-fluid">
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
                             <p:dataTable id="tabla" var="model" 
                                          value="#{beanCorteCaja.lstOperacionesEntrada}" 
                                          scrollable="true"
-                                         scrollHeight="200" styleClass="ui-datatable-hor-scroll" 
+                                         scrollHeight="100" styleClass="ui-datatable-hor-scroll" 
                                          emptyMessage="No se encontraron Registros" 
                                          rendered="#{beanCorteCaja.viewEstate =='init'}">
+                                <f:facet name="header">
+                                    Entradas
+                                </f:facet>
                                 <p:column headerText="N°" width="30px;" class="alignCenter">
                                     <h:outputText value="#{model.numero}" />
                                 </p:column>
@@ -64,7 +69,6 @@
                                         </p:column>
                                     </p:row>
                                 </p:columnGroup>
-
                             </p:dataTable>
 
                         </div>
@@ -72,9 +76,12 @@
                             <p:dataTable id="tabla1" var="model1" 
                                          value="#{beanCorteCaja.lstOperacionesSalida}" 
                                          scrollable="true"
-                                         scrollHeight="200" styleClass="ui-datatable-hor-scroll" 
+                                         scrollHeight="100" styleClass="ui-datatable-hor-scroll" 
                                          emptyMessage="No se encontraron Registros" 
                                          rendered="#{beanCorteCaja.viewEstate =='init'}">
+                                <f:facet name="header">
+                                    Salidas
+                                </f:facet>
                                 <p:column headerText="N°" width="30px;" class="alignCenter">
                                     <h:outputText value="#{model1.numero}" />
                                 </p:column>
@@ -98,20 +105,18 @@
                                                 </h:outputText>
                                             </f:facet>
                                         </p:column>
-                                        
+
                                     </p:row>
                                 </p:columnGroup>
 
                             </p:dataTable>
                         </div>
-                        <div class="form-group" align="right">
-                            <h:outputText  style="font-weight: bold !important" value ="Saldo Nuevo :$" /> 
-                            <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanCorteCaja.nuevoSaldo}"> 
-                                <f:convertNumber pattern="#,###"/>
-                            </h:outputText>
-                        </div>
+
                     </div>
+
                 </div>
+
+
             </p:panel>
         </h:form>
     </ui:define>

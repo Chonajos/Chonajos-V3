@@ -138,9 +138,7 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
             return 0;
         }
     
-    
     }
-
     @Override
     public List<Object[]> getOperacionesCorteBy(BigDecimal idCajaFk, BigDecimal idUserFk, BigDecimal idES) {
          Query query = em.createNativeQuery("select con.ID_TIPO_OPERACION_FK,tio.NOMBRE,sum(opc.MONTO) from operaciones_caja opc\n" +
@@ -148,17 +146,15 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
 "inner join CONCEPTOS con on con.ID_CONCEPTOS_PK = opc.ID_CONCEPTO_FK\n" +
 "inner join TIPOS_OPERACION tio on tio.ID_TIPO_OPERACION_PK = con.ID_TIPO_OPERACION_FK\n" +
 "where opc.ID_STATUS_FK=1 and opc.E_S=? and opc.ID_CORTE_CAJA_FK is null\n" +
-"and opc.ID_USER_FK = ? and opc.ID_CAJA_FK = ?\n" +
+"and opc.ID_USER_FK = ? and opc.ID_CAJA_FK = ? \n" +
 "group by con.ID_TIPO_OPERACION_FK,tio.NOMBRE");
-         System.out.println("===========Consulta=========");
-         System.out.println(query);
-         System.out.println("Variables: "+ "Caja: "+idCajaFk +"User: "+idUserFk +" E/S: " + idES);
+        System.out.println("===========Consulta=========");
+        System.out.println(query);
+        System.out.println("Variables: "+ "Caja: "+idCajaFk +"User: "+idUserFk +" E/S: " + idES);
         query.setParameter(1, idES);
         query.setParameter(2, idUserFk);
         query.setParameter(3, idCajaFk);
         return query.getResultList();
-    
-    
     }
 
     @Override
@@ -174,6 +170,15 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
          System.out.println("Variables: "+ "Caja: "+idCajaFk +"User: "+idUserFk);
         query.setParameter(1, idUserFk);
         query.setParameter(2, idCajaFk);
+        return query.getResultList();
+    }
+     @Override
+    public List<Object[]> getCheques(BigDecimal idCajaFk, BigDecimal idUserFk,BigDecimal idINOUT) {
+       Query query = em.createNativeQuery("select * from OPERACIONES_CAJA opc where opc.ID_CONCEPTO_FK = 12\n" +
+"and opc.ID_CAJA_FK = ? and opc.ID_USER_FK = ? and opc.ID_CORTE_CAJA_FK is null and opc.E_S=?");
+        query.setParameter(1, idCajaFk);
+        query.setParameter(2, idUserFk);
+        query.setParameter(3, idINOUT);
         return query.getResultList();
     }
 
