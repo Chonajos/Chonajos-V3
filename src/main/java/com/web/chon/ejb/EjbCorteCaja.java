@@ -31,7 +31,9 @@ public class EjbCorteCaja implements NegocioCorteCaja {
     @Override
     public int insertCorte(CorteCaja cc) {
         System.out.println("insert corte :" + cc.toString());
-        Query query = em.createNativeQuery("INSERT INTO Corte_Caja(ID_CORTE_CAJA_PK,ID_CAJA_FK,FECHA,CANT_CHEQUES_ANT,MONTO_CHEQUES_ANT,SALDO_ANTERIOR,CANT_CHEQUES_NUEVOS,NUEVO_SALDO,COMENTARIOS,ID_USER_FK,ID_STATUS_FK) VALUES(?,?,sysdate,?,?,?,?,?,?,?,?,?)");
+        Query query = em.createNativeQuery("INSERT INTO Corte_Caja(ID_CORTE_CAJA_PK,ID_CAJA_FK,FECHA,CANT_CHEQUES_ANT,"
+                + "                         MONTO_CHEQUES_ANT,SALDO_ANTERIOR,CANT_CHEQUES_NUEVOS,MONTO_CHEQUES_NUEVOS,NUEVO_SALDO,"
+                + "                         COMENTARIOS,ID_USER_FK,ID_STATUS_FK) VALUES(?,?,sysdate,?,?,?,?,?,?,?,?,?)");
        
         query.setParameter(1, cc.getIdCorteCajaPk());
         query.setParameter(2, cc.getIdCajaFk());
@@ -107,6 +109,20 @@ public class EjbCorteCaja implements NegocioCorteCaja {
        try {
             Query query = em.createNativeQuery("select * from corte_caja c where c.ID_CORTE_CAJA_PK = ? ");
             query.setParameter(1, idPk);
+            return query.getResultList();
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbCorteCaja.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
+    @Override
+    public List<Object[]> getLastCorteByCaja(BigDecimal idCajaPk) {
+        System.out.println("IdCaja: "+idCajaPk);
+        try {
+            Query query = em.createNativeQuery("select * from(select *  from CORTE_CAJA cj where cj.ID_CAJA_FK = ? ORDER BY cj.ID_CORTE_CAJA_PK desc)  t1 where rownum =1");
+            query.setParameter(1, idCajaPk);
             return query.getResultList();
 
         } catch (Exception ex) {

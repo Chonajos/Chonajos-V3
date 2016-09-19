@@ -1,16 +1,49 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <title>TODO supply a title</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    </head>
-    <body>
-        <div>TODO write content</div>
-    </body>
-</html>
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="./../templates/main.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content">
+        <div>
+            <h3>#{beanTransferencias.title}</h3>
+        </div>
+
+        <h:form id="formContent">
+            <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
+            <div class="form-group" align="right">
+                <div>
+                    <p:commandButton value="Transferir" update=":formContent" ajax="true" action="#{beanTransferencias.transferir()}"/>
+                </div>
+            </div>
+            <p:panel> 
+                <div class="container-fluid">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="cajaFiltro" value ="Caja Destino:" rendered="#{beanTransferencias.viewEstate =='init'}" /> 
+                            <h:selectOneMenu  id="cajaFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanTransferencias.idCajaDestinoBean}" rendered="#{beanTransferencias.viewEstate =='init'}" >
+                                <f:selectItem itemLabel="Selecciona" itemValue="" />
+                                <f:selectItems value="#{beanTransferencias.listaCajas}" var="cajita" itemLabel="#{cajita.nombre}" itemValue="#{cajita.idCajaPk}"/>
+                                <!--<p:ajax event="change" listener="{beanOperacionesCaja.printStatus()}" update=":formContent:table" />-->
+                            </h:selectOneMenu>
+                        </div>
+                        <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
+                            <p:outputLabel  class="col-lg-6 col-md-3 col-sm-4 col-xs-6"  for="txtPrecio" id="labelprecio" value ="Monto:" /> 
+                            <p:inputText id="txtPrecio" maxlength="8" class=" col-lg-6 col-md-4 col-sm-8 col-xs-6" value="#{beanTransferencias.monto}" required="true">
+                                <pe:keyFilter regEx="/[0-9 .]/i"/>
+                            </p:inputText>
+                        </div>
+                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 ">
+                            <p:outputLabel  class="col-lg-6 col-md-3 col-sm-4 col-xs-6 alignLeft"  for="txtComentarios" value ="Comentarios:" /> 
+                            <p:inputTextarea  style=" width:50%; height:25px;" rows="1" cols="20" id="txtComentarios" maxlength="95" class=" col-lg-6 col-md-4 col-sm-8 col-xs-6" value="#{beanTransferencias.comentarios}"/>
+                        </div>
+                    </div>
+                </div>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>

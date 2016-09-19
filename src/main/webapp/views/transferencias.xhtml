@@ -24,10 +24,10 @@
                 <div class="container-fluid">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="cajaFiltro" value ="Caja Destino:" rendered="#{beanOperacionesCaja.viewEstate =='init'}" /> 
-                            <h:selectOneMenu  id="cajaFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanOperacionesCaja.idCajaDestinoBean}" rendered="#{beanOperacionesCaja.viewEstate =='init'}" >
+                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="cajaFiltro" value ="Caja Destino:" rendered="#{beanTransferencias.viewEstate =='init'}" /> 
+                            <h:selectOneMenu  id="cajaFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanTransferencias.idCajaDestinoBean}" rendered="#{beanTransferencias.viewEstate =='init'}" >
                                 <f:selectItem itemLabel="Selecciona" itemValue="" />
-                                <f:selectItems value="#{beanOperacionesCaja.listaCajas}" var="cajita" itemLabel="#{cajita.nombre}" itemValue="#{cajita.idCajaPk}"/>
+                                <f:selectItems value="#{beanTransferencias.listaCajas}" var="cajita" itemLabel="#{cajita.nombre}" itemValue="#{cajita.idCajaPk}"/>
                                 <!--<p:ajax event="change" listener="{beanOperacionesCaja.printStatus()}" update=":formContent:table" />-->
                             </h:selectOneMenu>
                         </div>

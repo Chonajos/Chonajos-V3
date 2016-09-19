@@ -33,8 +33,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Scope("view")
-public class BeanOperacionesCaja  implements Serializable
-{
+public class BeanOperacionesCaja implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Autowired
     private IfaceCaja ifaceCaja;
@@ -44,63 +44,62 @@ public class BeanOperacionesCaja  implements Serializable
     private IfaceCatSucursales ifaceCatSucursales;
     @Autowired
     private PlataformaSecurityContext context;
-    @Autowired 
+    @Autowired
     private IfaceTiposOperacion ifaceTiposOperacion;
-    @Autowired 
+    @Autowired
     private IfaceConceptos ifaceConceptos;
-    
+
     private OperacionesCaja data;
     private UsuarioDominio usuario;
-    
+
     private ArrayList<OperacionesCaja> listaOperaciones;
     private ArrayList<Sucursal> listaSucursales;
     private ArrayList<Caja> listaCajas;
     private ArrayList<ConceptosES> listaConceptos;
     private ArrayList<TipoOperacion> listaTiposOperaciones;
-    
-    
+
     private String title;
     private String viewEstate;
-    
+
     private Date fechaFiltroInicio;
     private Date fechaFiltroFin;
     private int filtro;
     private int filtroStatus;
     private int filtroES;
     private boolean enableCalendar;
-    
+
     private BigDecimal idSucursalBean;
-    
+
     private BigDecimal idCajaBean;
     private BigDecimal idConceptoBean;
     private BigDecimal idTipoOperacionBean;
     private BigDecimal monto;
     private String comentarios;
-    
+
     @PostConstruct
-    public void init() 
-    {
+    public void init() {
         usuario = context.getUsuarioAutenticado();
         setTitle("Relación de Operaciones de Caja");
         setViewEstate("init");
+        fechaFiltroInicio = new Date();
+        fechaFiltroFin = new Date();
         listaSucursales = ifaceCatSucursales.getSucursales();
-        idSucursalBean= new BigDecimal(usuario.getSucId());
+        idSucursalBean = new BigDecimal(usuario.getSucId());
         listaCajas = ifaceCaja.getCajas();
-        listaOperaciones= new ArrayList<OperacionesCaja>();
+        listaOperaciones = new ArrayList<OperacionesCaja>();
         Caja c = new Caja();
         c = ifaceCaja.getCajaByIdUsuarioPk(usuario.getIdUsuario());
         idCajaBean = c.getIdCajaPk();
         listaConceptos = ifaceConceptos.getConceptos();
         listaTiposOperaciones = ifaceTiposOperacion.getOperaciones();
         listaOperaciones = ifaceOperacionesCaja.getOperacionesBy(idCajaBean, idTipoOperacionBean, idConceptoBean, TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicio), TiempoUtil.getFechaDDMMYYYY(fechaFiltroFin), idCajaBean, usuario.getIdUsuario());
-        
+
     }
-    
-    public void transferir()
-    {
-        
+
+    public void buscar() {
+
     }
-    
+
     public void verificarCombo() {
         if (filtro == -1) {
             //se habilitan los calendarios.
@@ -155,8 +154,6 @@ public class BeanOperacionesCaja  implements Serializable
     public void setViewEstate(String viewEstate) {
         this.viewEstate = viewEstate;
     }
-
-    
 
     public ArrayList<OperacionesCaja> getListaOperaciones() {
         return listaOperaciones;
@@ -302,10 +299,4 @@ public class BeanOperacionesCaja  implements Serializable
         this.comentarios = comentarios;
     }
 
-   
-    
-    
-    
-    
-    
 }

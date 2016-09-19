@@ -14,187 +14,109 @@
         </div>
         <h:form id="formContent">
             <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
-            <p:dialog  id="dialogoSalida" header="Verificar Saldos" widgetVar="dlg" resizable="false">
-                <h:panelGrid columns="1" cellpadding="5">
-                    <div class="form-group">
-                        <div class="form-group">
-                            <p:outputLabel for="comboCajas" value="Selecciona un caja Destino:"/> 
-                        </div>
-                        <div class="form-group">
-                            <h:selectOneMenu  id="comboCajas" value="#{beanCorteCaja.dataEntradaSalida.idCajaDestino}">
-                                <f:selectItem itemLabel="Selecciona una opción" itemValue="" />
-                                <f:selectItems value="#{beanCorteCaja.listaCajas}" var="cajita" itemLabel="#{cajita.nombre}" itemValue="#{cajita.idCajaPk}"/>
-                            </h:selectOneMenu>
-                        </div>
-                        <h:outputLabel for="monto" value="¿Cuanto dinero tiene usted en caja?: " />
-                        <p:inputText maxlength="8" id="monto"  value="#{beanCorteCaja.saldoRealCaja}">
-                            <pe:keyFilter regEx="/[0-9_]/i"/>
-                        </p:inputText>
-                        <h:outputLabel for="comentarios" value="Comentarios:" />
-                        <p:inputText maxlength="50" id="comentarios"  value="#{beanCorteCaja.data.comentarios}">
-                        </p:inputText>
-                        <div class="form-group">
-                            <p:commandButton value="Genrar Corte" update=":formContent" action="#{beanCorteCaja.generarCorte()}" oncomplete="PF('dlg').hide();"/>
-                        </div>
-                    </div>
-                </h:panelGrid>
-            </p:dialog> 
-
-            <div class="form-group" align="right">
-                <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                    <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="sucursalFiltro" value ="Sucursal:" rendered="#{beanCorteCaja.viewEstate =='init'}"/> 
-                    <h:selectOneMenu  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanCorteCaja.idSucursalBean}" rendered="#{beanCorteCaja.viewEstate =='init'}" disabled="#{beanCorteCaja.usuario.perId != 1}">
-                        <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="" />
-                        <f:selectItems value="#{beanCorteCaja.listaSucursales}" var="sucursal" itemLabel="#{sucursal.nombreSucursal}" itemValue="#{sucursal.idSucursalPk}"/>
-                    </h:selectOneMenu>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                    <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="cajaFiltro" value ="Caja:" rendered="#{beanCorteCaja.viewEstate =='init'}" /> 
-                    <h:selectOneMenu  id="cajaFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanCorteCaja.idCajaBean}" rendered="#{beanCorteCaja.viewEstate =='init'}" disabled="#{beanCorteCaja.usuario.perId != 1}" >
-                        <f:selectItem itemLabel="Selecciona" itemValue="" />
-                        <f:selectItems value="#{beanCorteCaja.listaCajas}" var="cajita" itemLabel="#{cajita.nombre}" itemValue="#{cajita.idCajaPk}"/>
-                        <!--<p:ajax event="change" listener="{beanCorteCaja.printStatus()}" update=":formContent:table" />-->
-                    </h:selectOneMenu>
-                </div>
-                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                    <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft "  for="calendarInicio" 
-                                   value ="Fecha:"
-                                   /> 
-                    <p:calendar id="calendarInicio" readonly="true"
-                                class="col-lg-8 col-md-8 col-sm-8 col-xs-12 
-                                calendario alignRight" navigator="true" placeholder="dd/mm/yyyy"
-                                value="#{beanCorteCaja.fecha}" locale="es" pattern="dd/MM/yyyy" 
-                                readonlyInput="true"
-                                showOn="button">
-                    </p:calendar>
-                </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight form-group">
                 <div>
-                    <h:outputText  style="font-weight: bold !important" value ="Saldo Actual en Caja: $"/> 
-                    <h:outputText  style="font-weight: bold !important; color: blue !important;" value ="#{beanCorteCaja.saldoCaja}"> 
+                    <h:outputText  style="font-weight: bold !important" value ="Saldo Anterior :$" /> 
+                    <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanCorteCaja.saldoAnterior}"> 
                         <f:convertNumber pattern="#,###"/>
                     </h:outputText>
                 </div>
                 <div>
-                    <p:commandButton value="Verificar Datos" update=":formContent" ajax="true" oncomplete="PF('dlg').show();" />
+                    <p:commandButton value="Generar Corte" update=":formContent" ajax="true" action="#{beanCorteCaja.generarCorte()}"/>
+                </div>
+                <div>
+                    <h:outputText  style="font-weight: bold !important" value ="Saldo Nuevo :$" /> 
+                    <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanCorteCaja.nuevoSaldo}"> 
+                        <f:convertNumber pattern="#,###"/>
+                    </h:outputText>
                 </div>
             </div>
-            <p:panel>
+            <p:panel> 
                 <div class="container-fluid">
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
-                            <p:panel header="Entradas" class="container-fluid form-group">
+                            <p:dataTable id="tabla" var="model" 
+                                         value="#{beanCorteCaja.lstOperacionesEntrada}" 
+                                         scrollable="true"
+                                         scrollHeight="100" styleClass="ui-datatable-hor-scroll" 
+                                         emptyMessage="No se encontraron Registros" 
+                                         rendered="#{beanCorteCaja.viewEstate =='init'}">
+                                <f:facet name="header">
+                                    Entradas
+                                </f:facet>
+                                <p:column headerText="N°" width="30px;" class="alignCenter">
+                                    <h:outputText value="#{model.numero}" />
+                                </p:column>
+                                <p:column headerText="Operacion" width="150px;" class="alignLeft">
+                                    <h:outputText value="#{model.nombre}" />
+                                </p:column>
 
-                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12" style="padding:0px;">    
-                                        <p:outputLabel class="col-lg-6 col-md-3 col-sm-4 col-xs-6"   for="txtSaldoAnterior" value ="Saldo Anterior:" /> 
-                                        <p:inputText id="txtSaldoAnterior"  readonly="true" class=" col-lg-3 col-md-4 col-sm-8 col-xs-6" value="#{beanCorteCaja.data.saldoAnterior}">
-                                        </p:inputText>
-                                    </div>
-                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 " style="padding:0px;">    
-                                        <p:outputLabel class="col-lg-6 col-md-3 col-sm-4 col-xs-6"   for="txtAbonosCreditos" value ="Abonos Créditos:" /> 
-                                        <p:inputText id="txtAbonosCreditos"  readonly="true" class=" col-lg-3 col-md-4 col-sm-8 col-xs-6" value="#{beanCorteCaja.data.abonosCreditos}">
-                                            <f:convertNumber pattern="#,###"/>
-                                        </p:inputText>
-                                    </div>
-                                </div>
-                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 " style="padding:0px;">    
-                                        <p:outputLabel class="col-lg-6 col-md-8 col-sm-4 col-xs-6"   for="txtVentasMayoreo" value ="Ventas Mayoreo:" /> 
-                                        <p:inputText id="txtVentasMayoreo"  readonly="true" class=" col-lg-3 col-md-4 col-sm-8 col-xs-6" value="#{beanCorteCaja.data.ventasMayoreo}">
-                                            <f:convertNumber pattern="#,###"/>
-                                        </p:inputText>
-                                    </div>
+                                <p:column headerText="Monto" width="50px;" class="alignRight">
+                                    <h:outputText value="#{model.montoTotal}">
+                                        <f:convertNumber type="currency" currencySymbol="$" />
+                                    </h:outputText>
+                                </p:column>
+                                <p:columnGroup type="footer">
+                                    <p:row>
+                                        <p:column colspan="1" />
+                                        <p:column colspan="4" style="text-align:right" footerText="Total:" />
+                                        <p:column colspan="1" class="alignRight">
+                                            <f:facet name="footer">
+                                                <h:outputText value="#{beanCorteCaja.totalEntradas}" >
+                                                    <f:convertNumber currencySymbol="$" type="currency" />
+                                                </h:outputText>
+                                            </f:facet>
+                                        </p:column>
+                                    </p:row>
+                                </p:columnGroup>
+                            </p:dataTable>
 
-                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 " style="padding:0px;">    
-                                        <p:outputLabel class="col-lg-6 col-md-8 col-sm-6 col-xs-6"   for="txtVentasMenudeo" value ="Ventas Menudeo:" /> 
-                                        <p:inputText id="txtVentasMenudeo"  readonly="true" class=" col-lg-3 col-md-4 col-sm-6 col-xs-6" value="#{beanCorteCaja.data.ventasMenudeo}">
-                                            <f:convertNumber pattern="#,###"/>
-                                        </p:inputText>
-                                    </div>
-                                </div>
-                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 " style="padding:0px;">
-                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 form-group">    
-                                        <p:outputLabel class="col-lg-6 col-md-3 col-sm-4 col-xs-6"   for="txtTransferenciasIN" value ="Transferencias:" /> 
-                                        <p:inputText id="txtTransferenciasIN"  readonly="true" class=" col-lg-3 col-md-4 col-sm-8 col-xs-6" value="#{beanCorteCaja.data.transferenciasIN}">
-                                            <f:convertNumber pattern="#,###"/>
-                                        </p:inputText>
-                                    </div>
-                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 " style="padding:0px;">    
-                                        <p:outputLabel class="col-lg-6 col-md-3 col-sm-4 col-xs-6"   for="txtAnticipos" value ="Anticipos:" /> 
-                                        <p:inputText id="txtAnticipos"  readonly="true" class=" col-lg-2 col-md-3 col-sm-8 col-xs-6" value="#{beanCorteCaja.data.anticipos}">
-                                            <f:convertNumber pattern="#,###"/>
-                                        </p:inputText>
-                                    </div>
-                                </div>
-                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 " style="padding:0px;">
-                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 form-group">    
-                                        <p:outputLabel class="col-lg-6 col-md-3 col-sm-4 col-xs-6"   for="txtCantidadCheques" value ="Cant. Cheques:" /> 
-                                        <p:inputText id="txtCantidadCheques"  readonly="true" class=" col-lg-1 col-md-2 col-sm-8 col-xs-6" value="#{beanCorteCaja.data.cantCheques}">
-                                            <f:convertNumber pattern="#,###"/>
-                                        </p:inputText>
-                                    </div>
-                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 " style="padding:0px;">    
-                                        <p:outputLabel class="col-lg-6 col-md-3 col-sm-4 col-xs-6"   for="txtmontoCheques" value ="Monto en Cheques:" /> 
-                                        <p:inputText id="txtmontoCheques"  readonly="true" class=" col-lg-3 col-md-2 col-sm-8 col-xs-6" value="#{beanCorteCaja.data.montoCheques}">
-
-                                        </p:inputText>
-                                    </div>
-                                </div>
-                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 col-lg-offset-6" style="padding:0px;">    
-                                        <p:outputLabel class="col-lg-6 col-md-3 col-sm-4 col-xs-6"   for="txtTotalEntradas" value ="Total Entradas:" /> 
-                                        <p:inputText id="txtTotalEntradas"  readonly="true" class=" col-lg-3 col-md-2 col-sm-8 col-xs-6" value="#{beanCorteCaja.data.totalEntradas}">
-                                            <f:convertNumber pattern="#,###"/>
-                                        </p:inputText>
-                                    </div>
-                                </div>
-                            </p:panel>
                         </div>
                         <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
-                            <p:panel header="Salidas" class="container-fluid form-group">
-                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 " style="padding:0px;">
-                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 form-group"> 
-                                        <p:outputLabel class="col-lg-6 col-md-3 col-sm-4 col-xs-6"   for="txtTransferenciasOUT" value ="Transferencias:" /> 
-                                        <p:inputText id="txtTransferenciasOUT"  readonly="true" class=" col-lg-3 col-md-4 col-sm-8 col-xs-6" value="#{beanCorteCaja.data.transferenciasOUT}">
-                                        </p:inputText>
-                                    </div>
-                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 " style="padding:0px;">   
-                                        <p:outputLabel class="col-lg-6 col-md-3 col-sm-4 col-xs-6"   for="txtServicios" value ="Servicios:" /> 
-                                        <p:inputText id="txtServicios"  readonly="true" class=" col-lg-3 col-md-2 col-sm-8 col-xs-6" value="#{beanCorteCaja.data.servicios}">
-                                        </p:inputText>
-                                    </div>
-                                </div>
-                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 " style="padding:0px;">
-                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 form-group"> 
-                                        <p:outputLabel class="col-lg-6 col-md-3 col-sm-4 col-xs-6"   for="txtProvedores" value ="Pagos a Provedores:" /> 
-                                        <p:inputText id="txtProvedores"  readonly="true" class=" col-lg-3 col-md-2 col-sm-8 col-xs-6" value="#{beanCorteCaja.data.pagoProvedores}">
-                                        </p:inputText>
-                                    </div>
-                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 " style="padding:0px;">   
-                                        <p:outputLabel class="col-lg-6 col-md-3 col-sm-4 col-xs-6"   for="txtPrestamos" value ="Prestamos:" /> 
-                                        <p:inputText id="txtPrestamos"  readonly="true" class=" col-lg-3 col-md-2 col-sm-8 col-xs-6" value="#{beanCorteCaja.data.prestamos}">
-                                        </p:inputText>
-                                    </div>
-                                </div>
-                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 col-lg-offset-6 " style="padding:0px;">
-                                    <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"   for="txtTotalSalidas" value ="Total Salidas:" /> 
-                                    <p:inputText id="txtTotalSalidas"  readonly="true" class=" col-lg-3 col-md-2 col-sm-8 col-xs-6" value="#{beanCorteCaja.data.totalSalidas}">
+                            <p:dataTable id="tabla1" var="model1" 
+                                         value="#{beanCorteCaja.lstOperacionesSalida}" 
+                                         scrollable="true"
+                                         scrollHeight="100" styleClass="ui-datatable-hor-scroll" 
+                                         emptyMessage="No se encontraron Registros" 
+                                         rendered="#{beanCorteCaja.viewEstate =='init'}">
+                                <f:facet name="header">
+                                    Salidas
+                                </f:facet>
+                                <p:column headerText="N°" width="30px;" class="alignCenter">
+                                    <h:outputText value="#{model1.numero}" />
+                                </p:column>
+                                <p:column headerText="Operacion" width="150px;" class="alignLeft">
+                                    <h:outputText value="#{model1.nombre}" />
+                                </p:column>
 
-                                    </p:inputText>
-                                </div>
-                            </p:panel>
+                                <p:column headerText="Monto" width="50px;" class="alignRight">
+                                    <h:outputText value="#{model1.montoTotal}">
+                                        <f:convertNumber type="currency" currencySymbol="$" />
+                                    </h:outputText>
+                                </p:column>
+                                <p:columnGroup type="footer">
+                                    <p:row>
+                                        <p:column colspan="1" />
+                                        <p:column colspan="4" style="text-align:right" footerText="Total:" />
+                                        <p:column colspan="1" class="alignRight">
+                                            <f:facet name="footer">
+                                                <h:outputText value="#{beanCorteCaja.totalSalidas}" >
+                                                    <f:convertNumber currencySymbol="$" type="currency" />
+                                                </h:outputText>
+                                            </f:facet>
+                                        </p:column>
+
+                                    </p:row>
+                                </p:columnGroup>
+
+                            </p:dataTable>
                         </div>
-                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 ">
-                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                                <p:outputLabel class="col-lg-6 col-md-3 col-sm-4 col-xs-6"   for="txttotal" value ="Saldo Nuevo:" /> 
-                                <p:inputText id="txttotal"  readonly="true" class=" col-lg-3 col-md-2 col-sm-8 col-xs-6" value="#{beanCorteCaja.data.saldoNuevo}">
-                                </p:inputText>
-                            </div>
 
-
-                        </div>
                     </div>
+
                 </div>
+
+
             </p:panel>
         </h:form>
     </ui:define>
