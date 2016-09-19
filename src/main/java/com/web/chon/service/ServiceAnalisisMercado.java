@@ -85,7 +85,6 @@ public class ServiceAnalisisMercado implements IfaceAnalisisMercado {
         List<String> rangoFechaInicio = new ArrayList<String>();
         List<String> rangoFechaFin = new ArrayList<String>();
         List<Object[]> lstObject = null;
-        System.out.println("idProducto " + idProducto);
         
         Date fechaFin = fechaInicio;
         
