@@ -31,9 +31,10 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
 
         System.out.println("Entrada_Porducto Existencia Nuevo=============: " + e.toString());
 
-        try {
+        try 
+        {          
 
-            Query query = em.createNativeQuery("INSERT INTO EXISTENCIA_PRODUCTO (ID_EXP_PK,ID_EM_FK,ID_SUBPRODUCTO_FK,ID_TIPO_EMPAQUE_FK,KILOS_TOTALES,CANTIDAD_EMPACAQUE,COMENTARIOS,ID_BODEGA_FK,ID_TIPO_CONVENIO_FK,CONVENIO,KILOSPROMPROD,ID_SUCURSAL_FK,ID_EMP_FK)VALUES (S_EXISTENCIA_PRODUCTO.NextVal,?,?,?,?,?,?,?,?,?,?,?,?)");
+            Query query = em.createNativeQuery("INSERT INTO EXISTENCIA_PRODUCTO (ID_EXP_PK,ID_EM_FK,ID_SUBPRODUCTO_FK,ID_TIPO_EMPAQUE_FK,KILOS_TOTALES,CANTIDAD_EMPACAQUE,COMENTARIOS,ID_BODEGA_FK,ID_TIPO_CONVENIO_FK,CONVENIO,KILOSPROMPROD,ID_SUCURSAL_FK,ID_EMP_FK,PRECIO_MINIMO,PRECIO_VENTA,PRECIO_MAXIMO,ESTATUS_BLOQUEO)VALUES (S_EXISTENCIA_PRODUCTO.NextVal,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
             query.setParameter(1, e.getIdEmFK());
             query.setParameter(2, e.getIdSubProductoFK());
             query.setParameter(3, e.getIdTipoEmpaqueFK());
@@ -42,10 +43,14 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
             query.setParameter(6, e.getComentarios());
             query.setParameter(7, e.getIdBodegaFK());
             query.setParameter(8, e.getIdTipoConvenio());
-            query.setParameter(9, e.getPrecio());
+            query.setParameter(9, e.getConvenio());
             query.setParameter(10, e.getKilospromprod());
             query.setParameter(11, e.getIdSucursal());
             query.setParameter(12, e.getIdEntradaMercanciaProductoFK());
+            query.setParameter(13, e.getPrecioMinimo());
+            query.setParameter(14, e.getPrecioVenta());
+            query.setParameter(15, e.getPrecioMaximo());
+            query.setParameter(16, e.isEstatusBloqueo() == true ? "0":"1");
 
             return query.executeUpdate();
 

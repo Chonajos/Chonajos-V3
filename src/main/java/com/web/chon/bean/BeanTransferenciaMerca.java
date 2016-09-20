@@ -114,6 +114,7 @@ public class BeanTransferenciaMerca implements Serializable {
                     }
                 } else {
 
+                    System.out.println("existenciaProducto :p "+existenciaProducto.toString());
                     existenciaProductoTemp = new ExistenciaProducto(existenciaProducto.getIdExistenciaProductoPk(), existenciaProducto.getIdEmFK(), existenciaProducto.getIdSubProductoFK(), existenciaProducto.getIdTipoEmpaqueFK(), existenciaProducto.getCantidadPaquetes(), existenciaProducto.getKilosTotalesProducto(), existenciaProducto.getComentarios(), existenciaProducto.getPrecio(), existenciaProducto.getNombreProducto(), existenciaProducto.getNombreEmpaque(), existenciaProducto.getIdTipoConvenio(), existenciaProducto.getIdBodegaFK(), existenciaProducto.getNombreTipoConvenio(), existenciaProducto.getNombreBodega(), existenciaProducto.getKilospromprod(), existenciaProducto.getNumeroMovimiento(), existenciaProducto.getPesoTara(), existenciaProducto.getIdSucursal(), existenciaProducto.getIdProvedor(), existenciaProducto.getNombreProvedorCompleto(), existenciaProducto.getIdentificador(), existenciaProducto.getNombreSucursal(), existenciaProducto.getPrecioMinimo(), existenciaProducto.getPrecioVenta(), existenciaProducto.getPrecioMaximo(), existenciaProducto.isEstatusBloqueo(), existenciaProducto.getConvenio(), existenciaProducto.getCarroSucursal(), existenciaProducto.getIdEntradaMercanciaProductoFK(), existenciaProducto.getPrecioSinIteres());
                     existenciaProductoTemp.setCantidadPaquetes(data.getCantidadMovida());
                     existenciaProductoTemp.setKilosTotalesProducto(data.getKilosMovios());
@@ -126,6 +127,7 @@ public class BeanTransferenciaMerca implements Serializable {
                         ifaceNegocioExistencia.updateExistenciaProducto(existenciaProducto);
 
                         //de lo contrario se genera un nuevo registro de existencia y se resta la existencia actual de lo tranferido.
+                        
                     } else if (ifaceNegocioExistencia.insertExistenciaProducto(existenciaProductoTemp) == 1) {
 
                         existenciaProducto.setCantidadPaquetes(existenciaProducto.getCantidadPaquetes().subtract(data.getCantidadMovida()));
