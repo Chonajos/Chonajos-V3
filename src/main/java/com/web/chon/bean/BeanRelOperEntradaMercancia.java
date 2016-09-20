@@ -100,7 +100,6 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     private ArrayList<TipoEmpaque> lstTipoEmpaque;
     private ArrayList<Bodega> listaBodegas;
     private ArrayList<Subproducto> lstProducto;
-    
 
     private EntradaMercancia data;
     private EntradaMercanciaProducto dataProducto;
@@ -157,9 +156,9 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         dataProductoAutoAjuste = new EntradaMercanciaProducto();
 
         /*Validacion de perfil administrador*/
-//        if (usuario.getPerId() != 1) {
-//            data.setIdSucursalFK(new BigDecimal(usuario.getSucId()));
-//        }
+        data.setIdSucursalFK(new BigDecimal(usuario.getSucId()));
+        idSucursal =  new BigDecimal(usuario.getSucId());
+        
         listaTiposConvenio = new ArrayList<TipoConvenio>();
         listaTiposConvenio = ifaceCovenio.getTipos();
         listaBodegas = new ArrayList<Bodega>();
@@ -171,26 +170,23 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         lstProvedor = ifaceCatProvedores.getProvedores();
 
     }
-    public void cerrarEntrada()
-    {
+
+    public void cerrarEntrada() {
         data.setIdStatusFk(new BigDecimal(2));
-        if(ifaceEntradaMercancia.update(data)==1)
-        {
+        if (ifaceEntradaMercancia.update(data) == 1) {
             JsfUtil.addSuccessMessageClean("Carro Cerrado con Éxito");
-        }
-        else
-        {
+        } else {
             JsfUtil.addErrorMessageClean("Ocurrió un problema el cerrar el caro");
         }
 
     }
-    
+
     public void imprimirEntrada() {
         setParameterTicket(data);
         generateReport(data.getIdCarroSucursal().intValue());
         RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
     }
-    
+
     private void setParameterTicket(EntradaMercancia em) {
 
         paramReport.put("nombreSucursal", usuario.getNombreSucursal());
@@ -203,10 +199,11 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         paramReport.put("comentariosGenerales", em.getComentariosGenerales());
         paramReport.put("nombreRecibidor", usuario.getNombreCompleto());
         paramReport.put("ID_EM_PK", em.getIdEmPK().toString());
-        System.out.println("=================="+em.getIdEmPK());
+        System.out.println("==================" + em.getIdEmPK());
         paramReport.put("leyenda", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:" + usuario.getTelefonoSucursal());
-     
+
     }
+
     public String getNombreProvedor(EntradaMercancia em) {
 
         for (Provedor prove : lstProvedor) {
@@ -268,21 +265,25 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
     public void autoAjustar() {
         //1.- Ajustar Existencias con los Paquetes nuevos
-        
-        System.out.println("DataAjuste: "+dataProductoAutoAjuste);
+
+        System.out.println("DataAjuste: " + dataProductoAutoAjuste);
         ExistenciaProducto exis = ifaceNegocioExistencia.getExistenciaByIdEmpFk(dataProductoAutoAjuste.getIdEmpPK());
+        
         exis.setCantidadPaquetes(dataProductoAutoAjuste.getCantPaquetes());
         exis.setKilosTotalesProducto(dataProductoAutoAjuste.getKilosPaquetes());
         System.out.println("-------------------------------------------------");
         System.out.println(exis.toString());
-        if (ifaceNegocioExistencia.updateExistenciaProducto(exis) == 1) 
-        {
+        if (ifaceNegocioExistencia.updateExistenciaProducto(exis) == 1) {
+            //dataProductoAutoAjuste.setIdBodegaFK();
             dataProductoAutoAjuste.setKilosTotalesProducto(dataProductoAutoAjuste.getKilosReales());
             dataProductoAutoAjuste.setCantidadPaquetes(dataProductoAutoAjuste.getCantidadReales());
             if (ifaceEntradaMercanciaProducto.update(dataProductoAutoAjuste) == 1) 
             {
-                ifaceEntMerProPaq.updatePaquete(dataProductoAutoAjuste.getIdEmpPK());
+                System.out.println("return 1 ? "+ifaceEntMerProPaq.updatePaquete(dataProductoAutoAjuste.getIdEmpPK()));
+                System.out.println("****************************************************************************");
                 buscar();
+                System.out.println("****************************************************************************");
+                
                 JsfUtil.addSuccessMessageClean("Se han actualizado los inventarios correctamente con auto-ajuste");
             } else {
                 JsfUtil.addErrorMessageClean("Ha ocurriod un error al actualizar entrada de mercancia con auto-ajuste");
@@ -343,6 +344,9 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
             }
             BigDecimal idProvedor = provedor == null ? null : provedor.getIdProvedorPK();
             lstEntradaMercancia = ifaceEntradaMercancia.getEntradaProductoByIntervalDate(fechaFiltroInicio, fechaFiltroFin, idSucursal, idProvedor);
+            for(EntradaMercancia dominio:lstEntradaMercancia){
+                System.out.println("dominio "+dominio.toString());
+            }
 
         }
     }
@@ -350,6 +354,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     public void registrarPaquete() {
         dataPaquete.setIdEmPP(new BigDecimal(ifaceEntMerProPaq.getNextVal()));
         dataPaquete.setIdEmpFK(dataProducto.getIdEmpPK());
+        dataPaquete.setIdStatusFk(new BigDecimal(1));
         if (ifaceEntMerProPaq.insertPaquete(dataPaquete) == 1) {
             JsfUtil.addSuccessMessageClean("Paquete agregado correctamente");
             buscar();
@@ -423,8 +428,6 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
             JsfUtil.addErrorMessageClean("Ocurrio un problema al insertar el nuevo producto");
         }
     }
-
-    
 
     public void editarProducto() {
 
@@ -919,7 +922,5 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     public void setParamReport(Map paramReport) {
         this.paramReport = paramReport;
     }
-    
 
-    
 }

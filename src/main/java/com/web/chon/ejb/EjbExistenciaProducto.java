@@ -279,7 +279,7 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
     @Override
     public List<Object[]> getExistenciaByIdEmpFk(BigDecimal idEmpFk) {
        try {
-            Query query = em.createNativeQuery("select exp.ID_EXP_PK,exp.CANTIDAD_EMPACAQUE,exp.KILOS_TOTALES from EXISTENCIA_PRODUCTO exp where exp.ID_EMP_FK =?");
+            Query query = em.createNativeQuery("select exp.ID_EXP_PK,exp.CANTIDAD_EMPACAQUE,exp.KILOS_TOTALES,exp.ID_BODEGA_FK from EXISTENCIA_PRODUCTO exp where exp.ID_EMP_FK =?");
             query.setParameter(1, idEmpFk);
             System.out.println("Parametro: "+idEmpFk);
             System.out.println(query);

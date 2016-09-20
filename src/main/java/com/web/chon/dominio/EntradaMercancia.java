@@ -39,9 +39,10 @@ public class EntradaMercancia extends ValueObject implements Serializable {
 
     @Override
     public String toString() {
-        return "EntradaMercancia{" + "idEmPK=" + idEmPK + ", idProvedorFK=" + idProvedorFK + ", movimiento=" + movimiento + ", fecha=" + fecha + ", remision=" + remision + ", idSucursalFK=" + idSucursalFK + ", fechaRemision=" + fechaRemision + ", comentariosGenerales=" + comentariosGenerales + ", abreviacion=" + abreviacion + ", folio=" + folio + ", idStatusFk=" + idStatusFk + ", kilosTotales=" + kilosTotales + ", kilosTotalesProvedor=" + kilosTotalesProvedor + ", idCarroSucursal=" + idCarroSucursal + ", nombreSucursal=" + nombreSucursal + ", nombreProvedor=" + nombreProvedor + ", idUsuario=" + idUsuario + ", listaProductos=" + listaProductos + '}';
+        return "EntradaMercancia{" + "idEmPK=" + idEmPK + ", idProvedorFK=" + idProvedorFK + ", movimiento=" + movimiento + ", fecha=" + fecha + ", remision=" + remision + ", idSucursalFK=" + idSucursalFK + ", fechaRemision=" + fechaRemision + ", comentariosGenerales=" + comentariosGenerales + ", abreviacion=" + abreviacion + ", folio=" + folio + ", idStatusFk=" + idStatusFk + ", kilosTotales=" + kilosTotales + ", kilosTotalesProvedor=" + kilosTotalesProvedor + ", idCarroSucursal=" + idCarroSucursal + ", nombreSucursal=" + nombreSucursal + ", nombreProvedor=" + nombreProvedor + ", idUsuario=" + idUsuario + ", fechaFiltroInicio=" + fechaFiltroInicio + ", fechaFiltroFin=" + fechaFiltroFin + ", listaProductos=" + listaProductos + '}';
     }
 
+   
 
     @Override
     public void reset() {

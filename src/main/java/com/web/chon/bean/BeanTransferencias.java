@@ -102,9 +102,12 @@ public class BeanTransferencias implements Serializable {
         if (caja.getIdCajaPk() != null) {
             if (ifaceOperacionesCaja.insertaOperacion(opcajaOrigen) == 1) 
             {
-                JsfUtil.addSuccessMessageClean("Pago de Servicio Registrado Correctamente");
+                JsfUtil.addSuccessMessageClean("Transferencia Registrada Correctamente");
+                monto = null;
+                comentarios=null;
+                idCajaDestinoBean = null;
             } else {
-                JsfUtil.addErrorMessageClean("Ocurrió un error al registrar el pago de servicio");
+                JsfUtil.addErrorMessageClean("Ocurrió un error al registrar la transferencia");
             }
         } else {
             JsfUtil.addErrorMessageClean("Su usuario no cuenta con caja registrada para realizar el pago de servicios");

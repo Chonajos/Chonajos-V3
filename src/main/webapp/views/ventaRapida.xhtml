@@ -141,7 +141,13 @@
 
                         <h5><b>Selecciona un producto</b></h5>
 
-                        <p:dataTable id="modelo2" var="modeloExistencias" value="#{beanVentaMayoreoRapido.lstExistencias}" selection="#{beanVentaMayoreoRapido.selectedExistencia}"   rowKey="#{modeloExistencias.idExistenciaProductoPk}" emptyMessage="Productos.">
+                        <p:dataTable id="modelo2" var="modeloExistencias"
+                                     scrollable="true"
+                                     scrollHeight="270" styleClass="ui-datatable-hor-scroll"  
+                                     value="#{beanVentaMayoreoRapido.lstExistencias}" 
+                                     selection="#{beanVentaMayoreoRapido.selectedExistencia}"   
+                                     rowKey="#{modeloExistencias.idExistenciaProductoPk}" 
+                                     emptyMessage="Productos.">
                             <p:ajax event="rowSelectRadio" update=":formContent:txtCantidadEmpaque :formContent:txtKilos :formContent:txtPrecioVenta" listener="#{beanVentaMayoreoRapido.habilitarBotones()}"/>
                             <p:column selectionMode="single"   style="width:16px;text-align:center" />
 

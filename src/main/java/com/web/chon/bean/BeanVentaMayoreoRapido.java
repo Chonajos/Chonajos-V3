@@ -5,9 +5,11 @@
  */
 package com.web.chon.bean;
 
+import com.web.chon.dominio.Caja;
 import com.web.chon.dominio.Cliente;
 import com.web.chon.dominio.EntradaMercancia;
 import com.web.chon.dominio.ExistenciaProducto;
+import com.web.chon.dominio.OperacionesCaja;
 import com.web.chon.dominio.Subproducto;
 import com.web.chon.dominio.TipoVenta;
 import com.web.chon.dominio.Usuario;
@@ -16,10 +18,12 @@ import com.web.chon.dominio.VentaMayoreo;
 import com.web.chon.dominio.VentaProductoMayoreo;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceBuscaVenta;
+import com.web.chon.service.IfaceCaja;
 
 import com.web.chon.service.IfaceCatCliente;
 import com.web.chon.service.IfaceCatUsuario;
 import com.web.chon.service.IfaceNegocioExistencia;
+import com.web.chon.service.IfaceOperacionesCaja;
 import com.web.chon.service.IfaceSubProducto;
 import com.web.chon.service.IfaceTipoVenta;
 import com.web.chon.service.IfaceVentaMayoreo;
@@ -90,6 +94,11 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
     @Autowired
     private IfaceVentaMayoreoProducto ifaceVentaMayoreoProducto;
 
+    @Autowired
+    private IfaceCaja ifaceCaja;
+    @Autowired
+    private IfaceOperacionesCaja ifaceOperacionesCaja;
+
     private ArrayList<TipoVenta> lstTipoVenta;
     private ArrayList<Cliente> lstCliente;
     private ArrayList<Usuario> lstUsuario;
@@ -99,6 +108,8 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
     private ExistenciaProducto selectedExistencia;
 
     private UsuarioDominio usuarioDominio;
+    private Caja caja;
+    private OperacionesCaja opcaja;
 
     private Cliente cliente;
     private Usuario usuario;
@@ -140,12 +151,14 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
     //Datos para el pago rapido
     private BigDecimal folio;
     private BigDecimal status;
-    
 
+    private static final BigDecimal entradaSalida = new BigDecimal(1);
+    private static final BigDecimal statusOperacion = new BigDecimal(1);
+    private static final BigDecimal concepto = new BigDecimal(9);
 
     @PostConstruct
     public void init() {
-   
+
         ventaRapida = "0";
         cliente = new Cliente();
         cliente = ifaceCatCliente.getClienteById(1);
@@ -172,9 +185,9 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
         ventaRapida = (usuario.getIdRolFk()).toString();
 //        if (ventaRapida.equals("4")) {
 
-            lstExistencias = ifaceNegocioExistencia.getExistencias(idSucu, null, null, null, null, null, null);
+        lstExistencias = ifaceNegocioExistencia.getExistencias(idSucu, null, null, null, null, null, null);
 //            ventaRapidaButton = "Rapida";
-            permisionVentaRapida = false;
+        permisionVentaRapida = false;
 //            ventaRapidaCheck = true;
 //
 //        } else {
@@ -183,13 +196,21 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
 //            ventaRapidaCheck = false;
 //        }
 
+        caja = new Caja();
+        caja = ifaceCaja.getCajaByIdUsuarioPk(usuario.getIdUsuarioPk());
+        opcaja = new OperacionesCaja();
+        opcaja.setIdCajaFk(caja.getIdCajaPk());
+        opcaja.setIdConceptoFk(concepto);
+        opcaja.setIdUserFk(usuario.getIdUsuarioPk());
+        opcaja.setEntradaSalida(entradaSalida);
+        opcaja.setIdStatusFk(statusOperacion);
+
     }
 
     public void calculaCambio() {
         System.out.println("Entra a cambiar");
         cambio = recibido.subtract(totalVenta, MathContext.UNLIMITED);
     }
-    
 
     public void changeVentaRapida() {
         System.out.println("Check:" + ventaRapidaCheck);
@@ -227,8 +248,7 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
 
     }
 
-    public void inserts() throws IOException 
-    {
+    public void inserts() throws IOException {
         if (lstVenta.isEmpty()) {
 
             JsfUtil.addErrorMessageClean("Tu pedido se encuentra vacío favor de agregar productos");
@@ -242,21 +262,21 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
         } else if (idTipoVenta == null) {
             changeView();
             JsfUtil.addErrorMessageClean("Favor de Seleccionar un tipo de venta");
-        } else 
-        {
+        } else {
             BigDecimal idVentaInsert = new BigDecimal(ifaceVentaMayoreo.getNextVal());
             ventaGeneral.setIdVentaMayoreoPk(idVentaInsert);
             ventaGeneral.setIdtipoVentaFk(idTipoVenta);
             ventaGeneral.setIdClienteFk(cliente.getId_cliente());
             ventaGeneral.setIdSucursalFk(idSucu);
             ventaGeneral.setIdVendedorFK(usuario.getIdUsuarioPk());
+            ventaGeneral.setIdStatusFk(new BigDecimal(2));
+
             int temp = ifaceVentaMayoreo.getVentaSucursal(idSucu);
 
-            
             ventaGeneral.setVentaSucursal(new BigDecimal(temp + 1));
             folio = ventaGeneral.getIdVentaMayoreoPk();
             //folio = ventaGeneral.getVentaSucursal();
-            
+
             //System.out.println("Venta General: " + ventaGeneral.toString());
             if (ifaceVentaMayoreo.insertarVenta(ventaGeneral) != 0) {
                 //si la venta se ingreso el siguiente paso es ingresar los productos.
@@ -265,70 +285,80 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
                     BigDecimal idVentaProducto = new BigDecimal(ifaceVentaMayoreoProducto.getNextVal());
                     //System.out.println("IdVentaProducto: " + idVentaProducto);
                     producto.setIdVentaMayProdPk(idVentaProducto);
+                    opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
+                    opcaja.setMonto(totalVenta);
+                    if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
 
-                    //System.out.println("Producto: " + producto.toString());
-                    if (ifaceVentaMayoreoProducto.insertarVentaMayoreoProducto(producto) != 0) {
+                        //System.out.println("Producto: " + producto.toString());
+                        if (ifaceVentaMayoreoProducto.insertarVentaMayoreoProducto(producto) != 0) {
 
-                        List<ExistenciaProducto> lista = ifaceNegocioExistencia.getExistenciaById(producto.getIdExistenciaFk());
-                        ExistenciaProducto existencia = new ExistenciaProducto();
-                        existencia = lista.get(0);
-                        ExistenciaProducto existencia_actualizada = new ExistenciaProducto();
-                        existencia_actualizada.setIdExistenciaProductoPk(existencia.getIdExistenciaProductoPk());
-                        existencia_actualizada.setCantidadPaquetes(existencia.getCantidadPaquetes().subtract(producto.getCantidadEmpaque(), MathContext.UNLIMITED));
-                        existencia_actualizada.setKilosTotalesProducto(existencia.getKilosTotalesProducto().subtract(producto.getKilosVendidos(), MathContext.UNLIMITED));
-                        if (ifaceNegocioExistencia.updateExistenciaProducto(existencia_actualizada) != 0) {
-                            totalVenta=TotalVentaGeneral;
-                            JsfUtil.addSuccessMessageClean("Venta Finalizada");
+                            List<ExistenciaProducto> lista = ifaceNegocioExistencia.getExistenciaById(producto.getIdExistenciaFk());
+                            ExistenciaProducto existencia = new ExistenciaProducto();
+                            existencia = lista.get(0);
+                            ExistenciaProducto existencia_actualizada = new ExistenciaProducto();
+                            existencia_actualizada.setIdBodegaFK(existencia.getIdBodegaFK());
+                            existencia_actualizada.setIdExistenciaProductoPk(existencia.getIdExistenciaProductoPk());
+                            existencia_actualizada.setCantidadPaquetes(existencia.getCantidadPaquetes().subtract(producto.getCantidadEmpaque(), MathContext.UNLIMITED));
+                            existencia_actualizada.setKilosTotalesProducto(existencia.getKilosTotalesProducto().subtract(producto.getKilosVendidos(), MathContext.UNLIMITED));
+                            if (ifaceNegocioExistencia.updateExistenciaProducto(existencia_actualizada) != 0) {
+                                totalVenta = TotalVentaGeneral;
+                                JsfUtil.addSuccessMessageClean("Venta Finalizada");
+                            } else {
+                                JsfUtil.addErrorMessageClean("Error actualizando existencia de producto: " + producto.getNombreProducto());
+                            }
                         } else {
-                            JsfUtil.addErrorMessageClean("Error actualizando existencia de producto: " + producto.getNombreProducto());
+                            JsfUtil.addErrorMessage("Ocurrio un error");
                         }
-                    } else {
-                        JsfUtil.addErrorMessage("Ocurrio un error");
+                    }
+                    else
+                    {
+                        JsfUtil.addErrorMessage("Ocurrio un error al ingresar dinero en caja");
                     }
 
-                }
-                
-                setViewEstate("cobrar");
+                    }
 
-                //cliente=new Cliente();
+                    setViewEstate("cobrar");
+
+                    //cliente=new Cliente();
+                }
+                //RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
+
+                //FacesContext contexts =FacesContext.getCurrentInstance();
+                //contexts.getExternalContext().getRequestParameterMap().put("folio", "hola");
+                //FacesContext.getCurrentInstance().getExternalContext().redirect("buscaVentaMayoreo.xhtml"); 
+                //return "buscaVentaMayoreo?displayTargetPopUp&faces-redirect=true&includeViewParams=true&folio=folio";
             }
-             //RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
-        
-            //FacesContext contexts =FacesContext.getCurrentInstance();
-            //contexts.getExternalContext().getRequestParameterMap().put("folio", "hola");
-            //FacesContext.getCurrentInstance().getExternalContext().redirect("buscaVentaMayoreo.xhtml"); 
-            //return "buscaVentaMayoreo?displayTargetPopUp&faces-redirect=true&includeViewParams=true&folio=folio";
-           }
-        
-    }
+
+        }
+
     
+
     public void updateVenta() {
 
-            try {
-                ifaceBuscaVenta.updateStatusVentaMayoreo(ventaGeneral.getIdVentaMayoreoPk().intValue(), usuario.getIdUsuarioPk().intValue());
-                
-                JsfUtil.addSuccessMessageClean("Venta Pagada");
-                setParameterTicket(ventaGeneral.getVentaSucursal().intValue());
-                generateReport(ventaGeneral.getVentaSucursal().intValue());
+        try {
+            ifaceBuscaVenta.updateStatusVentaMayoreo(ventaGeneral.getIdVentaMayoreoPk().intValue(), usuario.getIdUsuarioPk().intValue());
 
-                selectedExistencia = new ExistenciaProducto();
-                lstExistencias = new ArrayList<ExistenciaProducto>();
-                lstVenta = new ArrayList<VentaProductoMayoreo>();
-                data.reset();
-                subProducto = new Subproducto();
-                idTipoVenta = null;
-                totalProductoTemporal = null;
-                TotalVentaGeneral = new BigDecimal(0);
-                totalVenta = null;
-                folio = null;
-                setViewEstate("viewAddProducto");
-                RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
-        
-            } catch (Exception ex) 
-            {
-                JsfUtil.addErrorMessageClean("Ocurrió un error al realizar el pago");
-                }
-        
+            JsfUtil.addSuccessMessageClean("Venta Pagada");
+            setParameterTicket(ventaGeneral.getVentaSucursal().intValue());
+            generateReport(ventaGeneral.getVentaSucursal().intValue());
+
+            selectedExistencia = new ExistenciaProducto();
+            lstExistencias = new ArrayList<ExistenciaProducto>();
+            lstVenta = new ArrayList<VentaProductoMayoreo>();
+            data.reset();
+            subProducto = new Subproducto();
+            idTipoVenta = null;
+            totalProductoTemporal = null;
+            TotalVentaGeneral = new BigDecimal(0);
+            totalVenta = null;
+            folio = null;
+            setViewEstate("viewAddProducto");
+            RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
+
+        } catch (Exception ex) {
+            JsfUtil.addErrorMessageClean("Ocurrió un error al realizar el pago");
+        }
+
         //return "buscaVentas";
     }
 
@@ -354,10 +384,10 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
         if (idproductito != null) {
             lstExistencias = ifaceNegocioExistencia.getExistencias(idSucu, null, null, idproductito, null, null, null);
             if (lstExistencias.size() == 1) {
-                
+
                 selectedExistencia = new ExistenciaProducto();
-                selectedExistencia=lstExistencias.get(0);
-                
+                selectedExistencia = lstExistencias.get(0);
+
                 habilitarBotones();
             } else {
                 selectedExistencia = new ExistenciaProducto();
@@ -498,7 +528,6 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
 
     public void generateReport(int folio) {
         JRExporter exporter = null;
-        
 
         try {
             ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
@@ -509,7 +538,7 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
             } else {
                 temporal = servletContext.getRealPath("");
             }
-            
+
             pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketVenta" + File.separatorChar + "ticket.jasper";
             JasperPrint jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport, new JREmptyDataSource());
 
@@ -519,8 +548,7 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
             exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, outputStream);
 
             byte[] bytes = outputStream.toByteArray();
-            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf",folio,usuarioDominio.getSucId());
-            
+            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf", folio, usuarioDominio.getSucId());
 
         } catch (Exception exception) {
             System.out.println("Error >" + exception.getMessage());
@@ -560,7 +588,7 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
         paramReport.put("estado", "PEDIDO PAGADO");
         paramReport.put("labelFecha", "Fecha de Venta:");
         paramReport.put("labelFolio", "Folio de Venta:");
-        paramReport.put("telefonos", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:"+usuarioDominio.getTelefonoSucursal());
+        paramReport.put("telefonos", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:" + usuarioDominio.getTelefonoSucursal());
         paramReport.put("labelSucursal", usuarioDominio.getNombreSucursal());
 
     }
@@ -948,8 +976,5 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
     public void setStatus(BigDecimal status) {
         this.status = status;
     }
-
-    
-  
 
 }

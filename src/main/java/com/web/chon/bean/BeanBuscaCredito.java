@@ -273,7 +273,10 @@ public class BeanBuscaCredito implements Serializable {
 
     public void abonar() {
         AbonoCredito ac = new AbonoCredito();
-        if (abono.getIdtipoAbonoFk() != null || opcaja.getIdCajaFk()!=null) 
+        System.out.println("************************************");
+        System.out.println("idCaja: "+opcaja.getIdCajaFk());
+        System.out.println("************************************");
+        if (abono.getIdtipoAbonoFk() != null && opcaja.getIdCajaFk()!=null) 
         {
             switch (abono.getIdtipoAbonoFk().intValue()) {
                 /*
@@ -317,7 +320,6 @@ public class BeanBuscaCredito implements Serializable {
                         } else {
                             JsfUtil.addErrorMessageClean("Se ha producido un error al liquidar todo el folio de credito: " + ac.getIdCreditoFk());
                         }
-
                     }
                     if (ifaceAbonoCredito.insert(ac) == 1) {
                         JsfUtil.addSuccessMessage("Se ha realizado un abono existosamente");
@@ -470,22 +472,24 @@ public class BeanBuscaCredito implements Serializable {
                     c.setStatusACuenta(new BigDecimal(1));
                     if (ifaceCredito.updateACuenta(c) == 1) {
                         JsfUtil.addSuccessMessageClean("Monto a Cuenta Registrado");
-
                         opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
-                        opcaja.setMonto(ac.getMontoAbono());
-                        if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
+                        opcaja.setMonto(dataAbonar.getSaldoACuenta());
+                        opcaja.setIdConceptoFk(concepto);
+                        if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) 
+                        {
                             ac.setIdCreditoFk(c.getIdCreditoPk());
                             ac.setMontoAbono(dataAbonar.getSaldoACuenta());
                             ac.setIdtipoAbonoFk(abono.getIdtipoAbonoFk());
                             setParameterTicket(ac, cliente);
                             generateReport(ac.getIdCreditoFk().intValue(), "abonoCuenta.jasper");
                             RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
-
-                        } else {
+                        } else 
+                        {
                             JsfUtil.addErrorMessageClean("Ocurrió un error al registrar el pago de la venta");
                         }
 
-                    } else {
+                    } else 
+                    {
                         JsfUtil.addErrorMessageClean("Ocurrio un problema");
                     }
                     break;

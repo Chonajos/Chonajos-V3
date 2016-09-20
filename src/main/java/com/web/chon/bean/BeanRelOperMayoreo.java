@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package com.web.chon.bean;
+
 import com.web.chon.dominio.BuscaVenta;
 import com.web.chon.dominio.Caja;
 import com.web.chon.dominio.Credito;
@@ -59,8 +60,10 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
     private IfaceTipoVenta ifaceTipoVenta;
     @Autowired
     private PlataformaSecurityContext context;
-    @Autowired private IfaceCaja ifaceCaja;
-    @Autowired private IfaceCredito ifaceCredito;
+    @Autowired
+    private IfaceCaja ifaceCaja;
+    @Autowired
+    private IfaceCredito ifaceCredito;
     private UsuarioDominio usuario;
     private ArrayList<BuscaVenta> lstVenta;
     private ArrayList<TipoVenta> lstTipoVenta;
@@ -79,30 +82,22 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
     private BigDecimal porcentajeUtilidad;
     private static final BigDecimal TIPO = new BigDecimal(1);
 
-
     @PostConstruct
     public void init() {
         data = new RelacionOperacionesMayoreo();
         usuario = context.getUsuarioAutenticado();
         filtro = 1;
-
         data.setIdSucursal(new BigDecimal(usuario.getSucId()));
         model = new ArrayList<RelacionOperacionesMayoreo>();
-
         listaSucursales = new ArrayList<Sucursal>();
         listaStatusVenta = new ArrayList<StatusVenta>();
         lstTipoVenta = ifaceTipoVenta.getAll();
-
         listaSucursales = ifaceCatSucursales.getSucursales();
         listaStatusVenta = ifaceCatStatusVenta.getStatusVentas();
-
         setTitle("Relación de Operaciónes Venta Mayoreo");
         setViewEstate("init");
         getVentasByIntervalDate();
-        
-
     }
-    
 
     public void setFechaInicioFin(int filter) {
 
@@ -180,62 +175,52 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
 
     public void cancelarVenta() {
         Credito c = new Credito();
-        c=ifaceCredito.getCreditosByIdVentaMenudeo(totalVenta);
-        if(c==null || c.getIdCreditoPk()==null)
-        { 
-        if (data.getIdStatus().intValue() != 4) 
-        {
-            boolean banderaError= false;
-            lstVenta = ifaceBuscaVenta.buscaVentaCancelar(data.getVentaSucursal().intValue(), data.getIdSucursal().intValue());
-            for (BuscaVenta producto : lstVenta) 
-            {
-                BigDecimal cantidad = producto.getCantidadEmpaque();
-                BigDecimal kilos = producto.getKilosVendidos();
-                BigDecimal idExistencia = producto.getIdExistenciaFk();
-                BigDecimal idBodega = producto.getIdBodega();
-                //Obtenemos la existencia real del producto.
-                ArrayList<ExistenciaProducto> exis = new ArrayList<ExistenciaProducto>();
-                //public ArrayList<ExistenciaProducto> getExistencias(BigDecimal idSucursal, BigDecimal idBodega, BigDecimal idProvedor,String idProducto, BigDecimal idEmpaque, BigDecimal idConvenio,BigDecimal idEmPK);
-                exis = ifaceNegocioExistencia.getExistenciasCancelar(idExistencia);
-                //Primero obtenemos la cantidad de kilos y paquetes en Existencias
-                //sumamos los kilos y paquetes al nuevo update.
-                cantidad = cantidad.add(exis.get(0).getCantidadPaquetes(), MathContext.UNLIMITED);
-                kilos = kilos.add(exis.get(0).getKilosTotalesProducto(), MathContext.UNLIMITED);
-                //Creamos el nuevo objeto para hacer el update
-                ExistenciaProducto ep = new ExistenciaProducto();
-                ep.setCantidadPaquetes(cantidad);
-                ep.setKilosTotalesProducto(kilos);
-                ep.setIdExistenciaProductoPk(idExistencia);
-                ep.setIdBodegaFK(idBodega);
-                if (ifaceNegocioExistencia.updateExistenciaProducto(ep) == 1) 
-                {
-                    System.out.println("Regreso Producto Correctamente");
-                }
-                else
-                {
-                    banderaError = true;
+        c = ifaceCredito.getCreditosByIdVentaMenudeo(totalVenta);
+        if (c == null || c.getIdCreditoPk() == null) {
+            if (data.getIdStatus().intValue() != 4 && data.getIdStatus().intValue() != 2) {
+                boolean banderaError = false;
+                lstVenta = ifaceBuscaVenta.buscaVentaCancelar(data.getVentaSucursal().intValue(), data.getIdSucursal().intValue());
+                for (BuscaVenta producto : lstVenta) {
+                    BigDecimal cantidad = producto.getCantidadEmpaque();
+                    BigDecimal kilos = producto.getKilosVendidos();
+                    BigDecimal idExistencia = producto.getIdExistenciaFk();
+                    BigDecimal idBodega = producto.getIdBodega();
+                    //Obtenemos la existencia real del producto.
+                    ArrayList<ExistenciaProducto> exis = new ArrayList<ExistenciaProducto>();
+                    //public ArrayList<ExistenciaProducto> getExistencias(BigDecimal idSucursal, BigDecimal idBodega, BigDecimal idProvedor,String idProducto, BigDecimal idEmpaque, BigDecimal idConvenio,BigDecimal idEmPK);
+                    exis = ifaceNegocioExistencia.getExistenciasCancelar(idExistencia);
+                    //Primero obtenemos la cantidad de kilos y paquetes en Existencias
+                    //sumamos los kilos y paquetes al nuevo update.
+                    cantidad = cantidad.add(exis.get(0).getCantidadPaquetes(), MathContext.UNLIMITED);
+                    kilos = kilos.add(exis.get(0).getKilosTotalesProducto(), MathContext.UNLIMITED);
+                    //Creamos el nuevo objeto para hacer el update
+                    ExistenciaProducto ep = new ExistenciaProducto();
+                    ep.setCantidadPaquetes(cantidad);
+                    ep.setKilosTotalesProducto(kilos);
+                    ep.setIdExistenciaProductoPk(idExistencia);
+                    ep.setIdBodegaFK(idBodega);
+                    if (ifaceNegocioExistencia.updateExistenciaProducto(ep) == 1) {
+                        System.out.println("Regreso Producto Correctamente");
+                    } else {
+                        banderaError = true;
+                    }
+
                 }
 
-            }
+                if (ifaceBuscaVenta.cancelarVentaMayoreo(data.getIdVentaPk().intValue(), usuario.getIdUsuario().intValue(), data.getComentariosCancel()) != 0 && banderaError == false) {
 
-            if (ifaceBuscaVenta.cancelarVentaMayoreo(data.getIdVentaPk().intValue(), usuario.getIdUsuario().intValue(), data.getComentariosCancel()) != 0 && banderaError==false) 
-            {
-                
-                data.setIdStatus(null);
-                lstVenta.clear();
-                getVentasByIntervalDate();
+                    data.setIdStatus(null);
+                    lstVenta.clear();
+                    getVentasByIntervalDate();
 
-            } else 
-            {
-                JsfUtil.addErrorMessageClean("Ocurrió un error al intentar cancelar la venta.");
+                } else {
+                    JsfUtil.addErrorMessageClean("Ocurrió un error al intentar cancelar la venta.");
+                }
+            } else {
+                JsfUtil.addErrorMessageClean("No puedes volver a cancelar la venta, o cancelar una venta ya pagada");
+
             }
         } else {
-            JsfUtil.addErrorMessageClean("No puedes volver a cancelar la venta");
-
-        }
-        }
-        else
-        {
             JsfUtil.addErrorMessageClean("Venta de Crédito por el momento no se puede cancelar");
         }
     }

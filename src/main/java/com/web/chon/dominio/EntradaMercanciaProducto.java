@@ -46,12 +46,14 @@ public class EntradaMercanciaProducto extends ValueObject implements Serializabl
     private BigDecimal cantidadReales;
     private BigDecimal kilosPaquetes;
     private BigDecimal cantPaquetes;
-    
 
     @Override
     public String toString() {
-        return "EntradaMercanciaProducto{" + "idEmpPK=" + idEmpPK + ", idEmFK=" + idEmFK + ", idSubProductoFK=" + idSubProductoFK + ", idTipoEmpaqueFK=" + idTipoEmpaqueFK + ", cantidadPaquetes=" + cantidadPaquetes + ", kilosTotalesProducto=" + kilosTotalesProducto + ", comentarios=" + comentarios + ", precio=" + precio + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + ", idTipoConvenio=" + idTipoConvenio + ", idBodegaFK=" + idBodegaFK + ", nombreTipoConvenio=" + nombreTipoConvenio + ", nombreBodega=" + nombreBodega + ", kilospromprod=" + kilospromprod + ", numeroMovimiento=" + numeroMovimiento + ", pesoTara=" + pesoTara + ", pesoNeto=" + pesoNeto + ", idSucursalFk=" + idSucursalFk + ", listaBodegas=" + listaBodegas + '}';
+        return "EntradaMercanciaProducto{" + "idEmpPK=" + idEmpPK + ", idEmFK=" + idEmFK + ", idSubProductoFK=" + idSubProductoFK + ", idTipoEmpaqueFK=" + idTipoEmpaqueFK + ", cantidadPaquetes=" + cantidadPaquetes + ", kilosTotalesProducto=" + kilosTotalesProducto + ", comentarios=" + comentarios + ", precio=" + precio + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + ", idTipoConvenio=" + idTipoConvenio + ", idBodegaFK=" + idBodegaFK + ", nombreTipoConvenio=" + nombreTipoConvenio + ", nombreBodega=" + nombreBodega + ", kilospromprod=" + kilospromprod + ", numeroMovimiento=" + numeroMovimiento + ", pesoTara=" + pesoTara + ", pesoNeto=" + pesoNeto + ", idSucursalFk=" + idSucursalFk + ", listaBodegas=" + listaBodegas + ", subProducto=" + subProducto + ", listaPaquetes=" + listaPaquetes + ", kilosVendidos=" + kilosVendidos + ", cantidadVendida=" + cantidadVendida + ", kilosReales=" + kilosReales + ", cantidadReales=" + cantidadReales + ", kilosPaquetes=" + kilosPaquetes + ", cantPaquetes=" + cantPaquetes + '}';
     }
+    
+
+   
     
    
     @Override

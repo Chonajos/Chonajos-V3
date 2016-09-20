@@ -212,7 +212,7 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
                 existencia.setIdExistenciaProductoPk(object[0] == null ? null : new BigDecimal(object[0].toString()));
                 existencia.setCantidadPaquetes(object[1] == null ? null : new BigDecimal(object[1].toString()));
                 existencia.setKilosTotalesProducto(object[2] == null ? null : new BigDecimal(object[2].toString()));
-                
+                existencia.setIdBodegaFK(object[3] == null ? null : new BigDecimal(object[3].toString()));
             }
             return existencia;
         }

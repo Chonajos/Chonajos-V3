@@ -6,19 +6,23 @@
 package com.web.chon.bean;
 
 import com.web.chon.dominio.AbonoDocumentos;
+import com.web.chon.dominio.Caja;
 import com.web.chon.dominio.Cliente;
 import com.web.chon.dominio.CobroCheques;
 import com.web.chon.dominio.Documento;
+import com.web.chon.dominio.OperacionesCaja;
 import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.TipoAbono;
 import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceAbonoCredito;
 import com.web.chon.service.IfaceAbonoDocumentos;
+import com.web.chon.service.IfaceCaja;
 import com.web.chon.service.IfaceCatCliente;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceCobroCheques;
 import com.web.chon.service.IfaceDocumentos;
+import com.web.chon.service.IfaceOperacionesCaja;
 import com.web.chon.service.IfaceTipoAbono;
 import com.web.chon.util.Constantes;
 import com.web.chon.util.JasperReportUtil;
@@ -79,7 +83,12 @@ public class BeanDocumentosCobrar implements Serializable {
     private IfaceTipoAbono ifaceTipoAbono;
     @Autowired
     private IfaceAbonoDocumentos ifaceAbonoDocumentos;
+    @Autowired
+    IfaceCaja ifaceCaja;
+    @Autowired
+    private IfaceOperacionesCaja ifaceOperacionesCaja;
 
+    
     private ArrayList<Sucursal> listaSucursales;
     private ArrayList<Documento> listaDocumentos;
     private ArrayList<AbonoDocumentos> listaAbonosCheques;
@@ -122,6 +131,11 @@ public class BeanDocumentosCobrar implements Serializable {
     private static final BigDecimal DOCUMENTODEVUELTO = new BigDecimal(3);
     private static final BigDecimal DOCUMENTOCONVENIO = new BigDecimal(4);
 
+    private Caja caja;
+    private OperacionesCaja opcaja;
+    
+    
+    
     //Variables para el pago de Documentos
     private AbonoDocumentos ad;
     private String viewCheque;

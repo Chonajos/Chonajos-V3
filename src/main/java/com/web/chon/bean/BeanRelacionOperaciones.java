@@ -184,7 +184,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
         ArrayList<String> productos = new ArrayList<String>();
         NumeroALetra numeroLetra = new NumeroALetra();
         for (VentaProducto vp : v.getLstVentaProducto()) {
-            String cantidad = vp.getCantidadEmpaque() + " " + vp.getNombreEmpaque();
+            String cantidad = vp.getCantidadEmpaque() + " Kilos ";
             productos.add(vp.getNombreProducto().toUpperCase());
             productos.add("       " + cantidad + "               " + nf.format(vp.getPrecioProducto()) + "    " + nf.format(vp.getTotal()));
         }
