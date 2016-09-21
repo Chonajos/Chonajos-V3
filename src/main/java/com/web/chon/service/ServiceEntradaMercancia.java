@@ -238,10 +238,13 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
             dominio.setIdStatusFk(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
             dominio.setKilosTotales(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
             dominio.setKilosTotalesProvedor(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
-            dominio.setNombreProvedor(obj[12] == null ? " " : obj[12].toString());
-            dominio.setNombreSucursal(obj[13] == null ? " " : obj[13].toString());
-            dominio.setIdCarroSucursal(obj[14] == null ? null : new BigDecimal(obj[14].toString()));
-            dominio.setComentariosGenerales(obj[15] == null ? " " : obj[15].toString());
+            dominio.setComentariosGenerales(obj[10] == null ? " " : obj[10].toString());
+            dominio.setFechaRemision(obj[11] == null ? null : (Date) obj[11]);
+            
+            
+            dominio.setIdUsuario(obj[14] == null ? null : new BigDecimal(obj[14].toString()));
+            dominio.setIdCarroSucursal(obj[15] == null ? null : new BigDecimal(obj[15].toString()));
+            
             dominio.setListaProductos(ifaceEntradaMercanciaProducto.getEntradaProductoByIdEM(dominio.getIdEmPK()));
         }
         return dominio;
