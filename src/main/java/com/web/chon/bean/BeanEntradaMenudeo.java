@@ -573,14 +573,10 @@ public class BeanEntradaMenudeo implements Serializable {
             Context initContext;
             Connection con = null;
             try {
-                
                 javax.sql.DataSource datasource = null;
-
                 Context initialContext = new InitialContext();
-
                 // "jdbc/MyDBname" >> is a JNDI Name of DataSource on weblogic
                 datasource = (DataSource) initialContext.lookup("DataChon");
-
                 try {
                     con = datasource.getConnection();
                     System.out.println("datsource" + con.toString());
@@ -593,14 +589,12 @@ public class BeanEntradaMenudeo implements Serializable {
             JasperPrint jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport, con);
             outputStream = JasperReportUtil.getOutputStreamFromReport(paramReport, getPathFileJasper());
             exporter = new JRPdfExporter();
-
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
             exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, outputStream);
 //            exporter.setParameter(JRPdfExporterParameter.PDF_JAVASCRIPT, "this.print();");
             byte[] bytes = outputStream.toByteArray();
-
             rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf", folio, idSucu);
-con.close();
+            con.close();
         } catch (Exception exception) {
             System.out.println("Error >" + exception.getMessage());
             exception.getStackTrace();

@@ -100,7 +100,6 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     private ArrayList<TipoEmpaque> lstTipoEmpaque;
     private ArrayList<Bodega> listaBodegas;
     private ArrayList<Subproducto> lstProducto;
-
     private EntradaMercancia data;
     private EntradaMercanciaProducto dataProducto;
     private EntradaMercanciaProducto dataProductoAutoAjuste;
@@ -138,7 +137,6 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
     @PostConstruct
     public void init() {
-
         usuario = context.getUsuarioAutenticado();
         listaSucursales = new ArrayList<Sucursal>();
         listaSucursales = ifaceCatSucursales.getSucursales();
@@ -150,20 +148,16 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         verificarCombo();
         enableCalendar = true;
         buscar();
-
         dataPaquete = new EntradaMercanciaProductoPaquete();
         dataPaqueteEliminar = new EntradaMercanciaProductoPaquete();
         dataProductoAutoAjuste = new EntradaMercanciaProducto();
-
         /*Validacion de perfil administrador*/
         data.setIdSucursalFK(new BigDecimal(usuario.getSucId()));
         idSucursal =  new BigDecimal(usuario.getSucId());
-        
         listaTiposConvenio = new ArrayList<TipoConvenio>();
         listaTiposConvenio = ifaceCovenio.getTipos();
         listaBodegas = new ArrayList<Bodega>();
         listaBodegas = ifaceCatBodegas.getBodegaByIdSucursal(new BigDecimal(usuario.getSucId()));
-
         setTitle("Relación de Operaciónes Entrada de Mercancia Mayoreo");
         setViewEstate("init");
         dataProductoNuevo = new EntradaMercanciaProducto();
@@ -265,10 +259,8 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
     public void autoAjustar() {
         //1.- Ajustar Existencias con los Paquetes nuevos
-
         System.out.println("DataAjuste: " + dataProductoAutoAjuste);
         ExistenciaProducto exis = ifaceNegocioExistencia.getExistenciaByIdEmpFk(dataProductoAutoAjuste.getIdEmpPK());
-        
         exis.setCantidadPaquetes(dataProductoAutoAjuste.getCantPaquetes());
         exis.setKilosTotalesProducto(dataProductoAutoAjuste.getKilosPaquetes());
         System.out.println("-------------------------------------------------");
@@ -279,10 +271,17 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
             dataProductoAutoAjuste.setCantidadPaquetes(dataProductoAutoAjuste.getCantidadReales());
             if (ifaceEntradaMercanciaProducto.update(dataProductoAutoAjuste) == 1) 
             {
-                System.out.println("return 1 ? "+ifaceEntMerProPaq.updatePaquete(dataProductoAutoAjuste.getIdEmpPK()));
-                System.out.println("****************************************************************************");
+                ifaceEntMerProPaq.updatePaquete(dataProductoAutoAjuste.getIdEmpPK());
+                EntradaMercancia em = ifaceEntradaMercancia.getEntradaByIdEmPFk(dataProductoAutoAjuste.getIdEmpPK());
+                BigDecimal to = new BigDecimal(0);
+                for(EntradaMercanciaProducto p :em.getListaProductos())
+                {
+                    to = to.add(p.getKilosTotalesProducto(), MathContext.UNLIMITED);
+                }
+               
+                em.setKilosTotales(to);
+                ifaceEntradaMercancia.updateEntradaMercancia(em);
                 buscar();
-                System.out.println("****************************************************************************");
                 
                 JsfUtil.addSuccessMessageClean("Se han actualizado los inventarios correctamente con auto-ajuste");
             } else {
@@ -293,6 +292,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         }
 
     }
+    
 
     public void cancelarPaquete() {
         System.out.println("DataPaqueteEliminar: " + dataPaqueteEliminar.toString());

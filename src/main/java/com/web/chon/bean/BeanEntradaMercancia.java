@@ -124,10 +124,7 @@ public class BeanEntradaMercancia implements Serializable {
         lstTipoEmpaque = ifaceEmpaque.getEmpaques();
         data = new EntradaMercancia();
         usuario = context.getUsuarioAutenticado();
-        if (usuario.getPerId() != 1) {
-            
-            data.setIdSucursalFK(new BigDecimal(usuario.getSucId()));
-        }
+        data.setIdSucursalFK(new BigDecimal(usuario.getSucId()));
         data.setIdUsuario(usuario.getIdUsuario());
         listaTiposConvenio = new ArrayList<TipoConvenio>();
         listaTiposConvenio = ifaceCovenio.getTipos();

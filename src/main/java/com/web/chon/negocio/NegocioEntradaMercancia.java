@@ -36,5 +36,9 @@ public interface NegocioEntradaMercancia {
     
     public int deleteEntradaMercancia(EntradaMercancia em);
     
+    public List<Object[]> getEntradaByIdEmPFk(BigDecimal idEmPFk);
+    
+    public List<Object[]> getEntradaByIdPk(BigDecimal idPk);
+    
     
 }

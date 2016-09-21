@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-08-31T14:27:26 -->
+<!-- 2016-09-21T11:20:31 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EntradaMayoreoV1" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="df013db5-f76e-44d3-b0df-bcbc46d93160">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="AdaptadorChoni.xml"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -241,8 +241,8 @@ WHERE EMP.ID_EM_FK =$P{parametro}]]>
 					<text><![CDATA[Folio de Remisión:]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="631" y="22" width="50" height="20" uuid="86216d54-e1df-4c11-8420-a15d6c37ce10"/>
-					<textElement>
+					<reportElement x="611" y="22" width="50" height="20" uuid="86216d54-e1df-4c11-8420-a15d6c37ce10"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="14"/>
 					</textElement>
 					<text><![CDATA[Fecha:]]></text>
@@ -283,7 +283,7 @@ WHERE EMP.ID_EM_FK =$P{parametro}]]>
 					<textFieldExpression><![CDATA[$P{carro}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="682" y="23" width="80" height="20" uuid="f0287479-b9c2-48e0-9a67-832530e435d8"/>
+					<reportElement x="662" y="21" width="80" height="20" uuid="f0287479-b9c2-48e0-9a67-832530e435d8"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="14"/>
 					</textElement>
@@ -340,9 +340,9 @@ WHERE EMP.ID_EM_FK =$P{parametro}]]>
 				</staticText>
 			</frame>
 		</band>
-		<band height="100">
+		<band height="159">
 			<componentElement>
-				<reportElement x="16" y="10" width="765" height="90" uuid="14c392ce-4ccd-4c57-b7de-b0d52ee4be2d">
+				<reportElement x="14" y="20" width="768" height="90" uuid="14c392ce-4ccd-4c57-b7de-b0d52ee4be2d">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table 4_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table 4_CH"/>
@@ -403,14 +403,40 @@ WHERE EMP.ID_EM_FK =$P{parametro}]]>
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
 						<jr:columnHeader style="Table 4_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="65" height="30" uuid="c661db93-b2dd-4914-a7d5-4264180b9f7d"/>
+								<reportElement x="0" y="0" width="65" height="30" uuid="516b1a6e-98c9-4f65-8e4f-a41d0398db26"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[CANT.]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:columnFooter style="Table 4_CH" height="30" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="65" height="30" uuid="febff5a2-e2d9-46ae-9b25-fcba7d0f0d0f"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="14"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{sumaCantidad}]]></textFieldExpression>
+							</textField>
+						</jr:columnFooter>
+						<jr:detailCell style="Table 4_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="65" height="30" uuid="669bf144-c0b2-4677-a991-5559dada50cc"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{CANTIDAD_EMPACAQUE}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="105" uuid="2bcd6533-9bba-4300-97fb-e7e93d2ef305">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+						<jr:columnHeader style="Table 4_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="105" height="30" uuid="c661db93-b2dd-4914-a7d5-4264180b9f7d"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<text><![CDATA[KILOS]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter style="Table 4_CH" height="30" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="65" height="30" uuid="98daec2e-ccbf-4d87-b33d-6dbcfa834a47"/>
+								<reportElement x="0" y="0" width="105" height="30" uuid="98daec2e-ccbf-4d87-b33d-6dbcfa834a47"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="14"/>
 								</textElement>
@@ -419,27 +445,9 @@ WHERE EMP.ID_EM_FK =$P{parametro}]]>
 						</jr:columnFooter>
 						<jr:detailCell style="Table 4_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="65" height="30" uuid="c475ef71-ca7b-491e-9d8a-9293d383fd96"/>
-								<textElement textAlignment="Right" verticalAlignment="Middle"/>
+								<reportElement x="0" y="0" width="105" height="30" uuid="c475ef71-ca7b-491e-9d8a-9293d383fd96"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{KILOS_TOTALES}]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
-					<jr:column width="105" uuid="2bcd6533-9bba-4300-97fb-e7e93d2ef305">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
-						<jr:columnHeader style="Table 4_CH" height="30" rowSpan="1">
-							<staticText>
-								<reportElement x="0" y="0" width="105" height="30" uuid="361f69a4-c269-42bc-85ba-90d091976543"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<text><![CDATA[TIPO DE CONVENIO]]></text>
-							</staticText>
-						</jr:columnHeader>
-						<jr:columnFooter style="Table 4_CH" height="30" rowSpan="1"/>
-						<jr:detailCell style="Table 4_TD" height="30">
-							<textField>
-								<reportElement x="0" y="0" width="105" height="30" uuid="942a998e-3c36-48ed-9422-a0cd0b7dedb5"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{TIPO}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -447,17 +455,17 @@ WHERE EMP.ID_EM_FK =$P{parametro}]]>
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
 						<jr:columnHeader style="Table 4_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="85" height="30" uuid="847bf275-ab1a-4f60-b7d2-8091b62724ef"/>
+								<reportElement x="0" y="0" width="85" height="30" uuid="361f69a4-c269-42bc-85ba-90d091976543"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<text><![CDATA[CONVENIO]]></text>
+								<text><![CDATA[TIPO DE CONVENIO]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter style="Table 4_CH" height="30" rowSpan="1"/>
 						<jr:detailCell style="Table 4_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="85" height="30" uuid="cc36c614-e83b-4e08-be7b-10d1ee6df101"/>
-								<textElement textAlignment="Right" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{CONVENIO}]]></textFieldExpression>
+								<reportElement x="0" y="0" width="85" height="30" uuid="942a998e-3c36-48ed-9422-a0cd0b7dedb5"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{TIPO}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -465,17 +473,17 @@ WHERE EMP.ID_EM_FK =$P{parametro}]]>
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
 						<jr:columnHeader style="Table 4_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="105" height="30" uuid="f8eeda65-9222-4305-b591-6b0dfcf45618"/>
+								<reportElement x="0" y="0" width="105" height="30" uuid="847bf275-ab1a-4f60-b7d2-8091b62724ef"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<text><![CDATA[ÁREA]]></text>
+								<text><![CDATA[CONVENIO]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter style="Table 4_CH" height="30" rowSpan="1"/>
 						<jr:detailCell style="Table 4_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="105" height="30" uuid="aaebd8c3-889d-4cc6-abae-9a961d8985a0"/>
+								<reportElement x="0" y="0" width="105" height="30" uuid="cc36c614-e83b-4e08-be7b-10d1ee6df101"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{NOMBRE}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{CONVENIO}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -483,17 +491,17 @@ WHERE EMP.ID_EM_FK =$P{parametro}]]>
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
 						<jr:columnHeader style="Table 4_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="99" height="30" uuid="69b5e2a3-d1de-4667-9692-9c1df61153ba"/>
+								<reportElement x="0" y="0" width="99" height="30" uuid="f8eeda65-9222-4305-b591-6b0dfcf45618"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<text><![CDATA[COMENTARIOS]]></text>
+								<text><![CDATA[ÁREA]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter style="Table 4_CH" height="30" rowSpan="1"/>
 						<jr:detailCell style="Table 4_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="99" height="30" uuid="0a793fa9-50de-4a0c-923f-f7ff09f3c14e"/>
+								<reportElement x="0" y="0" width="99" height="30" uuid="aaebd8c3-889d-4cc6-abae-9a961d8985a0"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{COMENTARIOS}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{NOMBRE}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>

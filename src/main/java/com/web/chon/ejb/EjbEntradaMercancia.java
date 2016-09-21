@@ -163,11 +163,23 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
         System.out.println("EJB_UPDATE_ENTRADAMERCANCIA");
         try {
             System.out.println("Entrada: " + entrada);
-            Query query = em.createNativeQuery("UPDATE ENTRADAMERCANCIA SET ID_STATUS_FK = ?  WHERE ID_EM_PK = ?");
-            query.setParameter(1, entrada.getIdStatusFk());
-            query.setParameter(2, entrada.getIdEmPK());
-            
-
+            Query query = em.createNativeQuery("UPDATE ENTRADAMERCANCIA SET ID_PROVEDOR_FK=?,MOVIMIENTO=?,"
+                    + "FECHA=?,REMISION=?,ID_SUCURSAL_FK=?,IDENTIFICADOR=?,ID_STATUS_FK=?,KILOSTOTALES=?,KILOSTOTALESPROVEDOR=?,"
+                    + "COMENTARIOS=?,FECHAREMISION=?,ID_USUARIO_FK=?,CARROSUCURSAL=? WHERE ID_EM_PK = ?");
+            query.setParameter(1, entrada.getIdProvedorFK());
+            query.setParameter(2, entrada.getMovimiento());
+            query.setParameter(3, entrada.getFecha());
+            query.setParameter(4, entrada.getRemision());
+            query.setParameter(5, entrada.getIdSucursalFK());
+            query.setParameter(6, entrada.getFolio());
+            query.setParameter(7, entrada.getIdStatusFk());
+            query.setParameter(8, entrada.getKilosTotales());
+            query.setParameter(9, entrada.getKilosTotalesProvedor());
+            query.setParameter(10, entrada.getComentariosGenerales());
+            query.setParameter(11, entrada.getFechaRemision());
+            query.setParameter(12, entrada.getIdUsuario());
+            query.setParameter(13, entrada.getIdCarroSucursal());
+            query.setParameter(14, entrada.getIdEmPK());
             return query.executeUpdate();
 
         } catch (Exception ex) {
@@ -175,7 +187,27 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
             return 0;
         }
         
-        
+    }
+
+    @Override
+    public List<Object[]> getEntradaByIdEmPFk(BigDecimal idEmPFk) {
+        System.out.println("EJB_getEntradaByIdEmPFk: "+idEmPFk);
+        Query query = em.createNativeQuery("select em.* from ENTRADAMERCANCIA em\n" +
+"inner join ENTRADAMERCANCIAPRODUCTO emp\n" +
+"on emp.ID_EM_FK = em.ID_EM_PK\n" +
+"where emp.ID_EMP_PK= ? ");
+        query.setParameter(1, idEmPFk);
+        return query.getResultList();
+    
+    }
+
+    @Override
+    public List<Object[]> getEntradaByIdPk(BigDecimal idPk) {
+        System.out.println("EJB_getEntradaByIdPkk: "+idPk);
+        Query query = em.createNativeQuery("select em.* from ENTRADAMERCANCIA em\n" +
+"where em.ID_EM_PK = ?");
+        query.setParameter(1, idPk);
+        return query.getResultList();
     
     }
 }

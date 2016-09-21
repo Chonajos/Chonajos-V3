@@ -209,4 +209,69 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
         }
     }
 
+    @Override
+    public int updateEntradaMercancia(EntradaMercancia entrada) {
+       getEjb();
+        try {
+            return ejb.updateEntradaMercancia(entrada);
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceEntradaMercancia.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        }
+    
+    }
+
+    @Override
+    public EntradaMercancia getEntradaByIdEmPFk(BigDecimal idEmPFk) {
+       getEjb();
+        List<Object[]> lstObject = new ArrayList<Object[]>();
+        lstObject = ejb.getEntradaByIdEmPFk(idEmPFk);
+        EntradaMercancia dominio = new EntradaMercancia();
+        for (Object[] obj : lstObject) {
+            dominio.setIdEmPK(new BigDecimal(obj[0].toString()));
+            dominio.setIdProvedorFK(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
+            dominio.setMovimiento(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
+            dominio.setFecha(obj[3] == null ? null : (Date) obj[3]);
+            dominio.setRemision(obj[4] == null ? null : obj[4].toString());
+            dominio.setIdSucursalFK(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
+            dominio.setFolio(obj[6] == null ? null : obj[6].toString());
+            dominio.setIdStatusFk(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
+            dominio.setKilosTotales(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
+            dominio.setKilosTotalesProvedor(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
+            dominio.setNombreProvedor(obj[12] == null ? " " : obj[12].toString());
+            dominio.setNombreSucursal(obj[13] == null ? " " : obj[13].toString());
+            dominio.setIdCarroSucursal(obj[14] == null ? null : new BigDecimal(obj[14].toString()));
+            dominio.setComentariosGenerales(obj[15] == null ? " " : obj[15].toString());
+            dominio.setListaProductos(ifaceEntradaMercanciaProducto.getEntradaProductoByIdEM(dominio.getIdEmPK()));
+        }
+        return dominio;
+    
+    }
+
+    @Override
+    public EntradaMercancia getEntradaByIdPk(BigDecimal idPk) {
+        getEjb();
+        List<Object[]> lstObject = new ArrayList<Object[]>();
+        lstObject = ejb.getEntradaByIdPk(idPk);
+        EntradaMercancia dominio = new EntradaMercancia();
+        for (Object[] obj : lstObject) {
+            dominio.setIdEmPK(new BigDecimal(obj[0].toString()));
+            dominio.setIdProvedorFK(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
+            dominio.setMovimiento(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
+            dominio.setFecha(obj[3] == null ? null : (Date) obj[3]);
+            dominio.setRemision(obj[4] == null ? null : obj[4].toString());
+            dominio.setIdSucursalFK(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
+            dominio.setFolio(obj[6] == null ? null : obj[6].toString());
+            dominio.setIdStatusFk(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
+            dominio.setKilosTotales(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
+            dominio.setKilosTotalesProvedor(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
+            dominio.setNombreProvedor(obj[12] == null ? " " : obj[12].toString());
+            dominio.setNombreSucursal(obj[13] == null ? " " : obj[13].toString());
+            dominio.setIdCarroSucursal(obj[14] == null ? null : new BigDecimal(obj[14].toString()));
+            dominio.setComentariosGenerales(obj[15] == null ? " " : obj[15].toString());
+            dominio.setListaProductos(ifaceEntradaMercanciaProducto.getEntradaProductoByIdEM(dominio.getIdEmPK()));
+        }
+        return dominio;
+    }
+
 }

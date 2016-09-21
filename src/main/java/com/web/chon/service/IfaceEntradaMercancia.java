@@ -18,6 +18,12 @@ import java.util.Date;
 public interface IfaceEntradaMercancia extends PaginacionService<EntradaMercancia, BigDecimal> {
 
     public int insertEntradaMercancia(EntradaMercancia entrada);
+    
+    public int updateEntradaMercancia(EntradaMercancia entrada);
+    
+    public EntradaMercancia getEntradaByIdEmPFk(BigDecimal idEmPFk);
+    
+    public EntradaMercancia getEntradaByIdPk(BigDecimal idPk);
 
     public int buscaMaxMovimiento(EntradaMercancia entrada);
 
