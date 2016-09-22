@@ -62,7 +62,15 @@ public class EjbOperacionesCuentas implements NegocioOperacionesCuentas{
 
     @Override
     public int getNextVal() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+         try {
+            Query query = em.createNativeQuery("select S_OPERACIONES_CUENTAS.nextval from dual");
+            return Integer.parseInt(query.getSingleResult().toString());
+        } catch (Exception ex) {
+            System.out.println("error >" + ex.getMessage());
+            return 0;
+        }
+
+    
     }
     
 }

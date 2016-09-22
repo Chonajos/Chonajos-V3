@@ -137,6 +137,7 @@ public class BeanDocumentosCobrar implements Serializable {
     private static final BigDecimal salida = new BigDecimal(2);
     private static final BigDecimal statusOperacion = new BigDecimal(1);
     private static final BigDecimal conceptoMontoCheques = new BigDecimal(12);
+    private static final BigDecimal entradaSalida = new BigDecimal(1);
 
     //Variables para el pago de Documentos
     private AbonoDocumentos ad;
@@ -223,6 +224,7 @@ public class BeanDocumentosCobrar implements Serializable {
             }
             if (dataAbonar.getIdTipoAbonoFk().intValue() == 3) {
                 System.out.println("Ahora insertamos documento por cobrar");
+
                 Documento d = new Documento();
                 d.setIdDocumentoPk(new BigDecimal(ifaceDocumentos.getNextVal()));
                 d.setComentario("");
@@ -243,7 +245,17 @@ public class BeanDocumentosCobrar implements Serializable {
                 System.out.println("El nuevo Documento por Entrar será de: " + d.toString());
 
                 if (ifaceDocumentos.insertarDocumento(d) == 1) {
-                    JsfUtil.addSuccessMessageClean("Se ha ingresado correctamente en la tabla de documentos por cobrar");
+                    opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
+                    opcaja.setIdConceptoFk(conceptoMontoCheques);
+                    opcaja.setMonto(dataAbonar.getMontoAbono());
+                    opcaja.setEntradaSalida(entradaSalida);
+
+                    if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
+                        JsfUtil.addSuccessMessageClean("Se ha ingresado correctamente en la tabla de documentos por cobrar");
+
+                    } else {
+                        JsfUtil.addSuccessMessageClean("Se ha ingresado correctamente en la tabla de documentos por cobrar");
+                    }
                 } else {
                     JsfUtil.addErrorMessageClean("Ha ocurrido un error al ingresar el documento por cobrar");
                 }
@@ -327,8 +339,7 @@ public class BeanDocumentosCobrar implements Serializable {
                     opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
                     opcaja.setMonto(documentoData.getMonto());
                     opcaja.setEntradaSalida(salida);
-                    if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1)
-                    {
+                    if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
                         System.out.println("Se registro segundo movimiento");
                     }
                 }

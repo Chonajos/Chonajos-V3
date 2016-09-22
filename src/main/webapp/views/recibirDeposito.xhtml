@@ -9,7 +9,7 @@
                 xmlns:pe="http://primefaces.org/ui/extensions">
     <ui:define name="content">
         <div>
-            <h3>#{beanDepositoBancario.title}</h3>
+            <h3>#{beanRecibirDeposito.title}</h3>
         </div>
 
         <h:form id="formContent">
@@ -19,7 +19,7 @@
                 <div class="container-fluid">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <p:dataTable id="tabla" var="model" 
-                                     value="#{beanRecibirTransferencias.lstTransferenciasEntrantes}" 
+                                     value="#{beanRecibirDeposito.lstDespositosEntrantes}" 
                                      scrollable="true"
                                      scrollHeight="280" styleClass="ui-datatable-hor-scroll" 
                                      emptyMessage="No se encontraron Registros" 
@@ -27,7 +27,13 @@
                             <p:column headerText="N° Operación" width="60px;" class="alignCenter">
                                 <h:outputText value="#{model.numero}" />
                             </p:column>
-                            <p:column headerText="Caja Origen" width="150px;" class="alignLeft">
+                            <p:column headerText="Banco" width="150px;" class="alignLeft">
+                                <h:outputText value="#{model.nombreBanco}" />
+                            </p:column>
+                             <p:column headerText="Cuenta" width="150px;" class="alignLeft">
+                                 <h:outputText value="#{model.cuentaBanco}" />
+                            </p:column>
+                            <p:column headerText="Origen" width="150px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreCaja}" />
                             </p:column>
                             
@@ -43,10 +49,9 @@
                                 </h:outputText>
                             </p:column>
                             <p:column headerText="Recibir" width="60px;" class="alignCenter">
-                                <p:commandButton id="print" ajax="true" process="@this" action="#{beanRecibirTransferencias.aceptar()}" 
-                                                 icon="ui-icon-transfer-e-w" styleClass="ui-priority-primary" update=":formContent"
-                                                 oncomplete="window.frames.miFrame.print();">
-                                    <f:setPropertyActionListener value="#{model}" target="#{beanRecibirTransferencias.data}"/>
+                                <p:commandButton id="print" ajax="true" process="@this" action="#{beanRecibirDeposito.aceptar()}" 
+                                                 icon="ui-icon-transfer-e-w" styleClass="ui-priority-primary" update=":formContent">
+                                    <f:setPropertyActionListener value="#{model}" target="#{beanRecibirDeposito.data}"/>
                                 </p:commandButton>
                             </p:column>
                         </p:dataTable>

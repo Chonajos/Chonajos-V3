@@ -3,21 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.web.chon.negocio;
+package com.web.chon.service;
 
-import com.web.chon.dominio.OperacionesCaja;
 import com.web.chon.dominio.OperacionesCuentas;
 import java.math.BigDecimal;
 import java.util.List;
-import javax.ejb.Remote;
 
 /**
  *
  * @author JesusAlfredo
  */
-@Remote
-public interface NegocioOperacionesCuentas {
-    public int insertaOperacion(OperacionesCuentas es);
+public interface IfaceOperacionesCuentas {
+     public int insertaOperacion(OperacionesCuentas es);
     public int updateOperacion(OperacionesCuentas es);
     public List<Object[]> getOperacionesByIdCuenta(BigDecimal idCuentaFk);
     public int getNextVal();

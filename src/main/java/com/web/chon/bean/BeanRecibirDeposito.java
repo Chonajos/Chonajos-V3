@@ -7,6 +7,7 @@ package com.web.chon.bean;
 
 import com.web.chon.dominio.Caja;
 import com.web.chon.dominio.OperacionesCaja;
+import com.web.chon.dominio.OperacionesCuentas;
 import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.security.service.PlataformaSecurityContext;
@@ -14,6 +15,7 @@ import com.web.chon.service.IfaceCaja;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceConceptos;
 import com.web.chon.service.IfaceOperacionesCaja;
+import com.web.chon.service.IfaceOperacionesCuentas;
 import com.web.chon.service.IfaceTiposOperacion;
 import com.web.chon.util.JsfUtil;
 import java.io.Serializable;
@@ -37,17 +39,21 @@ public class BeanRecibirDeposito implements Serializable {
     private IfaceCaja ifaceCaja;
     @Autowired
     private IfaceOperacionesCaja ifaceOperacionesCaja;
+    
+    
+    
     @Autowired
     private PlataformaSecurityContext context;
-
+    
+    @Autowired 
+    private IfaceOperacionesCuentas ifaceOperacionesCuentas;
     private UsuarioDominio usuario;
+    private OperacionesCuentas opcuenta;
+    private OperacionesCaja opcajaOrigen;
 
-    private Caja caja;
-    private OperacionesCaja opcaja;
-    private OperacionesCaja opcajaDestino;
-    private OperacionesCaja data;
 
     private ArrayList<OperacionesCaja> lstDespositosEntrantes;
+    private OperacionesCaja data;
 
     private String title;
     private String viewEstate;
@@ -63,42 +69,35 @@ public class BeanRecibirDeposito implements Serializable {
     private static final BigDecimal entrada = new BigDecimal(1);
     private static final BigDecimal salida = new BigDecimal(2);
     private static final BigDecimal statusOperacion = new BigDecimal(1);
-    private static final BigDecimal idConcepto = new BigDecimal(5);
+    private static final BigDecimal idConcepto = new BigDecimal(14);
 
     @PostConstruct
     public void init() {
         usuario = context.getUsuarioAutenticado();
-        setTitle("Recibir Transferencias de Caja");
+        setTitle("Recibir Depósitos de Cuentas");
         setViewEstate("init");
-        caja = new Caja();
-        caja = ifaceCaja.getCajaByIdUsuarioPk(usuario.getIdUsuario());
-        opcaja = new OperacionesCaja();
-        opcaja.setIdCajaFk(caja.getIdCajaPk());
-        opcaja.setIdUserFk(usuario.getIdUsuario());
-        opcaja.setIdStatusFk(statusOperacion);
-        opcaja.setEntradaSalida(entrada);
         data = new OperacionesCaja();
+        opcuenta = new OperacionesCuentas();
+        opcuenta.setIdUserFk(usuario.getIdUsuario());
+        opcuenta.setIdStatusFk(statusOperacion);
+        opcuenta.setEntradaSalida(entrada);
+        opcuenta.setIdConceptoFk(idConcepto);
         lstDespositosEntrantes = new ArrayList<OperacionesCaja>();
         lstDespositosEntrantes = ifaceOperacionesCaja.getDepositosEntrantes();
     }
-
     public void aceptar() {
 
-        if (caja.getIdCajaPk() != null) {
-            opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
-            opcaja.setMonto(data.getMonto());
-            opcaja.setIdConceptoFk(idConcepto);
-            if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
-
+            opcuenta.setIdOperacionCuenta(new BigDecimal(ifaceOperacionesCuentas.getNextVal()));
+            opcuenta.setMonto(data.getMonto());
+            if (ifaceOperacionesCuentas.insertaOperacion(opcuenta) == 1) 
+            {
                 ifaceOperacionesCaja.updateStatus(data.getIdOperacionesCajaPk(), statusOperacion);
-                lstDespositosEntrantes = ifaceOperacionesCaja.getTransferenciasEntrantes(opcaja.getIdCajaFk());
-                JsfUtil.addSuccessMessageClean("Transferencia Recibida Correctamente");
+                lstDespositosEntrantes = ifaceOperacionesCaja.getDepositosEntrantes();
+                JsfUtil.addSuccessMessageClean("Se ha recibido el Depósito Correctamente");
             } else {
-                JsfUtil.addErrorMessageClean("Ocurrió un error al recibir la transferencia");
+                JsfUtil.addErrorMessageClean("Ocurrió un error al recibir el Depósito");
             }
-        } else {
-            JsfUtil.addErrorMessageClean("Su usuario no cuenta con caja registrada para realizar el pago de servicios");
-        }
+
     }
 
     public UsuarioDominio getUsuario() {
@@ -107,30 +106,6 @@ public class BeanRecibirDeposito implements Serializable {
 
     public void setUsuario(UsuarioDominio usuario) {
         this.usuario = usuario;
-    }
-
-    public Caja getCaja() {
-        return caja;
-    }
-
-    public void setCaja(Caja caja) {
-        this.caja = caja;
-    }
-
-    public OperacionesCaja getOpcaja() {
-        return opcaja;
-    }
-
-    public void setOpcaja(OperacionesCaja opcaja) {
-        this.opcaja = opcaja;
-    }
-
-    public OperacionesCaja getOpcajaDestino() {
-        return opcajaDestino;
-    }
-
-    public void setOpcajaDestino(OperacionesCaja opcajaDestino) {
-        this.opcajaDestino = opcajaDestino;
     }
 
     public String getTitle() {
@@ -213,7 +188,21 @@ public class BeanRecibirDeposito implements Serializable {
         this.lstDespositosEntrantes = lstDespositosEntrantes;
     }
 
-    
+    public OperacionesCuentas getOpcuenta() {
+        return opcuenta;
+    }
+
+    public void setOpcuenta(OperacionesCuentas opcuenta) {
+        this.opcuenta = opcuenta;
+    }
+
+    public OperacionesCaja getOpcajaOrigen() {
+        return opcajaOrigen;
+    }
+
+    public void setOpcajaOrigen(OperacionesCaja opcajaOrigen) {
+        this.opcajaOrigen = opcajaOrigen;
+    }
 
     public OperacionesCaja getData() {
         return data;
@@ -223,4 +212,7 @@ public class BeanRecibirDeposito implements Serializable {
         this.data = data;
     }
 
+   
+
+    
 }

@@ -7,6 +7,7 @@ package com.web.chon.negocio;
 
 import com.web.chon.dominio.OperacionesCaja;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Remote;
 
@@ -24,6 +25,7 @@ public interface NegocioOperacionesCaja {
     public List<Object[]> getOperacionByIdOperacionPK(BigDecimal idOperacionPk);
     public List<Object[]> getOperacionesBy(BigDecimal idCorteCajaFk, BigDecimal idCajaFk,BigDecimal idCajaDestinoFk,BigDecimal idConceptoFk,String fechaInicio, String fechaFin,BigDecimal idStatusFk,BigDecimal idUserFk);
     public List<Object[]> getTransferenciasEntrantes(BigDecimal idCorteCajaFk);
+    public List<Object[]> getDepositosEntrantes();
     public List<Object[]> getOperacionesCorteBy(BigDecimal idCajaFk, BigDecimal idUserFk, BigDecimal idES);
     public List<Object[]> getOperaciones(BigDecimal idCajaFk,BigDecimal idUserFk);
     public List<Object[]> getCheques(BigDecimal idCajaFk, BigDecimal idUserFk,BigDecimal idINOUT);
