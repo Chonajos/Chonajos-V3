@@ -241,7 +241,7 @@ public class EjbCredito implements NegocioCredito {
                 + " INNER JOIN STATUS_CREDITO STC "
                 + " ON STC.ID_STATUS_CREDITO_PK = CRE.ESTATUS_CREDITO "
                 + " INNER JOIN CLIENTE C ON C.ID_CLIENTE = CRE.ID_CLIENTE_FK "
-                + " WHERE CRE.ESTATUS_CREDITO=1 ORDER BY CRE.FECHA_INICIO_CREDITO");
+                + " WHERE CRE.ESTATUS_CREDITO=1 ORDER BY C.NOMBRE");
 
         try {
 

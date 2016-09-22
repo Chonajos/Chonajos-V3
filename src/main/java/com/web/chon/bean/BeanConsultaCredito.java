@@ -59,6 +59,7 @@ public class BeanConsultaCredito implements Serializable {
     private Date reprogramarFecha;
 
     private BigDecimal idResultadoGestio;
+    private BigDecimal totalLiquidar;
 
     private int numDias;
     private int numFiltro;
@@ -89,6 +90,7 @@ public class BeanConsultaCredito implements Serializable {
         ArrayList<SaldosDeudas> modelTemp = new ArrayList<SaldosDeudas>();
 
         BigDecimal zero = new BigDecimal(0);
+        totalLiquidar = zero;
         int diasDiferencia = 0;
         Date fechaTemporal = null;
 
@@ -101,6 +103,7 @@ public class BeanConsultaCredito implements Serializable {
                         if (diasDiferencia <= numDias) {
                             saldos.setDiasAtraso(Integer.toString(0));
                             saldos.setStatusFechaProxima(new BigDecimal(UNO));
+                            totalLiquidar = totalLiquidar.add(saldos.getSaldoLiquidar());
                             modelTemp.add(saldos);
                         }
 
@@ -117,6 +120,7 @@ public class BeanConsultaCredito implements Serializable {
                         if (diasDiferencia <= numDias) {
                             saldos.setDiasAtraso(Integer.toString(diasDiferencia));
                             saldos.setStatusFechaProxima(new BigDecimal(2));
+                            totalLiquidar = totalLiquidar.add(saldos.getSaldoLiquidar());
                             modelTemp.add(saldos);
                         }
 
@@ -128,7 +132,16 @@ public class BeanConsultaCredito implements Serializable {
 
                         if (diasDiferencia <= numDias) {
                             saldos.setDiasAtraso(Integer.toString(diasDiferencia));
-                            saldos.setStatusFechaProxima(new BigDecimal(4));
+                            if (diasDiferencia < 0) {
+                                diasDiferencia = TiempoUtil.diferenciasDeFechas(TiempoUtil.sumarRestarDias(saldos.getFechaVenta(), saldos.getPlazo().intValue()), fechaSystema);
+                                saldos.setStatusFechaProxima(new BigDecimal(1));
+                                saldos.setDiasAtraso(Integer.toString(diasDiferencia));
+                            } else {
+                                saldos.setStatusFechaProxima(new BigDecimal(4));
+                            }
+
+                            saldos.setFechaProximaAbonar(saldos.getFechaPromesaFinPago());
+                            totalLiquidar = totalLiquidar.add(saldos.getSaldoLiquidar());
                             modelTemp.add(saldos);
                         }
 
@@ -171,9 +184,9 @@ public class BeanConsultaCredito implements Serializable {
                     Credito credito = new Credito();
 
                     //Se optiene el credito para modificar la fecha promesa de pago
-                    System.out.println("data.getFolioCredito() "+data.getFolioCredito());
+                    System.out.println("data.getFolioCredito() " + data.getFolioCredito());
                     credito = ifaceCredito.getById(data.getFolioCredito());
-                    System.out.println("credito :"+credito.toString());
+                    System.out.println("credito :" + credito.toString());
                     credito.setFechaPromesaPago(reprogramarFecha);
                     credito.setNumeroPromesaPago(credito.getNumeroPromesaPago().add(new BigDecimal(UNO)));
 
@@ -290,6 +303,14 @@ public class BeanConsultaCredito implements Serializable {
 
     public void setIdResultadoGestio(BigDecimal idResultadoGestio) {
         this.idResultadoGestio = idResultadoGestio;
+    }
+
+    public BigDecimal getTotalLiquidar() {
+        return totalLiquidar;
+    }
+
+    public void setTotalLiquidar(BigDecimal totalLiquidar) {
+        this.totalLiquidar = totalLiquidar;
     }
 
 }

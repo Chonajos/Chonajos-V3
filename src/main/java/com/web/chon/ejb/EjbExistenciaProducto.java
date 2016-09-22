@@ -43,7 +43,7 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
             query.setParameter(6, e.getComentarios());
             query.setParameter(7, e.getIdBodegaFK());
             query.setParameter(8, e.getIdTipoConvenio());
-            query.setParameter(9, e.getConvenio());
+            query.setParameter(9, e.getConvenio() == null ? e.getPrecio():e.getConvenio());
             query.setParameter(10, e.getKilospromprod());
             query.setParameter(11, e.getIdSucursal());
             query.setParameter(12, e.getIdEntradaMercanciaProductoFK());

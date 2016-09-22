@@ -586,9 +586,9 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         NumeroALetra numeroLetra = new NumeroALetra();
 
         for (VentaProductoMayoreo venta : lstVenta) {
-            String cantidad = venta.getCantidadEmpaque() + " " + venta.getNombreEmpaque();
-            productos.add(venta.getNombreProducto().toUpperCase());
-            productos.add("       " + cantidad + "               " + nf.format(venta.getPrecioProducto()) + "    " + nf.format(venta.getTotalVenta()));
+            String cantidad = venta.getCantidadEmpaque() + " - "+venta.getKilosVendidos()+"Kg.";
+            productos.add(venta.getNombreProducto().toUpperCase()+" "+ venta.getNombreEmpaque());
+            productos.add("  " + cantidad + "                     " + nf.format(venta.getPrecioProducto()) + "    " + nf.format(venta.getTotalVenta()));
         }
 
         String totalVentaDescuentoStr = "";
@@ -601,22 +601,6 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
     }
 
-//    private void putValues(String dateTime, ArrayList<String> items, String total, String totalVentaStr, int idVenta) {
-//
-//        paramReport.put("fechaVenta", dateTime);
-//        paramReport.put("noVenta", Integer.toString(idVenta));
-//        paramReport.put("cliente", cliente.getNombreCombleto());
-//        paramReport.put("vendedor", usuario.getNombreCompletoUsuario());
-//        paramReport.put("productos", items);
-//        paramReport.put("ventaTotal", total);
-//        paramReport.put("totalLetra", totalVentaStr);
-//        paramReport.put("estado", "PEDIDO MARCADO");
-//        paramReport.put("labelFecha", "Fecha de Venta:");
-//        paramReport.put("labelFolio", "Folio de Venta:");
-//        paramReport.put("telefonos", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:" + usuarioDominio.getTelefonoSucursal());
-//        paramReport.put("labelSucursal", usuarioDominio.getNombreSucursal());
-//
-//    }
     private void putValues(String dateTime, ArrayList<String> items, String total, String totalVentaStr, int idVenta, int folioVenta, String totalVentaDescuentoStr, String totalDescuento) {
         DecimalFormat df = new DecimalFormat("#,###.00");
         paramReport.clear();
