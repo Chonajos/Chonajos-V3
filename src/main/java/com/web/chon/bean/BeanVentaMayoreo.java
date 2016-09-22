@@ -476,6 +476,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
                 }
             }
+        calculaAhorro(null);
 
     }
 
