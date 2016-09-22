@@ -186,7 +186,7 @@ public class ServiceAnalisisMercado implements IfaceAnalisisMercado {
                             dominio.setPrecio(obj[0] != null ? new BigDecimal(obj[0].toString()) : new BigDecimal(0));
                             dominio.setCantidadToneladas(obj[1] != null ? new BigDecimal(obj[1].toString()) : new BigDecimal(0));
 //                            dominio.setDescripcionFiltro(rangoFechaInicio.get(0) + "-" + rangoFechaInicio.get(6));
-                            dominio.setDescripcionFiltro(TiempoUtil.getNumberMonthYear(fechaInicio) + "-" + TiempoUtil.getYear(fechaInicio));
+                            dominio.setDescripcionFiltro(TiempoUtil.getFechaDDMMYY(fechaInicio));
                             dominio.setRemantePorSemana(obj[2] != null ? new BigDecimal(obj[2].toString()) : new BigDecimal(0));
 
                             //Objeto con los datos de la semana del año anterior
@@ -272,11 +272,11 @@ public class ServiceAnalisisMercado implements IfaceAnalisisMercado {
     }
     
     @Override
-    public AnalisisMercado getEntradaProductoByIdProducto(String idProducto) {
+    public AnalisisMercado getEntradaProductoByIdProducto(String idProducto,String fecha) {
         List<Object[]> lstObject = null;
         AnalisisMercado dominio = new AnalisisMercado();
         getEjb();
-        lstObject = ejb.getEntradaProductoByIdProducto(idProducto);
+        lstObject = ejb.getEntradaProductoByIdProducto(idProducto, fecha);
         
         getEjb();
         for (Object[] obj : lstObject) {
@@ -286,6 +286,7 @@ public class ServiceAnalisisMercado implements IfaceAnalisisMercado {
             dominio.setPrecio(obj[2] != null ? new BigDecimal(obj[2].toString()) : new BigDecimal(0));
             dominio.setCantidadToneladas(obj[3] != null ? new BigDecimal(obj[3].toString()) : new BigDecimal(0));
             dominio.setFecha((Date) obj[4]);
+            dominio.setRemantePorSemana(obj[5] != null ? new BigDecimal(obj[5].toString()) : null);
             
         }
         
@@ -301,13 +302,10 @@ public class ServiceAnalisisMercado implements IfaceAnalisisMercado {
     public BigDecimal getRemanente(Date fechaRemanente, String idProducto) {
         
         BigDecimal remanete = new BigDecimal(0);
-        
         List<String> lstFecha = TiempoUtil.getintervalWeekDDMMYYYYbyDay(fechaRemanente);
         
         getEjb();
         remanete = ejb.getRemanente(lstFecha.get(0), lstFecha.get(6), idProducto);
-        
-        getEjb();
         
         return remanete;
         

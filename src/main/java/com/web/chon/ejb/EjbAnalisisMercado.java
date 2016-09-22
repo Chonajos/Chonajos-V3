@@ -26,11 +26,12 @@ public class EjbAnalisisMercado implements NegocioAnalisisMercado {
     @Override
     public int saveEntradaProductoCentral(AnalisisMercado entradaMercancia) {
         try {
-            Query query = em.createNativeQuery("INSERT INTO ANALISIS_MERCADO (ID_ENTRADA,PRECIO_VENTA,TONELADAS,FECHA,ID_SUBPRODUCTO) VALUES(S_ANALISIS_MERCADO.NEXTVAL,?,?,SYSDATE,?)");
+            Query query = em.createNativeQuery("INSERT INTO ANALISIS_MERCADO (ID_ENTRADA,PRECIO_VENTA,TONELADAS,FECHA,ID_SUBPRODUCTO) VALUES(S_ANALISIS_MERCADO.NEXTVAL,?,?,?,?)");
 
             query.setParameter(1, entradaMercancia.getPrecio());
             query.setParameter(2, entradaMercancia.getCantidadToneladas());
-            query.setParameter(3, entradaMercancia.getIdProductoFk());
+            query.setParameter(3, TiempoUtil.getFechaDDMMYY(entradaMercancia.getFecha()));
+            query.setParameter(4, entradaMercancia.getIdProductoFk());
 
             return query.executeUpdate();
         } catch (Exception ex) {
@@ -122,11 +123,12 @@ public class EjbAnalisisMercado implements NegocioAnalisisMercado {
     }
 
     @Override
-    public List<Object[]> getEntradaProductoByIdProducto(String idProducto) {
+    public List<Object[]> getEntradaProductoByIdProducto(String idProducto,String fecha) {
         try {
-            Query query = em.createNativeQuery("SELECT * FROM ANALISIS_MERCADO WHERE TO_DATE(TO_CHAR(FECHA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN SYSDATE-1 and SYSDATE AND ID_SUBPRODUCTO = ? ORDER BY FECHA ");
+            Query query = em.createNativeQuery("SELECT * FROM ANALISIS_MERCADO WHERE TO_DATE(TO_CHAR(FECHA,'dd/mm/yyyy'),'dd/mm/yyyy') = ? AND ID_SUBPRODUCTO = ? ORDER BY FECHA ");
 
-            query.setParameter(1, idProducto.trim());
+            query.setParameter(1, fecha);
+            query.setParameter(2, idProducto.trim());
 
             return query.getResultList();
         } catch (Exception ex) {
@@ -161,7 +163,6 @@ public class EjbAnalisisMercado implements NegocioAnalisisMercado {
             query.setParameter(1, entradaMercancia.getRemantePorSemana());
             query.setParameter(2, TiempoUtil.getFechaDDMMYYYY(entradaMercancia.getFecha()));
             query.setParameter(3, entradaMercancia.getIdProductoFk());
-            System.out.println("query " + query.toString());
             return query.executeUpdate();
         } catch (Exception e) {
             System.out.println("error" + e.getMessage());

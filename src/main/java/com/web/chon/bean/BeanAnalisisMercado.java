@@ -121,6 +121,9 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
 
                 } else {
 
+                    if(data.getFecha() == null){
+                        data.setFecha(context.getFechaSistema());
+                    }
                     ifaceEntradaProductoCentral.saveEntradaProductoCentral(data);
                     JsfUtil.addSuccessMessage("Registro insertado Correctamente.");
                 }
@@ -654,7 +657,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
 
     public String searchDatabyIdProducto() {
         String idProducto = data.getIdProductoFk();
-        data = ifaceEntradaProductoCentral.getEntradaProductoByIdProducto(data.getIdProductoFk());
+        data = ifaceEntradaProductoCentral.getEntradaProductoByIdProducto(data.getIdProductoFk(), TiempoUtil.getFechaDDMMYYYY(fechaRemanente));
         data.setIdProductoFk(idProducto);
         filtroPorProducto();
 
@@ -662,7 +665,11 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
     }
 
     public void searchRemanente() {
-        data.setRemantePorSemana(ifaceEntradaProductoCentral.getRemanente(fechaRemanente, data.getIdProductoFk()));
+        if (!insertar.equals("precioPromedio")) {
+            data.setRemantePorSemana(ifaceEntradaProductoCentral.getRemanente(fechaRemanente, data.getIdProductoFk()));
+        }else{
+            searchDatabyIdProducto();
+        }
     }
 
     @Override
