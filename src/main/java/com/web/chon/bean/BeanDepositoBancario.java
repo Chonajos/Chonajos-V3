@@ -89,7 +89,7 @@ public class BeanDepositoBancario {
                 JsfUtil.addErrorMessageClean("Ocurrió un error al registrar el depósito");
             }
         } else {
-            JsfUtil.addErrorMessageClean("Su usuario no cuenta con caja registrada para realizar el pago de servicios");
+            JsfUtil.addErrorMessageClean("No cuenta con caja");
         }
     }
 
