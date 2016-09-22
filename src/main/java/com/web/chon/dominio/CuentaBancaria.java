@@ -18,11 +18,21 @@ public class CuentaBancaria implements Serializable {
     private BigDecimal idCuentaBancariaPk;
     private String nombreBanco;
     private BigDecimal cuenta;
+    private BigDecimal idUsuarioFk;
 
     @Override
     public String toString() {
         return "CuentaBancaria{" + "idCuentaBancariaPk=" + idCuentaBancariaPk + ", nombreBanco=" + nombreBanco + ", cuenta=" + cuenta + '}';
     }
+
+    public BigDecimal getIdUsuarioFk() {
+        return idUsuarioFk;
+    }
+
+    public void setIdUsuarioFk(BigDecimal idUsuarioFk) {
+        this.idUsuarioFk = idUsuarioFk;
+    }
+    
     
     public BigDecimal getIdCuentaBancariaPk() {
         return idCuentaBancariaPk;

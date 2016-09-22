@@ -88,7 +88,6 @@ public class BeanDocumentosCobrar implements Serializable {
     @Autowired
     private IfaceOperacionesCaja ifaceOperacionesCaja;
 
-    
     private ArrayList<Sucursal> listaSucursales;
     private ArrayList<Documento> listaDocumentos;
     private ArrayList<AbonoDocumentos> listaAbonosCheques;
@@ -133,11 +132,12 @@ public class BeanDocumentosCobrar implements Serializable {
 
     private Caja caja;
     private OperacionesCaja opcaja;
-    private static final BigDecimal entradaSalida = new BigDecimal(1);
+
+    private static final BigDecimal entrada = new BigDecimal(1);
+    private static final BigDecimal salida = new BigDecimal(2);
     private static final BigDecimal statusOperacion = new BigDecimal(1);
-    
-    
-    
+    private static final BigDecimal conceptoMontoCheques = new BigDecimal(12);
+
     //Variables para el pago de Documentos
     private AbonoDocumentos ad;
     private String viewCheque;
@@ -159,7 +159,7 @@ public class BeanDocumentosCobrar implements Serializable {
         filtroFecha = new BigDecimal(1);
 
         filtroStatus = DOCUMENTOACTIVO;
-        listaDocumentos = ifaceDocumentos.getDocumentos(fechaInicio, fechaFin, idSucursalFk, null, filtroFormaPago, filtroStatus,filtroFecha);
+        listaDocumentos = ifaceDocumentos.getDocumentos(fechaInicio, fechaFin, idSucursalFk, null, filtroFormaPago, filtroStatus, filtroFecha);
         generarQuery();
         camposDeposito = true;
         camposEfectivo = false;
@@ -174,7 +174,7 @@ public class BeanDocumentosCobrar implements Serializable {
         opcaja = new OperacionesCaja();
         opcaja.setIdCajaFk(caja.getIdCajaPk());
         opcaja.setIdUserFk(usuario.getIdUsuario());
-        opcaja.setEntradaSalida(entradaSalida);
+
         opcaja.setIdStatusFk(statusOperacion);
 
     }
@@ -208,23 +208,20 @@ public class BeanDocumentosCobrar implements Serializable {
         dataAbonar.setIdUsuarioFk(usuario.getIdUsuario());
         dataAbonar.setIdClienteFk(documentoData.getIdClienteFk());
         System.out.println("Nuevo Abono: " + dataAbonar.toString());
-        if (ifaceAbonoDocumentos.insert(dataAbonar) == 1) 
-        {
+        if (ifaceAbonoDocumentos.insert(dataAbonar) == 1) {
             //Tenemos que saber lo que llevamos abonado de un documento sumar el nuevo abono y ver si hemos terminado de
             //abonar y cambiar el estatus a finalizado.
-            
-            BigDecimal totalTemporal= ifaceAbonoDocumentos.getTotalAbonadoByIdDocumento(documentoData.getIdDocumentoPk());
-            System.out.println("Total Abonado: "+totalTemporal);
-            System.out.println("Monto Total: "+documentoData.getMonto());
-            if(totalTemporal.compareTo(documentoData.getMonto())>=0)
-            {
+
+            BigDecimal totalTemporal = ifaceAbonoDocumentos.getTotalAbonadoByIdDocumento(documentoData.getIdDocumentoPk());
+            System.out.println("Total Abonado: " + totalTemporal);
+            System.out.println("Monto Total: " + documentoData.getMonto());
+            if (totalTemporal.compareTo(documentoData.getMonto()) >= 0) {
                 System.out.println("Ya se liquido la deuda");
                 //cambiar el estaus del Documento
                 documentoData.setIdStatusFk(DOCUMENTOFINALIZADO);
                 ifaceDocumentos.updateDocumentoById(documentoData);
             }
-            if (dataAbonar.getIdTipoAbonoFk().intValue() == 3) 
-            {
+            if (dataAbonar.getIdTipoAbonoFk().intValue() == 3) {
                 System.out.println("Ahora insertamos documento por cobrar");
                 Documento d = new Documento();
                 d.setIdDocumentoPk(new BigDecimal(ifaceDocumentos.getNextVal()));
@@ -242,14 +239,12 @@ public class BeanDocumentosCobrar implements Serializable {
                 d.setLibrador(dataAbonar.getLibrador());
                 d.setFechaCobro(dataAbonar.getFechaCobro());
                 d.setIdDocumentoPadreFk(dataAbonar.getIdDocumentoFk());
-                
+
                 System.out.println("El nuevo Documento por Entrar será de: " + d.toString());
-                
-                if (ifaceDocumentos.insertarDocumento(d) == 1) 
-                {
+
+                if (ifaceDocumentos.insertarDocumento(d) == 1) {
                     JsfUtil.addSuccessMessageClean("Se ha ingresado correctamente en la tabla de documentos por cobrar");
-                } else 
-                {
+                } else {
                     JsfUtil.addErrorMessageClean("Ha ocurrido un error al ingresar el documento por cobrar");
                 }
             }
@@ -261,13 +256,12 @@ public class BeanDocumentosCobrar implements Serializable {
 
     public void buscar() {
         BigDecimal idCliente = null;
-        if (cliente != null) 
-        {
+        if (cliente != null) {
             idCliente = cliente.getId_cliente();
         }
-        listaDocumentos = ifaceDocumentos.getDocumentos(fechaInicio, fechaFin, idSucursalFk, idCliente,filtroFormaPago,filtroStatus,filtroFecha);
+        listaDocumentos = ifaceDocumentos.getDocumentos(fechaInicio, fechaFin, idSucursalFk, idCliente, filtroFormaPago, filtroStatus, filtroFecha);
 
-        }
+    }
 //    public void comboFiltro()
 //    {
 //        switch(filtro.intValue())
@@ -311,23 +305,36 @@ public class BeanDocumentosCobrar implements Serializable {
         }
     }
 
-    public void cobrarCheque() 
-    {
+    public void cobrarCheque() {
         cobroCheque.setIdCobroChequePk(new BigDecimal(ifaceCobroCheques.nextVal()));
         cobroCheque.setImporteDeposito(documentoData.getMonto());
         cobroCheque.setIdDocumentoFk(documentoData.getIdDocumentoPk());
         System.out.println("BEAN: CobroCheque: " + cobroCheque);
-        if (ifaceCobroCheques.insertarDocumento(cobroCheque) == 1) 
-        {
+        if (ifaceCobroCheques.insertarDocumento(cobroCheque) == 1) {
             Documento temp = new Documento();
             temp.setIdDocumentoPk(cobroCheque.getIdDocumentoFk());
             temp.setIdStatusFk(DOCUMENTOFINALIZADO);
             //si se inserta el cobro del cheque cambiamos el status del documento
-            if (ifaceDocumentos.updateDocumentoById(temp) == 1) 
-            {
+            if (ifaceDocumentos.updateDocumentoById(temp) == 1) {
+                opcaja.setIdConceptoFk(conceptoMontoCheques);
+                opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
+                opcaja.setMonto(documentoData.getMonto());
+                opcaja.setEntradaSalida(entrada);
+
+                if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
+                    System.out.println("Se registro primer movimiento");
+                    opcaja.setIdConceptoFk(conceptoMontoCheques);
+                    opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
+                    opcaja.setMonto(documentoData.getMonto());
+                    opcaja.setEntradaSalida(salida);
+                    if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1)
+                    {
+                        System.out.println("Se registro segundo movimiento");
+                    }
+                }
+
                 System.out.println("Se cambio status del documento");
                 JsfUtil.addSuccessMessageClean("Se realizó el cobro de cheque exitosamente");
-
             }
         } else {
             JsfUtil.addErrorMessageClean("Ocurrió un problema al cobrar el cheque");
@@ -666,7 +673,6 @@ public class BeanDocumentosCobrar implements Serializable {
         this.filtroFecha = filtroFecha;
     }
 
-    
     public ArrayList<Cliente> getLstCliente() {
         return lstCliente;
     }
@@ -739,5 +745,4 @@ public class BeanDocumentosCobrar implements Serializable {
         this.filtroFormaPago = filtroFormaPago;
     }
 
-    
 }

@@ -44,7 +44,7 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
         System.out.println("=================================================ejb insert" + es.toString());
             
         try {
-            Query query = em.createNativeQuery("INSERT INTO OPERACIONES_CAJA (ID_OPERACIONES_CAJA_PK,ID_CORTE_CAJA_FK,ID_CAJA_FK,ID_CAJA_DESTINO_FK,ID_CONCEPTO_FK,FECHA,ID_STATUS_FK,ID_USER_FK,COMENTARIOS,MONTO,E_S) values(?,?,?,?,?,sysdate,?,?,?,?,?)");
+            Query query = em.createNativeQuery("INSERT INTO OPERACIONES_CAJA (ID_OPERACIONES_CAJA_PK,ID_CORTE_CAJA_FK,ID_CAJA_FK,ID_CAJA_DESTINO_FK,ID_CONCEPTO_FK,FECHA,ID_STATUS_FK,ID_USER_FK,COMENTARIOS,MONTO,E_S,ID_CUENTA_DESTINO_FK) values(?,?,?,?,?,sysdate,?,?,?,?,?,?)");
             query.setParameter(1, es.getIdOperacionesCajaPk());
             query.setParameter(2, es.getIdCorteCajaFk());
             query.setParameter(3, es.getIdCajaFk());
@@ -55,6 +55,7 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
             query.setParameter(8, es.getComentarios());
             query.setParameter(9, es.getMonto());
             query.setParameter(10, es.getEntradaSalida());
+            query.setParameter(11, es.getIdCuentaDestinoFk());
             return query.executeUpdate();
 
         } catch (Exception ex) {

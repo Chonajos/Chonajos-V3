@@ -98,10 +98,10 @@ public class BeanCorteCaja implements Serializable {
         saldoAnterior = corteAnterior.getSaldoNuevo();
         nuevoSaldo = totalEntradas.subtract(totalSalidas, MathContext.UNLIMITED);
         nuevoSaldo = nuevoSaldo.add(saldoAnterior, MathContext.UNLIMITED);
-        listaChequesEntrada = ifaceOperacionesCaja.getCheques(caja.getIdCajaPk(), caja.getIdUsuarioFK(), entrada);
-        listaChequesSalida = ifaceOperacionesCaja.getCheques(caja.getIdCajaPk(), caja.getIdUsuarioFK(), salida);
-        getsumaChequesEntradas();
-        getsumaChequesSalidas();
+        //listaChequesEntrada = ifaceOperacionesCaja.getCheques(caja.getIdCajaPk(), caja.getIdUsuarioFK(), entrada);
+        //listaChequesSalida = ifaceOperacionesCaja.getCheques(caja.getIdCajaPk(), caja.getIdUsuarioFK(), salida);
+        //getsumaChequesEntradas();
+        //getsumaChequesSalidas();
     }
 
     public void reload() {
@@ -117,8 +117,8 @@ public class BeanCorteCaja implements Serializable {
         nuevoSaldo = nuevoSaldo.add(saldoAnterior, MathContext.UNLIMITED);
         listaChequesEntrada = ifaceOperacionesCaja.getCheques(caja.getIdCajaPk(), caja.getIdUsuarioFK(), entrada);
         listaChequesSalida = ifaceOperacionesCaja.getCheques(caja.getIdCajaPk(), caja.getIdUsuarioFK(), salida);
-        getsumaChequesEntradas();
-        getsumaChequesSalidas();
+        //getsumaChequesEntradas();
+        //getsumaChequesSalidas();
     }
 
     public void getsumaEntradas() {

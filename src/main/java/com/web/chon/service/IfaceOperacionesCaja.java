@@ -23,6 +23,7 @@ public interface IfaceOperacionesCaja {
     public OperacionesCaja getOperacionByIdPk(BigDecimal idPk);
     public ArrayList<OperacionesCaja> getOperacionesBy(BigDecimal idCajaFk,BigDecimal idOperacionFk,BigDecimal idConceptoFk,String fechaInicio, String fechaFin,BigDecimal idStatusFk,BigDecimal idUserFk);
     public ArrayList<OperacionesCaja> getTransferenciasEntrantes(BigDecimal idCajaFk);
+    public ArrayList<OperacionesCaja> getDepositosEntrantes();
     public ArrayList<TipoOperacion> getOperacionesCorteBy(BigDecimal idCajaFk, BigDecimal idUserFk, BigDecimal idES);
      public ArrayList<OperacionesCaja> getOperaciones(BigDecimal idCajaFk, BigDecimal idUserFk);
     public ArrayList<OperacionesCaja> getCheques(BigDecimal idCajaFk, BigDecimal idUserFk,BigDecimal idINOUT);

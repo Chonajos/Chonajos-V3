@@ -36,6 +36,7 @@ public class OperacionesCaja implements Serializable {
     private BigDecimal entradaSalida;
     private String nombreEntradaSalida;
     private int numero;
+    private BigDecimal idCuentaDestinoFk;
 
     @Override
     public String toString() {
@@ -64,9 +65,19 @@ public class OperacionesCaja implements Serializable {
         nombreOperacion=null;
         idTipoOperacionFk=null;
         nombreEntradaSalida=null;
+        idCuentaDestinoFk=null;
         
     }
 
+    public BigDecimal getIdCuentaDestinoFk() {
+        return idCuentaDestinoFk;
+    }
+
+    public void setIdCuentaDestinoFk(BigDecimal idCuentaDestinoFk) {
+        this.idCuentaDestinoFk = idCuentaDestinoFk;
+    }
+
+    
     public int getNumero() {
         return numero;
     }

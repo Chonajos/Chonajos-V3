@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="./../templates/main.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="content">
+        <div>
+            <h3>#{beanDepositoBancario.title}</h3>
+        </div>
+
+        <h:form id="formContent">
+            <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
+            
+            <p:panel> 
+                <div class="container-fluid">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <p:dataTable id="tabla" var="model" 
+                                     value="#{beanRecibirTransferencias.lstTransferenciasEntrantes}" 
+                                     scrollable="true"
+                                     scrollHeight="280" styleClass="ui-datatable-hor-scroll" 
+                                     emptyMessage="No se encontraron Registros" 
+                                     rendered="#{beanDepositoBancario.viewEstate =='init'}">
+                            <p:column headerText="N° Operación" width="60px;" class="alignCenter">
+                                <h:outputText value="#{model.numero}" />
+                            </p:column>
+                            <p:column headerText="Caja Origen" width="150px;" class="alignLeft">
+                                <h:outputText value="#{model.nombreCaja}" />
+                            </p:column>
+                            
+                            <p:column headerText="Fecha" width="120px;" class="alignCenter">
+                                <h:outputText value="#{model.fecha}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+                                </h:outputText>
+                            </p:column>
+                            
+                            <p:column headerText="Monto" width="50px;" class="alignRight">
+                                <h:outputText value="#{model.monto}">
+                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Recibir" width="60px;" class="alignCenter">
+                                <p:commandButton id="print" ajax="true" process="@this" action="#{beanRecibirTransferencias.aceptar()}" 
+                                                 icon="ui-icon-transfer-e-w" styleClass="ui-priority-primary" update=":formContent"
+                                                 oncomplete="window.frames.miFrame.print();">
+                                    <f:setPropertyActionListener value="#{model}" target="#{beanRecibirTransferencias.data}"/>
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+                </div>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>

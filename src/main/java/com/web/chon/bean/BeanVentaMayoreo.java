@@ -293,7 +293,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                
 
                 ventaGeneral.setVentaSucursal(new BigDecimal(folioMayoreo + 1));
-                
+                ventaGeneral.setIdStatusFk(new BigDecimal(1));
 
                 //System.out.println("Venta General: " + ventaGeneral.toString());
                 if (ifaceVentaMayoreo.insertarVenta(ventaGeneral) != 0) {

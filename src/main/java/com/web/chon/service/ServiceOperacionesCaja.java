@@ -246,6 +246,12 @@ public class ServiceOperacionesCaja implements IfaceOperacionesCaja {
     
     }
 
+    @Override
+    public ArrayList<OperacionesCaja> getDepositosEntrantes() 
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     
     
 }
