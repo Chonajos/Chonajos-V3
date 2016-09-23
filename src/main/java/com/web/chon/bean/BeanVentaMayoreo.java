@@ -491,7 +491,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         data.setClave(selectedExistencia.getIdentificador());
         data.setPrecioSinInteres(selectedExistencia.getPrecioSinIteres());
         data.setTotalVenta(data.getPrecioProducto().multiply(data.getKilosVendidos(), MathContext.UNLIMITED));
-
+        data.setFolioCarro(selectedExistencia.getCarroSucursal());
         VentaProductoMayoreo productoTemporal = new VentaProductoMayoreo();
 
         productoTemporal.setIdEntradaMercanciaFk(data.getIdEntradaMercanciaFk());
@@ -506,6 +506,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         productoTemporal.setTotalVenta(data.getTotalVenta());
         productoTemporal.setKilosVendidos(data.getKilosVendidos());
         productoTemporal.setIdExistenciaFk(data.getIdExistenciaFk());
+        productoTemporal.setFolioCarro(data.getFolioCarro());
 
         totalVentaGeneral = totalVentaGeneral.add(productoTemporal.getTotalVenta(), MathContext.UNLIMITED);
         lstVenta.add(productoTemporal);
@@ -664,10 +665,12 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     }
 
     public void updateProducto() {
+        
         dataEdit.setCantidadEmpaque(data.getCantidadEmpaque());
         dataEdit.setKilosVendidos(data.getKilosVendidos());
         dataEdit.setTotalVenta(data.getKilosVendidos().multiply(data.getPrecioProducto(), MathContext.UNLIMITED));
         dataEdit.setPrecioProducto(data.getPrecioProducto());
+        dataEdit.setIdExistenciaFk(selectedExistencia.getIdExistenciaProductoPk());
         setViewEstate("viewCarrito");
         JsfUtil.addSuccessMessage("Producto Modificado Correctamente");
         totalVentaGeneral = new BigDecimal(0);

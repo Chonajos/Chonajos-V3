@@ -63,9 +63,12 @@ public class BeanAjusteCaja  implements Serializable{
     
     private static final BigDecimal idConcepto = new BigDecimal(11);
     private static final BigDecimal statusOperacion = new BigDecimal(1);
+    private static final BigDecimal salida = new BigDecimal(2);
+    private static final BigDecimal entrada = new BigDecimal(1);
     @PostConstruct
     public void init() 
     {
+        filtroES=1;
         usuario = context.getUsuarioAutenticado();
         setTitle("Ajuste de Caja");
         setViewEstate("init");

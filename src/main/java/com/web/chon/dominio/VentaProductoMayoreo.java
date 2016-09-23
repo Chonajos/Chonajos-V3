@@ -34,6 +34,7 @@ public class VentaProductoMayoreo implements Serializable {
     private BigDecimal tipoPago;
     private BigDecimal numeroPagos;
     private BigDecimal precioSinInteres;
+    private BigDecimal folioCarro;
 
 
     public VentaProductoMayoreo()
@@ -57,6 +58,8 @@ public class VentaProductoMayoreo implements Serializable {
         nombreProducto = null;
         nombreEmpaque = null;
         idExistenciaFk=null;
+        folioCarro=null;
+        
 
     }
 
@@ -65,6 +68,15 @@ public class VentaProductoMayoreo implements Serializable {
         return "VentaProductoMayoreo{" + "idVentaMayProdPk=" + idVentaMayProdPk + ", idVentaMayoreoFk=" + idVentaMayoreoFk + ", idSubProductofk=" + idSubProductofk + ", precioProducto=" + precioProducto + ", kilosVendidos=" + kilosVendidos + ", cantidadEmpaque=" + cantidadEmpaque + ", totalVenta=" + totalVenta + ", idTipoEmpaqueFk=" + idTipoEmpaqueFk + ", idEntradaMercanciaFk=" + idEntradaMercanciaFk + ", clave=" + clave + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + ", idExistenciaFk=" + idExistenciaFk + ", idTipoVenta=" + idTipoVenta + '}';
     }
 
+    public BigDecimal getFolioCarro() {
+        return folioCarro;
+    }
+
+    public void setFolioCarro(BigDecimal folioCarro) {
+        this.folioCarro = folioCarro;
+    }
+
+    
     public BigDecimal getTipoPago() {
         return tipoPago;
     }
