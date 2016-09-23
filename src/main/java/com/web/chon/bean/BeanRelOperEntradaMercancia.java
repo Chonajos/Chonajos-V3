@@ -265,7 +265,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         exis.setKilosTotalesProducto(dataProductoAutoAjuste.getKilosPaquetes());
         System.out.println("-------------------------------------------------");
         System.out.println(exis.toString());
-        if (ifaceNegocioExistencia.updateExistenciaProducto(exis) == 1) {
+        if (ifaceNegocioExistencia.updateCantidadKilo(exis) == 1) {
             //dataProductoAutoAjuste.setIdBodegaFK();
             dataProductoAutoAjuste.setKilosTotalesProducto(dataProductoAutoAjuste.getKilosReales());
             dataProductoAutoAjuste.setCantidadPaquetes(dataProductoAutoAjuste.getCantidadReales());
@@ -566,7 +566,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
                 ep.setIdExistenciaProductoPk(e.getIdExistenciaProductoPk());
                 System.out.println("--------------Existencia Actualizar------------");
                 System.out.println(ep.toString());
-                if (ifaceNegocioExistencia.updateExistenciaProducto(ep) == 1) {
+                if (ifaceNegocioExistencia.updateCantidadKilo(ep) == 1) {
                     JsfUtil.addSuccessMessageClean("Actualización de datos correcta");
                 } else {
                     JsfUtil.addErrorMessageClean("Ocurrió un problema al actualizar existencias");

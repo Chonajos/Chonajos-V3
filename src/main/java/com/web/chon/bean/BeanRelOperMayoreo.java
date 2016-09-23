@@ -180,7 +180,8 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
             if (data.getIdStatus().intValue() != 4 && data.getIdStatus().intValue() != 2) {
                 boolean banderaError = false;
                 lstVenta = ifaceBuscaVenta.buscaVentaCancelar(data.getVentaSucursal().intValue(), data.getIdSucursal().intValue());
-                for (BuscaVenta producto : lstVenta) {
+                for (BuscaVenta producto : lstVenta)
+                {
                     BigDecimal cantidad = producto.getCantidadEmpaque();
                     BigDecimal kilos = producto.getKilosVendidos();
                     BigDecimal idExistencia = producto.getIdExistenciaFk();
@@ -199,7 +200,7 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
                     ep.setKilosTotalesProducto(kilos);
                     ep.setIdExistenciaProductoPk(idExistencia);
                     ep.setIdBodegaFK(idBodega);
-                    if (ifaceNegocioExistencia.updateExistenciaProducto(ep) == 1) {
+                    if (ifaceNegocioExistencia.updateCantidadKilo(ep) == 1) {
                         System.out.println("Regreso Producto Correctamente");
                     } else {
                         banderaError = true;

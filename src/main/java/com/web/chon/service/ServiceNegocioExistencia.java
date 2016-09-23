@@ -42,9 +42,9 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
     }
 
     @Override
-    public int updateExistenciaProducto(ExistenciaProducto ep) {
+    public int updateCantidadKilo(ExistenciaProducto ep) {
         getEjb();
-        return ejb.updateExistenciaProducto(ep);
+        return ejb.updateCantidadKilo(ep);
 
     }
 
@@ -221,5 +221,13 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
             Logger.getLogger(ServiceNegocioExistencia.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
+    }
+
+    @Override
+    public int update(ExistenciaProducto ep) {
+       getEjb();
+        return ejb.update(ep);
+
+    
     }
 }

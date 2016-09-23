@@ -11,6 +11,7 @@ import com.web.chon.dominio.Cliente;
 import com.web.chon.dominio.Credito;
 import com.web.chon.dominio.Documento;
 import com.web.chon.dominio.OperacionesCaja;
+import com.web.chon.dominio.OperacionesCuentas;
 import com.web.chon.dominio.SaldosDeudas;
 import com.web.chon.dominio.TipoAbono;
 import com.web.chon.dominio.UsuarioDominio;
@@ -21,6 +22,7 @@ import com.web.chon.service.IfaceCatCliente;
 import com.web.chon.service.IfaceCredito;
 import com.web.chon.service.IfaceDocumentos;
 import com.web.chon.service.IfaceOperacionesCaja;
+import com.web.chon.service.IfaceOperacionesCuentas;
 import com.web.chon.service.IfaceTipoAbono;
 import com.web.chon.util.Constantes;
 import com.web.chon.util.JasperReportUtil;
@@ -80,6 +82,8 @@ public class BeanBuscaCredito implements Serializable {
     IfaceCaja ifaceCaja;
     @Autowired
     private IfaceOperacionesCaja ifaceOperacionesCaja;
+    @Autowired
+    private IfaceOperacionesCuentas ifaceOperacionesCuentas;
 
     private BigDecimal idCliente;
     private String nombreCompletoCliente;
@@ -138,6 +142,12 @@ public class BeanBuscaCredito implements Serializable {
     private static final BigDecimal concepto = new BigDecimal(7);
     private static final BigDecimal conceptoMontoCheques = new BigDecimal(12);
 
+    //--Variables para datos Bancarios---//
+    private static final BigDecimal entradaCuenta = new BigDecimal(1);
+    private static final BigDecimal idStatusCuenta = new BigDecimal(1);
+    private static final BigDecimal idConceptoCuenta = new BigDecimal(15);
+    private OperacionesCuentas opcuenta;
+
     @PostConstruct
     public void init() {
         caja = new Caja();
@@ -161,6 +171,12 @@ public class BeanBuscaCredito implements Serializable {
         opcaja.setIdUserFk(usuarioDominio.getIdUsuario());
         opcaja.setEntradaSalida(entradaSalida);
         opcaja.setIdStatusFk(statusOperacion);
+        //-- Datos para Transferencias Bancarias o Dépositos Bancarios--//
+        opcuenta = new OperacionesCuentas();
+        opcuenta.setIdUserFk(usuarioDominio.getIdUsuario());
+        opcuenta.setIdStatusFk(idStatusCuenta);
+        opcuenta.setEntradaSalida(entradaCuenta);
+        opcuenta.setIdConceptoFk(idConceptoCuenta);
     }
 
     private void setParameterTicket(AbonoCredito ac, Cliente c) {
@@ -274,10 +290,9 @@ public class BeanBuscaCredito implements Serializable {
     public void abonar() {
         AbonoCredito ac = new AbonoCredito();
         System.out.println("************************************");
-        System.out.println("idCaja: "+opcaja.getIdCajaFk());
+        System.out.println("idCaja: " + opcaja.getIdCajaFk());
         System.out.println("************************************");
-        if (abono.getIdtipoAbonoFk() != null && opcaja.getIdCajaFk()!=null) 
-        {
+        if (abono.getIdtipoAbonoFk() != null && opcaja.getIdCajaFk() != null) {
             switch (abono.getIdtipoAbonoFk().intValue()) {
                 /*
             ===============
@@ -345,6 +360,7 @@ public class BeanBuscaCredito implements Serializable {
 
                     break;
                 case 2:
+
                     System.out.println("Ejecuto Transferencia");
                     if (abono.getMontoAbono() == null || abono.getReferencia() == null || abono.getConcepto() == null || abono.getFechaTransferencia() == null) {
                         JsfUtil.addErrorMessageClean("Ingrese el valor en todos los campos");
@@ -374,24 +390,31 @@ public class BeanBuscaCredito implements Serializable {
 
                     }
                     if (ifaceAbonoCredito.insert(ac) == 1) {
-                        JsfUtil.addSuccessMessage("Se ha realizado un abono existosamente");
-                        setParameterTicket(ac, cliente);
-                        generateReport(ac.getIdAbonoCreditoPk().intValue(), "abonoTransferencia.jasper");
-                        abono.reset();
-                        dataAbonar.reset();
-                        saldoParaLiquidar = new BigDecimal(0);
-                        searchByIdCliente();
 
-                        RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
+                        opcuenta.setIdOperacionCuenta(new BigDecimal(ifaceOperacionesCuentas.getNextVal()));
+                        opcuenta.setIdStatusFk(idStatusCuenta);
+                        opcuenta.setMonto(ac.getMontoAbono());
+                        if (ifaceOperacionesCuentas.insertaOperacion(opcuenta) == 1) {
+                            JsfUtil.addSuccessMessageClean("Se ha recibido el la Transferencia Correctamente");
+                            setParameterTicket(ac, cliente);
+                            generateReport(ac.getIdAbonoCreditoPk().intValue(), "abonoTransferencia.jasper");
+                            abono.reset();
+                            dataAbonar.reset();
+                            saldoParaLiquidar = new BigDecimal(0);
+                            searchByIdCliente();
+                            RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
+                        } else {
+                            JsfUtil.addErrorMessageClean("Ocurrió un error al recibir el Depósito");
+                        }
                     } else {
                         JsfUtil.addErrorMessageClean("Ocurrio un error al intentar registrar el abono con el folio: " + ac.getIdAbonoCreditoPk());
                     }
 
                     break;
                 case 3:
+
                     System.out.println("Ejecuto CHEQUE");
-                    if (abono.getMontoAbono() == null || abono.getNumeroCheque() == null || abono.getLibrador() == null || abono.getFechaCobro() == null || abono.getBanco() == null || abono.getFactura() == null) 
-                    {
+                    if (abono.getMontoAbono() == null || abono.getNumeroCheque() == null || abono.getLibrador() == null || abono.getFechaCobro() == null || abono.getBanco() == null || abono.getFactura() == null) {
                         JsfUtil.addErrorMessageClean("Ingrese el valor en todos los campos");
                         break;
                     }
@@ -439,7 +462,7 @@ public class BeanBuscaCredito implements Serializable {
                             opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
                             opcaja.setIdConceptoFk(conceptoMontoCheques);
                             opcaja.setMonto(ac.getMontoAbono());
-                            
+
                             if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
                                 setParameterTicket(ac, cliente);
                                 generateReport(ac.getIdAbonoCreditoPk().intValue(), "abonoCheque.jasper");
@@ -475,21 +498,18 @@ public class BeanBuscaCredito implements Serializable {
                         opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
                         opcaja.setMonto(dataAbonar.getSaldoACuenta());
                         opcaja.setIdConceptoFk(concepto);
-                        if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) 
-                        {
+                        if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
                             ac.setIdCreditoFk(c.getIdCreditoPk());
                             ac.setMontoAbono(dataAbonar.getSaldoACuenta());
                             ac.setIdtipoAbonoFk(abono.getIdtipoAbonoFk());
                             setParameterTicket(ac, cliente);
                             generateReport(ac.getIdCreditoFk().intValue(), "abonoCuenta.jasper");
                             RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
-                        } else 
-                        {
+                        } else {
                             JsfUtil.addErrorMessageClean("Ocurrió un error al registrar el pago de la venta");
                         }
 
-                    } else 
-                    {
+                    } else {
                         JsfUtil.addErrorMessageClean("Ocurrio un problema");
                     }
                     break;
@@ -497,8 +517,7 @@ public class BeanBuscaCredito implements Serializable {
             saldoParaLiquidar = new BigDecimal(0);
             abono = new AbonoCredito();
             searchByIdCliente();
-        } else 
-        {
+        } else {
             JsfUtil.addErrorMessageClean("Su usuario no cuenta con caja asignada o no selecciono un tipo de abono");
         }
     }

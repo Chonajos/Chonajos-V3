@@ -20,7 +20,8 @@ public interface IfaceNegocioExistencia {
      public ArrayList<ExistenciaProducto> getExistenciasCancelar(BigDecimal idExistencia);
     public ArrayList<ExistenciaProducto> getExistenciasbyIdSubProducto(String idSubproductoFk);
     public ArrayList<ExistenciaProducto> getExistenciaProductoRepetidos(BigDecimal idSucursal,String idSubproductoFk,BigDecimal idTipoEmpaqueFk, BigDecimal idBodegaFk, BigDecimal idProvedorFk,BigDecimal idEMFK,BigDecimal idTipoConvenio);
-    public int updateExistenciaProducto(ExistenciaProducto ep);
+    public int updateCantidadKilo(ExistenciaProducto ep);
+    public int update(ExistenciaProducto ep);
     public int updatePrecio(ExistenciaProducto ep);
     public ArrayList<ExistenciaProducto> getExistenciaById(BigDecimal idExistencia);
      public int deleteExistenciaProducto(ExistenciaProducto ep);

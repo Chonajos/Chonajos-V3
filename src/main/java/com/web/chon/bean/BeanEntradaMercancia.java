@@ -236,7 +236,7 @@ public class BeanEntradaMercancia implements Serializable {
                                 ep.setIdExistenciaProductoPk(existencia_temporal.getIdExistenciaProductoPk());
                                 ep.setCantidadPaquetes(ep.getCantidadPaquetes().add(existencia_temporal.getCantidadPaquetes(), MathContext.UNLIMITED));
                                 ep.setKilosTotalesProducto(ep.getKilosTotalesProducto().add(existencia_temporal.getKilosTotalesProducto(), MathContext.UNLIMITED));
-                                bandera = ifaceNegocioExistencia.updateExistenciaProducto(ep);
+                                bandera = ifaceNegocioExistencia.updateCantidadKilo(ep);
                             }
                             
                             if (bandera != 0) {

@@ -88,18 +88,15 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
     }
 
     @Override
-    public int updateExistenciaProducto(ExistenciaProducto e) {
+    public int updateCantidadKilo(ExistenciaProducto e) {
 
         System.out.println("EJBUPDATEPRODUCTO:--------------------"+e.toString());
         try {
-
-            Query query = em.createNativeQuery("update EXISTENCIA_PRODUCTO SET CANTIDAD_EMPACAQUE=?, KILOS_TOTALES=?,ID_BODEGA_FK =? WHERE ID_EXP_PK=?");
+            
+            Query query = em.createNativeQuery("update EXISTENCIA_PRODUCTO SET CANTIDAD_EMPACAQUE=?, KILOS_TOTALES=? WHERE ID_EXP_PK=?");
             query.setParameter(1, e.getCantidadPaquetes());
             query.setParameter(2, e.getKilosTotalesProducto());
-            query.setParameter(3, e.getIdBodegaFK());
-            query.setParameter(4, e.getIdExistenciaProductoPk());
-            
-
+            query.setParameter(3, e.getIdExistenciaProductoPk());
             return query.executeUpdate();
 
         } catch (Exception ex) {
@@ -109,6 +106,29 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
             return 0;
         }
     }
+    
+    @Override
+    public int update(ExistenciaProducto e) {
+
+        System.out.println("EJBUPDATEPRODUCTO:--------------------"+e.toString());
+        try {
+            
+            Query query = em.createNativeQuery("update EXISTENCIA_PRODUCTO SET CANTIDAD_EMPACAQUE=?, KILOS_TOTALES=?,ID_BODEGA_FK =? WHERE ID_EXP_PK=?");
+            query.setParameter(1, e.getCantidadPaquetes());
+            query.setParameter(2, e.getKilosTotalesProducto());
+            query.setParameter(3, e.getIdBodegaFK());
+            query.setParameter(4, e.getIdExistenciaProductoPk());
+            return query.executeUpdate();
+
+        } catch (Exception ex) {
+            System.out.println("error 0"+ex.getMessage().toUpperCase());
+            Logger.getLogger(EjbExistenciaProducto.class.getName()).log(Level.SEVERE, null, ex);
+
+            return 0;
+        }
+    }
+    
+    
 
     @Override
     public List<Object[]> getExistencias(BigDecimal idSucursal, BigDecimal idBodega, BigDecimal idProvedor, String idProducto, BigDecimal idEmpaque, BigDecimal idConvenio, BigDecimal idEmpPK) {

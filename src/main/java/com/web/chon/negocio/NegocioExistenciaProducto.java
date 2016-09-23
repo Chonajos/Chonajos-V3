@@ -21,13 +21,14 @@ import javax.ejb.Remote;
 public interface NegocioExistenciaProducto 
 {
     public int insertaExistencia(ExistenciaProducto e);
-    public int updateExistenciaProducto(ExistenciaProducto e);
+    public int updateCantidadKilo(ExistenciaProducto e);
     public List<Object[]> getExistencias(BigDecimal idSucursal, BigDecimal idBodega, BigDecimal idProvedor,String idProducto, BigDecimal idEmpaque, BigDecimal idConvenio,BigDecimal idEmpPK);
     public List<Object[]> getExistenciasCancelar(BigDecimal idExistencia);
     public List<Object[]> getExistenciaProductoId(BigDecimal idSucursal,String idSubproductoFk,BigDecimal idTipoEmpaqueFk, BigDecimal idBodegaFk, BigDecimal idProvedorFk);
     public List<Object[]> getExistenciasRepetidas(BigDecimal idSucursal, String idSubproductoFk, BigDecimal idTipoEmpaqueFk, BigDecimal idBodegaFk, BigDecimal idProvedorFk, BigDecimal idEMFK,BigDecimal idTipoConvenio);
     public int updatePrecio(ExistenciaProducto ep);
+    public int update(ExistenciaProducto e);
     public List<Object[]> getExistenciaById(BigDecimal idExistencia);
-        public int deleteExistenciaProducto(ExistenciaProducto exp);
+    public int deleteExistenciaProducto(ExistenciaProducto exp);
     public List<Object[]> getExistenciaByIdEmpFk(BigDecimal idEmpFk);
 }

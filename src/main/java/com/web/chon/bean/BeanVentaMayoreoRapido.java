@@ -300,7 +300,7 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
                             existencia_actualizada.setIdExistenciaProductoPk(existencia.getIdExistenciaProductoPk());
                             existencia_actualizada.setCantidadPaquetes(existencia.getCantidadPaquetes().subtract(producto.getCantidadEmpaque(), MathContext.UNLIMITED));
                             existencia_actualizada.setKilosTotalesProducto(existencia.getKilosTotalesProducto().subtract(producto.getKilosVendidos(), MathContext.UNLIMITED));
-                            if (ifaceNegocioExistencia.updateExistenciaProducto(existencia_actualizada) != 0) {
+                            if (ifaceNegocioExistencia.updateCantidadKilo(existencia_actualizada) != 0) {
                                 totalVenta = TotalVentaGeneral;
                                 JsfUtil.addSuccessMessageClean("Venta Finalizada");
                             } else {

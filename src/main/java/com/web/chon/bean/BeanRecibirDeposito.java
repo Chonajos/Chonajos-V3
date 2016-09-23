@@ -72,7 +72,8 @@ public class BeanRecibirDeposito implements Serializable {
     private static final BigDecimal idConcepto = new BigDecimal(14);
 
     @PostConstruct
-    public void init() {
+    public void init() 
+    {
         usuario = context.getUsuarioAutenticado();
         setTitle("Recibir Depósitos de Cuentas");
         setViewEstate("init");

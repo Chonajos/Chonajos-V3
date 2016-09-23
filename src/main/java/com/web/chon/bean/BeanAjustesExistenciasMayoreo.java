@@ -212,7 +212,7 @@ public class BeanAjustesExistenciasMayoreo implements Serializable {
             existenciaProductoNew.setCantidadPaquetes(existenciaProductoNew.getCantidadPaquetes().subtract(existenciaProductoNew.getEmpaquesAjustar()));
         }
 
-        if (ifaceNegocioExistencia.updateExistenciaProducto(existenciaProductoNew) != 0) {
+        if (ifaceNegocioExistencia.update(existenciaProductoNew) != 0) {
 
             ajusteExistenciaMayoreo.setEmpaqueAjustados(existenciaProductoNew.getCantidadPaquetes());
             ajusteExistenciaMayoreo.setEmpaqueAnterior(existenciaMayoreoOld.getCantidadPaquetes());

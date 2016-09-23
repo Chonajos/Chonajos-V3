@@ -209,6 +209,7 @@ public class ServiceBuscaVenta implements IfaceBuscaVenta {
                 busca_venta.setIdExistenciaFk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
                 busca_venta.setCantidadEmpaque(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
                 busca_venta.setKilosVendidos(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
+                
                 lstVentas.add(busca_venta);
             }
             return lstVentas;

@@ -103,11 +103,11 @@ public class BeanTransferenciaMerca implements Serializable {
                     existenciaProductoTemp.setCantidadPaquetes(data.getCantidadMovida().add(existenciaProductoTemp.getCantidadPaquetes()));
                     existenciaProductoTemp.setKilosTotalesProducto(data.getKilosMovios().add(existenciaProductoTemp.getKilosTotalesProducto()));
 
-                    if (ifaceNegocioExistencia.updateExistenciaProducto(existenciaProductoTemp) == 1) {
+                    if (ifaceNegocioExistencia.update(existenciaProductoTemp) == 1) {
 
                         existenciaProducto.setCantidadPaquetes(existenciaProducto.getCantidadPaquetes().subtract(data.getCantidadMovida()));
                         existenciaProducto.setKilosTotalesProducto(existenciaProducto.getKilosTotalesProducto().subtract(data.getKilosMovios()));
-                        ifaceNegocioExistencia.updateExistenciaProducto(existenciaProducto);
+                        ifaceNegocioExistencia.update(existenciaProducto);
                         data.setIdUsuarioFK(usuarioDominio.getIdUsuario());
                         ifaceNegocioTransferenciaMercancia.insertTransferenciaMercancia(data);
 
@@ -124,7 +124,7 @@ public class BeanTransferenciaMerca implements Serializable {
                     if (existenciaProductoTemp.getCantidadPaquetes().compareTo(existenciaProducto.getCantidadPaquetes()) == 0) {
 
                         existenciaProducto.setIdBodegaFK(data.getIdBodegaDestino());
-                        ifaceNegocioExistencia.updateExistenciaProducto(existenciaProducto);
+                        ifaceNegocioExistencia.update(existenciaProducto);
 
                         //de lo contrario se genera un nuevo registro de existencia y se resta la existencia actual de lo tranferido.
                         
@@ -132,7 +132,7 @@ public class BeanTransferenciaMerca implements Serializable {
 
                         existenciaProducto.setCantidadPaquetes(existenciaProducto.getCantidadPaquetes().subtract(data.getCantidadMovida()));
                         existenciaProducto.setKilosTotalesProducto(existenciaProducto.getKilosTotalesProducto().subtract(data.getKilosMovios()));
-                        ifaceNegocioExistencia.updateExistenciaProducto(existenciaProducto);
+                        ifaceNegocioExistencia.update(existenciaProducto);
                         data.setIdUsuarioFK(usuarioDominio.getIdUsuario());
                         ifaceNegocioTransferenciaMercancia.insertTransferenciaMercancia(data);
 

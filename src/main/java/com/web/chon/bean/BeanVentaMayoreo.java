@@ -314,7 +314,8 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                             existencia_actualizada.setCantidadPaquetes(existencia.getCantidadPaquetes().subtract(producto.getCantidadEmpaque(), MathContext.UNLIMITED));
                             existencia_actualizada.setKilosTotalesProducto(existencia.getKilosTotalesProducto().subtract(producto.getKilosVendidos(), MathContext.UNLIMITED));
                             existencia_actualizada.setIdBodegaFK(existencia.getIdBodegaFK());
-                            if (ifaceNegocioExistencia.updateExistenciaProducto(existencia_actualizada) != 0) {
+                            if (ifaceNegocioExistencia.updateCantidadKilo(existencia_actualizada) != 0) 
+                            {
 
                                 if (!data.getIdTipoVenta().equals(new BigDecimal("1"))) {
                                     if (insertaCredito(ventaGeneral)) {
@@ -560,24 +561,6 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
     }
 
-//    private void setParameterTicket(int idVenta) {
-//
-//        NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
-//        DecimalFormat df = new DecimalFormat("###.##");
-//        Date date = new Date();
-//        ArrayList<String> productos = new ArrayList<String>();
-//        NumeroALetra numeroLetra = new NumeroALetra();
-//        for (VentaProductoMayoreo venta : lstVenta) {
-//            String cantidad = venta.getCantidadEmpaque() + " " + venta.getNombreEmpaque();
-//            productos.add(venta.getNombreProducto().toUpperCase());
-//            productos.add("       " + cantidad + "               " + nf.format(venta.getPrecioProducto()) + "    " + nf.format(venta.getTotalVenta()));
-//        }
-//
-//        String totalVentaStr = numeroLetra.Convertir(df.format(totalVentaGeneral), true);
-//
-//        putValues(TiempoUtil.getFechaDDMMYYYYHHMM(date), productos, nf.format(totalVentaGeneral), totalVentaStr, idVenta);
-//
-//    }
     private void setParameterTicket(int idVenta, int folioVenta) {
 
         NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());

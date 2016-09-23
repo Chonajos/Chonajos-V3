@@ -11,6 +11,7 @@ import com.web.chon.dominio.Cliente;
 import com.web.chon.dominio.CobroCheques;
 import com.web.chon.dominio.Documento;
 import com.web.chon.dominio.OperacionesCaja;
+import com.web.chon.dominio.OperacionesCuentas;
 import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.TipoAbono;
 import com.web.chon.dominio.UsuarioDominio;
@@ -23,6 +24,7 @@ import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceCobroCheques;
 import com.web.chon.service.IfaceDocumentos;
 import com.web.chon.service.IfaceOperacionesCaja;
+import com.web.chon.service.IfaceOperacionesCuentas;
 import com.web.chon.service.IfaceTipoAbono;
 import com.web.chon.util.Constantes;
 import com.web.chon.util.JasperReportUtil;
@@ -87,6 +89,8 @@ public class BeanDocumentosCobrar implements Serializable {
     IfaceCaja ifaceCaja;
     @Autowired
     private IfaceOperacionesCaja ifaceOperacionesCaja;
+    @Autowired
+    private IfaceOperacionesCuentas ifaceOperacionesCuentas;
 
     private ArrayList<Sucursal> listaSucursales;
     private ArrayList<Documento> listaDocumentos;
@@ -144,6 +148,12 @@ public class BeanDocumentosCobrar implements Serializable {
     private String viewCheque;
     private BigDecimal filtroFormaPago;
 
+    //--Variables para Transferencias Bancarios---//
+    private static final BigDecimal entradaCuenta = new BigDecimal(1);
+    private static final BigDecimal idStatusCuenta = new BigDecimal(1);
+    private static final BigDecimal idConceptoCuenta = new BigDecimal(15);
+    private OperacionesCuentas opcuenta;
+    
     @PostConstruct
     public void init() {
         fechaInicio = new Date();
@@ -175,8 +185,13 @@ public class BeanDocumentosCobrar implements Serializable {
         opcaja = new OperacionesCaja();
         opcaja.setIdCajaFk(caja.getIdCajaPk());
         opcaja.setIdUserFk(usuario.getIdUsuario());
-
         opcaja.setIdStatusFk(statusOperacion);
+        
+        opcuenta = new OperacionesCuentas();
+        opcuenta.setIdUserFk(usuario.getIdUsuario());
+        opcuenta.setIdStatusFk(idStatusCuenta);
+        opcuenta.setEntradaSalida(entradaCuenta);
+        opcuenta.setIdConceptoFk(idConceptoCuenta);
 
     }
 
