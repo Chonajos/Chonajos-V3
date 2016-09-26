@@ -130,6 +130,11 @@ ul .ui-state-highlight {
 .ui-state{
     background-color:#00acd6  !important;  
 }
+.primaryButton{
+    margin-right:4px !important;
+    width: 102px !important;
+}
+
 /*Color azul a los botones*/
 /*.ui-button-text{
     background:#0081c2;
@@ -190,6 +195,10 @@ select{
     padding: 2px !important;
     padding-right: 2px !important;
     
+}
+
+.zeroPadding{
+    padding: 0px !important;
 }
 
 /*cortar label */
