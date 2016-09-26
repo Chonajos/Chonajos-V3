@@ -11,18 +11,18 @@
 
 
         <h:form id="formContent">
-            
+
             <div>
                 <h3>#{beanBodega.title}</h3>
             </div>
             <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:panel rendered="#{beanBodega.state == 'INIT'}"  style="border: 0px;" >
                 <div class="form-group" align="right">
-                    <p:commandButton value="Nuevo" update=":formContent" ajax="true" action="#{beanBodega.actionNew()}" icon="ui-icon-person" />
-                    <p:commandButton value="Eliminar" update=":formContent" ajax="true" action="#{beanBodega.delete}" icon="ui-icon-trash" />
+                    <p:commandButton value="Nuevo" update=":formContent" ajax="true" action="#{beanBodega.viewNew}" icon="ui-icon-person" class="primaryButton" />
+                    <p:commandButton value="Eliminar" update=":formContent" ajax="true" action="#{beanBodega.delete}" icon="ui-icon-trash" class="primaryButton"/>
                 </div>
                 <div class="col-lg-6 col-md-8 col-sm-12 col-xs-12 col-lg-offset-3 col-md-offset-2">
-                    <p:dataTable id="tableData" var="model" value="#{beanBodega.model}" rowKey="#{model.idBodegaPK}" rows="10" scrollable="true" paginator="true"
+                    <p:dataTable id="tableData" var="model" value="#{beanBodega.model}" rowKey="#{model.idBodegaPK}" rows="12" scrollable="true" paginator="true"
                                  lazy="true" selection="#{beanBodega.selectedBodega}" 
                                  emptyMessage="No se encontraron Registros." editable="true">
 
@@ -45,28 +45,30 @@
                 </div>
             </p:panel>
             <p:panel rendered="#{beanBodega.state=='SEARCH' || beanBodega.state=='NEW'}">
-                <div class="container">
+                <div class="container-fluid">
                     <div class="form-group" align="right">
-                        <p:commandButton value="Guardar" update=":formContent" ajax="true" action="#{beanBodega.save}" rendered="#{beanBodega.state=='NEW'}"/>
-                        <p:commandButton value="Actualizar" update=":formContent" ajax="true" action="#{beanBodega.update}" rendered="#{beanBodega.state=='SEARCH'}"/>
-                        <p:commandButton value="Atras" immediate="true" resetValues="true" update=":formContent" ajax="true" action="#{beanBodega.backView}" />
+                        <p:commandButton value="Guardar" update=":formContent" ajax="true" action="#{beanBodega.save}" rendered="#{beanBodega.state=='NEW'}" class="primaryButton"/>
+                        <p:commandButton value="Actualizar" update=":formContent" ajax="true" action="#{beanBodega.update}" rendered="#{beanBodega.state=='SEARCH'}" class="primaryButton"/>
+                        <p:commandButton value="Atras" immediate="true" resetValues="true" update=":formContent" ajax="true" action="#{beanBodega.backView}" class="primaryButton"/>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-12"  for="comboSucursal" value ="Sucursal:" rendered="#{beanBodega.usuario.perId == 1}"/> 
-                        <h:selectOneMenu  id="comboSucursal" class="col-lg-4 col-md-5 col-sm-8 col-xs-12 " value="#{beanBodega.data.idSucursalFk}" rendered="#{beanBodega.usuario.perId == 1}" required="true" requiredMessage="Ingresa un valor para el campo Sucursal.">
-                            <f:selectItem itemLabel="Selecciona" itemValue="#{null}" />
-                            <f:selectItems value="#{beanBodega.lstSucursal}" var="sucursal" itemLabel="#{sucursal.nombreSucursal}" itemValue="#{sucursal.idSucursalPk}"/>
-                            <p:ajax event="change" update="@this" />
-                        </h:selectOneMenu>
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12 zeroPadding">
+                            <p:selectOneMenu  id="comboSucursal"  value="#{beanBodega.data.idSucursalFk}" rendered="#{beanBodega.usuario.perId == 1}" required="true" requiredMessage="Ingresa un valor para el campo Sucursal." style="width:100% !important;">
+                                <f:selectItem itemLabel="Selecciona" itemValue="#{null}" />
+                                <f:selectItems value="#{beanBodega.lstSucursal}" var="sucursal" itemLabel="#{sucursal.nombreSucursal}" itemValue="#{sucursal.idSucursalPk}"/>
+                                <p:ajax event="change" update="@this" />
+                            </p:selectOneMenu>
+                        </div>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-12"  for="txtNombre" value ="Nombre:" /> 
-                        <p:inputText id="txtNombre" maxlength="30" class=" col-lg-4 col-md-5 col-sm-8 col-xs-12" value="#{beanBodega.data.nombreBodega}" required="true"
+                        <p:inputText id="txtNombre" maxlength="30" class=" col-lg-3 col-md-4 col-sm-5 col-xs-12" value="#{beanBodega.data.nombreBodega}" required="true"
                                      requiredMessage="Ingresa un valor para el campo Nombre." title="Este campo se llena con el nombre del empaque y la marca del empaque."/>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-12"  for="txtDescripcion" value ="Descripción:" /> 
-                        <p:inputText id="txtDescripcion" maxlength="45" class=" col-lg-4 col-md-5 col-sm-8 col-xs-12" value="#{beanBodega.data.descripcionBodega}"
+                        <p:inputText id="txtDescripcion" maxlength="45" class=" col-lg-3 col-md-4 col-sm-5 col-xs-12" value="#{beanBodega.data.descripcionBodega}"
                                      requiredMessage="Ingresa un valor para el campo Nombre." title="Este campo se llena con el nombre del empaque y la marca del empaque."/>
                     </div>
                 </div>

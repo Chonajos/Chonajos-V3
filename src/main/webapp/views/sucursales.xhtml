@@ -19,10 +19,10 @@
             <p:panel rendered="#{beanCatSucursal.viewEstate=='init'}" style="border: 0px;" >
 
                 <div class="form-group" align="right">
-                    <p:commandButton value="Nueva Sucursal" update=":formSucursal" resetValues="true" ajax="true" action="#{beanCatSucursal.viewNew}" icon="ui-icon-person" />
+                    <p:commandButton value="Nuevo" class="primaryButton" update=":formSucursal" resetValues="true" ajax="true" action="#{beanCatSucursal.viewNew}" icon="ui-icon-person" />
                 </div>
                 <div class="col-lg-8 col-md-10 col-sm-12 col-xs-12 col-lg-offset-2 col-md-offset-1">
-                    <p:dataTable id="tableData"  var="model" value="#{beanCatSucursal.model}" rowKey="#{model.idSucursalPk}" rows="10" paginator="true"
+                    <p:dataTable id="tableData"  var="model" value="#{beanCatSucursal.model}" rowKey="#{model.idSucursalPk}" rows="12" paginator="true"
                                  emptyMessage="No se encontraron Registros." lazy="true"
                                  resizableColumns="false" scrollable="true" editable="true">
                         <p:column headerText="Id" class="alignCenter" style="width:70px;">
@@ -55,89 +55,87 @@
 
             <!--##########################  Panel para nueva sucursal ################-->
             <p:panel rendered="#{beanCatSucursal.viewEstate=='searchById' || beanCatSucursal.viewEstate=='new' || beanCatSucursal.viewEstate=='viewDetails'}">
-                <div class="container">
+                <div class="container-fluid">
                     <div class="form-group" align="right">
-                        <p:commandButton value="Guardar" update=":formSucursal"  ajax="true" action="#{beanCatSucursal.save()}" rendered="#{beanCatSucursal.viewEstate=='new'}"/>
-                        <p:commandButton value="Actualizar" update=":formSucursal" ajax="true" action="#{beanCatSucursal.update()}" rendered="#{beanCatSucursal.viewEstate=='searchById'}"/>
-                        <p:commandButton value="Atras" immediate="true" resetValues="true" update=":formSucursal" ajax="true" action="#{beanCatSucursal.backView}" />
+                        <p:commandButton value="Guardar" class="primaryButton" update=":formSucursal"  ajax="true" action="#{beanCatSucursal.save()}" rendered="#{beanCatSucursal.viewEstate=='new'}"/>
+                        <p:commandButton value="Actualizar" class="primaryButton" update=":formSucursal" ajax="true" action="#{beanCatSucursal.update()}" rendered="#{beanCatSucursal.viewEstate=='searchById'}"/>
+                        <p:commandButton value="Atras" class="primaryButton" immediate="true" resetValues="true" update=":formSucursal" ajax="true" action="#{beanCatSucursal.backView}" />
                     </div>
-
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                        <h3 class="first">Datos de la Sucursal</h3>
-                    </div>
-
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                        <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtNombre" value ="Nombre:" /> 
-                        <p:inputText id="txtNombre" maxlength="60" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatSucursal.data.nombreSucursal}" required="true" disabled="#{beanCatSucursal.permissionToWrite}"
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 form-group">
+                        <p:outputLabel class="col-lg-6 col-md-6 col-sm-6 col-xs-12"  for="txtNombre" value ="Nombre:" /> 
+                        <p:inputText id="txtNombre" maxlength="60" class="col-lg-6 col-md-6 col-sm-6 col-xs-12" value="#{beanCatSucursal.data.nombreSucursal}" required="true" disabled="#{beanCatSucursal.permissionToWrite}"
                                      requiredMessage="Ingresa un valor para el campo Nombre de la Sucursal.">
-                            <pe:keyFilter regEx="/[a-z_ 0-9 ]/i"/>
+                            <pe:keyFilter regEx="/[a-z_ 0-9 ñ áéíóú]/i"/>
                         </p:inputText>
                     </div>
-
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                        <h:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6" value="Estatus de la Sucursal "  />
-                        <p:inputSwitch value="#{beanCatSucursal.data.statusSucursal}" disabled="#{beanCatSucursal.permissionToWriteStatus}"/>
-                    </div>
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                        <h3 class="first">Dirección</h3>
-                    </div>
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                        <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"   for="txtTelOfilada" value ="Teléfono" /> 
-                        <p:inputText id="txtTelOfilada" maxlength="10" class=" col-lg-2 col-md-4 col-sm-8 col-xs-6" value="#{beanCatSucursal.data.telefonoSucursal}" disabled="#{beanCatSucursal.permissionToWrite}">
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 form-group">
+                        <p:outputLabel class="col-lg-6 col-md-6 col-sm-6 col-xs-12"   for="txtTelOfilada" value ="Teléfono:" /> 
+                        <p:inputText id="txtTelOfilada" maxlength="10" class="col-lg-6 col-md-6 col-sm-6 col-xs-12" value="#{beanCatSucursal.data.telefonoSucursal}" disabled="#{beanCatSucursal.permissionToWrite}">
                             <pe:keyFilter regEx="/[0-9_]/i"/>
                         </p:inputText>
                     </div>
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                        <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtCalle" value ="Calle:" /> 
-                        <p:inputText id="txtCalle" maxlength="60" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanCatSucursal.data.calleSucursal}" disabled="#{beanCatSucursal.permissionToWrite}">
-                            <pe:keyFilter regEx="/[a-z-0-9_ ]/i"/>
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 form-group">
+                        <p:outputLabel class="col-lg-6 col-md-6 col-sm-6 col-xs-12"  for="txtCalle" value ="Calle:" /> 
+                        <p:inputText id="txtCalle" maxlength="60" class="col-lg-6 col-md-6 col-sm-6 col-xs-12" value="#{beanCatSucursal.data.calleSucursal}" disabled="#{beanCatSucursal.permissionToWrite}">
+                            <pe:keyFilter regEx="/[a-z-0-9_ ñáéíóú]/i"/>
                         </p:inputText>
                     </div>
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                        <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"   for="txtNumInt" value ="Número Interior" /> 
-                        <p:inputText id="txtNumInt" maxlength="5" class=" col-lg-1 col-md-4 col-sm-8 col-xs-6" value="#{beanCatSucursal.data.numInt}" disabled="#{beanCatSucursal.permissionToWrite}" >
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 form-group">
+                        <p:outputLabel class="col-lg-6 col-md-6 col-sm-6 col-xs-12"   for="txtNumInt" value ="Número Interior:" /> 
+                        <p:inputText id="txtNumInt" maxlength="5" class="col-lg-6 col-md-6 col-sm-6 col-xs-12" value="#{beanCatSucursal.data.numInt}" disabled="#{beanCatSucursal.permissionToWrite}" >
                             <pe:keyFilter regEx="/[0-9_]/i"/>
                         </p:inputText>
                     </div>
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                        <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtNumExt" value ="Número Exterior" /> 
-                        <p:inputText id="txtNumExt" maxlength="5" class=" col-lg-1 col-md-4 col-sm-8 col-xs-6" value="#{beanCatSucursal.data.numExt}" disabled="#{beanCatSucursal.permissionToWrite}">
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 form-group">
+                        <p:outputLabel class="col-lg-6 col-md-6 col-sm-6 col-xs-12"  for="txtNumExt" value ="Número Exterior:" /> 
+                        <p:inputText id="txtNumExt" maxlength="5" class="col-lg-6 col-md-6 col-sm-6 col-xs-12" value="#{beanCatSucursal.data.numExt}" disabled="#{beanCatSucursal.permissionToWrite}">
                             <pe:keyFilter regEx="/[0-9_]/i"/>
                         </p:inputText>
                     </div>
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                        <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtCP" value ="Código Postal" /> 
-                        <p:inputText id="txtCP" maxlength="5" class=" col-lg-1 col-md-4 col-sm-8 col-xs-6" value="#{beanCatSucursal.data.codigoPostal}" disabled="#{beanCatSucursal.permissionToWrite}">
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 form-group">
+                        <p:outputLabel class="col-lg-6 col-md-6 col-sm-6 col-xs-12"  for="txtCP" value ="Código Postal:" /> 
+                        <p:inputText id="txtCP" maxlength="5" class="col-lg-6 col-md-6 col-sm-6 col-xs-12" value="#{beanCatSucursal.data.codigoPostal}" disabled="#{beanCatSucursal.permissionToWrite}">
                             <p:ajax event="blur" update=":formSucursal:txtEstado1 :formSucursal:txtMunicipio1 :formSucursal:txtColonia :formSucursal:txtCP" listener="#{beanCatSucursal.buscaColonias()}"/>
                             <pe:keyFilter regEx="/[0-9_]/i"/>
                         </p:inputText>
                     </div>
-                    <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12">
-                        <p:outputLabel class="col-lg-3 col-md-4 col-sm-4 col-xs-12"  for="txtEstado1" value ="Estado:" /> 
-                        <h:selectOneMenu  id="txtEstado1" class=" col-lg-5 col-md-8 col-sm-8 col-xs-12" value="#{beanCatSucursal.data.idEntidadFk}" disabled="#{beanCatSucursal.permissionToWrite}">
-                            <f:selectItem itemLabel="Selecciona un Estado" itemValue="" />
-                            <f:selectItems value="#{beanCatSucursal.lista_entidades}" var="estadito" itemLabel="#{estadito.nombreEntidad}" itemValue="#{estadito.idEntidadPk}"/>
-                            <p:ajax event="change" update=":formSucursal:txtMunicipio1 " listener="#{beanCatSucursal.buscaMunicipios()}" />
-                        </h:selectOneMenu>
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 form-group">
+                        <p:outputLabel class="col-lg-6 col-md-6 col-sm-6 col-xs-12"  for="txtEstado1" value ="Estado:" /> 
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 zeroPadding">
+                            <p:selectOneMenu  id="txtEstado1" value="#{beanCatSucursal.data.idEntidadFk}" disabled="#{beanCatSucursal.permissionToWrite}" style="width:100% !important;">
+                                <f:selectItem itemLabel="Selecciona un Estado" itemValue="" />
+                                <f:selectItems value="#{beanCatSucursal.lista_entidades}" var="estadito" itemLabel="#{estadito.nombreEntidad}" itemValue="#{estadito.idEntidadPk}"/>
+                                <p:ajax event="change" update=":formSucursal:txtMunicipio1 " listener="#{beanCatSucursal.buscaMunicipios()}" />
+                            </p:selectOneMenu>
+                        </div>
                     </div>
-                    <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12">
-                        <p:outputLabel class="col-lg-3 col-md-4 col-sm-4 col-xs-12"  for="txtMunicipio1" value ="Municipio:" /> 
-                        <h:selectOneMenu  id="txtMunicipio1" class=" col-lg-5 col-md-8 col-sm-8 col-xs-12" value="#{beanCatSucursal.data.idMunicipioFK}" disabled="#{beanCatSucursal.permissionToWrite}">
-                            <f:selectItem itemLabel="Selecciona un Municipio" itemValue="" />
-                            <f:selectItems  value="#{beanCatSucursal.lista_municipios}" var="municipito" itemLabel="#{municipito.nombreMunicipio}" itemValue="#{municipito.idMunicipioPk}"/>
-                            <p:ajax event="change" update=":formSucursal:txtColonia" listener="#{beanCatSucursal.buscaColoniasMun()}" />
-                        </h:selectOneMenu>
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 form-group">
+                        <p:outputLabel class="col-lg-6 col-md-6 col-sm-6 col-xs-12"  for="txtMunicipio1" value ="Municipio:" /> 
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 zeroPadding">
+                            <p:selectOneMenu  id="txtMunicipio1" value="#{beanCatSucursal.data.idMunicipioFK}" disabled="#{beanCatSucursal.permissionToWrite}" style="width:100% !important;">
+                                <f:selectItem itemLabel="Selecciona un Municipio" itemValue="" />
+                                <f:selectItems  value="#{beanCatSucursal.lista_municipios}" var="municipito" itemLabel="#{municipito.nombreMunicipio}" itemValue="#{municipito.idMunicipioPk}"/>
+                                <p:ajax event="change" update=":formSucursal:txtColonia" listener="#{beanCatSucursal.buscaColoniasMun()}" />
+                            </p:selectOneMenu>
+                        </div>
                     </div>
 
-                    <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12">
-                        <p:outputLabel class="col-lg-3 col-md-4 col-sm-4 col-xs-12"  for="txtColonia" value ="Colonia:" /> 
-                        <h:selectOneMenu  id="txtColonia" class=" col-lg-5 col-md-8 col-sm-8 col-xs-12" value="#{beanCatSucursal.data.cpSucursal}" disabled="#{beanCatSucursal.permissionToWrite}">
-                            <f:selectItem itemLabel="Selecciona un Colonia" itemValue="" />
-                            <f:selectItems value="#{beanCatSucursal.lista_codigos_postales}" var="colonita" itemLabel="#{colonita.nombreColonia}" itemValue="#{colonita.id_cp}"/>
-                            <p:ajax event="change" update=":formSucursal:txtCP" listener="#{beanCatSucursal.ActualizaCodigoPostal()}"/> 
-                        </h:selectOneMenu>
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 form-group">
+                        <p:outputLabel class="col-lg-6 col-md-6 col-sm-6 col-xs-12"  for="txtColonia" value ="Colonia:" /> 
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 zeroPadding">
+                            <p:selectOneMenu  id="txtColonia"  value="#{beanCatSucursal.data.cpSucursal}" disabled="#{beanCatSucursal.permissionToWrite}" style="width:100% !important;">
+                                <f:selectItem itemLabel="Selecciona un Colonia" itemValue="" />
+                                <f:selectItems value="#{beanCatSucursal.lista_codigos_postales}" var="colonita" itemLabel="#{colonita.nombreColonia}" itemValue="#{colonita.id_cp}"/>
+                                <p:ajax event="change" update=":formSucursal:txtCP" listener="#{beanCatSucursal.ActualizaCodigoPostal()}"/> 
+                            </p:selectOneMenu>
+                        </div>
                     </div>  
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 form-group">
+                        <h:outputLabel class="col-lg-6 col-md-6 col-sm-6 col-xs-12" value="Estatus de la Sucursal:"  />
+                        <p:inputSwitch value="#{beanCatSucursal.data.statusSucursal}" disabled="#{beanCatSucursal.permissionToWriteStatus}"/>
+                    </div>
                 </div>
+
             </p:panel>      
 
             <!--Codigo de Prueba Vista Detalle -->
@@ -153,7 +151,6 @@
                     </div>
 
                     <!--Dirección-->
-                    <h5 class="first">Dirección</h5>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <h:outputLabel class="col-lg-2 col-md-2 col-sm-12 col-xs-12" for="telefono" value="Teléfono:" />
                         <h:outputText class="col-lg-2 col-md-2 col-sm-12 col-xs-12" id="telefono" value="#{beanCatSucursal.data.telefonoSucursal}"  />
@@ -168,7 +165,7 @@
                         <h:outputLabel class="col-lg-2 col-md-2 col-sm-12 col-xs-12" for="codigoPostal" value="Código Postal:" />
                         <h:outputText class="col-lg-2 col-md-2 col-sm-12 col-xs-12" id="codigoPostal" value="#{beanCatSucursal.data.cpSucursal}"/>
                     </div>
-                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <h:outputLabel class="col-lg-2 col-md-2 col-sm-12 col-xs-12" for="estadoL" value="Estado:" />
                         <h:outputText class="col-lg-2 col-md-2 col-sm-12 col-xs-12" id="estadoL" value="#{beanCatSucursal.data.nombreEntidad}"  />
                         <h:outputLabel class="col-lg-2 col-md-2 col-sm-12 col-xs-12" for="entidad" value="Municipio:" />
@@ -176,7 +173,7 @@
                         <h:outputLabel class="col-lg-2 col-md-2 col-sm-12 col-xs-12" for="colonia" value="Colonia:" />
                         <h:outputText class="col-lg-2 col-md-2 col-sm-12 col-xs-12" id="colonia" value="#{beanCatSucursal.data.nombreColonia}"/>
                     </div>
-                    
+
                 </p:outputPanel>
             </p:dialog>
         </h:form>
