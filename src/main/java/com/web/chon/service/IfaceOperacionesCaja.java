@@ -18,7 +18,7 @@ import java.util.List;
 public interface IfaceOperacionesCaja {
     public int insertaOperacion(OperacionesCaja es);
     public int updateOperacion(OperacionesCaja es);
-    public int updateStatus(BigDecimal idOperacionPk,BigDecimal idStatusFk);
+    public int updateStatusConcepto(BigDecimal idOperacionPk,BigDecimal idStatusFk,BigDecimal idConceptoFk);
     public int updateCorte(BigDecimal idOperacionPk,BigDecimal idCorteFk);
     public OperacionesCaja getOperacionByIdPk(BigDecimal idPk);
     public ArrayList<OperacionesCaja> getOperacionesBy(BigDecimal idCajaFk,BigDecimal idOperacionFk,BigDecimal idConceptoFk,String fechaInicio, String fechaFin,BigDecimal idStatusFk,BigDecimal idUserFk);

@@ -418,6 +418,15 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
             ep.setIdEntradaMercanciaProductoFK(dataProductoNuevo.getIdEmpPK());
             if (ifaceNegocioExistencia.insertExistenciaProducto(ep) == 1) {
                 JsfUtil.addSuccessMessageClean("El producto se ha agregado correctamente");
+                EntradaMercancia em = ifaceEntradaMercancia.getEntradaByIdEmPFk(dataProductoAutoAjuste.getIdEmpPK());
+                BigDecimal to = new BigDecimal(0);
+                for(EntradaMercanciaProducto p :em.getListaProductos())
+                {
+                    to = to.add(p.getKilosTotalesProducto(), MathContext.UNLIMITED);
+                }
+               
+                em.setKilosTotales(to);
+                ifaceEntradaMercancia.updateEntradaMercancia(em);
                 buscar();
 
             } else {

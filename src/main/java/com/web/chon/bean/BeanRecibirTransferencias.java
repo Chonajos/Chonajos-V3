@@ -62,8 +62,11 @@ public class BeanRecibirTransferencias implements Serializable {
 
     private static final BigDecimal entrada = new BigDecimal(1);
     private static final BigDecimal salida = new BigDecimal(2);
-    private static final BigDecimal statusOperacion = new BigDecimal(1);
-    private static final BigDecimal idConcepto = new BigDecimal(5);
+    private static final BigDecimal aprobada = new BigDecimal(1);
+    private static final BigDecimal rechazada = new BigDecimal(2);
+    private static final BigDecimal idConceptoTransPendiente = new BigDecimal(15);
+    private static final BigDecimal idConceptoTransRechazada = new BigDecimal(17);
+    private static final BigDecimal idConceptoTransAprobada = new BigDecimal(16);
 
     @PostConstruct
     public void init() {
@@ -75,7 +78,7 @@ public class BeanRecibirTransferencias implements Serializable {
         opcaja = new OperacionesCaja();
         opcaja.setIdCajaFk(caja.getIdCajaPk());
         opcaja.setIdUserFk(usuario.getIdUsuario());
-        opcaja.setIdStatusFk(statusOperacion);
+        
         opcaja.setEntradaSalida(entrada);
         data = new OperacionesCaja();
         lstTransferenciasEntrantes = new ArrayList<OperacionesCaja>();
@@ -83,14 +86,15 @@ public class BeanRecibirTransferencias implements Serializable {
     }
 
     public void aceptar() {
-
         if (caja.getIdCajaPk() != null) {
             opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
             opcaja.setMonto(data.getMonto());
-            opcaja.setIdConceptoFk(idConcepto);
-            if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
-
-                ifaceOperacionesCaja.updateStatus(data.getIdOperacionesCajaPk(), statusOperacion);
+            opcaja.setIdConceptoFk(idConceptoTransAprobada);
+            opcaja.setIdStatusFk(aprobada);
+            
+            if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) 
+            {
+                ifaceOperacionesCaja.updateStatusConcepto(data.getIdOperacionesCajaPk(), aprobada,idConceptoTransAprobada);
                 lstTransferenciasEntrantes = ifaceOperacionesCaja.getTransferenciasEntrantes(opcaja.getIdCajaFk());
                 JsfUtil.addSuccessMessageClean("Transferencia Recibida Correctamente");
             } else {
@@ -98,6 +102,26 @@ public class BeanRecibirTransferencias implements Serializable {
             }
         } else {
             JsfUtil.addErrorMessageClean("Su usuario no cuenta con caja registrada para realizar el pago de servicios");
+        }
+    }
+    public void rechazarTransferencia()
+    {
+        if (caja.getIdCajaPk() != null) {
+            opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
+            opcaja.setMonto(data.getMonto());
+            opcaja.setIdConceptoFk(idConceptoTransRechazada);
+            opcaja.setIdStatusFk(rechazada);
+            if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) 
+            {
+                System.out.println("======="+data.getIdOperacionesCajaPk());
+                ifaceOperacionesCaja.updateStatusConcepto(data.getIdOperacionesCajaPk(), rechazada,idConceptoTransRechazada);
+                lstTransferenciasEntrantes = ifaceOperacionesCaja.getTransferenciasEntrantes(opcaja.getIdCajaFk());
+                JsfUtil.addSuccessMessageClean("Transferencia Rechazada Correctamente");
+            } else {
+                JsfUtil.addErrorMessageClean("Ocurrió un error al rechazar la transferencia");
+            }
+        } else {
+            JsfUtil.addErrorMessageClean("Su usuario no cuenta con caja registrada para realizar la operación");
         }
     }
 

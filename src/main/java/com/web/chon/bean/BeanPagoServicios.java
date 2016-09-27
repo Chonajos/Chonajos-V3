@@ -7,15 +7,19 @@ package com.web.chon.bean;
 
 import com.web.chon.dominio.Caja;
 import com.web.chon.dominio.ConceptosES;
+import com.web.chon.dominio.CorteCaja;
 import com.web.chon.dominio.OperacionesCaja;
+import com.web.chon.dominio.TipoOperacion;
 import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceCaja;
 import com.web.chon.service.IfaceConceptos;
+import com.web.chon.service.IfaceCorteCaja;
 import com.web.chon.service.IfaceOperacionesCaja;
 import com.web.chon.util.JsfUtil;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,9 +60,22 @@ public class BeanPagoServicios implements Serializable {
     private String referencia;
     private String comentarios;
 
+    //--Variables para Verificar Maximo en Caja --//
+    private ArrayList<TipoOperacion> lstOperacionesEntrada;
+    private ArrayList<TipoOperacion> lstOperacionesSalida;
+    private CorteCaja corteAnterior;
+    @Autowired
+    private IfaceCorteCaja ifaceCorteCaja;
+    private BigDecimal saldoAnterior;
+    private BigDecimal nuevoSaldo;
+    private BigDecimal totalEntradas;
+    private BigDecimal totalSalidas;
+    private static final BigDecimal entrada = new BigDecimal(1);
+    private static final BigDecimal salida = new BigDecimal(2);
+    //--Variables para Verificar Maximo en Caja --//
+
     @PostConstruct
-    public void init() 
-    {
+    public void init() {
         usuario = context.getUsuarioAutenticado();
         setTitle("Pago de Servicios");
         setViewEstate("init");
@@ -70,27 +87,80 @@ public class BeanPagoServicios implements Serializable {
         opcaja.setIdUserFk(usuario.getIdUsuario());
         opcaja.setEntradaSalida(entradaSalida);
         opcaja.setIdStatusFk(statusOperacion);
+        
+        //--Maximo Pago--//
+        corteAnterior = new CorteCaja();
+        corteAnterior = ifaceCorteCaja.getLastCorteByCaja(caja.getIdCajaPk());
+        totalEntradas = new BigDecimal(0);
+        totalSalidas = new BigDecimal(0);
+        saldoAnterior = new BigDecimal(0);
+        nuevoSaldo = new BigDecimal(0);
+
+        
     }
 
-    public void pagar() {
+    public void reset() {
+        totalServicio = null;
+        referencia = null;
+        comentarios = null;
+        idConceptoBean = null;
+    }
+
+    //----Funciones para Verificar Maximo de Dinero en Caja --//
+    public void verificarDinero() {
         
-        opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
-        opcaja.setMonto(totalServicio);
-        opcaja.setComentarios(comentarios);
-        opcaja.setIdConceptoFk(idConceptoBean);
+        lstOperacionesEntrada = new ArrayList<TipoOperacion>();
+        lstOperacionesSalida = new ArrayList<TipoOperacion>();
+        lstOperacionesEntrada = ifaceOperacionesCaja.getOperacionesCorteBy(caja.getIdCajaPk(), caja.getIdUsuarioFK(), entrada);
+        lstOperacionesSalida = ifaceOperacionesCaja.getOperacionesCorteBy(caja.getIdCajaPk(), caja.getIdUsuarioFK(), salida);
+        getsumaEntradas();
+        getsumaSalidas();
 
-        if(caja.getIdCajaPk()!=null)
+        if (corteAnterior.getSaldoNuevo() == null) 
         {
-        if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
+            corteAnterior.setSaldoNuevo(new BigDecimal(0));
+        }
+        saldoAnterior = corteAnterior.getSaldoNuevo();
+        nuevoSaldo = totalEntradas.subtract(totalSalidas, MathContext.UNLIMITED);
+        nuevoSaldo = nuevoSaldo.add(saldoAnterior, MathContext.UNLIMITED);
+    }
 
-            JsfUtil.addSuccessMessageClean("Pago de Servicio Registrado Correctamente");
+    public void getsumaEntradas() {
+        for (TipoOperacion t : lstOperacionesEntrada) {
+            totalEntradas = totalEntradas.add(t.getMontoTotal(), MathContext.UNLIMITED);
+        }
+    }
+
+    public void getsumaSalidas() {
+        for (TipoOperacion t : lstOperacionesSalida) {
+            totalSalidas = totalSalidas.add(t.getMontoTotal(), MathContext.UNLIMITED);
+        }
+    }
+
+    //----Funciones para Verificar Maximo de Dinero en Caja --//
+    public void pagar() {
+
+        verificarDinero();
+
+        if (nuevoSaldo.compareTo(totalServicio) >= 0) {
+            opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
+            opcaja.setMonto(totalServicio);
+            opcaja.setComentarios(comentarios);
+            opcaja.setIdConceptoFk(idConceptoBean);
+
+            if (caja.getIdCajaPk() != null) {
+                if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
+
+                    JsfUtil.addSuccessMessageClean("Pago de Servicio Registrado Correctamente");
+                    reset();
+                } else {
+                    JsfUtil.addErrorMessageClean("Ocurrió un error al registrar el pago de servicio");
+                }
+            } else {
+                JsfUtil.addErrorMessageClean("Su usuario no cuenta con caja registrada para realizar el pago de servicios");
+            }
         } else {
-            JsfUtil.addErrorMessageClean("Ocurrió un error al registrar el pago de servicio");
-        }
-        }
-        else
-        {
-             JsfUtil.addErrorMessageClean("Su usuario no cuenta con caja registrada para realizar el pago de servicios");
+            JsfUtil.addErrorMessageClean("No hay suficiente dinero en caja");
         }
     }
 
@@ -173,5 +243,5 @@ public class BeanPagoServicios implements Serializable {
     public void setComentarios(String comentarios) {
         this.comentarios = comentarios;
     }
-    
+
 }

@@ -20,7 +20,7 @@ public interface NegocioOperacionesCaja {
     
     public int insertaOperacion(OperacionesCaja es);
     public int updateOperacion(OperacionesCaja es);
-    public int updateStatusOperacion(BigDecimal idOperacionPk,BigDecimal idStatusFk);
+    public int updateStatusConceptoOperacion(BigDecimal idOperacionPk,BigDecimal idStatusFk,BigDecimal idConceptoFk);
     public int updateCorteCaja(BigDecimal idOperacionPk,BigDecimal idCorteCajaFk);
     public List<Object[]> getOperacionByIdOperacionPK(BigDecimal idOperacionPk);
     public List<Object[]> getOperacionesBy(BigDecimal idCorteCajaFk, BigDecimal idCajaFk,BigDecimal idCajaDestinoFk,BigDecimal idConceptoFk,String fechaInicio, String fechaFin,BigDecimal idStatusFk,BigDecimal idUserFk);

@@ -17,6 +17,12 @@
             
             <p:panel> 
                 <div class="container-fluid">
+                    <p:confirmDialog   global="true" showEffect="fade" hideEffect="fade">
+                        <div class="alignCenter">
+                            <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                            <p:commandButton  value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                        </div>
+                    </p:confirmDialog>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <p:dataTable id="tabla" var="model" 
                                      value="#{beanRecibirDeposito.lstDespositosEntrantes}" 
@@ -52,6 +58,13 @@
                                 <p:commandButton id="print" ajax="true" process="@this" action="#{beanRecibirDeposito.aceptar()}" 
                                                  icon="ui-icon-transfer-e-w" styleClass="ui-priority-primary" update=":formContent">
                                     <f:setPropertyActionListener value="#{model}" target="#{beanRecibirDeposito.data}"/>
+                                    <p:confirm header="Confirmación" message="¿Estás seguro que deseas recibir el depósito?" icon="ui-icon-alert"/>
+                                </p:commandButton>
+                            </p:column>
+                            <p:column headerText="Rechazar" width="60px;" class="alignCenter">
+                                <p:commandButton id="cancel" ajax="true" process="@this" action="#{beanRecibirDeposito.rechazarDeposito()}" icon="ui-icon-trash" styleClass="ui-priority-primary" update=":formContent">
+                                    <f:setPropertyActionListener value="#{model}" target="#{beanRecibirDeposito.data}"/>
+                                    <p:confirm header="Confirmación" message="¿Estás seguro de rechazar el depósito?" icon="ui-icon-alert"/>
                                 </p:commandButton>
                             </p:column>
                         </p:dataTable>

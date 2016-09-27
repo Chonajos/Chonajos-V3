@@ -7,6 +7,7 @@ package com.web.chon.bean;
 
 import com.web.chon.dominio.Caja;
 import com.web.chon.dominio.ConceptosES;
+import com.web.chon.dominio.CorteCaja;
 import com.web.chon.dominio.OperacionesCaja;
 import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.TipoOperacion;
@@ -15,12 +16,14 @@ import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceCaja;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceConceptos;
+import com.web.chon.service.IfaceCorteCaja;
 import com.web.chon.service.IfaceOperacionesCaja;
 import com.web.chon.service.IfaceTiposOperacion;
 import com.web.chon.util.JsfUtil;
 import com.web.chon.util.TiempoUtil;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.annotation.PostConstruct;
@@ -74,7 +77,19 @@ public class BeanTransferencias implements Serializable {
     private static final BigDecimal entrada = new BigDecimal(1);
     private static final BigDecimal salida = new BigDecimal(2);
     private static final BigDecimal statusOperacion = new BigDecimal(2);
-    private static final BigDecimal idConcepto = new BigDecimal(5);
+    private static final BigDecimal idConcepto = new BigDecimal(15);
+
+    //--Variables para Verificar Maximo en Caja --//
+    private ArrayList<TipoOperacion> lstOperacionesEntrada;
+    private ArrayList<TipoOperacion> lstOperacionesSalida;
+    private CorteCaja corteAnterior;
+    @Autowired
+    private IfaceCorteCaja ifaceCorteCaja;
+    private BigDecimal saldoAnterior;
+    private BigDecimal nuevoSaldo;
+    private BigDecimal totalEntradas;
+    private BigDecimal totalSalidas;
+    //--Variables para Verificar Maximo en Caja --//
 
     @PostConstruct
     public void init() {
@@ -89,28 +104,85 @@ public class BeanTransferencias implements Serializable {
         opcajaOrigen.setIdUserFk(usuario.getIdUsuario());
         opcajaOrigen.setEntradaSalida(salida);
         opcajaOrigen.setIdStatusFk(statusOperacion);
+
+        //--Maximo Pago--//
+        corteAnterior = new CorteCaja();
+        corteAnterior = ifaceCorteCaja.getLastCorteByCaja(caja.getIdCajaPk());
+        totalEntradas = new BigDecimal(0);
+        totalSalidas = new BigDecimal(0);
+        saldoAnterior = new BigDecimal(0);
+        nuevoSaldo = new BigDecimal(0);
+        //--Maximo Pago--//
+        listaCajas.remove(caja);
+        Caja cRemove = new Caja();
+        for(Caja c : listaCajas)
+        {
+            if(c.getIdCajaPk().equals(caja.getIdCajaPk()))
+            {
+                cRemove = c;
+            }
+            
+        }
         
+        listaCajas.remove(cRemove);
+
     }
 
-    public void transferir() {
-        opcajaOrigen.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
-        opcajaOrigen.setMonto(monto);
-        opcajaOrigen.setComentarios(comentarios);
-        opcajaOrigen.setIdConceptoFk(idConcepto);
-        opcajaOrigen.setIdCajaDestinoFk(idCajaDestinoBean);
+    //----Funciones para Verificar Maximo de Dinero en Caja --//
+    public void verificarDinero() {
 
-        if (caja.getIdCajaPk() != null) {
-            if (ifaceOperacionesCaja.insertaOperacion(opcajaOrigen) == 1) 
-            {
-                JsfUtil.addSuccessMessageClean("Transferencia Registrada Correctamente");
-                monto = null;
-                comentarios=null;
-                idCajaDestinoBean = null;
+        lstOperacionesEntrada = new ArrayList<TipoOperacion>();
+        lstOperacionesSalida = new ArrayList<TipoOperacion>();
+        lstOperacionesEntrada = ifaceOperacionesCaja.getOperacionesCorteBy(caja.getIdCajaPk(), caja.getIdUsuarioFK(), entrada);
+        lstOperacionesSalida = ifaceOperacionesCaja.getOperacionesCorteBy(caja.getIdCajaPk(), caja.getIdUsuarioFK(), salida);
+        getsumaEntradas();
+        getsumaSalidas();
+
+        if (corteAnterior.getSaldoNuevo() == null) {
+            corteAnterior.setSaldoNuevo(new BigDecimal(0));
+        }
+        saldoAnterior = corteAnterior.getSaldoNuevo();
+        nuevoSaldo = totalEntradas.subtract(totalSalidas, MathContext.UNLIMITED);
+        nuevoSaldo = nuevoSaldo.add(saldoAnterior, MathContext.UNLIMITED);
+    }
+
+    public void getsumaEntradas() {
+        for (TipoOperacion t : lstOperacionesEntrada) {
+            totalEntradas = totalEntradas.add(t.getMontoTotal(), MathContext.UNLIMITED);
+        }
+    }
+
+    public void getsumaSalidas() {
+        for (TipoOperacion t : lstOperacionesSalida) {
+            totalSalidas = totalSalidas.add(t.getMontoTotal(), MathContext.UNLIMITED);
+        }
+    }
+
+    //----Funciones para Verificar Maximo de Dinero en Caja --//
+    public void transferir() {
+        verificarDinero();
+
+        if (nuevoSaldo.compareTo(monto) >= 0) {
+            opcajaOrigen.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
+            opcajaOrigen.setMonto(monto);
+            opcajaOrigen.setComentarios(comentarios);
+            opcajaOrigen.setIdConceptoFk(idConcepto);
+            opcajaOrigen.setIdCajaDestinoFk(idCajaDestinoBean);
+
+            if (caja.getIdCajaPk() != null) {
+                if (ifaceOperacionesCaja.insertaOperacion(opcajaOrigen) == 1) {
+                    JsfUtil.addSuccessMessageClean("Transferencia Registrada Correctamente");
+                    monto = null;
+                    comentarios = null;
+                    idCajaDestinoBean = null;
+                } else {
+                    JsfUtil.addErrorMessageClean("Ocurrió un error al registrar la transferencia");
+                }
             } else {
-                JsfUtil.addErrorMessageClean("Ocurrió un error al registrar la transferencia");
+                JsfUtil.addErrorMessageClean("Su usuario no cuenta con caja registrada para realizar el pago de servicios");
             }
         } else {
-            JsfUtil.addErrorMessageClean("Su usuario no cuenta con caja registrada para realizar el pago de servicios");
+            JsfUtil.addErrorMessageClean("No hay suficiente dinero en caja");
         }
     }
 

@@ -15,9 +15,15 @@
 
         <h:form id="formContent">
             <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
-            
+
             <p:panel> 
                 <div class="container-fluid">
+                    <p:confirmDialog   global="true" showEffect="fade" hideEffect="fade">
+                        <div class="alignCenter">
+                            <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                            <p:commandButton  value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                        </div>
+                    </p:confirmDialog>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <p:dataTable id="tabla" var="model" 
                                      value="#{beanRecibirTransferencias.lstTransferenciasEntrantes}" 
@@ -31,13 +37,13 @@
                             <p:column headerText="Caja Origen" width="150px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreCaja}" />
                             </p:column>
-                            
+
                             <p:column headerText="Fecha" width="120px;" class="alignCenter">
                                 <h:outputText value="#{model.fecha}">
                                     <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
                                 </h:outputText>
                             </p:column>
-                            
+
                             <p:column headerText="Monto" width="50px;" class="alignRight">
                                 <h:outputText value="#{model.monto}">
                                     <f:convertNumber type="currency" currencySymbol="$" />
@@ -48,6 +54,13 @@
                                                  icon="ui-icon-transfer-e-w" styleClass="ui-priority-primary" update=":formContent"
                                                  oncomplete="window.frames.miFrame.print();">
                                     <f:setPropertyActionListener value="#{model}" target="#{beanRecibirTransferencias.data}"/>
+                                    <p:confirm header="Confirmación" message="¿Estás seguro de  aceptar la transferencia?" icon="ui-icon-alert"/>
+                                </p:commandButton>
+                            </p:column>
+                            <p:column headerText="Rechazar" width="60px;" class="alignCenter">
+                                <p:commandButton id="cancel" ajax="true" process="@this" action="#{beanRecibirTransferencias.rechazarTransferencia()}" icon="ui-icon-trash" styleClass="ui-priority-primary" update=":formContent">
+                                    <f:setPropertyActionListener value="#{model}" target="#{beanRecibirTransferencias.data}"/>
+                                    <p:confirm header="Confirmación" message="¿Estás seguro de rechazar la transferencia?" icon="ui-icon-alert"/>
                                 </p:commandButton>
                             </p:column>
                         </p:dataTable>

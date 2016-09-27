@@ -68,8 +68,11 @@ public class BeanRecibirDeposito implements Serializable {
 
     private static final BigDecimal entrada = new BigDecimal(1);
     private static final BigDecimal salida = new BigDecimal(2);
-    private static final BigDecimal statusOperacion = new BigDecimal(1);
-    private static final BigDecimal idConcepto = new BigDecimal(14);
+    private static final BigDecimal statusAprobada = new BigDecimal(1);
+    private static final BigDecimal statusRechazada = new BigDecimal(2);
+    private static final BigDecimal depositoPorConfirmar = new BigDecimal(14);
+    private static final BigDecimal depositoRechazado = new BigDecimal(19);
+    private static final BigDecimal depositoRecibido = new BigDecimal(18);
 
     @PostConstruct
     public void init() 
@@ -80,25 +83,42 @@ public class BeanRecibirDeposito implements Serializable {
         data = new OperacionesCaja();
         opcuenta = new OperacionesCuentas();
         opcuenta.setIdUserFk(usuario.getIdUsuario());
-        opcuenta.setIdStatusFk(statusOperacion);
+        
         opcuenta.setEntradaSalida(entrada);
-        opcuenta.setIdConceptoFk(idConcepto);
+        
         lstDespositosEntrantes = new ArrayList<OperacionesCaja>();
         lstDespositosEntrantes = ifaceOperacionesCaja.getDepositosEntrantes();
     }
-    public void aceptar() {
-
+    public void aceptar() 
+    {
             opcuenta.setIdOperacionCuenta(new BigDecimal(ifaceOperacionesCuentas.getNextVal()));
             opcuenta.setMonto(data.getMonto());
+            opcuenta.setIdStatusFk(statusAprobada);
+            opcuenta.setIdConceptoFk(depositoRecibido);
             if (ifaceOperacionesCuentas.insertaOperacion(opcuenta) == 1) 
             {
-                ifaceOperacionesCaja.updateStatus(data.getIdOperacionesCajaPk(), statusOperacion);
+                ifaceOperacionesCaja.updateStatusConcepto(data.getIdOperacionesCajaPk(), statusAprobada,depositoRecibido);
                 lstDespositosEntrantes = ifaceOperacionesCaja.getDepositosEntrantes();
                 JsfUtil.addSuccessMessageClean("Se ha recibido el Depósito Correctamente");
             } else {
                 JsfUtil.addErrorMessageClean("Ocurrió un error al recibir el Depósito");
             }
 
+    }
+    public void rechazarDeposito()
+    {
+        opcuenta.setIdOperacionCuenta(new BigDecimal(ifaceOperacionesCuentas.getNextVal()));
+            opcuenta.setMonto(data.getMonto());
+            opcuenta.setIdStatusFk(statusRechazada);
+            opcuenta.setIdConceptoFk(depositoRechazado);
+            if (ifaceOperacionesCuentas.insertaOperacion(opcuenta) == 1) 
+            {
+                ifaceOperacionesCaja.updateStatusConcepto(data.getIdOperacionesCajaPk(), statusRechazada,depositoRechazado);
+                lstDespositosEntrantes = ifaceOperacionesCaja.getDepositosEntrantes();
+                JsfUtil.addSuccessMessageClean("Se ha rechazado el Depósito Correctamente");
+            } else {
+                JsfUtil.addErrorMessageClean("Ocurrió un error al rechazar el Depósito");
+            }
     }
 
     public UsuarioDominio getUsuario() {

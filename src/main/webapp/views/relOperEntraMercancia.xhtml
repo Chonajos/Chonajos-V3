@@ -49,26 +49,6 @@
                     </p:dialog>
                     <p:dialog  id="dialogoProducto" header="Agregar Producto" widgetVar="dlg2" resizable="false">
                         <h:panelGrid columns="1" cellpadding="5">
-                            <p:outputLabel 
-                                for="comboTipoOrden" value ="Tipo de Convenio:"/> 
-                            <h:selectOneMenu  id="comboTipoOrden" 
-                                              value="#{beanRelOperEntradaMercancia.dataProductoNuevo.idTipoConvenio}" 
-                                              >
-                                <f:selectItem itemLabel="Selecciona un convenio" itemValue="" />
-                                <f:selectItems value="#{beanRelOperEntradaMercancia.listaTiposConvenio}" var="listitaconvenio" 
-                                               itemLabel="#{listitaconvenio.nombreTipoConvenio}" itemValue="#{listitaconvenio.idTcPK}"/>
-                            </h:selectOneMenu>
-
-                            <h:outputLabel for="txtPrecio" value="Convenio:" />
-                            <p:inputText id="txtPrecio"  value="#{beanRelOperEntradaMercancia.dataProductoNuevo.precio}"/>
-
-                            <p:outputLabel  for="comboBodega" value ="Bodega de Ingreso:" /> 
-                            <h:selectOneMenu  id="comboBodega"  value="#{beanRelOperEntradaMercancia.dataProductoNuevo.idBodegaFK}">
-                                <f:selectItem itemLabel="Seleccione" itemValue="" />
-                                <f:selectItems value="#{beanRelOperEntradaMercancia.listaBodegas}" var="bode" itemLabel="#{bode.nombreBodega}" itemValue="#{bode.idBodegaPK}"/>
-                            </h:selectOneMenu>
-
-
                             <p:outputLabel  for="autocompletePoducto" value ="Producto:" /> 
                             <p:autoComplete  placeholder="Seleccione un Producto" id="autocompletePoducto" 
                                              styleClass="autocomplete-input-text-media"
@@ -87,6 +67,19 @@
                                 <f:selectItem itemLabel="Seleccione" itemValue="" />
                                 <f:selectItems value="#{beanEntradaMercancia.lstTipoEmpaque}" var="empaque" itemLabel="#{empaque.nombreEmpaque}" itemValue="#{empaque.idTipoEmpaquePk}"/>
                             </h:selectOneMenu>
+
+                            <p:outputLabel 
+                                for="comboTipoOrden" value ="Tipo de Convenio:"/> 
+                            <h:selectOneMenu  id="comboTipoOrden" 
+                                              value="#{beanRelOperEntradaMercancia.dataProductoNuevo.idTipoConvenio}" 
+                                              >
+                                <f:selectItem itemLabel="Selecciona un convenio" itemValue="" />
+                                <f:selectItems value="#{beanRelOperEntradaMercancia.listaTiposConvenio}" var="listitaconvenio" 
+                                               itemLabel="#{listitaconvenio.nombreTipoConvenio}" itemValue="#{listitaconvenio.idTcPK}"/>
+                            </h:selectOneMenu>
+
+                            <h:outputLabel for="txtPrecio" value="Convenio:" />
+                            <p:inputText id="txtPrecio"  value="#{beanRelOperEntradaMercancia.dataProductoNuevo.precio}"/>
 
                             <h:outputLabel for="cantidadNueva" value="Cantidad:" />
                             <p:inputText id="cantidadNueva"  value="#{beanRelOperEntradaMercancia.dataProductoNuevo.cantidadPaquetes}"/>
@@ -109,6 +102,13 @@
                                     <p:inputText id="pesoNeto"  value="#{beanRelOperEntradaMercancia.dataProductoNuevo.pesoNeto}" readonly="true"/>
                                 </div>
                             </p:fragment>
+
+                            <p:outputLabel  for="comboBodega" value ="Bodega de Ingreso:" /> 
+                            <h:selectOneMenu  id="comboBodega"  value="#{beanRelOperEntradaMercancia.dataProductoNuevo.idBodegaFK}">
+                                <f:selectItem itemLabel="Seleccione" itemValue="" />
+                                <f:selectItems value="#{beanRelOperEntradaMercancia.listaBodegas}" var="bode" itemLabel="#{bode.nombreBodega}" itemValue="#{bode.idBodegaPK}"/>
+                            </h:selectOneMenu>
+
                             <p:commandButton value="Registrar" update="formContent" 
                                              action="#{beanRelOperEntradaMercancia.agregarProducto()}"  oncomplete="PF('dlg').hide();"/>
                         </h:panelGrid>
@@ -200,7 +200,7 @@
                         <p:dataTable id="table" var="model" 
                                      value="#{beanRelOperEntradaMercancia.lstEntradaMercancia}"
                                      scrollable="true"
-                                     scrollHeight="370" styleClass="ui-datatable-hor-scroll"  
+                                     styleClass="ui-datatable-hor-scroll"  
                                      emptyMessage="No se encontraron Registros" 
                                      rendered="#{beanRelOperEntradaMercancia.viewEstate =='init'}">
 
@@ -268,7 +268,6 @@
                                     <p:dataTable id="tabla2" var="item" 
                                                  value="#{model.listaProductos}" 
                                                  scrollable="true"
-                                                 scrollHeight="370" 
                                                  editable="true" styleClass="seconTable"  
                                                  emptyMessage="No se encontraron Registros">
                                         <p:ajax event="rowEdit" listener="#{beanRelOperEntradaMercancia.onRowEdit}" update=":formContent:table"/>
@@ -430,7 +429,6 @@
                                                 <p:dataTable id="tabla4" var="paquete" 
                                                              value="#{item.listaPaquetes}" 
                                                              scrollable="true"
-                                                             scrollHeight="200" 
                                                              editable="true" styleClass="seconTable"  
                                                              emptyMessage="No se encontraron Registros">
                                                     <p:column headerText="N°" width="30px;" class="alignCenter">

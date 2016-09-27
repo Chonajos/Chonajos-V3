@@ -17,12 +17,12 @@
             <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <div class="form-group" align="right">
                 <div>
-                    <p:commandButton value="Buscar" update=":formContent" ajax="true" disabled="true" action="#{beanOperacionesCaja.buscar()}"/>
+                    <p:commandButton value="Buscar" update=":formContent" ajax="true" disabled="false" action="#{beanOperacionesCaja.buscar()}"/>
                 </div>
             </div>
             <p:panel> 
                 <div class="container-fluid">
-                    <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 ">
+                    <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 form-group">
                         <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="sucursalFiltro" value ="Sucursal:" rendered="#{beanOperacionesCaja.viewEstate =='init'}"/> 
                             <h:selectOneMenu  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanOperacionesCaja.idSucursalBean}" rendered="#{beanOperacionesCaja.viewEstate =='init'}" disabled="#{beanOperacionesCaja.usuario.perId != 1}">
@@ -37,6 +37,17 @@
                                 <f:selectItems value="#{beanOperacionesCaja.listaCajas}" var="cajita" itemLabel="#{cajita.nombre}" itemValue="#{cajita.idCajaPk}"/>
                                 <!--<p:ajax event="change" listener="{beanOperacionesCaja.printStatus()}" update=":formContent:table" />-->
                             </h:selectOneMenu>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft "  
+                                           for="calendarInicio" value ="Fecha:" 
+                                           rendered="#{beanOperacionesCaja.viewEstate =='init'}"/> 
+                            <p:calendar disabled="#{beanOperacionesCaja.enableCalendar}" id="calendarInicio" 
+                                        class="col-lg-8 col-md-8 col-sm-8 col-xs-12 
+                                        calendario alignRight" navigator="true" placeholder="dd/mm/yyyy"
+                                        value="#{beanOperacionesCaja.fechaFiltroInicio}" locale="es" pattern="dd/MM/yyyy" 
+                                        readonlyInput="true" showOn="button" rendered="#{beanOperacionesCaja.viewEstate =='init'}">
+                            </p:calendar>
                         </div>
                         <!--                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
                                                     <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="operacionFiltro" value ="Tipo de Operación:" rendered="{beanOperacionesCaja.viewEstate =='init'}" /> 
@@ -107,39 +118,40 @@
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <p:dataTable id="tabla" var="model" 
                                      value="#{beanOperacionesCaja.listaOperaciones}" 
-                                     scrollable="true"
-                                     scrollHeight="280" styleClass="ui-datatable-hor-scroll" 
+                                     rows="10"
+                                     paginator="true" styleClass="ui-datatable-hor-scroll" 
                                      emptyMessage="No se encontraron Registros" 
                                      rendered="#{beanOperacionesCaja.viewEstate =='init'}">
                             <p:column headerText="N° Operación" width="60px;" class="alignCenter">
                                 <h:outputText value="#{model.numero}" />
-                            </p:column>
-                            <p:column headerText="Caja" width="150px;" class="alignLeft">
-                                <h:outputText value="#{model.nombreCaja}" />
-                            </p:column>
-                            <p:column headerText="Tipo Operacion" width="200px;" class="alignCenter">
-                                <h:outputText value="#{model.nombreOperacion}">
-                                </h:outputText>
-                            </p:column>
-                            <p:column headerText="Concepto" width="200px;" class="alignCenter">
-                                <h:outputText value="#{model.nombreConcepto}">
-                                </h:outputText>
-                            </p:column>
-                            <p:column headerText="E/S" width="30px;" class="alignCenter">
-                                <h:outputText value="#{model.nombreEntradaSalida}"/>
                             </p:column>
                             <p:column headerText="Fecha" width="120px;" class="alignCenter">
                                 <h:outputText value="#{model.fecha}">
                                     <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
                                 </h:outputText>
                             </p:column>
+                            <p:column headerText="Caja" width="150px;" class="alignLeft">
+                                <h:outputText value="#{model.nombreCaja}" />
+                            </p:column>
+                            <p:column headerText="Tipo Operacion" width="200px;" class="alignLeft">
+                                <h:outputText value="#{model.nombreOperacion}">
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Concepto" width="200px;" class="alignLeft">
+                                <h:outputText value="#{model.nombreConcepto}">
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="E/S" width="30px;" class="alignCenter">
+                                <h:outputText value="#{model.nombreEntradaSalida}"/>
+                            </p:column>
+
                             <!--
                             <p:column headerText="Estatus" width="120px;" class="alignCenter">
                                 <h:outputText value="{model.nombreStatus}">
                                 </h:outputText>
                             </p:column>
                             -->
-                            <p:column headerText="Monto" width="50px;" class="alignRight">
+                            <p:column headerText="Monto" width="100px;" class="alignRight">
                                 <h:outputText value="#{model.monto}">
                                     <f:convertNumber type="currency" currencySymbol="$" />
                                 </h:outputText>

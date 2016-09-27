@@ -81,7 +81,7 @@ public class BeanOperacionesCaja implements Serializable {
         usuario = context.getUsuarioAutenticado();
         setTitle("Relación de Operaciones de Caja");
         setViewEstate("init");
-        fechaFiltroInicio = new Date();
+        fechaFiltroInicio = context.getFechaSistema();
         fechaFiltroFin = new Date();
         listaSucursales = ifaceCatSucursales.getSucursales();
         idSucursalBean = new BigDecimal(usuario.getSucId());
@@ -97,6 +97,8 @@ public class BeanOperacionesCaja implements Serializable {
     }
 
     public void buscar() {
+        listaOperaciones = ifaceOperacionesCaja.getOperacionesBy(idCajaBean, idTipoOperacionBean, idConceptoBean, TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicio), TiempoUtil.getFechaDDMMYYYY(fechaFiltroFin), idCajaBean, usuario.getIdUsuario());
+
 
     }
 

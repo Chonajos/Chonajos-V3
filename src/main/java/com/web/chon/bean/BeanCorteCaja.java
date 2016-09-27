@@ -40,7 +40,7 @@ public class BeanCorteCaja implements Serializable {
     @Autowired
     private PlataformaSecurityContext context;
     @Autowired
-    IfaceCorteCaja ifaceCorteCaja;
+    private IfaceCorteCaja ifaceCorteCaja;
 
     private ArrayList<TipoOperacion> lstOperacionesEntrada;
     private ArrayList<TipoOperacion> lstOperacionesSalida;
@@ -98,10 +98,7 @@ public class BeanCorteCaja implements Serializable {
         saldoAnterior = corteAnterior.getSaldoNuevo();
         nuevoSaldo = totalEntradas.subtract(totalSalidas, MathContext.UNLIMITED);
         nuevoSaldo = nuevoSaldo.add(saldoAnterior, MathContext.UNLIMITED);
-        //listaChequesEntrada = ifaceOperacionesCaja.getCheques(caja.getIdCajaPk(), caja.getIdUsuarioFK(), entrada);
-        //listaChequesSalida = ifaceOperacionesCaja.getCheques(caja.getIdCajaPk(), caja.getIdUsuarioFK(), salida);
-        //getsumaChequesEntradas();
-        //getsumaChequesSalidas();
+
     }
 
     public void reload() {

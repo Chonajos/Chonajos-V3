@@ -104,7 +104,7 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
 "inner join TIPOS_OPERACION tio on tio.ID_TIPO_OPERACION_PK = con.ID_TIPO_OPERACION_FK\n" +
 "inner join USUARIO u on u.ID_USUARIO_PK = opc.ID_USER_FK\n" +
 "WHERE opc.ID_CORTE_CAJA_FK is null and opc.ID_CAJA_FK = ?\n" +
-"and opc.ID_USER_FK=?");
+"and opc.ID_USER_FK=? and TO_DATE(TO_CHAR(opc.FECHA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '"+fechaInicio+"' AND '"+fechaInicio+"' ");
         query.setParameter(1,idCajaFk);
         query.setParameter(2,idUserFk);
         return query.getResultList();
@@ -118,19 +118,21 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
 "inner join CONCEPTOS con on con.ID_CONCEPTOS_PK = opc.ID_CONCEPTO_FK\n" +
 "inner join TIPOS_OPERACION tio on tio.ID_TIPO_OPERACION_PK = con.ID_TIPO_OPERACION_FK\n" +
 "inner join USUARIO u on u.ID_USUARIO_PK = opc.ID_USER_FK\n" +
-"where opc.ID_STATUS_FK=2 and opc.E_S=2 and opc.ID_CAJA_DESTINO_FK= ?");
+"where opc.ID_STATUS_FK=2 and opc.E_S=2 and  opc.ID_CONCEPTO_FK = 15 and opc.ID_CAJA_DESTINO_FK= ?");
         query.setParameter(1, idCorteCajaFk);
         return query.getResultList();
     }
 
     @Override
-    public int updateStatusOperacion(BigDecimal idOperacionPk, BigDecimal idStatusFk) {
+    public int updateStatusConceptoOperacion(BigDecimal idOperacionPk, BigDecimal idStatusFk,BigDecimal idConceptoFk) {
          try {
             System.out.println("ejb UPDATE" + idOperacionPk);
-            Query query = em.createNativeQuery("UPDATE OPERACIONES_CAJA SET ID_STATUS_FK = ? WHERE ID_OPERACIONES_CAJA_PK = ?");
+            Query query = em.createNativeQuery("UPDATE OPERACIONES_CAJA SET ID_STATUS_FK = ?, ID_CONCEPTO_FK = ? WHERE ID_OPERACIONES_CAJA_PK = ?");
 
             query.setParameter(1, idStatusFk);
-            query.setParameter(2, idOperacionPk);
+            query.setParameter(2, idConceptoFk);
+            query.setParameter(3, idOperacionPk);
+           
             return query.executeUpdate();
 
         } catch (Exception ex) {
@@ -208,7 +210,7 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
 "inner join CONCEPTOS con on con.ID_CONCEPTOS_PK = opc.ID_CONCEPTO_FK\n" +
 "inner join TIPOS_OPERACION tio on tio.ID_TIPO_OPERACION_PK = con.ID_TIPO_OPERACION_FK\n" +
 "inner join USUARIO u on u.ID_USUARIO_PK = opc.ID_USER_FK\n" +
-"where opc.ID_STATUS_FK=2 and opc.ID_CAJA_DESTINO_FK is null and opc.E_S=2");
+"where opc.ID_STATUS_FK=2 and opc.ID_CAJA_DESTINO_FK is null and opc.E_S=2 and opc.ID_CONCEPTO_FK =14");
         return query.getResultList();
     
     }

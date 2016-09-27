@@ -176,10 +176,6 @@ public class EjbCatSucursales implements NegocioCatSucursales {
             Logger.getLogger(EjbCatSucursales.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
-    
-    
     }
-    
-    
     
 }

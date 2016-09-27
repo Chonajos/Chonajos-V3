@@ -161,9 +161,9 @@ public class ServiceOperacionesCaja implements IfaceOperacionesCaja {
     }
 
     @Override
-    public int updateStatus(BigDecimal idOperacionPk, BigDecimal idStatusFk) {
+    public int updateStatusConcepto(BigDecimal idOperacionPk, BigDecimal idStatusFk,BigDecimal idConceptoFk) {
         getEjb();
-        return ejb.updateStatusOperacion(idOperacionPk, idStatusFk);
+        return ejb.updateStatusConceptoOperacion(idOperacionPk, idStatusFk,idConceptoFk);
     }
 
     @Override

@@ -729,13 +729,16 @@ INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Caja', 1,'90','NULL');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Caja', 0,'90.1','/views/caja.xhtml');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Corte Caja', 0,'90.5','/views/corteCaja.xhtml');
-INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Cortes Pendientes', 0,'90.6','/views/cortesPendientes.xhtml');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Pago de Servicios', 0,'90.7','/views/pagoServicios.xhtml');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Ajuste de Caja', 0,'90.8','/views/ajusteCaja.xhtml');
-INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Transferencias', 0,'90.9','/views/transferencias.xhtml');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Realizar Transferencia', 0,'90.9','/views/transferencias.xhtml');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Depósitos Bancarios', 0,'90.10','/views/depositosBancarios.xhtml');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Recibir Transferencias', 0,'90.11','/views/recibirTransferencias.xhtml');
-INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Recibir Depósitos', 0,'90.12','/views/recibirDeposito.xhtml');
+
+
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Cuentas Bancarias', 1,'10','NULL');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Recibir Depósitos', 0,'10.1','/views/recibirDeposito.xhtml');
+
 
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(1,1);
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(2,1);
