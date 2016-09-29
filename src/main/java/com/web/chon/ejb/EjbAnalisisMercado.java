@@ -123,7 +123,7 @@ public class EjbAnalisisMercado implements NegocioAnalisisMercado {
     }
 
     @Override
-    public List<Object[]> getEntradaProductoByIdProducto(String idProducto,String fecha) {
+    public List<Object[]> getEntradaProductoByIdProducto(String idProducto, String fecha) {
         try {
             Query query = em.createNativeQuery("SELECT * FROM ANALISIS_MERCADO WHERE TO_DATE(TO_CHAR(FECHA,'dd/mm/yyyy'),'dd/mm/yyyy') = ? AND ID_SUBPRODUCTO = ? ORDER BY FECHA ");
 
@@ -170,6 +170,30 @@ public class EjbAnalisisMercado implements NegocioAnalisisMercado {
             return 0;
         }
 
+    }
+
+    @Override
+    public List<Object[]> getAnalisMercadoByNameDayOfYear(String fechaInicio, String fechaFin, String idProducto, String nombreDia) {
+
+        try {
+
+            Query query = em.createNativeQuery("SELECT * FROM (SELECT  dates FROM( SELECT  TO_DATE(?,'dd/mm/yyyy') + ROWNUM -1 AS dates FROM all_objects "
+                    + " WHERE ROWNUM <= TO_DATE(?,'dd/mm/yyyy') - TO_DATE(?,'dd/mm/yyyy') + 1) "
+                    + " WHERE UPPER(REGEXP_SUBSTR(TO_CHAR(dates, 'DAY-MM-YYYY'), '([[:alpha:]])+')) = UPPER(?) ) T1 "
+                    + " LEFT JOIN ANALISIS_MERCADO AM ON TO_DATE(TO_CHAR(AM.FECHA,'dd/mm/yyyy'),'dd/mm/yyyy') = T1.dates AND AM.ID_SUBPRODUCTO =? ORDER BY T1.dates ASC");
+
+            query.setParameter(1, fechaInicio);
+            query.setParameter(2, fechaFin);
+            query.setParameter(3, fechaInicio);
+            query.setParameter(4, nombreDia);
+            query.setParameter(5, idProducto);
+
+            return query.getResultList();
+            
+        } catch (Exception ex) {
+            Logger.getLogger(EjbAnalisisMercado.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 
 }

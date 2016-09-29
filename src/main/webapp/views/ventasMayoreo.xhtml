@@ -23,8 +23,9 @@
         </p:dialog>
         <p:messages id="messages" showDetail="true" showIcon="false" showSummary="false" autoUpdate="true" closable="true" />
         <h:form id="formContent" >
+            <p:focus id="focus" context=":formContent:autocompleteProducto" />
             <div class="form-group">
-                <div class="col-lg-9 col-md-8 col-sm-8 col-xs-12 form-group" align="right">
+                <div class="col-lg-8 col-md-7 col-sm-8 col-xs-12 form-group" align="right">
                     <p:fragment id="labelCredito" rendered="#{beanVentaMayoreo.data.idTipoVenta == 2}">
                         <h:outputText  style="font-weight: bold !important" value ="Linea a crédito: $" rendered="#{beanVentaMayoreo.credito}"/> 
                         <h:outputText  style="font-weight: bold !important; color: blue !important;" value ="#{beanVentaMayoreo.cliente.limiteCredito}" rendered="#{beanVentaMayoreo.credito}"> 
@@ -36,12 +37,19 @@
                         </h:outputText>
                     </p:fragment> 
                 </div>
-                <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 form-group" align="right">
-                    <p:commandButton value="Finalizar Venta" update=":formContent" ajax="true" action="#{beanVentaMayoreo.inserts()}"  immediate="true" resetValues="true" >
+                <div class="col-lg-4 col-md-5 col-sm-4 col-xs-12 form-group" align="right">
+                    <!--                    <p:commandButton value="Agregar más Productos" id="regresar" ajax="true" action="{beanVentaMayoreo.changeViewToAddProducto()}"  update=":formContent"  immediate="true" resetValues="true" rendered="{beanVentaMayoreo.viewEstate =='viewCarrito'}"/>  -->
+                    <!--                        <p:commandButton   value="Agregar a Pedido y Finalizar" update=":formContent" ajax="true" action="{beanVentaMayoreo.addProductoEnd()}" rendered="{beanVentaMayoreo.ventaRapidaButton =='Rapida' and beanVentaMayoreo.viewEstate =='viewAddProducto' }">
+                                                    <p:confirm header="Confirmación" message="¿Estás seguro de finalizar la venta?" icon="ui-icon-alert"/>
+                                                </p:commandButton>-->
+                    <p:commandButton value="Aceptar" update=":formContent" ajax="true" class="primaryButton" action="#{beanVentaMayoreo.updateProducto()}" rendered="#{beanVentaMayoreo.viewEstate =='update'}"/>
+                    <p:commandButton value="Cancelar" update=":formContent" ajax="true" class="primaryButton" action="#{beanVentaMayoreo.changeView}" immediate="true" resetValues="true" rendered="#{beanVentaMayoreo.viewEstate =='update'}"/>
+                    <!--<p:commandButton value="Ver Pedido" update=":formContent" id="verCarrito" ajax="true" action="{beanVentaMayoreo.changeView()}"    immediate="true" resetValues="true" rendered="{beanVentaMayoreo.viewEstate =='viewAddProducto'}"/>-->
+                    <p:commandButton value="Agregar" update=":formContent" ajax="true" class="primaryButton" action="#{beanVentaMayoreo.addProducto()}" rendered="#{beanVentaMayoreo.viewEstate =='viewAddProducto'}"/>
+                    <p:commandButton value="Vender" update=":formContent" ajax="true" class="primaryButton" action="#{beanVentaMayoreo.inserts()}"  immediate="true" resetValues="true" rendered="#{beanVentaMayoreo.viewEstate =='viewAddProducto'}">
                         <p:confirm header="Confirmación" message="¿Estás seguro de finalizar la venta?" icon="ui-icon-alert" />
-
                     </p:commandButton>
-                    <p:commandButton value="Cancelar" id="cancelarVenta" ajax="true" update="formContent"   action="#{beanVentaMayoreo.cancelarPedido()}" immediate="true" resetValues="true" >
+                    <p:commandButton value="Cancelar" id="cancelarVenta" ajax="true" update="formContent"   action="#{beanVentaMayoreo.cancelarPedido()}" immediate="true" resetValues="true" rendered="#{beanVentaMayoreo.viewEstate =='viewAddProducto'}">
                         <p:confirm header="Confirmación" message="¿Estás seguro de cancelar la venta?" icon="ui-icon-alert" />
                     </p:commandButton>
                 </div>
@@ -51,11 +59,11 @@
             <p:panel style="padding: 0px;">
                 <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanVentaMayoreo.rutaPDF}"/>
                 <div class="container-fluid" style="padding: 0px;">
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group" style="padding: 0px;">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding: 0px;">
 
                         <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 "  for="autocompleteCliente" value ="Cliente:" /> 
-                            <p:autoComplete  placeholder="beanVentaMayoreo un Cliente" id="autocompleteCliente"  required="true" requiredMessage="Ingresa un valor para el campo Cliente." styleClass="autocomplete-input-text-media ui-state-highlight-autocomplete" class="ui-state-highlight-autocomplete"
+                            <p:autoComplete  placeholder="Seleccione un Cliente" id="autocompleteCliente"  required="true" requiredMessage="Ingresa un valor para el campo Cliente." styleClass="autocomplete-input-text-media ui-state-highlight-autocomplete" class="ui-state-highlight-autocomplete"
                                              value="#{beanVentaMayoreo.cliente}" completeMethod="#{beanVentaMayoreo.autoCompleteCliente}" forceSelection="true" var="cliente"  inputStyle="width: 180px"
                                              itemLabel="#{cliente.nombreCombleto}"
                                              itemValue="#{cliente.id_cliente}" converter="#{clienteConverter}">
@@ -109,18 +117,7 @@
                         </p:fragment> 
                     </div>
                 </div>
-            </p:panel>
-            <p:panel id="panel2" rendered="#{beanVentaMayoreo.viewEstate=='viewAddProducto' || beanVentaMayoreo.viewEstate=='update'}">
                 <div class="container-fluid" style="padding: 0px;">
-                    <div class="form-group" align="right">
-                        <p:commandButton value="Agregar a Pedido" update=":formContent" ajax="true" action="#{beanVentaMayoreo.addProducto()}" rendered="#{beanVentaMayoreo.viewEstate =='viewAddProducto'}"/>
-                        <p:commandButton   value="Agregar a Pedido y Finalizar" update=":formContent" ajax="true" action="#{beanVentaMayoreo.addProductoEnd()}" rendered="#{beanVentaMayoreo.ventaRapidaButton =='Rapida' and beanVentaMayoreo.viewEstate =='viewAddProducto' }">
-                            <p:confirm header="Confirmación" message="¿Estás seguro de finalizar la venta?" icon="ui-icon-alert"/>
-                        </p:commandButton>
-                        <p:commandButton value="Aceptar" update=":formContent" ajax="true" action="#{beanVentaMayoreo.updateProducto()}" rendered="#{beanVentaMayoreo.viewEstate =='update'}"/>
-                        <p:commandButton value="Cancelar Edición" update=":formContent" ajax="true" action="#{beanVentaMayoreo.changeView()}" immediate="true" resetValues="true" rendered="#{beanVentaMayoreo.viewEstate =='update'}"/>
-                        <p:commandButton value="Ver Pedido" update=":formContent" id="verCarrito" ajax="true" action="#{beanVentaMayoreo.changeView()}"    immediate="true" resetValues="true" rendered="#{beanVentaMayoreo.viewEstate =='viewAddProducto'}"/>
-                    </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group" style="padding: 0px;">
                         <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="autocompleteProducto" value ="Producto:" /> 
@@ -139,7 +136,9 @@
                             <p:outputLabel class="col-lg-8 col-md-4 col-sm-4 col-xs-12" id="labelEmpaque" for="txtCantidadEmpaque" value ="Cantidad"  /> 
                             <p:inputText id="txtCantidadEmpaque" maxlength="6" class=" col-lg-4 col-md-8 col-sm-8 col-xs-12" disabled="#{beanVentaMayoreo.permisionToWrite}" value="#{beanVentaMayoreo.data.cantidadEmpaque}" required="true" 
                                          requiredMessage="Ingresa un valor para el campo Cantidad de Empaques.">
-                                <pe:keyFilter regEx="/[0-9_]/i"/></p:inputText> 
+                                <pe:keyFilter regEx="/[0-9_]/i"/>
+                                <p:ajax process="@form"  oncomplete="txtPrecioVenta.focus()"/>
+                            </p:inputText> 
                         </div>
                         <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="txtKilos" value ="Kilos:" /> 
@@ -163,12 +162,9 @@
                         </div>
                     </div>
 
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-
-                        <h5><b>Selecciona un producto</b></h5>
-
-                        <p:dataTable id="modelo2" var="modeloExistencias" value="#{beanVentaMayoreo.lstExistencias}" selection="#{beanVentaMayoreo.selectedExistencia}"   rowKey="#{modeloExistencias.idExistenciaProductoPk}" emptyMessage="Productos.">
-                            <p:ajax event="rowSelectRadio" update=":formContent:txtCantidadEmpaque :formContent:txtKilos :formContent:txtPrecioVenta" listener="#{beanVentaMayoreo.habilitarBotones()}"/>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <p:dataTable id="modelo2"  var="modeloExistencias" value="#{beanVentaMayoreo.lstExistencias}" selection="#{beanVentaMayoreo.selectedExistencia}"   rowKey="#{modeloExistencias.idExistenciaProductoPk}" emptyMessage="No se Encontraron Registros.">
+                            <p:ajax event="rowSelectRadio" update=":formContent" listener="#{beanVentaMayoreo.habilitarBotones()}" oncomplete="autocompleteProducto.focus()"/>
                             <p:column selectionMode="single"   style="width:16px;text-align:center" />
 
                             <p:column headerText="Carro" width="40px;" style="text-align:center">
@@ -206,16 +202,10 @@
                         </p:dataTable>
                         <!-- <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="{beanVentaMayoreo.rutaPDF}"/>-->
                     </div>
-                </div>
 
-            </p:panel>
-            <p:panel id="panel3" rendered="#{beanVentaMayoreo.viewEstate=='viewCarrito'}">
-                <div class="container-fluid">
-                    <div class="form-group" align="right">
-                        <p:commandButton value="Agregar más Productos" id="regresar" ajax="true" action="#{beanVentaMayoreo.changeViewToAddProducto()}"  update=":formContent"  immediate="true" resetValues="true" rendered="#{beanVentaMayoreo.viewEstate =='viewCarrito'}"/>  
-                    </div>
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <p:dataTable id="model" var="model" value="#{beanVentaMayoreo.lstVenta}" styleClass="ui-datatable-hor-scroll"  emptyMessage="Productos.">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <p:dataTable id="model" var="model" value="#{beanVentaMayoreo.lstVenta}" styleClass="ui-datatable-hor-scroll"  emptyMessage="No Hay Productos Agregados.">
+                            <f:facet name="header"> Carrito de Compra </f:facet>
                             <p:column headerText="Carro" width="40px;" style="text-align:center">
                                 <h:outputText value="#{model.folioCarro}" />
                             </p:column>
@@ -270,6 +260,9 @@
                         </p:dataTable>
                     </div>
                 </div>
+
+            </p:panel>
+            <p:panel id="panel3" rendered="#{beanVentaMayoreo.viewEstate=='viewCarrito'}">
                 <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanVentaMayoreo.rutaPDF}"/>
             </p:panel>
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
@@ -293,7 +286,7 @@
                     <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12" >
                         <p:outputLabel class="col-lg-8 col-md-8 col-sm-4 col-xs-12" for="txtVentaTotalDes" value ="Total de la Venta:"  /> 
                         <p:inputText id="txtVentaTotalDes" maxlength="10" class=" col-lg-3 col-md-3 col-sm-8 col-xs-12" value="#{beanVentaMayoreo.totalVentaDescuento}" required="true" 
-                                     requiredMessage="Ingresa un valor para el campo Total de la Venta." disabled="true"/>
+                                     requiredMessage="Ingresa un valor para el campo Total de la Venta." readonly="true"/>
                         <pe:keyFilter regEx="/[\d.,\-]/" for="txtVentaTotalDes"/>  
                     </div>
                 </p:fragment>

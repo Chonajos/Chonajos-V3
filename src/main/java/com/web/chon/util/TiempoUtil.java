@@ -141,7 +141,7 @@ public class TiempoUtil {
 
     }
 
-    /*Obtiene un alista de fechas el cual seria el rango 
+    /*Obtiene una lista de fechas el cual seria el rango 
 	 * de acuerdo a la fecha indicada 
 	 * */
     private static List<Date> getListDatesForDate(Date date) {
@@ -442,10 +442,66 @@ public class TiempoUtil {
     public static BigDecimal obtenerUltimoDiaMes(Date fecha) {
 
         Calendar cal = java.util.GregorianCalendar.getInstance();
-        cal.set(fecha.getYear(), fecha.getMonth()+1, 0);
+        cal.set(fecha.getYear(), fecha.getMonth() + 1, 0);
 
         return new BigDecimal(cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH));
 
+    }
+
+    /**
+     * Obtiene el nombre del dia por el numero del dia de la semana
+     *
+     * @param fecha
+     * @return
+     */
+    public static String nombreDia(int numeroDiaSemana) {
+        String dia = "Lunes";
+        switch (numeroDiaSemana) {
+            case 0:
+                dia = "Domingo";
+                break;
+            case 1:
+                dia = "Lunes";
+                break;
+
+            case 2:
+                dia = "Martes";
+                break;
+
+            case 3:
+                dia = "Miércoles";
+                break;
+
+            case 4:
+                dia = "Jueves";
+                break;
+
+            case 5:
+                dia = "Viernes";
+                break;
+            case 6:
+                dia = "Sábado";
+                break;
+
+        }
+        
+        return dia;
+    }
+    
+    /**
+     * Obtiene el numero del dia de la semana
+     *
+     * @param fecha
+     * @return
+     */
+    public static int getNumberDayForWeek(Date fecha) {
+
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(fecha);
+
+        int numeroDia = cal.get(Calendar.DAY_OF_WEEK);
+
+        return numeroDia-1;
     }
 
 }

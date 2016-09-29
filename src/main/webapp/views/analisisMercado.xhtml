@@ -111,9 +111,27 @@
                         <p:chart style="height:500px;" type="line" responsive="true" rendered ="#{beanAnalisisMercado.chartLineByDias != null and beanAnalisisMercado.state =='SEARCH' and beanAnalisisMercado.charLine == true}" model="#{beanAnalisisMercado.chartLineByDias}"/>
                         <p:chart style="height:500px;" type="bar" responsive="true" rendered ="#{beanAnalisisMercado.chartBarByDias != null and beanAnalisisMercado.state =='SEARCH' and beanAnalisisMercado.charLine == false}" model="#{beanAnalisisMercado.chartBarByDias}" />
                     </div>
+                    <div id="chartByName" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="selectDay" value ="Dia:" rendered ="#{beanAnalisisMercado.chartLineByNameDay != null and beanAnalisisMercado.state =='SEARCH' and beanAnalisisMercado.chartBarByNameDay != null}"/> 
+                            <p:selectOneMenu  id="selectDay"  value="#{beanAnalisisMercado.filtroDiaSemana}" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" requiredMessage="Ingresa un valor para el campo Producto." rendered ="#{beanAnalisisMercado.chartLineByNameDay != null and beanAnalisisMercado.state =='SEARCH' and beanAnalisisMercado.chartBarByNameDay != null}">
+                                <f:selectItem itemLabel="Domingo" itemValue="0" noSelectionOption="true" />
+                                <f:selectItem itemLabel="Lunes" itemValue="1" />
+                                <f:selectItem itemLabel="Martes" itemValue="2" />
+                                <f:selectItem itemLabel="Miercoles" itemValue="3" />
+                                <f:selectItem itemLabel="Jueves" itemValue="4" />
+                                <f:selectItem itemLabel="Viernes" itemValue="5" />
+                                <f:selectItem itemLabel="Sabado" itemValue="6" />
+                                <p:ajax event="change" update=":formContent" listener="#{beanAnalisisMercado.filtroPorProducto}"/>
+                            </p:selectOneMenu>
+                        </div>
+                        
+                        <p:chart  style="height:500px;" type="line" responsive="true" rendered ="#{beanAnalisisMercado.chartLineByNameDay != null and beanAnalisisMercado.state =='SEARCH' and beanAnalisisMercado.charLine == true}" model="#{beanAnalisisMercado.chartLineByNameDay}"/>
+                        <p:chart style="height:500px;" type="bar" responsive="true" rendered ="#{beanAnalisisMercado.chartBarByNameDay != null and beanAnalisisMercado.state =='SEARCH' and beanAnalisisMercado.charLine == false}" model="#{beanAnalisisMercado.chartBarByNameDay}" />
+                    </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <p:chart style="height:1000px;" type="line" responsive="true" rendered ="#{beanAnalisisMercado.chartLineBMes != null and beanAnalisisMercado.state =='SEARCH' and beanAnalisisMercado.charLine == true}" model="#{beanAnalisisMercado.chartLineBMes}"/>
-                        <p:chart style="height:1000px;" type="bar" responsive="true" rendered ="#{beanAnalisisMercado.chartBarByMes != null and beanAnalisisMercado.state =='SEARCH' and beanAnalisisMercado.charLine == false}" model="#{beanAnalisisMercado.chartBarByMes}" />
+                        <p:chart style="height:800px;" type="line" responsive="true" rendered ="#{beanAnalisisMercado.chartLineBMes != null and beanAnalisisMercado.state =='SEARCH' and beanAnalisisMercado.charLine == true}" model="#{beanAnalisisMercado.chartLineBMes}"/>
+                        <p:chart style="height:800px;" type="bar" responsive="true" rendered ="#{beanAnalisisMercado.chartBarByMes != null and beanAnalisisMercado.state =='SEARCH' and beanAnalisisMercado.charLine == false}" model="#{beanAnalisisMercado.chartBarByMes}" />
                     </div>
 
                 </div>

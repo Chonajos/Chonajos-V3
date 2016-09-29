@@ -22,9 +22,9 @@
                         <p:inputText id="txtFolioVenta" value ="#{beanEntregaMercancia.data.idFolioVenta}"  maxlength="10" class="col-lg-1 col-md-2 col-sm-2 col-xs-12" >
                             <pe:keyFilter regEx="/[0-9.]/i"/>
                         </p:inputText>
-                        <p:commandButton  value="Entregar" update=":formContent" action="#{beanEntregaMercancia.print}" style="margin-left:30px; " />
+                        <p:commandButton  value="Entregar" class="primaryButton" update=":formContent" action="#{beanEntregaMercancia.print}" style="margin-left:30px; " />
                         <div class="col-lg-8">
-                            <p:commandButton  value="Buscar" update=":formContent" action="#{beanEntregaMercancia.buscaFolioVenta}" style="margin-left:30px; "/>
+                            <p:commandButton  value="Buscar" class="primaryButton" update=":formContent" action="#{beanEntregaMercancia.buscaFolioVenta}" style="margin-left:30px; "/>
                         </div>
                     </div>
                     <div class="col-lg-12 col-md-12 col-md-12 col-xs-12 form-group" style="padding: 0px;">
@@ -53,14 +53,14 @@
                                 <h:outputText value="#{model.nombreEmpaque}">
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Empaques a entregar" width="80px;" class="alignRight">
+                            <p:column headerText="Empaques por Entregar" width="80px;" class="alignRight">
                                 <h:outputText value="#{model.empaquesRemanente-model.empaquesEntregados}" >
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Kilos a entregar" width="80px;" class="alignRight">
+                            <p:column headerText="Kilos por Entregar" width="80px;" class="alignRight">
                                 <h:outputText value="#{model.kilosRemanente-model.kilosEntregados}" />
                             </p:column>
-                            <p:column headerText="Empaques entregados" width="100px;" class="alignRight">
+                            <p:column headerText="Empaques Entregados" width="100px;" class="alignRight">
                                 <h:outputText value="#{model.empaquesEntregados}" />
                             </p:column>
                             <p:column headerText="Kilos Entregados" width="100px;" class="alignRight">
@@ -74,17 +74,17 @@
                             </p:column>
                             <p:rowExpansion>
                                 <p:dataTable id="table" var="modelEntregado" value="#{model.lstEntregaMercancia}" styleClass="ui-datatable-hor-scroll seconTable" rowKey="#{modelEntregado.idEntregaMercanciaPk}"
-                                             emptyMessage="No se encontraron Registros." scrollable="true" >
+                                             emptyMessage="No se Encontraron Registros." scrollable="true" >
                                     <p:column headerText="Usuario que entrego">
                                         <h:outputText value="#{modelEntregado.nombreUsuarioEntrega}"/>
                                     </p:column>
-                                    <p:column headerText="Fecha de entrega">
+                                    <p:column headerText="Fecha de Entrega">
                                         <h:outputText value="#{modelEntregado.fechaStr}"/>
                                     </p:column>
-                                    <p:column headerText="Cajas/Bultos entregados" class="alignRight">
+                                    <p:column headerText="Cajas/Bultos Entregados" class="alignRight">
                                         <h:outputText value="#{modelEntregado.empaquesEntregados}"/>
                                     </p:column>
-                                    <p:column headerText="Kilos entregados" class="alignRight">
+                                    <p:column headerText="Kilos Entregados" class="alignRight">
                                         <h:outputText value="#{modelEntregado.kilosEntregados}"/>
                                     </p:column>
                                     <p:column headerText="Comentarios">

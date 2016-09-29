@@ -35,5 +35,6 @@ public interface NegocioAnalisisMercado
     
     public int updateByIdProductoAndFecha(AnalisisMercado entradaMercancia) ;
 
+    public List<Object[]> getAnalisMercadoByNameDayOfYear(String fechaInicio, String fechaFin,String idProducto,String nombreDia);
     
 }

@@ -45,6 +45,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
     private ArrayList<AnalisisMercado> lstEntradaMercancia;
     private ArrayList<AnalisisMercado> lstEntradaMercanciaSemana;
     private ArrayList<AnalisisMercado> lstEntradaMercanciaMes;
+    private ArrayList<AnalisisMercado> lstEntradaMercanciaDayName;
     private ArrayList<Subproducto> lstProducto;
 
     private UsuarioDominio usuario;
@@ -55,6 +56,8 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
     private BarChartModel chartBarBySemana;
     private LineChartModel chartLineBMes;
     private BarChartModel chartBarByMes;
+    private LineChartModel chartLineByNameDay;
+    private BarChartModel chartBarByNameDay;
 
     private Date filtroFechaInicio;
     private Date filtroFechaFin;
@@ -63,7 +66,10 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
     private String title;
     private String insertar;
 
-    int maxChartValue;
+    private int filtroDiaSemana;
+    private int filtroPromedioSemana;
+    private int count;
+    private int maxChartValue;
 
     private boolean charLine = true;
     private boolean charExpander = false;
@@ -78,9 +84,11 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
 
         lstProducto = new ArrayList<Subproducto>();
         lstProducto = ifaceProducto.getSubProductos();
+        filtroFechaInicio = context.getFechaSistema();
+        filtroDiaSemana = TiempoUtil.getNumberDayForWeek(context.getFechaSistema());
 
-        filtroFechaInicio = new Date();
-
+        count = 0;
+        filtroPromedioSemana = 4;
         lstEntradaMercancia = new ArrayList<AnalisisMercado>();
         setTitle("Análisis de Mercado");
         setInsertar("precioPromedio");
@@ -121,7 +129,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
 
                 } else {
 
-                    if(data.getFecha() == null){
+                    if (data.getFecha() == null) {
                         data.setFecha(context.getFechaSistema());
                     }
                     ifaceEntradaProductoCentral.saveEntradaProductoCentral(data);
@@ -163,7 +171,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
         Axis yAxis = chartLineByDias.getAxis(AxisType.Y);
         yAxis.setLabel("Toneladas");
         yAxis.setMin(0);
-        yAxis.setTickInterval("10");
+        yAxis.setTickInterval("20");
         yAxis.setMax(maxChartValue);
     }
 
@@ -197,7 +205,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
             toneladasAnt.set(dominio.getDescripcionFiltro(), dominio.getCantidadToneladasAnterior());
             precioAnt.set(dominio.getDescripcionFiltro(), dominio.getPrecioAnterior());
         }
-        maxChartValue += 10;
+        maxChartValue += 20;
         model.addSeries(toneladas);
         model.addSeries(precio);
         model.addSeries(toneladasAnt);
@@ -225,7 +233,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
 
         yAxis.setLabel("Toneladas");
         yAxis.setMin(0);
-        yAxis.setTickInterval("10");
+        yAxis.setTickInterval("20");
         yAxis.setMax(maxChartValue);
     }
 
@@ -305,9 +313,19 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
         salidaMercancia.setLabel("Salida Mercancia");
         AnalisisMercado analisisMercadoTemp = null;
 
+        maxChartValue = 50;
+
         for (AnalisisMercado dominio : lstEntradaMercanciaSemana) {
 
             if (index != 0) {
+
+                if (maxChartValue < dominio.getCantidadToneladasAnterior().intValue()) {
+                    maxChartValue = dominio.getCantidadToneladasAnterior().intValue();
+                }
+                if (maxChartValue < dominio.getCantidadToneladas().intValue()) {
+                    maxChartValue = dominio.getCantidadToneladas().intValue();
+                }
+
                 toneladas.set(dominio.getDescripcionFiltro(), dominio.getCantidadToneladas());
                 precio.set(dominio.getDescripcionFiltro(), dominio.getPrecio());
                 toneladasAnt.set(dominio.getDescripcionFiltro(), dominio.getCantidadToneladasAnterior());
@@ -326,10 +344,13 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
                 salidaMercancia.set(dominio.getDescripcionFiltro(), ventaDia);
 
             }
+
             analisisMercadoTemp = dominio;
             index++;
 
         }
+        
+        maxChartValue += 50;
 
         model.addSeries(toneladas);
         model.addSeries(precio);
@@ -386,7 +407,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
         remanente.setLabel("Remanente");
         salidaMercancia.setLabel("Salida Mercancia");
         AnalisisMercado analisisMercadoTemp = null;
-        maxChartValue = 100;
+        maxChartValue = 50;
         for (AnalisisMercado dominio : lstEntradaMercanciaSemana) {
             if (index != 0) {
 
@@ -419,7 +440,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
             analisisMercadoTemp = dominio;
         }
 
-        maxChartValue += 100;
+        maxChartValue += 50;
 
         model.addSeries(toneladas);
         model.addSeries(precio);
@@ -430,7 +451,6 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
 
         return model;
     }
-    ///Mes
 
     public void generateChartLineMes() {
 
@@ -451,7 +471,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
 
         yAxis.setLabel("Toneladas");
         yAxis.setMin(0);
-        yAxis.setTickInterval("150");
+        yAxis.setTickInterval("500");
         yAxis.setMax(maxChartValue);
     }
 
@@ -474,6 +494,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
         remanente.setLabel("Remanente");
         salidaMercancia.setLabel("Salida Mercancia");
         AnalisisMercado analisisMercadoTemp = null;
+        maxChartValue = 500;
         for (AnalisisMercado dominio : lstEntradaMercanciaMes) {
 
             if (maxChartValue < dominio.getCantidadToneladasAnterior().intValue()) {
@@ -503,7 +524,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
             analisisMercadoTemp = dominio;
 
         }
-        maxChartValue += 300;
+        maxChartValue += 500;
 
         model.addSeries(toneladas);
         model.addSeries(precio);
@@ -534,7 +555,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
 
         yAxis.setLabel("Toneladas");
         yAxis.setMin(0);
-        yAxis.setTickInterval("150");
+        yAxis.setTickInterval("500");
         yAxis.setMax(maxChartValue);
     }
 
@@ -560,7 +581,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
         remanente.setLabel("Remanente");
         salidaMercancia.setLabel("Salida Mercancia");
 
-        maxChartValue = 300;
+        maxChartValue = 500;
         AnalisisMercado analisisMercadoTemp = null;
         for (AnalisisMercado dominio : lstEntradaMercanciaMes) {
 
@@ -591,7 +612,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
             analisisMercadoTemp = dominio;
 
         }
-        maxChartValue += 300;
+        maxChartValue += 500;
 
         model.addSeries(toneladas);
         model.addSeries(precio);
@@ -603,22 +624,134 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
         return model;
     }
 
+    public void generateChartLineNameDay() {
+
+        chartLineByNameDay = initChartLineNameDay();
+        chartLineByNameDay.setSeriesColors("0404B4,088A08,81BEF7,D0F5A9,");
+        chartLineByNameDay.setTitle("Análisis de Mercado por Día de la Semana");
+        chartLineByNameDay.setLegendPosition("ne");
+        chartLineByNameDay.setZoom(true);
+        chartLineByNameDay.setAnimate(true);
+        chartLineByNameDay.setShowPointLabels(true);
+        chartLineByNameDay.setDatatipFormat("%2$d");
+        chartLineByNameDay.setLegendCols(6);
+        chartLineByNameDay.setStacked(false);
+        chartLineByNameDay.getAxes().put(AxisType.X, new CategoryAxis("Fecha"));
+        chartLineByNameDay.getAxis(AxisType.X).setTickAngle(90);
+
+        Axis yAxis = chartLineByNameDay.getAxis(AxisType.Y);
+
+        yAxis.setLabel("Toneladas");
+        yAxis.setMin(0);
+        yAxis.setTickInterval("30");
+        yAxis.setMax(maxChartValue);
+
+    }
+
+    private LineChartModel initChartLineNameDay() {
+        count = 0;
+        LineChartModel model = new LineChartModel();
+        ChartSeries toneladas = new ChartSeries();
+        ChartSeries precio = new ChartSeries();
+        ChartSeries promedio = new ChartSeries();
+
+        toneladas.setLabel("Toneladas");
+        precio.setLabel("Precio");
+        promedio.setLabel("Promedio");
+        maxChartValue = 30;
+        for (AnalisisMercado dominio : lstEntradaMercanciaDayName) {
+
+            if (maxChartValue < dominio.getCantidadToneladas().intValue()) {
+                maxChartValue = dominio.getCantidadToneladas().intValue();
+            }
+
+            toneladas.set(dominio.getDescripcionFiltro(), dominio.getCantidadToneladas());
+            precio.set(dominio.getDescripcionFiltro(), dominio.getPrecio());
+
+            if (!dominio.getIdEntrada().equals(zero)) {
+                count++;
+                int promedioEntrada = 0;
+
+                promedio.set(dominio.getDescripcionFiltro(), promedioEntrada);
+            }
+
+        }
+        maxChartValue += 30;
+
+        model.addSeries(toneladas);
+        model.addSeries(precio);
+        model.addSeries(promedio);
+
+        return model;
+    }
+
+    public void generateChartBarNameDay() {
+
+        chartBarByNameDay = initChartBarNameDay();
+        chartBarByNameDay.setSeriesColors("0404B4,088A08,81BEF7,D0F5A9,");
+        chartBarByNameDay.setTitle("Análisis de Mercado por Día de la Semana");
+        chartBarByNameDay.setLegendPosition("ne");
+        chartBarByNameDay.setZoom(true);
+        chartBarByNameDay.setAnimate(true);
+        chartBarByNameDay.setShowPointLabels(true);
+        chartBarByNameDay.setDatatipFormat("%2$d");
+        chartBarByNameDay.setLegendCols(6);
+        chartBarByNameDay.setStacked(false);
+        chartBarByNameDay.getAxes().put(AxisType.X, new CategoryAxis("Fecha"));
+        chartBarByNameDay.getAxis(AxisType.X).setTickAngle(90);
+
+        Axis yAxis = chartBarByNameDay.getAxis(AxisType.Y);
+
+        yAxis.setLabel("Toneladas");
+        yAxis.setMin(0);
+        yAxis.setTickInterval("30");
+        yAxis.setMax(maxChartValue);
+    }
+
+    private BarChartModel initChartBarNameDay() {
+
+        BarChartModel model = new BarChartModel();
+        ChartSeries toneladas = new ChartSeries();
+        ChartSeries precio = new ChartSeries();
+
+        toneladas.setLabel("Toneladas");
+        precio.setLabel("Precio");
+
+        maxChartValue = 30;
+        for (AnalisisMercado dominio : lstEntradaMercanciaDayName) {
+
+            if (maxChartValue < dominio.getCantidadToneladas().intValue()) {
+                maxChartValue = dominio.getCantidadToneladas().intValue();
+            }
+
+            toneladas.set(dominio.getDescripcionFiltro(), dominio.getCantidadToneladas());
+            precio.set(dominio.getDescripcionFiltro(), dominio.getPrecio());
+        }
+
+        maxChartValue += 30;
+
+        model.addSeries(toneladas);
+        model.addSeries(precio);
+
+        return model;
+    }
+
     public void filtroPorProducto() {
         try {
             int registrosMostrarDia = 8;
-            int registrosMostrarSemana = 42;
+            int registrosMostrarSemana = 49;
             int registrosMostrarMes = 12;
 
             if (charExpander) {
                 registrosMostrarDia = 40;
-                registrosMostrarSemana = 320;
+                registrosMostrarSemana = 329;
             }
 
             if (data.getIdProductoFk() != null) {
                 lstEntradaMercancia = ifaceEntradaProductoCentral.getEntradaMercanciaByFiltro(registrosMostrarDia, 1, filtroFechaInicio, data.getIdProductoFk());
                 lstEntradaMercanciaSemana = ifaceEntradaProductoCentral.getEntradaMercanciaByFiltro(registrosMostrarSemana, 2, filtroFechaInicio, data.getIdProductoFk());
                 lstEntradaMercanciaMes = ifaceEntradaProductoCentral.getEntradaMercanciaByFiltro(registrosMostrarMes, 3, filtroFechaInicio, data.getIdProductoFk());
-                System.out.println("3 bean");
+                lstEntradaMercanciaDayName = ifaceEntradaProductoCentral.getAnalisMercadoByNameDayOfYear(TiempoUtil.getFechaDDMMYYYY(TiempoUtil.getDayOneYear(filtroFechaInicio)), TiempoUtil.getFechaDDMMYYYY(TiempoUtil.getDayEndYear(filtroFechaInicio)), data.getIdProductoFk(), TiempoUtil.nombreDia(filtroDiaSemana));
 
                 generateChartLine();
                 generateChartBar();
@@ -626,10 +759,14 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
                 generateChartLineSemana();
                 generateChartLineMes();
                 generateChartBarMes();
+                generateChartBarNameDay();
+                generateChartLineNameDay();
+
             } else {
                 lstEntradaMercancia.clear();
                 lstEntradaMercanciaSemana.clear();
                 lstEntradaMercanciaMes.clear();
+                lstEntradaMercanciaDayName.clear();
 
                 chartLineByDias = null;
                 chartBarByDias = null;
@@ -637,6 +774,8 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
                 chartBarBySemana = null;
                 chartLineBMes = null;
                 chartBarByMes = null;
+                chartBarByMes = null;
+                chartLineBMes = null;
 
             }
 
@@ -653,6 +792,10 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
         chartLineBySemana = null;
         chartLineBySemana = null;
         chartBarBySemana = null;
+        chartBarByNameDay = null;
+        chartLineByNameDay = null;
+        chartBarByMes = null;
+        chartLineBMes = null;
     }
 
     public String searchDatabyIdProducto() {
@@ -667,7 +810,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
     public void searchRemanente() {
         if (!insertar.equals("precioPromedio")) {
             data.setRemantePorSemana(ifaceEntradaProductoCentral.getRemanente(fechaRemanente, data.getIdProductoFk()));
-        }else{
+        } else {
             searchDatabyIdProducto();
         }
     }
@@ -809,6 +952,38 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
 
     public void setChartBarByMes(BarChartModel chartBarByMes) {
         this.chartBarByMes = chartBarByMes;
+    }
+
+    public LineChartModel getChartLineByNameDay() {
+        return chartLineByNameDay;
+    }
+
+    public void setChartLineByNameDay(LineChartModel chartLineByNameDay) {
+        this.chartLineByNameDay = chartLineByNameDay;
+    }
+
+    public BarChartModel getChartBarByNameDay() {
+        return chartBarByNameDay;
+    }
+
+    public void setChartBarByNameDay(BarChartModel chartBarByNameDay) {
+        this.chartBarByNameDay = chartBarByNameDay;
+    }
+
+    public int getFiltroDiaSemana() {
+        return filtroDiaSemana;
+    }
+
+    public void setFiltroDiaSemana(int filtroDiaSemana) {
+        this.filtroDiaSemana = filtroDiaSemana;
+    }
+
+    public int getFiltroPromedioSemana() {
+        return filtroPromedioSemana;
+    }
+
+    public void setFiltroPromedioSemana(int filtroPromedioSemana) {
+        this.filtroPromedioSemana = filtroPromedioSemana;
     }
 
 }

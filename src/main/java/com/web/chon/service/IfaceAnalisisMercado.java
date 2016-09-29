@@ -2,7 +2,6 @@ package com.web.chon.service;
 
 import com.web.chon.dominio.AnalisisMercado;
 import com.web.chon.core.service.PaginacionService;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -51,4 +50,14 @@ public interface IfaceAnalisisMercado extends PaginacionService<AnalisisMercado,
      * @return 
      */
     public int updateByIdProductoAndFecha(AnalisisMercado analisiMercado);
+    
+    /**
+     * Regresa una lista de todos los dias del año por dia de la semana
+     * @param fechaInicio
+     * @param fechaFin
+     * @param idProducto
+     * @param nombreDia
+     * @return ArrayList<AnalisisMercado>
+     */
+    public ArrayList<AnalisisMercado> getAnalisMercadoByNameDayOfYear(String fechaInicio, String fechaFin,String idProducto,String nombreDia);
 }
