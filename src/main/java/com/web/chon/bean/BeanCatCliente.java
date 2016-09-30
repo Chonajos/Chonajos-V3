@@ -108,6 +108,9 @@ public class BeanCatCliente implements BeanSimple {
         lista_entidades = ifaceCatEntidad.getEntidades();
         lista_entidades_2 = ifaceCatEntidad.getEntidades();
     }
+    public void changeView(){
+        System.out.println("Entro a Metodo");
+    }
 
     public void onRowEdit(RowEditEvent event) {
         //FacesMessage msg = new FacesMessage("Correo  Modificado", ((Correos) event.getObject()).getCorreo());
@@ -143,6 +146,9 @@ public class BeanCatCliente implements BeanSimple {
         try {
             BigDecimal id_cliente_next_val = new BigDecimal(ifaceCatCliente.getNextVal());
             data.setId_cliente(id_cliente_next_val);
+            Correos c = new Correos();
+            c.setCorreo(data.getEmail());
+            lista_emails.add(c);
 
             System.out.println("Cliente Bean: " + data.toString());
             if (ifaceCatCliente.insertCliente(data) == 0) {
@@ -274,6 +280,7 @@ public class BeanCatCliente implements BeanSimple {
     }
 
     public void buscaMunicipios() {
+        System.out.println("Error: "+data.getEstado());
         lista_municipios = ifaceCatMunicipio.getMunicipios(Integer.parseInt(data.getEstado()));
         buscaColonias();
     }

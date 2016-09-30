@@ -70,6 +70,7 @@ public class Cliente implements Serializable
     private BigDecimal utilizadoTotal;
     private BigDecimal creditoDisponible;
     private BigDecimal utilizadoDocumentos;
+    private BigDecimal tipoPersona;
 
     @Override
     public String toString() {
@@ -528,6 +529,14 @@ public class Cliente implements Serializable
 
     public void setCreditoDisponible(BigDecimal creditoDisponible) {
         this.creditoDisponible = creditoDisponible;
+    }
+
+    public BigDecimal getTipoPersona() {
+        return tipoPersona;
+    }
+
+    public void setTipoPersona(BigDecimal tipoPersona) {
+        this.tipoPersona = tipoPersona;
     }
     
     

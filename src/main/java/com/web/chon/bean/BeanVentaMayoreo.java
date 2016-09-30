@@ -173,8 +173,8 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         usuario = new Usuario();
         usuarioDominio = context.getUsuarioAutenticado();
         idSucu = new BigDecimal(usuarioDominio.getSucId());
-        
-        focus ="autocompleteProducto";
+
+        focus = "autocompleteProducto";
 
         usuario.setIdUsuarioPk(usuarioDominio.getIdUsuario());
         usuario.setIdSucursal(idSucu.intValue());
@@ -222,14 +222,15 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     }
 
     public void habilitarBotones() {
-        focus ="txtCantidadEmpaque";
         permisionToWrite = false;
         data.setPrecioProducto(selectedExistencia.getPrecioVenta());
     }
 
     public void calculaTotalTemporal() {
-
+        System.out.println("-----------------------------------------------------------------------");
+        System.out.println("Antes:" +totalProductoTemporal);
         totalProductoTemporal = data.getKilosVendidos().multiply(data.getPrecioProducto(), MathContext.UNLIMITED);
+        System.out.println("Despues" +totalProductoTemporal);
     }
 
     public void cancelarPedido() {
@@ -423,7 +424,8 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
             JsfUtil.addErrorMessage("Seleccione un Producto de la tabla o peso en 0 Kg.");
 
         } else //            System.out.println("idSubProducto:" + selectedExistencia.getIdSubProductoFK());
-         if (selectedExistencia.getPrecioVenta() == null) {
+        {
+            if (selectedExistencia.getPrecioVenta() == null) {
                 JsfUtil.addErrorMessage("No se tiene precio de venta para este producto. Contactar al administrador.");
             } else if (data.getPrecioProducto().intValue() < selectedExistencia.getPrecioMinimo().intValue() || data.getPrecioProducto().intValue() > selectedExistencia.getPrecioMaximo().intValue()) {
                 JsfUtil.addErrorMessage("Precio de Venta fuera de Rango \n Precio Maximo =" + selectedExistencia.getPrecioMaximo() + " Precio minimo =" + selectedExistencia.getPrecioMinimo());
@@ -477,6 +479,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
                 }
             }
+        }
         calculaAhorro(null);
 
     }
@@ -1331,13 +1334,6 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         this.dejaACuenta = dejaACuenta;
     }
 
-    public String getFocus() {
-        return focus;
-    }
+   
 
-    public void setFocus(String focus) {
-        this.focus = focus;
-    }
-
-    
 }

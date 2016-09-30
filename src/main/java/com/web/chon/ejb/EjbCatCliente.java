@@ -32,20 +32,23 @@ public class EjbCatCliente implements NegocioCatCliente {
         try {
 
             //System.out.println("EJB_GET_CLIENTE");
-            Query query = em.createNativeQuery("select c.* ,en.ID_ENTIDAD_PK, en.NOMBRE_ENTIDAD ,en1.ID_ENTIDAD_PK, en1.NOMBRE_ENTIDAD,m.NOMBRE_MUNICIPIO,m1.NOMBRE_MUNICIPIO,cp.NOMBRE_COLONIA,cp.CODIGO_POSTAL,cp1.NOMBRE_COLONIA,cp1.CODIGO_POSTAL,m.ID_MUNICIPIO_PK,m.ID_MUNICIPIO_PK,cp.ID_PK,cp1.ID_PK "
-                    + "from Cliente c "
-                    + "INNER JOIN CODIGOS_POSTALES cp "
-                    + "on c.ID_CP=cp.ID_PK "
-                    + "INNER JOIN Municipios m "
-                    + "on cp.ID_MUNICIPIO_FK=m.id_municipio_pk "
-                    + "INNER JOIN ENTIDAD en "
-                    + "on en.ID_ENTIDAD_PK=m.ID_ENTIDAD_FK "
-                    + "INNER JOIN CODIGOS_POSTALES cp1 "
-                    + "on c.ID_CP_FISCAL=cp1.ID_PK "
-                    + "INNER JOIN Municipios m1 "
-                    + "on cp.ID_MUNICIPIO_FK=m1.id_municipio_pk "
-                    + "INNER JOIN ENTIDAD en1 "
-                    + "on en1.ID_ENTIDAD_PK=m1.ID_ENTIDAD_FK");
+            Query query = em.createNativeQuery("select c.* ,en.ID_ENTIDAD_PK, en.NOMBRE_ENTIDAD ,en1.ID_ENTIDAD_PK, \n" +
+"en1.NOMBRE_ENTIDAD,m.NOMBRE_MUNICIPIO,m1.NOMBRE_MUNICIPIO,cp.NOMBRE_COLONIA,\n" +
+"cp.CODIGO_POSTAL,cp1.NOMBRE_COLONIA,cp1.CODIGO_POSTAL,m.ID_MUNICIPIO_PK,m.ID_MUNICIPIO_PK,cp.ID_PK,cp1.ID_PK \n" +
+"from Cliente c \n" +
+"INNER JOIN CODIGOS_POSTALES cp \n" +
+"on c.ID_CP=cp.ID_PK \n" +
+"INNER JOIN Municipios m \n" +
+"on cp.ID_MUNICIPIO_FK=m.id_municipio_pk \n" +
+"INNER JOIN ENTIDAD en \n" +
+"on en.ID_ENTIDAD_PK=m.ID_ENTIDAD_FK \n" +
+"INNER JOIN CODIGOS_POSTALES cp1 \n" +
+"on c.ID_CP_FISCAL=cp1.ID_PK \n" +
+"INNER JOIN Municipios m1 \n" +
+"on cp.ID_MUNICIPIO_FK=m1.id_municipio_pk \n" +
+"INNER JOIN ENTIDAD en1 \n" +
+"on en1.ID_ENTIDAD_PK=m1.ID_ENTIDAD_FK\n" +
+"order by c.NOMBRE");
             List<Object[]> resultList = null;
             resultList = query.getResultList();
             return resultList;
@@ -92,7 +95,7 @@ public class EjbCatCliente implements NegocioCatCliente {
 
         try {
             //System.out.println("Cliente a modificar :" + clie.toString());
-            Query query = em.createNativeQuery("UPDATE CLIENTE SET NOMBRE = ?, APELLIDO_PATERNO = ?, APELLIDO_MATERNO = ?, EMPRESA = ?, CALLE = ?, SEXO = ?, FECHA_NACIMIENTO = ?,TELEFONO_MOVIL = ?, TELEFONO_FIJO = ?, EXTENSION = ?, NUM_INT = ? , NUM_EXT = ?, CLAVECELULAR = ?, LADACELULAR = ?, ID_CP= ?,CALLEFISCAL = ?,NUMINTFIS = ?,NUMEXTFIS = ?, ID_CP_FISCAL = ?, NEXTEL = ?,RAZON = ?,RFC = ?, LADAOFICINA = ?,CLAVEOFICINA = ?,NEXTELCLAVE = ?, STATUS =? ,DIAS_CREDITO = ?,MONTO_CREDITO = ? WHERE ID_CLIENTE = ? ");
+            Query query = em.createNativeQuery("UPDATE CLIENTE SET NOMBRE = ?, APELLIDO_PATERNO = ?, APELLIDO_MATERNO = ?, EMPRESA = ?, CALLE = ?, SEXO = ?, FECHA_NACIMIENTO = ?,TELEFONO_MOVIL = ?, TELEFONO_FIJO = ?, EXTENSION = ?, NUM_INT = ? , NUM_EXT = ?, CLAVECELULAR = ?, LADACELULAR = ?, ID_CP= ?,CALLEFISCAL = ?,NUMINTFIS = ?,NUMEXTFIS = ?, ID_CP_FISCAL = ?, NEXTEL = ?,RAZON = ?,RFC = ?, LADAOFICINA = ?,CLAVEOFICINA = ?,NEXTELCLAVE = ?, STATUS =? ,DIAS_CREDITO = ?,MONTO_CREDITO = ?, TIPO_PERSONA = ?WHERE ID_CLIENTE = ? ");
             query.setParameter(1, clie.getNombre());
             query.setParameter(2, clie.getPaterno());
             query.setParameter(3, clie.getMaterno());
@@ -125,6 +128,7 @@ public class EjbCatCliente implements NegocioCatCliente {
             query.setParameter(27, clie.getDiasCredito());
             query.setParameter(28, clie.getLimiteCredito());
             query.setParameter(29, clie.getId_cliente());
+            query.setParameter(30, clie.getTipoPersona());
 
             return query.executeUpdate();
 
@@ -142,8 +146,8 @@ public class EjbCatCliente implements NegocioCatCliente {
         //System.out.println("EJB_INSERTA_CLIENTE");
         try {
             //System.out.println("insert : " + clie.toString());
-            Query query = em.createNativeQuery("INSERT INTO CLIENTE (ID_CLIENTE,NOMBRE, APELLIDO_PATERNO, APELLIDO_MATERNO, EMPRESA, CALLE, SEXO, FECHA_NACIMIENTO,TELEFONO_MOVIL, TELEFONO_FIJO, EXTENSION,  NUM_INT, NUM_EXT,  CLAVECELULAR, LADACELULAR,ID_CP,CALLEFISCAL,NUMINTFIS,NUMEXTFIS,ID_CP_FISCAL,NEXTEL,RAZON,RFC,LADAOFICINA,CLAVEOFICINA,NEXTELCLAVE,STATUS,DIAS_CREDITO,MONTO_CREDITO,FECHA_ALTA) "
-                    + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,sysdate)");
+            Query query = em.createNativeQuery("INSERT INTO CLIENTE (ID_CLIENTE,NOMBRE, APELLIDO_PATERNO, APELLIDO_MATERNO, EMPRESA, CALLE, SEXO, FECHA_NACIMIENTO,TELEFONO_MOVIL, TELEFONO_FIJO, EXTENSION,  NUM_INT, NUM_EXT,  CLAVECELULAR, LADACELULAR,ID_CP,CALLEFISCAL,NUMINTFIS,NUMEXTFIS,ID_CP_FISCAL,NEXTEL,RAZON,RFC,LADAOFICINA,CLAVEOFICINA,NEXTELCLAVE,STATUS,DIAS_CREDITO,MONTO_CREDITO,FECHA_ALTA,TIPO_PERSONA) "
+                    + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,sysdate,?)");
             query.setParameter(1, clie.getId_cliente());
             query.setParameter(2, clie.getNombre());
             query.setParameter(3, clie.getPaterno());
@@ -176,6 +180,7 @@ public class EjbCatCliente implements NegocioCatCliente {
             query.setParameter(27, 1);//activo
             query.setParameter(28, clie.getDiasCredito());
             query.setParameter(29, clie.getLimiteCredito());
+            query.setParameter(30, clie.getTipoPersona());
 
             return query.executeUpdate();
 

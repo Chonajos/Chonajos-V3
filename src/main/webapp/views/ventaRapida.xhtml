@@ -148,7 +148,10 @@
                                      selection="#{beanVentaMayoreoRapido.selectedExistencia}"   
                                      rowKey="#{modeloExistencias.idExistenciaProductoPk}" 
                                      emptyMessage="Productos.">
-                            <p:ajax event="rowSelectRadio" update=":formContent:txtCantidadEmpaque :formContent:txtKilos :formContent:txtPrecioVenta" listener="#{beanVentaMayoreoRapido.habilitarBotones()}"/>
+                            <p:ajax event="rowSelectRadio" 
+                             update=":formContent:txtCantidadEmpaque :formContent:txtKilos :formContent:txtPrecioVenta" 
+                             listener="#{beanVentaMayoreoRapido.habilitarBotones()}"/>
+                            
                             <p:column selectionMode="single"   style="width:16px;text-align:center" />
 
                             <p:column headerText="Carro" width="40px;" style="text-align:center">

@@ -286,7 +286,8 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
                     //System.out.println("IdVentaProducto: " + idVentaProducto);
                     producto.setIdVentaMayProdPk(idVentaProducto);
                     opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
-                    opcaja.setMonto(totalVenta);
+                    opcaja.setMonto(TotalVentaGeneral);
+                    System.out.println("**************************====" + TotalVentaGeneral + "*********************");
                     if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
 
                         //System.out.println("Producto: " + producto.toString());

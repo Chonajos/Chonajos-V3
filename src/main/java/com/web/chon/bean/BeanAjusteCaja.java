@@ -87,6 +87,7 @@ public class BeanAjusteCaja  implements Serializable{
         opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
         opcaja.setMonto(monto);
         opcaja.setComentarios(comentarios);
+        opcaja.setEntradaSalida(new BigDecimal(filtroES));
         
 
         if(caja.getIdCajaPk()!=null)
