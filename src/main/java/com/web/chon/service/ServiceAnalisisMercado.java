@@ -163,7 +163,7 @@ public class ServiceAnalisisMercado implements IfaceAnalisisMercado {
                     fechaInicio = TiempoUtil.fechaTextoDiaMesAnio(rangoFechaInicio.get(0));
                     rangoFechaFin = TiempoUtil.getintervalWeekDDMMYYYYbyDay(fechaFin);
                     fechaFin = TiempoUtil.fechaTextoDiaMesAnio(rangoFechaFin.get(6));
-                    fechaFin = TiempoUtil.sumarRestarDias(fechaFin, -14);
+                    fechaFin = TiempoUtil.sumarRestarDias(fechaFin, -7);
 
                     Date anioAnteriorInicio = fechaInicio;
                     Date anioAnteriorFin = fechaInicio;
@@ -178,7 +178,7 @@ public class ServiceAnalisisMercado implements IfaceAnalisisMercado {
 
                         lstObject = ejb.getEntradaProductoByFiltroWeek(rangoFechaInicio.get(0), rangoFechaInicio.get(6), idProducto);
                         List<Object[]> lstObjectAnterior = ejb.getEntradaProductoByFiltroWeek(TiempoUtil.getFechaDDMMYYYY(anioAnteriorInicio), TiempoUtil.getFechaDDMMYYYY(anioAnteriorFin), idProducto);
-                        fechaInicio = TiempoUtil.sumarRestarDias(fechaInicio, 7);
+                        
 
                         for (Object[] obj : lstObject) {
                             AnalisisMercado dominio = new AnalisisMercado();
@@ -197,7 +197,8 @@ public class ServiceAnalisisMercado implements IfaceAnalisisMercado {
                             lstEntradaMercancia.add(dominio);
                             cont++;
                         }
-
+                        
+                        fechaInicio = TiempoUtil.sumarRestarDias(fechaInicio, 7);
                         rangoFechaInicio = TiempoUtil.getintervalWeekDDMMYYYYbyDay(fechaInicio);
                     }
 
@@ -330,7 +331,6 @@ public class ServiceAnalisisMercado implements IfaceAnalisisMercado {
         for (Object[] obj : lstObject) {
             AnalisisMercado dominio = new AnalisisMercado();
         
-            System.out.println("termina servicw 1");
             dominio.setIdEntrada(obj[1] != null ? new BigDecimal(obj[1].toString()) : new BigDecimal(0));
             dominio.setIdProductoFk(idProducto);
             dominio.setPrecio(obj[3] != null ? new BigDecimal(obj[3].toString()) : new BigDecimal(0));

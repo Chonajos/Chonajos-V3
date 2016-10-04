@@ -111,6 +111,7 @@ public class ServiceCredito implements IfaceCredito {
     public int insert(Credito credito) {
         try {
             getEjb();
+            System.out.println("credito "+credito.toString());
             int idCredito = ejb.nextVal();
 
             if (ejb.insert(credito, idCredito) == 0) {
