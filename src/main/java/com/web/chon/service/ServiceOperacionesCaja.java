@@ -8,6 +8,7 @@ package com.web.chon.service;
 
 import com.web.chon.dominio.OperacionesCaja;
 import com.web.chon.dominio.TipoOperacion;
+import com.web.chon.dominio.Usuario;
 import com.web.chon.util.Utilidades;
 import java.math.BigDecimal;
 import java.util.logging.Level;
@@ -62,11 +63,11 @@ public class ServiceOperacionesCaja implements IfaceOperacionesCaja {
     }
 
     @Override
-    public ArrayList<OperacionesCaja> getOperacionesBy(BigDecimal idCajaFk, BigDecimal idOperacionFk, BigDecimal idConceptoFk, String fechaInicio, String fechaFin, BigDecimal idStatusFk, BigDecimal idUserFk) {
+    public ArrayList<OperacionesCaja> getOperacionesBy(BigDecimal idCajaFk, BigDecimal idOperacionFk, BigDecimal idConceptoFk, String fechaInicio, String fechaFin, BigDecimal idStatusFk, BigDecimal idUserFk,BigDecimal idCorte) {
         getEjb();
         int i = 1;
         ArrayList<OperacionesCaja> listaOperaciones = new ArrayList<OperacionesCaja>();
-        List<Object[]> lstObject = ejb.getOperacionesBy(idCajaFk, idCajaFk, idConceptoFk, idConceptoFk, fechaInicio, fechaFin, idStatusFk, idUserFk);
+        List<Object[]> lstObject = ejb.getOperacionesBy(idCajaFk, idCajaFk, idConceptoFk, idConceptoFk, fechaInicio, fechaFin, idStatusFk, idUserFk,idCorte);
         for (Object[] obj : lstObject) 
         {
             OperacionesCaja op = new OperacionesCaja();
@@ -275,8 +276,22 @@ public class ServiceOperacionesCaja implements IfaceOperacionesCaja {
         }
         return listaOperaciones;
     
-    
-    
+    }
+
+    @Override
+    public ArrayList<Usuario> getResponsables(BigDecimal idCajaFk) {
+        getEjb();
+        ArrayList<Usuario> listaResponsables = new ArrayList<Usuario>();
+        List<Object[]> lstObject = ejb.getResponsables(idCajaFk);
+        for (Object[] obj : lstObject) 
+        {
+            Usuario u = new Usuario();
+            u.setIdUsuarioPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+            u.setNombreUsuario(obj[1] == null ? null : obj[1].toString());
+            System.out.println("-------------------------------------"+u.toString());
+            listaResponsables.add(u);
+        }
+        return listaResponsables;
     }
 
     

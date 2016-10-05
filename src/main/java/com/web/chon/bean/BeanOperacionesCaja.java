@@ -10,6 +10,7 @@ import com.web.chon.dominio.ConceptosES;
 import com.web.chon.dominio.OperacionesCaja;
 import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.TipoOperacion;
+import com.web.chon.dominio.Usuario;
 import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceCaja;
@@ -57,6 +58,7 @@ public class BeanOperacionesCaja implements Serializable {
     private ArrayList<Caja> listaCajas;
     private ArrayList<ConceptosES> listaConceptos;
     private ArrayList<TipoOperacion> listaTiposOperaciones;
+    private ArrayList<Usuario> listaResponsables;
 
     private String title;
     private String viewEstate;
@@ -69,6 +71,8 @@ public class BeanOperacionesCaja implements Serializable {
     private boolean enableCalendar;
 
     private BigDecimal idSucursalBean;
+    private BigDecimal idUsuarioCajaBean;
+    private BigDecimal idStatusBean;
 
     private BigDecimal idCajaBean;
     private BigDecimal idConceptoBean;
@@ -76,8 +80,13 @@ public class BeanOperacionesCaja implements Serializable {
     private BigDecimal monto;
     private String comentarios;
 
+    private BigDecimal idCorteBean;
+
     @PostConstruct
     public void init() {
+        idCajaBean = new BigDecimal(0);
+        idCorteBean = new BigDecimal(1);
+        idUsuarioCajaBean = new BigDecimal(0);
         usuario = context.getUsuarioAutenticado();
         setTitle("Relación de Operaciones de Caja");
         setViewEstate("init");
@@ -87,19 +96,30 @@ public class BeanOperacionesCaja implements Serializable {
         idSucursalBean = new BigDecimal(usuario.getSucId());
         listaCajas = ifaceCaja.getCajas();
         listaOperaciones = new ArrayList<OperacionesCaja>();
+        listaResponsables = new ArrayList<Usuario>();
         Caja c = new Caja();
         c = ifaceCaja.getCajaByIdUsuarioPk(usuario.getIdUsuario());
         idCajaBean = c.getIdCajaPk();
+
         listaConceptos = ifaceConceptos.getConceptos();
         listaTiposOperaciones = ifaceTiposOperacion.getOperaciones();
-        listaOperaciones = ifaceOperacionesCaja.getOperacionesBy(idCajaBean, idTipoOperacionBean, idConceptoBean, TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicio), TiempoUtil.getFechaDDMMYYYY(fechaFiltroFin), idCajaBean, usuario.getIdUsuario());
+        listaResponsables = ifaceOperacionesCaja.getResponsables(idCajaBean);
+        listaOperaciones = ifaceOperacionesCaja.getOperacionesBy(idCajaBean, idTipoOperacionBean, idConceptoBean, TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicio), TiempoUtil.getFechaDDMMYYYY(fechaFiltroFin), idStatusBean, usuario.getIdUsuario(), idCorteBean);
+
+        if (idCajaBean != null) {
+            idUsuarioCajaBean = listaResponsables.get(0).getIdUsuarioPk();
+        }
 
     }
 
+    public void buscarReponsables() {
+        idUsuarioCajaBean = null;
+        listaResponsables = ifaceOperacionesCaja.getResponsables(idCajaBean);
+    }
+
     public void buscar() {
-        listaOperaciones = ifaceOperacionesCaja.getOperacionesBy(idCajaBean, idTipoOperacionBean, idConceptoBean, TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicio), TiempoUtil.getFechaDDMMYYYY(fechaFiltroFin), idCajaBean, usuario.getIdUsuario());
-
-
+        System.out.println("Entro a buscar");
+        listaOperaciones = ifaceOperacionesCaja.getOperacionesBy(idCajaBean, idTipoOperacionBean, idConceptoBean, TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicio), TiempoUtil.getFechaDDMMYYYY(fechaFiltroFin), idStatusBean, idUsuarioCajaBean, idCorteBean);
     }
 
     public void verificarCombo() {
@@ -299,6 +319,38 @@ public class BeanOperacionesCaja implements Serializable {
 
     public void setComentarios(String comentarios) {
         this.comentarios = comentarios;
+    }
+
+    public BigDecimal getIdUsuarioCajaBean() {
+        return idUsuarioCajaBean;
+    }
+
+    public void setIdUsuarioCajaBean(BigDecimal idUsuarioCajaBean) {
+        this.idUsuarioCajaBean = idUsuarioCajaBean;
+    }
+
+    public ArrayList<Usuario> getListaResponsables() {
+        return listaResponsables;
+    }
+
+    public void setListaResponsables(ArrayList<Usuario> listaResponsables) {
+        this.listaResponsables = listaResponsables;
+    }
+
+    public BigDecimal getIdStatusBean() {
+        return idStatusBean;
+    }
+
+    public void setIdStatusBean(BigDecimal idStatusBean) {
+        this.idStatusBean = idStatusBean;
+    }
+
+    public BigDecimal getIdCorteBean() {
+        return idCorteBean;
+    }
+
+    public void setIdCorteBean(BigDecimal idCorteBean) {
+        this.idCorteBean = idCorteBean;
     }
 
 }

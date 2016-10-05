@@ -23,12 +23,13 @@ public interface NegocioOperacionesCaja {
     public int updateStatusConceptoOperacion(BigDecimal idOperacionPk,BigDecimal idStatusFk,BigDecimal idConceptoFk);
     public int updateCorteCaja(BigDecimal idOperacionPk,BigDecimal idCorteCajaFk);
     public List<Object[]> getOperacionByIdOperacionPK(BigDecimal idOperacionPk);
-    public List<Object[]> getOperacionesBy(BigDecimal idCorteCajaFk, BigDecimal idCajaFk,BigDecimal idCajaDestinoFk,BigDecimal idConceptoFk,String fechaInicio, String fechaFin,BigDecimal idStatusFk,BigDecimal idUserFk);
+    public List<Object[]> getOperacionesBy(BigDecimal idCorteCajaFk, BigDecimal idCajaFk,BigDecimal idCajaDestinoFk,BigDecimal idConceptoFk,String fechaInicio, String fechaFin,BigDecimal idStatusFk,BigDecimal idUserFk,BigDecimal idCorte);
     public List<Object[]> getTransferenciasEntrantes(BigDecimal idCorteCajaFk);
     public List<Object[]> getDepositosEntrantes();
     public List<Object[]> getOperacionesCorteBy(BigDecimal idCajaFk, BigDecimal idUserFk, BigDecimal idES);
     public List<Object[]> getOperaciones(BigDecimal idCajaFk,BigDecimal idUserFk);
     public List<Object[]> getCheques(BigDecimal idCajaFk, BigDecimal idUserFk,BigDecimal idINOUT);
+    public List<Object[]> getResponsables(BigDecimal idCajaFk);
     public int getNextVal();
     
 }
