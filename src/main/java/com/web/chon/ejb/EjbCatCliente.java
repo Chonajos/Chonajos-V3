@@ -94,8 +94,8 @@ public class EjbCatCliente implements NegocioCatCliente {
     public int updateCliente(Cliente clie) {
 
         try {
-            //System.out.println("Cliente a modificar :" + clie.toString());
-            Query query = em.createNativeQuery("UPDATE CLIENTE SET NOMBRE = ?, APELLIDO_PATERNO = ?, APELLIDO_MATERNO = ?, EMPRESA = ?, CALLE = ?, SEXO = ?, FECHA_NACIMIENTO = ?,TELEFONO_MOVIL = ?, TELEFONO_FIJO = ?, EXTENSION = ?, NUM_INT = ? , NUM_EXT = ?, CLAVECELULAR = ?, LADACELULAR = ?, ID_CP= ?,CALLEFISCAL = ?,NUMINTFIS = ?,NUMEXTFIS = ?, ID_CP_FISCAL = ?, NEXTEL = ?,RAZON = ?,RFC = ?, LADAOFICINA = ?,CLAVEOFICINA = ?,NEXTELCLAVE = ?, STATUS =? ,DIAS_CREDITO = ?,MONTO_CREDITO = ?, TIPO_PERSONA = ?WHERE ID_CLIENTE = ? ");
+            System.out.println("Cliente a modificar :" + clie.toString());
+            Query query = em.createNativeQuery("UPDATE CLIENTE SET NOMBRE = ?, APELLIDO_PATERNO = ?, APELLIDO_MATERNO = ?, EMPRESA = ?, CALLE = ?, SEXO = ?, FECHA_NACIMIENTO = ?,TELEFONO_MOVIL = ?, TELEFONO_FIJO = ?, EXTENSION = ?, NUM_INT = ? , NUM_EXT = ?, CLAVECELULAR = ?, LADACELULAR = ?, ID_CP= ?,CALLEFISCAL = ?,NUMINTFIS = ?,NUMEXTFIS = ?, ID_CP_FISCAL = ?, NEXTEL = ?,RAZON = ?,RFC = ?, LADAOFICINA = ?,CLAVEOFICINA = ?,NEXTELCLAVE = ?, STATUS =? ,DIAS_CREDITO = ?,MONTO_CREDITO = ?, TIPO_PERSONA = ?  WHERE ID_CLIENTE = ? ");
             query.setParameter(1, clie.getNombre());
             query.setParameter(2, clie.getPaterno());
             query.setParameter(3, clie.getMaterno());
@@ -134,6 +134,8 @@ public class EjbCatCliente implements NegocioCatCliente {
 
         } catch (Exception ex) {
 
+            System.out.println("error ");
+            System.out.println("error >> "+ex.getMessage().toString());
             Logger.getLogger(EjbCatCliente.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }

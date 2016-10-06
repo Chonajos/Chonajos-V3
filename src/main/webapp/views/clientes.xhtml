@@ -111,13 +111,13 @@
                         <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 form-group ">
                             <h:outputLabel class="col-lg-12 col-md-3 col-sm-3 col-xs-12 alignLeft" for="radioTipoPersona" 
                                            value="Tipo de Persona:" style="padding: 0px" />
-                            <h:selectOneRadio class="col-lg-12 col-md-3 col-sm-3 col-xs-12 alignLeftRadioButton"  
+                            <p:selectOneRadio class="col-lg-12 col-md-3 col-sm-3 col-xs-12 alignLeftRadioButton"  
                                               id="radioTipoPersona" label="Sexo" value="#{beanCatCliente.data.tipoPersona}" 
                                               disabled="#{beanCatCliente.permissionToWrite}">
                                 <f:selectItem itemLabel="Persona Fisica" itemValue="1" class="alignLeftRadioButton"/>
                                 <f:selectItem itemLabel="Persona Moral" itemValue="2" class="alignLeftRadioButton"/>
                                 <p:ajax event="change" listener="#{beanCatCliente.changeView()}" update=":formCliente" />
-                            </h:selectOneRadio>
+                            </p:selectOneRadio>
                         </div>
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                             <p:fragment rendered="#{beanCatCliente.banderaTipoCliente=='pm'}">

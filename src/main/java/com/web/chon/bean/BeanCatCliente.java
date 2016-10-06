@@ -14,6 +14,7 @@ import com.web.chon.service.IfaceCatCorreos;
 import com.web.chon.service.IfaceCatEntidad;
 import com.web.chon.service.IfaceCatMotivos;
 import com.web.chon.service.IfaceCatMunicipio;
+import com.web.chon.util.JsfUtil;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,10 +77,9 @@ public class BeanCatCliente implements BeanSimple {
 
     @PostConstruct
     public void init() {
-        
-        banderaTipoCliente= "pf";
+
+        banderaTipoCliente = "pf";
         data = new Cliente();
-        data.setTipoPersona("1");
         model = new ArrayList<Cliente>();
         model = new ArrayList<Cliente>();
         bajaCliente = new BajaClientes();
@@ -112,15 +112,13 @@ public class BeanCatCliente implements BeanSimple {
         lista_entidades = ifaceCatEntidad.getEntidades();
         lista_entidades_2 = ifaceCatEntidad.getEntidades();
     }
-    public void changeView(){
-        System.out.println("Entro a Metodo:"+data.getTipoPersona() );
-        if(data.getTipoPersona().equals("1"))
-        {
+
+    public void changeView() {
+        System.out.println("Entro a Metodo:" + data.getTipoPersona());
+        if (data.getTipoPersona().equals("1")) {
             banderaTipoCliente = "pf";
-            
-        }
-        else
-        {
+
+        } else {
             banderaTipoCliente = "pm";
         }
     }
@@ -221,29 +219,38 @@ public class BeanCatCliente implements BeanSimple {
     @Override
     public String update() {
         try {
-            if (data.isStatusClienteBoolean()) {
-                data.setStatus_cliente(1);
-                ifaceBajaCliente.deleteCliente(data.getId_cliente());
-            } else {
-                data.setStatus_cliente(2);
-            }
-            ifaceCatCliente.updateCliente(data);
+//            if (data.isStatusClienteBoolean()) 
+//            {
+//                data.setStatus_cliente(1);
+//                ifaceBajaCliente.deleteCliente(data.getId_cliente());
+//            } else 
+//            {
+//                data.setStatus_cliente(2);
+//            }
+            System.out.println("update controller");
+            if (ifaceCatCliente.updateCliente(data) == 1) {
+                System.out.println("update 1");
 
-            for (int y = 0; y < data.getEmails().size(); y++) {
-                data.getEmails().get(y).setId_cliente_fk(data.getId_cliente());
+                for (int y = 0; y < data.getEmails().size(); y++) {
+                    data.getEmails().get(y).setId_cliente_fk(data.getId_cliente());
 
-                if (ifaceCatCorreos.updateCorreos(data.getEmails().get(y)) == 0) {
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "No se modificó o no se inserto correo repetido:" + data.getNombre() + "."));
-                } else {
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Los datos del cliente se han modificado."));
+                    if (ifaceCatCorreos.updateCorreos(data.getEmails().get(y)) == 0) {
+
+                        JsfUtil.addErrorMessageClean("Error al modificar Correo");
+                    } else {
+                        JsfUtil.addSuccessMessage("Se han actualizado los datos correctamente");
+                    }
                 }
+            } else {
+                System.out.println("0");
+                JsfUtil.addErrorMessage("Ocurrio un problema al actualizar el cliente");
             }
 
         } catch (Exception ex) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar modificar el registro :" + data.getNombre() + "."));
-            System.out.println("ERROR >" );
-            ex.printStackTrace();
+            System.out.println("error beancontroller "+ex.getMessage());
+            JsfUtil.addErrorMessage("Ocurrio un problema al actualizar el cliente");
         }
+        System.out.println("end");
         backView();
         return "clientes";
 
@@ -286,6 +293,7 @@ public class BeanCatCliente implements BeanSimple {
     public void viewNew() {
 
         data = new Cliente();
+        data.setTipoPersona("1");
         setTitle("Alta de Clientes");
         setViewEstate("new");
         permissionToWrite = false;
@@ -293,7 +301,7 @@ public class BeanCatCliente implements BeanSimple {
     }
 
     public void buscaMunicipios() {
-        System.out.println("Error: "+data.getEstado());
+        System.out.println("Error: " + data.getEstado());
         lista_municipios = ifaceCatMunicipio.getMunicipios(Integer.parseInt(data.getEstado()));
         buscaColonias();
     }
@@ -373,7 +381,7 @@ public class BeanCatCliente implements BeanSimple {
         }
 
     }
-    
+
     public Cliente getCliente() {
         return data;
     }
@@ -589,6 +597,5 @@ public class BeanCatCliente implements BeanSimple {
     public void setBanderaTipoCliente(String banderaTipoCliente) {
         this.banderaTipoCliente = banderaTipoCliente;
     }
-    
 
 }
