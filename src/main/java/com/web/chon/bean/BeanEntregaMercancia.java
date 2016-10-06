@@ -113,40 +113,52 @@ public class BeanEntregaMercancia implements Serializable {
 
         int insertEntregaMercancia = 0;
 
+        System.out.println("print");
         boolean validaEntregaTotal = true;
 
-        for (EntregaMercancia dominio : model) {
-            if (dominio.getEmpaquesEntregar() != null && dominio.getEmpaquesEntregar().compareTo(BIGDECIMAL_ZERO) != 0) {
-                if (dominio.getEmpaquesRemanente().compareTo(dominio.getEmpaquesEntregar().add(dominio.getEmpaquesEntregados())) == -1) {
-                    JsfUtil.addErrorMessage("La cantidad de paquetes o de kilos a entregar es mayor a la de la venta.");
-                    return;
-
-                } else {
-
-                    if (dominio.getEmpaquesRemanente().compareTo(dominio.getEmpaquesEntregar().add(dominio.getEmpaquesEntregados())) == 0 && validaEntregaTotal) {
-                        validaEntregaTotal = true;
-                    } else {
-                        validaEntregaTotal = false;
-                    }
-
-                    dominio.setIdUsuario(usuarioDominio.getIdUsuario());
-                    insertEntregaMercancia = ifaceEntregaMercancia.insert(dominio);
-                    if (insertEntregaMercancia == 1) {
-                        JsfUtil.addSuccessMessage("Se entrego correctamente.");
-                        //ejecuta un update al formulario con el id :formContent
-
-                        dominio.getEmpaquesEntregados().add(dominio.getEmpaquesEntregar());
+        if (model != null && !model.isEmpty()) {
+            for (EntregaMercancia dominio : model) {
+                System.out.println("for");
+                if (dominio.getEmpaquesEntregar() != null && dominio.getEmpaquesEntregar().compareTo(BIGDECIMAL_ZERO) != 0) {
+                    if (dominio.getEmpaquesRemanente().compareTo(dominio.getEmpaquesEntregar().add(dominio.getEmpaquesEntregados())) == -1) {
+                        JsfUtil.addErrorMessage("La cantidad de paquetes o de kilos a entregar es mayor a la de la venta.");
+                        return;
 
                     } else {
-                        JsfUtil.addErrorMessage("Ocurrio un error al hacer la entrega.");
+
+                        if (dominio.getEmpaquesRemanente().compareTo(dominio.getEmpaquesEntregar().add(dominio.getEmpaquesEntregados())) == 0 && validaEntregaTotal) {
+                            System.out.println("for true");
+                            validaEntregaTotal = true;
+                        } else {
+                            System.out.println("for false");
+                            validaEntregaTotal = false;
+                        }
+
+                        dominio.setIdUsuario(usuarioDominio.getIdUsuario());
+                        insertEntregaMercancia = ifaceEntregaMercancia.insert(dominio);
+                        if (insertEntregaMercancia == 1) {
+                            System.out.println("Se entrego correctamente");
+                            JsfUtil.addSuccessMessage("Se entrego correctamente.");
+                            //ejecuta un update al formulario con el id :formContent
+
+                            dominio.getEmpaquesEntregados().add(dominio.getEmpaquesEntregar());
+
+                        } else {
+                            System.out.println("Ocurrio un error al hacer la entrega.");
+                            JsfUtil.addErrorMessage("Ocurrio un error al hacer la entrega.");
+                        }
+
                     }
+                } else if (dominio.getEmpaquesRemanente().compareTo(dominio.getEmpaquesEntregados()) != 0) {
+                    System.out.println("false valida entrega total");
+                    validaEntregaTotal = false;
 
                 }
-            } else if (dominio.getEmpaquesRemanente().compareTo(dominio.getEmpaquesEntregados()) != 0) {
-                validaEntregaTotal = false;
 
             }
-
+        } else {
+            JsfUtil.addErrorMessage("Tiene que Bucar un Folio de Venta Valido.");
+            validaEntregaTotal = false;
         }
 
         if (validaEntregaTotal) {
@@ -299,7 +311,7 @@ public class BeanEntregaMercancia implements Serializable {
 
             BigDecimal remanenteProducto = dominio.getEmpaquesRemanente().subtract(dominio.getEmpaquesEntregar());
             remanenteProducto = remanenteProducto.subtract(dominio.getEmpaquesEntregados());
-            
+
             productos.add("                                         " + remanenteProducto + "                     " + dominio.getEmpaquesEntregar());
 
         }

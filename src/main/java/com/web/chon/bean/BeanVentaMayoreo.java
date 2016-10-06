@@ -228,9 +228,9 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
     public void calculaTotalTemporal() {
         System.out.println("-----------------------------------------------------------------------");
-        System.out.println("Antes:" +totalProductoTemporal);
+        System.out.println("Antes:" + totalProductoTemporal);
         totalProductoTemporal = data.getKilosVendidos().multiply(data.getPrecioProducto(), MathContext.UNLIMITED);
-        System.out.println("Despues" +totalProductoTemporal);
+        System.out.println("Despues" + totalProductoTemporal);
     }
 
     public void cancelarPedido() {
@@ -294,6 +294,13 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
                 //System.out.println("Venta General: " + ventaGeneral.toString());
                 if (ifaceVentaMayoreo.insertarVenta(ventaGeneral) != 0) {
+                    if (!data.getIdTipoVenta().equals(new BigDecimal("1"))) {
+                        if (insertaCredito(ventaGeneral)) {
+                            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info!", "La venta se realizo correctamente."));
+                        } else {
+                            JsfUtil.addErrorMessage("Error al Realizar la Venta, favor de cancelar la venta y volver a realizarla. Si los problemas persisten contactar al administrado.");
+                        }
+                    }
                     //si la venta se ingreso el siguiente paso es ingresar los productos.
                     for (VentaProductoMayoreo producto : lstVenta) {
                         producto.setIdVentaMayoreoFk(idVentaInsert);
@@ -312,14 +319,6 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                             existencia_actualizada.setKilosTotalesProducto(existencia.getKilosTotalesProducto().subtract(producto.getKilosVendidos(), MathContext.UNLIMITED));
                             existencia_actualizada.setIdBodegaFK(existencia.getIdBodegaFK());
                             if (ifaceNegocioExistencia.updateCantidadKilo(existencia_actualizada) != 0) {
-
-                                if (!data.getIdTipoVenta().equals(new BigDecimal("1"))) {
-                                    if (insertaCredito(ventaGeneral)) {
-                                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info!", "La venta se realizo correctamente."));
-                                    } else {
-                                        JsfUtil.addErrorMessage("Error al Realizar la Venta, favor de cancelar la venta y volver a realizarla. Si los problemas persisten contactar al administrado.");
-                                    }
-                                }
 //                                JsfUtil.addSuccessMessageClean("Venta de Productos finalizada");
                             } else {
                                 JsfUtil.addErrorMessageClean("Error actualizando existencia de producto: " + producto.getNombreProducto());
@@ -329,6 +328,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                         }
 
                     }
+
                     setParameterTicket(ventaGeneral.getVentaSucursal().intValue(), ventaGeneral.getVentaSucursal().intValue());
                     generateReport(ventaGeneral.getVentaSucursal().intValue());
                     selectedExistencia = new ExistenciaProducto();
@@ -1333,7 +1333,5 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     public void setDejaACuenta(BigDecimal dejaACuenta) {
         this.dejaACuenta = dejaACuenta;
     }
-
-   
 
 }

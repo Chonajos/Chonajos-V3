@@ -22,10 +22,11 @@
                         <p:inputText id="txtFolioVenta" value ="#{beanEntregaMercancia.data.idFolioVenta}"  maxlength="10" class="col-lg-1 col-md-2 col-sm-2 col-xs-12" >
                             <pe:keyFilter regEx="/[0-9.]/i"/>
                         </p:inputText>
-                        <p:commandButton  value="Entregar" class="primaryButton" update=":formContent" action="#{beanEntregaMercancia.print}" style="margin-left:30px; " />
                         <div class="col-lg-8">
                             <p:commandButton  value="Buscar" class="primaryButton" update=":formContent" action="#{beanEntregaMercancia.buscaFolioVenta}" style="margin-left:30px; "/>
                         </div>
+                        <p:commandButton  value="Entregar" class="primaryButton" update=":formContent" action="#{beanEntregaMercancia.print}" style="margin-left:30px; " />
+
                     </div>
                     <div class="col-lg-12 col-md-12 col-md-12 col-xs-12 form-group" style="padding: 0px;">
                         <p:outputLabel value="Cliente:" class="col-lg-1 col-md-3 col-sm-3 col-xs-12" for="txtCliente" style="padding-left: 0px;"/>
