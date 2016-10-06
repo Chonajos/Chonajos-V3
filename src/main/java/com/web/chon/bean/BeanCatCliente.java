@@ -72,10 +72,14 @@ public class BeanCatCliente implements BeanSimple {
     private ArrayList<Correos> emails_del_cliente;
     private ArrayList<Motivos> lista_motivos;
     private BajaClientes bajaCliente;
+    private String banderaTipoCliente;
 
     @PostConstruct
     public void init() {
+        
+        banderaTipoCliente= "pf";
         data = new Cliente();
+        data.setTipoPersona("1");
         model = new ArrayList<Cliente>();
         model = new ArrayList<Cliente>();
         bajaCliente = new BajaClientes();
@@ -109,7 +113,16 @@ public class BeanCatCliente implements BeanSimple {
         lista_entidades_2 = ifaceCatEntidad.getEntidades();
     }
     public void changeView(){
-        System.out.println("Entro a Metodo");
+        System.out.println("Entro a Metodo:"+data.getTipoPersona() );
+        if(data.getTipoPersona().equals("1"))
+        {
+            banderaTipoCliente = "pf";
+            
+        }
+        else
+        {
+            banderaTipoCliente = "pm";
+        }
     }
 
     public void onRowEdit(RowEditEvent event) {
@@ -568,5 +581,14 @@ public class BeanCatCliente implements BeanSimple {
     public void setPermissionToWriteStatus(boolean permissionToWriteStatus) {
         this.permissionToWriteStatus = permissionToWriteStatus;
     }
+
+    public String getBanderaTipoCliente() {
+        return banderaTipoCliente;
+    }
+
+    public void setBanderaTipoCliente(String banderaTipoCliente) {
+        this.banderaTipoCliente = banderaTipoCliente;
+    }
+    
 
 }

@@ -28,13 +28,10 @@ public class EmailValidator implements Validator, ClientValidator {
     }
  
     public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
-        if(value == null) {
-            return;
-        }
-         
-        if(!pattern.matcher(value.toString()).matches()) {
-            throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Validation Error", 
-                        value + " is not a valid email;"));
+        if(value == null || value.toString().trim().equals("")) {
+        }else if(!pattern.matcher(value.toString()).matches()) {
+            throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR,"" , 
+                        value + " No es un Correo Valido;"));
         }
     }
  

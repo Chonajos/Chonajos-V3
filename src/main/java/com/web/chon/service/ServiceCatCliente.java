@@ -65,7 +65,7 @@ public class ServiceCatCliente implements IfaceCatCliente {
                 cliente.setNextelclave(obj[25] == null ? "" : obj[25].toString());
                 cliente.setStatus_cliente(Integer.parseInt(obj[26] == null ? "0" : obj[26].toString()));
                 cliente.setStatusClienteBoolean(obj[26].toString().equals("1"));
-                cliente.setTipoPersona(obj[30] == null ? null : new BigDecimal(obj[30].toString()));
+                cliente.setTipoPersona(obj[30] == null ? null : obj[30].toString());
 //Hasta aqui terminan los datos de la tabla clientes.
                 //Los siguientes datos son para obtener las direcciones y los correos.
                 cliente.setFecha_alta((Date) obj[27]);

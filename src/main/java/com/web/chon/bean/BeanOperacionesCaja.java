@@ -105,9 +105,13 @@ public class BeanOperacionesCaja implements Serializable {
         listaTiposOperaciones = ifaceTiposOperacion.getOperaciones();
         listaResponsables = ifaceOperacionesCaja.getResponsables(idCajaBean);
         listaOperaciones = ifaceOperacionesCaja.getOperacionesBy(idCajaBean, idTipoOperacionBean, idConceptoBean, TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicio), TiempoUtil.getFechaDDMMYYYY(fechaFiltroFin), idStatusBean, usuario.getIdUsuario(), idCorteBean);
-
+        System.out.println("IDCAJABEAN: ---------------"+idCajaBean);
+        
         if (idCajaBean != null) {
+          if(!listaResponsables.isEmpty())
+          {
             idUsuarioCajaBean = listaResponsables.get(0).getIdUsuarioPk();
+          }
         }
 
     }
