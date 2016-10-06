@@ -127,8 +127,8 @@ public class EjbCatCliente implements NegocioCatCliente {
             query.setParameter(26, clie.getStatus_cliente());//activo
             query.setParameter(27, clie.getDiasCredito());
             query.setParameter(28, clie.getLimiteCredito());
-            query.setParameter(29, clie.getId_cliente());
-            query.setParameter(30, clie.getTipoPersona());
+            query.setParameter(29, clie.getTipoPersona());
+            query.setParameter(30, clie.getId_cliente());
 
             return query.executeUpdate();
 
