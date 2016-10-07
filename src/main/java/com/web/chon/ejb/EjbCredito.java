@@ -136,17 +136,21 @@ public class EjbCredito implements NegocioCredito {
     public List<Object[]> getCreditosActivos(BigDecimal idCliente) {
         try {
 
-            Query query = em.createNativeQuery("select cre.ID_CREDITO_PK as folio,stc.NOMBRE_STATUS,cre.FECHA_INICIO_CREDITO,cre.PLAZOS,cre.MONTO_CREDITO,\n"
-                    + "(select NVL(sum(ac.MONTO_ABONO),0)from ABONO_CREDITO ac\n"
-                    + "where ac.ID_CREDITO_FK= cre.ID_CREDITO_PK and ac.ESTATUS=1)\n"
-                    + "as Total_Abonado,\n"
-                    + "cre.ESTATUS_CREDITO,cre.ACUENTA,cre.STATUSACUENTA, cre.NUMERO_PAGOS,\n"
-                    + "(select NVL(sum(ac.MONTO_ABONO),0)from ABONO_CREDITO ac\n"
-                    + "where ac.ID_CREDITO_FK= cre.ID_CREDITO_PK and ac.ESTATUS=2)\n"
-                    + "as CHEQUES_PENDIENTES\n"
-                    + "from credito cre\n"
-                    + "inner join STATUS_CREDITO stc\n"
-                    + "on stc.ID_STATUS_CREDITO_PK = cre.ESTATUS_CREDITO\n"
+            Query query = em.createNativeQuery("select cre.ID_CREDITO_PK as folio,stc.NOMBRE_STATUS,cre.FECHA_INICIO_CREDITO,cre.PLAZOS,cre.MONTO_CREDITO, "
+                    + "(select NVL(sum(ac.MONTO_ABONO),0)from ABONO_CREDITO ac "
+                    + "where ac.ID_CREDITO_FK= cre.ID_CREDITO_PK and ac.ESTATUS=1) "
+                    + "as Total_Abonado, "
+                    + "cre.ESTATUS_CREDITO,cre.ACUENTA,cre.STATUSACUENTA, cre.NUMERO_PAGOS, "
+                    + "(select NVL(sum(ac.MONTO_ABONO),0)from ABONO_CREDITO ac "
+                    + "where ac.ID_CREDITO_FK= cre.ID_CREDITO_PK and ac.ESTATUS=2) "
+                    + "as CHEQUES_PENDIENTES, suc.NOMBRE_SUCURSAL "
+                    + "from credito cre "
+                    + "inner join STATUS_CREDITO stc "
+                    + "on stc.ID_STATUS_CREDITO_PK = cre.ESTATUS_CREDITO "
+                    +" inner join USUARIO usu "
+                    +" on usu.ID_USUARIO_PK = cre.ID_USUARIO_CREDITO "
+                    +" inner join SUCURSAL suc "
+                    +" on suc.ID_SUCURSAL_PK = usu.ID_SUCURSAL_FK "
                     + "where cre.ESTATUS_CREDITO=1 and cre.ID_CLIENTE_FK ='" + idCliente + "' order by cre.FECHA_INICIO_CREDITO");
             List<Object[]> resultList = null;
             resultList = query.getResultList();

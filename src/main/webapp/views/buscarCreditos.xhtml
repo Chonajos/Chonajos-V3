@@ -289,6 +289,11 @@
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
                         </p:column>
+                        <p:column headerText="Origen de Crédito" width="40px;" class="alignRight">
+                            <h:outputText value="#{model.nombreSucursal}"> 
+                                <f:convertNumber type="currency" currencySymbol="$" />
+                            </h:outputText>
+                        </p:column>
                         <p:column headerText="Abonar" width="30px;" class="alignCenter">
                             <p:commandButton ajax="true"  oncomplete="PF('dlg').show();" update =":formContent:dialogw:" icon="ui-icon-triangle-1-e" styleClass="ui-priority-primary" >
                                 <f:setPropertyActionListener value="#{model}" target="#{beanBuscaCredito.dataAbonar}"/>
@@ -320,6 +325,7 @@
                                     </h:outputText>
                                 </f:facet>
                             </p:column>
+                            <p:column colspan="1" />
 
                             <p:column colspan="1" />
                         </p:columnGroup>

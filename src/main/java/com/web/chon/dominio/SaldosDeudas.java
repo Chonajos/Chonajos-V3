@@ -48,6 +48,8 @@ public class SaldosDeudas implements Serializable {
     private int dias;
     private int filtro;
     private Date fechaPromesaFinPago;
+    private String nombreSucursal;
+    private BigDecimal idSucursal;
 
     public void reset() {
         folioCredito = null;
@@ -80,6 +82,8 @@ public class SaldosDeudas implements Serializable {
         dias = 0;
         filtro = 0;
         fechaPromesaFinPago = null;
+        nombreSucursal = null;
+        idSucursal = null;
 
     }
 
@@ -327,7 +331,13 @@ public class SaldosDeudas implements Serializable {
     public void setFechaPromesaFinPago(Date fechaPromesaFinPago) {
         this.fechaPromesaFinPago = fechaPromesaFinPago;
     }
-    
-    
 
+    public String getNombreSucursal() {
+        return nombreSucursal;
+    }
+
+    public void setNombreSucursal(String nombreSucursal) {
+        this.nombreSucursal = nombreSucursal;
+    }
+    
 }
