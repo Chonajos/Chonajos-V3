@@ -51,7 +51,8 @@ public class ServiceVentaMayoreoProducto implements IfaceVentaMayoreoProducto {
     @Override
     public ArrayList<VentaProductoMayoreo> getProductosbyIdVmFk(BigDecimal idVmFk) {
         try {
-            System.out.println("VariableService: "+idVmFk);
+            getEjb();
+            System.out.println("VariableService: " + idVmFk);
             ArrayList<VentaProductoMayoreo> lstProductos = new ArrayList<VentaProductoMayoreo>();
             List<Object[]> lstObject = ejb.getProductos(idVmFk);
             for (Object[] obj : lstObject) {

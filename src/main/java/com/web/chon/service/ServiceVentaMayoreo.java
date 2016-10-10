@@ -26,7 +26,9 @@ import org.springframework.stereotype.Service;
 public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
 
     NegocioVentaMayoreo ejb;
-    @Autowired IfaceVentaMayoreoProducto ifaceVentaMayoreoProducto;
+    
+    @Autowired
+    IfaceVentaMayoreoProducto ifaceVentaMayoreoProducto;
 
     private void getEjb() {
         try {
@@ -52,7 +54,7 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
     }
 
     @Override
-    public ArrayList<VentaMayoreo> getVentasByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idStatusVenta, BigDecimal idTipoVenta,String idSubProductoFk) {
+    public ArrayList<VentaMayoreo> getVentasByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idStatusVenta, BigDecimal idTipoVenta, String idSubProductoFk) {
 
         getEjb();
         ArrayList<VentaMayoreo> lstVenta = new ArrayList<VentaMayoreo>();
@@ -63,8 +65,8 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
             VentaMayoreo venta = new VentaMayoreo();
             venta.setIdVentaMayoreoPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
             venta.setIdClienteFk(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
-            venta.setIdVendedorFK(obj[2] == null ? null :new BigDecimal(obj[2].toString()));
-            venta.setFechaVenta(obj[3] == null ? null: (Date) obj[3]);
+            venta.setIdVendedorFK(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
+            venta.setFechaVenta(obj[3] == null ? null : (Date) obj[3]);
             venta.setFechaPromesaPago(obj[4] == null ? null : (Date) obj[4]);
             venta.setIdStatusFk(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
             venta.setFechaPago(obj[6] == null ? null : (Date) obj[6]);
