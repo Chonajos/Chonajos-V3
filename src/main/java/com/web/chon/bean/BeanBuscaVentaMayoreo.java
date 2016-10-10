@@ -281,7 +281,9 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
 
             JsfUtil.addWarnMessageClean("No se encontraron Registros.");
 
-        } else {
+        } else 
+        {
+            
             data.setNombreCliente(model.get(0).getNombreCliente());
             data.setNombreVendedor(model.get(0).getNombreVendedor());
             data.setStatusFK(model.get(0).getIdStatus().intValue());
@@ -290,11 +292,29 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
             data.setIdSucursalFk(model.get(0).getIdSucursalFk());
             data.setNombreStatus(model.get(0).getNombreStatus());
             idVentaTemporal = data.getIdVenta().intValue();
-
             calculatotalVenta();
-            if (data.getStatusFK() == 2) {
-                statusButtonPagar = true;
+            
+            switch(data.getStatusFK())
+            {
+                case 1:
+                    statusButtonPagar = false;
+                    break;
+                case 2:
+                    statusButtonPagar = true;
+                    JsfUtil.addWarnMessageClean("No puedes cobrar este folio; ya fue pagado.");
+                    break;
+                case 3:
+                    statusButtonPagar = true;
+                    JsfUtil.addWarnMessageClean("No puedes cobrar este folio; ya fue cobrado y entregado");
+                    break;
+                case 4:
+                    statusButtonPagar = true;
+                    JsfUtil.addWarnMessageClean("No puedes cobrar este folio; fue cancelado.");
+                    break;
+                default:
+                    JsfUtil.addErrorMessageClean("Ocurrió un error, contactar al administrador");
             }
+
 //            if (data.getIdSucursalFk().equals(new BigDecimal(usuario.getIdSucursal()))) {
 //
 //                statusButtonPagar = false;
@@ -303,10 +323,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
 //                JsfUtil.addWarnMessageClean("No puedes cobrar el folio de otra sucursal.");
 //                statusButtonPagar = true;
 //            }
-            if (data.getStatusFK() == 2) {
-                JsfUtil.addWarnMessageClean("No puedes pagar de nuevo este producto");
-                statusButtonPagar = true;
-            }
+
 
         }
 

@@ -17,6 +17,7 @@ import javax.ejb.Remote;
 @Remote
 public interface NegocioVentaMayoreoProducto {
     public int insertarVentaProducto(VentaProductoMayoreo ventaproducto);
+    public List<Object[]> getProductos(BigDecimal idVmFk);
     public int getNextVal();
     
     

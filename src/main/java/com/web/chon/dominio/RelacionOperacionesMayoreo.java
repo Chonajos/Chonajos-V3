@@ -22,21 +22,25 @@ public class RelacionOperacionesMayoreo implements Serializable{
     private BigDecimal idVendedorFk;
     private String nombreCliente;
     private String nombreVendedor;
-    private BigDecimal totalVenta;
+    private String nombreTipoVenta;
     private String estatus;
+    private String comentariosCancel;
+    
+    
     private Date fechaPago;
     private Date fechaFiltroInicio;
     private Date fechaFiltroFin;
+    private Date fechaCancelacion;
+     
+    
     private BigDecimal idSucursal;
     private BigDecimal idStatus;
     private BigDecimal idTipoVenta;
-    private String nombreTipoVenta;
     private BigDecimal ventaSucursal;
     private BigDecimal idCajero;
     private BigDecimal idCancelUser;
-    private String comentariosCancel;
-    private Date fechaCancelacion;
     private BigDecimal ganciaVenta;
+    private BigDecimal totalVenta;
 
     @Override
     public String toString() {

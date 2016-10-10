@@ -9,6 +9,8 @@ import com.web.chon.dominio.VentaProductoMayoreo;
 import com.web.chon.negocio.NegocioVentaMayoreoProducto;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -45,6 +47,38 @@ public class EjbVentaMayoreoProducto implements NegocioVentaMayoreoProducto{
     public int getNextVal() {
        Query query = em.createNativeQuery("SELECT S_VENTA_MAYOREO_PRODUCTO.nextVal FROM DUAL");
         return Integer.parseInt(query.getSingleResult().toString());
+    }
+
+    @Override
+    public List<Object[]> getProductos(BigDecimal idVmFk) {
+        System.out.println("=====================Entro a metodo GetProductos==================0");
+       try {
+            Query query = em.createNativeQuery("select em.CARROSUCURSAL,em.IDENTIFICADOR,sp.NOMBRE_SUBPRODUCTO,tem.NOMBRE_EMPAQUE,vmp.CANTIDAD_EMPAQUE,\n" +
+"vmp.KILOS_VENDIDOS,vmp.PRECIO_PRODUCTO,vmp.TOTAL_VENTA from VENTAMAYOREOPRODUCTO vmp\n" +
+"join VENTA_MAYOREO vm\n" +
+"on vm.ID_VENTA_MAYOREO_PK = vmp.ID_VENTA_MAYOREO_FK\n" +
+"INNER JOIN tipo_empaque tem\n" +
+"on vmp.ID_TIPO_EMPAQUE_FK= tem.ID_TIPO_EMPAQUE_PK\n" +
+"INNER JOIN subproducto sp\n" +
+"on sp.id_subproducto_pk=vmp.ID_SUBPRODUCTO_FK\n" +
+"INNER JOIN EXISTENCIA_PRODUCTO exp\n" +
+"on exp.ID_EXP_PK = vmp.ID_EXISTENCIA_FK\n" +
+"INNER JOIN ENTRADAMERCANCIAPRODUCTO emp\n" +
+"on emp.ID_EMP_PK = exp.ID_EMP_FK\n" +
+"INNER JOIN ENTRADAMERCANCIA em\n" +
+"on em.ID_EM_PK = emp.ID_EM_FK\n" +
+"where vmp.ID_VENTA_MAYOREO_FK=?");
+            query.setParameter(1, idVmFk);
+            System.out.println("Query: "+query.toString());
+            System.out.println("Parametro: "+idVmFk);
+            return query.getResultList();
+        } catch (Exception ex) 
+        {
+            System.out.println("-----------------------Entro a Error----------------");
+            Logger.getLogger(EjbVentaMayoreoProducto.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    
     }
 
     

@@ -101,16 +101,22 @@ public class BeanCatCliente implements BeanSimple {
         selectedCliente = new ArrayList<Cliente>();
         selectedEntidad = 1;
         model = ifaceCatCliente.getClientes();
-        for (Cliente dominio : model) {
-            emails_del_cliente = ifaceCatCorreos.SearchCorreosbyidClientPk(dominio.getId_cliente());
-            dominio.setEmails(emails_del_cliente);
-        }
+        
+//        for (Cliente dominio : model) 
+//        {
+//            emails_del_cliente = ifaceCatCorreos.SearchCorreosbyidClientPk(dominio.getId_cliente());
+//            dominio.setEmails(emails_del_cliente);
+//        }
 
         setTitle("Catalogo de Clientes");
         setViewEstate("init");
 
         lista_entidades = ifaceCatEntidad.getEntidades();
         lista_entidades_2 = ifaceCatEntidad.getEntidades();
+    }
+    public void cambiarVista()
+    {
+        
     }
 
     public void changeView() {
@@ -154,6 +160,7 @@ public class BeanCatCliente implements BeanSimple {
     @Override
     public String insert() {
 
+        System.out.println("=====================Entro a Insetar=====================");
         try {
             BigDecimal id_cliente_next_val = new BigDecimal(ifaceCatCliente.getNextVal());
             data.setId_cliente(id_cliente_next_val);
@@ -231,16 +238,16 @@ public class BeanCatCliente implements BeanSimple {
             if (ifaceCatCliente.updateCliente(data) == 1) {
                 System.out.println("update 1");
 
-                for (int y = 0; y < data.getEmails().size(); y++) {
-                    data.getEmails().get(y).setId_cliente_fk(data.getId_cliente());
-
-                    if (ifaceCatCorreos.updateCorreos(data.getEmails().get(y)) == 0) {
-
-                        JsfUtil.addErrorMessageClean("Error al modificar Correo");
-                    } else {
-                        JsfUtil.addSuccessMessage("Se han actualizado los datos correctamente");
-                    }
-                }
+//                for (int y = 0; y < data.getEmails().size(); y++) {
+//                    data.getEmails().get(y).setId_cliente_fk(data.getId_cliente());
+//
+//                    if (ifaceCatCorreos.updateCorreos(data.getEmails().get(y)) == 0) {
+//
+//                        JsfUtil.addErrorMessageClean("Error al modificar Correo");
+//                    } else {
+//                        JsfUtil.addSuccessMessage("Se han actualizado los datos correctamente");
+//                    }
+//                }
             } else {
                 System.out.println("0");
                 JsfUtil.addErrorMessage("Ocurrio un problema al actualizar el cliente");
@@ -258,6 +265,7 @@ public class BeanCatCliente implements BeanSimple {
 
     @Override
     public void searchById() {
+        System.out.println("==========================================================0Search: "+data);
         buscaMunicipios();
         buscaMunicipios2();
         setTitle("Editar Cliente");

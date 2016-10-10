@@ -7,6 +7,7 @@ package com.web.chon.dominio;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -25,6 +26,18 @@ public class VentaMayoreo implements Serializable{
     private BigDecimal idSucursalFk;
     private BigDecimal idtipoVentaFk;
     private BigDecimal ventaSucursal;
+    private BigDecimal idCajeroFk;
+    private Date fechaCancelacion;
+    private BigDecimal idCancelUser;
+    private BigDecimal totalVenta;         ;
+    
+    private String nombreCliente;
+    private String nombreVendedor;
+    private String nombreTipoVenta;
+    private String nombreEstatus;
+    private String comentariosCancel;
+    private ArrayList<VentaProductoMayoreo> listaProductos;
+    private BigDecimal ganciaVenta;
 
     @Override
     public String toString() {
@@ -112,6 +125,94 @@ public class VentaMayoreo implements Serializable{
 
     public void setIdSucursalFk(BigDecimal idSucursalFk) {
         this.idSucursalFk = idSucursalFk;
+    }
+
+    public String getNombreCliente() {
+        return nombreCliente;
+    }
+
+    public void setNombreCliente(String nombreCliente) {
+        this.nombreCliente = nombreCliente;
+    }
+
+    public String getNombreVendedor() {
+        return nombreVendedor;
+    }
+
+    public void setNombreVendedor(String nombreVendedor) {
+        this.nombreVendedor = nombreVendedor;
+    }
+
+    public String getNombreTipoVenta() {
+        return nombreTipoVenta;
+    }
+
+    public void setNombreTipoVenta(String nombreTipoVenta) {
+        this.nombreTipoVenta = nombreTipoVenta;
+    }
+
+    public String getNombreEstatus() {
+        return nombreEstatus;
+    }
+
+    public void setNombreEstatus(String nombreEstatus) {
+        this.nombreEstatus = nombreEstatus;
+    }
+
+    public String getComentariosCancel() {
+        return comentariosCancel;
+    }
+
+    public void setComentariosCancel(String comentariosCancel) {
+        this.comentariosCancel = comentariosCancel;
+    }
+
+    public BigDecimal getIdCajeroFk() {
+        return idCajeroFk;
+    }
+
+    public void setIdCajeroFk(BigDecimal idCajeroFk) {
+        this.idCajeroFk = idCajeroFk;
+    }
+
+    public BigDecimal getIdCancelUser() {
+        return idCancelUser;
+    }
+
+    public void setIdCancelUser(BigDecimal idCancelUser) {
+        this.idCancelUser = idCancelUser;
+    }
+
+    public ArrayList<VentaProductoMayoreo> getListaProductos() {
+        return listaProductos;
+    }
+
+    public void setListaProductos(ArrayList<VentaProductoMayoreo> listaProductos) {
+        this.listaProductos = listaProductos;
+    }
+
+    public Date getFechaCancelacion() {
+        return fechaCancelacion;
+    }
+
+    public void setFechaCancelacion(Date fechaCancelacion) {
+        this.fechaCancelacion = fechaCancelacion;
+    }
+
+    public BigDecimal getTotalVenta() {
+        return totalVenta;
+    }
+
+    public void setTotalVenta(BigDecimal totalVenta) {
+        this.totalVenta = totalVenta;
+    }
+
+    public BigDecimal getGanciaVenta() {
+        return ganciaVenta;
+    }
+
+    public void setGanciaVenta(BigDecimal ganciaVenta) {
+        this.ganciaVenta = ganciaVenta;
     }
     
     

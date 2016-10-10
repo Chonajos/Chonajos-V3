@@ -28,6 +28,8 @@ public class VentaProductoMayoreo implements Serializable {
     private String nombreProducto;
     private String nombreEmpaque;
     private BigDecimal idExistenciaFk;
+
+    
     
     //Variables para credito
     private BigDecimal idTipoVenta;
@@ -215,4 +217,5 @@ public class VentaProductoMayoreo implements Serializable {
         this.idEntradaMercanciaFk = idEntradaMercanciaFk;
     }
 
+   
 }

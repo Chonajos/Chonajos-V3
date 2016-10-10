@@ -5,7 +5,6 @@
  */
 package com.web.chon.service;
 
-import com.web.chon.dominio.RelacionOperacionesMayoreo;
 import com.web.chon.dominio.VentaMayoreo;
 import com.web.chon.negocio.NegocioVentaMayoreo;
 import com.web.chon.util.TiempoUtil;
@@ -16,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
 
     NegocioVentaMayoreo ejb;
+    @Autowired IfaceVentaMayoreoProducto ifaceVentaMayoreoProducto;
 
     private void getEjb() {
         try {
@@ -51,26 +52,26 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
     }
 
     @Override
-    public ArrayList<RelacionOperacionesMayoreo> getVentasByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idStatusVenta, BigDecimal idTipoVenta) {
+    public ArrayList<VentaMayoreo> getVentasByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idStatusVenta, BigDecimal idTipoVenta,String idSubProductoFk) {
 
         getEjb();
-        ArrayList<RelacionOperacionesMayoreo> lstVenta = new ArrayList<RelacionOperacionesMayoreo>();
+        ArrayList<VentaMayoreo> lstVenta = new ArrayList<VentaMayoreo>();
         List<Object[]> lstObject = ejb.getVentasByInterval(TiempoUtil.getFechaDDMMYYYY(fechaInicio), TiempoUtil.getFechaDDMMYYYY(fechaFin), idSucursal, idStatusVenta, idTipoVenta);
         BigDecimal ganacias = new BigDecimal(0);
         for (Object[] obj : lstObject) {
 
-            RelacionOperacionesMayoreo venta = new RelacionOperacionesMayoreo();
-            venta.setIdVentaPk(new BigDecimal(obj[0].toString()));
-            venta.setIdClienteFk(new BigDecimal(obj[1].toString()));
-            venta.setIdVendedorFk(new BigDecimal(obj[2].toString()));
-            venta.setFechaVenta((Date) obj[3]);
+            VentaMayoreo venta = new VentaMayoreo();
+            venta.setIdVentaMayoreoPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+            venta.setIdClienteFk(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
+            venta.setIdVendedorFK(obj[2] == null ? null :new BigDecimal(obj[2].toString()));
+            venta.setFechaVenta(obj[3] == null ? null: (Date) obj[3]);
             venta.setFechaPromesaPago(obj[4] == null ? null : (Date) obj[4]);
-            venta.setIdStatus(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
+            venta.setIdStatusFk(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
             venta.setFechaPago(obj[6] == null ? null : (Date) obj[6]);
-            venta.setIdSucursal(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
-            venta.setIdTipoVenta(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
+            venta.setIdSucursalFk(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
+            venta.setIdtipoVentaFk(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
             venta.setVentaSucursal(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
-            venta.setIdCajero(obj[10] == null ? null : new BigDecimal(obj[10].toString()));
+            venta.setIdCajeroFk(obj[10] == null ? null : new BigDecimal(obj[10].toString()));
             venta.setIdCancelUser(obj[11] == null ? null : new BigDecimal(obj[11].toString()));
             venta.setFechaCancelacion((Date) obj[12]);
             venta.setNombreCliente(obj[13] == null ? "" : obj[13].toString());
@@ -80,6 +81,7 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
             venta.setNombreTipoVenta(obj[17].toString());
             ganacias = obj[18] == null ? new BigDecimal(0) : new BigDecimal(obj[18].toString());
             venta.setGanciaVenta(venta.getTotalVenta().subtract(ganacias));
+            venta.setListaProductos(ifaceVentaMayoreoProducto.getProductosbyIdVmFk(venta.getIdVentaMayoreoPk()));
             lstVenta.add(venta);
         }
 
