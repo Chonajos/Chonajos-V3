@@ -99,11 +99,13 @@ public class EjbEntradaMercanciaProducto implements NegocioEntradaMercanciaProdu
     public List<Object[]> getTotalVentasByIdEMP(BigDecimal idEmP) {
 
         try {
-            Query query = em.createNativeQuery("select NVL(sum(vmp.TOTAL_VENTA),0)as total, NVL(sum(vmp.KILOS_VENDIDOS),0) as kilos , NVL(sum(vmp.CANTIDAD_EMPAQUE),0) as Cantidad\n"
-                    + "from ENTRADAMERCANCIAPRODUCTO emp \n"
-                    + "inner join EXISTENCIA_PRODUCTO ex on ex.ID_EMP_FK = emp.ID_EMP_PK\n"
-                    + "inner join VENTAMAYOREOPRODUCTO vmp on vmp.ID_EXISTENCIA_FK = ex.ID_EXP_PK\n"
-                    + "where emp.ID_EMP_PK  =? ");
+            Query query = em.createNativeQuery("select NVL(sum(vmp.TOTAL_VENTA),0)as total, NVL(sum(vmp.KILOS_VENDIDOS),0) as kilos , NVL(sum(vmp.CANTIDAD_EMPAQUE),0)\n" +
+"as Cantidad\n" +
+"from ENTRADAMERCANCIAPRODUCTO emp\n" +
+"inner join EXISTENCIA_PRODUCTO ex on ex.ID_EMP_FK = emp.ID_EMP_PK\n" +
+"inner join VENTAMAYOREOPRODUCTO vmp on vmp.ID_EXISTENCIA_FK = ex.ID_EXP_PK\n" +
+"inner join VENTA_MAYOREO vm on vm.ID_VENTA_MAYOREO_PK  = vmp.ID_VENTA_MAYOREO_FK\n" +
+"where vm.ID_STATUS_FK != 4 and  emp.ID_EMP_PK = ? ");
             query.setParameter(1, idEmP);
             System.out.println(query);
             return query.getResultList();

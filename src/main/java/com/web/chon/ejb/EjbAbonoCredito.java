@@ -191,4 +191,44 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
 
     }
 
+    @Override
+    public List<Object[]> getByIdVentaMayoreoFk(BigDecimal idVentaMayoreoFk) {
+       try {
+
+            Query query = em.createNativeQuery("SELECT ab.ID_ABONO_CREDITO_PK ,ab.ID_CREDITO_FK ,ab.MONTO_ABONO ,ab.FECHA_ABONO ,ab.ID_USUARIO_FK from credito c\n" +
+"inner join ABONO_CREDITO ab on ab.ID_CREDITO_FK = c.ID_CREDITO_PK\n" +
+"where c.ID_VENTA_MAYOREO =?");
+            List<Object[]> resultList = null;
+            query.setParameter(1, idVentaMayoreoFk);
+            resultList = query.getResultList();
+
+            return resultList;
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbAbonoCredito.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    
+    }
+
+    @Override
+    public List<Object[]> getByIdVentaMenudeoFk(BigDecimal idVentaMenudeoFk) {
+       try {
+
+            Query query = em.createNativeQuery("SELECT ab.ID_ABONO_CREDITO_PK ,ab.ID_CREDITO_FK ,ab.MONTO_ABONO ,ab.FECHA_ABONO ,ab.ID_USUARIO_FK from credito c\n" +
+"inner join ABONO_CREDITO ab on ab.ID_CREDITO_FK = c.ID_CREDITO_PK\n" +
+"where c.ID_VENTA_MENUDEO =?");
+            List<Object[]> resultList = null;
+            query.setParameter(1, idVentaMenudeoFk);
+            resultList = query.getResultList();
+
+            return resultList;
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbAbonoCredito.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    
+    }
+
 }

@@ -55,7 +55,6 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
 
     @Override
     public ArrayList<VentaMayoreo> getVentasByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idStatusVenta, BigDecimal idTipoVenta, String idSubProductoFk) {
-
         getEjb();
         ArrayList<VentaMayoreo> lstVenta = new ArrayList<VentaMayoreo>();
         List<Object[]> lstObject = ejb.getVentasByInterval(TiempoUtil.getFechaDDMMYYYY(fechaInicio), TiempoUtil.getFechaDDMMYYYY(fechaFin), idSucursal, idStatusVenta, idTipoVenta);
@@ -103,5 +102,13 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
         return ejb.updateEstatusVentaByFolioSucursalAndIdSucursal(folioSucursal, idSucursal, estatusVenta);
 
     }
+
+    @Override
+    public int cancelarVentaMayoreo(BigDecimal idVenta, BigDecimal idUsuario, String comentarios) {
+        getEjb();
+        return ejb.cancelarVentaMayoreo(idVenta, idUsuario, comentarios);
+
+    }
+    
 
 }

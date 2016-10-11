@@ -30,6 +30,10 @@ public interface IfaceAbonoCredito {
     
     public AbonoCredito getById(BigDecimal idAbonoCredito);
     
+    public AbonoCredito getByIdVentaMayoreoFk(BigDecimal idVentaMayoreoFk);
+    
+    public AbonoCredito getByIdVentaMenudeoFk(BigDecimal idVentaMenudeoFk);
+    
     public int getNextVal();
     
     

@@ -28,6 +28,7 @@ public class VentaProductoMayoreo implements Serializable {
     private String nombreProducto;
     private String nombreEmpaque;
     private BigDecimal idExistenciaFk;
+    private BigDecimal idBodegaFk;
 
     
     
@@ -61,9 +62,19 @@ public class VentaProductoMayoreo implements Serializable {
         nombreEmpaque = null;
         idExistenciaFk=null;
         folioCarro=null;
+        idBodegaFk=null;
         
 
     }
+
+    public BigDecimal getIdBodegaFk() {
+        return idBodegaFk;
+    }
+
+    public void setIdBodegaFk(BigDecimal idBodegaFk) {
+        this.idBodegaFk = idBodegaFk;
+    }
+    
 
     @Override
     public String toString() {

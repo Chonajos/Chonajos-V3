@@ -166,6 +166,45 @@ public class ServiceAbonoCredito implements IfaceAbonoCredito {
         return lstAbonoCredito;
     
     }
+
+    @Override
+    public AbonoCredito getByIdVentaMayoreoFk(BigDecimal idVentaMayoreoFk) {
+        getEjb();
+        List<Object[]> lstObject = new ArrayList<Object[]>();
+        lstObject = ejb.getByIdVentaMayoreoFk(idVentaMayoreoFk);
+        AbonoCredito abonoCredito = new AbonoCredito();
+        for (Object[] object : lstObject) {
+
+            abonoCredito.setIdAbonoCreditoPk(object[0] == null ? null : new BigDecimal(object[0].toString()));
+            abonoCredito.setIdCreditoFk(object[1] == null ? null : new BigDecimal(object[1].toString()));
+            abonoCredito.setMontoAbono(object[2] == null ? null : new BigDecimal(object[2].toString()));
+            abonoCredito.setFechaAbono(object[3] == null ? null : (Date) object[3]);
+            abonoCredito.setIdUsuarioFk(object[4] == null ? null : new BigDecimal(object[4].toString()));
+
+        }
+
+        return abonoCredito;
+    }
+
+    @Override
+    public AbonoCredito getByIdVentaMenudeoFk(BigDecimal idVentaMenudeoFk) {
+       getEjb();
+        List<Object[]> lstObject = new ArrayList<Object[]>();
+        lstObject = ejb.getByIdVentaMenudeoFk(idVentaMenudeoFk);
+        AbonoCredito abonoCredito = new AbonoCredito();
+        for (Object[] object : lstObject) {
+
+            abonoCredito.setIdAbonoCreditoPk(object[0] == null ? null : new BigDecimal(object[0].toString()));
+            abonoCredito.setIdCreditoFk(object[1] == null ? null : new BigDecimal(object[1].toString()));
+            abonoCredito.setMontoAbono(object[2] == null ? null : new BigDecimal(object[2].toString()));
+            abonoCredito.setFechaAbono(object[3] == null ? null : (Date) object[3]);
+            abonoCredito.setIdUsuarioFk(object[4] == null ? null : new BigDecimal(object[4].toString()));
+
+        }
+
+        return abonoCredito;
+    
+    }
     
 
 }

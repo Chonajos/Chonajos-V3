@@ -17,6 +17,7 @@ public interface IfaceVentaMayoreoProducto {
     public int insertarVentaMayoreoProducto(VentaProductoMayoreo venta);
     public ArrayList<VentaProductoMayoreo> getProductosbyIdVmFk(BigDecimal idVmFk);
     public int getNextVal();
+    public ArrayList<VentaProductoMayoreo> buscaVentaCancelar(BigDecimal idVenta,BigDecimal idSucursal);
     
     
     

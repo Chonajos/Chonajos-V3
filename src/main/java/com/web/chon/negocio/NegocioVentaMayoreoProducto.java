@@ -18,6 +18,7 @@ import javax.ejb.Remote;
 public interface NegocioVentaMayoreoProducto {
     public int insertarVentaProducto(VentaProductoMayoreo ventaproducto);
     public List<Object[]> getProductos(BigDecimal idVmFk);
+    public List<Object[]> buscaVentaCancelar(BigDecimal idVenta, BigDecimal idSucursal);
     public int getNextVal();
     
     

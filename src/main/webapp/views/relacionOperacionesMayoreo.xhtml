@@ -45,9 +45,10 @@
                         <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="selectFiltro" value ="Consulta por Fecha:" rendered="#{beanRelOperMayoreo.viewEstate =='init'}"/> 
                             <h:selectOneMenu  id="selectFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanRelOperMayoreo.filtro}" rendered="#{beanRelOperMayoreo.viewEstate =='init'}" >
+                                <f:selectItem itemLabel="Rango de Fecha" itemValue="-1"/>
                                 <f:selectItem itemLabel="Día" itemValue="1"/>
                                 <f:selectItem itemLabel="Mes" itemValue="2"/>
-                                <p:ajax event="change" update=":formContent:calendarInicio formContent:calendarFin" listener="#{beanRelacionOperaciones.verificarCombo()}"/>
+                                <p:ajax event="change" update=":formContent:calendarInicio formContent:calendarFin" listener="#{beanRelOperMayoreo.verificarCombo()}"/>
                             </h:selectOneMenu>
                         </div>
 
@@ -93,23 +94,18 @@
                                      scrollable="true"
                                      scrollHeight="400" styleClass="ui-datatable-hor-scroll" 
                                      rendered="#{beanRelOperMayoreo.viewEstate =='init'}">
-                            <p:column style="width:16px">
+                            <p:column style="width:20px">
                                 <p:rowToggler />
                             </p:column>
 
 
-                            <p:column headerText="Folio" class="#{model.idStatus eq 1 ? 'statusPedido': (model.idStatus eq 2 ? 'statusPagado':(model.idStatus eq 3 ? 'statusEntregado':'statusCancelado'))}  alignCenter"  width="60px;" >
+                            <p:column headerText="Folio" class="#{model.idStatusFk eq 1 ? 'statusPedido': (model.idStatusFk eq 2 ? 'statusPagado':(model.idStatusFk eq 3 ? 'statusEntregado':'statusCancelado'))}  alignCenter"  width="60px;" >
                                 <h:outputText value="#{model.ventaSucursal}" />
                             </p:column>
 
                             <p:column headerText="Fecha de venta" width="115px;" class="alignCenter">
                                 <h:outputText value="#{model.fechaVenta}">
-                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
-                                </h:outputText>
-                            </p:column>
-                            <p:column headerText="Hora de venta" width="115px;" class="alignCenter">
-                                <h:outputText value="#{model.fechaVenta}">
-                                    <f:convertDateTime pattern="HH:mm" />
+                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
                                 </h:outputText>
                             </p:column>
                             <p:column headerText="Tipo de Venta" width="115px;" class="alignCenter">
@@ -124,10 +120,10 @@
                             </p:column>
                             <p:column headerText="Total de Venta" width="115px;" class="alignCenter">
                                 <h:outputText value="#{model.totalVenta}">
-                                    <f:convertNumber pattern="#,##0.00" />
+                                    <f:convertNumber type="currency" currencySymbol="$" />
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Utilidad Bruta" width="115px;" class="alignCenter">
+                            <p:column headerText="Utilidad Bruta" width="85px;" class="alignCenter">
                                 <h:outputText value="#{model.ganciaVenta}">
                                     <f:convertNumber pattern="#,##0.00" />
                                 </h:outputText>
@@ -138,7 +134,7 @@
                                 </p:commandButton>
                             </p:column>
                             <p:column headerText="Imprimir" width="70px;" class="alignCenter">
-                                <p:commandButton id="print" ajax="true" process="@this" action="#{beanRelOperMayoreo.printVenta()}" icon="ui-icon-search" styleClass="ui-priority-primary" update=":formContent">
+                                <p:commandButton id="print" ajax="true" process="@this" action="#{beanRelOperMayoreo.printVenta()}" icon="ui-icon-print" styleClass="ui-priority-primary" update=":formContent">
                                     <f:setPropertyActionListener value="#{model}" target="#{beanRelOperMayoreo.data}"/>
                                 </p:commandButton>
                             </p:column>
@@ -153,12 +149,12 @@
                                 <p:column colspan="1" />
                                 <p:column colspan="1" />
                                 <p:column colspan="1" />
-                                <p:column colspan="1" />
+                                
                                 <p:column colspan="1" footerText="Total: " style="text-align:right"/>
                                 <p:column colspan="1" >
                                     <f:facet name="footer">
                                         <h:outputText value="#{beanRelOperMayoreo.totalVenta}">
-                                            <f:convertNumber pattern="#,###.00"/>
+                                            <f:convertNumber type="currency" currencySymbol="$" />
                                         </h:outputText>
                                     </f:facet>
                                 </p:column>
@@ -176,22 +172,24 @@
                                     </f:facet>
                                 </p:column>
                                 <p:column colspan="1" />
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
 
                             </p:columnGroup>
 
                             <p:rowExpansion>
                                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                     <p:dataTable var="item" value="#{model.listaProductos}" styleClass="seconTable"  emptyMessage="No se encontraron Registros.">
-                                        <p:column headerText="Carro" width="35px;" class="alignLeft">
-                                            <h:outputText value="#{item.carro}" />
+                                        <p:column headerText="Carro" width="35px;" class="alignCenter">
+                                            <h:outputText value="#{item.folioCarro}" />
                                         </p:column>
-                                        <p:column headerText="Clave" width="60px;" class="alignLeft">
+                                        <p:column headerText="Clave" width="60px;" class="alignCenter">
                                             <h:outputText value="#{item.clave}" />
                                         </p:column>
-                                        <p:column headerText="Producto" width="60px;" class="alignLeft">
-                                            <h:outputText value="#{item.nombreSubproducto}" />
+                                        <p:column headerText="Producto" width="100px;" class="alignLeft">
+                                            <h:outputText value="#{item.nombreProducto}" />
                                         </p:column>
-                                        <p:column headerText="Empaque" width="150px;" class="alignLeft">
+                                        <p:column headerText="Empaque" width="70px;" class="alignLeft">
                                             <h:outputText value="#{item.nombreEmpaque}" />
                                         </p:column>
                                         <p:column headerText="Cantidad" width="85px;" class="alignCenter">
@@ -205,9 +203,9 @@
                                                 <f:convertNumber pattern="#,##0.00"/>
                                             </h:outputText>
                                         </p:column>
-                                        <p:column headerText="Total" width="90px;" class="alignCenter">
+                                        <p:column headerText="Total" width="100px;" class="alignCenter">
                                             <h:outputText value="#{item.totalVenta}">
-                                                <f:convertNumber pattern="#,##0.00"/>
+                                                <f:convertNumber type="currency" currencySymbol="$" />
                                             </h:outputText>
                                         </p:column>
 

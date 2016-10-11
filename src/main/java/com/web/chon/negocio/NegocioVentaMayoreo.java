@@ -27,4 +27,6 @@ public interface NegocioVentaMayoreo {
 
     public int updateEstatusVentaByFolioSucursalAndIdSucursal(BigDecimal folioSucursal, BigDecimal idSucursal, BigDecimal estatusVenta);
 
+    public int cancelarVentaMayoreo(BigDecimal idVenta, BigDecimal idUsuario,String comentarios);
+    
     }

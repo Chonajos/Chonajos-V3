@@ -94,4 +94,28 @@ public class ServiceVentaMayoreoProducto implements IfaceVentaMayoreoProducto {
         }
     }
 
+    @Override
+    public ArrayList<VentaProductoMayoreo> buscaVentaCancelar(BigDecimal  idVenta, BigDecimal  idSucursal) {
+        getEjb();
+        try {
+            ArrayList<VentaProductoMayoreo> lstVentas = new ArrayList<VentaProductoMayoreo>();
+            List<Object[]> lstObject = ejb.buscaVentaCancelar(idVenta, idSucursal);
+            for (Object[] obj : lstObject) {
+                VentaProductoMayoreo producto = new VentaProductoMayoreo();
+                producto.setIdExistenciaFk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+                producto.setCantidadEmpaque(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
+                producto.setKilosVendidos(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
+                lstVentas.add(producto);
+            }
+            return lstVentas;
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceVentaMayoreoProducto.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+
+        }
+    
+    
+    
+    }
+
 }

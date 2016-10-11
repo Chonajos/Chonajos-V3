@@ -81,6 +81,28 @@ public class EjbVentaMayoreoProducto implements NegocioVentaMayoreoProducto{
     
     }
 
+    @Override
+    public List<Object[]> buscaVentaCancelar(BigDecimal idVenta, BigDecimal idSucursal) {
+         System.out.println("EJB BuscaVentaCancelar ");
+        try {
+
+            Query query = em.createNativeQuery("select vmp.ID_EXISTENCIA_FK,vmp.CANTIDAD_EMPAQUE,vmp.KILOS_VENDIDOS from VENTAMAYOREOPRODUCTO vmp\n"
+                    + "INNER JOIN VENTA_MAYOREO vm\n"
+                    + "on vm.ID_VENTA_MAYOREO_PK = vmp.ID_VENTA_MAYOREO_FK\n"
+                    + "where vm.VENTASUCURSAL = ? and vm.ID_SUCURSAL_FK=?");
+            query.setParameter(1, idVenta);
+            query.setParameter(2, idSucursal);
+            System.out.println(query);
+            return query.getResultList();
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbBuscaVenta.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    
+    
+    }
+
     
     
 }

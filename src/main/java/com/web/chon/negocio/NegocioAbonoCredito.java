@@ -29,6 +29,10 @@ public interface NegocioAbonoCredito
     
     public int getNextVal();
     
+    public List<Object[]>  getByIdVentaMayoreoFk(BigDecimal idVentaMayoreoFk);
+    
+    public List<Object[]>  getByIdVentaMenudeoFk(BigDecimal idVentaMenudeoFk);
+    
 
     
 }

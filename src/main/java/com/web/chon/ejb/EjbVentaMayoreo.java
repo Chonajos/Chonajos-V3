@@ -9,6 +9,7 @@ import com.web.chon.dominio.VentaMayoreo;
 import com.web.chon.negocio.NegocioVentaMayoreo;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.logging.Level;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -139,6 +140,28 @@ public class EjbVentaMayoreo implements NegocioVentaMayoreo {
             return 0;
 
         }
+    }
+
+    @Override
+    public int cancelarVentaMayoreo(BigDecimal idVenta, BigDecimal idUsuario, String comentarios) {
+        System.out.println("idVenta: " + idVenta);
+        System.out.println("idUsuario: " + idUsuario);
+        System.out.println("comentarios: " + comentarios);
+        try {
+            Query query = em.createNativeQuery("UPDATE VENTA_MAYOREO SET ID_STATUS_FK= ?,ID_USER_CANCEL_FK=?,COMENTARIOS_CANCEL=?,FECHA_CANCELACION=sysdate WHERE ID_VENTA_MAYOREO_PK = ? ");
+            query.setParameter(1, 4);
+            query.setParameter(2, idUsuario);
+            query.setParameter(3, comentarios);
+            query.setParameter(4, idVenta);
+            return query.executeUpdate();
+
+        } catch (Exception ex) {
+
+            java.util.logging.Logger.getLogger(EjbBuscaVenta.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        }
+    
+    
     }
 
 }
