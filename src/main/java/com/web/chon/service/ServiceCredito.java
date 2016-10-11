@@ -420,7 +420,7 @@ public class ServiceCredito implements IfaceCredito {
          getEjb();
         Credito credito = new Credito();
         List<Object[]> lstObject = new ArrayList<Object[]>();
-        lstObject = ejb.getCreditosByIdVentaMenudeo(idVentaMayoreo);
+        lstObject = ejb.getCreditosByIdVentaMayoreo(idVentaMayoreo);
         for (Object[] object : lstObject) {
             credito.setIdCreditoPk(object[0] == null ? null : new BigDecimal(object[0].toString()));
             credito.setIdClienteFk(object[1] == null ? null : new BigDecimal(object[1].toString()));

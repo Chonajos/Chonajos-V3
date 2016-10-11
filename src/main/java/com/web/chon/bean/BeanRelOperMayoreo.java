@@ -266,14 +266,16 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
 
                     Credito c = new Credito();
                     c = ifaceCredito.getCreditosByIdVentaMayoreo(data.getIdVentaMayoreoPk());
-                    if (c != null || c.getIdCreditoPk() != null) 
+                    System.out.println("Credito: "+c.toString());
+                    if (c != null && c.getIdCreditoPk() != null) 
                     {
                         if (ifaceCredito.eliminarCreditoByIdCreditoPk(c.getIdCreditoPk()) == 1) {
                             JsfUtil.addSuccessMessageClean("Se ha cancelado la venta  y credito correctamente ");
                             data.setIdStatusFk(null);
                             lstVenta.clear();
                             buscar();
-                        } else {
+                        } else 
+                        {
                             JsfUtil.addErrorMessageClean("Ha ocurrido un error al eliminar el credito");
                         }
                     }

@@ -278,6 +278,7 @@ public class EjbCredito implements NegocioCredito {
      @Override
     public List<Object[]> getCreditosByIdVentaMayoreo(BigDecimal idVentaMayoreo) 
     {
+        System.out.println("entro ejbCredito: "+idVentaMayoreo);
         try {
             Query query = em.createNativeQuery("SELECT ID_CREDITO_PK,ID_CLIENTE_FK,ID_VENTA_MENUDEO,ID_VENTA_MAYOREO,ID_USUARIO_CREDITO,ESTATUS_CREDITO,NUMERO_PROMESA_PAGO,FECHA_INICIO_CREDITO,FECHA_FIN_CREDITO,FECHA_PROMESA_FIN_PAGO,TAZA_INTERES,PLAZOS  FROM CREDITO WHERE ID_VENTA_MAYOREO = ?");
             List<Object[]> resultList = null;
