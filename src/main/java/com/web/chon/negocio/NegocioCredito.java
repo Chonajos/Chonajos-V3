@@ -48,5 +48,7 @@ public interface NegocioCredito {
     
     public List<Object[]> getCreditosByIdVentaMayoreo(BigDecimal idVentaMayoreo);
     
+    public int eliminarCreditoByIdCreditoPk(BigDecimal idCreditoPk);
+    
 
 }

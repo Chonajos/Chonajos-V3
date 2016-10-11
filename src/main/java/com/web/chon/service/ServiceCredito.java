@@ -439,7 +439,11 @@ public class ServiceCredito implements IfaceCredito {
 
         return credito;
     
-    
+    }
+    @Override
+    public int eliminarCreditoByIdCreditoPk(BigDecimal idCreditoPk) {
+        getEjb();
+        return ejb.eliminarCreditoByIdCreditoPk(idCreditoPk);
     }
 
 }

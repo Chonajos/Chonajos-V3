@@ -45,6 +45,8 @@ public interface IfaceCredito {
      public Credito getCreditosByIdVentaMenudeo(BigDecimal idVenta);
      
      public Credito getCreditosByIdVentaMayoreo(BigDecimal idVentaMayoreo);
+     
+     public int eliminarCreditoByIdCreditoPk(BigDecimal idCreditoPk);
     
     
     

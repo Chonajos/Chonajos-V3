@@ -63,11 +63,10 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
     @Autowired
     private PlataformaSecurityContext context;
     @Autowired
-    private IfaceCaja ifaceCaja;
-    @Autowired
     private IfaceAbonoCredito ifaceAbonoCredito;
-    
-    
+    @Autowired
+    private IfaceCredito ifaceCredito;
+
     private UsuarioDominio usuario;
     private ArrayList<VentaProductoMayoreo> lstVenta;
     private ArrayList<TipoVenta> lstTipoVenta;
@@ -80,7 +79,7 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
     private int filtro;
     private Date fechaInicio;
     private Date fechaFin;
-    
+
     private Date fechaFiltroInicio;
     private Date fechaFiltroFin;
     private boolean enableCalendar;
@@ -88,9 +87,7 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
     private BigDecimal idStatusBean;
     private BigDecimal idSucursalBean;
     private BigDecimal idTipoVentaBean;
-    
-    
-    
+
     private BigDecimal totalVenta;
     private BigDecimal totalUtilidad;
     private BigDecimal totalVentaDetalle;
@@ -114,10 +111,11 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
         fechaFiltroFin = context.getFechaSistema();
         setViewEstate("init");
         idSucursalBean = new BigDecimal(usuario.getSucId());
-        
+
         //getVentasByIntervalDate();
     }
-     public void verificarCombo() {
+
+    public void verificarCombo() {
         if (filtro == -1) {
             //se habilitan los calendarios.
             fechaFiltroInicio = null;
@@ -148,12 +146,10 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
         }
     }
 
-     public void buscar() 
-     {
+    public void buscar() {
         if (fechaFiltroInicio == null || fechaFiltroFin == null) {
             JsfUtil.addErrorMessageClean("Favor de ingresar un rango de fechas");
-        } else 
-        {
+        } else {
             if (subProducto == null) {
                 subProducto = new Subproducto();
                 subProducto.setIdProductoFk("");
@@ -196,11 +192,9 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
 //
 //    }
 
-    public void printVenta()
-    {
-        
+    public void printVenta() {
+
     }
-    
 
 //    public void getVentasByIntervalDate() {
 //
@@ -209,7 +203,6 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
 //        listaVentasMayoreo = ifaceVentaMayoreo.getVentasByIntervalDate(data.getFechaFiltroInicio(), data.getFechaFiltroFin(), data.getIdSucursal(), data.getIdStatus(), data.getIdTipoVenta());
 //        getTotalVentaByInterval();
 //    }
-
     public void getTotalVentaByInterval() {
         totalVenta = new BigDecimal(0);
         totalUtilidad = new BigDecimal(0);
@@ -230,19 +223,19 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
         lstVenta.clear();
     }
 
-
-    public void cancelarVenta()
-    {
+    public void cancelarVenta() {
         AbonoCredito ac = new AbonoCredito();
         ac = ifaceAbonoCredito.getByIdVentaMayoreoFk(data.getIdVentaMayoreoPk());
         if (ac != null && ac.getIdAbonoCreditoPk() != null) 
         {
-            if (data.getIdStatusFk().intValue() != 4 && data.getIdStatusFk().intValue() != 2)
-            {
+            JsfUtil.addErrorMessageClean("Este crédito ya cuenta con abonos, no se puede cancelar");
+        
+        } else 
+        {
+            if (data.getIdStatusFk().intValue() != 4 && data.getIdStatusFk().intValue() != 2) {
                 boolean banderaError = false;
                 lstVenta = ifaceVentaMayoreoProducto.buscaVentaCancelar(data.getVentaSucursal(), data.getIdSucursalFk());
-                for (VentaProductoMayoreo producto : lstVenta)
-                {
+                for (VentaProductoMayoreo producto : lstVenta) {
                     BigDecimal cantidad = producto.getCantidadEmpaque();
                     BigDecimal kilos = producto.getKilosVendidos();
                     BigDecimal idExistencia = producto.getIdExistenciaFk();
@@ -261,8 +254,7 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
                     ep.setKilosTotalesProducto(kilos);
                     ep.setIdExistenciaProductoPk(idExistencia);
                     ep.setIdBodegaFK(idBodega);
-                    if (ifaceNegocioExistencia.updateCantidadKilo(ep) == 1) 
-                    {
+                    if (ifaceNegocioExistencia.updateCantidadKilo(ep) == 1) {
                         System.out.println("Regreso Producto Correctamente");
                     } else {
                         banderaError = true;
@@ -270,27 +262,38 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
 
                 }
 
-                if (ifaceVentaMayoreo.cancelarVentaMayoreo(data.getIdVentaMayoreoPk(), usuario.getIdUsuario(), data.getComentariosCancel()) != 0 && banderaError == false) 
-                {
-                    JsfUtil.addSuccessMessageClean("Se ha cancelado la venta correctamente");
+                if (ifaceVentaMayoreo.cancelarVentaMayoreo(data.getIdVentaMayoreoPk(), usuario.getIdUsuario(), data.getComentariosCancel()) != 0 && banderaError == false) {
 
-                    data.setIdStatusFk(null);
-                    lstVenta.clear();
-                    buscar();
+                    Credito c = new Credito();
+                    c = ifaceCredito.getCreditosByIdVentaMayoreo(data.getIdVentaMayoreoPk());
+                    if (c != null || c.getIdCreditoPk() != null) 
+                    {
+                        if (ifaceCredito.eliminarCreditoByIdCreditoPk(c.getIdCreditoPk()) == 1) {
+                            JsfUtil.addSuccessMessageClean("Se ha cancelado la venta  y credito correctamente ");
+                            data.setIdStatusFk(null);
+                            lstVenta.clear();
+                            buscar();
+                        } else {
+                            JsfUtil.addErrorMessageClean("Ha ocurrido un error al eliminar el credito");
+                        }
+                    }
+                    else
+                    {
+                        JsfUtil.addSuccessMessageClean("Se ha cancelado la venta correctamente");
+                        data.setIdStatusFk(null);
+                        lstVenta.clear();
+                        buscar();
+                    }
 
-                } else 
-                {
+                } else {
                     JsfUtil.addErrorMessageClean("Ocurrió un error al intentar cancelar la venta.");
                 }
-            } else 
-            {
+            } else {
                 JsfUtil.addErrorMessageClean("No puedes volver a cancelar la venta, o cancelar una venta ya pagada");
 
             }
-        } else 
-        {
-            JsfUtil.addErrorMessageClean("Este crédito ya cuenta con abonos, no se puede cancelar");
-        }
+            
+            }
     }
 
 //    public void calculatotalVentaDetalle() 
@@ -301,7 +304,6 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
 //            totalVentaDetalle = totalVentaDetalle.add(venta.getTotal());
 //        }
 //    }
-
     @Override
     public String delete() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -321,8 +323,6 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
     public void searchById() {
         viewEstate = "searchById";
     }
-
-    
 
     public ArrayList<Sucursal> getListaSucursales() {
         return listaSucursales;
@@ -388,7 +388,6 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
         this.totalVenta = totalVenta;
     }
 
-   
     public ArrayList<TipoVenta> getLstTipoVenta() {
         return lstTipoVenta;
     }
@@ -429,8 +428,6 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
         this.porcentajeUtilidad = porcentajeUtilidad;
     }
 
-    
-
     public VentaMayoreo getData() {
         return data;
     }
@@ -446,8 +443,6 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
     public void setListaVentasMayoreo(ArrayList<VentaMayoreo> listaVentasMayoreo) {
         this.listaVentasMayoreo = listaVentasMayoreo;
     }
-
-   
 
     public Date getFechaFiltroInicio() {
         return fechaFiltroInicio;
@@ -513,6 +508,4 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
         this.lstVenta = lstVenta;
     }
 
-    
-    
 }

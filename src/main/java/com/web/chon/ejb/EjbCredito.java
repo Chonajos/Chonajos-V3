@@ -289,5 +289,18 @@ public class EjbCredito implements NegocioCredito {
             return null;
         }
     }
+    @Override
+    public int eliminarCreditoByIdCreditoPk(BigDecimal idCreditoPk) {
+        System.out.println("Parametro : "+idCreditoPk);
+        try {
+            Query query = em.createNativeQuery("DELETE FROM  CREDITO WHERE ID_CREDITO_PK = ?");
+            query.setParameter(1, idCreditoPk);
+            return query.executeUpdate();
+        } catch (Exception ex) {
+            Logger.getLogger(EjbCredito.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        }
+    
+    }
 
 }
