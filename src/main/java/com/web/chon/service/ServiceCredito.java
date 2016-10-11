@@ -435,6 +435,10 @@ public class ServiceCredito implements IfaceCredito {
             credito.setFechaPromesaPago(object[9] == null ? null : (Date) object[9]);
             credito.setTazaInteres(object[10] == null ? null : new BigDecimal(object[10].toString()));
             credito.setPlasos(object[11] == null ? null : new BigDecimal(object[11].toString()));
+            credito.setMontoCredito(object[12] == null ? null : new BigDecimal(object[12].toString()));
+            credito.setDejaCuenta(object[13] == null ? null : new BigDecimal(object[13].toString()));
+            credito.setStatusACuenta(object[14] == null ? null : new BigDecimal(object[14].toString()));
+            credito.setNumeroPagos(object[15] == null ? null : new BigDecimal(object[15].toString()));
         }
 
         return credito;

@@ -25,18 +25,39 @@ import com.web.chon.service.IfaceNegocioExistencia;
 import com.web.chon.service.IfaceTipoVenta;
 import com.web.chon.service.IfaceVentaMayoreo;
 import com.web.chon.service.IfaceVentaMayoreoProducto;
+import com.web.chon.util.Constantes;
+import com.web.chon.util.JasperReportUtil;
 import com.web.chon.util.JsfUtil;
+import com.web.chon.util.NumeroALetra;
 import com.web.chon.util.TiempoUtil;
+import com.web.chon.util.UtilUpload;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
+import net.sf.jasperreports.engine.JREmptyDataSource;
+import net.sf.jasperreports.engine.JRExporter;
+import net.sf.jasperreports.engine.JRExporterParameter;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
+import org.primefaces.context.RequestContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.support.JstlUtils;
 
 /**
  *
@@ -94,6 +115,27 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
     private BigDecimal porcentajeUtilidad;
     private static final BigDecimal TIPO = new BigDecimal(1);
 
+    //Variables para Generar el pdf
+    private String rutaPDF;
+    private Map paramReport = new HashMap();
+    private String number;
+    private String pathFileJasper = "C:/Users/Juan/Documents/NetBeansProjects/Chonajos-V2/ticket.jasper";
+    private ByteArrayOutputStream outputStream;
+    private boolean charLine = true;
+    private BigDecimal max;
+    private BigDecimal min;
+    private BigDecimal descuento;
+    private BigDecimal dejaACuenta;
+    private BigDecimal totalVentaDescuento;
+    private BigDecimal INTERES_VENTA = new BigDecimal("0.60");
+    private BigDecimal DIAS_PLAZO = new BigDecimal("7");
+    private int folioCredito = 0;
+    private Credito c;
+    private boolean variableInicial;
+    private boolean credito;
+
+    private Date date;
+
     @PostConstruct
     public void init() {
         data = new VentaMayoreo();
@@ -112,7 +154,11 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
         setViewEstate("init");
         idSucursalBean = new BigDecimal(usuario.getSucId());
 
+        descuento = new BigDecimal(0);
+        dejaACuenta = new BigDecimal(0);
+        totalVentaDescuento = new BigDecimal(0);
         //getVentasByIntervalDate();
+        c = new Credito();
     }
 
     public void verificarCombo() {
@@ -158,41 +204,20 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
             getTotalVentaByInterval();
         }
     }
-//    public void setFechaInicioFin(int filter) {
-//
-//        switch (filter) {
-//            case 4:
-//                if (data.getFechaFiltroInicio() != null && data.getFechaFiltroFin() != null) {
-//                    model = ifaceVentaMayoreo.getVentasByIntervalDate(data.getFechaFiltroInicio(), data.getFechaFiltroFin(), data.getIdSucursal(), data.getIdStatus(), data.getIdTipoVenta());
-//                    getTotalVentaByInterval();
-//                } else {
-//                    model = new ArrayList<VentaMayoreo>();
-//                    getTotalVentaByInterval();
-//                }
-//                break;
-//            case 1:
-//                data.setFechaFiltroInicio(new Date());
-//                data.setFechaFiltroFin(new Date());
-//                break;
-//
-//            case 2:
-//                data.setFechaFiltroInicio(TiempoUtil.getDayOneOfMonth(new Date()));
-//                data.setFechaFiltroFin(TiempoUtil.getDayEndOfMonth(new Date()));
-//
-//                break;
-//            case 3:
-//                data.setFechaFiltroInicio(TiempoUtil.getDayOneYear(new Date()));
-//                data.setFechaFiltroFin(TiempoUtil.getDayEndYear(new Date()));
-//                break;
-//            default:
-//                data.setFechaFiltroInicio(null);
-//                data.setFechaFiltroFin(null);
-//                break;
-//        }
-//
-//    }
 
     public void printVenta() {
+        c = new Credito();
+        c = ifaceCredito.getCreditosByIdVentaMayoreo(data.getIdVentaMayoreoPk());
+        if (c.getDejaCuenta() == null) {
+            c.setDejaCuenta(new BigDecimal(0));
+        }
+        if (c.getMontoCredito() == null) {
+            c.setMontoCredito(new BigDecimal(0));
+        }
+        System.out.println("================Credito: " + c.toString());
+        setParameterTicket(data.getIdVentaMayoreoPk().intValue(), data.getVentaSucursal().intValue());
+        generateReport(data.getVentaSucursal().intValue());
+        RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
 
     }
 
@@ -226,12 +251,10 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
     public void cancelarVenta() {
         AbonoCredito ac = new AbonoCredito();
         ac = ifaceAbonoCredito.getByIdVentaMayoreoFk(data.getIdVentaMayoreoPk());
-        if (ac != null && ac.getIdAbonoCreditoPk() != null) 
-        {
+        if (ac != null && ac.getIdAbonoCreditoPk() != null) {
             JsfUtil.addErrorMessageClean("Este crédito ya cuenta con abonos, no se puede cancelar");
-        
-        } else 
-        {
+
+        } else {
             if (data.getIdStatusFk().intValue() != 4 && data.getIdStatusFk().intValue() != 2) {
                 boolean banderaError = false;
                 lstVenta = ifaceVentaMayoreoProducto.buscaVentaCancelar(data.getVentaSucursal(), data.getIdSucursalFk());
@@ -266,21 +289,17 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
 
                     Credito c = new Credito();
                     c = ifaceCredito.getCreditosByIdVentaMayoreo(data.getIdVentaMayoreoPk());
-                    System.out.println("Credito: "+c.toString());
-                    if (c != null && c.getIdCreditoPk() != null) 
-                    {
+                    System.out.println("Credito: " + c.toString());
+                    if (c != null && c.getIdCreditoPk() != null) {
                         if (ifaceCredito.eliminarCreditoByIdCreditoPk(c.getIdCreditoPk()) == 1) {
                             JsfUtil.addSuccessMessageClean("Se ha cancelado la venta  y credito correctamente ");
                             data.setIdStatusFk(null);
                             lstVenta.clear();
                             buscar();
-                        } else 
-                        {
+                        } else {
                             JsfUtil.addErrorMessageClean("Ha ocurrido un error al eliminar el credito");
                         }
-                    }
-                    else
-                    {
+                    } else {
                         JsfUtil.addSuccessMessageClean("Se ha cancelado la venta correctamente");
                         data.setIdStatusFk(null);
                         lstVenta.clear();
@@ -294,8 +313,141 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
                 JsfUtil.addErrorMessageClean("No puedes volver a cancelar la venta, o cancelar una venta ya pagada");
 
             }
-            
+
+        }
+    }
+
+    public void generateReport(int folio) {
+        JRExporter exporter = null;
+
+        try {
+            ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+
+            String temporal = "";
+            if (servletContext.getRealPath("") == null) {
+                temporal = Constantes.PATHSERVER;
+            } else {
+                temporal = servletContext.getRealPath("");
             }
+
+            if (data.getIdtipoVentaFk().equals(new BigDecimal(1))) {
+                pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketVenta" + File.separatorChar + "ticket.jasper";
+            } else {
+                pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketVenta" + File.separatorChar + "ticketCredito.jasper";
+            }
+
+//            pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketVenta" + File.separatorChar + "ticket.jasper";
+            JasperPrint jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport, new JREmptyDataSource());
+
+            outputStream = JasperReportUtil.getOutputStreamFromReport(paramReport, getPathFileJasper());
+            exporter = new JRPdfExporter();
+            exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
+            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, outputStream);
+
+            byte[] bytes = outputStream.toByteArray();
+            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf", folio, usuario.getSucId());
+
+        } catch (Exception exception) {
+            System.out.println("Error >" + exception.getMessage());
+
+        }
+
+    }
+
+    private void setParameterTicket(int idVenta, int folioVenta) {
+
+        NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
+        DecimalFormat df = new DecimalFormat("###.##");
+
+        ArrayList<String> productos = new ArrayList<String>();
+        NumeroALetra numeroLetra = new NumeroALetra();
+
+        for (VentaProductoMayoreo venta : data.getListaProductos()) {
+            String cantidad = venta.getCantidadEmpaque() + " - " + venta.getKilosVendidos() + "Kg.";
+            productos.add(venta.getNombreProducto().toUpperCase() + " " + venta.getNombreEmpaque());
+            productos.add("  " + cantidad + "                     " + nf.format(venta.getPrecioProducto()) + "    " + nf.format(venta.getTotalVenta()));
+        }
+
+        String totalVentaDescuentoStr = "";
+        String totalVentaStr = numeroLetra.Convertir(df.format(data.getTotalVenta()), true);
+        if (data.getIdtipoVentaFk().equals(new BigDecimal(2))) {
+            totalVentaDescuentoStr = numeroLetra.Convertir(df.format(c.getMontoCredito()), true);
+        }
+
+        putValues(TiempoUtil.getFechaDDMMYYYYHHMM(data.getFechaVenta()), productos, nf.format(data.getTotalVenta()), totalVentaStr, idVenta, folioVenta, totalVentaDescuentoStr, nf.format(c.getMontoCredito()));
+
+    }
+
+    private void putValues(String dateTime, ArrayList<String> items, String total, String totalVentaStr, int idVenta, int folioVenta, String totalVentaDescuentoStr, String totalDescuento) {
+        DecimalFormat df = new DecimalFormat("#,###.00");
+        paramReport.clear();
+        paramReport.put("fechaVenta", dateTime);
+        paramReport.put("noVenta", Integer.toString(idVenta));
+        paramReport.put("cliente", data.getNombreCliente());
+        paramReport.put("vendedor", data.getNombreVendedor());
+        paramReport.put("productos", items);
+        paramReport.put("ventaTotal", total);
+        paramReport.put("totalLetra", totalVentaStr);
+        switch (data.getIdStatusFk().intValue()) {
+            case 1:
+                paramReport.put("estado", "PEDIDO MARCADO");
+                break;
+            case 2:
+                paramReport.put("estado", "PEDIDO PAGADO");
+                break;
+            case 3:
+                paramReport.put("estado", "PEDIDO ENTREGADO");
+                break;
+            case 4:
+                paramReport.put("estado", "PEDIDO CANCELADO");
+                break;
+            default:
+                paramReport.put("estado", "ERROR TICKET");
+                JsfUtil.addErrorMessageClean("Ocurrió un error");
+        }
+        paramReport.put("labelFecha", "Fecha de Venta:");
+        paramReport.put("labelFolio", "Folio de Venta:");
+        paramReport.put("telefonos", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:" + usuario.getTelefonoSucursal());
+        paramReport.put("labelSucursal", usuario.getNombreSucursal());
+
+        //Se agregan los campos que se utiliza en el ticket de credito
+        if (!data.getIdtipoVentaFk().equals(new BigDecimal(1))) {
+
+            paramReport.put("numeroCliente", data.getIdClienteFk().toString());
+            paramReport.put("fechaPromesaPago", TiempoUtil.getFechaDDMMYYYY(c.getFechaPromesaPago()));
+            paramReport.put("beneficiario", "FIDENCIO TORRES REYNOSO");
+            paramReport.put("totalCompraDescuento", "$" + df.format(c.getMontoCredito()));
+            paramReport.put("totalDescuentoLetra", totalVentaDescuentoStr);
+
+            paramReport.put("aCuenta", "-$" + df.format(c.getDejaCuenta()));
+            paramReport.put("descuentoVenta", "-$" + df.format(descuento));
+            paramReport.put("foliCredito", Integer.toString(folioCredito));
+            //Imprime el calendario de pagos
+            date = data.getFechaVenta();
+            Date dateTemp = date;
+            ArrayList calendario = new ArrayList();
+            String montoAbono = df.format(c.getMontoCredito().divide(c.getNumeroPagos() == null ? BigDecimal.ZERO : c.getNumeroPagos(), 2, RoundingMode.UP));
+            String item = "N. Pago   Fecha de Pago   Monto";
+            calendario.add(item);
+            if (c.getDejaCuenta().intValue() > 0) {
+                item = "    0            " + TiempoUtil.getFechaDDMMYYYY(date) + "    $" + df.format(c.getDejaCuenta());
+                calendario.add(item);
+                paramReport.put("msgAcuenta", "Favor de pasar a caja para su pago inicial de: $" + df.format(c.getDejaCuenta()));
+            } else {
+                paramReport.put("msgAcuenta", "");
+            }
+
+            int plaso = (c.getPlasos().divide(c.getNumeroPagos())).intValue();
+            int pagos = c.getNumeroPagos().intValue();
+            for (int y = 0; y < pagos; y++) {
+
+                dateTemp = TiempoUtil.sumarRestarDias(dateTemp, plaso);
+                item = "    " + (y + 1) + "            " + TiempoUtil.getFechaDDMMYYYY(dateTemp) + "    $" + montoAbono;
+                calendario.add(item);
+
+            }
+            paramReport.put("calendarioPago", calendario);
+        }
     }
 
 //    public void calculatotalVentaDetalle() 
@@ -508,6 +660,150 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
 
     public void setLstVenta(ArrayList<VentaProductoMayoreo> lstVenta) {
         this.lstVenta = lstVenta;
+    }
+
+    public String getRutaPDF() {
+        return rutaPDF;
+    }
+
+    public void setRutaPDF(String rutaPDF) {
+        this.rutaPDF = rutaPDF;
+    }
+
+    public Map getParamReport() {
+        return paramReport;
+    }
+
+    public void setParamReport(Map paramReport) {
+        this.paramReport = paramReport;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getPathFileJasper() {
+        return pathFileJasper;
+    }
+
+    public void setPathFileJasper(String pathFileJasper) {
+        this.pathFileJasper = pathFileJasper;
+    }
+
+    public ByteArrayOutputStream getOutputStream() {
+        return outputStream;
+    }
+
+    public void setOutputStream(ByteArrayOutputStream outputStream) {
+        this.outputStream = outputStream;
+    }
+
+    public boolean isCharLine() {
+        return charLine;
+    }
+
+    public void setCharLine(boolean charLine) {
+        this.charLine = charLine;
+    }
+
+    public BigDecimal getMax() {
+        return max;
+    }
+
+    public void setMax(BigDecimal max) {
+        this.max = max;
+    }
+
+    public BigDecimal getMin() {
+        return min;
+    }
+
+    public void setMin(BigDecimal min) {
+        this.min = min;
+    }
+
+    public BigDecimal getDescuento() {
+        return descuento;
+    }
+
+    public void setDescuento(BigDecimal descuento) {
+        this.descuento = descuento;
+    }
+
+    public BigDecimal getDejaACuenta() {
+        return dejaACuenta;
+    }
+
+    public void setDejaACuenta(BigDecimal dejaACuenta) {
+        this.dejaACuenta = dejaACuenta;
+    }
+
+    public BigDecimal getTotalVentaDescuento() {
+        return totalVentaDescuento;
+    }
+
+    public void setTotalVentaDescuento(BigDecimal totalVentaDescuento) {
+        this.totalVentaDescuento = totalVentaDescuento;
+    }
+
+    public BigDecimal getINTERES_VENTA() {
+        return INTERES_VENTA;
+    }
+
+    public void setINTERES_VENTA(BigDecimal INTERES_VENTA) {
+        this.INTERES_VENTA = INTERES_VENTA;
+    }
+
+    public BigDecimal getDIAS_PLAZO() {
+        return DIAS_PLAZO;
+    }
+
+    public void setDIAS_PLAZO(BigDecimal DIAS_PLAZO) {
+        this.DIAS_PLAZO = DIAS_PLAZO;
+    }
+
+    public int getFolioCredito() {
+        return folioCredito;
+    }
+
+    public void setFolioCredito(int folioCredito) {
+        this.folioCredito = folioCredito;
+    }
+
+    public boolean isVariableInicial() {
+        return variableInicial;
+    }
+
+    public void setVariableInicial(boolean variableInicial) {
+        this.variableInicial = variableInicial;
+    }
+
+    public boolean isCredito() {
+        return credito;
+    }
+
+    public void setCredito(boolean credito) {
+        this.credito = credito;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public Credito getC() {
+        return c;
+    }
+
+    public void setC(Credito c) {
+        this.c = c;
     }
 
 }

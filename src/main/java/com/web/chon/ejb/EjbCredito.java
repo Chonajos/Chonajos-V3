@@ -280,7 +280,9 @@ public class EjbCredito implements NegocioCredito {
     {
         System.out.println("entro ejbCredito: "+idVentaMayoreo);
         try {
-            Query query = em.createNativeQuery("SELECT ID_CREDITO_PK,ID_CLIENTE_FK,ID_VENTA_MENUDEO,ID_VENTA_MAYOREO,ID_USUARIO_CREDITO,ESTATUS_CREDITO,NUMERO_PROMESA_PAGO,FECHA_INICIO_CREDITO,FECHA_FIN_CREDITO,FECHA_PROMESA_FIN_PAGO,TAZA_INTERES,PLAZOS  FROM CREDITO WHERE ID_VENTA_MAYOREO = ?");
+            Query query = em.createNativeQuery("select c.ID_CREDITO_PK,c.ID_CLIENTE_FK,c.ID_VENTA_MENUDEO,c.ID_VENTA_MAYOREO,c.ID_USUARIO_CREDITO,\n" +
+"c.ESTATUS_CREDITO,c.NUMERO_PROMESA_PAGO,c.FECHA_INICIO_CREDITO,c.FECHA_FIN_CREDITO,c.FECHA_PROMESA_FIN_PAGO,\n" +
+"c.TAZA_INTERES,c.PLAZOS,c.MONTO_CREDITO,c.ACUENTA,c.STATUSACUENTA,c.NUMERO_PAGOS  FROM CREDITO c WHERE c.ID_VENTA_MAYOREO = ?");
             List<Object[]> resultList = null;
             query.setParameter(1, idVentaMayoreo);
             resultList = query.getResultList();
