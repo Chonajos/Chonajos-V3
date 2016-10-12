@@ -523,7 +523,7 @@ public class BeanVenta implements Serializable, BeanSimple {
         paramReport.put("telefonos", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:" + usuarioDominio.getTelefonoSucursal());
         paramReport.put("labelSucursal", usuarioDominio.getNombreSucursal());
 
-        //Se ahregan los campos que se utiliza en el ticket de credito
+        //Se agregan los campos que se utiliza en el ticket de credito
         if (!data.getIdTipoVentaFk().equals(new BigDecimal(1))) {
 
             paramReport.put("numeroCliente", cliente.getId_cliente().toString());

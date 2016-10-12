@@ -1,5 +1,6 @@
 package com.web.chon.bean;
 
+import com.web.chon.dominio.AbonoCredito;
 import com.web.chon.dominio.Caja;
 import com.web.chon.dominio.Credito;
 import com.web.chon.dominio.ExistenciaMenudeo;
@@ -10,6 +11,7 @@ import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.dominio.Venta;
 import com.web.chon.dominio.VentaProducto;
 import com.web.chon.security.service.PlataformaSecurityContext;
+import com.web.chon.service.IfaceAbonoCredito;
 import com.web.chon.service.IfaceCaja;
 import com.web.chon.service.IfaceCatStatusVenta;
 import com.web.chon.service.IfaceCatSucursales;
@@ -29,6 +31,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -78,6 +81,8 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     private IfaceCaja ifaceCaja;
     @Autowired
     private IfaceCredito ifaceCredito;
+    @Autowired
+    private IfaceAbonoCredito ifaceAbonoCredito;
 
     private ArrayList<Sucursal> listaSucursales;
     private ArrayList<Venta> listaVentas;
@@ -159,7 +164,15 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
                 temporal = servletContext.getRealPath("");
             }
 
-            pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketVenta" + File.separatorChar + "ticket.jasper";
+            System.out.println("v.getIdTipoVenta() " + v.getIdTipoVenta());
+            if (v.getIdTipoVenta().equals(new BigDecimal(1))) {
+                System.out.println("normal");
+                pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketVenta" + File.separatorChar + "ticket.jasper";
+            } else {
+                System.out.println("credito");
+                pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketVenta" + File.separatorChar + "ticketCredito.jasper";
+            }
+
             JasperPrint jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport, new JREmptyDataSource());
 
             outputStream = JasperReportUtil.getOutputStreamFromReport(paramReport, getPathFileJasper());
@@ -198,11 +211,56 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
         paramReport.put("productos", productos);
         paramReport.put("ventaTotal", nf.format(totalVenta).toString());
         paramReport.put("totalLetra", totalVentaStr);
-        paramReport.put("labelFecha", "Fecha de Pago:");
-        paramReport.put("labelFolio", "Folio de Venta:");
+        if (!v.getIdStatusVenta().equals(2)) {
+            paramReport.put("labelFecha", "Fecha de Venta: K-");
+        } else {
+            paramReport.put("labelFecha", "Fecha de Pago: K-");
+        }
+        paramReport.put("labelFolio", "Folio de Venta: K-");
         paramReport.put("estado", v.getNombreEstatus());
         paramReport.put("labelSucursal", v.getNombreSucursal());
         paramReport.put("telefonos", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:" + usuario.getTelefonoSucursal());
+
+        //Se agregan los campos que se utiliza en el ticket de credito
+        if (!v.getIdTipoVenta().equals(new BigDecimal(1))) {
+
+            String totalVentaDescuentoStr = numeroLetra.Convertir(df.format(v.getMontoCredito()), true);
+            paramReport.put("numeroCliente", v.getIdClienteFk().toString());
+            paramReport.put("labelFecha", "Fecha de Venta:");
+            paramReport.put("fechaPromesaPago", TiempoUtil.getFechaDDMMYYYY(v.getFechaPromesaPago()));
+            paramReport.put("beneficiario", "FIDENCIO TORRES REYNOSO");
+            paramReport.put("totalCompraDescuento", nf.format(v.getMontoCredito()));
+            paramReport.put("totalDescuentoLetra", totalVentaDescuentoStr);
+            paramReport.put("aCuenta", "-" + nf.format(v.getaCuenta()));
+            paramReport.put("descuentoVenta", "-" + df.format(0));
+            paramReport.put("foliCredito", v.getIdCredito() == null ? null : v.getIdCredito().toString());
+
+            //Imprime el calendario de pagos
+            Date dateTemp = v.getFechaVenta();
+            ArrayList calendario = new ArrayList();
+            String montoAbono = nf.format(v.getMontoCredito().divide(v.getNumeroPagos() == null ? BigDecimal.ZERO : v.getNumeroPagos(), 2, RoundingMode.UP));
+            String item = "N. Pago   Fecha de Pago   Monto";
+            calendario.add(item);
+            if (v.getaCuenta().intValue() > 0) {
+                item = "    0            " + TiempoUtil.getFechaDDMMYYYY(date) + "    " + nf.format(v.getaCuenta());
+                calendario.add(item);
+
+                paramReport.put("msgAcuenta", "Favor de pasar a caja para su pago inicial de: " + nf.format(v.getaCuenta()));
+            } else {
+                paramReport.put("msgAcuenta", "");
+            }
+
+            int plaso = (v.getPlazos().divide(v.getNumeroPagos())).intValue();
+            int pagos = v.getNumeroPagos().intValue();
+            for (int y = 0; y < pagos; y++) {
+
+                dateTemp = TiempoUtil.sumarRestarDias(dateTemp, plaso);
+                item = "    " + (y + 1) + "            " + TiempoUtil.getFechaDDMMYYYY(dateTemp) + "     " + montoAbono;
+                calendario.add(item);
+
+            }
+            paramReport.put("calendarioPago", calendario);
+        }
 
     }
 
@@ -251,7 +309,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
                 subProducto = new Subproducto();
                 subProducto.setIdProductoFk("");
             }
-            listaVentas = ifaceVenta.getVentasByIntervalDate(fechaFiltroInicio, fechaFiltroFin, idSucursal, idStatusVenta, subProducto.getIdSubproductoPk());
+            listaVentas = ifaceVenta.getVentasByIntervalDate(fechaFiltroInicio, fechaFiltroFin, idSucursal, idStatusVenta, subProducto.getIdSubproductoPk(), null);
             getTotalVentaByInterval();
         }
     }
@@ -270,12 +328,6 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
             }
         }
     }
-//    public void cancel() 
-//    {
-//        viewEstate = "init";
-//        lstVenta.clear();
-//        getTotalVentaByInterval();
-//    }
 
     public void cancelarVenta() {
         switch (ventaCancelar.getIdStatusVenta().intValue()) {
@@ -283,16 +335,21 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
                 JsfUtil.addErrorMessageClean("No puedes volver a cancelar la venta");
                 break;
             default:
-                boolean bandera = false;
-                Credito c = new Credito();
-                c = ifaceCredito.getCreditosByIdVentaMenudeo(totalVenta);
-                if (c == null || c.getIdCreditoPk() == null) {
+                //Verifica si tiene abonos en caso de que sea una venta a creditos
+                ArrayList<AbonoCredito> lstAbonoCredito = new ArrayList<AbonoCredito>();
+                lstAbonoCredito = ifaceAbonoCredito.getAbonosByIdCredito(ventaCancelar.getIdCredito());
+                
+                if (lstAbonoCredito == null || lstAbonoCredito.isEmpty()) {
+
+                    boolean bandera = false;
+                    Credito c = new Credito();
+                    c = ifaceCredito.getCreditosByIdVentaMenudeo(totalVenta);
+                    //Verifica si es una venta de contado
+
                     listaProductoCancel = ifaceVentaProducto.getVentasProductoByIdVenta(ventaCancelar.getIdVentaPk());
                     for (VentaProducto vp : listaProductoCancel) {
-                        System.out.println("Bean==========" + vp.toString());
                         ExistenciaMenudeo em = new ExistenciaMenudeo();
                         em = ifaceExistenciaMenudeo.getExistenciasRepetidasById(vp.getIdProductoFk(), new BigDecimal(ventaCancelar.getIdSucursal()));
-                        System.out.println("Bean ::::::::::::" + em.toString());
                         BigDecimal kilosExistencia = new BigDecimal(0);
                         kilosExistencia = em.getKilos();
                         kilosExistencia = kilosExistencia.add(vp.getCantidadEmpaque(), MathContext.UNLIMITED);
@@ -305,24 +362,32 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
                             break;
                         }
                     }
-                    if (ifaceVenta.cancelarVenta(ventaCancelar.getIdVentaPk().intValue(), usuario.getIdUsuario().intValue(),
-                            comentarioCancelacion) != 0 && bandera == false) {
+                    if (ifaceVenta.cancelarVenta(ventaCancelar.getIdVentaPk().intValue(), usuario.getIdUsuario().intValue(), comentarioCancelacion) != 0 && bandera == false) {
 
-                        JsfUtil.addSuccessMessageClean("Venta Cancelada, se han regresado existencias y dinero en caja correctamente");
+                        System.out.println("ventaCancelar.toString "+ventaCancelar.toString());
+                        System.out.println("ventaCancelar.getIdTipoVenta() "+ventaCancelar.getIdTipoVenta());
+                        if (ventaCancelar.getIdTipoVenta().equals(new BigDecimal(2))) {
+                            int creditoBorrado = 0;
+                            creditoBorrado = ifaceCredito.delete(ventaCancelar.getIdCredito());
+                            if (creditoBorrado == 1) {
+                                JsfUtil.addSuccessMessageClean("Venta Cancelada, se han regresado existencias y dinero en caja correctamente");
+                            } else {
+                                JsfUtil.addErrorMessageClean("Ocurrió un error al Borrar el Credito, Contactar al Administrador.");
+                            }
+                        }
 
                     } else {
                         JsfUtil.addErrorMessageClean("Ocurrió un error al intentar cancelar la venta.");
                     }
                     break;
-                } else {
-                    JsfUtil.addSuccessMessageClean("La venta es de crédito, por el momento no se puede cancelar");
+                }else{
+                    JsfUtil.addErrorMessageClean("No se Puede Cancelar una Venta de Credito en la Cual ya se Registraron Abonos.");
                 }
-
         }
     }
 
     public void imprimirVenta() {
-        System.out.println("Entro aqui");
+
         idSucursalImpresion = new BigDecimal(ventaImpresion.getIdSucursal());
         fechaImpresion = ventaImpresion.getFechaVenta();
         //System.out.println("Estatus Venta: "+statusVentaImpresion);
@@ -331,12 +396,6 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
         generateReport(ventaImpresion);
 
     }
-//    public void detallesVenta() {
-//        viewEstate = "searchById";
-//        lstVenta = ifaceBuscaVenta.getVentaById(data.getIdVentaPk().intValue());
-//        calculatotalVentaDetalle();
-//
-//    }
 
     public void calculatotalVentaDetalle(ArrayList<VentaProducto> vp) {
         totalVenta = new BigDecimal(0);

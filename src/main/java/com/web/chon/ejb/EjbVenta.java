@@ -27,7 +27,7 @@ public class EjbVenta implements NegocioVenta {
     EntityManager em;
 
     @Override
-    public int insertarVenta(Venta venta,int folioVenta) {
+    public int insertarVenta(Venta venta, int folioVenta) {
         Query query = em.createNativeQuery("INSERT INTO VENTA(ID_VENTA_PK,FECHA_VENTA,ID_CLIENTE_FK,ID_VENDEDOR_FK,STATUS_FK,ID_SUCURSAL_FK,FOLIO_SUCURSAL,TIPO_VENTA) VALUES(?,sysdate,?,?,1,?,?,?)");
         System.out.println("venta ejb :" + venta.toString());
         query.setParameter(1, venta.getIdVentaPk());
@@ -46,62 +46,52 @@ public class EjbVenta implements NegocioVenta {
     }
 
     @Override
-    public List<Object[]> getVentasByInterval(String fechaInicio, String fechaFin, BigDecimal idSucursal, BigDecimal idStatusVenta,String idProducto) {
+    public List<Object[]> getVentasByInterval(String fechaInicio, String fechaFin, BigDecimal idSucursal, BigDecimal idStatusVenta, String idProducto, BigDecimal idTipoVenta) {
         Query query;
         int cont = 0;
-     
-        StringBuffer cadena = new StringBuffer("SELECT ven.ID_VENTA_PK,ven.ID_CLIENTE_FK,\n" +
-"  ven.ID_VENDEDOR_FK, ven.FECHA_VENTA,ven.STATUS_FK,\n" +
-"  USU.ID_SUCURSAL_FK,\n" +
-"  (CLI.NOMBRE||' '||CLI.APELLIDO_PATERNO ||' '||CLI.APELLIDO_MATERNO ) AS CLIENTE, \n" +
-"  (USU.NOMBRE_USUARIO||' '||USU.APATERNO_USUARIO ||' '||USU.AMATERNO_USUARIO ) AS VENDEDOR, \n" +
-"  (select NVL(sum(VTP.TOTAL_VENTA),0)\n" +
-"FROM VENTA_PRODUCTO VTP WHERE VTP.ID_VENTA_FK =ven.ID_VENTA_PK)\n" +
-"  AS TOTAL_VENTA,FOLIO_SUCURSAL,sucu.NOMBRE_SUCURSAL, sv.NOMBRE_STATUS \n" +
-"FROM VENTA ven \n" +
-"  INNER JOIN CLIENTE CLI ON CLI.ID_CLIENTE = ven.ID_CLIENTE_FK \n" +
-"  INNER JOIN USUARIO USU ON USU.ID_USUARIO_PK = ven.ID_VENDEDOR_FK\n" +
-"  inner join SUCURSAL sucu on sucu.ID_SUCURSAL_PK = ven.ID_SUCURSAL_FK\n" +
-"  inner join STATUS_VENTA sv on sv.ID_STATUS_PK = ven.STATUS_FK\n");
 
-        if (idProducto != null && !idProducto.equals("")) 
-        {
-            if (cont == 0) 
-            {
-                cont++;
-                cadena.append(" INNER JOIN VENTA_PRODUCTO vp on vp.ID_VENTA_FK = ven.ID_VENTA_PK WHERE  vp.ID_SUBPRODUCTO_FK = '" + idProducto+"'");
-            } 
-            
+        StringBuffer cadena = new StringBuffer("SELECT ven.ID_VENTA_PK,ven.ID_CLIENTE_FK, "
+                + "  ven.ID_VENDEDOR_FK, ven.FECHA_VENTA,ven.STATUS_FK, "
+                + "  USU.ID_SUCURSAL_FK, "
+                + "  (CLI.NOMBRE||' '||CLI.APELLIDO_PATERNO ||' '||CLI.APELLIDO_MATERNO ) AS CLIENTE, "
+                + "  (USU.NOMBRE_USUARIO||' '||USU.APATERNO_USUARIO ||' '||USU.AMATERNO_USUARIO ) AS VENDEDOR, "
+                + "  (select NVL(sum(VTP.TOTAL_VENTA),0) "
+                + "  FROM VENTA_PRODUCTO VTP WHERE VTP.ID_VENTA_FK =ven.ID_VENTA_PK) "
+                + "  AS TOTAL_VENTA,FOLIO_SUCURSAL,sucu.NOMBRE_SUCURSAL, sv.NOMBRE_STATUS,ven.TIPO_VENTA, "
+                + "  C.ID_CREDITO_PK,C.FECHA_PROMESA_FIN_PAGO,C.MONTO_CREDITO,C.NUMERO_PAGOS,C.PLAZOS,C.ACUENTA "
+                + "  FROM VENTA ven "
+                + "  INNER JOIN CLIENTE CLI ON CLI.ID_CLIENTE = ven.ID_CLIENTE_FK "
+                + "  INNER JOIN USUARIO USU ON USU.ID_USUARIO_PK = ven.ID_VENDEDOR_FK "
+                + "  INNER JOIN SUCURSAL sucu on sucu.ID_SUCURSAL_PK = ven.ID_SUCURSAL_FK "
+                + "  INNER JOIN STATUS_VENTA sv on sv.ID_STATUS_PK = ven.STATUS_FK "
+                + "  LEFT JOIN CREDITO C ON C.ID_VENTA_MENUDEO = ven.ID_VENTA_PK");
+
+        if (idProducto != null && !idProducto.equals("")) {
+            cadena.append(" INNER JOIN VENTA_PRODUCTO vp on vp.ID_VENTA_FK = ven.ID_VENTA_PK WHERE  vp.ID_SUBPRODUCTO_FK = '" + idProducto + "'");
+            cont++;
+
         }
-        
-        if (!fechaInicio.equals("")) 
-        {
-            if (cont == 0) 
-            {
+
+        if (!fechaInicio.equals("")) {
+            if (cont == 0) {
                 cadena.append(" WHERE TO_DATE(TO_CHAR(ven.FECHA_VENTA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "' ");
-            }
-            else 
-            {
+            } else {
                 cadena.append(" AND TO_DATE(TO_CHAR(ven.FECHA_VENTA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "' ");
             }
             cont++;
         }
 
-         
-        if (idSucursal.intValue() != 0) 
-        {
+        if (idSucursal.intValue() != 0) {
             if (cont == 0) {
                 cadena.append(" WHERE ");
-            } else 
-            {
+            } else {
                 cadena.append(" AND ");
             }
             cadena.append("ven.ID_SUCURSAL_FK = '" + idSucursal + "' ");
             cont++;
         }
-        
-        
-        if (idStatusVenta !=null && idStatusVenta.intValue() != 0) {
+
+        if (idStatusVenta != null && idStatusVenta.intValue() != 0) {
             if (cont == 0) {
                 cadena.append(" WHERE ");
             } else {
@@ -112,13 +102,21 @@ public class EjbVenta implements NegocioVenta {
             cont++;
 
         }
-        
-        
+
+        if (idTipoVenta != null) {
+
+            if (cont == 0) {
+                cadena.append(" WHERE ");
+            } else {
+                cadena.append(" AND ");
+            }
+
+            cadena.append(" ven.ID_VENTA_PK  = '" + idTipoVenta + "' ");
+
+        }
 
         cadena.append(" ORDER BY ven.ID_VENTA_PK");
-        
-        System.out.println("=======================QueryEJB==========================");
-        System.out.println(cadena);
+
         query = em.createNativeQuery(cadena.toString());
 
         try {
@@ -143,7 +141,7 @@ public class EjbVenta implements NegocioVenta {
             return 1;
         }
     }
-    
+
     @Override
     public int cancelarVenta(int idVenta, int idUsuario, String comentarios) {
         System.out.println("idVenta: " + idVenta);
@@ -168,9 +166,5 @@ public class EjbVenta implements NegocioVenta {
     public BigDecimal getTotalVentasByDay(String fecha) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-   
-    
-    
 
 }

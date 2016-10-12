@@ -99,6 +99,7 @@ public class BeanTransferenciaMerca implements Serializable {
 
                 if (lstExistenciaProductoExistente != null && !lstExistenciaProductoExistente.isEmpty()) {
 
+                    System.out.println("hay existenacias repetidas solo se actualizan");
                     existenciaProductoTemp = lstExistenciaProductoExistente.get(0);
                     existenciaProductoTemp.setCantidadPaquetes(data.getCantidadMovida().add(existenciaProductoTemp.getCantidadPaquetes()));
                     existenciaProductoTemp.setKilosTotalesProducto(data.getKilosMovios().add(existenciaProductoTemp.getKilosTotalesProducto()));
@@ -114,6 +115,7 @@ public class BeanTransferenciaMerca implements Serializable {
                     }
                 } else {
 
+                    System.out.println("Se genera nueva existencia");
                     System.out.println("existenciaProducto :p "+existenciaProducto.toString());
                     existenciaProductoTemp = new ExistenciaProducto(existenciaProducto.getIdExistenciaProductoPk(), existenciaProducto.getIdEmFK(), existenciaProducto.getIdSubProductoFK(), existenciaProducto.getIdTipoEmpaqueFK(), existenciaProducto.getCantidadPaquetes(), existenciaProducto.getKilosTotalesProducto(), existenciaProducto.getComentarios(), existenciaProducto.getPrecio(), existenciaProducto.getNombreProducto(), existenciaProducto.getNombreEmpaque(), existenciaProducto.getIdTipoConvenio(), existenciaProducto.getIdBodegaFK(), existenciaProducto.getNombreTipoConvenio(), existenciaProducto.getNombreBodega(), existenciaProducto.getKilospromprod(), existenciaProducto.getNumeroMovimiento(), existenciaProducto.getPesoTara(), existenciaProducto.getIdSucursal(), existenciaProducto.getIdProvedor(), existenciaProducto.getNombreProvedorCompleto(), existenciaProducto.getIdentificador(), existenciaProducto.getNombreSucursal(), existenciaProducto.getPrecioMinimo(), existenciaProducto.getPrecioVenta(), existenciaProducto.getPrecioMaximo(), existenciaProducto.isEstatusBloqueo(), existenciaProducto.getConvenio(), existenciaProducto.getCarroSucursal(), existenciaProducto.getIdEntradaMercanciaProductoFK(), existenciaProducto.getPrecioSinIteres());
                     existenciaProductoTemp.setCantidadPaquetes(data.getCantidadMovida());
@@ -123,6 +125,7 @@ public class BeanTransferenciaMerca implements Serializable {
                     //Si se tranfiere todos los paquetes solo se modifica el id de bodega
                     if (existenciaProductoTemp.getCantidadPaquetes().compareTo(existenciaProducto.getCantidadPaquetes()) == 0) {
 
+                        System.out.println("Se trasnfiere todo solo se modifica id de bodega");
                         existenciaProducto.setIdBodegaFK(data.getIdBodegaDestino());
                         ifaceNegocioExistencia.update(existenciaProducto);
 
@@ -130,6 +133,7 @@ public class BeanTransferenciaMerca implements Serializable {
                         
                     } else if (ifaceNegocioExistencia.insertExistenciaProducto(existenciaProductoTemp) == 1) {
 
+                        System.out.println("Inserta existencia nueva");
                         existenciaProducto.setCantidadPaquetes(existenciaProducto.getCantidadPaquetes().subtract(data.getCantidadMovida()));
                         existenciaProducto.setKilosTotalesProducto(existenciaProducto.getKilosTotalesProducto().subtract(data.getKilosMovios()));
                         ifaceNegocioExistencia.update(existenciaProducto);

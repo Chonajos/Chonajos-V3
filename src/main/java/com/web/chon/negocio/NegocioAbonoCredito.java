@@ -33,6 +33,13 @@ public interface NegocioAbonoCredito
     
     public List<Object[]>  getByIdVentaMenudeoFk(BigDecimal idVentaMenudeoFk);
     
+    /**
+     * Obtiene todos los abonos por medio del id de credito
+     * @param idAbonoCredito
+     * @return 
+     */
+    public List<Object[]> getAbonosByIdCredito(BigDecimal idCredito) ;
+    
 
     
 }

@@ -206,5 +206,36 @@ public class ServiceAbonoCredito implements IfaceAbonoCredito {
     
     }
     
+    
+     @Override
+    public ArrayList<AbonoCredito> getAbonosByIdCredito(BigDecimal idCredito) {
+       getEjb();
+        ArrayList<AbonoCredito> lstAbonoCredito = new ArrayList<AbonoCredito>();
+        List<Object[]> lstObject = new ArrayList<Object[]>();
+        lstObject = ejb.getAbonosByIdCredito(idCredito);
+        for (Object[] object : lstObject) 
+        {
+            AbonoCredito abonoCredito = new AbonoCredito();
+            abonoCredito.setIdAbonoCreditoPk(object[0] == null ? null : new BigDecimal(object[0].toString()));
+            abonoCredito.setIdCreditoFk(object[1] == null ? null : new BigDecimal(object[1].toString()));
+            abonoCredito.setMontoAbono(object[2] == null ? null : new BigDecimal(object[2].toString()));
+            abonoCredito.setFechaAbono(object[3] == null ? null : (Date) object[3]);
+            abonoCredito.setIdUsuarioFk(object[4] == null ? null : new BigDecimal(object[4].toString()));
+            abonoCredito.setIdtipoAbonoFk(object[5] == null ? null : new BigDecimal(object[5].toString()));
+            abonoCredito.setEstatusAbono(object[6] == null ? null : new BigDecimal(object[6].toString()));
+            abonoCredito.setNumeroCheque(object[7] == null ? null : new BigDecimal(object[7].toString()));
+            abonoCredito.setLibrador(object[8] == null ? "" : object[8].toString());
+            abonoCredito.setFechaCobro(object[9] == null ? null : (Date) object[9]);
+            abonoCredito.setBanco(object[10] == null ? "" : object[10].toString());
+            abonoCredito.setFactura(object[11] == null ? "" : object[11].toString());
+            abonoCredito.setReferencia(object[12] == null ? "" : object[12].toString());
+            abonoCredito.setConcepto(object[13] == null ? "" : object[13].toString());
+            abonoCredito.setFechaTransferencia(object[14] == null ? null : (Date) object[14]);
+            
+            lstAbonoCredito.add(abonoCredito);
+        }
+        return lstAbonoCredito;
+    }
+
 
 }

@@ -29,7 +29,7 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
     @Override
     public int insertaExistencia(ExistenciaProducto e) {
 
-        System.out.println("Entrada_Porducto Existencia Nuevo=============: " + e.toString());
+        System.out.println("Entrada_Porducto Existencia Nuevo =============: " + e.toString());
 
         try 
         {          

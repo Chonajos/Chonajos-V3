@@ -37,6 +37,7 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
     @Override
     public int insertExistenciaProducto(ExistenciaProducto ep) {
         getEjb();
+        System.out.println("service");
         return ejb.insertaExistencia(ep);
 
     }

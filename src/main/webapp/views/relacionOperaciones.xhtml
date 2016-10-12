@@ -12,11 +12,16 @@
         <div>
             <h3>#{beanRelacionOperaciones.title}</h3>
         </div>
+        <p:ajaxStatus onsuccess="PF('statusDialog').hide()" oncomplete="PF('statusDialog').hide()" onerror="PF('statusDialog').hide()" />
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                  closable="false" resizable="false" showHeader="false">
+            <p:graphicImage value="../resources/img/carga.gif" />
+        </p:dialog>
 
         <h:form id="formContent">
             <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <div class="form-group" align="right">
-                <p:commandButton value="Buscar" update=":formContent" ajax="true" action="#{beanRelacionOperaciones.buscar()}"/>
+                <p:commandButton value="Buscar" onclick="PF('statusDialog').show()" update=":formContent" ajax="true" action="#{beanRelacionOperaciones.buscar()}"/>
             </div>
             <p:confirmDialog   global="true" showEffect="fade" hideEffect="fade">
                 <div class="alignCenter">
@@ -100,7 +105,7 @@
                         <p:dataTable id="table" var="model" 
                                      value="#{beanRelacionOperaciones.listaVentas}" 
                                      scrollable="true"
-                                     scrollHeight="280" styleClass="ui-datatable-hor-scroll" 
+                                     scrollHeight="320" styleClass="ui-datatable-hor-scroll" 
                                      emptyMessage="No se encontraron Registros" 
                                      rendered="#{beanRelacionOperaciones.viewEstate =='init'}">
 
@@ -130,7 +135,7 @@
                             </p:column>
 
                             <p:column headerText="Imprimir" width="60px;" class="alignCenter">
-                                <p:commandButton id="print" ajax="true" process="@this" action="#{beanRelacionOperaciones.imprimirVenta()}" 
+                                <p:commandButton id="print" ajax="true" onclick="PF('statusDialog').show()" process="@this" action="#{beanRelacionOperaciones.imprimirVenta()}" 
                                                  icon="ui-icon-print" styleClass="ui-priority-primary" update=":formContent"
                                                  oncomplete="window.frames.miFrame.print();">
                                     <f:setPropertyActionListener value="#{model}" target="#{beanRelacionOperaciones.ventaImpresion}"/>
@@ -138,7 +143,7 @@
                             </p:column>
 
                             <p:column headerText="Cancelar" width="60px;" class="alignCenter">
-                                <p:commandButton id="cancel" ajax="true" process="@this" action="#{beanRelacionOperaciones.cancelarVenta()}" icon="ui-icon-trash" styleClass="ui-priority-primary" update=":formContent">
+                                <p:commandButton id="cancel" onclick="PF('statusDialog').show()" ajax="true" process="@this" action="#{beanRelacionOperaciones.cancelarVenta()}" icon="ui-icon-trash" styleClass="ui-priority-primary" update=":formContent">
                                     <f:setPropertyActionListener value="#{model}" target="#{beanRelacionOperaciones.ventaCancelar}"/>
                                     <p:confirm header="Confirmación" message="¿Estás seguro de cancelar la venta?" icon="ui-icon-alert"/>
                                 </p:commandButton>
@@ -151,13 +156,13 @@
                                 <p:column colspan="1" />
                                 <p:column colspan="1" />
                                 <p:column colspan="1" footerText="Total: " style="text-align:right"/>
-                                
+
                                 <p:column colspan="1" >
-                                <f:facet name="footer">
-                                    <h:outputText value="#{beanRelacionOperaciones.totalVenta}" class="alignRight">
-                                        <f:convertNumber type="currency" currencySymbol="$" />
-                                    </h:outputText>
-                                </f:facet>
+                                    <f:facet name="footer">
+                                        <h:outputText value="#{beanRelacionOperaciones.totalVenta}" class="alignRight">
+                                            <f:convertNumber type="currency" currencySymbol="$" />
+                                        </h:outputText>
+                                    </f:facet>
                                 </p:column>
                                 <p:column colspan="1" />
                                 <p:column colspan="1" />

@@ -35,12 +35,21 @@ public class Venta implements Serializable {
     private String nombreEstatus;
     private ArrayList<VentaProducto> lstVentaProducto;
     private BigDecimal tipoVenta;
+    
+    //Variables para creditos
+    private BigDecimal idTipoVenta;
+    private BigDecimal idCredito;
+    private Date fechaPromesaPagoCredito;
+    private BigDecimal montoCredito;
+    private BigDecimal numeroPagos;
+    private BigDecimal plazos;
+    private BigDecimal aCuenta;
 
     @Override
     public String toString() {
-        return "Venta{" + "idVentaPk=" + idVentaPk + ", fechaVenta=" + fechaVenta + ", fechaPromesaPago=" + fechaPromesaPago + ", idClienteFk=" + idClienteFk + ", idSucursal=" + idSucursal + ", idVendedorFk=" + idVendedorFk + ", nombrestatus=" + nombrestatus + ", fechaPago=" + fechaPago + ", nombreCliente=" + nombreCliente + ", nombreVendedor=" + nombreVendedor + ", totalVenta=" + totalVenta + ", folio=" + folio + ", idStatusVenta=" + idStatusVenta + ", count=" + count + ", nombreSucursal=" + nombreSucursal + ", nombreEstatus=" + nombreEstatus + ", lstVentaProducto=" + lstVentaProducto + '}';
+        return "Venta{" + "idVentaPk=" + idVentaPk + ", fechaVenta=" + fechaVenta + ", fechaPromesaPago=" + fechaPromesaPago + ", idClienteFk=" + idClienteFk + ", idSucursal=" + idSucursal + ", idVendedorFk=" + idVendedorFk + ", nombrestatus=" + nombrestatus + ", fechaPago=" + fechaPago + ", nombreCliente=" + nombreCliente + ", nombreVendedor=" + nombreVendedor + ", totalVenta=" + totalVenta + ", folio=" + folio + ", idStatusVenta=" + idStatusVenta + ", count=" + count + ", nombreSucursal=" + nombreSucursal + ", nombreEstatus=" + nombreEstatus + ", lstVentaProducto=" + lstVentaProducto + ", tipoVenta=" + tipoVenta + ", idTipoVenta=" + idTipoVenta + ", idCredito=" + idCredito + ", fechaPromesaPagoCredito=" + fechaPromesaPagoCredito + ", montoCredito=" + montoCredito + ", numeroPagos=" + numeroPagos + ", plazos=" + plazos + '}';
     }
- 
+
     public BigDecimal getIdVentaPk() {
         return idVentaPk;
     }
@@ -184,6 +193,66 @@ public class Venta implements Serializable {
     public void setTipoVenta(BigDecimal tipoVenta) {
         this.tipoVenta = tipoVenta;
     }
+
+    public BigDecimal getIdTipoVenta() {
+        return idTipoVenta;
+    }
+
+    public void setIdTipoVenta(BigDecimal idTipoVenta) {
+        this.idTipoVenta = idTipoVenta;
+    }
+
+    public BigDecimal getIdCredito() {
+        return idCredito;
+    }
+
+    public void setIdCredito(BigDecimal idCredito) {
+        this.idCredito = idCredito;
+    }
+
+    public Date getFechaPromesaPagoCredito() {
+        return fechaPromesaPagoCredito;
+    }
+
+    public void setFechaPromesaPagoCredito(Date fechaPromesaPagoCredito) {
+        this.fechaPromesaPagoCredito = fechaPromesaPagoCredito;
+    }
+
+    public BigDecimal getMontoCredito() {
+        return montoCredito;
+    }
+
+    public void setMontoCredito(BigDecimal montoCredito) {
+        this.montoCredito = montoCredito;
+    }
+
+    public BigDecimal getNumeroPagos() {
+        return numeroPagos;
+    }
+
+    public void setNumeroPagos(BigDecimal numeroPagos) {
+        this.numeroPagos = numeroPagos;
+    }
+
+    public BigDecimal getPlazos() {
+        return plazos;
+    }
+
+    public void setPlazos(BigDecimal plazos) {
+        this.plazos = plazos;
+    }
+
+    public BigDecimal getaCuenta() {
+        return aCuenta;
+    }
+
+    public void setaCuenta(BigDecimal aCuenta) {
+        this.aCuenta = aCuenta;
+    }
+    
+    
+    
+    
     
     
 

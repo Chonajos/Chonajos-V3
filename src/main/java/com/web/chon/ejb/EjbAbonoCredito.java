@@ -147,7 +147,7 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
     }
 
     @Override
-    public List<Object[]> getChequesPendientes(String fechaInicio, String fechaFin, BigDecimal idSucursal, BigDecimal idClienteFk, BigDecimal filtro,BigDecimal filtroStatus) {
+    public List<Object[]> getChequesPendientes(String fechaInicio, String fechaFin, BigDecimal idSucursal, BigDecimal idClienteFk, BigDecimal filtro, BigDecimal filtroStatus) {
         System.out.println("Fecha fin: " + fechaFin);
         System.out.println("IdSucursalEJB: " + idSucursal);
 
@@ -159,13 +159,12 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
                 + "inner join STATUS_DOCUMENTOS SD ON SD.ID_STATUS_DOCUMENTO_PK = DC.ID_STATUS_FK ");
         if (filtro.intValue() == 1) {
             cadena.append(" WHERE TO_DATE(TO_CHAR(ab.FECHA_COBRO,'dd/mm/yyyy'),'dd/mm/yyyy')<= '" + fechaInicio + "'");
-        cadena.append(" and ab.ESTATUS=1 and ab.TIPO_ABONO_FK=3 and dc.ID_STATUS_FK='"+filtroStatus+"'");
+            cadena.append(" and ab.ESTATUS=1 and ab.TIPO_ABONO_FK=3 and dc.ID_STATUS_FK='" + filtroStatus + "'");
         } else if (filtro.intValue() == 2) {
             cadena.append(" WHERE TO_DATE(TO_CHAR(ab.FECHA_COBRO,'dd/mm/yyyy'),'dd/mm/yyyy')> '" + fechaInicio + "'");
-        cadena.append(" and ab.ESTATUS=1 and ab.TIPO_ABONO_FK=3 and dc.ID_STATUS_FK='"+filtroStatus+"'");
-        }
-        else{
-            cadena.append(" where ab.ESTATUS=1 and ab.TIPO_ABONO_FK=3 and dc.ID_STATUS_FK='"+filtroStatus+"'");
+            cadena.append(" and ab.ESTATUS=1 and ab.TIPO_ABONO_FK=3 and dc.ID_STATUS_FK='" + filtroStatus + "'");
+        } else {
+            cadena.append(" where ab.ESTATUS=1 and ab.TIPO_ABONO_FK=3 and dc.ID_STATUS_FK='" + filtroStatus + "'");
         }
 
         if (idSucursal != null && !idSucursal.equals("")) {
@@ -193,11 +192,11 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
 
     @Override
     public List<Object[]> getByIdVentaMayoreoFk(BigDecimal idVentaMayoreoFk) {
-       try {
+        try {
 
-            Query query = em.createNativeQuery("SELECT ab.ID_ABONO_CREDITO_PK ,ab.ID_CREDITO_FK ,ab.MONTO_ABONO ,ab.FECHA_ABONO ,ab.ID_USUARIO_FK from credito c\n" +
-"inner join ABONO_CREDITO ab on ab.ID_CREDITO_FK = c.ID_CREDITO_PK\n" +
-"where c.ID_VENTA_MAYOREO =?");
+            Query query = em.createNativeQuery("SELECT ab.ID_ABONO_CREDITO_PK ,ab.ID_CREDITO_FK ,ab.MONTO_ABONO ,ab.FECHA_ABONO ,ab.ID_USUARIO_FK from credito c\n"
+                    + "inner join ABONO_CREDITO ab on ab.ID_CREDITO_FK = c.ID_CREDITO_PK\n"
+                    + "where c.ID_VENTA_MAYOREO =?");
             List<Object[]> resultList = null;
             query.setParameter(1, idVentaMayoreoFk);
             resultList = query.getResultList();
@@ -208,16 +207,16 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
             Logger.getLogger(EjbAbonoCredito.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
-    
+
     }
 
     @Override
     public List<Object[]> getByIdVentaMenudeoFk(BigDecimal idVentaMenudeoFk) {
-       try {
+        try {
 
-            Query query = em.createNativeQuery("SELECT ab.ID_ABONO_CREDITO_PK ,ab.ID_CREDITO_FK ,ab.MONTO_ABONO ,ab.FECHA_ABONO ,ab.ID_USUARIO_FK from credito c\n" +
-"inner join ABONO_CREDITO ab on ab.ID_CREDITO_FK = c.ID_CREDITO_PK\n" +
-"where c.ID_VENTA_MENUDEO =?");
+            Query query = em.createNativeQuery("SELECT ab.ID_ABONO_CREDITO_PK ,ab.ID_CREDITO_FK ,ab.MONTO_ABONO ,ab.FECHA_ABONO ,ab.ID_USUARIO_FK from credito c\n"
+                    + "inner join ABONO_CREDITO ab on ab.ID_CREDITO_FK = c.ID_CREDITO_PK\n"
+                    + "where c.ID_VENTA_MENUDEO =?");
             List<Object[]> resultList = null;
             query.setParameter(1, idVentaMenudeoFk);
             resultList = query.getResultList();
@@ -228,7 +227,27 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
             Logger.getLogger(EjbAbonoCredito.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
-    
+
+    }
+
+    @Override
+    public List<Object[]> getAbonosByIdCredito(BigDecimal idCredito) {
+
+        try {
+
+            Query query = em.createNativeQuery("SELECT ID_ABONO_CREDITO_PK,ID_CREDITO_FK,MONTO_ABONO,FECHA_ABONO,ID_USUARIO_FK,"
+                    + "TIPO_ABONO_FK,ESTATUS,NUMERO_CHEQUE,LIBRADOR,FECHA_COBRO,BANCO_EMISOR,NUMERO_FACTURA,REFERENCIA,CONCEPTO,"
+                    + "FECHA_TRANSFERENCIA FROM ABONO_CREDITO ABC WHERE ABC.ID_CREDITO_FK = ?");
+            List<Object[]> resultList = null;
+            query.setParameter(1, idCredito);
+            resultList = query.getResultList();
+
+            return resultList;
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbAbonoCredito.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 
 }

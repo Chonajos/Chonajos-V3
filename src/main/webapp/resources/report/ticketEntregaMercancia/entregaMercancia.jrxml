@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-09-12T09:55:17 -->
+<!-- 2016-10-11T12:20:56 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="entregaMercancia" pageWidth="219" pageHeight="1224" columnWidth="179" leftMargin="20" rightMargin="20" topMargin="4" bottomMargin="20" isIgnorePagination="true" uuid="cce07992-6ec7-4616-8caf-ceb4ee12975b">
 	<property name="ireport.zoom" value="2.5937424601000028"/>
 	<property name="ireport.x" value="0"/>
@@ -81,7 +81,7 @@
 	<pageHeader>
 		<band height="43" splitType="Stretch">
 			<textField>
-				<reportElement x="38" y="15" width="137" height="14" uuid="11a3db79-a67a-4727-ada1-73b599dac3c4"/>
+				<reportElement x="38" y="15" width="142" height="14" uuid="11a3db79-a67a-4727-ada1-73b599dac3c4"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>

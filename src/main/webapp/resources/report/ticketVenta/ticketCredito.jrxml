@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-08-25T15:12:52 -->
+<!-- 2016-10-12T11:48:55 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ticketCredito" pageWidth="219" pageHeight="1224" whenNoDataType="BlankPage" columnWidth="179" leftMargin="20" rightMargin="20" topMargin="4" bottomMargin="20" isIgnorePagination="true" uuid="cce07992-6ec7-4616-8caf-ceb4ee12975b">
 	<property name="ireport.zoom" value="2.5937424601000028"/>
 	<property name="ireport.x" value="0"/>
@@ -98,7 +98,7 @@
 	<pageHeader>
 		<band height="53" splitType="Stretch">
 			<textField isBlankWhenNull="true">
-				<reportElement x="69" y="15" width="93" height="14" uuid="11a3db79-a67a-4727-ada1-73b599dac3c4"/>
+				<reportElement x="51" y="15" width="128" height="14" uuid="11a3db79-a67a-4727-ada1-73b599dac3c4"/>
 				<textElement>
 					<font size="10" isBold="true"/>
 				</textElement>
@@ -140,14 +140,14 @@
 				<textFieldExpression><![CDATA[$P{labelFolio}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="41" y="15" width="28" height="14" uuid="b2f34d36-16b3-4afa-87f2-3895d11e7349"/>
+				<reportElement x="29" y="15" width="22" height="14" uuid="b2f34d36-16b3-4afa-87f2-3895d11e7349"/>
 				<textElement>
 					<font size="10" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{numeroCliente}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="100" y="0" width="51" height="14" uuid="e2294e0b-0d53-4fd8-b610-628880b64aae">
+				<reportElement x="99" y="0" width="52" height="14" uuid="e2294e0b-0d53-4fd8-b610-628880b64aae">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<textElement>
@@ -252,9 +252,9 @@
 				<text><![CDATA[Total: ]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="2" y="116" width="177" height="14" uuid="910f5e7e-02a1-45fd-b282-7a6834e518c5"/>
+				<reportElement x="2" y="110" width="177" height="20" uuid="910f5e7e-02a1-45fd-b282-7a6834e518c5"/>
 				<textElement textAlignment="Center">
-					<font size="5"/>
+					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{telefonos}]]></textFieldExpression>
 			</textField>
@@ -357,15 +357,15 @@
 				<reportElement x="37" y="152" width="89" height="20" uuid="e01f7f17-e600-403f-b6a6-9c2fb45e0405"/>
 				<text><![CDATA[             Firma]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement x="31" y="122" width="147" height="14" uuid="18d91916-6aaa-4db5-8797-99be940cb6b7"/>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="18" y="122" width="160" height="14" uuid="18d91916-6aaa-4db5-8797-99be940cb6b7"/>
 				<textElement>
-					<font size="10" isBold="true"/>
+					<font size="9.5" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{cliente}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="12" y="122" width="17" height="14" uuid="b822a926-920e-4709-8f34-3b53b855b4b7"/>
+				<reportElement x="1" y="122" width="17" height="14" uuid="b822a926-920e-4709-8f34-3b53b855b4b7"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>

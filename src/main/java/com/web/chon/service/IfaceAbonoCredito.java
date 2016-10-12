@@ -36,5 +36,12 @@ public interface IfaceAbonoCredito {
     
     public int getNextVal();
     
+    /**
+     * Obtiene todos los abonos de un credito por medio del id de credito
+     * @param idCredito
+     * @return 
+     */
+    public ArrayList<AbonoCredito> getAbonosByIdCredito(BigDecimal idCredito);
+    
     
 }

@@ -31,7 +31,7 @@ public interface IfaceVenta {
      * @param fechaFin
      * @return 
      */
-    public ArrayList<Venta> getVentasByIntervalDate(Date fechaInicio, Date fechaFin,BigDecimal idSucursal,BigDecimal idStatusVenta,String idproducto);
+    public ArrayList<Venta> getVentasByIntervalDate(Date fechaInicio, Date fechaFin,BigDecimal idSucursal,BigDecimal idStatusVenta,String idproducto,BigDecimal idTipoVenta);
     
     
     /**

@@ -30,18 +30,7 @@ public class EjbTransferenciaMercancia implements NegocioTransferenciaMercancia 
         try {
             System.out.println("Transferencia: " + tm);
             Query query = em.createNativeQuery("INSERT INTO TRANSFERENCIA_MERCANCIA (ID_TRANSFERENCIA_PK,ID_EXISTENCIA_PRODUCTO_FK,CANTIDAD_ANTERIOR,KILOS_ANTERIOR,CANTIDAD_MOVIDA,KILOS_MOVIDOS,ID_BODEGA_NUEVA_FK,FECHA_MOVIMIENTO,ID_USUARIO_FK,COMENTARIOS)VALUES (S_TRANSFERENCIA_MERCANCIA.NextVal,?,?,?,?,?,?,sysdate,?,?)");
-
-//ID_TRANSFERENCIA_PK
-//ID_EXISTENCIA_PRODUCTO_FK
-//CANTIDAD_ANTERIOR
-//KILOS_ANTERIOR
-//CANTIDAD_MOVIDA
-//KILOS_MOVIDOS
-//ID_BODEGA_NUEVA_FK
-//FECHA_MOVIMIENTO
-//ID_USUARIO_FK
-//COMENTARIOS
-//        
+        
             query.setParameter(1, tm.getIdExistenciaProductoFK());
             query.setParameter(2, tm.getCantidadAnterior());
             query.setParameter(3, tm.getKilosAnterior());
