@@ -24,6 +24,7 @@ public interface IfaceVentaMayoreo {
 
     public ArrayList<VentaMayoreo> getVentasByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idStatusVenta, BigDecimal idTipoVenta,String idSubproductoFk);
     
+    public VentaMayoreo getVentaMayoreoByFolioidSucursalFk(BigDecimal idFolio,BigDecimal idSucursal);
 
     public int getVentaSucursal(BigDecimal idSucursal);
 

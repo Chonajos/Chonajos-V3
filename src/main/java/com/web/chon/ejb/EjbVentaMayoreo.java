@@ -164,4 +164,9 @@ public class EjbVentaMayoreo implements NegocioVentaMayoreo {
     
     }
 
+    @Override
+    public List<Object[]> getVentaMayoreoByFolioidSucursalFk(BigDecimal idFolio, BigDecimal idSucursal) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

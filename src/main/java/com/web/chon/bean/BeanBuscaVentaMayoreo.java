@@ -1,16 +1,20 @@
 package com.web.chon.bean;
 
-import com.web.chon.dominio.BuscaVenta;
 import com.web.chon.dominio.Caja;
+import com.web.chon.dominio.CuentaBancaria;
 import com.web.chon.dominio.OperacionesCaja;
 import com.web.chon.dominio.Usuario;
 import com.web.chon.dominio.UsuarioDominio;
-import com.web.chon.dominio.VentaProducto;
+import com.web.chon.dominio.VentaMayoreo;
+import com.web.chon.dominio.VentaProductoMayoreo;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceBuscaVenta;
 import com.web.chon.service.IfaceCaja;
 import com.web.chon.service.IfaceCatUsuario;
+import com.web.chon.service.IfaceCuentasBancarias;
 import com.web.chon.service.IfaceOperacionesCaja;
+import com.web.chon.service.IfaceTipoAbono;
+import com.web.chon.service.IfaceVentaMayoreo;
 import com.web.chon.util.Constantes;
 import com.web.chon.util.JasperReportUtil;
 import com.web.chon.util.JsfUtil;
@@ -31,7 +35,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
@@ -62,8 +65,18 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     private IfaceCaja ifaceCaja;
     @Autowired
     private IfaceOperacionesCaja ifaceOperacionesCaja;
+    @Autowired
+    private IfaceTipoAbono ifaceTipoAbono;
+    @Autowired
+    private IfaceCuentasBancarias ifaceCuentasBancarias;
+    @Autowired
+    private IfaceVentaMayoreo ifaceVentaMayoreo;
 
-    private ArrayList<BuscaVenta> model;
+    private ArrayList<CuentaBancaria> listaCuentas;
+
+    private VentaMayoreo ventaMayoreo;
+    private ArrayList<VentaProductoMayoreo> listaProductos;
+
     private Usuario usuario;
     private Caja caja;
     private OperacionesCaja opcaja;
@@ -71,9 +84,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     private String title;
     private String viewEstate;
     private BigDecimal totalVenta;
-    private BuscaVenta data;
     private Map paramReport = new HashMap();
-    private ArrayList<BuscaVenta> dataModel; //Modelo con un solo Objeto
     private boolean statusButtonPagar;
     private int idVentaTemporal; //utilizado para comprobacion de venta
     private String rutaPDF;
@@ -82,7 +93,6 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     private ByteArrayOutputStream outputStream;
     private StreamedContent media;
     private UsuarioDominio usuarioDominio;
-    private ArrayList<BuscaVenta> selectedVenta;
     private BigDecimal recibido;
     private BigDecimal cambio;
 
@@ -90,13 +100,18 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     private static final BigDecimal statusOperacion = new BigDecimal(1);
     private static final BigDecimal concepto = new BigDecimal(9);
 
+    //-------------- Variables para Registrar Pago ----------//
+    private BigDecimal idTipoPagoFk;
+    private BigDecimal folioVenta;
+
+    //-------------- Variables para Registrar Pago ----------//
     @PostConstruct
     public void init() {
         FacesContext contexts = FacesContext.getCurrentInstance();
         String folio = contexts.getExternalContext().getRequestParameterMap().get("folio");
         System.out.println("FolioPasado: " + folio);
-        data = new BuscaVenta();
-        model = new ArrayList<BuscaVenta>();
+        ventaMayoreo = new VentaMayoreo();
+        listaProductos = new ArrayList<VentaProductoMayoreo>();
 
         usuario = new Usuario();
         usuarioDominio = context.getUsuarioAutenticado();
@@ -106,7 +121,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
         usuario.setApaternoUsuario(usuarioDominio.getUsuPaterno());
         usuario.setAmaternoUsuario(usuarioDominio.getUsuMaterno());
 
-        setTitle("Búsqueda de Ventas al Mayoreo");
+        setTitle("Pagar Venta de Mayoreo");
         setViewEstate("init");
         statusButtonPagar = true;
         caja = new Caja();
@@ -161,11 +176,11 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
         Date date = new Date();
         ArrayList<String> productos = new ArrayList<String>();
         NumeroALetra numeroLetra = new NumeroALetra();
-        for (BuscaVenta venta : model) {
-            String cantidad = venta.getCantidadEmpaque() + " " + venta.getNombreEmpaque();
-            productos.add(venta.getNombreSubproducto().toUpperCase());
-            productos.add("       " + cantidad + "               " + nf.format(venta.getPrecioProducto()) + "    " + nf.format(venta.getTotal()));
-        }
+//        for (BuscaVenta venta : model) {
+//            String cantidad = venta.getCantidadEmpaque() + " " + venta.getNombreEmpaque();
+//            productos.add(venta.getNombreSubproducto().toUpperCase());
+//            productos.add("       " + cantidad + "               " + nf.format(venta.getPrecioProducto()) + "    " + nf.format(venta.getTotal()));
+//        }
 
         String totalVentaStr = numeroLetra.Convertir(df.format(totalVenta), true);
 
@@ -175,12 +190,11 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
 
     private void putValues(String dateTime, ArrayList<String> items, String total, String totalVentaStr, int idVenta) {
 
-        System.out.println(data.getFechaVenta());
-
+        //System.out.println(data.getFechaVenta());
         paramReport.put("fechaVenta", dateTime);
         paramReport.put("noVenta", Integer.toString(idVenta));
-        paramReport.put("cliente", data.getNombreCliente());
-        paramReport.put("vendedor", data.getNombreVendedor());
+        //paramReport.put("cliente", data.getNombreCliente());
+        //paramReport.put("vendedor", data.getNombreVendedor());
         paramReport.put("productos", items);
         paramReport.put("ventaTotal", total);
         paramReport.put("totalLetra", totalVentaStr);
@@ -230,39 +244,40 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public void updateVenta() {
-        if (opcaja.getIdCajaFk() != null) {
-
-            System.out.println("Status Venta :" + data.getStatusFK());
-            if (data.getStatusFK() == 2) {
-                JsfUtil.addErrorMessageClean("Error, la venta ya se encuentra pagada");
-            } else if (data.getIdVenta().intValue() != idVentaTemporal) {
-                JsfUtil.addErrorMessageClean("No coincide el numero de venta");
-            } else if (ifaceBuscaVenta.updateStatusVentaMayoreo(data.getIdVenta().intValue(), usuario.getIdUsuarioPk().intValue()) == 1) {
-                System.out.println("Se cambió el estatus");
-
-                opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
-                opcaja.setMonto(totalVenta);
-                if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
-                    setParameterTicket(data.getFolioSucursal().intValue());
-                    generateReport();
-                    data.setNombreCliente("");
-                    data.setNombreVendedor("");
-                    data.setIdVenta(new BigDecimal(0));
-                    statusButtonPagar = true;
-                    data.reset();
-                    model = null;
-                    totalVenta = null;
-                    RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
-                } else {
-                    JsfUtil.addErrorMessageClean("Ocurrió un error al registrar el pago de la venta");
-                }
-            } else {
-                System.out.println("Error al cambiar estaus de la venta");
-            }
-        } else {
-            JsfUtil.addErrorMessageClean("Su usuario no cuenta con caja asignada, no se puede realizar el cobro");
-        }
+    public void updateVenta() 
+    {
+//        if (opcaja.getIdCajaFk() != null) {
+//
+//            System.out.println("Status Venta :" + data.getStatusFK());
+//            if (data.getStatusFK() == 2) {
+//                JsfUtil.addErrorMessageClean("Error, la venta ya se encuentra pagada");
+//            } else if (data.getIdVenta().intValue() != idVentaTemporal) {
+//                JsfUtil.addErrorMessageClean("No coincide el numero de venta");
+//            } else if (ifaceBuscaVenta.updateStatusVentaMayoreo(data.getIdVenta().intValue(), usuario.getIdUsuarioPk().intValue()) == 1) {
+//                System.out.println("Se cambió el estatus");
+//
+//                opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
+//                opcaja.setMonto(totalVenta);
+//                if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
+//                    setParameterTicket(data.getFolioSucursal().intValue());
+//                    generateReport();
+//                    data.setNombreCliente("");
+//                    data.setNombreVendedor("");
+//                    data.setIdVenta(new BigDecimal(0));
+//                    statusButtonPagar = true;
+//                    data.reset();
+//                    model = null;
+//                    totalVenta = null;
+//                    RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
+//                } else {
+//                    JsfUtil.addErrorMessageClean("Ocurrió un error al registrar el pago de la venta");
+//                }
+//            } else {
+//                System.out.println("Error al cambiar estaus de la venta");
+//            }
+//        } else {
+//            JsfUtil.addErrorMessageClean("Su usuario no cuenta con caja asignada, no se puede realizar el cobro");
+//        }
 
         //return "buscaVentas";
     }
@@ -271,49 +286,65 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     public void searchById() {
         statusButtonPagar = false;
 
-        model = ifaceBuscaVenta.getVentaMayoreoByIdBuscaVenta(data.getFolioSucursal().intValue(), usuario.getIdSucursal());
-        if (model.isEmpty()) {
-            data.setNombreCliente("");
-            data.setNombreVendedor("");
-            data.setIdVenta(new BigDecimal(0));
-            data.setFolioSucursal(null);
-            statusButtonPagar = true;
-
-            JsfUtil.addWarnMessageClean("No se encontraron Registros.");
-
+        ventaMayoreo = ifaceVentaMayoreo.getVentaMayoreoByFolioidSucursalFk(folioVenta, new BigDecimal(usuario.getIdSucursal()));
+        if (ventaMayoreo == null || ventaMayoreo.getIdVentaMayoreoPk() == null) 
+        {
+            JsfUtil.addErrorMessageClean("No se encontró ese folio, podría ser de otra sucursal.");
         } else 
         {
-            
-            data.setNombreCliente(model.get(0).getNombreCliente());
-            data.setNombreVendedor(model.get(0).getNombreVendedor());
-            data.setStatusFK(model.get(0).getIdStatus().intValue());
-            data.setFolioSucursal(model.get(0).getFolioSucursal());
-            data.setIdVenta(model.get(0).getIdVenta());
-            data.setIdSucursalFk(model.get(0).getIdSucursalFk());
-            data.setNombreStatus(model.get(0).getNombreStatus());
-            idVentaTemporal = data.getIdVenta().intValue();
-            calculatotalVenta();
-            
-            switch(data.getStatusFK())
+            if (ventaMayoreo.getIdtipoVentaFk().intValue() == 1) 
             {
-                case 1:
-                    statusButtonPagar = false;
-                    break;
-                case 2:
-                    statusButtonPagar = true;
-                    JsfUtil.addWarnMessageClean("No puedes cobrar este folio; ya fue pagado.");
-                    break;
-                case 3:
-                    statusButtonPagar = true;
-                    JsfUtil.addWarnMessageClean("No puedes cobrar este folio; ya fue cobrado y entregado");
-                    break;
-                case 4:
-                    statusButtonPagar = true;
-                    JsfUtil.addWarnMessageClean("No puedes cobrar este folio; fue cancelado.");
-                    break;
-                default:
-                    JsfUtil.addErrorMessageClean("Ocurrió un error, contactar al administrador");
+                switch (ventaMayoreo.getIdStatusFk().intValue()) {
+                    case 1:
+                        statusButtonPagar = false;
+                        break;
+                    case 2:
+                        statusButtonPagar = true;
+                        JsfUtil.addErrorMessageClean("No puedes volver a cobrar la venta.");
+                        break;
+                    case 3:
+                        statusButtonPagar = true;
+                        JsfUtil.addErrorMessageClean("No puedes cobrar una venta entregada.");
+                        break;
+                    case 4:
+                        statusButtonPagar = true;
+                        JsfUtil.addErrorMessageClean("No puedes cobrar una venta cancelada.");
+                        break;
+                    default:
+                        statusButtonPagar = true;
+                        JsfUtil.addErrorMessageClean("Ha ocurrido un error, contactar al administrador.");
+                        break;
+                }
             }
+            else
+            {
+                JsfUtil.addErrorMessageClean("No puedes cobrar una venta de crédito, ir a la sección abonar crédito.");
+       
+            }
+        }
+
+//        if (model.isEmpty()) {
+//            data.setNombreCliente("");
+//            data.setNombreVendedor("");
+//            data.setIdVenta(new BigDecimal(0));
+//            data.setFolioSucursal(null);
+//            statusButtonPagar = true;
+//
+//            JsfUtil.addWarnMessageClean("No se encontraron Registros.");
+//
+//        } else {
+//
+//            data.setNombreCliente(model.get(0).getNombreCliente());
+//            data.setNombreVendedor(model.get(0).getNombreVendedor());
+//            data.setStatusFK(model.get(0).getIdStatus().intValue());
+//            data.setFolioSucursal(model.get(0).getFolioSucursal());
+//            data.setIdVenta(model.get(0).getIdVenta());
+//            data.setIdSucursalFk(model.get(0).getIdSucursalFk());
+//            data.setNombreStatus(model.get(0).getNombreStatus());
+//            idVentaTemporal = data.getIdVenta().intValue();
+//            calculatotalVenta();
+
+           
 
 //            if (data.getIdSucursalFk().equals(new BigDecimal(usuario.getIdSucursal()))) {
 //
@@ -323,26 +354,8 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
 //                JsfUtil.addWarnMessageClean("No puedes cobrar el folio de otra sucursal.");
 //                statusButtonPagar = true;
 //            }
+        
 
-
-        }
-
-    }
-
-    public void calculatotalVenta() {
-        totalVenta = new BigDecimal(0);
-
-        for (BuscaVenta venta : model) {
-            totalVenta = totalVenta.add(venta.getTotal());
-        }
-    }
-
-    public ArrayList<BuscaVenta> getModel() {
-        return model;
-    }
-
-    public void setModel(ArrayList<BuscaVenta> model) {
-        this.model = model;
     }
 
     public String getTitle() {
@@ -359,22 +372,6 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
 
     public void setViewEstate(String viewEstate) {
         this.viewEstate = viewEstate;
-    }
-
-    public BuscaVenta getData() {
-        return data;
-    }
-
-    public void setData(BuscaVenta data) {
-        this.data = data;
-    }
-
-    public ArrayList<BuscaVenta> getSelectedVenta() {
-        return selectedVenta;
-    }
-
-    public void setSelectedVenta(ArrayList<BuscaVenta> selectedVenta) {
-        this.selectedVenta = selectedVenta;
     }
 
     public IfaceBuscaVenta getIfaceBuscaVenta() {
@@ -460,6 +457,86 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
 
     public void setCambio(BigDecimal cambio) {
         this.cambio = cambio;
+    }
+
+    public ArrayList<CuentaBancaria> getListaCuentas() {
+        return listaCuentas;
+    }
+
+    public void setListaCuentas(ArrayList<CuentaBancaria> listaCuentas) {
+        this.listaCuentas = listaCuentas;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public Caja getCaja() {
+        return caja;
+    }
+
+    public void setCaja(Caja caja) {
+        this.caja = caja;
+    }
+
+    public OperacionesCaja getOpcaja() {
+        return opcaja;
+    }
+
+    public void setOpcaja(OperacionesCaja opcaja) {
+        this.opcaja = opcaja;
+    }
+
+    public Map getParamReport() {
+        return paramReport;
+    }
+
+    public void setParamReport(Map paramReport) {
+        this.paramReport = paramReport;
+    }
+
+    public BigDecimal getIdTipoPagoFk() {
+        return idTipoPagoFk;
+    }
+
+    public void setIdTipoPagoFk(BigDecimal idTipoPagoFk) {
+        this.idTipoPagoFk = idTipoPagoFk;
+    }
+
+    public VentaMayoreo getVentaMayoreo() {
+        return ventaMayoreo;
+    }
+
+    public void setVentaMayoreo(VentaMayoreo ventaMayoreo) {
+        this.ventaMayoreo = ventaMayoreo;
+    }
+
+    public ArrayList<VentaProductoMayoreo> getListaProductos() {
+        return listaProductos;
+    }
+
+    public void setListaProductos(ArrayList<VentaProductoMayoreo> listaProductos) {
+        this.listaProductos = listaProductos;
+    }
+
+    public UsuarioDominio getUsuarioDominio() {
+        return usuarioDominio;
+    }
+
+    public void setUsuarioDominio(UsuarioDominio usuarioDominio) {
+        this.usuarioDominio = usuarioDominio;
+    }
+
+    public BigDecimal getFolioVenta() {
+        return folioVenta;
+    }
+
+    public void setFolioVenta(BigDecimal folioVenta) {
+        this.folioVenta = folioVenta;
     }
 
 }

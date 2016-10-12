@@ -421,7 +421,7 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
 
             paramReport.put("aCuenta", "-$" + df.format(c.getDejaCuenta()));
             paramReport.put("descuentoVenta", "-$" + df.format(descuento));
-            paramReport.put("foliCredito", Integer.toString(folioCredito));
+            paramReport.put("foliCredito", Integer.toString(c.getIdCreditoPk().intValue()));
             //Imprime el calendario de pagos
             date = data.getFechaVenta();
             Date dateTemp = date;

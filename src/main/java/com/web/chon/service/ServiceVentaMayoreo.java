@@ -26,7 +26,7 @@ import org.springframework.stereotype.Service;
 public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
 
     NegocioVentaMayoreo ejb;
-    
+
     @Autowired
     IfaceVentaMayoreoProducto ifaceVentaMayoreoProducto;
 
@@ -109,6 +109,38 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
         return ejb.cancelarVentaMayoreo(idVenta, idUsuario, comentarios);
 
     }
-    
+
+    @Override
+    public VentaMayoreo getVentaMayoreoByFolioidSucursalFk(BigDecimal idFolio, BigDecimal idSucursal) {
+        getEjb();
+        List<Object[]> Object = ejb.getVentaMayoreoByFolioidSucursalFk(idFolio,idSucursal);
+        VentaMayoreo venta = new VentaMayoreo();
+        for (Object[] obj : Object) {
+            venta.setIdVentaMayoreoPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+            venta.setIdClienteFk(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
+            venta.setIdVendedorFK(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
+            venta.setFechaVenta(obj[3] == null ? null : (Date) obj[3]);
+            venta.setFechaPromesaPago(obj[4] == null ? null : (Date) obj[4]);
+            venta.setIdStatusFk(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
+            venta.setFechaPago(obj[6] == null ? null : (Date) obj[6]);
+            venta.setIdSucursalFk(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
+            venta.setIdtipoVentaFk(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
+            venta.setVentaSucursal(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
+            venta.setIdCajeroFk(obj[10] == null ? null : new BigDecimal(obj[10].toString()));
+            venta.setIdCancelUser(obj[11] == null ? null : new BigDecimal(obj[11].toString()));
+            venta.setFechaCancelacion((Date) obj[12]);
+            venta.setNombreCliente(obj[13] == null ? "" : obj[13].toString());
+            venta.setNombreCliente(obj[14].toString());
+            venta.setNombreVendedor(obj[15].toString());
+            venta.setTotalVenta(obj[16] == null ? new BigDecimal(0) : new BigDecimal(obj[16].toString()));
+            venta.setNombreTipoVenta(obj[17].toString());
+            //ganacias = obj[18] == null ? new BigDecimal(0) : new BigDecimal(obj[18].toString());
+            //venta.setGanciaVenta(venta.getTotalVenta().subtract(ganacias));
+            venta.setListaProductos(ifaceVentaMayoreoProducto.getProductosbyIdVmFk(venta.getIdVentaMayoreoPk()));
+        }
+
+    return venta;
+
+}
 
 }
