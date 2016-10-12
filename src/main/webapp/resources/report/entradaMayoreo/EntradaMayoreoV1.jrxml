@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-09-21T11:20:31 -->
+<!-- 2016-10-12T13:39:29 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EntradaMayoreoV1" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="df013db5-f76e-44d3-b0df-bcbc46d93160">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="AdaptadorChoni.xml"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -192,7 +192,7 @@ WHERE EMP.ID_EM_FK =$P{parametro}]]>
 			<staticText>
 				<reportElement style="Title" x="170" y="0" width="450" height="62" uuid="bc1ce1da-8232-46ea-be55-cec4abb986dd"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="18"/>
+					<font fontName="SansSerif" size="18"/>
 				</textElement>
 				<text><![CDATA[COMERCIALIZADORA Y EXPORTADORA CHONAJOS S DE RL DE CV]]></text>
 			</staticText>

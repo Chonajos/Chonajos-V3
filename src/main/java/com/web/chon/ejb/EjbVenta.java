@@ -50,6 +50,8 @@ public class EjbVenta implements NegocioVenta {
         Query query;
         int cont = 0;
 
+        System.out.println("idTipoVenta " + idTipoVenta);
+
         StringBuffer cadena = new StringBuffer("SELECT ven.ID_VENTA_PK,ven.ID_CLIENTE_FK, "
                 + "  ven.ID_VENDEDOR_FK, ven.FECHA_VENTA,ven.STATUS_FK, "
                 + "  USU.ID_SUCURSAL_FK, "
@@ -98,7 +100,7 @@ public class EjbVenta implements NegocioVenta {
                 cadena.append(" AND ");
             }
 
-            cadena.append(" ven.STATUS_FK  = '" + idStatusVenta + "' ");
+            cadena.append(" ven.TIPO_VENTA  = '" + idStatusVenta + "' ");
             cont++;
 
         }
@@ -111,11 +113,12 @@ public class EjbVenta implements NegocioVenta {
                 cadena.append(" AND ");
             }
 
-            cadena.append(" ven.ID_VENTA_PK  = '" + idTipoVenta + "' ");
+            cadena.append(" ven.TIPO_VENTA  = '" + idTipoVenta + "' ");
 
         }
 
         cadena.append(" ORDER BY ven.ID_VENTA_PK");
+        System.out.println("query [] " + cadena.toString());
 
         query = em.createNativeQuery(cadena.toString());
 

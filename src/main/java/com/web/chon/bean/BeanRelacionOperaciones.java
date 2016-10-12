@@ -119,6 +119,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     private String idProducto;
     private BigDecimal idStatusVenta;
     private BigDecimal idSucursal;
+    private BigDecimal idTipoVenta;
     private Date fechaFin;
     private Date fechaInicio;
     private Date fechaFiltroFin;
@@ -142,6 +143,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
         ventaImpresion = new Venta();
         ventaCancelar = new Venta();
         filtro = 1;
+        idTipoVenta = null;
         comentarioCancelacion = "";
         totalVenta = new BigDecimal(0);
         verificarCombo();
@@ -164,12 +166,9 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
                 temporal = servletContext.getRealPath("");
             }
 
-            System.out.println("v.getIdTipoVenta() " + v.getIdTipoVenta());
             if (v.getIdTipoVenta().equals(new BigDecimal(1))) {
-                System.out.println("normal");
                 pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketVenta" + File.separatorChar + "ticket.jasper";
             } else {
-                System.out.println("credito");
                 pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketVenta" + File.separatorChar + "ticketCredito.jasper";
             }
 
@@ -309,7 +308,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
                 subProducto = new Subproducto();
                 subProducto.setIdProductoFk("");
             }
-            listaVentas = ifaceVenta.getVentasByIntervalDate(fechaFiltroInicio, fechaFiltroFin, idSucursal, idStatusVenta, subProducto.getIdSubproductoPk(), null);
+            listaVentas = ifaceVenta.getVentasByIntervalDate(fechaFiltroInicio, fechaFiltroFin, idSucursal, idStatusVenta, subProducto.getIdSubproductoPk(), idTipoVenta);
             getTotalVentaByInterval();
         }
     }
@@ -338,7 +337,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
                 //Verifica si tiene abonos en caso de que sea una venta a creditos
                 ArrayList<AbonoCredito> lstAbonoCredito = new ArrayList<AbonoCredito>();
                 lstAbonoCredito = ifaceAbonoCredito.getAbonosByIdCredito(ventaCancelar.getIdCredito());
-                
+
                 if (lstAbonoCredito == null || lstAbonoCredito.isEmpty()) {
 
                     boolean bandera = false;
@@ -363,9 +362,6 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
                         }
                     }
                     if (ifaceVenta.cancelarVenta(ventaCancelar.getIdVentaPk().intValue(), usuario.getIdUsuario().intValue(), comentarioCancelacion) != 0 && bandera == false) {
-
-                        System.out.println("ventaCancelar.toString "+ventaCancelar.toString());
-                        System.out.println("ventaCancelar.getIdTipoVenta() "+ventaCancelar.getIdTipoVenta());
                         if (ventaCancelar.getIdTipoVenta().equals(new BigDecimal(2))) {
                             int creditoBorrado = 0;
                             creditoBorrado = ifaceCredito.delete(ventaCancelar.getIdCredito());
@@ -380,7 +376,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
                         JsfUtil.addErrorMessageClean("Ocurrió un error al intentar cancelar la venta.");
                     }
                     break;
-                }else{
+                } else {
                     JsfUtil.addErrorMessageClean("No se Puede Cancelar una Venta de Credito en la Cual ya se Registraron Abonos.");
                 }
         }
@@ -676,5 +672,17 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     public void setComentarioCancelacion(String comentarioCancelacion) {
         this.comentarioCancelacion = comentarioCancelacion;
     }
+
+    public BigDecimal getIdTipoVenta() {
+        return idTipoVenta;
+    }
+
+    public void setIdTipoVenta(BigDecimal idTipoVenta) {
+        this.idTipoVenta = idTipoVenta;
+    }
+
+   
+    
+    
 
 }

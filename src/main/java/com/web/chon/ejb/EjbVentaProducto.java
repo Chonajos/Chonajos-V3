@@ -27,29 +27,27 @@ public class EjbVentaProducto implements NegocioVentaProducto {
 
     @Override
     public List<Object[]> getVentaProductoByIdVenta(BigDecimal idVenta) {
-       try {
+        try {
 
             Query query = em.createNativeQuery("select ID_SUBPRODUCTO_FK,CANTIDAD_EMPAQUE from VENTA_PRODUCTO where ID_VENTA_FK =?");
             query.setParameter(1, idVenta);
             List<Object[]> resultList = null;
-            
+
             resultList = query.getResultList();
 
             return resultList;
 
-        } catch (Exception ex) 
-        {
+        } catch (Exception ex) {
             Logger.getLogger(EjbVentaProducto.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
-        
+
     }
 
     @Override
     public int insertarVentaProducto(VentaProducto ventaProducto, int idVenta) {
         Query query = em.createNativeQuery("INSERT INTO VENTA_PRODUCTO(ID_VENTA_PRODUCTO_PK,ID_SUBPRODUCTO_FK,PRECIO_PRODUCTO,KILOS_VENDIDOS,CANTIDAD_EMPAQUE,TOTAL_VENTA,ID_TIPO_EMPAQUE_FK,ID_VENTA_FK)"
                 + "VALUES(S_VENTA_PRODUCTO.nextVal,?,?,?,?,?,?,?)");
-        System.out.println("" + ventaProducto.toString());
         query.setParameter(1, ventaProducto.getIdProductoFk());
         query.setParameter(2, ventaProducto.getPrecioProducto());
         query.setParameter(3, ventaProducto.getKilosVenta());
@@ -65,20 +63,17 @@ public class EjbVentaProducto implements NegocioVentaProducto {
     public List<Object[]> getProductosByIdVentaFK(BigDecimal idVentaFK) {
         try {
 
-            Query query = em.createNativeQuery("select sub.NOMBRE_SUBPRODUCTO, vp.CANTIDAD_EMPAQUE, vp.PRECIO_PRODUCTO, sub.ID_SUBPRODUCTO_PK from VENTA_PRODUCTO vp\n" +
-"inner join SUBPRODUCTO sub on sub.ID_SUBPRODUCTO_PK = vp.ID_SUBPRODUCTO_FK\n" +
-"where ID_VENTA_FK = ?");
-            System.out.println("***************************************************************");
-            System.out.println(query);
+            Query query = em.createNativeQuery("select sub.NOMBRE_SUBPRODUCTO, vp.CANTIDAD_EMPAQUE, vp.PRECIO_PRODUCTO, sub.ID_SUBPRODUCTO_PK from VENTA_PRODUCTO vp\n"
+                    + "inner join SUBPRODUCTO sub on sub.ID_SUBPRODUCTO_PK = vp.ID_SUBPRODUCTO_FK\n"
+                    + "where ID_VENTA_FK = ?");
             query.setParameter(1, idVentaFK);
             List<Object[]> resultList = null;
-            
+
             resultList = query.getResultList();
 
             return resultList;
 
-        } catch (Exception ex) 
-        {
+        } catch (Exception ex) {
             Logger.getLogger(EjbVentaProducto.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }

@@ -58,6 +58,9 @@ public class ServiceVenta implements IfaceVenta {
         getEjb();
         ArrayList<Venta> lstVenta = new ArrayList<Venta>();
         BigDecimal count = new BigDecimal(0);
+        BigDecimal B_CONTADO = new BigDecimal(1);
+        String S_CONTADO ="CONTADO";
+        String S_CREDITO ="CREDITO";
         List<Object[]> lstObject = ejb.getVentasByInterval(TiempoUtil.getFechaDDMMYYYY(fechaInicio), TiempoUtil.getFechaDDMMYYYY(fechaFin), idSucursal, idStatusVenta, idProducto, idTipoVenta);
         for (Object[] obj : lstObject) {
             Venta venta = new Venta();
@@ -73,10 +76,11 @@ public class ServiceVenta implements IfaceVenta {
             venta.setFolio(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
             venta.setNombreSucursal(obj[10] == null ? null : obj[10].toString());
             venta.setNombreEstatus(obj[11] == null ? null : obj[11].toString());
-            // se agregan estos valores en 1 para que no de error en borrados 
+            // se agregan estos valores en 1 para que no de error en creditos borrados 
             venta.setIdTipoVenta(obj[12] == null ? new BigDecimal(1) : new BigDecimal(obj[12].toString()));
+            venta.setDescripcionTipoVenta(venta.getIdTipoVenta().equals(B_CONTADO) ? S_CONTADO:S_CREDITO);
             venta.setIdCredito(obj[13] == null ? null : new BigDecimal(obj[13].toString()));
-            venta.setFechaPromesaPago(obj[14] == null ? new Date() : (Date)obj[14]);
+            venta.setFechaPromesaPago(obj[14] == null ? new Date() : (Date) obj[14]);
             venta.setMontoCredito(obj[15] == null ? new BigDecimal(1) : new BigDecimal(obj[15].toString()));
             venta.setNumeroPagos(obj[16] == null ? new BigDecimal(1) : new BigDecimal(obj[16].toString()));
             venta.setPlazos(obj[17] == null ? new BigDecimal(1) : new BigDecimal(obj[17].toString()));
