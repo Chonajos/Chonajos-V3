@@ -100,7 +100,7 @@ public class EjbVenta implements NegocioVenta {
                 cadena.append(" AND ");
             }
 
-            cadena.append(" ven.TIPO_VENTA  = '" + idStatusVenta + "' ");
+            cadena.append(" ven.STATUS_FK  = '" + idStatusVenta + "' ");
             cont++;
 
         }

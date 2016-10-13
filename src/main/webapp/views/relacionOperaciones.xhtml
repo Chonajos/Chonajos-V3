@@ -109,10 +109,10 @@
                         </div>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <p:dataTable id="table" var="model" 
+                        <p:dataTable id="table" var="model" styleClass="#{model.idStatusVenta eq 1 ? 'statusPedido': (model.idStatusVenta eq 2 ? 'statusPagado':(model.idStatusVenta eq 3 ? 'statusEntregado':'statusCancelado'))} ui-datatable-hor-scroll"
                                      value="#{beanRelacionOperaciones.listaVentas}" 
                                      scrollable="true"
-                                     scrollHeight="320" styleClass="ui-datatable-hor-scroll" 
+                                     scrollHeight="320" 
                                      emptyMessage="No se encontraron Registros" >
 
                             <p:column style="width:16px">
@@ -152,7 +152,7 @@
                             </p:column>
 
                             <p:column headerText="Cancelar" width="60px;" class="alignCenter">
-                                <p:commandButton id="cancel" onclick="PF('statusDialog').show()" ajax="true" process="@this" action="#{beanRelacionOperaciones.cancelarVenta()}" icon="ui-icon-trash" styleClass="ui-priority-primary" update=":formContent">
+                                <p:commandButton id="cancel" onclick="PF('statusDialog').show()" ajax="true" process="@this" action="#{beanRelacionOperaciones.cancelarVenta()}" icon="ui-icon-trash" styleClass="ui-priority-primary" update=":formContent" disabled="#{model.idStatusVenta.intValue() != 1}">
                                     <f:setPropertyActionListener value="#{model}" target="#{beanRelacionOperaciones.ventaCancelar}"/>
                                     <p:confirm header="Confirmación" message="¿Estás seguro de cancelar la venta?" icon="ui-icon-alert"/>
                                 </p:commandButton>
