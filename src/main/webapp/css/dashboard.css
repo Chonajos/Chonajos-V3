@@ -41,19 +41,34 @@ html{
 }
 .statusPagado
 {
-    color:darkviolet;
+    /*    background:#d9B3FF;
+        */
+    border-color: black !important;
+    background-image:-webkit-linear-gradient(top, #FE9A2E, #FACC2E) !important;
+    font-weight:bold
 }
 .statusEntregado
 {
-    color:#4cae4c;
+    /*background:#4cae4c;*/
+    border-color: black !important;
+    background-image:-webkit-linear-gradient(top, #A9E2F3, #04B404) !important;
+    font-weight:bold
+    
 }
 .statusPedido
 {
-    color:deepskyblue;
+    /*    background-color: #d9edf7;
+        border-color: #bce8f1;*/
+    border-color: black !important;
+    background-image:-webkit-linear-gradient(top, #A9E2F3, #81BEF7) !important;
+    font-weight:bold
 }
 .statusCancelado
 {
-    color:red;
+    /*background:#f2dede !important;*/
+    border-color: black !important;
+    background-image:-webkit-linear-gradient(top, #FE642E, #FE2E2E) !important;
+    font-weight:bold
 }
 
 .menuPrincipal{
