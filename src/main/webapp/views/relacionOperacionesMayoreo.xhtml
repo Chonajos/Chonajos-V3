@@ -135,7 +135,7 @@
                                 </p:commandButton>
                             </p:column>
                             <p:column headerText="Cancelar" width="70px;" class="alignCenter">
-                                <p:commandButton id="cancelar" ajax="true" process="@this" action="#{beanRelOperMayoreo.cancelarVenta}" icon="ui-icon-trash" styleClass="ui-priority-primary" update=":formContent">
+                                <p:commandButton id="cancelar" ajax="true" process="@this" action="#{beanRelOperMayoreo.cancelarVenta}" icon="ui-icon-trash" styleClass="ui-priority-primary" update=":formContent" disabled="#{model.idStatusFk.intValue() != 1}"  >
                                     <f:setPropertyActionListener value="#{model}" target="#{beanRelOperMayoreo.data}"/>
                                     <p:confirm header="Confirmación" message="¿Estás seguro de cancelar la venta?" icon="ui-icon-alert"/>
                                 </p:commandButton>

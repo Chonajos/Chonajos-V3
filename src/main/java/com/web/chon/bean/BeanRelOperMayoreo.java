@@ -17,7 +17,6 @@ import com.web.chon.dominio.VentaMayoreo;
 import com.web.chon.dominio.VentaProductoMayoreo;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceAbonoCredito;
-import com.web.chon.service.IfaceCaja;
 import com.web.chon.service.IfaceCatStatusVenta;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceCredito;
@@ -57,7 +56,6 @@ import org.primefaces.context.RequestContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.support.JstlUtils;
 
 /**
  *
@@ -133,8 +131,10 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
     private Credito c;
     private boolean variableInicial;
     private boolean credito;
+    
 
     private Date date;
+    
 
     @PostConstruct
     public void init() {
@@ -159,6 +159,7 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
         totalVentaDescuento = new BigDecimal(0);
         //getVentasByIntervalDate();
         c = new Credito();
+        buscar();
     }
 
     public void verificarCombo() {
@@ -255,7 +256,7 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
             JsfUtil.addErrorMessageClean("Este crédito ya cuenta con abonos, no se puede cancelar");
 
         } else {
-            if (data.getIdStatusFk().intValue() != 4 && data.getIdStatusFk().intValue() != 2) {
+            if (data.getIdStatusFk().intValue() != 4 && data.getIdStatusFk().intValue() != 2 && data.getIdStatusFk().intValue() != 3) {
                 boolean banderaError = false;
                 lstVenta = ifaceVentaMayoreoProducto.buscaVentaCancelar(data.getVentaSucursal(), data.getIdSucursalFk());
                 for (VentaProductoMayoreo producto : lstVenta) {
