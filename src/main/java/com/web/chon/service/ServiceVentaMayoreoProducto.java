@@ -81,7 +81,8 @@ public class ServiceVentaMayoreoProducto implements IfaceVentaMayoreoProducto {
                 //busca_venta.setIdBodega(obj[19] == null ? null : new BigDecimal(obj[19].toString()));
                 //busca_venta.setIdTipoConvenio(obj[20] == null ? null : new BigDecimal(obj[20].toString()));
                 //busca_venta.setIdProvedor(obj[21] == null ? null : new BigDecimal(obj[21].toString()));
-
+                producto.setIdVentaMayProdPk(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
+                producto.setIdVentaMayoreoFk(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
                 System.out.println("###################################");
                 System.out.println(producto.toString());
                 lstProductos.add(producto);

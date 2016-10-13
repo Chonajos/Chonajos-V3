@@ -6,10 +6,12 @@
 package com.web.chon.service;
 
 import com.web.chon.dominio.VentaMayoreo;
+import com.web.chon.dominio.VentaProductoMayoreo;
 import com.web.chon.negocio.NegocioVentaMayoreo;
 import com.web.chon.util.TiempoUtil;
 import com.web.chon.util.Utilidades;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -113,9 +115,12 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
     @Override
     public VentaMayoreo getVentaMayoreoByFolioidSucursalFk(BigDecimal idFolio, BigDecimal idSucursal) {
         getEjb();
+        System.out.println("Entro a ServiceVentaMayoreo: Folio: "+idFolio +"IdSucursal: "+idSucursal);
         List<Object[]> Object = ejb.getVentaMayoreoByFolioidSucursalFk(idFolio,idSucursal);
         VentaMayoreo venta = new VentaMayoreo();
         for (Object[] obj : Object) {
+            BigDecimal total = new BigDecimal(0);
+            
             venta.setIdVentaMayoreoPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
             venta.setIdClienteFk(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
             venta.setIdVendedorFK(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
@@ -128,15 +133,21 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
             venta.setVentaSucursal(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
             venta.setIdCajeroFk(obj[10] == null ? null : new BigDecimal(obj[10].toString()));
             venta.setIdCancelUser(obj[11] == null ? null : new BigDecimal(obj[11].toString()));
-            venta.setFechaCancelacion((Date) obj[12]);
-            venta.setNombreCliente(obj[13] == null ? "" : obj[13].toString());
-            venta.setNombreCliente(obj[14].toString());
-            venta.setNombreVendedor(obj[15].toString());
-            venta.setTotalVenta(obj[16] == null ? new BigDecimal(0) : new BigDecimal(obj[16].toString()));
-            venta.setNombreTipoVenta(obj[17].toString());
+            venta.setFechaCancelacion(obj[12] == null ? null:(Date) obj[12]);
+            venta.setComentariosCancel(obj[13] == null ? "" : obj[13].toString());
+            venta.setNombreCliente(obj[14] == null ? "" :obj[14].toString());
+            venta.setNombreVendedor(obj[15] == null ? "" :obj[15].toString());
+            venta.setNombreTipoVenta(obj[16] == null ? "" :obj[16].toString());
+            venta.setNombreEstatus(obj[17] == null ? "" :obj[17].toString());
             //ganacias = obj[18] == null ? new BigDecimal(0) : new BigDecimal(obj[18].toString());
             //venta.setGanciaVenta(venta.getTotalVenta().subtract(ganacias));
             venta.setListaProductos(ifaceVentaMayoreoProducto.getProductosbyIdVmFk(venta.getIdVentaMayoreoPk()));
+            for(VentaProductoMayoreo producto: venta.getListaProductos())
+            {
+                total = total.add(producto.getTotalVenta(), MathContext.UNLIMITED);
+            }
+            venta.setTotalVenta(total);
+            
         }
 
     return venta;

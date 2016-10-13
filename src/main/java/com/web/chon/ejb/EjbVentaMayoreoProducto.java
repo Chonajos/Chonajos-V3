@@ -54,7 +54,7 @@ public class EjbVentaMayoreoProducto implements NegocioVentaMayoreoProducto{
         System.out.println("=====================Entro a metodo GetProductos==================0");
        try {
             Query query = em.createNativeQuery("select em.CARROSUCURSAL,em.IDENTIFICADOR,sp.NOMBRE_SUBPRODUCTO,tem.NOMBRE_EMPAQUE,vmp.CANTIDAD_EMPAQUE,\n" +
-"vmp.KILOS_VENDIDOS,vmp.PRECIO_PRODUCTO,vmp.TOTAL_VENTA from VENTAMAYOREOPRODUCTO vmp\n" +
+"vmp.KILOS_VENDIDOS,vmp.PRECIO_PRODUCTO,vmp.TOTAL_VENTA, vmp.ID_V_M_P_PK,vmp.ID_VENTA_MAYOREO_FK from VENTAMAYOREOPRODUCTO vmp\n" +
 "join VENTA_MAYOREO vm\n" +
 "on vm.ID_VENTA_MAYOREO_PK = vmp.ID_VENTA_MAYOREO_FK\n" +
 "INNER JOIN tipo_empaque tem\n" +
@@ -67,7 +67,7 @@ public class EjbVentaMayoreoProducto implements NegocioVentaMayoreoProducto{
 "on emp.ID_EMP_PK = exp.ID_EMP_FK\n" +
 "INNER JOIN ENTRADAMERCANCIA em\n" +
 "on em.ID_EM_PK = emp.ID_EM_FK\n" +
-"where vmp.ID_VENTA_MAYOREO_FK=?");
+"where vmp.ID_VENTA_MAYOREO_FK =?");
             query.setParameter(1, idVmFk);
             System.out.println("Query: "+query.toString());
             System.out.println("Parametro: "+idVmFk);

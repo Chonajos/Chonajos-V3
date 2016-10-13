@@ -14,7 +14,8 @@ import java.util.Date;
  *
  * @author freddy
  */
-public class VentaMayoreo implements Serializable{
+public class VentaMayoreo implements Serializable {
+
     private static final long serialVersionUID = 1L;
     private BigDecimal idVentaMayoreoPk;
     private BigDecimal idClienteFk;
@@ -29,7 +30,8 @@ public class VentaMayoreo implements Serializable{
     private BigDecimal idCajeroFk;
     private Date fechaCancelacion;
     private BigDecimal idCancelUser;
-    private BigDecimal totalVenta;         ;
+    private BigDecimal totalVenta;
+    ;
     
     private String nombreCliente;
     private String nombreVendedor;
@@ -44,6 +46,30 @@ public class VentaMayoreo implements Serializable{
         return "VentaMayoreo{" + "idVentaMayoreoPk=" + idVentaMayoreoPk + ", idClienteFk=" + idClienteFk + ", idVendedorFK=" + idVendedorFK + ", fechaVenta=" + fechaVenta + ", fechaPromesaPago=" + fechaPromesaPago + ", idStatusFk=" + idStatusFk + ", fechaPago=" + fechaPago + ", idSucursalFk=" + idSucursalFk + ", idtipoVentaFk=" + idtipoVentaFk + '}';
     }
 
+    public void reset() {
+        idVentaMayoreoPk = null;
+        idClienteFk = null;
+        idVendedorFK = null;
+        fechaVenta = null;
+        fechaPromesaPago = null;
+        idStatusFk = null;
+        fechaPago = null;
+        idSucursalFk = null;
+        idtipoVentaFk = null;
+        ventaSucursal = null;
+        idCajeroFk = null;
+        fechaCancelacion = null;
+        idCancelUser = null;
+        totalVenta = null;
+        nombreCliente = null;
+        nombreVendedor = null;
+        nombreTipoVenta = null;
+        nombreEstatus = null;
+        comentariosCancel = null;
+        listaProductos = null;
+        ganciaVenta = null;
+    }
+
     public BigDecimal getVentaSucursal() {
         return ventaSucursal;
     }
@@ -52,7 +78,6 @@ public class VentaMayoreo implements Serializable{
         this.ventaSucursal = ventaSucursal;
     }
 
-   
     public BigDecimal getIdtipoVentaFk() {
         return idtipoVentaFk;
     }
@@ -61,8 +86,6 @@ public class VentaMayoreo implements Serializable{
         this.idtipoVentaFk = idtipoVentaFk;
     }
 
-    
-    
     public BigDecimal getIdVentaMayoreoPk() {
         return idVentaMayoreoPk;
     }
@@ -214,8 +237,5 @@ public class VentaMayoreo implements Serializable{
     public void setGanciaVenta(BigDecimal ganciaVenta) {
         this.ganciaVenta = ganciaVenta;
     }
-    
-    
-    
-    
+
 }

@@ -255,7 +255,7 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
             JsfUtil.addErrorMessageClean("Este crédito ya cuenta con abonos, no se puede cancelar");
 
         } else {
-            if (data.getIdStatusFk().intValue() != 4 && data.getIdStatusFk().intValue() != 2) {
+            if (data.getIdStatusFk().intValue() != 4 && data.getIdStatusFk().intValue() != 2 && data.getIdStatusFk().intValue() != 3) {
                 boolean banderaError = false;
                 lstVenta = ifaceVentaMayoreoProducto.buscaVentaCancelar(data.getVentaSucursal(), data.getIdSucursalFk());
                 for (VentaProductoMayoreo producto : lstVenta) {

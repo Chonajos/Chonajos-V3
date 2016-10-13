@@ -126,11 +126,10 @@ public class EjbVentaMayoreo implements NegocioVentaMayoreo {
     public int updateEstatusVentaByFolioSucursalAndIdSucursal(BigDecimal folioSucursal, BigDecimal idSucursal, BigDecimal estatusVenta) {
         try {
             Query query = em.createNativeQuery("UPDATE VENTA_MAYOREO SET ID_STATUS_FK = ? WHERE ID_SUCURSAL_FK = ? AND VENTASUCURSAL =?");
-            
+
             query.setParameter(1, estatusVenta);
             query.setParameter(2, idSucursal);
             query.setParameter(3, folioSucursal);
-            
 
             return query.executeUpdate();
 
@@ -160,13 +159,32 @@ public class EjbVentaMayoreo implements NegocioVentaMayoreo {
             java.util.logging.Logger.getLogger(EjbBuscaVenta.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
-    
-    
+
     }
 
     @Override
     public List<Object[]> getVentaMayoreoByFolioidSucursalFk(BigDecimal idFolio, BigDecimal idSucursal) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            Query query = em.createNativeQuery("select vm.ID_VENTA_MAYOREO_PK,vm.ID_CLIENTE_FK,vm.ID_VENDEDOR_FK,vm.FECHA_VENTA,\n" +
+"vm.FECHA_PROMESA_PAGO,vm.ID_STATUS_FK,vm.FECHA_PAGO,vm.ID_SUCURSAL_FK, vm.ID_TIPO_VENTA_FK,\n" +
+"vm.VENTASUCURSAL, vm.ID_CAJERO_FK, vm.ID_USER_CANCEL_FK, vm.FECHA_CANCELACION,vm.COMENTARIOS_CANCEL,\n" +
+"(CLI.NOMBRE||' '||CLI.APELLIDO_PATERNO ||' '||CLI.APELLIDO_MATERNO ) AS CLIENTE,\n" +
+"(usu.NOMBRE_USUARIO||' '||usu.APATERNO_USUARIO ||' '||usu.AMATERNO_USUARIO ) AS Vendedor,\n" +
+"tv.NOMBRE_TIPO_VENTA, sv.NOMBRE_STATUS\n" +
+"from VENTA_MAYOREO vm \n" +
+"inner join CLIENTE cli on cli.ID_CLIENTE = vm.ID_CLIENTE_FK\n" +
+"inner join USUARIO usu on usu.ID_USUARIO_PK = vm.ID_VENDEDOR_FK\n" +
+"inner join TIPO_VENTA tv on tv.ID_TIPO_VENTA_PK = vm.ID_TIPO_VENTA_FK\n" +
+"inner join STATUS_VENTA sv on sv.ID_STATUS_PK = vm.ID_STATUS_FK\n" +
+"where vm.VENTASUCURSAL= ? and vm.ID_SUCURSAL_FK = ?");
+            query.setParameter(1, idFolio);
+            query.setParameter(2, idSucursal);
+            return query.getResultList();
+        } catch (Exception ex) {
+            java.util.logging.Logger.getLogger(EjbVentaMayoreo.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+
     }
 
 }
