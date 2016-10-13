@@ -17,7 +17,6 @@ import com.web.chon.dominio.VentaMayoreo;
 import com.web.chon.dominio.VentaProductoMayoreo;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceAbonoCredito;
-import com.web.chon.service.IfaceCaja;
 import com.web.chon.service.IfaceCatStatusVenta;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceCredito;
@@ -57,7 +56,6 @@ import org.primefaces.context.RequestContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.support.JstlUtils;
 
 /**
  *
@@ -133,8 +131,10 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
     private Credito c;
     private boolean variableInicial;
     private boolean credito;
+    
 
     private Date date;
+    
 
     @PostConstruct
     public void init() {
@@ -159,6 +159,7 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
         totalVentaDescuento = new BigDecimal(0);
         //getVentasByIntervalDate();
         c = new Credito();
+        buscar();
     }
 
     public void verificarCombo() {
