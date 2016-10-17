@@ -25,6 +25,21 @@ html{
     margin-right: 0px;
 }
 
+/*Estilos para las fechas de Pago */
+.pagoAtrasado{
+    /*status: 4 */
+    color:red;
+}
+.sinAdeudos{
+    color:blue;
+    /*status: 1*/
+}
+.conAdeudos{
+    /* status = 2 */
+color: #FACC2E;
+}
+
+
 
 
 .calendario input 

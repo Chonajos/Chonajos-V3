@@ -383,7 +383,7 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
         DecimalFormat df = new DecimalFormat("#,###.00");
         paramReport.clear();
         paramReport.put("fechaVenta", dateTime);
-        paramReport.put("noVenta", Integer.toString(idVenta));
+        paramReport.put("noVenta", Integer.toString(folioVenta));
         paramReport.put("cliente", data.getNombreCliente());
         paramReport.put("vendedor", data.getNombreVendedor());
         paramReport.put("productos", items);

@@ -144,10 +144,10 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         dataProducto = new EntradaMercanciaProducto();
         lstTipoEmpaque = ifaceEmpaque.getEmpaques();
         provedor = new Provedor();
-        filtro = 1;
+        filtro = 2;
         verificarCombo();
         enableCalendar = true;
-        buscar();
+
         dataPaquete = new EntradaMercanciaProductoPaquete();
         dataPaqueteEliminar = new EntradaMercanciaProductoPaquete();
         dataProductoAutoAjuste = new EntradaMercanciaProducto();
@@ -162,6 +162,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         setViewEstate("init");
         dataProductoNuevo = new EntradaMercanciaProducto();
         lstProvedor = ifaceCatProvedores.getProvedores();
+        buscar();
 
     }
 

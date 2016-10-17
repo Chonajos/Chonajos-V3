@@ -93,13 +93,14 @@
                         <p:dataTable id="table" var="model" value="#{beanRelOperMayoreo.listaVentasMayoreo}" 
                                      scrollable="true"
                                      scrollHeight="400" styleClass="ui-datatable-hor-scroll" 
-                                     rendered="#{beanRelOperMayoreo.viewEstate =='init'}">
+                                     rendered="#{beanRelOperMayoreo.viewEstate =='init'}"
+                                     rowStyleClass="#{model.idStatusFk eq 1 ? 'statusPedido': (model.idStatusFk eq 2 ? 'statusPagado':(model.idStatusFk eq 3 ? 'statusEntregado':'statusCancelado'))}">
                             <p:column style="width:20px">
                                 <p:rowToggler />
                             </p:column>
 
 
-                            <p:column headerText="Folio" class="#{model.idStatusFk eq 1 ? 'statusPedido': (model.idStatusFk eq 2 ? 'statusPagado':(model.idStatusFk eq 3 ? 'statusEntregado':'statusCancelado'))}  alignCenter"  width="60px;" >
+                            <p:column headerText="Folio" width="60px;" >
                                 <h:outputText value="#{model.ventaSucursal}" />
                             </p:column>
 

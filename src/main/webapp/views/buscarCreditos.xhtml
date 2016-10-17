@@ -273,7 +273,7 @@
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
                         </p:column>
-                        <p:column headerText="Fecha de Próximo Pago" width="40px;" class="#{model.statusFechaProxima eq 1 ? 'statusPedido': (model.statusFechaProxima eq 2 ? 'statusPagado':(model.statusFechaProxima eq 3 ? 'statusEntregado':'statusCancelado'))}  alignCenter">
+                        <p:column headerText="Fecha de Próximo Pago" width="40px;" class="#{model.statusFechaProxima eq 1 ? 'sinAdeudos': (model.statusFechaProxima eq 2 ? 'conAdeudos':(model.statusFechaProxima eq 3 ? 'statusEntregado':'pagoAtrasado'))}  alignCenter">
                             <h:outputText value="#{model.fechaProximaAbonar}"> 
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputText>

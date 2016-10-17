@@ -8,6 +8,8 @@ import com.web.chon.dominio.Subproducto;
 import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.TipoConvenio;
 import com.web.chon.dominio.TipoEmpaque;
+import com.web.chon.dominio.UsuarioDominio;
+import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceCatBodegas;
 import com.web.chon.service.IfaceCatProvedores;
 import com.web.chon.service.IfaceCatSucursales;
@@ -44,6 +46,8 @@ public class BeanExistencias implements Serializable {
     @Autowired private IfaceCatSucursales ifaceCatSucursales;
     @Autowired private IfaceEntradaMercancia ifaceEntradaMercancia;
     @Autowired private IfaceNegocioExistencia ifaceNegocioExistencia;
+    @Autowired
+    private PlataformaSecurityContext context;
 
     private ArrayList<Bodega> listaBodegas;
     private ArrayList<Subproducto> lstProducto;
@@ -64,6 +68,7 @@ public class BeanExistencias implements Serializable {
     private BigDecimal totalKilos;
     private BigDecimal totalCajas;
 
+    private UsuarioDominio usuario;
     private int filtro;
 
     @PostConstruct
@@ -73,6 +78,7 @@ public class BeanExistencias implements Serializable {
         listaSucursales = new ArrayList<Sucursal>();
         listaProvedores = new ArrayList<Provedor>();
         listaTiposConvenio = new ArrayList<TipoConvenio>();
+        usuario = context.getUsuarioAutenticado();
 
         data = new ExistenciaProducto();
         subProducto = new Subproducto();
@@ -88,9 +94,12 @@ public class BeanExistencias implements Serializable {
         lstTipoEmpaque = ifaceEmpaque.getEmpaques();
         listaTiposConvenio = ifaceCovenio.getTipos();
 
+        data.setIdSucursal( new BigDecimal(usuario.getSucId()));
         setViewEstate("init");
         setTitle("Existencias");
         filtro = 1;
+        buscaExistencias();
+        
     }
 
     public void buscaExistencias() {
