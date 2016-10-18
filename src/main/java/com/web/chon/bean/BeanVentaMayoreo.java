@@ -448,15 +448,12 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
     }
 
-    public void addProducto() 
-    {
+    public void addProducto() {
         if (selectedExistencia == null || data.getKilosVendidos().compareTo(BigDecimal.ZERO) == 0) {
             JsfUtil.addErrorMessage("Seleccione un Producto de la tabla o peso en 0 Kg.");
 
         } else //            System.out.println("idSubProducto:" + selectedExistencia.getIdSubProductoFK());
-        {
-            
-            if (selectedExistencia.getPrecioVenta() == null) {
+         if (selectedExistencia.getPrecioVenta() == null) {
                 JsfUtil.addErrorMessage("No se tiene precio de venta para este producto. Contactar al administrador.");
             } else if (data.getPrecioProducto().intValue() < selectedExistencia.getPrecioMinimo().intValue() || data.getPrecioProducto().intValue() > selectedExistencia.getPrecioMaximo().intValue()) {
                 JsfUtil.addErrorMessage("Precio de Venta fuera de Rango \n Precio Maximo =" + selectedExistencia.getPrecioMaximo() + " Precio minimo =" + selectedExistencia.getPrecioMinimo());
@@ -469,11 +466,9 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                 add();
                 limpia();
             } else {
-                for (int i = 0; i < lstVenta.size(); i++) 
-                {
+                for (int i = 0; i < lstVenta.size(); i++) {
                     VentaProductoMayoreo productoRepetido = lstVenta.get(i);
-                    if (productoRepetido.getIdExistenciaFk().intValue()==selectedExistencia.getIdExistenciaProductoPk().intValue()) 
-                    {
+                    if (productoRepetido.getIdExistenciaFk().intValue() == selectedExistencia.getIdExistenciaProductoPk().intValue()) {
                         System.out.println("Entro a Producto Repetido.......");
                         BigDecimal enlista = productoRepetido.getCantidadEmpaque();
                         BigDecimal totalexistencia = selectedExistencia.getCantidadPaquetes();
@@ -513,7 +508,6 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
                 }
             }
-        }
         calculaAhorro(null);
 
     }
@@ -839,6 +833,11 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                     descuento = descuento.add(kiloCompra.multiply(dominio.getPrecioProducto()).subtract(kiloCompra.multiply(dominio.getPrecioSinInteres())));
                 }
 
+            }
+
+            //SI el descuento es negativo se pone el valor  cero
+            if (descuento.compareTo(zero) == -1) {
+                descuento = zero;
             }
 
             descuento = descuento.setScale(2, RoundingMode.UP);
