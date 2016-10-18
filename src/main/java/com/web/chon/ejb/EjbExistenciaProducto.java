@@ -316,4 +316,15 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
         }
     
     }
+     @Override
+    public int getNextVal() {
+        try {
+            Query query = em.createNativeQuery("select S_EXISTENCIA_PRODUCTO.NextVal from dual");
+            return Integer.parseInt(query.getSingleResult().toString());
+        } catch (Exception ex) {
+            System.out.println("error >" + ex.getMessage());
+            return 0;
+        }
+
+    }
 }

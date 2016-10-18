@@ -231,4 +231,10 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
 
     
     }
+
+    @Override
+    public int getNextVal() {
+        getEjb();
+        return ejb.getNextVal();
+    }
 }

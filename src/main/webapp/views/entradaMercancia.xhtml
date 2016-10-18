@@ -10,6 +10,12 @@
 
     <ui:define name="content" id="content">
         <h:form id="formContent" >
+            <p:confirmDialog  global="true" showEffect="fade" hideEffect="fade">
+                <div class="alignCenter">
+                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton  value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </div>
+            </p:confirmDialog>
             <div class="container-fluid">
 
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -17,7 +23,9 @@
                         <h3>#{beanEntradaMercancia.title}</h3>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 alignRight ">
-                        <p:commandButton value="Finalizar" id="vender" ajax="true" immediate="true" resetValues="true" action="#{beanEntradaMercancia.inserts}" update=":formContent" disabled="#{beanEntradaMercancia.permisionToGenerate}"/>
+                        <p:commandButton value="Finalizar" id="vender" ajax="true" immediate="true" resetValues="true" action="#{beanEntradaMercancia.inserts}" update=":formContent" disabled="#{beanEntradaMercancia.permisionToGenerate}">
+                            <p:confirm header="Confirmación" message="¿Estás seguro de finalizar la entrada de mercancia?" icon="ui-icon-alert" />
+                        </p:commandButton>
                     </div>
                 </div>
             </div>
@@ -99,7 +107,7 @@
                 </div>
                 <div class="container-fluid">
                     <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 " >
-                         <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
+                        <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-12 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="autocompletePoducto" value ="Producto:" /> 
                             <p:autoComplete  placeholder="Seleccione un Producto" id="autocompletePoducto"  required="true" requiredMessage="Ingresa un valor para el campo Producto." styleClass="autocomplete-input-text-media"
                                              value="#{beanEntradaMercancia.subProducto}" completeMethod="#{beanMantenimientoPrecio.autoComplete}" forceSelection="true" var="producto"  inputStyle="width: 170px"
@@ -116,7 +124,7 @@
                                 <f:selectItems value="#{beanEntradaMercancia.lstTipoEmpaque}" var="empaque" itemLabel="#{empaque.nombreEmpaque}" itemValue="#{empaque.idTipoEmpaquePk}"/>
                             </h:selectOneMenu>
                         </div>
-                       
+
                         <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12  ">
                             <p:outputLabel class="col-lg-12 col-md-8 col-sm-4 col-xs-12 alignLeft"  for="comboTipoOrden" value ="Tipo de Convenio:"/> 
                             <h:selectOneMenu  id="comboTipoOrden" class=" col-lg-12 col-md-8 col-sm-8 col-xs-12" value="#{beanEntradaMercancia.dataProducto.idTipoConvenio}" required="true" >
@@ -131,10 +139,10 @@
                                 <pe:keyFilter regEx="/[0-9 .]/i"/>
                             </p:inputText>
                         </div>
-                        
+
                     </div>
                     <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 " >
-                       <div class="col-lg-1 col-md-12 col-sm-12 col-xs-12 ">
+                        <div class="col-lg-1 col-md-12 col-sm-12 col-xs-12 ">
                             <p:outputLabel  class="col-lg-12 col-md-3 col-sm-4 col-xs-6"  for="txtCantidad" value ="Cantidad:" /> 
                             <p:inputText id="txtCantidad" maxlength="6" class=" col-lg-12 col-md-4 col-sm-8 col-xs-6 " value="#{beanEntradaMercancia.dataProducto.cantidadPaquetes}" required ="true"
                                          requiredMessage="Ingresa la Cantidad de Paquetes">
@@ -146,7 +154,7 @@
                             <p:inputText id="txtkilosProducto" maxlength="6" class=" col-lg-12 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMercancia.dataProducto.kilosTotalesProducto}">
                                 <pe:keyFilter regEx="/[0-9 .]/i"/>
                                 <p:ajax event="blur" update="formContent:txtPesoNeto" listener ="#{beanEntradaMercancia.calculaPesoNeto()}"/>
-                            
+
                             </p:inputText>
                         </div>
                         <div class="col-lg-1 col-md-12 col-sm-12 col-xs-12 ">

@@ -24,8 +24,9 @@ public interface IfaceNegocioExistencia {
     public int update(ExistenciaProducto ep);
     public int updatePrecio(ExistenciaProducto ep);
     public ArrayList<ExistenciaProducto> getExistenciaById(BigDecimal idExistencia);
-     public int deleteExistenciaProducto(ExistenciaProducto ep);
+    public int deleteExistenciaProducto(ExistenciaProducto ep);
     public ExistenciaProducto getExistenciaByIdEmpFk(BigDecimal idEmpFk);
+    public int getNextVal();
     
     
     }

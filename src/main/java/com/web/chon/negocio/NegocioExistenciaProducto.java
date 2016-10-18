@@ -31,4 +31,5 @@ public interface NegocioExistenciaProducto
     public List<Object[]> getExistenciaById(BigDecimal idExistencia);
     public int deleteExistenciaProducto(ExistenciaProducto exp);
     public List<Object[]> getExistenciaByIdEmpFk(BigDecimal idEmpFk);
+    public int getNextVal();
 }

@@ -16,6 +16,11 @@
             <p:messages id="messages" showDetail="true" showSummary="false" showIcon="false" autoUpdate="true" closable="true" />
             <p:panel>
                 <div class="container-fluid">
+                    <p:ajaxStatus onsuccess="PF('statusDialog').hide()" oncomplete="PF('statusDialog').hide()" onerror="PF('statusDialog').hide()" />
+                    <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                              closable="false" resizable="false" showHeader="false">
+                        <p:graphicImage value="../resources/img/carga.gif" />
+                    </p:dialog>
                     <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
                         <p:commandButton value="Si" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
                         <p:commandButton value="No" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
@@ -110,7 +115,7 @@
                             </h:selectOneMenu>
 
                             <p:commandButton value="Registrar" update="formContent" 
-                                             action="#{beanRelOperEntradaMercancia.agregarProducto()}"  oncomplete="PF('dlg').hide();"/>
+                                             action="#{beanRelOperEntradaMercancia.agregarProducto()}" onclick="PF('statusDialog').show()"  oncomplete="PF('dlg').hide();"/>
                         </h:panelGrid>
                     </p:dialog>
                     <p:dialog  id="dialogoAutoAjustar" header="Auto Ajustar Entrada de Mercancia" widgetVar="dlg3" resizable="false">
@@ -137,6 +142,7 @@
 
                             <p:commandButton value="Auto Ajustar" update=":formContent" 
                                              action="#{beanRelOperEntradaMercancia.autoAjustar()}" 
+                                             onclick="PF('statusDialog').show()"
                                              oncomplete="PF('dlg3').hide();">
                                 <p:confirm header="Confirmación" message="¿Estas seguro de Ajustar este Producto?" icon="ui-icon-alert" />
 
@@ -145,7 +151,7 @@
                     </p:dialog>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <div class="form-group" align="right">
-                            <p:commandButton value="Buscar" update=":formContent" ajax="true" action="#{beanRelOperEntradaMercancia.buscar()}"/>
+                            <p:commandButton value="Buscar" update=":formContent" ajax="true" action="#{beanRelOperEntradaMercancia.buscar()}" onclick="PF('statusDialog').show()"/>
                         </div>
                         <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12 alignLeft">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="sucursalFiltro" value ="Sucursal:" rendered="#{beanRelOperEntradaMercancia.viewEstate =='init'}"/> 
