@@ -78,12 +78,12 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
                 expro.setIdBodegaFK(obj[16] == null ? null : new BigDecimal(obj[16].toString()));
                 expro.setConvenio(obj[17] == null ? null : new BigDecimal(obj[17].toString()));
                 expro.setCarroSucursal(obj[18] == null ? null : new BigDecimal(obj[18].toString()));
-                expro.setPrecioSinIteres(obj[19] == null ? null : new BigDecimal(obj[19].toString()));
-                expro.setIdEntradaMercanciaProductoFK(obj[20] == null ? null : new BigDecimal(obj[20].toString()));
-                expro.setComentarios(obj[21] == null ? null :  obj[21].toString());
-                expro.setIdTipoConvenio(obj[22] == null ? null : new BigDecimal(obj[22].toString()));
-                expro.setKilospromprod(obj[23] == null ? null : new BigDecimal(obj[23].toString()));
-                expro.setIdSucursal(obj[24] == null ? null : new BigDecimal(obj[24].toString()));
+                expro.setPrecioSinIteres(obj[11] == null ? null : new BigDecimal(obj[11].toString()));
+                expro.setIdEntradaMercanciaProductoFK(obj[19] == null ? null : new BigDecimal(obj[19].toString()));
+                expro.setComentarios(obj[20] == null ? null :  obj[20].toString());
+                expro.setIdTipoConvenio(obj[21] == null ? null : new BigDecimal(obj[21].toString()));
+                expro.setKilospromprod(obj[22] == null ? null : new BigDecimal(obj[22].toString()));
+                expro.setIdSucursal(obj[23] == null ? null : new BigDecimal(obj[23].toString()));
 
 
                 
@@ -209,9 +209,21 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
             ExistenciaProducto existencia = new ExistenciaProducto();
             for (Object[] object : lstObject) {
                 existencia.setIdExistenciaProductoPk(object[0] == null ? null : new BigDecimal(object[0].toString()));
-                existencia.setCantidadPaquetes(object[1] == null ? null : new BigDecimal(object[1].toString()));
-                existencia.setKilosTotalesProducto(object[2] == null ? null : new BigDecimal(object[2].toString()));
-                existencia.setIdBodegaFK(object[3] == null ? null : new BigDecimal(object[3].toString()));
+                existencia.setIdSubProductoFK(object[1] == null ? null : object[1].toString());
+                existencia.setIdTipoEmpaqueFK(object[2] == null ? null : new BigDecimal(object[2].toString()));
+                existencia.setKilosTotalesProducto(object[3] == null ? null : new BigDecimal(object[3].toString()));
+                existencia.setCantidadPaquetes(object[4] == null ? null : new BigDecimal(object[4].toString()));
+                existencia.setComentarios(object[5] == null ? "" : object[5].toString());
+                existencia.setIdBodegaFK(object[6] == null ? null : new BigDecimal(object[6].toString()));
+                existencia.setIdTipoConvenio(object[7] == null ? null : new BigDecimal(object[7].toString()));
+                existencia.setConvenio(object[8] == null ? null : new BigDecimal(object[8].toString()));
+                existencia.setKilospromprod(object[9] == null ? null : new BigDecimal(object[9].toString()));
+                existencia.setPrecioMinimo(object[10] == null ? null : new BigDecimal(object[10].toString()));
+                existencia.setPrecioVenta(object[11] == null ? null : new BigDecimal(object[11].toString()));
+                existencia.setPrecioMaximo(object[12] == null ? null : new BigDecimal(object[12].toString()));
+                //existencia.setEstatusBloqueo(object[13] == null ? null : object[12].toString());
+                existencia.setIdSucursal(object[14] == null ? null : new BigDecimal(object[14].toString()));
+                existencia.setIdEntradaMercanciaProductoFK(object[15] == null ? null : new BigDecimal(object[15].toString()));
             }
             return existencia;
         }

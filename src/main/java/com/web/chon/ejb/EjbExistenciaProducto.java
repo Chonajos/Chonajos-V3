@@ -29,7 +29,7 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
     @Override
     public int insertaExistencia(ExistenciaProducto e) {
 
-        System.out.println("Entrada_Porducto Existencia Nuevo =============: " + e.toString());
+        //System.out.println("Entrada_Porducto Existencia Nuevo =============: " + e.toString());
 
         try 
         {          
@@ -78,7 +78,7 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
         try {
 
             Query query = em.createNativeQuery("select * from existencia_producto where ID_SUCURSAL_FK = '" + idSucursal + "' and ID_SUBPRODUCTO_FK='" + idSubproductoFk + "' and  ID_TIPO_EMPAQUE='" + idTipoEmpaqueFk + "' and ID_BODEGA_FK='" + idBodegaFk + "'and ID_PROVEDOR_FK='" + idProvedorFk + "'");
-            System.out.println(query);
+            //System.out.println(query);
             return query.getResultList();
         } catch (Exception ex) {
             System.out.println("Encontro null ejb");
@@ -90,7 +90,7 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
     @Override
     public int updateCantidadKilo(ExistenciaProducto e) {
 
-        System.out.println("EJBUPDATEPRODUCTO:--------------------"+e.toString());
+        //System.out.println("EJBUPDATEPRODUCTO:--------------------"+e.toString());
         try {
             
             Query query = em.createNativeQuery("update EXISTENCIA_PRODUCTO SET CANTIDAD_EMPACAQUE=?, KILOS_TOTALES=? WHERE ID_EXP_PK=?");
@@ -110,10 +110,12 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
     @Override
     public int update(ExistenciaProducto e) {
 
-        System.out.println("EJBUPDATEPRODUCTO:--------------------"+e.toString());
+        //System.out.println("EJBUPDATEPRODUCTO:--------------------"+e.toString());
         try {
             
-            Query query = em.createNativeQuery("update EXISTENCIA_PRODUCTO SET CANTIDAD_EMPACAQUE=?, KILOS_TOTALES=?,ID_BODEGA_FK =? WHERE ID_EXP_PK=?");
+            Query query = em.createNativeQuery("update EXISTENCIA_PRODUCTO SET ID_SUBPRODUCTO_FK = ?, ID_TIPO_EMPAQUE_FK = ?, KILOS_TOTALES = ?, CANTIDAD_EMPACAQUE = ?, COMENTARIOS = ?,"
+                    + "ID_BODEGA_FK = ?, ID_TIPO_CONVENIO_FK = ?, CONVENIO = ?, KILOSPROMPROD = ?, PRECIO_MINIMO = ?, PRECIO_VENTA = ?,"
+                    + "PRECIO_MAXIMO = ?, ESTATUS_BLOQUEO = ?, ID_SUCURSAL_FK = ?, ID_EMP_FK=?  WHERE ID_EXP_PK=?");
             query.setParameter(1, e.getIdSubProductoFK());
             query.setParameter(2, e.getIdTipoEmpaqueFK());
             query.setParameter(3, e.getKilosTotalesProducto());
@@ -121,14 +123,15 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
             query.setParameter(5, e.getComentarios());
             query.setParameter(6, e.getIdBodegaFK());
             query.setParameter(7, e.getIdTipoConvenio());
-            query.setParameter(8, e.getKilospromprod());
-            query.setParameter(9, e.getPrecioMinimo());
-            query.setParameter(10, e.getPrecioVenta());
-            query.setParameter(11, e.getPrecioMaximo());
-            query.setParameter(12, e.isEstatusBloqueo());
-            query.setParameter(13, e.getIdSucursal());
-            query.setParameter(14, e.getIdEntradaMercanciaProductoFK());
-            query.setParameter(15, e.getIdExistenciaProductoPk());
+            query.setParameter(8, e.getConvenio());
+            query.setParameter(9, e.getKilospromprod());
+            query.setParameter(10, e.getPrecioMinimo());
+            query.setParameter(11, e.getPrecioVenta());
+            query.setParameter(12, e.getPrecioMaximo());
+            query.setParameter(13, e.isEstatusBloqueo());
+            query.setParameter(14, e.getIdSucursal());
+            query.setParameter(15, e.getIdEntradaMercanciaProductoFK());
+            query.setParameter(16, e.getIdExistenciaProductoPk());
             return query.executeUpdate();
 
         } catch (Exception ex) {
@@ -315,13 +318,13 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
     @Override
     public List<Object[]> getExistenciaByIdEmpFk(BigDecimal idEmpFk) {
        try {
-            Query query = em.createNativeQuery("select exp.ID_EXP_PK,exp.CANTIDAD_EMPACAQUE,exp.KILOS_TOTALES,exp.ID_BODEGA_FK from EXISTENCIA_PRODUCTO exp where exp.ID_EMP_FK =?");
+            Query query = em.createNativeQuery("select exp.* from EXISTENCIA_PRODUCTO exp where exp.ID_EMP_FK =?");
             query.setParameter(1, idEmpFk);
-            System.out.println("Parametro: "+idEmpFk);
-            System.out.println(query);
+            //System.out.println("Parametro: "+idEmpFk);
+            //System.out.println(query);
             return query.getResultList();
         } catch (Exception ex) {
-            System.out.println("Encontro null ejb");
+            //System.out.println("Encontro null ejb");
             Logger.getLogger(EjbExistenciaProducto.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }

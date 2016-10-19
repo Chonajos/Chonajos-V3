@@ -345,9 +345,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
             }
             BigDecimal idProvedor = provedor == null ? null : provedor.getIdProvedorPK();
             lstEntradaMercancia = ifaceEntradaMercancia.getEntradaProductoByIntervalDate(fechaFiltroInicio, fechaFiltroFin, idSucursal, idProvedor);
-            for(EntradaMercancia dominio:lstEntradaMercancia){
-                System.out.println("dominio "+dominio.toString());
-            }
+            
 
         }
     }
@@ -554,12 +552,13 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
                 System.out.println("Se actualizo correctamente");
                 ExistenciaProducto ep = new ExistenciaProducto();
+                ep = ifaceNegocioExistencia.getExistenciaByIdEmpFk(dataProductEdit.getIdEmpPK());
                 ep.setIdSubProductoFK(dataProductEdit.getIdSubProductoFK());
                 ep.setIdTipoEmpaqueFK(dataProductEdit.getIdTipoEmpaqueFK());
                 ep.setIdBodegaFK(dataProductEdit.getIdBodegaFK());
                 ep.setIdTipoConvenio(dataProductEdit.getIdTipoConvenio());
                 ep.setIdEntradaMercanciaProductoFK(dataProductEdit.getIdEmpPK());
-
+                ep.setConvenio(dataProductEdit.getPrecio());
                 System.out.println("Entrada Anterior kilos: " + kilosAnterior);
                 System.out.println("Entrada Anterior Cantidad: " + cantidadAnterior);
                 System.out.println("Entrada Nueva kilos: " + dataProductEdit.getKilosTotalesProducto());
@@ -576,7 +575,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
                 ep.setIdExistenciaProductoPk(e.getIdExistenciaProductoPk());
                 System.out.println("--------------Existencia Actualizar------------");
                 System.out.println(ep.toString());
-                if (ifaceNegocioExistencia.updateCantidadKilo(ep) == 1) {
+                if (ifaceNegocioExistencia.update(ep) == 1) {
                     JsfUtil.addSuccessMessageClean("Actualización de datos correcta");
                 } else {
                     JsfUtil.addErrorMessageClean("Ocurrió un problema al actualizar existencias");

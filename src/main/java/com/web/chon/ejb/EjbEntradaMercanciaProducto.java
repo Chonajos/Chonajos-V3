@@ -28,9 +28,9 @@ public class EjbEntradaMercanciaProducto implements NegocioEntradaMercanciaProdu
 
     @Override
     public int insertEntradaMercanciaProducto(EntradaMercanciaProducto producto) {
-        System.out.println("EJB_INSERTA_ENTRADAMERCANCIA Producto");
+        //System.out.println("EJB_INSERTA_ENTRADAMERCANCIA Producto");
         try {
-            System.out.println("Entrada_Porducto: " + producto);
+            //System.out.println("Entrada_Porducto: " + producto);
             Query query = em.createNativeQuery("INSERT INTO ENTRADAMERCANCIAPRODUCTO (ID_EM_FK,ID_SUBPRODUCTO_FK,ID_TIPO_EMPAQUE_FK,KILOS_TOTALES,CANTIDAD_EMPACAQUE,COMENTARIOS,ID_BODEGA_FK,ID_TIPO_CONVENIO_FK,CONVENIO,KILOSPROMPROD,ID_EMP_PK)VALUES (?,?,?,?,?,?,?,?,?,?,?)");
             query.setParameter(1, producto.getIdEmFK());
             query.setParameter(2, producto.getIdSubProductoFK());
@@ -81,13 +81,13 @@ public class EjbEntradaMercanciaProducto implements NegocioEntradaMercanciaProdu
 
     @Override
     public int deleteEntradaProducto(EntradaMercanciaProducto ep) {
-        System.out.println("EJB_DELETE EntradaProducto");
+        //System.out.println("EJB_DELETE EntradaProducto");
         try {
-            System.out.println("Entrada_Porducto: " + ep);
+            //System.out.println("Entrada_Porducto: " + ep);
             Query query = em.createNativeQuery("delete from ENTRADAMERCANCIAPRODUCTO emp where emp.ID_EMP_PK = ?");
             query.setParameter(1, ep.getIdEmpPK());
-            System.out.println("Query: " + query);
-            System.out.println("ID: " + ep.getIdEmpPK());
+            //System.out.println("Query: " + query);
+            //System.out.println("ID: " + ep.getIdEmpPK());
             return query.executeUpdate();
         } catch (Exception ex) {
             Logger.getLogger(EjbEntradaMercanciaProducto.class.getName()).log(Level.SEVERE, null, ex);
@@ -107,11 +107,11 @@ public class EjbEntradaMercanciaProducto implements NegocioEntradaMercanciaProdu
 "inner join VENTA_MAYOREO vm on vm.ID_VENTA_MAYOREO_PK  = vmp.ID_VENTA_MAYOREO_FK\n" +
 "where vm.ID_STATUS_FK != 4 and  emp.ID_EMP_PK = ? ");
             query.setParameter(1, idEmP);
-            System.out.println(query);
+            //System.out.println(query);
             return query.getResultList();
         } catch (Exception ex) 
         {
-            System.out.println("Encontro null ejb");
+            //System.out.println("Encontro null ejb");
             Logger.getLogger(EjbEntradaMercanciaProducto.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
@@ -119,8 +119,8 @@ public class EjbEntradaMercanciaProducto implements NegocioEntradaMercanciaProdu
 
     @Override
     public int updateEntradaMercanciaProducto(EntradaMercanciaProducto producto) {
-        System.out.println("=============================================================");
-        System.out.println("Producto: " + producto.toString());
+        //System.out.println("=============================================================");
+        //System.out.println("Producto: " + producto.toString());
         try {
 
             Query query = em.createNativeQuery("UPDATE ENTRADAMERCANCIAPRODUCTO SET "
@@ -154,10 +154,10 @@ public class EjbEntradaMercanciaProducto implements NegocioEntradaMercanciaProdu
 
             Query query = em.createNativeQuery("select emp.ID_EMP_PK,emp.CANTIDAD_EMPACAQUE,emp.KILOS_TOTALES,emp.ID_SUBPRODUCTO_FK from ENTRADAMERCANCIAPRODUCTO emp where emp.ID_EMP_PK =?");
             query.setParameter(1, idEmpPk);
-            System.out.println(query);
+            //System.out.println(query);
             return query.getResultList();
         } catch (Exception ex) {
-            System.out.println("Encontro null ejb");
+            //System.out.println("Encontro null ejb");
             Logger.getLogger(EjbEntradaMercanciaProducto.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }

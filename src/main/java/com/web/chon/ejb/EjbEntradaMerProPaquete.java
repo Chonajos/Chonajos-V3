@@ -45,7 +45,7 @@ public class EjbEntradaMerProPaquete  implements NegocioEntradaMerProPaquete{
     }
     @Override
     public int updatePaquete(BigDecimal idEmpFk) {
-        System.out.println("IDEMPFK: "+idEmpFk);
+        //System.out.println("IDEMPFK: "+idEmpFk);
        try {
             Query query = em.createNativeQuery("UPDATE  ENTRADA_PAQUETES SET ID_STATUS_FK = 2 WHERE ID_EMP_FK = ?");
             query.setParameter(1, idEmpFk);

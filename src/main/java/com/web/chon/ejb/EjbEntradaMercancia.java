@@ -30,9 +30,9 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
 
     @Override
     public int insertEntradaMercancia(EntradaMercancia entrada) {
-        System.out.println("EJB_INSERTA_ENTRADAMERCANCIA");
+        //System.out.println("EJB_INSERTA_ENTRADAMERCANCIA");
         try {
-            System.out.println("Entrada: " + entrada);
+            //System.out.println("Entrada: " + entrada);
             Query query = em.createNativeQuery("INSERT INTO ENTRADAMERCANCIA (ID_EM_PK,ID_PROVEDOR_FK,MOVIMIENTO,FECHA,REMISION,ID_SUCURSAL_FK,IDENTIFICADOR,ID_STATUS_FK,KILOSTOTALES,KILOSTOTALESPROVEDOR,COMENTARIOS,FECHAREMISION,CARROSUCURSAL,ID_USUARIO_FK)VALUES (?,?,?,sysdate,?,?,?,1,?,?,?,?,?,?)");
             query.setParameter(1, entrada.getIdEmPK());
             query.setParameter(2, entrada.getIdProvedorFK());
@@ -58,9 +58,9 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
     }
 
     public int buscaMaxMovimiento(EntradaMercancia entrada) {
-        System.out.println("EJB_BUSCA_MAX_MOVIMIENTO");
+        //System.out.println("EJB_BUSCA_MAX_MOVIMIENTO");
         try {
-            System.out.println("Entrada: " + entrada.toString());
+            //System.out.println("Entrada: " + entrada.toString());
             Query query = em.createNativeQuery("select max(movimiento) from ENTRADAMERCANCIA where ID_PROVEDOR_FK = ? AND FECHA BETWEEN ? AND ?");
             query.setParameter(1, entrada.getIdProvedorFK());
             //query.setParameter(2, entrada.getIdSucursalFK());
@@ -122,7 +122,7 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
 
     @Override
     public List<Object[]> getSubEntradaByNombre(String clave) {
-        System.out.println("Ejb: " + clave);
+        //System.out.println("Ejb: " + clave);
         Query query = em.createNativeQuery("SELECT ID_EM_PK,IDENTIFICADOR FROM ENTRADAMERCANCIA WHERE UPPER(IDENTIFICADOR) LIKE '%" + clave + "%'");
 
         return query.getResultList();
@@ -145,7 +145,7 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
     }
     @Override
     public int deleteEntradaMercancia(EntradaMercancia entrada) {
-        System.out.println("EJB_DELETE EntradaMercancia");
+        //System.out.println("EJB_DELETE EntradaMercancia");
         try 
         {
             Query query = em.createNativeQuery("delete from ENTRADAMERCANCIA em where em.ID_EM_PK =?");
@@ -160,9 +160,9 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
     @Override
     public int updateEntradaMercancia(EntradaMercancia entrada) {
         
-        System.out.println("EJB_UPDATE_ENTRADAMERCANCIA");
+        //System.out.println("EJB_UPDATE_ENTRADAMERCANCIA");
         try {
-            System.out.println("Entrada: " + entrada);
+            //System.out.println("Entrada: " + entrada);
             Query query = em.createNativeQuery("UPDATE ENTRADAMERCANCIA SET ID_PROVEDOR_FK=?,MOVIMIENTO=?,"
                     + "FECHA=?,REMISION=?,ID_SUCURSAL_FK=?,IDENTIFICADOR=?,ID_STATUS_FK=?,KILOSTOTALES=?,KILOSTOTALESPROVEDOR=?,"
                     + "COMENTARIOS=?,FECHAREMISION=?,ID_USUARIO_FK=?,CARROSUCURSAL=? WHERE ID_EM_PK = ?");
@@ -191,7 +191,7 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
 
     @Override
     public List<Object[]> getEntradaByIdEmPFk(BigDecimal idEmPFk) {
-        System.out.println("EJB_getEntradaByIdEmPFk: "+idEmPFk);
+        //System.out.println("EJB_getEntradaByIdEmPFk: "+idEmPFk);
         Query query = em.createNativeQuery("select em.* from ENTRADAMERCANCIA em\n" +
 "inner join ENTRADAMERCANCIAPRODUCTO emp\n" +
 "on emp.ID_EM_FK = em.ID_EM_PK\n" +
@@ -203,7 +203,7 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
 
     @Override
     public List<Object[]> getEntradaByIdPk(BigDecimal idPk) {
-        System.out.println("EJB_getEntradaByIdPkk: "+idPk);
+        //System.out.println("EJB_getEntradaByIdPkk: "+idPk);
         Query query = em.createNativeQuery("select em.* from ENTRADAMERCANCIA em\n" +
 "where em.ID_EM_PK = ?");
         query.setParameter(1, idPk);
