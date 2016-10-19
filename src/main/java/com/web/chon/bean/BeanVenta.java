@@ -97,7 +97,8 @@ public class BeanVenta implements Serializable, BeanSimple {
     private IfaceExistenciaMenudeo ifaceExistenciaMenudeo;
     @Autowired
     private IfaceMantenimientoPrecio ifaceMantenimientoPrecio;
-    @Autowired private IfaceVentaMayoreo ifaceVentaMayoreo;
+    @Autowired
+    private IfaceVentaMayoreo ifaceVentaMayoreo;
 
     private ArrayList<Usuario> lstUsuario;
     private ArrayList<Cliente> lstCliente;
@@ -272,7 +273,7 @@ public class BeanVenta implements Serializable, BeanSimple {
         int idVenta = 0;
         int folioVenta = 0;
         Venta venta = new Venta();
-        int folioVentaMayoreo= 0;
+        int folioVentaMayoreo = 0;
         String mensaje = validaCompraCredito();
 
         try {
@@ -284,13 +285,12 @@ public class BeanVenta implements Serializable, BeanSimple {
 
                 idVenta = ifaceVenta.getNextVal();
                 folioVenta = ifaceVenta.getFolioByIdSucursal(idSucu);
-                folioVentaMayoreo  = ifaceVentaMayoreo.getVentaSucursal(new BigDecimal(idSucu));
-                
-                if(folioVentaMayoreo>folioVenta)
-                {
+                folioVentaMayoreo = ifaceVentaMayoreo.getVentaSucursal(new BigDecimal(idSucu));
+
+                if (folioVentaMayoreo > folioVenta) {
                     folioVenta = folioVentaMayoreo;
                 }
-               folioVenta = folioVenta +1;
+                folioVenta = folioVenta + 1;
 
                 venta.setIdVentaPk(new BigDecimal(idVenta));
                 venta.setIdClienteFk(cliente.getId_cliente());
@@ -542,15 +542,13 @@ public class BeanVenta implements Serializable, BeanSimple {
             String item = "N. Pago   Fecha de Pago   Monto";
             calendario.add(item);
             if (dejaACuenta.intValue() > 0) {
-                item = "    0            " + TiempoUtil.getFechaDDMMYYYY(date) + "    $" +df.format(dejaACuenta);
+                item = "    0            " + TiempoUtil.getFechaDDMMYYYY(date) + "    $" + df.format(dejaACuenta);
                 calendario.add(item);
-                
+
                 paramReport.put("msgAcuenta", "Favor de pasar a caja para su pago inicial de: $" + df.format(dejaACuenta));
-            }else{
+            } else {
                 paramReport.put("msgAcuenta", "");
             }
-
-            
 
             int plaso = (c.getPlasos().divide(c.getNumeroPagos())).intValue();
             int pagos = c.getNumeroPagos().intValue();
@@ -910,6 +908,10 @@ public class BeanVenta implements Serializable, BeanSimple {
 
             }
             descuento = descuento.setScale(2, RoundingMode.UP);
+            //SI el descuento es negativo se pone el valor  cero
+            if (descuento.compareTo(zero) == -1) {
+                descuento = zero;
+            }
             setTotalVentaDescuento(totalVenta.subtract(descuento));
 
         }
