@@ -405,7 +405,6 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         if (ifaceEntradaMercanciaProducto.insertEntradaMercanciaProducto(dataProductoNuevo) != 0) {
             ExistenciaProducto ep = new ExistenciaProducto();
             ep.setIdExistenciaProductoPk(new BigDecimal(ifaceNegocioExistencia.getNextVal()));
-            ep.setIdEmFK(dataProductoNuevo.getIdEmFK());
             ep.setIdSubProductoFK(dataProductoNuevo.getIdSubProductoFK());
             ep.setIdTipoEmpaqueFK(dataProductoNuevo.getIdTipoEmpaqueFK());
             ep.setKilosTotalesProducto(dataProductoNuevo.getKilosTotalesProducto());

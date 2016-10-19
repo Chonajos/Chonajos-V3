@@ -19,7 +19,7 @@ public interface IfaceNegocioExistencia {
     public ArrayList<ExistenciaProducto> getExistencias(BigDecimal idSucursal, BigDecimal idBodega, BigDecimal idProvedor,String idProducto, BigDecimal idEmpaque, BigDecimal idConvenio,BigDecimal idEmpPK);
      public ArrayList<ExistenciaProducto> getExistenciasCancelar(BigDecimal idExistencia);
     public ArrayList<ExistenciaProducto> getExistenciasbyIdSubProducto(String idSubproductoFk);
-    public ArrayList<ExistenciaProducto> getExistenciaProductoRepetidos(BigDecimal idSucursal,String idSubproductoFk,BigDecimal idTipoEmpaqueFk, BigDecimal idBodegaFk, BigDecimal idProvedorFk,BigDecimal idEMFK,BigDecimal idTipoConvenio);
+    public ArrayList<ExistenciaProducto> getExistenciaProductoRepetidos(BigDecimal idSucursal,String idSubproductoFk,BigDecimal idTipoEmpaqueFk, BigDecimal idBodegaFk, BigDecimal idProvedorFk,BigDecimal idTipoConvenio);
     public int updateCantidadKilo(ExistenciaProducto ep);
     public int update(ExistenciaProducto ep);
     public int updatePrecio(ExistenciaProducto ep);

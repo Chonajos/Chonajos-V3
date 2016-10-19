@@ -490,7 +490,6 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
 
     public void add() {
         data.setIdExistenciaFk(selectedExistencia.getIdExistenciaProductoPk());
-        data.setIdEntradaMercanciaFk(selectedExistencia.getIdEmFK());
         data.setIdTipoEmpaqueFk(selectedExistencia.getIdTipoEmpaqueFK());
         data.setIdSubProductofk(selectedExistencia.getIdSubProductoFK());
         data.setNombreEmpaque(selectedExistencia.getNombreEmpaque());

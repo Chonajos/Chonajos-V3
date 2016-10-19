@@ -34,8 +34,8 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
         try 
         {          
 
-            Query query = em.createNativeQuery("INSERT INTO EXISTENCIA_PRODUCTO (ID_EXP_PK,ID_EM_FK,ID_SUBPRODUCTO_FK,ID_TIPO_EMPAQUE_FK,KILOS_TOTALES,CANTIDAD_EMPACAQUE,COMENTARIOS,ID_BODEGA_FK,ID_TIPO_CONVENIO_FK,CONVENIO,KILOSPROMPROD,ID_SUCURSAL_FK,ID_EMP_FK,PRECIO_MINIMO,PRECIO_VENTA,PRECIO_MAXIMO,ESTATUS_BLOQUEO)VALUES (S_EXISTENCIA_PRODUCTO.NextVal,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-            query.setParameter(1, e.getIdEmFK());
+            Query query = em.createNativeQuery("INSERT INTO EXISTENCIA_PRODUCTO (ID_EXP_PK,ID_SUBPRODUCTO_FK,ID_TIPO_EMPAQUE_FK,KILOS_TOTALES,CANTIDAD_EMPACAQUE,COMENTARIOS,ID_BODEGA_FK,ID_TIPO_CONVENIO_FK,CONVENIO,KILOSPROMPROD,ID_SUCURSAL_FK,ID_EMP_FK,PRECIO_MINIMO,PRECIO_VENTA,PRECIO_MAXIMO,ESTATUS_BLOQUEO)VALUES (S_EXISTENCIA_PRODUCTO.NextVal,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+
             query.setParameter(2, e.getIdSubProductoFK());
             query.setParameter(3, e.getIdTipoEmpaqueFK());
             query.setParameter(4, e.getKilosTotalesProducto());
@@ -114,10 +114,21 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
         try {
             
             Query query = em.createNativeQuery("update EXISTENCIA_PRODUCTO SET CANTIDAD_EMPACAQUE=?, KILOS_TOTALES=?,ID_BODEGA_FK =? WHERE ID_EXP_PK=?");
-            query.setParameter(1, e.getCantidadPaquetes());
-            query.setParameter(2, e.getKilosTotalesProducto());
-            query.setParameter(3, e.getIdBodegaFK());
-            query.setParameter(4, e.getIdExistenciaProductoPk());
+            query.setParameter(1, e.getIdSubProductoFK());
+            query.setParameter(2, e.getIdTipoEmpaqueFK());
+            query.setParameter(3, e.getKilosTotalesProducto());
+            query.setParameter(4, e.getCantidadPaquetes());
+            query.setParameter(5, e.getComentarios());
+            query.setParameter(6, e.getIdBodegaFK());
+            query.setParameter(7, e.getIdTipoConvenio());
+            query.setParameter(8, e.getKilospromprod());
+            query.setParameter(9, e.getPrecioMinimo());
+            query.setParameter(10, e.getPrecioVenta());
+            query.setParameter(11, e.getPrecioMaximo());
+            query.setParameter(12, e.isEstatusBloqueo());
+            query.setParameter(13, e.getIdSucursal());
+            query.setParameter(14, e.getIdEntradaMercanciaProductoFK());
+            query.setParameter(15, e.getIdExistenciaProductoPk());
             return query.executeUpdate();
 
         } catch (Exception ex) {
@@ -137,11 +148,11 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
 
             Query query;
             int cont = 0;
-            StringBuffer cadena = new StringBuffer("select ex.ID_EXP_PK,em.ID_EM_PK,em.IDENTIFICADOR,subp.NOMBRE_SUBPRODUCTO, te.NOMBRE_EMPAQUE,\n" +
+            StringBuffer cadena = new StringBuffer("select ex.ID_EXP_PK,em.IDENTIFICADOR,subp.NOMBRE_SUBPRODUCTO, te.NOMBRE_EMPAQUE,\n" +
 "  ex.CANTIDAD_EMPACAQUE,ex.KILOS_TOTALES,tc.DESCRIPCION_TIPO,\n" +
 "  prove.nombre_provedor ||' '|| prove.A_PATERNO_PROVE || ' ' || prove.A_MATERNO_PROVE as nombreProvedor,\n" +
 "  sucu.NOMBRE_SUCURSAL,bod.NOMBRE, ex.PRECIO_MINIMO, ex.PRECIO_VENTA, ex.PRECIO_MAXIMO,\n" +
-"  ex.ESTATUS_BLOQUEO,ex.ID_SUBPRODUCTO_FK,ex.ID_TIPO_EMPAQUE_FK,bod.ID_BD_PK,ex.CONVENIO,em.CARROSUCURSAL, ex.ID_EMP_FK,ex.COMENTARIOS,ex.ID_EM_FK,ex.ID_TIPO_CONVENIO_FK,ex.KILOSPROMPROD,ex.ID_SUCURSAL_FK" +
+"  ex.ESTATUS_BLOQUEO,ex.ID_SUBPRODUCTO_FK,ex.ID_TIPO_EMPAQUE_FK,bod.ID_BD_PK,ex.CONVENIO,em.CARROSUCURSAL, ex.ID_EMP_FK,ex.COMENTARIOS,ex.ID_TIPO_CONVENIO_FK,ex.KILOSPROMPROD,ex.ID_SUCURSAL_FK" +
 " from EXISTENCIA_PRODUCTO ex\n" +
 " join ENTRADAMERCANCIAPRODUCTO emp\n" +
 " on emp.ID_EMP_PK = ex.ID_EMP_FK\n" +
@@ -236,10 +247,10 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
     }
 
     @Override
-    public List<Object[]> getExistenciasRepetidas(BigDecimal idSucursal, String idSubproductoFk, BigDecimal idTipoEmpaqueFk, BigDecimal idBodegaFk, BigDecimal idProvedorFk, BigDecimal idEMFK, BigDecimal idTipoConvenio) {
+    public List<Object[]> getExistenciasRepetidas(BigDecimal idSucursal, String idSubproductoFk, BigDecimal idTipoEmpaqueFk, BigDecimal idBodegaFk, BigDecimal idProvedorFk, BigDecimal idTipoConvenio) {
 
         try {
-            Query query = em.createNativeQuery("select * from existencia_producto where id_sucursal_fk='" + idSucursal + "'and id_subproducto_Fk = '" + idSubproductoFk + "' and id_Tipo_Empaque_Fk='" + idTipoEmpaqueFk + "'and  id_Bodega_Fk='" + idBodegaFk + "'and  id_EM_FK = '" + idEMFK + "' and  ID_TIPO_CONVENIO_FK = '" + idTipoConvenio + "'");
+            Query query = em.createNativeQuery("select * from existencia_producto where id_sucursal_fk='" + idSucursal + "'and id_subproducto_Fk = '" + idSubproductoFk + "' and id_Tipo_Empaque_Fk='" + idTipoEmpaqueFk + "'and  id_Bodega_Fk='" + idBodegaFk + "' and  ID_TIPO_CONVENIO_FK = '" + idTipoConvenio + "'");
 
             return query.getResultList();
         } catch (Exception ex) {

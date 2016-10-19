@@ -123,7 +123,11 @@ public class EjbEntradaMercanciaProducto implements NegocioEntradaMercanciaProdu
         System.out.println("Producto: " + producto.toString());
         try {
 
-            Query query = em.createNativeQuery("UPDATE ENTRADAMERCANCIAPRODUCTO SET ID_SUBPRODUCTO_FK =? ,ID_TIPO_EMPAQUE_FK=?,KILOS_TOTALES=?,CANTIDAD_EMPACAQUE=?,COMENTARIOS=?,ID_BODEGA_FK=?,ID_TIPO_CONVENIO_FK=?,CONVENIO=?,KILOSPROMPROD=? WHERE ID_EMP_PK=?");
+            Query query = em.createNativeQuery("UPDATE ENTRADAMERCANCIAPRODUCTO SET "
+                    + "ID_SUBPRODUCTO_FK =? ,ID_TIPO_EMPAQUE_FK=?,KILOS_TOTALES=?,"
+                    + "CANTIDAD_EMPACAQUE=?,COMENTARIOS=?,ID_BODEGA_FK=?,"
+                    + "ID_TIPO_CONVENIO_FK=?,CONVENIO=?,KILOSPROMPROD=? "
+                    + "WHERE ID_EMP_PK=?");
 
             query.setParameter(1, producto.getIdSubProductoFK());
             query.setParameter(2, producto.getIdTipoEmpaqueFK());

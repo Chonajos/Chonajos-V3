@@ -60,32 +60,31 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
             for (Object[] obj : lstObject) {
                 ExistenciaProducto expro = new ExistenciaProducto();
                 expro.setIdExistenciaProductoPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
-                expro.setIdEmFK(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
-                expro.setIdentificador(obj[2] == null ? "" : obj[2].toString());
-                expro.setNombreProducto(obj[3] == null ? "" : obj[3].toString());
-                expro.setNombreEmpaque(obj[4] == null ? "" : obj[4].toString());
-                expro.setCantidadPaquetes(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
-                expro.setKilosTotalesProducto(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
-                expro.setNombreTipoConvenio(obj[7] == null ? "" : obj[7].toString());
-                expro.setNombreProvedorCompleto(obj[8] == null ? "" : obj[8].toString());
-                expro.setNombreSucursal(obj[9] == null ? "" : obj[9].toString());
-                expro.setNombreBodega(obj[10] == null ? "" : obj[10].toString());
-                expro.setPrecioMinimo(obj[11] == null ? null : new BigDecimal(obj[11].toString()));
-                expro.setPrecioVenta(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
-                expro.setPrecioMaximo(obj[13] == null ? null : new BigDecimal(obj[13].toString()));
-                expro.setEstatusBloqueo(obj[14] == null ? false : (obj[14].toString().equals("0")));
-                expro.setIdSubProductoFK(obj[15] == null ? "" : obj[15].toString());
-                expro.setIdTipoEmpaqueFK(obj[16] == null ? null : new BigDecimal(obj[16].toString()));
-                expro.setIdBodegaFK(obj[17] == null ? null : new BigDecimal(obj[17].toString()));
-                expro.setConvenio(obj[18] == null ? null : new BigDecimal(obj[18].toString()));
-                expro.setCarroSucursal(obj[19] == null ? null : new BigDecimal(obj[19].toString()));
-                expro.setPrecioSinIteres(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
+                expro.setIdentificador(obj[1] == null ? "" : obj[1].toString());
+                expro.setNombreProducto(obj[2] == null ? "" : obj[2].toString());
+                expro.setNombreEmpaque(obj[3] == null ? "" : obj[3].toString());
+                expro.setCantidadPaquetes(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
+                expro.setKilosTotalesProducto(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
+                expro.setNombreTipoConvenio(obj[6] == null ? "" : obj[6].toString());
+                expro.setNombreProvedorCompleto(obj[7] == null ? "" : obj[7].toString());
+                expro.setNombreSucursal(obj[8] == null ? "" : obj[8].toString());
+                expro.setNombreBodega(obj[9] == null ? "" : obj[9].toString());
+                expro.setPrecioMinimo(obj[10] == null ? null : new BigDecimal(obj[10].toString()));
+                expro.setPrecioVenta(obj[11] == null ? null : new BigDecimal(obj[11].toString()));
+                expro.setPrecioMaximo(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
+                expro.setEstatusBloqueo(obj[13] == null ? false : (obj[13].toString().equals("0")));
+                expro.setIdSubProductoFK(obj[14] == null ? "" : obj[14].toString());
+                expro.setIdTipoEmpaqueFK(obj[15] == null ? null : new BigDecimal(obj[15].toString()));
+                expro.setIdBodegaFK(obj[16] == null ? null : new BigDecimal(obj[16].toString()));
+                expro.setConvenio(obj[17] == null ? null : new BigDecimal(obj[17].toString()));
+                expro.setCarroSucursal(obj[18] == null ? null : new BigDecimal(obj[18].toString()));
+                expro.setPrecioSinIteres(obj[19] == null ? null : new BigDecimal(obj[19].toString()));
                 expro.setIdEntradaMercanciaProductoFK(obj[20] == null ? null : new BigDecimal(obj[20].toString()));
                 expro.setComentarios(obj[21] == null ? null :  obj[21].toString());
-                expro.setIdEmFK(obj[22] == null ? null : new BigDecimal(obj[22].toString()));
-                expro.setIdTipoConvenio(obj[23] == null ? null : new BigDecimal(obj[23].toString()));
-                expro.setKilospromprod(obj[24] == null ? null : new BigDecimal(obj[24].toString()));
-                expro.setIdSucursal(obj[25] == null ? null : new BigDecimal(obj[25].toString()));
+                expro.setIdTipoConvenio(obj[22] == null ? null : new BigDecimal(obj[22].toString()));
+                expro.setKilospromprod(obj[23] == null ? null : new BigDecimal(obj[23].toString()));
+                expro.setIdSucursal(obj[24] == null ? null : new BigDecimal(obj[24].toString()));
+
 
                 
                 lista.add(expro);
@@ -100,27 +99,26 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
 
 
     @Override
-    public ArrayList<ExistenciaProducto> getExistenciaProductoRepetidos(BigDecimal idSucursal, String idSubproductoFk, BigDecimal idTipoEmpaqueFk, BigDecimal idBodegaFk, BigDecimal idProvedorFk, BigDecimal idEMFK, BigDecimal idTipoConvenio) {
-        System.out.println("service existencia "+idSucursal +" "+idSubproductoFk+" " +idTipoEmpaqueFk+" " +idBodegaFk+" " +idProvedorFk+" "+idEMFK +"  "+idTipoConvenio);
+    public ArrayList<ExistenciaProducto> getExistenciaProductoRepetidos(BigDecimal idSucursal, String idSubproductoFk, BigDecimal idTipoEmpaqueFk, BigDecimal idBodegaFk, BigDecimal idProvedorFk, BigDecimal idTipoConvenio) {
+        System.out.println("service existencia "+idSucursal +" "+idSubproductoFk+" " +idTipoEmpaqueFk+" " +idBodegaFk+" " +idProvedorFk+ "" +idTipoConvenio);
         getEjb();
 
         try {
             ArrayList<ExistenciaProducto> lista = new ArrayList<ExistenciaProducto>();
             System.out.println("SerivceNegocioExistencia: getExistenciaProductoRepetidos : " + idSucursal + " idProvedorFk: " + idProvedorFk);
-            List<Object[]> lstObject = ejb.getExistenciasRepetidas(idSucursal, idSubproductoFk, idTipoEmpaqueFk, idBodegaFk, idProvedorFk, idEMFK, idTipoConvenio);
+            List<Object[]> lstObject = ejb.getExistenciasRepetidas(idSucursal, idSubproductoFk, idTipoEmpaqueFk, idBodegaFk, idProvedorFk, idTipoConvenio);
             for (Object[] obj : lstObject) {
                 ExistenciaProducto expro = new ExistenciaProducto();
                 expro.setIdExistenciaProductoPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
-                expro.setIdEmFK(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
-                expro.setIdSubProductoFK(obj[2] == null ? "" : obj[2].toString());
-                expro.setIdTipoEmpaqueFK(obj[3] == null ? null : new BigDecimal(obj[3].toString()));
-                expro.setKilosTotalesProducto(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
-                expro.setCantidadPaquetes(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
-                expro.setComentarios(obj[6] == null ? "" : obj[6].toString());
-                expro.setIdBodegaFK(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
-                expro.setIdTipoConvenio(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
-                expro.setPrecio(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
-                expro.setKilospromprod(obj[10] == null ? null : new BigDecimal(obj[10].toString()));
+                expro.setIdSubProductoFK(obj[1] == null ? "" : obj[1].toString());
+                expro.setIdTipoEmpaqueFK(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
+                expro.setKilosTotalesProducto(obj[3] == null ? null : new BigDecimal(obj[3].toString()));
+                expro.setCantidadPaquetes(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
+                expro.setComentarios(obj[5] == null ? "" : obj[5].toString());
+                expro.setIdBodegaFK(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
+                expro.setIdTipoConvenio(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
+                expro.setPrecio(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
+                expro.setKilospromprod(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
 
                 lista.add(expro);
             }

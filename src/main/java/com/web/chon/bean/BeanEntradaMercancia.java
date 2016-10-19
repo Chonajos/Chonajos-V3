@@ -209,7 +209,6 @@ public class BeanEntradaMercancia implements Serializable {
                         if (ifaceEntradaMercanciaProducto.insertEntradaMercanciaProducto(producto) != 0) {
                             //BUSCAR SI YA EXISTE EN LA TABLA EXISTENCIA PRODUCTO.
                             ExistenciaProducto ep = new ExistenciaProducto();
-                            ep.setIdEmFK(producto.getIdEmFK());
                             ep.setIdSubProductoFK(producto.getIdSubProductoFK());
                             ep.setIdTipoEmpaqueFK(producto.getIdTipoEmpaqueFK());
                             ep.setKilosTotalesProducto(producto.getKilosTotalesProducto());
@@ -223,7 +222,7 @@ public class BeanEntradaMercancia implements Serializable {
                             ep.setIdProvedor(entrada_mercancia.getIdProvedorFK());
                             ep.setIdEntradaMercanciaProductoFK(new BigDecimal(idEnTMerPro));
                             
-                            existencia_repetida = ifaceNegocioExistencia.getExistenciaProductoRepetidos(entrada_mercancia.getIdSucursalFK(), producto.getIdSubProductoFK(), producto.getIdTipoEmpaqueFK(), producto.getIdBodegaFK(), entrada_mercancia.getIdProvedorFK(), entrada_mercancia.getIdEmPK(), producto.getIdTipoConvenio());
+                            existencia_repetida = ifaceNegocioExistencia.getExistenciaProductoRepetidos(entrada_mercancia.getIdSucursalFK(), producto.getIdSubProductoFK(), producto.getIdTipoEmpaqueFK(), producto.getIdBodegaFK(), entrada_mercancia.getIdProvedorFK(), producto.getIdTipoConvenio());
                             int bandera = 0;
                             if (existencia_repetida == null || existencia_repetida.isEmpty()) {
                                 

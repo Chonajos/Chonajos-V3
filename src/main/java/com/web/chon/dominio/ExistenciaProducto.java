@@ -16,7 +16,6 @@ public class ExistenciaProducto implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private BigDecimal idExistenciaProductoPk;
-    private BigDecimal idEmFK;
     private String idSubProductoFK;
     private BigDecimal idTipoEmpaqueFK;
     private BigDecimal cantidadPaquetes;
@@ -55,9 +54,16 @@ public class ExistenciaProducto implements Serializable {
     private BigDecimal kilosAjustar;
     private BigDecimal empaquesAjustar;
 
+    @Override
+    public String toString() {
+        return "ExistenciaProducto{" + "idExistenciaProductoPk=" + idExistenciaProductoPk + ", idSubProductoFK=" + idSubProductoFK + ", idTipoEmpaqueFK=" + idTipoEmpaqueFK + ", cantidadPaquetes=" + cantidadPaquetes + ", kilosTotalesProducto=" + kilosTotalesProducto + ", comentarios=" + comentarios + ", precio=" + precio + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + ", idTipoConvenio=" + idTipoConvenio + ", idBodegaFK=" + idBodegaFK + ", nombreTipoConvenio=" + nombreTipoConvenio + ", nombreBodega=" + nombreBodega + ", kilospromprod=" + kilospromprod + ", numeroMovimiento=" + numeroMovimiento + ", pesoTara=" + pesoTara + ", idSucursal=" + idSucursal + ", idProvedor=" + idProvedor + ", nombreProvedorCompleto=" + nombreProvedorCompleto + ", identificador=" + identificador + ", nombreSucursal=" + nombreSucursal + ", precioMinimo=" + precioMinimo + ", precioVenta=" + precioVenta + ", precioMaximo=" + precioMaximo + ", estatusBloqueo=" + estatusBloqueo + ", convenio=" + convenio + ", carroSucursal=" + carroSucursal + ", idEntradaMercanciaProductoFK=" + idEntradaMercanciaProductoFK + ", precioSinIteres=" + precioSinIteres + ", salidaEntrada=" + salidaEntrada + ", motivoAjuste=" + motivoAjuste + ", observaciones=" + observaciones + ", kilosAjustar=" + kilosAjustar + ", empaquesAjustar=" + empaquesAjustar + '}';
+    }
+
+    
+    
+    
     public void reset() {
         idExistenciaProductoPk = null;
-        idEmFK = null;
         idSubProductoFK = null;
         idTipoEmpaqueFK = null;
         cantidadPaquetes = null;
@@ -93,10 +99,7 @@ public class ExistenciaProducto implements Serializable {
         kilosAjustar = null;
     }
 
-    @Override
-    public String toString() {
-        return "ExistenciaProducto{" + "idExistenciaProductoPk=" + idExistenciaProductoPk + ", idEmFK=" + idEmFK + ", idSubProductoFK=" + idSubProductoFK + ", idTipoEmpaqueFK=" + idTipoEmpaqueFK + ", cantidadPaquetes=" + cantidadPaquetes + ", kilosTotalesProducto=" + kilosTotalesProducto + ", comentarios=" + comentarios + ", precio=" + precio + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + ", idTipoConvenio=" + idTipoConvenio + ", idBodegaFK=" + idBodegaFK + ", nombreTipoConvenio=" + nombreTipoConvenio + ", nombreBodega=" + nombreBodega + ", kilospromprod=" + kilospromprod + ", numeroMovimiento=" + numeroMovimiento + ", pesoTara=" + pesoTara + ", idSucursal=" + idSucursal + ", idProvedor=" + idProvedor + ", nombreProvedorCompleto=" + nombreProvedorCompleto + ", identificador=" + identificador + ", nombreSucursal=" + nombreSucursal + ", precioMinimo=" + precioMinimo + ", precioVenta=" + precioVenta + ", precioMaximo=" + precioMaximo + ", estatusBloqueo=" + estatusBloqueo + ", convenio=" + convenio + ", carroSucursal=" + carroSucursal + ", idEntradaMercanciaProductoFK=" + idEntradaMercanciaProductoFK + ", precioSinIteres=" + precioSinIteres + '}';
-    }
+    
 
     public BigDecimal getIdEntradaMercanciaProductoFK() {
         return idEntradaMercanciaProductoFK;
@@ -170,14 +173,7 @@ public class ExistenciaProducto implements Serializable {
         this.idExistenciaProductoPk = idExistenciaProductoPk;
     }
 
-    public BigDecimal getIdEmFK() {
-        return idEmFK;
-    }
-
-    public void setIdEmFK(BigDecimal idEmFK) {
-        this.idEmFK = idEmFK;
-    }
-
+  
     public String getIdSubProductoFK() {
         return idSubProductoFK;
     }
@@ -382,9 +378,8 @@ public class ExistenciaProducto implements Serializable {
     
     
 
-    public ExistenciaProducto(BigDecimal idExistenciaProductoPk, BigDecimal idEmFK, String idSubProductoFK, BigDecimal idTipoEmpaqueFK, BigDecimal cantidadPaquetes, BigDecimal kilosTotalesProducto, String comentarios, BigDecimal precio, String nombreProducto, String nombreEmpaque, BigDecimal idTipoConvenio, BigDecimal idBodegaFK, String nombreTipoConvenio, String nombreBodega, BigDecimal kilospromprod, int numeroMovimiento, BigDecimal pesoTara, BigDecimal idSucursal, BigDecimal idProvedor, String nombreProvedorCompleto, String identificador, String nombreSucursal, BigDecimal precioMinimo, BigDecimal precioVenta, BigDecimal precioMaximo, boolean estatusBloqueo, BigDecimal convenio, BigDecimal carroSucursal, BigDecimal idEntradaMercanciaProductoFK, BigDecimal precioSinIteres) {
+    public ExistenciaProducto(BigDecimal idExistenciaProductoPk, String idSubProductoFK, BigDecimal idTipoEmpaqueFK, BigDecimal cantidadPaquetes, BigDecimal kilosTotalesProducto, String comentarios, BigDecimal precio, String nombreProducto, String nombreEmpaque, BigDecimal idTipoConvenio, BigDecimal idBodegaFK, String nombreTipoConvenio, String nombreBodega, BigDecimal kilospromprod, int numeroMovimiento, BigDecimal pesoTara, BigDecimal idSucursal, BigDecimal idProvedor, String nombreProvedorCompleto, String identificador, String nombreSucursal, BigDecimal precioMinimo, BigDecimal precioVenta, BigDecimal precioMaximo, boolean estatusBloqueo, BigDecimal convenio, BigDecimal carroSucursal, BigDecimal idEntradaMercanciaProductoFK, BigDecimal precioSinIteres) {
         this.idExistenciaProductoPk = idExistenciaProductoPk;
-        this.idEmFK = idEmFK;
         this.idSubProductoFK = idSubProductoFK;
         this.idTipoEmpaqueFK = idTipoEmpaqueFK;
         this.cantidadPaquetes = cantidadPaquetes;
