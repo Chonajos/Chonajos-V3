@@ -45,25 +45,25 @@ public class ServiceCatCliente implements IfaceCatCliente {
                 String auxiliar_sexo = obj[6] == null ? "M" : obj[6].toString();
                 cliente.setSexo(auxiliar_sexo.charAt(0));
                 cliente.setFecha_nacimiento((Date) obj[7]);
-                cliente.setTel_movil(Integer.parseInt(obj[8].toString()));
-                cliente.setTel_fijo(Integer.parseInt(obj[9].toString()));
-                cliente.setExt(Integer.parseInt(obj[10].toString()));
-                cliente.setNum_int(Integer.parseInt(obj[11].toString()));
-                cliente.setNum_ext(Integer.parseInt(obj[12].toString()));
-                cliente.setClavecelular(Integer.parseInt(obj[13].toString()));
-                cliente.setLadacelular(Integer.parseInt(obj[14] == null ? "0" : obj[14].toString()));
-                cliente.setID_CP(Integer.parseInt(obj[15] == null ? "100000" : obj[15].toString()));//
+                cliente.setTel_movil(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
+                cliente.setTel_fijo(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
+                cliente.setExt(obj[10] == null ? null : new BigDecimal(obj[10].toString()));
+                cliente.setNum_int(obj[11] == null ? null : new BigDecimal(obj[11].toString()));
+                cliente.setNum_ext(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
+                cliente.setClavecelular(obj[13] == null ? null : new BigDecimal(obj[13].toString()));
+                cliente.setLadacelular(obj[14] == null ? null : new BigDecimal(obj[14].toString()));
+                cliente.setID_CP(obj[15] == null ? null : new BigDecimal(obj[15].toString()));//
                 cliente.setCalleFiscal(obj[16] == null ? "" : obj[16].toString());
-                cliente.setNum_int_fiscal(Integer.parseInt(obj[17] == null ? "0" : obj[17].toString()));
-                cliente.setNum_ext_fiscal(Integer.parseInt(obj[18] == null ? "0" : obj[18].toString()));
-                cliente.setID_CP_FISCAL(Integer.parseInt(obj[19] == null ? "100000" : obj[19].toString()));
+                cliente.setNum_int_fiscal(obj[17] == null ? new BigDecimal(0) : new BigDecimal(obj[17].toString()));
+                cliente.setNum_ext_fiscal(obj[18] == null ? new BigDecimal(0) : new BigDecimal(obj[18].toString()));
+                cliente.setID_CP_FISCAL(obj[19] == null ? new BigDecimal(100000) : new BigDecimal(obj[19].toString()));
                 cliente.setNextel(obj[20] == null ? "" : obj[20].toString());
                 cliente.setRazon_social(obj[21] == null ? "" : obj[21].toString());
                 cliente.setRfcFiscal(obj[22] == null ? "" : obj[22].toString());
-                cliente.setLadaoficina(obj[23] == null ? 0 : Integer.parseInt(obj[23].toString()));
-                cliente.setClaveoficina(obj[24] == null ? 0 : Integer.parseInt(obj[24].toString()));
+                cliente.setLadaoficina(obj[23] == null ? null : new BigDecimal(obj[23].toString()));
+                cliente.setClaveoficina(obj[24] == null ? new BigDecimal(0) : new BigDecimal(obj[24].toString()));
                 cliente.setNextelclave(obj[25] == null ? "" : obj[25].toString());
-                cliente.setStatus_cliente(Integer.parseInt(obj[26] == null ? "0" : obj[26].toString()));
+                cliente.setStatus_cliente(obj[26] == null ? new BigDecimal(0) : new BigDecimal(obj[26].toString()));
                 cliente.setStatusClienteBoolean(obj[26].toString().equals("1"));
                 cliente.setTipoPersona(obj[30] == null ? "1" : obj[30].toString());
 //Hasta aqui terminan los datos de la tabla clientes.
@@ -71,7 +71,7 @@ public class ServiceCatCliente implements IfaceCatCliente {
                 cliente.setFecha_alta((Date) obj[27]);
                 cliente.setDiasCredito(obj[28] == null ? null : new BigDecimal(obj[28].toString()));
                 cliente.setLimiteCredito(obj[29] == null ? null : new BigDecimal(obj[29].toString()));
-                cliente.setEstado(obj[31] == null ? "" : (obj[31].toString()));
+                cliente.setEstado_id(obj[31] == null ? "" : (obj[31].toString()));
                 //agregamos fecha de alta.
                 cliente.setNombreEstado(obj[32] == null ? "" : (obj[32].toString()));
                 cliente.setEstadoFiscal(obj[33] == null ? "" : (obj[33].toString()));
@@ -280,32 +280,32 @@ public class ServiceCatCliente implements IfaceCatCliente {
                 String auxiliar_sexo = obj[6] == null ? "M" : obj[6].toString();
                 cliente.setSexo(auxiliar_sexo.charAt(0));
                 cliente.setFecha_nacimiento((Date) obj[7]);
-                cliente.setTel_movil(Integer.parseInt(obj[8].toString()));
-                cliente.setTel_fijo(Integer.parseInt(obj[9].toString()));
-                cliente.setExt(Integer.parseInt(obj[10].toString()));
-                cliente.setNum_int(Integer.parseInt(obj[11].toString()));
-                cliente.setNum_ext(Integer.parseInt(obj[12].toString()));
-                cliente.setClavecelular(Integer.parseInt(obj[13].toString()));
-                cliente.setLadacelular(Integer.parseInt(obj[14] == null ? "0" : obj[14].toString()));
-                cliente.setID_CP(Integer.parseInt(obj[15] == null ? "100000" : obj[15].toString()));//
+                cliente.setTel_movil(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
+                cliente.setTel_fijo(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
+                cliente.setExt(obj[10] == null ? null : new BigDecimal(obj[10].toString()));
+                cliente.setNum_int(obj[11] == null ? null : new BigDecimal(obj[11].toString()));
+                cliente.setNum_ext(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
+                cliente.setClavecelular(obj[13] == null ? null : new BigDecimal(obj[13].toString()));
+                cliente.setLadacelular(obj[14] == null ? null : new BigDecimal(obj[14].toString()));
+                cliente.setID_CP(obj[15] == null ? new BigDecimal(100000): new BigDecimal(obj[15].toString()));//
                 cliente.setCalleFiscal(obj[16] == null ? "" : obj[16].toString());
-                cliente.setNum_int_fiscal(Integer.parseInt(obj[17] == null ? "0" : obj[17].toString()));
-                cliente.setNum_ext_fiscal(Integer.parseInt(obj[18] == null ? "0" : obj[18].toString()));
-                cliente.setID_CP_FISCAL(Integer.parseInt(obj[19] == null ? "100000" : obj[19].toString()));
+                cliente.setNum_int_fiscal(obj[17] == null ? null : new BigDecimal(obj[17].toString()));
+                cliente.setNum_ext_fiscal(obj[18] == null ? null : new BigDecimal(obj[18].toString()));
+                cliente.setID_CP_FISCAL(obj[19] == null ? new BigDecimal(100000) : new BigDecimal(obj[19].toString()));
                 cliente.setNextel(obj[20] == null ? "" : obj[20].toString());
                 cliente.setRazon_social(obj[21] == null ? "" : obj[21].toString());
                 cliente.setRfcFiscal(obj[22] == null ? "" : obj[22].toString());
-                cliente.setLadaoficina(obj[23] == null ? 0 : Integer.parseInt(obj[23].toString()));
-                cliente.setClaveoficina(obj[24] == null ? 0 : Integer.parseInt(obj[24].toString()));
+                cliente.setLadaoficina(obj[23] == null ? null : new BigDecimal(obj[23].toString()));
+                cliente.setClaveoficina(obj[24] == null ? null : new BigDecimal(obj[24].toString()));
                 cliente.setNextelclave(obj[25] == null ? "" : obj[25].toString());
-                cliente.setStatus_cliente(Integer.parseInt(obj[26] == null ? "0" : obj[26].toString()));
+                //cliente.setStatus_cliente(Integer.parseInt(obj[26] == null ? "0" : obj[26].toString()));
                 cliente.setStatusClienteBoolean(obj[26].toString().equals("1"));
 //Hasta aqui terminan los datos de la tabla clientes.
                 //Los siguientes datos son para obtener las direcciones y los correos.
                 cliente.setFecha_alta((Date) obj[27]);
                 cliente.setDiasCredito(obj[28] == null ? null : new BigDecimal(obj[28].toString()));
                 cliente.setLimiteCredito(obj[29] == null ? null : new BigDecimal(obj[29].toString()));
-                cliente.setEstado(obj[30] == null ? "" : (obj[30].toString()));
+                cliente.setEstado_id(obj[30] == null ? "" : (obj[30].toString()));
                 //agregamos fecha de alta.
                 cliente.setNombreEstado(obj[31] == null ? "" : (obj[31].toString()));
                 cliente.setEstadoFiscal(obj[32] == null ? "" : (obj[32].toString()));

@@ -146,7 +146,7 @@ public class BeanCatCliente implements BeanSimple {
 
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "El cliente :" + data.getNombre() + " ya está en baja."));
             } else {
-                data.setStatus_cliente(2);
+                data.setStatus_cliente(new BigDecimal(2));
                 ifaceCatCliente.updateCliente(data);
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "El cliente se ha dado de baja correctamente"));
             }
@@ -272,7 +272,7 @@ public class BeanCatCliente implements BeanSimple {
         setViewEstate("searchById");
         permissionToWrite = false;
         permissionToEdit = true;
-        if (data.getStatus_cliente() == 2) {
+        if (data.getStatus_cliente().intValue() == 2) {
             permissionToWriteStatus = false;
         } else {
             permissionToWriteStatus = true;
@@ -309,8 +309,8 @@ public class BeanCatCliente implements BeanSimple {
     }
 
     public void buscaMunicipios() {
-        System.out.println("Error: " + data.getEstado());
-        lista_municipios = ifaceCatMunicipio.getMunicipios(Integer.parseInt(data.getEstado()));
+        System.out.println("Error: " + data.getEstado_id());
+        lista_municipios = ifaceCatMunicipio.getMunicipios(Integer.parseInt(data.getEstado_id()));
         buscaColonias();
     }
 
@@ -327,18 +327,18 @@ public class BeanCatCliente implements BeanSimple {
         if (lista_codigos_postales.isEmpty()) {
 
             lista_entidades = ifaceCatEntidad.getEntidades();
-            lista_municipios = ifaceCatMunicipio.getMunicipios(Integer.parseInt(data.getEstado()));
-            data.setEstado("-1");
+            lista_municipios = ifaceCatMunicipio.getMunicipios(Integer.parseInt(data.getEstado_id()));
+            data.setEstado_id("-1");
             data.setMunicipio("-1");
             lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalById("");
             data.setCodigoPostal("");
             //data.setID_CP(-1);
         } else {
 
-            data.setEstado(Integer.toString(lista_codigos_postales.get(0).getIdEntidad()));
+            data.setEstado_id(Integer.toString(lista_codigos_postales.get(0).getIdEntidad()));
             data.setMunicipio(Integer.toString(lista_codigos_postales.get(0).getIdMunicipio()));
-            data.setID_CP(lista_codigos_postales.get(0).getId_cp());
-            lista_municipios = ifaceCatMunicipio.getMunicipios(Integer.parseInt(data.getEstado()));
+            data.setID_CP(new BigDecimal(lista_codigos_postales.get(0).getId_cp()));
+            lista_municipios = ifaceCatMunicipio.getMunicipios(Integer.parseInt(data.getEstado_id()));
         }
 
     }
@@ -361,7 +361,7 @@ public class BeanCatCliente implements BeanSimple {
             System.out.println("Lista llena");
             data.setEstadoFiscal(Integer.toString(lista_codigos_postales_2.get(0).getIdEntidad()));
             data.setMunicipioFiscal(Integer.toString(lista_codigos_postales_2.get(0).getIdMunicipio()));
-            data.setID_CP_FISCAL(lista_codigos_postales_2.get(0).getId_cp());
+            data.setID_CP_FISCAL(new BigDecimal(lista_codigos_postales_2.get(0).getId_cp()));
             lista_municipios_2 = ifaceCatMunicipio.getMunicipios(Integer.parseInt(data.getEstadoFiscal()));
         }
 
@@ -383,7 +383,7 @@ public class BeanCatCliente implements BeanSimple {
 
     public void ActualizaCodigoPostal() {
         for (int i = 0; i < lista_codigos_postales.size(); i++) {
-            if (lista_codigos_postales.get(i).getId_cp() == data.getID_CP()) {
+            if (lista_codigos_postales.get(i).getId_cp() == data.getID_CP().intValue()) {
                 data.setCodigoPostal(lista_codigos_postales.get(i).getNumeropostal());
             }
         }

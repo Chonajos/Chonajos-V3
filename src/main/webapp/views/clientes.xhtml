@@ -219,7 +219,7 @@
                             </div>
                             <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12">
                                 <p:outputLabel class="col-lg-12 col-md-2 col-sm-3 col-xs-12"  for="txtEstado1" value ="Estado" /> 
-                                <h:selectOneMenu  id="txtEstado1" class=" col-lg-12 col-md-2 col-sm-3 col-xs-12" value="#{beanCatCliente.data.estado}" disabled="#{beanCatCliente.permissionToWrite}">
+                                <h:selectOneMenu  id="txtEstado1" class=" col-lg-12 col-md-2 col-sm-3 col-xs-12" value="#{beanCatCliente.data.estado_id}" disabled="#{beanCatCliente.permissionToWrite}">
                                     <f:selectItem itemLabel="Selecciona un Estado" itemValue="" />
                                     <f:selectItems value="#{beanCatCliente.lista_entidades}" var="estadito" itemLabel="#{estadito.nombreEntidad}" itemValue="#{estadito.idEntidadPk}"/>
                                     <p:ajax event="change" update=":formCliente:txtMunicipio1 " listener="#{beanCatCliente.buscaMunicipios()}" />
