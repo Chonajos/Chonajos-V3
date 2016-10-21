@@ -39,12 +39,15 @@ public class OperacionesCaja implements Serializable {
     private BigDecimal idCuentaDestinoFk;
     private String nombreBanco;
     private BigDecimal cuentaBanco;
+    private BigDecimal idSucursalFk;
+    private String nombreSucursal;
 
     @Override
     public String toString() {
-        return "OperacionesCaja{" + "idOperacionesCajaPk=" + idOperacionesCajaPk + ", idCorteCajaFk=" + idCorteCajaFk + ", idCajaFk=" + idCajaFk + ", idCajaDestinoFk=" + idCajaDestinoFk + ", idConceptoFk=" + idConceptoFk + ", fecha=" + fecha + ", idStatusFk=" + idStatusFk + ", idUserFk=" + idUserFk + ", comentarios=" + comentarios + ", monto=" + monto + ", nombreUsuario=" + nombreUsuario + ", nombreCaja=" + nombreCaja + ", nombreCajaDestino=" + nombreCajaDestino + ", nombreStatus=" + nombreStatus + ", nombreConcepto=" + nombreConcepto + ", nombreOperacion=" + nombreOperacion + ", idTipoOperacionFk=" + idTipoOperacionFk + ", entradaSalida=" + entradaSalida + ", nombreEntradaSalida=" + nombreEntradaSalida + ", numero=" + numero + '}';
+        return "OperacionesCaja{" + "idOperacionesCajaPk=" + idOperacionesCajaPk + ", idCorteCajaFk=" + idCorteCajaFk + ", idCajaFk=" + idCajaFk + ", idCajaDestinoFk=" + idCajaDestinoFk + ", idConceptoFk=" + idConceptoFk + ", fecha=" + fecha + ", idStatusFk=" + idStatusFk + ", idUserFk=" + idUserFk + ", comentarios=" + comentarios + ", monto=" + monto + ", nombreUsuario=" + nombreUsuario + ", nombreCaja=" + nombreCaja + ", nombreCajaDestino=" + nombreCajaDestino + ", nombreStatus=" + nombreStatus + ", nombreConcepto=" + nombreConcepto + ", nombreOperacion=" + nombreOperacion + ", idTipoOperacionFk=" + idTipoOperacionFk + ", entradaSalida=" + entradaSalida + ", nombreEntradaSalida=" + nombreEntradaSalida + ", numero=" + numero + ", idCuentaDestinoFk=" + idCuentaDestinoFk + ", nombreBanco=" + nombreBanco + ", cuentaBanco=" + cuentaBanco + ", idSucursalFk=" + idSucursalFk + '}';
     }
 
+   
     
     
     public void reset() {
@@ -68,8 +71,19 @@ public class OperacionesCaja implements Serializable {
         idTipoOperacionFk=null;
         nombreEntradaSalida=null;
         idCuentaDestinoFk=null;
+        idSucursalFk = null;
+        nombreSucursal = null;
         
     }
+
+    public String getNombreSucursal() {
+        return nombreSucursal;
+    }
+
+    public void setNombreSucursal(String nombreSucursal) {
+        this.nombreSucursal = nombreSucursal;
+    }
+    
 
     public String getNombreBanco() {
         return nombreBanco;
@@ -264,4 +278,13 @@ public class OperacionesCaja implements Serializable {
         this.monto = monto;
     }
 
+    public BigDecimal getIdSucursalFk() {
+        return idSucursalFk;
+    }
+
+    public void setIdSucursalFk(BigDecimal idSucursalFk) {
+        this.idSucursalFk = idSucursalFk;
+    }
+
+    
 }

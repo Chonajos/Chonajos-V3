@@ -72,13 +72,16 @@ public class BeanPagoServicios implements Serializable {
     private BigDecimal totalSalidas;
     private static final BigDecimal entrada = new BigDecimal(1);
     private static final BigDecimal salida = new BigDecimal(2);
+    private BigDecimal idSucursalFk;
     //--Variables para Verificar Maximo en Caja --//
 
     @PostConstruct
-    public void init() {
+    public void init() 
+    {
         usuario = context.getUsuarioAutenticado();
         setTitle("Pago de Servicios");
         setViewEstate("init");
+        idSucursalFk = new BigDecimal(1);
         listaConceptos = ifaceConceptos.getConceptosByTipoOperacion(new BigDecimal(1));
         caja = new Caja();
         caja = ifaceCaja.getCajaByIdUsuarioPk(usuario.getIdUsuario());
@@ -147,6 +150,7 @@ public class BeanPagoServicios implements Serializable {
             opcaja.setMonto(totalServicio);
             opcaja.setComentarios(comentarios);
             opcaja.setIdConceptoFk(idConceptoBean);
+            opcaja.setIdSucursalFk(idSucursalFk);
 
             if (caja.getIdCajaPk() != null) {
                 if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
@@ -244,4 +248,45 @@ public class BeanPagoServicios implements Serializable {
         this.comentarios = comentarios;
     }
 
+    public BigDecimal getSaldoAnterior() {
+        return saldoAnterior;
+    }
+
+    public void setSaldoAnterior(BigDecimal saldoAnterior) {
+        this.saldoAnterior = saldoAnterior;
+    }
+
+    public BigDecimal getNuevoSaldo() {
+        return nuevoSaldo;
+    }
+
+    public void setNuevoSaldo(BigDecimal nuevoSaldo) {
+        this.nuevoSaldo = nuevoSaldo;
+    }
+
+    public BigDecimal getTotalEntradas() {
+        return totalEntradas;
+    }
+
+    public void setTotalEntradas(BigDecimal totalEntradas) {
+        this.totalEntradas = totalEntradas;
+    }
+
+    public BigDecimal getTotalSalidas() {
+        return totalSalidas;
+    }
+
+    public void setTotalSalidas(BigDecimal totalSalidas) {
+        this.totalSalidas = totalSalidas;
+    }
+
+    public BigDecimal getIdSucursalFk() {
+        return idSucursalFk;
+    }
+
+    public void setIdSucursalFk(BigDecimal idSucursalFk) {
+        this.idSucursalFk = idSucursalFk;
+    }
+
+    
 }

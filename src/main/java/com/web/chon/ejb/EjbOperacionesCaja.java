@@ -43,7 +43,7 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
         System.out.println("=================================================ejb insert" + es.toString());
 
         try {
-            Query query = em.createNativeQuery("INSERT INTO OPERACIONES_CAJA (ID_OPERACIONES_CAJA_PK,ID_CORTE_CAJA_FK,ID_CAJA_FK,ID_CAJA_DESTINO_FK,ID_CONCEPTO_FK,FECHA,ID_STATUS_FK,ID_USER_FK,COMENTARIOS,MONTO,E_S,ID_CUENTA_DESTINO_FK) values(?,?,?,?,?,sysdate,?,?,?,?,?,?)");
+            Query query = em.createNativeQuery("INSERT INTO OPERACIONES_CAJA (ID_OPERACIONES_CAJA_PK,ID_CORTE_CAJA_FK,ID_CAJA_FK,ID_CAJA_DESTINO_FK,ID_CONCEPTO_FK,FECHA,ID_STATUS_FK,ID_USER_FK,COMENTARIOS,MONTO,E_S,ID_CUENTA_DESTINO_FK,ID_SUCURSAL_FK) values(?,?,?,?,?,sysdate,?,?,?,?,?,?,?)");
             query.setParameter(1, es.getIdOperacionesCajaPk());
             query.setParameter(2, es.getIdCorteCajaFk());
             query.setParameter(3, es.getIdCajaFk());
@@ -55,6 +55,7 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
             query.setParameter(9, es.getMonto());
             query.setParameter(10, es.getEntradaSalida());
             query.setParameter(11, es.getIdCuentaDestinoFk());
+            query.setParameter(12, es.getIdSucursalFk());
             return query.executeUpdate();
 
         } catch (Exception ex) {
@@ -97,7 +98,7 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
     }
 
     @Override
-    public List<Object[]> getOperacionesBy(BigDecimal idCorteCajaFk, BigDecimal idCajaFk, BigDecimal idCajaDestinoFk, BigDecimal idConceptoFk, String fechaInicio, String fechaFin, BigDecimal idStatusFk, BigDecimal idUserFk,BigDecimal idCorte) {
+    public List<Object[]> getOperacionesBy(BigDecimal idCorteCajaFk, BigDecimal idCajaFk, BigDecimal idCajaDestinoFk, BigDecimal idConceptoFk, String fechaInicio, String fechaFin, BigDecimal idStatusFk, BigDecimal idUserFk, BigDecimal idCorte) {
         StringBuffer cadena = new StringBuffer("select opc.*,cj.NOMBRE,con.NOMBRE "
                 + "as concepto,tio.NOMBRE as Operacion,u.NOMBRE_USUARIO from OPERACIONES_CAJA opc\n"
                 + "inner join caja cj on cj.ID_CAJA_PK = opc.ID_CAJA_FK\n"
@@ -105,8 +106,8 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
                 + "inner join TIPOS_OPERACION tio on tio.ID_TIPO_OPERACION_PK = con.ID_TIPO_OPERACION_FK\n"
                 + "inner join USUARIO u on u.ID_USUARIO_PK = opc.ID_USER_FK\n"
                 + "WHERE opc.ID_CAJA_FK = " + idCajaFk + "\n"
-                + "and opc.ID_USER_FK= " + idUserFk + " and TO_DATE(TO_CHAR(opc.FECHA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + fechaInicio + "' AND '" + fechaFin+ "'");
-        
+                + "and opc.ID_USER_FK= " + idUserFk + " and TO_DATE(TO_CHAR(opc.FECHA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "'");
+
 //        if (idCorte.intValue()==1) 
 //        {
 //            cadena.append(" and opc.ID_CORTE_CAJA_FK is null ");
@@ -115,7 +116,6 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
 //             cadena.append(" and opc.ID_CORTE_CAJA_FK is not null ");
 //        }
 //        System.out.println("Cadena: "+cadena);
-        
         Query query;
         query = em.createNativeQuery(cadena.toString());
         return query.getResultList();
@@ -227,13 +227,32 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
 
     @Override
     public List<Object[]> getResponsables(BigDecimal idCajaFk) {
-        Query query = em.createNativeQuery("select  distinct opc.ID_USER_FK,(u.NOMBRE_USUARIO||' '||u.APATERNO_USUARIO||' '||u.AMATERNO_USUARIO) AS nombreCompleto\n" +
-"from operaciones_caja opc\n" +
-"inner join USUARIO u on u.ID_USUARIO_PK = opc.ID_USER_FK\n" +
-"where opc.ID_CAJA_FK=?");
+        Query query = em.createNativeQuery("select  distinct opc.ID_USER_FK,(u.NOMBRE_USUARIO||' '||u.APATERNO_USUARIO||' '||u.AMATERNO_USUARIO) AS nombreCompleto\n"
+                + "from operaciones_caja opc\n"
+                + "inner join USUARIO u on u.ID_USUARIO_PK = opc.ID_USER_FK\n"
+                + "where opc.ID_CAJA_FK=?");
         query.setParameter(1, idCajaFk);
         return query.getResultList();
 
+    }
+
+    @Override
+    public List<Object[]> getDetalles(BigDecimal idCajaFk, BigDecimal idUserFk, BigDecimal entrada_salida, BigDecimal idStatusFk) {
+        Query query = em.createNativeQuery("select opc.ID_CONCEPTO_FK,con.NOMBRE, opc.ID_SUCURSAL_FK,sucu.NOMBRE_SUCURSAL,sum(opc.MONTO) as monto from OPERACIONES_CAJA opc\n" +
+"inner join conceptos con on con.ID_CONCEPTOS_PK = opc.ID_CONCEPTO_FK\n" +
+"inner join SUCURSAL sucu on sucu.ID_SUCURSAL_PK = opc.ID_SUCURSAL_FK\n" +
+"where opc.E_S = ? and opc.ID_STATUS_FK = ? and opc.ID_CAJA_FK = ? and opc.ID_USER_FK = ? and opc.ID_CORTE_CAJA_FK is null\n" +
+"group by opc.ID_CONCEPTO_FK,con.NOMBRE,opc.ID_SUCURSAL_FK,sucu.NOMBRE_SUCURSAL");
+        System.out.println("===========Consulta=========");
+        System.out.println(query);
+        System.out.println("Variables: " + "Caja: " + idCajaFk + " User: " + idUserFk +" E/S: "+entrada_salida + " Status: "+idStatusFk);
+        query.setParameter(1, entrada_salida);
+        query.setParameter(2, idStatusFk);
+        query.setParameter(3, idCajaFk);
+        query.setParameter(4, idUserFk);
+        
+        return query.getResultList();
+    
     }
 
 }

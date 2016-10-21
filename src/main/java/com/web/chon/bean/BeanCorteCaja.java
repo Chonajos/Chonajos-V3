@@ -45,9 +45,12 @@ public class BeanCorteCaja implements Serializable {
     private ArrayList<TipoOperacion> lstOperacionesEntrada;
     private ArrayList<TipoOperacion> lstOperacionesSalida;
     private ArrayList<OperacionesCaja> listaOperaciones;
+    private ArrayList<OperacionesCaja> listaDetalleEntradas;
+    private ArrayList<OperacionesCaja> listaDetalleSalidas;
 
     private ArrayList<OperacionesCaja> listaChequesEntrada;
     private ArrayList<OperacionesCaja> listaChequesSalida;
+    
 
     private UsuarioDominio usuario;
     private Caja caja;
@@ -58,8 +61,17 @@ public class BeanCorteCaja implements Serializable {
 
     private static final BigDecimal entrada = new BigDecimal(1);
     private static final BigDecimal salida = new BigDecimal(2);
+    private static final BigDecimal statusAplicado = new BigDecimal(1);
+    private static final BigDecimal statusPendiente = new BigDecimal(2);
+    private static final BigDecimal statusRechazado = new BigDecimal(3);
+    private static final BigDecimal cero = new BigDecimal(0);
+    
     private BigDecimal saldoAnterior;
+    private BigDecimal saldoAnteriorCheques;
+    private BigDecimal saldoAnteriorCuentas;
     private BigDecimal nuevoSaldo;
+    private BigDecimal nuevoSaldoCheques;
+    private BigDecimal nuevoSaldoCuentas;
     private BigDecimal totalEntradas;
     private BigDecimal totalSalidas;
     private BigDecimal totalChequesEntradas;
@@ -74,12 +86,18 @@ public class BeanCorteCaja implements Serializable {
         corteAnterior = new CorteCaja();
 
         cj = new CorteCaja();
-        totalEntradas = new BigDecimal(0);
-        totalSalidas = new BigDecimal(0);
-        saldoAnterior = new BigDecimal(0);
-        nuevoSaldo = new BigDecimal(0);
-        totalChequesEntradas = new BigDecimal(0);
-        totalChequesSalidas = new BigDecimal(0);
+        totalEntradas = cero;
+        totalSalidas = cero;
+        saldoAnterior = cero;
+        nuevoSaldo = cero;
+        saldoAnteriorCheques = cero;
+        totalChequesEntradas = cero;
+        totalChequesSalidas =cero;
+        nuevoSaldoCuentas = cero;
+        nuevoSaldoCheques = cero;
+        saldoAnteriorCuentas = cero;
+        totalChequesEntradas = cero;
+        totalChequesSalidas = cero;
         caja = ifaceCaja.getCajaByIdUsuarioPk(usuario.getIdUsuario());
         corteAnterior = ifaceCorteCaja.getLastCorteByCaja(caja.getIdCajaPk());
         listaChequesEntrada = new ArrayList<OperacionesCaja>();
@@ -89,6 +107,11 @@ public class BeanCorteCaja implements Serializable {
         lstOperacionesSalida = new ArrayList<TipoOperacion>();
         lstOperacionesEntrada = ifaceOperacionesCaja.getOperacionesCorteBy(caja.getIdCajaPk(), caja.getIdUsuarioFK(), entrada);
         lstOperacionesSalida = ifaceOperacionesCaja.getOperacionesCorteBy(caja.getIdCajaPk(), caja.getIdUsuarioFK(), salida);
+        
+        
+        
+       
+        
         getsumaEntradas();
         getsumaSalidas();
          
@@ -99,6 +122,10 @@ public class BeanCorteCaja implements Serializable {
         nuevoSaldo = totalEntradas.subtract(totalSalidas, MathContext.UNLIMITED);
         nuevoSaldo = nuevoSaldo.add(saldoAnterior, MathContext.UNLIMITED);
 
+    }
+    public void changeView()
+    {
+        setViewEstate("init");
     }
 
     public void reload() {
@@ -139,6 +166,11 @@ public class BeanCorteCaja implements Serializable {
         for (OperacionesCaja t : listaChequesSalida) {
             totalSalidas = totalSalidas.add(t.getMonto(), MathContext.UNLIMITED);
         }
+    }
+    public void verDetalle(){
+        listaDetalleEntradas = ifaceOperacionesCaja.getDetalles(caja.getIdCajaPk(), caja.getIdUsuarioFK(), entrada, statusAplicado);
+        listaDetalleSalidas = ifaceOperacionesCaja.getDetalles(caja.getIdCajaPk(), caja.getIdUsuarioFK(), salida, statusAplicado);
+        setViewEstate("second");
     }
 
     public void generarCorte() {
@@ -312,5 +344,55 @@ public class BeanCorteCaja implements Serializable {
         this.totalChequesSalidas = totalChequesSalidas;
     }
 
+    public ArrayList<OperacionesCaja> getListaDetalleEntradas() {
+        return listaDetalleEntradas;
+    }
+
+    public void setListaDetalleEntradas(ArrayList<OperacionesCaja> listaDetalleEntradas) {
+        this.listaDetalleEntradas = listaDetalleEntradas;
+    }
+
+    public ArrayList<OperacionesCaja> getListaDetalleSalidas() {
+        return listaDetalleSalidas;
+    }
+
+    public void setListaDetalleSalidas(ArrayList<OperacionesCaja> listaDetalleSalidas) {
+        this.listaDetalleSalidas = listaDetalleSalidas;
+    }
+
+    public BigDecimal getSaldoAnteriorCheques() {
+        return saldoAnteriorCheques;
+    }
+
+    public void setSaldoAnteriorCheques(BigDecimal saldoAnteriorCheques) {
+        this.saldoAnteriorCheques = saldoAnteriorCheques;
+    }
+
+    public BigDecimal getSaldoAnteriorCuentas() {
+        return saldoAnteriorCuentas;
+    }
+
+    public void setSaldoAnteriorCuentas(BigDecimal saldoAnteriorCuentas) {
+        this.saldoAnteriorCuentas = saldoAnteriorCuentas;
+    }
+
+    public BigDecimal getNuevoSaldoCheques() {
+        return nuevoSaldoCheques;
+    }
+
+    public void setNuevoSaldoCheques(BigDecimal nuevoSaldoCheques) {
+        this.nuevoSaldoCheques = nuevoSaldoCheques;
+    }
+
+    public BigDecimal getNuevoSaldoCuentas() {
+        return nuevoSaldoCuentas;
+    }
+
+    public void setNuevoSaldoCuentas(BigDecimal nuevoSaldoCuentas) {
+        this.nuevoSaldoCuentas = nuevoSaldoCuentas;
+    }
+
+   
     
+     
 }

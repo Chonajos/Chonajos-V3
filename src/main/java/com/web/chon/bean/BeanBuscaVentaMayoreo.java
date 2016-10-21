@@ -3,6 +3,7 @@ package com.web.chon.bean;
 import com.web.chon.dominio.Caja;
 import com.web.chon.dominio.CuentaBancaria;
 import com.web.chon.dominio.OperacionesCaja;
+import com.web.chon.dominio.TipoAbono;
 import com.web.chon.dominio.Usuario;
 import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.dominio.VentaMayoreo;
@@ -98,15 +99,34 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
 
     private static final BigDecimal entradaSalida = new BigDecimal(1);
     private static final BigDecimal statusOperacion = new BigDecimal(1);
-    private static final BigDecimal concepto = new BigDecimal(9);
+    //private static final BigDecimal concepto = new BigDecimal(9);
+    private static final BigDecimal conceptoMayoreoEfectivo = new BigDecimal(9);
+    private static final BigDecimal conceptoMayoreoCheques = new BigDecimal(27);
+    private static final BigDecimal conceptoMayoreoDeposito = new BigDecimal(28);
+    private static final BigDecimal conceptoMayoreoTransferencia = new BigDecimal(29);
 
     //-------------- Variables para Registrar Pago ----------//
     private BigDecimal idTipoPagoFk;
     private BigDecimal folioVenta;
-
+    private ArrayList<TipoAbono> lstTipoAbonos;
+    private String viewCheque;
+    private BigDecimal montoAbono;
+    private BigDecimal numeroCheque;
+    private String librador;
+    private Date fechaCobro;
+    private String banco;
+    private String factura;
+    private String conceptoTransferencia;
+    private String referencia;
+    private Date fechaTransferencia;
+    private BigDecimal idCuentaDestinoFk;
+    private BigDecimal recibi;
+    
     //-------------- Variables para Registrar Pago ----------//
     @PostConstruct
     public void init() {
+        cambio = new BigDecimal(0);
+        recibido = new BigDecimal(0);
         FacesContext contexts = FacesContext.getCurrentInstance();
         String folio = contexts.getExternalContext().getRequestParameterMap().get("folio");
         System.out.println("FolioPasado: " + folio);
@@ -120,6 +140,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
         usuario.setNombreUsuario(usuarioDominio.getUsuNombre());
         usuario.setApaternoUsuario(usuarioDominio.getUsuPaterno());
         usuario.setAmaternoUsuario(usuarioDominio.getUsuMaterno());
+        listaCuentas = ifaceCuentasBancarias.getCuentas();
 
         setTitle("Pagar Venta de Mayoreo");
         setViewEstate("init");
@@ -128,13 +149,59 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
         caja = ifaceCaja.getCajaByIdUsuarioPk(usuario.getIdUsuarioPk());
         opcaja = new OperacionesCaja();
         opcaja.setIdCajaFk(caja.getIdCajaPk());
-        opcaja.setIdConceptoFk(concepto);
+        //opcaja.setIdConceptoFk(concepto);
         opcaja.setIdUserFk(usuario.getIdUsuarioPk());
         opcaja.setEntradaSalida(entradaSalida);
         opcaja.setIdStatusFk(statusOperacion);
+        opcaja.setIdSucursalFk(new BigDecimal(usuario.getIdSucursal()));
+        lstTipoAbonos = ifaceTipoAbono.getAll();
+    }
+    public void verificarTipo()
+    {
+        switch(idTipoPagoFk.intValue())
+        {
+            case 1:
+                System.out.println("Se ejecuto cobro en efectivo");
+                opcaja.setIdConceptoFk(conceptoMayoreoEfectivo);
+                break;
+            case 2:
+                System.out.println("Se ejecuto cobro en cheque");
+                opcaja.setIdConceptoFk(conceptoMayoreoCheques);
+                break;
+            case 3:
+                System.out.println("Se ejecuto cobro en deposito bancario");
+                opcaja.setIdConceptoFk(conceptoMayoreoDeposito);
+                break;
+            case 4:
+                System.out.println("Se ejecuto cobro en transferencia");
+                opcaja.setIdConceptoFk(conceptoMayoreoTransferencia);
+                break;
+            default:
+                System.out.println("Se ejecuto cobro en efectivo");
+                break;
+                
+        }
+        
+    }
+    
+    public void addView() 
+    {
+
+        if (idTipoPagoFk.intValue() == 3) {
+            setViewCheque("true");
+        } else if (idTipoPagoFk.intValue() == 2) {
+            setViewCheque("trans");
+
+        } else {
+            setViewCheque("init");
+        }
+
     }
 
     public void calculaCambio() {
+        System.out.println("Cambio: " + cambio);
+        System.out.println("Recibido: "+ recibido);
+        System.out.println("Total Venta: "+ventaMayoreo.getTotalVenta());
         cambio = recibido.subtract(ventaMayoreo.getTotalVenta(), MathContext.UNLIMITED);
     }
 
@@ -246,17 +313,9 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
 
     public void updateVenta() {
         if (opcaja.getIdCajaFk() != null) {
-
-//            System.out.println("Status Venta :" + data.getStatusFK());
-//            if (data.getStatusFK() == 2) 
-//            {
-//                JsfUtil.addErrorMessageClean("Error, la venta ya se encuentra pagada");
-//            } else if (data.getIdVenta().intValue() != idVentaTemporal) 
-//            {
-//                JsfUtil.addErrorMessageClean("No coincide el numero de venta");
-//            } else 
             if (ifaceBuscaVenta.updateStatusVentaMayoreo(ventaMayoreo.getIdVentaMayoreoPk().intValue(), usuario.getIdUsuarioPk().intValue()) == 1) 
             {
+                verificarTipo();
                 System.out.println("Se cambió el estatus");
                 opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
                 opcaja.setMonto(ventaMayoreo.getTotalVenta());
@@ -529,4 +588,113 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
         this.folioVenta = folioVenta;
     }
 
+    public ArrayList<TipoAbono> getLstTipoAbonos() {
+        return lstTipoAbonos;
+    }
+
+    public void setLstTipoAbonos(ArrayList<TipoAbono> lstTipoAbonos) {
+        this.lstTipoAbonos = lstTipoAbonos;
+    }
+
+    public String getViewCheque() {
+        return viewCheque;
+    }
+
+    public void setViewCheque(String viewCheque) {
+        this.viewCheque = viewCheque;
+    }
+
+    public BigDecimal getMontoAbono() {
+        return montoAbono;
+    }
+
+    public void setMontoAbono(BigDecimal montoAbono) {
+        this.montoAbono = montoAbono;
+    }
+
+    public BigDecimal getNumeroCheque() {
+        return numeroCheque;
+    }
+
+    public void setNumeroCheque(BigDecimal numeroCheque) {
+        this.numeroCheque = numeroCheque;
+    }
+
+    public String getLibrador() {
+        return librador;
+    }
+
+    public void setLibrador(String librador) {
+        this.librador = librador;
+    }
+
+    public Date getFechaCobro() {
+        return fechaCobro;
+    }
+
+    public void setFechaCobro(Date fechaCobro) {
+        this.fechaCobro = fechaCobro;
+    }
+
+    public String getBanco() {
+        return banco;
+    }
+
+    public void setBanco(String banco) {
+        this.banco = banco;
+    }
+
+    public String getFactura() {
+        return factura;
+    }
+
+    public void setFactura(String factura) {
+        this.factura = factura;
+    }
+
+    public String getConceptoTransferencia() {
+        return conceptoTransferencia;
+    }
+
+    public void setConceptoTransferencia(String conceptoTransferencia) {
+        this.conceptoTransferencia = conceptoTransferencia;
+    }
+
+    public String getReferencia() {
+        return referencia;
+    }
+
+    public void setReferencia(String referencia) {
+        this.referencia = referencia;
+    }
+
+    public Date getFechaTransferencia() {
+        return fechaTransferencia;
+    }
+
+    public void setFechaTransferencia(Date fechaTransferencia) {
+        this.fechaTransferencia = fechaTransferencia;
+    }
+
+    public BigDecimal getIdCuentaDestinoFk() {
+        return idCuentaDestinoFk;
+    }
+
+    public void setIdCuentaDestinoFk(BigDecimal idCuentaDestinoFk) {
+        this.idCuentaDestinoFk = idCuentaDestinoFk;
+    }
+
+    public BigDecimal getRecibi() {
+        return recibi;
+    }
+
+    public void setRecibi(BigDecimal recibi) {
+        this.recibi = recibi;
+    }
+    
+    
+    
+
+    
+    
 }

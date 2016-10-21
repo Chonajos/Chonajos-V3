@@ -23,11 +23,18 @@
             <p:panel> 
                 <div class="container-fluid">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="conceptoFiltro" value ="Concepto de Operación:" rendered="#{beanPagoServicios.viewEstate =='init'}" /> 
                             <h:selectOneMenu  id="conceptoFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanPagoServicios.idConceptoBean}" rendered="#{beanPagoServicios.viewEstate =='init'}" required="true">
                                 <f:selectItem itemLabel="selecciona un servicio" itemValue="" />
                                 <f:selectItems value="#{beanPagoServicios.listaConceptos}" var="conceptito" itemLabel="#{conceptito.nombre}" itemValue="#{conceptito.idConceptoPk}"/>
+                            </h:selectOneMenu>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12 alignLeft">
+                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12" for="txtSucursal" value="Sucursal:"/> 
+                            <h:selectOneMenu  class="col-lg-6 col-md-8 col-sm-8 col-xs-12" id="txtSucursal"  value="#{beanPagoServicios.idSucursalFk}" >
+                                <f:selectItem  itemLabel="Q-85 Mayoreo" itemValue="1"/>
+                                <f:selectItem  itemLabel="Q-85 Kilo" itemValue="2"/>
                             </h:selectOneMenu>
                         </div>
                         <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
@@ -41,7 +48,7 @@
                             <p:inputText id="txtReferencia" maxlength="16" class=" col-lg-6 col-md-4 col-sm-8 col-xs-6" value="#{beanPagoServicios.referencia}" >
                             </p:inputText>
                         </div>
-                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 ">
+                        <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
                             <p:outputLabel  class="col-lg-6 col-md-3 col-sm-4 col-xs-6 alignLeft"  for="txtComentarios" value ="Comentarios:" /> 
                             <p:inputTextarea  style=" width:50%; height:25px;" rows="1" cols="20" id="txtComentarios" maxlength="95" class=" col-lg-6 col-md-4 col-sm-8 col-xs-6" value="#{beanPagoServicios.comentarios}"/>
                         </div>
