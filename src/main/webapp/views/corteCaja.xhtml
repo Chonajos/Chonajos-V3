@@ -23,7 +23,7 @@
                                 <p:commandButton value="Generar Corte" update=":formContent" ajax="true" action="#{beanCorteCaja.generarCorte()}"/>
                             </div>
                             <div>
-                                <p:commandButton value="Ver Detalle" update=":formContent" ajax="true" action="#{beanCorteCaja.verDetalle()}"/>
+                                <p:commandButton value="Ver Detalle" update=":formContent" ajax="true" action="#{beanCorteCaja.verDetalle()}" rendered="#{beanCorteCaja.viewEstate=='init'}"/>
                             </div>
                             <div>
                                 <p:commandButton value="Atrás" update=":formContent" ajax="true" action="#{beanCorteCaja.changeView()}" rendered="#{beanCorteCaja.viewEstate=='second'}"/>

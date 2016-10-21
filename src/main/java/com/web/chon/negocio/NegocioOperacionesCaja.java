@@ -31,6 +31,7 @@ public interface NegocioOperacionesCaja {
     public List<Object[]> getCheques(BigDecimal idCajaFk, BigDecimal idUserFk,BigDecimal idINOUT);
     public List<Object[]> getResponsables(BigDecimal idCajaFk);
     public List<Object[]> getDetalles(BigDecimal idCajaFk, BigDecimal idUserFk, BigDecimal entrada_salida, BigDecimal idStatusFk);
+    public List<Object[]> getOperacionesByIdCorteCajaFk(BigDecimal idCorteCajaFk,BigDecimal entrada_salida);
     public int getNextVal();
     
 }

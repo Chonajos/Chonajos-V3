@@ -23,5 +23,6 @@ public interface NegocioCorteCaja {
     public List<Object[]>  getCortesByIdCajaFk(BigDecimal idCajaFK,String fechaIni,String fechaFin);
     public  List<Object[]>  getCorteByidPk(BigDecimal idPk);
     public  List<Object[]>  getLastCorteByCaja(BigDecimal idCajaPk);
+    public List<Object[]> getCortesByFechaCajaUsuario(BigDecimal idCajaFk,BigDecimal idUsuarioFk,String fecha);
     
 }

@@ -334,6 +334,31 @@ public class ServiceOperacionesCaja implements IfaceOperacionesCaja {
         return listaOperaciones;
     
     }
+    
+    @Override
+    public ArrayList<OperacionesCaja> getOperacionesByIdCorteCajaFk(BigDecimal idCorteCajaFk,BigDecimal entrada_salida) {
+        getEjb();
+        ArrayList<OperacionesCaja> listaOperaciones = new ArrayList<OperacionesCaja>();
+        List<Object[]> lstObject = ejb.getOperacionesByIdCorteCajaFk(idCorteCajaFk,entrada_salida);
+        for (Object[] obj : lstObject) 
+        {
+            OperacionesCaja op = new OperacionesCaja();
+            op.setIdOperacionesCajaPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+            op.setIdCorteCajaFk(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
+            op.setIdCajaFk(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
+            op.setIdCajaDestinoFk(obj[3] == null ? null : new BigDecimal(obj[3].toString()));
+            op.setIdConceptoFk(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
+            op.setFecha(obj[5] == null ? null : (Date)obj[5]);
+            op.setIdStatusFk(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
+            op.setIdUserFk(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
+            op.setComentarios(obj[8] == null ? null : obj[8].toString());
+            op.setMonto(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
+            op.setEntradaSalida(obj[10] == null ? null : new BigDecimal(obj[10].toString()));
+            op.setIdCuentaDestinoFk(obj[11] == null ? null : new BigDecimal(obj[11].toString()));
+            listaOperaciones.add(op);
+        }
+        return listaOperaciones;
+    }
 
     
     

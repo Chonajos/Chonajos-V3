@@ -255,4 +255,22 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
     
     }
 
+    @Override
+    public List<Object[]> getOperacionesByIdCorteCajaFk(BigDecimal idCorteCajaFk, BigDecimal entrada_salida) {
+        Query query = em.createNativeQuery("select con.ID_TIPO_OPERACION_FK,tio.NOMBRE,sum(opc.MONTO) from operaciones_caja opc\n"
+                + "inner join usuario u on u.ID_USUARIO_PK = opc.ID_USER_FK\n"
+                + "inner join CONCEPTOS con on con.ID_CONCEPTOS_PK = opc.ID_CONCEPTO_FK\n"
+                + "inner join TIPOS_OPERACION tio on tio.ID_TIPO_OPERACION_PK = con.ID_TIPO_OPERACION_FK\n"
+                + "where opc.ID_STATUS_FK=1  and opc.ID_CORTE_CAJA_FK = ? and opc.E_S = ?\n"
+                + "  \n"
+                + "group by con.ID_TIPO_OPERACION_FK,tio.NOMBRE");
+        System.out.println("===========Consulta=========");
+        System.out.println(query);
+        query.setParameter(1, idCorteCajaFk);
+        query.setParameter(2, entrada_salida);
+        return query.getResultList();
+    
+    
+    }
+
 }

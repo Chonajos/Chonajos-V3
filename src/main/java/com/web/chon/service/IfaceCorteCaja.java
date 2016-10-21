@@ -21,5 +21,6 @@ public interface IfaceCorteCaja {
     public ArrayList<CorteCaja> getCortesByIdCajaFk(BigDecimal idDestinoFK,String fechaIni,String fechaFin);
     public  CorteCaja getCorteByidPk(BigDecimal idPk);
     public CorteCaja getLastCorteByCaja(BigDecimal idCajaPk);
+    public ArrayList<CorteCaja> getCortesByFechaCajaUsuario(BigDecimal idCajaFk,BigDecimal idUsuarioFk,String fecha);
     
 }

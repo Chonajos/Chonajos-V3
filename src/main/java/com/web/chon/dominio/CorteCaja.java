@@ -31,16 +31,18 @@ public class CorteCaja implements Serializable {
     private String nombreCaja;
     private String nombreUsuario;
     private String nombreStatus;
+    private BigDecimal montoCuentaAnterior;
+    private BigDecimal montoCuentaNuevo;
 
     @Override
     public String toString() {
-        return "CorteCaja{" + "idCorteCajaPk=" + idCorteCajaPk + ", idCajaFk=" + idCajaFk + ", fecha=" + fecha + ", cantChequesAnt=" + cantChequesAnt + ", montoChequesAnt=" + montoChequesAnt + ", saldoAnterior=" + saldoAnterior + ", cantChequesNuevos=" + cantChequesNuevos + ", montoChequesNuevos=" + montoChequesNuevos + ", saldoNuevo=" + saldoNuevo + ", comentarios=" + comentarios + ", idUserFk=" + idUserFk + ", idStatusFk=" + idStatusFk + ", nombreCaja=" + nombreCaja + ", nombreUsuario=" + nombreUsuario + ", nombreStatus=" + nombreStatus + '}';
+        return "CorteCaja{" + "idCorteCajaPk=" + idCorteCajaPk + ", idCajaFk=" + idCajaFk + ", fecha=" + fecha + ", cantChequesAnt=" + cantChequesAnt + ", montoChequesAnt=" + montoChequesAnt + ", saldoAnterior=" + saldoAnterior + ", cantChequesNuevos=" + cantChequesNuevos + ", montoChequesNuevos=" + montoChequesNuevos + ", saldoNuevo=" + saldoNuevo + ", comentarios=" + comentarios + ", idUserFk=" + idUserFk + ", idStatusFk=" + idStatusFk + ", nombreCaja=" + nombreCaja + ", nombreUsuario=" + nombreUsuario + ", nombreStatus=" + nombreStatus + ", montoCuentaAnterior=" + montoCuentaAnterior + ", montoCuentaNuevo=" + montoCuentaNuevo + '}';
     }
 
-    
-    
 
     public void reset() {
+        montoCuentaAnterior=null;
+        montoCuentaNuevo=null;
         idCorteCajaPk = null;
         idCajaFk = null;
         fecha = null;
@@ -59,6 +61,23 @@ public class CorteCaja implements Serializable {
 
     }
 
+    public BigDecimal getMontoCuentaAnterior() {
+        return montoCuentaAnterior;
+    }
+
+    public void setMontoCuentaAnterior(BigDecimal montoCuentaAnterior) {
+        this.montoCuentaAnterior = montoCuentaAnterior;
+    }
+
+    public BigDecimal getMontoCuentaNuevo() {
+        return montoCuentaNuevo;
+    }
+
+    public void setMontoCuentaNuevo(BigDecimal montoCuentaNuevo) {
+        this.montoCuentaNuevo = montoCuentaNuevo;
+    }
+
+    
     public String getNombreCaja() {
         return nombreCaja;
     }

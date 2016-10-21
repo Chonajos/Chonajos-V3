@@ -30,5 +30,6 @@ public interface IfaceOperacionesCaja {
     public ArrayList<OperacionesCaja> getCheques(BigDecimal idCajaFk, BigDecimal idUserFk,BigDecimal idINOUT);
     public ArrayList<Usuario> getResponsables(BigDecimal idCajaFk);
     public int getNextVal();
+    public ArrayList<OperacionesCaja> getOperacionesByIdCorteCajaFk(BigDecimal idCorteCajaFk,BigDecimal entrada_salida);
     public ArrayList<OperacionesCaja> getDetalles(BigDecimal idCajaFk,BigDecimal idUserFk,BigDecimal entrada_salida,BigDecimal idStatusFk);
 }

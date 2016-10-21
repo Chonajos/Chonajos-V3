@@ -123,12 +123,30 @@ public class EjbCorteCaja implements NegocioCorteCaja {
         try {
             Query query = em.createNativeQuery("select * from(select *  from CORTE_CAJA cj where cj.ID_CAJA_FK = ? ORDER BY cj.ID_CORTE_CAJA_PK desc)  t1 where rownum =1");
             query.setParameter(1, idCajaPk);
+            
             return query.getResultList();
 
         } catch (Exception ex) {
             Logger.getLogger(EjbCorteCaja.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
+    }
+
+    @Override
+    public List<Object[]> getCortesByFechaCajaUsuario(BigDecimal idCajaFk, BigDecimal idUsuarioFk, String fecha) {
+       try {
+            Query query = em.createNativeQuery(" select cj.* from CORTE_CAJA cj where cj.ID_CAJA_FK = ? and cj.ID_USER_FK = ? and  TO_DATE(TO_CHAR(cj.FECHA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN ' "+fecha+" ' AND '"+fecha+"' ");
+            query.setParameter(1, idCajaFk);
+            query.setParameter(2, idUsuarioFk);
+            
+            System.out.println("Query: "+query);
+            return query.getResultList();
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbCorteCaja.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    
     }
 
 }
