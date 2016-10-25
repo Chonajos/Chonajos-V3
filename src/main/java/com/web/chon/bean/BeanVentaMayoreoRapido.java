@@ -580,7 +580,7 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
 
         paramReport.put("fechaVenta", dateTime);
         paramReport.put("noVenta", Integer.toString(idVenta));
-        paramReport.put("cliente", cliente.getNombreCombleto());
+        paramReport.put("cliente", cliente.getNombreCompleto());
         paramReport.put("vendedor", usuario.getNombreCompletoUsuario());
         paramReport.put("productos", items);
         paramReport.put("ventaTotal", total);

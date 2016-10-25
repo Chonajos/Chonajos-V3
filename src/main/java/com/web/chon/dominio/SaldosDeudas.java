@@ -50,6 +50,7 @@ public class SaldosDeudas implements Serializable {
     private Date fechaPromesaFinPago;
     private String nombreSucursal;
     private BigDecimal idSucursal;
+    private BigDecimal abonarTemporal;
 
     public void reset() {
         folioCredito = null;
@@ -84,6 +85,7 @@ public class SaldosDeudas implements Serializable {
         fechaPromesaFinPago = null;
         nombreSucursal = null;
         idSucursal = null;
+        abonarTemporal = null;
 
     }
 
@@ -91,6 +93,15 @@ public class SaldosDeudas implements Serializable {
     public String toString() {
         return "SaldosDeudas{" + "folioCredito=" + folioCredito + ", folioVenta=" + folioVenta + ", montoTotal=" + montoTotal + ", totalAbonado=" + totalAbonado + ", fechaVenta=" + fechaVenta + ", montoAbonar=" + montoAbonar + ", fechaProximaAbonar=" + fechaProximaAbonar + ", periodo=" + periodo + ", plazo=" + plazo + ", periodosAtraso=" + periodosAtraso + ", diasAtraso=" + diasAtraso + ", saldoDeudor=" + saldoDeudor + ", saldoAtrasado=" + saldoAtrasado + ", idEstatus=" + idEstatus + ", nombreStatus=" + nombreStatus + ", saldoTotal=" + saldoTotal + ", tipoCredito=" + tipoCredito + ", saldoLiquidar=" + saldoLiquidar + ", saldoACuenta=" + saldoACuenta + ", statusAcuenta=" + statusAcuenta + ", minimoPago=" + minimoPago + ", numeroPagos=" + numeroPagos + ", statusFechaProxima=" + statusFechaProxima + ", chequesPorCobrar=" + chequesPorCobrar + ", numeroTelefono=" + numeroTelefono + ", nombreCompleto=" + nombreCompleto + ", correo=" + correo + '}';
     }
+
+    public BigDecimal getAbonarTemporal() {
+        return abonarTemporal;
+    }
+
+    public void setAbonarTemporal(BigDecimal abonarTemporal) {
+        this.abonarTemporal = abonarTemporal;
+    }
+    
 
     public BigDecimal getChequesPorCobrar() {
         return chequesPorCobrar;

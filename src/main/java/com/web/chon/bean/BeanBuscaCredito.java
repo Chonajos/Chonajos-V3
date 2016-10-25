@@ -54,6 +54,7 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.RowEditEvent;
 import org.primefaces.model.StreamedContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -86,7 +87,7 @@ public class BeanBuscaCredito implements Serializable {
     private IfaceOperacionesCaja ifaceOperacionesCaja;
     @Autowired
     private IfaceOperacionesCuentas ifaceOperacionesCuentas;
-    @Autowired 
+    @Autowired
     private IfaceCuentasBancarias ifaceCuentasBancarias;
 
     private BigDecimal idCliente;
@@ -107,6 +108,7 @@ public class BeanBuscaCredito implements Serializable {
     private ArrayList<AbonoCredito> chequesPendientes;
     private ArrayList<AbonoCredito> selectedchequesPendientes;
     private ArrayList<CuentaBancaria> listaCuentas;
+    private SaldosDeudas saldosDeudasEdit;
 
     private SaldosDeudas dataAbonar;
     private AbonoCredito abono;
@@ -152,12 +154,14 @@ public class BeanBuscaCredito implements Serializable {
     private static final BigDecimal idStatusCuenta = new BigDecimal(1);
     private static final BigDecimal idConceptoCuenta = new BigDecimal(15);
     private OperacionesCuentas opcuenta;
-     private BigDecimal idCuentaDestinoBean;
+    private BigDecimal idCuentaDestinoBean;
+    private BigDecimal comboFiltro;
+    private boolean habilitaBotones;
 
     @PostConstruct
     public void init() {
         caja = new Caja();
-        idCuentaDestinoBean=new BigDecimal(0);
+        idCuentaDestinoBean = new BigDecimal(0);
         minimoPago = new BigDecimal(0);
         bandera = false;
         fechaMasProximaPago = new Date();
@@ -185,6 +189,55 @@ public class BeanBuscaCredito implements Serializable {
         opcuenta.setIdStatusFk(idStatusCuenta);
         opcuenta.setEntradaSalida(entradaCuenta);
         opcuenta.setIdConceptoFk(idConceptoCuenta);
+        comboFiltro = new BigDecimal(1);
+        habilitaBotones = true;
+    }
+
+    public void cancelarAbonar() 
+    {
+        abono.reset();
+        for (int i = 0; i < modelo.size(); i++)
+        {
+            SaldosDeudas item = modelo.get(i);
+            item.setAbonarTemporal(null);
+        }
+        JsfUtil.addSuccessMessageClean("Se ha cancelado el abono");
+
+    }
+
+    public void actualizarCreditos() {
+        BigDecimal totalAabonar = new BigDecimal(0);
+        for (SaldosDeudas fila : modelo) {
+            if (fila.getAbonarTemporal() != null) {
+                totalAabonar = totalAabonar.add(fila.getAbonarTemporal(), MathContext.UNLIMITED);
+            }
+        }
+        System.out.println("Abono: "+abono.getMontoAbono());
+        System.out.println("TotalLista: "+totalAabonar);
+        if (abono.getMontoAbono().equals(totalAabonar)) {
+            System.out.println("La suma es exacta");
+            JsfUtil.addSuccessMessageClean("La suma es correcta");
+        } else {
+            System.out.println("error de suma");
+            JsfUtil.addErrorMessageClean("La suma de los abonos no corresponde con el monto del abono total = $" + abono.getMontoAbono());
+        }
+        //Vertificar el monto total del abono que no sobre y que no falte ni un peso
+        // verificar el combo hacia que forma se haran los abonos.
+
+    }
+
+    public void onRowEdit(RowEditEvent event) {
+        saldosDeudasEdit = new SaldosDeudas();
+        saldosDeudasEdit = (SaldosDeudas) event.getObject();
+
+        System.out.println("editado " + saldosDeudasEdit.toString());
+        //updatePrecio();
+
+    }
+
+    public void onRowCancel(RowEditEvent event) {
+        System.out.println("cancel");
+
     }
 
     private void setParameterTicket(AbonoCredito ac, Cliente c) {
@@ -197,7 +250,7 @@ public class BeanBuscaCredito implements Serializable {
         paramReport.put("labelEstatus", "Abono Pagado");
         paramReport.put("fecha", TiempoUtil.getFechaDDMMYYYYHHMM(date));
         paramReport.put("numeroCliente", c.getId_cliente().toString());
-        paramReport.put("nombreCliente", cliente.getNombreCombleto());
+        paramReport.put("nombreCliente", cliente.getNombreCompleto());
         paramReport.put("recibimos", nf.format(ac.getMontoAbono()));
         paramReport.put("totalLetra", totalVentaStr);
         paramReport.put("fechaProximoPago", TiempoUtil.getFechaDDMMYYYYHHMM(date));
@@ -293,6 +346,81 @@ public class BeanBuscaCredito implements Serializable {
             setViewCheque("init");
         }
 
+    }
+
+    public void prepararAbono() {
+        JsfUtil.addSuccessMessageClean("Abono Preparado");
+        System.out.println("Abono: " + abono);
+        BigDecimal to = abono.getMontoAbono();
+        System.out.println("Monto abono: " + to);
+        if (to != null) {
+            switch (comboFiltro.intValue()) {
+
+                case 1:
+                    System.out.println("Entro a case 1");
+                    for (int i = 0; i < modelo.size(); i++) {
+
+                        SaldosDeudas item = modelo.get(i);
+                        to = to.subtract(item.getSaldoAtrasado(), MathContext.UNLIMITED);
+                        if (to.compareTo(new BigDecimal(0)) >= 0) {
+
+                            item.setAbonarTemporal(item.getSaldoAtrasado());
+                        } else {
+                            to = to.add(item.getSaldoAtrasado(), MathContext.UNLIMITED);
+                            item.setAbonarTemporal(to);
+                            to = to.subtract(item.getSaldoAtrasado(), MathContext.UNLIMITED);
+                            break;
+                        }
+
+                    }
+
+                    System.out.println("Sobrante Final:  " + to);
+                    break;
+                case 2:
+                    System.out.println("Entro a case 2");
+                    for (int i = 0; i < modelo.size(); i++) {
+
+                        SaldosDeudas item = modelo.get(i);
+                        to = to.subtract(item.getMinimoPago(), MathContext.UNLIMITED);
+                        if (to.compareTo(new BigDecimal(0)) >= 0) {
+
+                            item.setAbonarTemporal(item.getMinimoPago());
+                        } else {
+                            to = to.add(item.getMinimoPago(), MathContext.UNLIMITED);
+                            item.setAbonarTemporal(to);
+                            to = to.subtract(item.getMinimoPago(), MathContext.UNLIMITED);
+                            break;
+                        }
+
+                    }
+
+                    break;
+                case 3:
+
+                    System.out.println("Entro a case 3");
+                    for (int i = 0; i < modelo.size(); i++) {
+
+                        SaldosDeudas item = modelo.get(i);
+                        to = to.subtract(item.getSaldoLiquidar(), MathContext.UNLIMITED);
+                        if (to.compareTo(new BigDecimal(0)) >= 0) {
+                            item.setAbonarTemporal(item.getSaldoLiquidar());
+                        } else {
+                            to = to.add(item.getSaldoLiquidar(), MathContext.UNLIMITED);
+                            item.setAbonarTemporal(to);
+                            to = to.subtract(item.getSaldoLiquidar(), MathContext.UNLIMITED);
+                            break;
+                        }
+
+                    }
+
+                    break;
+                default:
+                    JsfUtil.addErrorMessageClean("Ocurrio un error, contactar al administrador");
+                    break;
+            }
+        } else {
+            JsfUtil.addErrorMessageClean("Primero debes agregar la forma de pago");
+        }
     }
 
     public void abonar() {
@@ -583,10 +711,12 @@ public class BeanBuscaCredito implements Serializable {
             for (SaldosDeudas sd : modelo) {
                 saldoParaLiquidar = saldoParaLiquidar.add(sd.getSaldoLiquidar(), MathContext.UNLIMITED);
             }
+            habilitaBotones = false;
 
         } else {
             JsfUtil.addWarnMessage("El cliente no cuenta con creditos activos");
             modelo = new ArrayList<SaldosDeudas>();
+            habilitaBotones = true;
             cliente = new Cliente();
         }
 
@@ -885,6 +1015,29 @@ public class BeanBuscaCredito implements Serializable {
     public void setIdCuentaDestinoBean(BigDecimal idCuentaDestinoBean) {
         this.idCuentaDestinoBean = idCuentaDestinoBean;
     }
-    
+
+    public SaldosDeudas getSaldosDeudasEdit() {
+        return saldosDeudasEdit;
+    }
+
+    public void setSaldosDeudasEdit(SaldosDeudas saldosDeudasEdit) {
+        this.saldosDeudasEdit = saldosDeudasEdit;
+    }
+
+    public BigDecimal getComboFiltro() {
+        return comboFiltro;
+    }
+
+    public void setComboFiltro(BigDecimal comboFiltro) {
+        this.comboFiltro = comboFiltro;
+    }
+
+    public boolean isHabilitaBotones() {
+        return habilitaBotones;
+    }
+
+    public void setHabilitaBotones(boolean habilitaBotones) {
+        this.habilitaBotones = habilitaBotones;
+    }
 
 }

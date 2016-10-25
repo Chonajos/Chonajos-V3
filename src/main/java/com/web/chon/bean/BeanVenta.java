@@ -512,7 +512,7 @@ public class BeanVenta implements Serializable, BeanSimple {
         paramReport.clear();
         paramReport.put("fechaVenta", dateTime);
         paramReport.put("noVenta", Integer.toString(folioVenta));
-        paramReport.put("cliente", cliente.getNombreCombleto());
+        paramReport.put("cliente", cliente.getNombreCompleto());
         paramReport.put("vendedor", usuario.getNombreCompletoUsuario());
         paramReport.put("productos", items);
         paramReport.put("ventaTotal", total);

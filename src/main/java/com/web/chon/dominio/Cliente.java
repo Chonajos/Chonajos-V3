@@ -14,8 +14,8 @@ import java.util.Date;
  *
  * @author fredy
  */
-public class Cliente implements Serializable
-{
+public class Cliente implements Serializable {
+
     private static final long serialVersionUID = 1L;
     private BigDecimal id_cliente;
     private String nombre;
@@ -36,9 +36,9 @@ public class Cliente implements Serializable
     private BigDecimal num_ext;
     private String colonia;
     private BigDecimal clavecelular;
-    private String nombreCombleto;
+    private String nombreCompleto;
     private BigDecimal ladacelular;
-    private BigDecimal ID_CP_FISCAL; 
+    private BigDecimal ID_CP_FISCAL;
     private String calleFiscal;
     private BigDecimal num_int_fiscal;
     private BigDecimal num_ext_fiscal;
@@ -74,10 +74,20 @@ public class Cliente implements Serializable
 
     @Override
     public String toString() {
-        return "Cliente{" + "id_cliente=" + id_cliente + ", nombre=" + nombre + ", paterno=" + paterno + ", materno=" + materno + ", empresa=" + empresa + ", calle=" + calle + ", ID_CP=" + ID_CP + ", estado_id=" + estado_id + ", municipio=" + municipio + ", sexo=" + sexo + ", fecha_nacimiento=" + fecha_nacimiento + ", tel_movil=" + tel_movil + ", tel_fijo=" + tel_fijo + ", ext=" + ext + ", email=" + email + ", num_int=" + num_int + ", num_ext=" + num_ext + ", colonia=" + colonia + ", clavecelular=" + clavecelular + ", nombreCombleto=" + nombreCombleto + ", ladacelular=" + ladacelular + ", ID_CP_FISCAL=" + ID_CP_FISCAL + ", calleFiscal=" + calleFiscal + ", num_int_fiscal=" + num_int_fiscal + ", num_ext_fiscal=" + num_ext_fiscal + ", coloniaFiscal=" + coloniaFiscal + ", estadoFiscal=" + estadoFiscal + ", municipioFiscal=" + municipioFiscal + ", codigoPostal=" + codigoPostal + ", codigoPostalFiscal=" + codigoPostalFiscal + ", nextel=" + nextel + ", razon_social=" + razon_social + ", rfcFiscal=" + rfcFiscal + ", ladaoficina=" + ladaoficina + ", claveoficina=" + claveoficina + ", nextelclave=" + nextelclave + ", nombreEstado=" + nombreEstado + ", nombreDelegacionMunicipio=" + nombreDelegacionMunicipio + ", nombreEstadoFiscal=" + nombreEstadoFiscal + ", nombreDeleMunFiscal=" + nombreDeleMunFiscal + ", emails=" + emails + ", status_cliente=" + status_cliente + ", statusClienteBoolean=" + statusClienteBoolean + ", nombreStatus=" + nombreStatus + ", codigo_Postal=" + codigo_Postal + ", fecha_alta=" + fecha_alta + ", diasCredito=" + diasCredito + ", limiteCredito=" + limiteCredito + ", utilizadoMenudeo=" + utilizadoMenudeo + ", utilizadoMayoreo=" + utilizadoMayoreo + ", utilizadoTotal=" + utilizadoTotal + ", creditoDisponible=" + creditoDisponible + ", utilizadoDocumentos=" + utilizadoDocumentos + ", tipoPersona=" + tipoPersona + '}';
+        return "Cliente{" + "id_cliente=" + id_cliente + ", nombre=" + nombre + ", paterno=" + paterno + ", materno=" + materno + ", empresa=" + empresa + ", calle=" + calle + ", ID_CP=" + ID_CP + ", estado_id=" + estado_id + ", municipio=" + municipio + ", sexo=" + sexo + ", fecha_nacimiento=" + fecha_nacimiento + ", tel_movil=" + tel_movil + ", tel_fijo=" + tel_fijo + ", ext=" + ext + ", email=" + email + ", num_int=" + num_int + ", num_ext=" + num_ext + ", colonia=" + colonia + ", clavecelular=" + clavecelular + ", nombreCompleto=" + nombreCompleto + ", ladacelular=" + ladacelular + ", ID_CP_FISCAL=" + ID_CP_FISCAL + ", calleFiscal=" + calleFiscal + ", num_int_fiscal=" + num_int_fiscal + ", num_ext_fiscal=" + num_ext_fiscal + ", coloniaFiscal=" + coloniaFiscal + ", estadoFiscal=" + estadoFiscal + ", municipioFiscal=" + municipioFiscal + ", codigoPostal=" + codigoPostal + ", codigoPostalFiscal=" + codigoPostalFiscal + ", nextel=" + nextel + ", razon_social=" + razon_social + ", rfcFiscal=" + rfcFiscal + ", ladaoficina=" + ladaoficina + ", claveoficina=" + claveoficina + ", nextelclave=" + nextelclave + ", nombreEstado=" + nombreEstado + ", nombreDelegacionMunicipio=" + nombreDelegacionMunicipio + ", nombreEstadoFiscal=" + nombreEstadoFiscal + ", nombreDeleMunFiscal=" + nombreDeleMunFiscal + ", emails=" + emails + ", status_cliente=" + status_cliente + ", statusClienteBoolean=" + statusClienteBoolean + ", nombreStatus=" + nombreStatus + ", codigo_Postal=" + codigo_Postal + ", fecha_alta=" + fecha_alta + ", diasCredito=" + diasCredito + ", limiteCredito=" + limiteCredito + ", utilizadoMenudeo=" + utilizadoMenudeo + ", utilizadoMayoreo=" + utilizadoMayoreo + ", utilizadoTotal=" + utilizadoTotal + ", creditoDisponible=" + creditoDisponible + ", utilizadoDocumentos=" + utilizadoDocumentos + ", tipoPersona=" + tipoPersona + '}';
     }
-    
-    
+
+    public String getNombreCompleto() {
+        String nombre = this.nombre == null ? "" : this.nombre + " ";
+        String paterno = this.paterno == null ? "" : this.paterno + " ";
+        String materno = this.materno == null ? "" : this.materno;
+        return nombre+paterno+materno;
+
+    }
+
+    public void setNombreCompleto(String nombreCompleto) {
+        this.nombreCompleto = nombreCompleto;
+    }
 
     public BigDecimal getId_cliente() {
         return id_cliente;
@@ -229,14 +239,6 @@ public class Cliente implements Serializable
 
     public void setClavecelular(BigDecimal clavecelular) {
         this.clavecelular = clavecelular;
-    }
-
-    public String getNombreCombleto() {
-        return nombreCombleto;
-    }
-
-    public void setNombreCombleto(String nombreCombleto) {
-        this.nombreCombleto = nombreCombleto;
     }
 
     public BigDecimal getLadacelular() {
@@ -511,7 +513,4 @@ public class Cliente implements Serializable
         this.tipoPersona = tipoPersona;
     }
 
-    
-    
-    
 }
