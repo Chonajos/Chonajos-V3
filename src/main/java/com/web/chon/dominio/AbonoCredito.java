@@ -30,13 +30,14 @@ public class AbonoCredito extends ValueObject {
     private String nombreStatus;
     private BigDecimal idStatusDocumentoFk;
     private BigDecimal idClienteFk;
+    private BigDecimal folioElectronico;
 
     @Override
     public String toString() {
-        return "AbonoCredito{" + "idAbonoCreditoPk=" + idAbonoCreditoPk + ", idCreditoFk=" + idCreditoFk + ", montoAbono=" + montoAbono + ", fechaAbono=" + fechaAbono + ", idUsuarioFk=" + idUsuarioFk + ", idtipoAbonoFk=" + idtipoAbonoFk + ", estatusAbono=" + estatusAbono + ", numeroCheque=" + numeroCheque + ", librador=" + librador + ", fechaCobro=" + fechaCobro + ", banco=" + banco + ", factura=" + factura + ", referencia=" + referencia + ", concepto=" + concepto + ", fechaTransferencia=" + fechaTransferencia + ", datoACuenta=" + datoACuenta + ", idDocumentoPk=" + idDocumentoPk + ", nombreCliente=" + nombreCliente + ", nombreStatus=" + nombreStatus + ", idStatusDocumentoFk=" + idStatusDocumentoFk + ", idClienteFk=" + idClienteFk + '}';
+        return "AbonoCredito{" + "idAbonoCreditoPk=" + idAbonoCreditoPk + ", idCreditoFk=" + idCreditoFk + ", montoAbono=" + montoAbono + ", fechaAbono=" + fechaAbono + ", idUsuarioFk=" + idUsuarioFk + ", idtipoAbonoFk=" + idtipoAbonoFk + ", estatusAbono=" + estatusAbono + ", numeroCheque=" + numeroCheque + ", librador=" + librador + ", fechaCobro=" + fechaCobro + ", banco=" + banco + ", factura=" + factura + ", referencia=" + referencia + ", concepto=" + concepto + ", fechaTransferencia=" + fechaTransferencia + ", datoACuenta=" + datoACuenta + ", idDocumentoPk=" + idDocumentoPk + ", nombreCliente=" + nombreCliente + ", nombreStatus=" + nombreStatus + ", idStatusDocumentoFk=" + idStatusDocumentoFk + ", idClienteFk=" + idClienteFk + ", folioElectronico=" + folioElectronico + '}';
     }
 
-    
+   
 
     @Override
     public void reset() {
@@ -60,8 +61,18 @@ public class AbonoCredito extends ValueObject {
         nombreCliente=null;
         nombreStatus=null;
         idClienteFk=null;
+        folioElectronico=null; 
     }
 
+    public BigDecimal getFolioElectronico() {
+        return folioElectronico;
+    }
+
+    public void setFolioElectronico(BigDecimal folioElectronico) {
+        this.folioElectronico = folioElectronico;
+    }
+
+    
     public BigDecimal getIdClienteFk() {
         return idClienteFk;
     }
@@ -236,4 +247,5 @@ public class AbonoCredito extends ValueObject {
         this.referencia = referencia;
     }
 
+    
 }
