@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-07-28T12:40:41 -->
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<!-- 2016-10-26T12:42:39 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ticket" pageWidth="219" pageHeight="1224" columnWidth="179" leftMargin="20" rightMargin="20" topMargin="4" bottomMargin="20" isIgnorePagination="true" uuid="cce07992-6ec7-4616-8caf-ceb4ee12975b">
 	<property name="ireport.zoom" value="2.5937424601000028"/>
 	<property name="ireport.x" value="0"/>
@@ -51,7 +51,7 @@
 				<text><![CDATA[S DE RL DE CV]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="123" y="73" width="57" height="10" uuid="6e57c4b1-dfa7-4eba-a047-8b089afdeb7c"/>
+				<reportElement x="28" y="73" width="57" height="10" uuid="6e57c4b1-dfa7-4eba-a047-8b089afdeb7c"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="6"/>
 				</textElement>
@@ -65,7 +65,7 @@
 				<textFieldExpression><![CDATA[$P{labelSucursal}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="98" y="73" width="25" height="10" uuid="cffef96f-b4df-4df6-94fa-e4c5704cfec0">
+				<reportElement x="3" y="73" width="25" height="10" uuid="cffef96f-b4df-4df6-94fa-e4c5704cfec0">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -73,13 +73,6 @@
 				</textElement>
 				<text><![CDATA[Fecha:]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="28" y="73" width="46" height="10" uuid="f1054343-5398-4da7-bbbd-d49445d7b31b"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="7" isBold="false" isUnderline="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{folio}]]></textFieldExpression>
-			</textField>
 			<staticText>
 				<reportElement x="3" y="94" width="28" height="11" uuid="02c688ff-4514-4faa-9595-b06d6abd1d06"/>
 				<textElement textAlignment="Left">
@@ -108,15 +101,6 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{numeroCliente}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="3" y="73" width="25" height="10" uuid="267daca9-5447-4e6f-9c14-b79fe578b16b">
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-				</reportElement>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="7"/>
-				</textElement>
-				<text><![CDATA[Folio:]]></text>
-			</staticText>
 			<textField>
 				<reportElement x="40" y="50" width="120" height="20" uuid="d9ae33be-69c3-45c5-bfca-feebdcf0625c"/>
 				<textFieldExpression><![CDATA[$P{labelEstatus}]]></textFieldExpression>
