@@ -453,62 +453,78 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
             JsfUtil.addErrorMessage("Seleccione un Producto de la tabla o peso en 0 Kg.");
 
         } else //            System.out.println("idSubProducto:" + selectedExistencia.getIdSubProductoFK());
-         if (selectedExistencia.getPrecioVenta() == null) {
-                JsfUtil.addErrorMessage("No se tiene precio de venta para este producto. Contactar al administrador.");
-            } else if (data.getPrecioProducto().intValue() < selectedExistencia.getPrecioMinimo().intValue() || data.getPrecioProducto().intValue() > selectedExistencia.getPrecioMaximo().intValue()) {
-                JsfUtil.addErrorMessage("Precio de Venta fuera de Rango \n Precio Maximo =" + selectedExistencia.getPrecioMaximo() + " Precio minimo =" + selectedExistencia.getPrecioMinimo());
-            } else if (data.getCantidadEmpaque().intValue() > selectedExistencia.getCantidadPaquetes().intValue()) {
-                JsfUtil.addErrorMessage("Cantidad de Empaque insuficiente");
-            } else if (data.getKilosVendidos().intValue() > selectedExistencia.getKilosTotalesProducto().intValue()) {
-                JsfUtil.addErrorMessage("Cantidad de Kilos insuficiente");
-            } else if (lstVenta.isEmpty()) {
+        if (selectedExistencia.getPrecioVenta() == null) {
+            JsfUtil.addErrorMessage("No se tiene precio de venta para este producto. Contactar al administrador.");
+        } else if (data.getPrecioProducto().intValue() < selectedExistencia.getPrecioMinimo().intValue() || data.getPrecioProducto().intValue() > selectedExistencia.getPrecioMaximo().intValue()) {
+            JsfUtil.addErrorMessage("Precio de Venta fuera de Rango \n Precio Maximo =" + selectedExistencia.getPrecioMaximo() + " Precio minimo =" + selectedExistencia.getPrecioMinimo());
+        } else if (data.getCantidadEmpaque().intValue() > selectedExistencia.getCantidadPaquetes().intValue()) {
+            JsfUtil.addErrorMessage("Cantidad de Empaque insuficiente");
+        } else if (data.getKilosVendidos().intValue() > selectedExistencia.getKilosTotalesProducto().intValue()) {
+            JsfUtil.addErrorMessage("Cantidad de Kilos insuficiente");
+        } else if (lstVenta.isEmpty()) {
+            System.out.println("=======================Entro aqui perro ======================");
 
+            add();
+            limpia();
+
+        } else {
+            boolean banderaRepetido = false;
+            for (int i = 0; i < lstVenta.size(); i++) {
+                VentaProductoMayoreo productoRepetido = lstVenta.get(i);
+                System.out.println("Producto Repetido: " + productoRepetido.toString());
+                System.out.println("Selected Existencia: " + selectedExistencia.toString());
+                if (productoRepetido.getIdExistenciaFk().intValue() == selectedExistencia.getIdExistenciaProductoPk().intValue()) {
+                    System.out.println("Entro a Producto Repetido.......");
+                    banderaRepetido = true;
+                    addRepetido(productoRepetido,i);
+
+                    break;
+                } else {
+                    System.out.println("No es producto Repetido");
+                    banderaRepetido = false;
+                   // add();
+                }
+
+            }
+            //fin for
+            if(!banderaRepetido)
+            {
                 add();
                 limpia();
-            } else {
-                for (int i = 0; i < lstVenta.size(); i++) {
-                    VentaProductoMayoreo productoRepetido = lstVenta.get(i);
-                    if (productoRepetido.getIdExistenciaFk().intValue() == selectedExistencia.getIdExistenciaProductoPk().intValue()) {
-                        System.out.println("Entro a Producto Repetido.......");
-                        BigDecimal enlista = productoRepetido.getCantidadEmpaque();
-                        BigDecimal totalexistencia = selectedExistencia.getCantidadPaquetes();
-                        BigDecimal suma = enlista.add(data.getCantidadEmpaque(), MathContext.UNLIMITED);
-                        BigDecimal kilosnelista = productoRepetido.getKilosVendidos();
-                        BigDecimal kilostotalexistencia = selectedExistencia.getKilosTotalesProducto();
-                        BigDecimal kilossuma = kilosnelista.add(data.getKilosVendidos(), MathContext.UNLIMITED);
-
-                        if (suma.intValue() > totalexistencia.intValue() || kilossuma.intValue() > kilostotalexistencia.intValue()) {
-
-                            JsfUtil.addErrorMessage("Producto repetido, no alcanzan las existencias.\n Cantidad: " + selectedExistencia.getCantidadPaquetes() + "\nKilos: " + selectedExistencia.getKilosTotalesProducto());
-                        } else {
-                            lstVenta.remove(i);
-                            totalVentaGeneral = totalVentaGeneral.subtract(productoRepetido.getTotalVenta(), MathContext.UNLIMITED);
-
-                            productoRepetido.setCantidadEmpaque(suma);
-                            productoRepetido.setKilosVendidos(kilossuma);
-                            productoRepetido.setTotalVenta(productoRepetido.getPrecioProducto().multiply(productoRepetido.getKilosVendidos(), MathContext.UNLIMITED));
-                            productoRepetido.setPrecioSinInteres(data.getPrecioSinInteres());
-
-                            totalVentaGeneral = totalVentaGeneral.add(productoRepetido.getTotalVenta(), MathContext.UNLIMITED);
-                            lstVenta.add(productoRepetido);
-                            limpia();
-                            //System.out.println("Existencias suficientes, producto actualizado");
-                            JsfUtil.addSuccessMessageClean("Producto Actualizado");
-                        }
-                    } else {
-                        System.out.println("No encontro repetidos");
-                        if (selectedExistencia.getIdExistenciaProductoPk() != null) {
-
-                            add();
-                            limpia();
-                        }
-
-///
-                    }
-
-                }
             }
+           
+        }
         calculaAhorro(null);
+
+    }
+
+    public void addRepetido(VentaProductoMayoreo productoRepetido,int i) 
+    {
+        BigDecimal enlista = productoRepetido.getCantidadEmpaque();
+        BigDecimal totalexistencia = selectedExistencia.getCantidadPaquetes();
+        BigDecimal suma = enlista.add(data.getCantidadEmpaque(), MathContext.UNLIMITED);
+        BigDecimal kilosnelista = productoRepetido.getKilosVendidos();
+        BigDecimal kilostotalexistencia = selectedExistencia.getKilosTotalesProducto();
+        BigDecimal kilossuma = kilosnelista.add(data.getKilosVendidos(), MathContext.UNLIMITED);
+
+        if (suma.intValue() > totalexistencia.intValue() || kilossuma.intValue() > kilostotalexistencia.intValue()) {
+
+            JsfUtil.addErrorMessage("Producto repetido, no alcanzan las existencias.\n Cantidad: " + selectedExistencia.getCantidadPaquetes() + "\nKilos: " + selectedExistencia.getKilosTotalesProducto());
+        } else {
+            lstVenta.remove(i);
+            totalVentaGeneral = totalVentaGeneral.subtract(productoRepetido.getTotalVenta(), MathContext.UNLIMITED);
+
+            productoRepetido.setCantidadEmpaque(suma);
+            productoRepetido.setKilosVendidos(kilossuma);
+            productoRepetido.setTotalVenta(productoRepetido.getPrecioProducto().multiply(productoRepetido.getKilosVendidos(), MathContext.UNLIMITED));
+            productoRepetido.setPrecioSinInteres(data.getPrecioSinInteres());
+
+            totalVentaGeneral = totalVentaGeneral.add(productoRepetido.getTotalVenta(), MathContext.UNLIMITED);
+            lstVenta.add(productoRepetido);
+            limpia();
+            //System.out.println("Existencias suficientes, producto actualizado");
+            JsfUtil.addSuccessMessageClean("Producto Actualizado");
+        }
 
     }
 

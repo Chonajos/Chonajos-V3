@@ -13,6 +13,8 @@
 
             <p:messages id="messages"   showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:panel  rendered="#{beanBuscaCredito.viewEstate=='init'}" >
+                <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanBuscaCredito.rutaPDF}"/>
+            
                 <div class="form-group" align="right">
                     <p:commandButton value="Abonar" ajax="true" disabled="#{beanBuscaCredito.habilitaBotones}" oncomplete="PF('dlg').show();" update =":formContent:dialogw:" icon="ui-icon-triangle-1-e" styleClass="ui-priority-primary" >
                     </p:commandButton>
@@ -392,8 +394,7 @@
                         </p:dataTable>
                     </div>
                 </div>
-                <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanBuscaCredito.rutaPDF}"/>
-            </p:panel>
+                </p:panel>
 
 
 
