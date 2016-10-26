@@ -16,10 +16,21 @@ import javax.ejb.Remote;
  */
 @Remote
 public interface NegocioVentaMayoreoProducto {
+
     public int insertarVentaProducto(VentaProductoMayoreo ventaproducto);
+
     public List<Object[]> getProductos(BigDecimal idVmFk);
+
     public List<Object[]> buscaVentaCancelar(BigDecimal idVenta, BigDecimal idSucursal);
+
     public int getNextVal();
-    
-    
+
+    /**
+     * Obtiene el total de ventas por producto por medio del id de sucursal y el carro
+     * @param idSucursal
+     * @param carro
+     * @return 
+     */
+    public List<Object[]> getVentaByIdSucursalAndCarro(BigDecimal idSucursal, BigDecimal carro);
+
 }

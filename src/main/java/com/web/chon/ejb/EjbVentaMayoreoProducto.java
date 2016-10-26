@@ -21,7 +21,8 @@ import javax.persistence.Query;
  * @author freddy
  */
 @Stateless(mappedName = "ejbVentaMayoreoProducto")
-public class EjbVentaMayoreoProducto implements NegocioVentaMayoreoProducto{
+public class EjbVentaMayoreoProducto implements NegocioVentaMayoreoProducto {
+
     @PersistenceContext(unitName = "persistenceJR")
     EntityManager em;
 
@@ -40,50 +41,49 @@ public class EjbVentaMayoreoProducto implements NegocioVentaMayoreoProducto{
         query.setParameter(9, ventaproducto.getIdEntradaMercanciaFk());
         query.setParameter(10, ventaproducto.getIdExistenciaFk());
         return query.executeUpdate();
-        
+
     }
 
     @Override
     public int getNextVal() {
-       Query query = em.createNativeQuery("SELECT S_VENTA_MAYOREO_PRODUCTO.nextVal FROM DUAL");
+        Query query = em.createNativeQuery("SELECT S_VENTA_MAYOREO_PRODUCTO.nextVal FROM DUAL");
         return Integer.parseInt(query.getSingleResult().toString());
     }
 
     @Override
     public List<Object[]> getProductos(BigDecimal idVmFk) {
         System.out.println("=====================Entro a metodo GetProductos==================0");
-       try {
-            Query query = em.createNativeQuery("select em.CARROSUCURSAL,em.IDENTIFICADOR,sp.NOMBRE_SUBPRODUCTO,tem.NOMBRE_EMPAQUE,vmp.CANTIDAD_EMPAQUE,\n" +
-"vmp.KILOS_VENDIDOS,vmp.PRECIO_PRODUCTO,vmp.TOTAL_VENTA, vmp.ID_V_M_P_PK,vmp.ID_VENTA_MAYOREO_FK from VENTAMAYOREOPRODUCTO vmp\n" +
-"join VENTA_MAYOREO vm\n" +
-"on vm.ID_VENTA_MAYOREO_PK = vmp.ID_VENTA_MAYOREO_FK\n" +
-"INNER JOIN tipo_empaque tem\n" +
-"on vmp.ID_TIPO_EMPAQUE_FK= tem.ID_TIPO_EMPAQUE_PK\n" +
-"INNER JOIN subproducto sp\n" +
-"on sp.id_subproducto_pk=vmp.ID_SUBPRODUCTO_FK\n" +
-"INNER JOIN EXISTENCIA_PRODUCTO exp\n" +
-"on exp.ID_EXP_PK = vmp.ID_EXISTENCIA_FK\n" +
-"INNER JOIN ENTRADAMERCANCIAPRODUCTO emp\n" +
-"on emp.ID_EMP_PK = exp.ID_EMP_FK\n" +
-"INNER JOIN ENTRADAMERCANCIA em\n" +
-"on em.ID_EM_PK = emp.ID_EM_FK\n" +
-"where vmp.ID_VENTA_MAYOREO_FK =?");
+        try {
+            Query query = em.createNativeQuery("select em.CARROSUCURSAL,em.IDENTIFICADOR,sp.NOMBRE_SUBPRODUCTO,tem.NOMBRE_EMPAQUE,vmp.CANTIDAD_EMPAQUE,\n"
+                    + "vmp.KILOS_VENDIDOS,vmp.PRECIO_PRODUCTO,vmp.TOTAL_VENTA, vmp.ID_V_M_P_PK,vmp.ID_VENTA_MAYOREO_FK from VENTAMAYOREOPRODUCTO vmp\n"
+                    + "join VENTA_MAYOREO vm\n"
+                    + "on vm.ID_VENTA_MAYOREO_PK = vmp.ID_VENTA_MAYOREO_FK\n"
+                    + "INNER JOIN tipo_empaque tem\n"
+                    + "on vmp.ID_TIPO_EMPAQUE_FK= tem.ID_TIPO_EMPAQUE_PK\n"
+                    + "INNER JOIN subproducto sp\n"
+                    + "on sp.id_subproducto_pk=vmp.ID_SUBPRODUCTO_FK\n"
+                    + "INNER JOIN EXISTENCIA_PRODUCTO exp\n"
+                    + "on exp.ID_EXP_PK = vmp.ID_EXISTENCIA_FK\n"
+                    + "INNER JOIN ENTRADAMERCANCIAPRODUCTO emp\n"
+                    + "on emp.ID_EMP_PK = exp.ID_EMP_FK\n"
+                    + "INNER JOIN ENTRADAMERCANCIA em\n"
+                    + "on em.ID_EM_PK = emp.ID_EM_FK\n"
+                    + "where vmp.ID_VENTA_MAYOREO_FK =?");
             query.setParameter(1, idVmFk);
-            System.out.println("Query: "+query.toString());
-            System.out.println("Parametro: "+idVmFk);
+            System.out.println("Query: " + query.toString());
+            System.out.println("Parametro: " + idVmFk);
             return query.getResultList();
-        } catch (Exception ex) 
-        {
+        } catch (Exception ex) {
             System.out.println("-----------------------Entro a Error----------------");
             Logger.getLogger(EjbVentaMayoreoProducto.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
-    
+
     }
 
     @Override
     public List<Object[]> buscaVentaCancelar(BigDecimal idVenta, BigDecimal idSucursal) {
-         System.out.println("EJB BuscaVentaCancelar ");
+        System.out.println("EJB BuscaVentaCancelar ");
         try {
 
             Query query = em.createNativeQuery("select vmp.ID_EXISTENCIA_FK,vmp.CANTIDAD_EMPAQUE,vmp.KILOS_VENDIDOS from VENTAMAYOREOPRODUCTO vmp\n"
@@ -99,10 +99,35 @@ public class EjbVentaMayoreoProducto implements NegocioVentaMayoreoProducto{
             Logger.getLogger(EjbBuscaVenta.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
-    
-    
+
     }
 
-    
-    
+    @Override
+    public List<Object[]> getVentaByIdSucursalAndCarro(BigDecimal idSucursal, BigDecimal carro) {
+        System.out.println("EJB BuscaVentaCancelar ");
+        try {
+
+            Query query = em.createNativeQuery("SELECT VMP.ID_SUBPRODUCTO_FK,SUM(VMP.CANTIDAD_EMPAQUE),SUM(VMP.KILOS_VENDIDOS),SUM(VMP.TOTAL_VENTA), "
+                    + "EM.CARROSUCURSAL,EMP.CONVENIO,EMP.ID_TIPO_CONVENIO_FK,EMP.CANTIDAD_EMPACAQUE,EMP.KILOS_TOTALES,EMP.ID_TIPO_EMPAQUE_FK FROM VENTAMAYOREOPRODUCTO VMP "
+                    + "INNER JOIN EXISTENCIA_PRODUCTO EXP ON EXP.ID_EXP_PK = VMP.ID_EXISTENCIA_FK "
+                    + "INNER JOIN ENTRADAMERCANCIAPRODUCTO EMP ON EMP.ID_EMP_PK = EXP.ID_EMP_FK "
+                    + "INNER JOIN ENTRADAMERCANCIA EM ON EM.ID_EM_PK = EMP.ID_EM_FK "
+                    + "INNER JOIN VENTA_MAYOREO VM ON VM.ID_VENTA_MAYOREO_PK = VMP.ID_VENTA_MAYOREO_FK "
+                    + "WHERE EM.ID_SUCURSAL_FK = ? AND VM.ID_STATUS_FK != 4 AND EM.CARROSUCURSAL = ? "
+                    + "GROUP BY EM.CARROSUCURSAL,EMP.CONVENIO,EMP.ID_TIPO_CONVENIO_FK,VMP.ID_SUBPRODUCTO_FK "
+                    + ",EMP.CANTIDAD_EMPACAQUE,EMP.KILOS_TOTALES,EMP.ID_TIPO_EMPAQUE_FK ORDER BY EM.CARROSUCURSAL ");
+            
+            query.setParameter(1, idSucursal);
+            query.setParameter(2, carro);
+
+            System.out.println(query);
+            return query.getResultList();
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbBuscaVenta.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+
+    }
+
 }

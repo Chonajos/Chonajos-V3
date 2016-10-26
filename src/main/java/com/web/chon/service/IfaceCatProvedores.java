@@ -38,4 +38,11 @@ public interface IfaceCatProvedores extends PaginacionService<Provedor,BigDecima
      */
     public ArrayList<Provedor> getProvedorByNombreCompleto(String nombreCompleto);
     
+    /**
+     * Obtiene una lista de provedores por medio del id de sucursal
+     * @param idSucursal
+     * @return 
+     */
+    public ArrayList<Provedor> getProvedoresByIdSucursal(BigDecimal idSucursal);
+    
 }

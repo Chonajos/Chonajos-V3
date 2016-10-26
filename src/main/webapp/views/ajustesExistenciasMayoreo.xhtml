@@ -104,6 +104,10 @@
                         <p:dataTable id="table" var="model" value="#{beanAjustesExistenciasMayoreo.model}" resizableColumns="false" style=" width: 100%;" editable="true" styleClass="ui-datatable-hor-scroll noPadding"  emptyMessage="No se encontraron Registros." >
                             <p:ajax event="rowEdit" listener="#{beanAjustesExistenciasMayoreo.onRowEdit}" update="table" />
                             <p:ajax event="rowEditCancel" listener="#{beanAjustesExistenciasMayoreo.onRowCancel}" update="table" />
+                            
+                             <p:column headerText="Id de exitencia producto" width="100px;" class="alignLeft">
+                                 <h:outputText value="#{model.idExistenciaProductoPk}" />
+                            </p:column>
                             <p:column headerText="Carro"   width="45px;" style="text-align:center">
                                 <h:outputText value="#{model.carroSucursal}">
                                 </h:outputText>

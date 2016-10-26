@@ -40,5 +40,12 @@ public interface NegocioEntradaMercancia {
     
     public List<Object[]> getEntradaByIdPk(BigDecimal idPk);
     
+    /**
+     * Obtiene los carros de las entradas de mercancia por medio del id de sucursal
+     * @param idPk
+     * @return 
+     */
+    public List<Object[]> getCarrosByIdSucursalAndIdProvedor(BigDecimal idSucursal,BigDecimal idProvedor,BigDecimal carro);
+    
     
 }

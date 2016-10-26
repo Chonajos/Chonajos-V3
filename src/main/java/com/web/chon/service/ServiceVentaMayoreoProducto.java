@@ -5,6 +5,7 @@
  */
 package com.web.chon.service;
 
+import com.web.chon.dominio.MayoreoProductoEntradaProducto;
 import com.web.chon.dominio.VentaProductoMayoreo;
 import com.web.chon.negocio.NegocioVentaMayoreoProducto;
 import com.web.chon.util.Utilidades;
@@ -96,7 +97,7 @@ public class ServiceVentaMayoreoProducto implements IfaceVentaMayoreoProducto {
     }
 
     @Override
-    public ArrayList<VentaProductoMayoreo> buscaVentaCancelar(BigDecimal  idVenta, BigDecimal  idSucursal) {
+    public ArrayList<VentaProductoMayoreo> buscaVentaCancelar(BigDecimal idVenta, BigDecimal idSucursal) {
         getEjb();
         try {
             ArrayList<VentaProductoMayoreo> lstVentas = new ArrayList<VentaProductoMayoreo>();
@@ -114,9 +115,81 @@ public class ServiceVentaMayoreoProducto implements IfaceVentaMayoreoProducto {
             return null;
 
         }
-    
-    
-    
+
+    }
+
+    @Override
+    public ArrayList<MayoreoProductoEntradaProducto> getVentaByIdSucursalAndCarro(BigDecimal idSucursal, BigDecimal carro) {
+        getEjb();
+        try {
+            ArrayList<MayoreoProductoEntradaProducto> lstMayoreoProductoEntradaProducto = new ArrayList<MayoreoProductoEntradaProducto>();
+            List<Object[]> lstObject = ejb.getVentaByIdSucursalAndCarro(idSucursal, carro);
+            for (Object[] obj : lstObject) {
+                MayoreoProductoEntradaProducto dominio = new MayoreoProductoEntradaProducto();
+
+                dominio.setIdSubProductofk(obj[0] == null ? null : obj[0].toString());
+                dominio.setEmpaquesVendidos(obj[1] == null ? new BigDecimal(0) : new BigDecimal(obj[1].toString()));
+                dominio.setKilosVendidos(obj[2] == null ? new BigDecimal(0) : new BigDecimal(obj[2].toString()));
+                dominio.setTotalVenta(obj[3] == null ? new BigDecimal(0) : new BigDecimal(obj[3].toString()));
+                dominio.setCarroSucursal(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
+                dominio.setConvenio(obj[5] == null ? new BigDecimal(0) : new BigDecimal(obj[5].toString()));
+                dominio.setIdConvenio(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
+                dominio.setEmpaqueEntrada(obj[7] == null ? new BigDecimal(0) : new BigDecimal(obj[7].toString()));
+                dominio.setKilosEntrada(obj[8] == null ? new BigDecimal(0) : new BigDecimal(obj[8].toString()));
+                dominio.setIdTipoEmpaqueFk(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
+
+                dominio.setComision(calculaComision(dominio));
+
+                lstMayoreoProductoEntradaProducto.add(dominio);
+            }
+            return lstMayoreoProductoEntradaProducto;
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceVentaMayoreoProducto.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+
+        }
+    }
+
+    private BigDecimal calculaComision(MayoreoProductoEntradaProducto dominio) {
+        BigDecimal comision = new BigDecimal(0);
+
+        switch (dominio.getIdConvenio().intValue()) {
+            case 1:
+                System.out.println("1");
+                BigDecimal kiloPromedio = dominio.getKilosEntrada().divide(dominio.getEmpaqueEntrada(), 3);
+                
+                System.out.println("kilos promedio "+kiloPromedio);
+                
+                comision = dominio.getTotalVenta().subtract((kiloPromedio.multiply(dominio.getEmpaquesVendidos()).multiply(dominio.getConvenio())));
+                
+                System.out.println("dominio.getEmpaquesVendidos() "+dominio.getEmpaquesVendidos());
+                System.out.println("convenio "+dominio.getConvenio());
+                System.out.println("comision " + comision);
+                break;
+            case 2:
+                System.out.println("2");
+                System.out.println("getConvenio 0 "+dominio.getConvenio());
+                dominio.setConvenio(dominio.getConvenio().divide(new BigDecimal(100)));
+                comision = dominio.getTotalVenta().multiply(dominio.getConvenio());
+                System.out.println("getConvenio "+dominio.getConvenio());
+                System.out.println("total venta "+dominio.getTotalVenta());
+                System.out.println("comision "+comision);
+                break;
+            case 3:
+                System.out.println("3");
+                System.out.println("kilos vendidos "+dominio.getKilosVendidos());
+                comision = dominio.getKilosVendidos().multiply(dominio.getConvenio());
+                
+                System.out.println("dominio convenio "+dominio.getConvenio());
+                System.out.println("comision "+comision);
+                break;
+            default:
+                break;
+
+        }
+
+        return comision;
+
     }
 
 }

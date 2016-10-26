@@ -46,7 +46,6 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
             query.setParameter(10, entrada.getFechaRemision());
             query.setParameter(11, entrada.getIdCarroSucursal());
             query.setParameter(12, entrada.getIdUsuario());
-            
 
             return query.executeUpdate();
 
@@ -83,13 +82,13 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
     @Override
     public List<Object[]> getEntradaProductoByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idProvedor) {
         int cont = 0;
-        StringBuffer query = new StringBuffer("SELECT EMA.ID_EM_PK,EMA.ID_PROVEDOR_FK,EMA.MOVIMIENTO,EMA.FECHA,EMA.REMISION,EMA.ID_SUCURSAL_FK,EMA.IDENTIFICADOR,\n" +
-"EMA.ID_STATUS_FK,EMA.KILOSTOTALES,EMA.KILOSTOTALESPROVEDOR,EMA.COMENTARIOS,EMA.FECHAREMISION,PRO.NOMBRE_PROVEDOR ||' '|| PRO.A_PATERNO_PROVE ||' '|| \n" +
-"PRO.A_MATERNO_PROVE AS NOMBRE_PROVEDOR, SUC.NOMBRE_SUCURSAL,EMA.CARROSUCURSAL,EMA.COMENTARIOS FROM ENTRADAMERCANCIA EMA \n" +
-"LEFT JOIN PROVEDORES PRO \n" +
-"ON EMA.ID_PROVEDOR_FK = PRO.ID_PROVEDOR_PK\n" +
-"LEFT JOIN SUCURSAL SUC \n" +
-"ON EMA.ID_SUCURSAL_FK = SUC.ID_SUCURSAL_PK");
+        StringBuffer query = new StringBuffer("SELECT EMA.ID_EM_PK,EMA.ID_PROVEDOR_FK,EMA.MOVIMIENTO,EMA.FECHA,EMA.REMISION,EMA.ID_SUCURSAL_FK,EMA.IDENTIFICADOR,\n"
+                + "EMA.ID_STATUS_FK,EMA.KILOSTOTALES,EMA.KILOSTOTALESPROVEDOR,EMA.COMENTARIOS,EMA.FECHAREMISION,PRO.NOMBRE_PROVEDOR ||' '|| PRO.A_PATERNO_PROVE ||' '|| \n"
+                + "PRO.A_MATERNO_PROVE AS NOMBRE_PROVEDOR, SUC.NOMBRE_SUCURSAL,EMA.CARROSUCURSAL,EMA.COMENTARIOS FROM ENTRADAMERCANCIA EMA \n"
+                + "LEFT JOIN PROVEDORES PRO \n"
+                + "ON EMA.ID_PROVEDOR_FK = PRO.ID_PROVEDOR_PK\n"
+                + "LEFT JOIN SUCURSAL SUC \n"
+                + "ON EMA.ID_SUCURSAL_FK = SUC.ID_SUCURSAL_PK");
         if (fechaInicio != null) {
             cont++;
             query.append(" WHERE TO_DATE(TO_CHAR(EMA.FECHA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + TiempoUtil.getFechaDDMMYY(fechaInicio) + "' AND '" + TiempoUtil.getFechaDDMMYY(fechaFin) + "' ");
@@ -141,13 +140,13 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
         Query query = em.createNativeQuery("select count(*) from ENTRADAMERCANCIA where ID_SUCURSAL_FK=?");
         query.setParameter(1, idSucursal);
         return Integer.parseInt(query.getSingleResult().toString());
-        
+
     }
+
     @Override
     public int deleteEntradaMercancia(EntradaMercancia entrada) {
         //System.out.println("EJB_DELETE EntradaMercancia");
-        try 
-        {
+        try {
             Query query = em.createNativeQuery("delete from ENTRADAMERCANCIA em where em.ID_EM_PK =?");
             query.setParameter(1, entrada.getIdEmPK());
             return query.executeUpdate();
@@ -159,7 +158,7 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
 
     @Override
     public int updateEntradaMercancia(EntradaMercancia entrada) {
-        
+
         //System.out.println("EJB_UPDATE_ENTRADAMERCANCIA");
         try {
             //System.out.println("Entrada: " + entrada);
@@ -186,28 +185,73 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
             Logger.getLogger(EjbCatSucursales.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
-        
+
     }
 
     @Override
     public List<Object[]> getEntradaByIdEmPFk(BigDecimal idEmPFk) {
         //System.out.println("EJB_getEntradaByIdEmPFk: "+idEmPFk);
-        Query query = em.createNativeQuery("select em.* from ENTRADAMERCANCIA em\n" +
-"inner join ENTRADAMERCANCIAPRODUCTO emp\n" +
-"on emp.ID_EM_FK = em.ID_EM_PK\n" +
-"where emp.ID_EMP_PK= ? ");
+        Query query = em.createNativeQuery("select em.* from ENTRADAMERCANCIA em\n"
+                + "inner join ENTRADAMERCANCIAPRODUCTO emp\n"
+                + "on emp.ID_EM_FK = em.ID_EM_PK\n"
+                + "where emp.ID_EMP_PK= ? ");
         query.setParameter(1, idEmPFk);
         return query.getResultList();
-    
+
     }
 
     @Override
     public List<Object[]> getEntradaByIdPk(BigDecimal idPk) {
         //System.out.println("EJB_getEntradaByIdPkk: "+idPk);
-        Query query = em.createNativeQuery("select em.* from ENTRADAMERCANCIA em\n" +
-"where em.ID_EM_PK = ?");
+        Query query = em.createNativeQuery("select em.* from ENTRADAMERCANCIA em\n"
+                + "where em.ID_EM_PK = ?");
         query.setParameter(1, idPk);
         return query.getResultList();
-    
+
+    }
+
+    @Override
+    public List<Object[]> getCarrosByIdSucursalAndIdProvedor(BigDecimal idSucursal, BigDecimal idProvedor, BigDecimal carro) {
+
+        try {
+            StringBuffer txtQuery = new StringBuffer("SELECT ENM.CARROSUCURSAL,ENM.IDENTIFICADOR,ENM.FECHA, PRO.NOMBRE_PROVEDOR||' '||PRO.A_PATERNO_PROVE||' '||PRO.A_MATERNO_PROVE AS NOMBRE_PROVEDOR FROM ENTRADAMERCANCIA ENM "
+                    + "INNER JOIN PROVEDORES PRO ON PRO.ID_PROVEDOR_PK = ENM.ID_PROVEDOR_FK");
+
+            int cont = 0;
+            if (idProvedor != null) {
+                cont++;
+                txtQuery.append(" WHERE ENM.ID_PROVEDOR_FK=" + idProvedor);
+            }
+
+            if (idSucursal != null) {
+
+                cont++;
+                if (cont != 0) {
+                    txtQuery.append(" AND ENM.ID_SUCURSAL_FK=" + idSucursal);
+                } else {
+                    txtQuery.append(" WHERE ENM.ID_SUCURSAL_FK =" + idSucursal);
+                }
+            }
+            
+            if (carro != null) {
+
+                if (cont != 0) {
+                    txtQuery.append(" AND ENM.CARROSUCURSAL =" + carro);
+                } else {
+                    txtQuery.append(" WHERE ENM.CARROSUCURSAL =" + carro);
+                }
+            }
+
+            txtQuery.append(" ORDER BY ENM.CARROSUCURSAL ASC");
+
+            Query query = em.createNativeQuery(txtQuery.toString());
+
+            return query.getResultList();
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbCatSucursales.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+
     }
 }

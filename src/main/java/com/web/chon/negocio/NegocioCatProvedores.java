@@ -39,4 +39,6 @@ public List<Object[]> getProvedores();
     
     public List<Object[]> getById(BigDecimal idProvedor);
     
+    public List<Object[]> getProvedoresByIdSucursal(BigDecimal idSucursal);
+    
 }

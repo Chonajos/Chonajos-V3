@@ -112,13 +112,10 @@ public class BeanEntregaMercancia implements Serializable {
     public void print() {
 
         int insertEntregaMercancia = 0;
-
-        System.out.println("print");
         boolean validaEntregaTotal = true;
 
         if (model != null && !model.isEmpty()) {
             for (EntregaMercancia dominio : model) {
-                System.out.println("for");
                 if (dominio.getEmpaquesEntregar() != null && dominio.getEmpaquesEntregar().compareTo(BIGDECIMAL_ZERO) != 0) {
                     if (dominio.getEmpaquesRemanente().compareTo(dominio.getEmpaquesEntregar().add(dominio.getEmpaquesEntregados())) == -1) {
                         JsfUtil.addErrorMessage("La cantidad de paquetes o de kilos a entregar es mayor a la de la venta.");
@@ -127,10 +124,8 @@ public class BeanEntregaMercancia implements Serializable {
                     } else {
 
                         if (dominio.getEmpaquesRemanente().compareTo(dominio.getEmpaquesEntregar().add(dominio.getEmpaquesEntregados())) == 0 && validaEntregaTotal) {
-                            System.out.println("for true");
                             validaEntregaTotal = true;
                         } else {
-                            System.out.println("for false");
                             validaEntregaTotal = false;
                         }
 

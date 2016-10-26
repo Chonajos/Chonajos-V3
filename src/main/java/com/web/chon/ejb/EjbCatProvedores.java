@@ -233,9 +233,24 @@ public class EjbCatProvedores implements NegocioCatProvedores {
 
     @Override
     public List<Object[]> getById(BigDecimal idProvedor) {
-          Query query = em.createNativeQuery("SELECT * FROM PROVEDORES WHERE ID_PROVEDOR_PK = ?");
-          query.setParameter(1, idProvedor);
+        Query query = em.createNativeQuery("SELECT * FROM PROVEDORES WHERE ID_PROVEDOR_PK = ?");
+        query.setParameter(1, idProvedor);
         return query.getResultList();
+    }
+
+    @Override
+    public List<Object[]> getProvedoresByIdSucursal(BigDecimal idSucursal) {
+        try {
+            Query query = em.createNativeQuery("SELECT UNIQUE(PRO.ID_PROVEDOR_PK), PRO.NOMBRE_PROVEDOR ||' '||PRO.A_PATERNO_PROVE||' '||PRO.A_MATERNO_PROVE AS NOMBRE_COMPLETO, "
+                    + "PRO.CALLE_PROVE,PRO.CORREO,PRO.EMPRESA,PRO.TELEFONO_MOVIL_PROVE from PROVEDORES PRO "
+                    + "LEFT JOIN ENTRADAMERCANCIA ENM ON ENM.ID_PROVEDOR_FK = pro.ID_PROVEDOR_PK WHERE ENM.ID_SUCURSAL_FK =? ORDER BY NOMBRE_COMPLETO ASC");
+            query.setParameter(1, idSucursal);
+            return query.getResultList();
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbCatSucursales.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 
 }

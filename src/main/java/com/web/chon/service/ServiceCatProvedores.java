@@ -243,4 +243,30 @@ public class ServiceCatProvedores implements IfaceCatProvedores {
         return lstProvedor;
 
     }
+
+    @Override
+    public ArrayList<Provedor> getProvedoresByIdSucursal(BigDecimal idSucursal) {
+
+        getEjb();
+
+        ArrayList<Provedor> lstProvedor = new ArrayList<Provedor>();
+        List<Object[]> lstObject = ejb.getProvedoresByIdSucursal(idSucursal);
+
+        for (Object[] obj : lstObject) {
+
+            Provedor dominio = new Provedor();
+
+            dominio.setIdProvedorPK(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+            dominio.setNombreProvedor(obj[1] == null ? "" : obj[1].toString());
+            dominio.setCalleProve(obj[2] == null ? "" : obj[2].toString());
+            dominio.setCorreo(obj[3] == null ? "" : obj[3].toString());
+            dominio.setEmpresa(obj[4] == null ? "" : obj[4].toString());
+            dominio.setTelefonoFijoMovil(obj[5] == null ? 0 : Integer.parseInt(obj[5].toString()));
+
+            lstProvedor.add(dominio);
+
+        }
+
+        return lstProvedor;
+    }
 }

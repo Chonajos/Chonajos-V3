@@ -5,9 +5,8 @@
  */
 package com.web.chon.service;
 
-import com.web.chon.dominio.RelacionOperacionesMayoreo;
+import com.web.chon.dominio.OperacionesVentasMayoreo;
 import com.web.chon.dominio.VentaMayoreo;
-import com.web.chon.dominio.VentaProductoMayoreo;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,6 +35,8 @@ public interface IfaceVentaMayoreo {
     public int updateEstatusVentaByFolioSucursalAndIdSucursal(BigDecimal folioSucursal, BigDecimal idSucursal, BigDecimal estatusVenta);
 
     public int cancelarVentaMayoreo(BigDecimal idVenta,BigDecimal idUsuario,String comentarios);
+    
+    public ArrayList<OperacionesVentasMayoreo> getReporteVentasByCarroAndIdSucursalAndTipoVenta(BigDecimal carro, BigDecimal idSucursal,BigDecimal idTipoVenta);
     
 
 }

@@ -1,11 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.web.chon.service;
 
 import com.web.chon.core.service.PaginacionService;
+import com.web.chon.dominio.CarroDetalleGeneral;
 import com.web.chon.dominio.EntradaMercancia;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -45,4 +42,20 @@ public interface IfaceEntradaMercancia extends PaginacionService<EntradaMercanci
     public ArrayList<EntradaMercancia> getSubEntradaByNombre(String nombre);
     
     public int deleteEntradaMercancia(EntradaMercancia entrada);
+    
+    /**
+     * Obtiene una lista de los carros por medio del id de la sucursal y/o id del provedor
+     * @param idSucursal
+     * @param idProvedor
+     * @return 
+     */
+    public ArrayList<EntradaMercancia> getCarrosByIdSucursalAnsIdProvedor(BigDecimal idSucursal ,BigDecimal idProvedor);
+    
+    /**
+     * Obtiene una lista de los carros y sus datos generales por medio del id de la sucursal y/o id del provedor
+     * @param idSucursal
+     * @param idProvedor
+     * @return 
+     */
+    public ArrayList<CarroDetalleGeneral> getReporteGeneralCarro(BigDecimal idSucursal ,BigDecimal idProvedor,BigDecimal carro);
 }

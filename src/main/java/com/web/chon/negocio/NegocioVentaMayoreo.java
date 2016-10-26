@@ -30,6 +30,24 @@ public interface NegocioVentaMayoreo {
     public int cancelarVentaMayoreo(BigDecimal idVenta, BigDecimal idUsuario,String comentarios);
     
     public List<Object[]>  getVentaMayoreoByFolioidSucursalFk(BigDecimal idFolio, BigDecimal idSucursal);
+    
+    /**
+     * obtiene le detalle del reporte de ventas
+     * @param carro
+     * @param idSucursal
+     * @param idTipoVenta
+     * @return 
+     */
+    public List<Object[]> getDetalleReporteVentas(BigDecimal carro, BigDecimal idSucursal,BigDecimal idTipoVenta);
+    
+    /**
+     * Obtiene los datos principales del reporte de ventas
+     * @param carro
+     * @param idSucursal
+     * @param idTipoVenta
+     * @return 
+     */
+    public List<Object[]> getReporteVentas(BigDecimal carro, BigDecimal idSucursal,BigDecimal idTipoVenta);
 
     
     }

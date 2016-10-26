@@ -22,10 +22,10 @@ import org.jboss.logging.Logger;
  */
 @Stateless(mappedName = "ejbVentaMayoreo")
 public class EjbVentaMayoreo implements NegocioVentaMayoreo {
-
+    
     @PersistenceContext(unitName = "persistenceJR")
     EntityManager em;
-
+    
     @Override
     public int insertarVenta(VentaMayoreo venta) {
         Query query = em.createNativeQuery("INSERT INTO VENTA_MAYOREO(ID_VENTA_MAYOREO_PK,ID_CLIENTE_FK,ID_VENDEDOR_FK,FECHA_VENTA,ID_SUCURSAL_FK,ID_TIPO_VENTA_FK,ID_STATUS_FK,VENTASUCURSAL) VALUES(?,?,?,sysdate,?,?,?,?)");
@@ -38,14 +38,14 @@ public class EjbVentaMayoreo implements NegocioVentaMayoreo {
         query.setParameter(7, venta.getVentaSucursal());
         return query.executeUpdate();
     }
-
+    
     @Override
     public int getNextVal() {
         Query query = em.createNativeQuery("SELECT s_venta_Mayoreo.nextVal FROM DUAL");
         return Integer.parseInt(query.getSingleResult().toString());
-
+        
     }
-
+    
     @Override
     public List<Object[]> getVentasByInterval(String fechaInicio, String fechaFin, BigDecimal idSucursal, BigDecimal idStatusVenta, BigDecimal idTipoVenta) {
         Query query;
@@ -75,50 +75,50 @@ public class EjbVentaMayoreo implements NegocioVentaMayoreo {
                 + " INNER JOIN CLIENTE CLI ON CLI.ID_CLIENTE = ven.ID_CLIENTE_FK "
                 + " INNER JOIN USUARIO USU ON USU.ID_USUARIO_PK = ven.ID_VENDEDOR_FK "
                 + " INNER JOIN TIPO_VENTA TV ON TV.ID_TIPO_VENTA_PK = ven.ID_TIPO_VENTA_FK ");
-
+        
         if (!fechaInicio.equals("")) {
             cont++;
             cadena.append(" WHERE TO_DATE(TO_CHAR(ven.FECHA_VENTA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "' ");
         }
-
+        
         if (idSucursal != null && idSucursal.intValue() != 0) {
             if (cont == 0) {
                 cadena.append(" WHERE ");
             } else {
                 cadena.append(" AND ");
             }
-
+            
             cadena.append(" ven.ID_SUCURSAL_FK = '" + idSucursal + "' ");
             cont++;
-
+            
         }
-
+        
         if (idTipoVenta != null && idTipoVenta.intValue() != 0) {
             if (cont == 0) {
                 cadena.append(" WHERE ");
             } else {
                 cadena.append(" AND ");
             }
-
+            
             cadena.append("ven.ID_TIPO_VENTA_FK = '" + idTipoVenta + "' ");
             cont++;
         }
-
+        
         if (idStatusVenta != null && idStatusVenta.intValue() != 0) {
             if (cont == 0) {
                 cadena.append(" WHERE ");
             } else {
                 cadena.append(" AND ");
             }
-
+            
             cadena.append(" ven.ID_STATUS_FK  = '" + idStatusVenta + "' ");
             cont++;
         }
-
+        
         cadena.append(" ORDER BY ven.ID_VENTA_MAYOREO_PK");
-
+        
         query = em.createNativeQuery(cadena.toString());
-
+        
         try {
             System.out.println("" + cadena.toString());
             List<Object[]> lstObject = query.getResultList();
@@ -127,35 +127,35 @@ public class EjbVentaMayoreo implements NegocioVentaMayoreo {
             System.out.println("Error >" + e.getMessage());
             return null;
         }
-
+        
     }
-
+    
     @Override
     public int getVentaSucursal(BigDecimal idSucursal) {
         Query query = em.createNativeQuery("select NVL(max(VENTASUCURSAL),0) from VENTA_MAYOREO where ID_SUCURSAL_FK=?");
         query.setParameter(1, idSucursal);
         return Integer.parseInt(query.getSingleResult().toString());
     }
-
+    
     @Override
     public int updateEstatusVentaByFolioSucursalAndIdSucursal(BigDecimal folioSucursal, BigDecimal idSucursal, BigDecimal estatusVenta) {
         try {
             Query query = em.createNativeQuery("UPDATE VENTA_MAYOREO SET ID_STATUS_FK = ? WHERE ID_SUCURSAL_FK = ? AND VENTASUCURSAL =?");
-
+            
             query.setParameter(1, estatusVenta);
             query.setParameter(2, idSucursal);
             query.setParameter(3, folioSucursal);
-
+            
             return query.executeUpdate();
-
+            
         } catch (Exception ex) {
             System.out.println("Error >" + ex.getMessage());
             Logger.getLogger(EjbVentaMayoreo.class).log(Logger.Level.FATAL, ex);
             return 0;
-
+            
         }
     }
-
+    
     @Override
     public int cancelarVentaMayoreo(BigDecimal idVenta, BigDecimal idUsuario, String comentarios) {
         System.out.println("idVenta: " + idVenta);
@@ -168,30 +168,30 @@ public class EjbVentaMayoreo implements NegocioVentaMayoreo {
             query.setParameter(3, comentarios);
             query.setParameter(4, idVenta);
             return query.executeUpdate();
-
+            
         } catch (Exception ex) {
-
+            
             java.util.logging.Logger.getLogger(EjbBuscaVenta.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
-
+        
     }
-
+    
     @Override
     public List<Object[]> getVentaMayoreoByFolioidSucursalFk(BigDecimal idFolio, BigDecimal idSucursal) {
         try {
-            Query query = em.createNativeQuery("select vm.ID_VENTA_MAYOREO_PK,vm.ID_CLIENTE_FK,vm.ID_VENDEDOR_FK,vm.FECHA_VENTA,\n" +
-"vm.FECHA_PROMESA_PAGO,vm.ID_STATUS_FK,vm.FECHA_PAGO,vm.ID_SUCURSAL_FK, vm.ID_TIPO_VENTA_FK,\n" +
-"vm.VENTASUCURSAL, vm.ID_CAJERO_FK, vm.ID_USER_CANCEL_FK, vm.FECHA_CANCELACION,vm.COMENTARIOS_CANCEL,\n" +
-"(CLI.NOMBRE||' '||CLI.APELLIDO_PATERNO ||' '||CLI.APELLIDO_MATERNO ) AS CLIENTE,\n" +
-"(usu.NOMBRE_USUARIO||' '||usu.APATERNO_USUARIO ||' '||usu.AMATERNO_USUARIO ) AS Vendedor,\n" +
-"tv.NOMBRE_TIPO_VENTA, sv.NOMBRE_STATUS\n" +
-"from VENTA_MAYOREO vm \n" +
-"inner join CLIENTE cli on cli.ID_CLIENTE = vm.ID_CLIENTE_FK\n" +
-"inner join USUARIO usu on usu.ID_USUARIO_PK = vm.ID_VENDEDOR_FK\n" +
-"inner join TIPO_VENTA tv on tv.ID_TIPO_VENTA_PK = vm.ID_TIPO_VENTA_FK\n" +
-"inner join STATUS_VENTA sv on sv.ID_STATUS_PK = vm.ID_STATUS_FK\n" +
-"where vm.VENTASUCURSAL= ? and vm.ID_SUCURSAL_FK = ?");
+            Query query = em.createNativeQuery("select vm.ID_VENTA_MAYOREO_PK,vm.ID_CLIENTE_FK,vm.ID_VENDEDOR_FK,vm.FECHA_VENTA,\n"
+                    + "vm.FECHA_PROMESA_PAGO,vm.ID_STATUS_FK,vm.FECHA_PAGO,vm.ID_SUCURSAL_FK, vm.ID_TIPO_VENTA_FK,\n"
+                    + "vm.VENTASUCURSAL, vm.ID_CAJERO_FK, vm.ID_USER_CANCEL_FK, vm.FECHA_CANCELACION,vm.COMENTARIOS_CANCEL,\n"
+                    + "(CLI.NOMBRE||' '||CLI.APELLIDO_PATERNO ||' '||CLI.APELLIDO_MATERNO ) AS CLIENTE,\n"
+                    + "(usu.NOMBRE_USUARIO||' '||usu.APATERNO_USUARIO ||' '||usu.AMATERNO_USUARIO ) AS Vendedor,\n"
+                    + "tv.NOMBRE_TIPO_VENTA, sv.NOMBRE_STATUS\n"
+                    + "from VENTA_MAYOREO vm \n"
+                    + "inner join CLIENTE cli on cli.ID_CLIENTE = vm.ID_CLIENTE_FK\n"
+                    + "inner join USUARIO usu on usu.ID_USUARIO_PK = vm.ID_VENDEDOR_FK\n"
+                    + "inner join TIPO_VENTA tv on tv.ID_TIPO_VENTA_PK = vm.ID_TIPO_VENTA_FK\n"
+                    + "inner join STATUS_VENTA sv on sv.ID_STATUS_PK = vm.ID_STATUS_FK\n"
+                    + "where vm.VENTASUCURSAL= ? and vm.ID_SUCURSAL_FK = ?");
             query.setParameter(1, idFolio);
             query.setParameter(2, idSucursal);
             return query.getResultList();
@@ -199,7 +199,70 @@ public class EjbVentaMayoreo implements NegocioVentaMayoreo {
             java.util.logging.Logger.getLogger(EjbVentaMayoreo.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
-
+        
     }
+    
+    @Override
+    public List<Object[]> getDetalleReporteVentas(BigDecimal carro, BigDecimal idSucursal, BigDecimal idTipoVenta) {
+        
+        try {
+            StringBuffer txtQuery = new StringBuffer("SELECT ENM.CARROSUCURSAL,EMP.ID_SUBPRODUCTO_FK,SUB.NOMBRE_SUBPRODUCTO, "
+                    + "EMP.ID_TIPO_EMPAQUE_FK,TE.NOMBRE_EMPAQUE,EMP.CANTIDAD_EMPACAQUE,EMP.KILOS_TOTALES,VMP.CANTIDAD_EMPAQUE,VMP.KILOS_VENDIDOS, "
+                    + "VMP.PRECIO_PRODUCTO,EMP.CONVENIO,EMP.ID_TIPO_CONVENIO_FK,VM.FECHA_VENTA,VM.ID_CLIENTE_FK, "
+                    + "CLI.NOMBRE ||' '||CLI.APELLIDO_PATERNO ||' '|| CLI.APELLIDO_MATERNO AS NOMBRE_CLIENTE FROM ENTRADAMERCANCIA ENM "
+                    + "RIGHT JOIN ENTRADAMERCANCIAPRODUCTO EMP ON EMP.ID_EM_FK = ENM.ID_EM_PK "
+                    + "RIGHT JOIN SUBPRODUCTO SUB ON SUB.ID_SUBPRODUCTO_PK = EMP.ID_SUBPRODUCTO_FK "
+                    + "RIGHT JOIN TIPO_EMPAQUE TE ON TE.ID_TIPO_EMPAQUE_PK = EMP.ID_TIPO_EMPAQUE_FK "
+                    + "RIGHT JOIN EXISTENCIA_PRODUCTO EXP ON EXP.ID_EMP_FK = EMP.ID_EMP_PK "
+                    + "RIGHT JOIN VENTAMAYOREOPRODUCTO VMP ON VMP.ID_EXISTENCIA_FK = EXP.ID_EXP_PK "//LLEVAVA LEF PARA MOSTRAR INCLUSO LOS PRODUCTOS QUE NO SE AN ECHO VENTAS
+                    + "RIGHT JOIN VENTA_MAYOREO VM ON VM.ID_VENTA_MAYOREO_PK = VMP.ID_VENTA_MAYOREO_FK "
+                    + "RIGHT JOIN CLIENTE CLI ON CLI.ID_CLIENTE = VM.ID_CLIENTE_FK "
+                    + "WHERE ENM.ID_SUCURSAL_FK =" + idSucursal + " AND ENM.CARROSUCURSAL =" + carro + " AND VM.ID_STATUS_FK !=4");
+            
+            if (idTipoVenta != null) {
+                txtQuery.append(" AND VM.ID_TIPO_VENTA_FK =" + idTipoVenta);
+            }
+            txtQuery.append(" ORDER BY SUB.ID_SUBPRODUCTO_PK, VM.FECHA_VENTA");
 
+            Query query = em.createNativeQuery(txtQuery.toString());
+            
+            return query.getResultList();
+        } catch (Exception ex) {
+            java.util.logging.Logger.getLogger(EjbVentaMayoreo.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+        
+    }
+    
+    @Override
+    public List<Object[]> getReporteVentas(BigDecimal carro, BigDecimal idSucursal, BigDecimal idTipoVenta) {
+        
+        try {
+            StringBuffer txtQuery = new StringBuffer("SELECT ENM.CARROSUCURSAL,EMP.ID_SUBPRODUCTO_FK,SUB.NOMBRE_SUBPRODUCTO, "
+                    + "EMP.ID_TIPO_EMPAQUE_FK,TE.NOMBRE_EMPAQUE,EMP.CANTIDAD_EMPACAQUE,EMP.KILOS_TOTALES,SUM(VMP.CANTIDAD_EMPAQUE),SUM(VMP.KILOS_VENDIDOS), "
+                    + "ROUND(AVG(VMP.PRECIO_PRODUCTO),2),EMP.CONVENIO,EMP.ID_TIPO_CONVENIO_FK FROM ENTRADAMERCANCIA ENM "
+                    + "RIGHT JOIN ENTRADAMERCANCIAPRODUCTO EMP ON EMP.ID_EM_FK = ENM.ID_EM_PK "
+                    + "RIGHT JOIN SUBPRODUCTO SUB ON SUB.ID_SUBPRODUCTO_PK = EMP.ID_SUBPRODUCTO_FK "
+                    + "RIGHT JOIN TIPO_EMPAQUE TE ON TE.ID_TIPO_EMPAQUE_PK = EMP.ID_TIPO_EMPAQUE_FK "
+                    + "RIGHT JOIN EXISTENCIA_PRODUCTO EXP ON EXP.ID_EMP_FK = EMP.ID_EMP_PK "
+                    + "LEFT JOIN VENTAMAYOREOPRODUCTO VMP ON VMP.ID_EXISTENCIA_FK = EXP.ID_EXP_PK "
+                    + "LEFT JOIN VENTA_MAYOREO VM ON VM.ID_VENTA_MAYOREO_PK = VMP.ID_VENTA_MAYOREO_FK "
+                    + "LEFT JOIN CLIENTE CLI ON CLI.ID_CLIENTE = VM.ID_CLIENTE_FK "
+                    + "WHERE ENM.ID_SUCURSAL_FK =" + idSucursal + " AND VM.ID_STATUS_FK !=4 AND ENM.CARROSUCURSAL =" + carro);
+            
+            if (idTipoVenta != null) {
+                txtQuery.append(" AND VM.ID_TIPO_VENTA_FK =" + idTipoVenta);
+            }
+            
+            txtQuery.append(" GROUP BY ENM.CARROSUCURSAL,EMP.ID_SUBPRODUCTO_FK,SUB.NOMBRE_SUBPRODUCTO, "
+                    + " EMP.ID_TIPO_EMPAQUE_FK,TE.NOMBRE_EMPAQUE,EMP.CANTIDAD_EMPACAQUE,EMP.KILOS_TOTALES,EMP.CONVENIO,EMP.ID_TIPO_CONVENIO_FK");
+            Query query = em.createNativeQuery(txtQuery.toString());
+            
+            return query.getResultList();
+        } catch (Exception ex) {
+            java.util.logging.Logger.getLogger(EjbVentaMayoreo.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+    
 }

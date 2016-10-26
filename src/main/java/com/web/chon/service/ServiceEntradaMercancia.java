@@ -1,6 +1,8 @@
 package com.web.chon.service;
 
+import com.web.chon.dominio.CarroDetalleGeneral;
 import com.web.chon.dominio.EntradaMercancia;
+import com.web.chon.dominio.MayoreoProductoEntradaProducto;
 import com.web.chon.dominio.Pagina;
 
 import com.web.chon.negocio.NegocioEntradaMercancia;
@@ -22,7 +24,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
 
-    @Autowired IfaceEntradaMercanciaProducto ifaceEntradaMercanciaProducto;
+    @Autowired
+    IfaceEntradaMercanciaProducto ifaceEntradaMercanciaProducto;
+    @Autowired
+    IfaceVentaMayoreoProducto ifaceVentaMayoreoProducto;
     NegocioEntradaMercancia ejb;
 
     public void getEjb() {
@@ -120,23 +125,22 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
             entra.setIdEmPK(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
             entra.setFolio(obj[1] == null ? "" : obj[1].toString());
         }
-    
-    return entra ;
-}
 
-@Override
-        public EntradaMercancia getById(String dominio) {
+        return entra;
+    }
+
+    @Override
+    public EntradaMercancia getById(String dominio) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-        public int create(EntradaMercancia dominio) {
+    public int create(EntradaMercancia dominio) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-        public int update(EntradaMercancia dominio) 
-        {
+    public int update(EntradaMercancia dominio) {
         getEjb();
         try {
             return ejb.updateEntradaMercancia(dominio);
@@ -145,51 +149,50 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
             Logger.getLogger(ServiceEntradaMercancia.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
-        
-        }
+
+    }
 
     @Override
-        public List<EntradaMercancia> getAll() {
+    public List<EntradaMercancia> getAll() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-        public int delete(BigDecimal id) {
+    public int delete(BigDecimal id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-        public ArrayList<EntradaMercancia> getSubEntradaByNombre(String nombre) {
-        System.out.println("Entro a Servicio, clave: "+nombre);
+    public ArrayList<EntradaMercancia> getSubEntradaByNombre(String nombre) {
+        System.out.println("Entro a Servicio, clave: " + nombre);
         try {
             ArrayList<EntradaMercancia> lstEntradas = new ArrayList<EntradaMercancia>();
-          
+
             getEjb();
-           List<Object[]> object = ejb.getSubEntradaByNombre(nombre);
+            List<Object[]> object = ejb.getSubEntradaByNombre(nombre);
 
             for (Object[] obj : object) {
 
                 EntradaMercancia entrada = new EntradaMercancia();
-                entrada.setIdEmPK(obj[0] == null ? null:new BigDecimal(obj[0].toString()));
+                entrada.setIdEmPK(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
                 entrada.setFolio(obj[1] == null ? "" : obj[1].toString());
 
                 lstEntradas.add(entrada);
             }
 
             return lstEntradas;
-        
 
-} catch (Exception ex) {
+        } catch (Exception ex) {
             Logger.getLogger(ServiceEntradaMercancia.class
-.getName()).log(Level.SEVERE, null, ex);
+                    .getName()).log(Level.SEVERE, null, ex);
             return null;
         }
-    
+
     }
 
     @Override
     public int getCarroSucursal(BigDecimal idSucursal) {
-       getEjb();
+        getEjb();
         try {
             return ejb.getCarroSucursal(idSucursal);
         } catch (Exception ex) {
@@ -211,19 +214,19 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
 
     @Override
     public int updateEntradaMercancia(EntradaMercancia entrada) {
-       getEjb();
+        getEjb();
         try {
             return ejb.updateEntradaMercancia(entrada);
         } catch (Exception ex) {
             Logger.getLogger(ServiceEntradaMercancia.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
-    
+
     }
 
     @Override
     public EntradaMercancia getEntradaByIdEmPFk(BigDecimal idEmPFk) {
-       getEjb();
+        getEjb();
         List<Object[]> lstObject = new ArrayList<Object[]>();
         lstObject = ejb.getEntradaByIdEmPFk(idEmPFk);
         EntradaMercancia dominio = new EntradaMercancia();
@@ -240,15 +243,14 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
             dominio.setKilosTotalesProvedor(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
             dominio.setComentariosGenerales(obj[10] == null ? " " : obj[10].toString());
             dominio.setFechaRemision(obj[11] == null ? null : (Date) obj[11]);
-            
-            
+
             dominio.setIdUsuario(obj[14] == null ? null : new BigDecimal(obj[14].toString()));
             dominio.setIdCarroSucursal(obj[15] == null ? null : new BigDecimal(obj[15].toString()));
-            
+
             dominio.setListaProductos(ifaceEntradaMercanciaProducto.getEntradaProductoByIdEM(dominio.getIdEmPK()));
         }
         return dominio;
-    
+
     }
 
     @Override
@@ -277,4 +279,73 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
         return dominio;
     }
 
+    @Override
+    public ArrayList<EntradaMercancia> getCarrosByIdSucursalAnsIdProvedor(BigDecimal idSucursal, BigDecimal idProvedor) {
+
+        getEjb();
+
+        List<Object[]> lstObject = new ArrayList<Object[]>();
+        ArrayList<EntradaMercancia> lstEntradaMercancia = new ArrayList<EntradaMercancia>();
+
+        lstObject = ejb.getCarrosByIdSucursalAndIdProvedor(idSucursal, idProvedor, null);
+        for (Object[] obj : lstObject) {
+
+            EntradaMercancia dominio = new EntradaMercancia();
+
+            dominio.setIdCarroSucursal(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+            dominio.setRemision(obj[1] == null ? null : obj[1].toString());
+
+            lstEntradaMercancia.add(dominio);
+        }
+
+        return lstEntradaMercancia;
+    }
+
+    @Override
+    public ArrayList<CarroDetalleGeneral> getReporteGeneralCarro(BigDecimal idSucursal, BigDecimal idProvedor, BigDecimal carro) {
+
+        getEjb();
+
+        List<Object[]> lstObject = new ArrayList<Object[]>();
+        ArrayList<CarroDetalleGeneral> lstCarroDetalleGeneral = new ArrayList<CarroDetalleGeneral>();
+
+        lstObject = ejb.getCarrosByIdSucursalAndIdProvedor(idSucursal, idProvedor, carro);
+
+        for (Object[] obj : lstObject) {
+
+            CarroDetalleGeneral dominio = new CarroDetalleGeneral();
+
+            dominio.setCarro(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+            dominio.setIdentificador(obj[1] == null ? null : obj[1].toString());
+            dominio.setFecha(obj[2] == null ? null : (Date) obj[2]);
+            dominio.setNombreProvedor(obj[3] == null ? "" : obj[3].toString());
+
+            ArrayList<MayoreoProductoEntradaProducto> lstMayoreoProductoEntradaProducto = ifaceVentaMayoreoProducto.getVentaByIdSucursalAndCarro(idSucursal, dominio.getCarro());
+            //Se calculan las ventas, comisiones y el status del  carro
+            String status = "Vendido";
+            BigDecimal venta = new BigDecimal(0);
+            BigDecimal comision = new BigDecimal(0);
+            for (MayoreoProductoEntradaProducto mayoreoProducto : lstMayoreoProductoEntradaProducto) {
+
+                venta = venta.add(mayoreoProducto.getTotalVenta());
+                comision = comision.add(mayoreoProducto.getComision());
+                if (!mayoreoProducto.getEmpaqueEntrada().equals(mayoreoProducto.getEmpaquesVendidos())) {
+                    status = "En Proceso";
+                }
+            }
+
+            //Si no hay ventas se pone un status en proceso
+            if (venta.equals(new BigDecimal(0))) {
+                status = "En Proceso";
+            }
+            
+            dominio.setVenta(venta);
+            dominio.setStatus(status);
+            dominio.setComision(comision);
+
+            lstCarroDetalleGeneral.add(dominio);
+        }
+
+        return lstCarroDetalleGeneral;
+    }
 }

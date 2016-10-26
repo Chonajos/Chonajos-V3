@@ -1,0 +1,125 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="./../templates/main.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content">
+        <div>
+            <h3>#{beanTableroControlVentaMeyoreo.title}</h3>
+        </div>
+        <p:ajaxStatus onsuccess="PF('statusDialog').hide()" oncomplete="PF('statusDialog').hide()" onerror="PF('statusDialog').hide()" />
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                  closable="false" resizable="false" showHeader="false">
+            <p:graphicImage value="../resources/img/carga.gif" />
+        </p:dialog>
+
+        <h:form id="formContent">
+            <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
+            <div class="form-group" align="right">
+                <p:commandButton value="Consultar" onclick="PF('statusDialog').show()" update=":formContent" ajax="true" action="#{beanTableroControlVentaMeyoreo.buscar()}"/>
+            </div>
+            <p:panel>
+                <div class="container-fluid">
+
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+
+
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <p:outputLabel value="Sucursal:"/>
+                            <p:selectOneMenu value="#{beanTableroControlVentaMeyoreo.idSucursal}" id="selectSucursal">
+                                <f:selectItems  value="#{beanTableroControlVentaMeyoreo.lstSucursal}" var="lst" itemValue="#{lst.idSucursalPk}" itemLabel="#{lst.nombreSucursal}" />
+                                <p:ajax event="change" update=":formContent:selectCarro :formContent:selectProveedor :formContent:table" listener="#{beanTableroControlVentaMeyoreo.getProvedores()}" />
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <p:outputLabel value="Proveedor:"/>
+                            <p:selectOneMenu value="#{beanTableroControlVentaMeyoreo.idProvedor}" id="selectProveedor">
+                                <f:selectItem itemLabel="Todos" itemValue=""/>
+                                <f:selectItems value="#{beanTableroControlVentaMeyoreo.lstProvedor}" var="lst" itemValue="#{lst.idProvedorPK}" itemLabel="#{lst.nombreProvedor}" actionListener="#{beanTableroControlVentaMeyoreo.getCarros}"/>
+                                <p:ajax event="change" update=":formContent:selectCarro :formContent:table" listener="#{beanTableroControlVentaMeyoreo.getCarros()}"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                            <p:outputLabel value="Carro:"/>
+                            <p:selectOneMenu value="#{beanTableroControlVentaMeyoreo.carroSucursal}" id="selectCarro">
+                                <f:selectItem itemLabel="Todos" itemValue=""/>
+                                <f:selectItems value="#{beanTableroControlVentaMeyoreo.lstCarros}" var="lst" itemValue="#{lst.idCarroSucursal}" itemLabel="#{lst.idCarroSucursal}"/>
+                                <p:ajax event="change" update=":formContent:table"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <p:dataTable id="table" var="model" styleClass="ui-datatable-hor-scroll"
+                                     value="#{beanTableroControlVentaMeyoreo.lstCarroDetalleGeneral}"
+                                     emptyMessage="No se encontraron Registros" >
+
+                            <p:column style="width:16px">
+                                <p:rowToggler />
+                            </p:column>
+
+                            <p:column headerText="Carro" class="alignLeft"  width="60px;" >
+                                <h:outputText value="#{model.carro}" />
+                            </p:column>
+
+                            <p:column headerText="Proveedor" width="130px;" class="alignLeft">
+                                <h:outputText value="#{model.nombreProvedor}"/>
+                            </p:column>
+                            <p:column headerText="Folio Remisión" width="130px;" class="alignLeft">
+                                <h:outputText value="#{model.identificador}"/>
+                            </p:column>
+                            <p:column headerText="Fecha Remisión" width="100px;" class="alignLeft">
+                                <h:outputText value="#{model.fecha}">
+                                    <f:convertDateTime pattern="dd/MM/yyy HH:mm"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Status" width="100px;" class="alignLeft">
+                                <h:outputText value="#{model.status}" />
+                            </p:column>
+                            <p:column headerText="$Venta" width="100px;" class="alignRight">
+                                <h:outputText value="#{model.venta}" >
+                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="$Comisión" width="100px;" class="alignRight">
+                                <h:outputText value="#{model.comision}" >
+                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                </h:outputText>
+                            </p:column>
+                            <p:columnGroup type="footer">
+                                <p:column colspan="1" />
+                                <p:column colspan="1"/>
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                                <p:column colspan="1" >
+                                </p:column>
+                                <p:column  colspan="1" footerText="Total:" class="alignRight"/>
+                                <p:column  colspan="1" class="alignRight">
+                                    <f:facet name="footer" >
+                                        <h:outputText value="#{beanTableroControlVentaMeyoreo.totalVentaGeneral}" >
+                                            <f:convertNumber type="currency" currencySymbol="$" />
+                                        </h:outputText>
+                                    </f:facet>
+                                </p:column>
+                                <p:column colspan="1" class="alignRight">
+                                    <f:facet name="footer">
+                                        <h:outputText value="#{beanTableroControlVentaMeyoreo.totalComisionGeneral}">
+                                            <f:convertNumber type="currency" currencySymbol="$" />
+                                        </h:outputText>
+                                    </f:facet>
+                                </p:column>
+
+                            </p:columnGroup>
+                        </p:dataTable>
+                    </div>
+                </div>
+                <!--<iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="{beanTableroControlVentaMeyoreo.rutaPDF}"/>-->
+
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>
