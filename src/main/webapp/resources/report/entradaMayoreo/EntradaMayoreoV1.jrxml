@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2016-10-25T09:23:14 -->
+<!-- 2016-10-26T10:35:25 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EntradaMayoreoV1" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="df013db5-f76e-44d3-b0df-bcbc46d93160">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -176,6 +176,8 @@ WHERE EMP.ID_EM_FK =$P{parametro}]]>
 	</parameter>
 	<parameter name="leyenda" class="java.lang.String"/>
 	<parameter name="to_cant" class="java.math.BigDecimal"/>
+	<parameter name="cantidadProvedor" class="java.math.BigDecimal"/>
+	<parameter name="cantidadBodega" class="java.math.BigDecimal"/>
 	<queryString>
 		<![CDATA[SELECT SYSDATE FROM DUAL]]>
 	</queryString>
@@ -250,14 +252,14 @@ WHERE EMP.ID_EM_FK =$P{parametro}]]>
 					<text><![CDATA[Fecha:]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="1" y="77" width="110" height="20" uuid="25ff3d8e-da8c-4a86-ab53-84b1c098b73e"/>
+					<reportElement x="282" y="54" width="110" height="20" uuid="25ff3d8e-da8c-4a86-ab53-84b1c098b73e"/>
 					<textElement>
 						<font size="14"/>
 					</textElement>
 					<text><![CDATA[Kilos Provedor:]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="301" y="75" width="110" height="20" uuid="c6e500a2-86e0-4a2a-8a03-d6293ccc6946"/>
+					<reportElement x="281" y="79" width="110" height="20" uuid="c6e500a2-86e0-4a2a-8a03-d6293ccc6946"/>
 					<textElement>
 						<font size="14"/>
 					</textElement>
@@ -299,14 +301,14 @@ WHERE EMP.ID_EM_FK =$P{parametro}]]>
 					<textFieldExpression><![CDATA[$P{provedor}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="121" y="81" width="90" height="20" uuid="6d2e294c-a7d7-47f3-b976-3c512368c53b"/>
+					<reportElement x="401" y="56" width="100" height="20" uuid="6d2e294c-a7d7-47f3-b976-3c512368c53b"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="14"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{kilosProvedor}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="421" y="74" width="100" height="20" uuid="208dcaaf-f681-4bad-979f-f586ec117576"/>
+					<reportElement x="401" y="78" width="100" height="20" uuid="208dcaaf-f681-4bad-979f-f586ec117576"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="14"/>
 					</textElement>
@@ -341,19 +343,33 @@ WHERE EMP.ID_EM_FK =$P{parametro}]]>
 					<text><![CDATA[Comentarios:]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="1" y="53" width="139" height="20" uuid="2f4a62ca-a3f3-4fc9-b271-710c9ba9c5c5"/>
+					<reportElement x="1" y="53" width="149" height="20" uuid="2f4a62ca-a3f3-4fc9-b271-710c9ba9c5c5"/>
 					<textElement>
 						<font size="14"/>
 					</textElement>
 					<text><![CDATA[Empaques Provedor:]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="261" y="51" width="139" height="20" uuid="536f1297-93be-4f1a-b2fd-0d6293dd049e"/>
+					<reportElement x="7" y="77" width="143" height="20" uuid="536f1297-93be-4f1a-b2fd-0d6293dd049e"/>
 					<textElement>
 						<font size="14"/>
 					</textElement>
-					<text><![CDATA[Empaques Provedor:]]></text>
+					<text><![CDATA[Empaques Almacén:]]></text>
 				</staticText>
+				<textField>
+					<reportElement x="155" y="53" width="114" height="18" uuid="4aca787b-f940-4a55-95ef-4111ad5ace9e"/>
+					<textElement>
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{cantidadProvedor}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="156" y="78" width="112" height="18" uuid="ba5a547d-3414-407d-bf9c-2540159cc123"/>
+					<textElement>
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{cantidadBodega}]]></textFieldExpression>
+				</textField>
 			</frame>
 		</band>
 		<band height="174">
@@ -531,18 +547,18 @@ WHERE EMP.ID_EM_FK =$P{parametro}]]>
 				</jr:table>
 			</componentElement>
 		</band>
-		<band height="51"/>
-	</detail>
-	<columnFooter>
-		<band height="63" splitType="Stretch">
+		<band height="51">
 			<textField>
-				<reportElement x="80" y="20" width="600" height="30" uuid="8f47fcf5-7e33-4984-8503-5c6b9dc73de6"/>
+				<reportElement x="78" y="11" width="600" height="30" uuid="8f47fcf5-7e33-4984-8503-5c6b9dc73de6"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="13"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{leyenda}]]></textFieldExpression>
 			</textField>
 		</band>
+	</detail>
+	<columnFooter>
+		<band height="63" splitType="Stretch"/>
 	</columnFooter>
 	<summary>
 		<band splitType="Stretch"/>

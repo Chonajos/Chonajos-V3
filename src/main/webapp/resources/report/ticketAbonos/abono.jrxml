@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-07-27T12:01:32 -->
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<!-- 2016-10-26T10:39:57 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ticket" pageWidth="219" pageHeight="1224" columnWidth="179" leftMargin="20" rightMargin="20" topMargin="4" bottomMargin="20" isIgnorePagination="true" uuid="cce07992-6ec7-4616-8caf-ceb4ee12975b">
 	<property name="ireport.zoom" value="2.5937424601000028"/>
 	<property name="ireport.x" value="0"/>
@@ -67,13 +67,6 @@
 				</textElement>
 				<text><![CDATA[Fecha:]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="26" y="64" width="46" height="10" uuid="f1054343-5398-4da7-bbbd-d49445d7b31b"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="7" isBold="false" isUnderline="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{folio}]]></textFieldExpression>
-			</textField>
 			<staticText>
 				<reportElement x="1" y="85" width="28" height="11" uuid="02c688ff-4514-4faa-9595-b06d6abd1d06"/>
 				<textElement textAlignment="Left">
@@ -102,15 +95,6 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{numeroCliente}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="1" y="64" width="25" height="10" uuid="267daca9-5447-4e6f-9c14-b79fe578b16b">
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-				</reportElement>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="7"/>
-				</textElement>
-				<text><![CDATA[Folio:]]></text>
-			</staticText>
 			<textField>
 				<reportElement x="121" y="100" width="56" height="11" uuid="40d08e9b-c2be-4a54-a254-a2ec28823f89"/>
 				<textElement textAlignment="Right">
