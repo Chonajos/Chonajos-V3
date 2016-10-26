@@ -118,7 +118,6 @@ public class UtilUpload {
             out.close();
             ubicacionPdf = "/resources/pdf/temp/" + nombreArchivo + ".pdf";
             System.out.println("archivo upload succes ubicacionPdf"+ubicacionPdf);
-             System.out.println("archivo upload succes ubicacionPdf"+ubicacionPdf);
             System.out.println("archivo upload succes");
             
         } catch (Exception e) {

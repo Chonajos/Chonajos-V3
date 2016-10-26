@@ -16,10 +16,10 @@
                 <div class="form-group" align="right">
                     <p:commandButton value="Abonar" ajax="true" disabled="#{beanBuscaCredito.habilitaBotones}" oncomplete="PF('dlg').show();" update =":formContent:dialogw:" icon="ui-icon-triangle-1-e" styleClass="ui-priority-primary" >
                     </p:commandButton>
-                    <p:commandButton value="Cancelar" class="primaryButton"  update="formContent" ajax="true" action="#{beanBuscaCredito.cancelarAbonar()}" icon="ui-icon-trash" />
-                    <p:commandButton value="Actualizar" class="primaryButton"  update="formContent:table" ajax="true" action="#{beanBuscaCredito.actualizarCreditos()}" icon="ui-icon-person" />
+                    <p:commandButton value="Cancelar" class="primaryButton"  update=":formContent" ajax="true" action="#{beanBuscaCredito.cancelarAbonar()}" icon="ui-icon-trash" />
+                    <p:commandButton value="Actualizar" class="primaryButton"  update=":formContent" ajax="true" action="#{beanBuscaCredito.actualizarCreditos()}" icon="ui-icon-person" />
                 </div>
-                <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanBuscaCredito.rutaPDF}"/>
+                
                 <div class="container-fluid">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
@@ -392,6 +392,7 @@
                         </p:dataTable>
                     </div>
                 </div>
+                <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanBuscaCredito.rutaPDF}"/>
             </p:panel>
 
 
