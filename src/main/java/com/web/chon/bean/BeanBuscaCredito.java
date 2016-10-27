@@ -295,10 +295,10 @@ public class BeanBuscaCredito implements Serializable {
                 paramReport.put("banco", ac.getBanco());
                 paramReport.put("fechaCobro", TiempoUtil.getFechaDDMMYYYYHHMM(ac.getFechaCobro()));
             case 4:
-                paramReport.put("folio", ac.getIdAbonoCreditoPk().toString());
-                paramReport.put("folioElectronico", ac.getFolioElectronico().toString());
+                //paramReport.put("folio", ac.getIdAbonoCreditoPk().toString());
+                paramReport.put("folioElectronico", ac.getFolioElectronico() == null ? "-----" : ac.getFolioElectronico().toString());
                 paramReport.put("cuenta", idCuentaDestinoBean.toString());
-                paramReport.put("fechaCobro", TiempoUtil.getFechaDDMMYYYYHHMM(ac.getFechaCobro()));
+                paramReport.put("fecha", TiempoUtil.getFechaDDMMYYYYHHMM(ac.getFechaCobro()));
             case 5:
                 paramReport.put("labelEstatus", "PAGO A CUENTA");
                 paramReport.put("folio", ac.getIdCreditoFk().toString());
@@ -587,6 +587,29 @@ public class BeanBuscaCredito implements Serializable {
                                     JsfUtil.addSuccessMessageClean("Se ha registrado el abono correctamente");
                                 } else {
                                     JsfUtil.addErrorMessageClean("Ocurrió un error al registrar el pago de la venta");
+                                }
+                                //--- Insertar Documento -- //
+                                Documento d = new Documento();
+                                d.setIdDocumentoPk(new BigDecimal(ifaceDocumentos.getNextVal()));
+                                d.setIdAbonoFk(ac.getIdAbonoCreditoPk());
+                                d.setFechaCobro(ac.getFechaCobro());
+                                Credito c = ifaceCredito.getById(ac.getIdCreditoFk());
+                                d.setIdClienteFk(c.getIdClienteFk());
+                                d.setIdStatusFk(DOCUMENTOACTIVO);
+                                d.setIdTipoDocumento(DOCUMENTOTIPOCHEQUE);
+                                d.setMonto(ac.getMontoAbono());
+                                d.setNumeroCheque(ac.getNumeroCheque());
+                                d.setFactura(ac.getFactura());
+                                d.setBanco(ac.getBanco());
+                                d.setLibrador(ac.getLibrador());
+                                d.setIdFormaCobroFk(new BigDecimal(1));
+                                System.out.println("Documento: " + d.toString());
+                                //--- Insertar Documento -- //
+                                if (ifaceDocumentos.insertarDocumento(d) == 1) {
+                                    System.out.println("Se ingreso corractamente el documento por cobrar");
+                                    
+                                } else {
+                                    JsfUtil.addErrorMessageClean("Ocurrió un error al registrar el documento por cobrar");
                                 }
 
                             } else {

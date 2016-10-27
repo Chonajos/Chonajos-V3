@@ -2,6 +2,7 @@ package com.web.chon.bean;
 
 import com.web.chon.dominio.Caja;
 import com.web.chon.dominio.CuentaBancaria;
+import com.web.chon.dominio.Documento;
 import com.web.chon.dominio.OperacionesCaja;
 import com.web.chon.dominio.TipoAbono;
 import com.web.chon.dominio.Usuario;
@@ -13,6 +14,7 @@ import com.web.chon.service.IfaceBuscaVenta;
 import com.web.chon.service.IfaceCaja;
 import com.web.chon.service.IfaceCatUsuario;
 import com.web.chon.service.IfaceCuentasBancarias;
+import com.web.chon.service.IfaceDocumentos;
 import com.web.chon.service.IfaceOperacionesCaja;
 import com.web.chon.service.IfaceTipoAbono;
 import com.web.chon.service.IfaceVentaMayoreo;
@@ -72,6 +74,8 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     private IfaceCuentasBancarias ifaceCuentasBancarias;
     @Autowired
     private IfaceVentaMayoreo ifaceVentaMayoreo;
+    @Autowired
+    private IfaceDocumentos ifaceDocumentos;
 
     private ArrayList<CuentaBancaria> listaCuentas;
 
@@ -104,6 +108,10 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     private static final BigDecimal conceptoMayoreoCheques = new BigDecimal(27);
     private static final BigDecimal conceptoMayoreoDeposito = new BigDecimal(28);
     private static final BigDecimal conceptoMayoreoTransferencia = new BigDecimal(29);
+    
+    //--- Datos para Cheque ---//
+    private static final BigDecimal DOCUMENTOACTIVO = new BigDecimal(1);
+    private static final BigDecimal DOCUMENTOTIPOCHEQUE = new BigDecimal(1);
 
     //-------------- Variables para Registrar Pago ----------//
     private BigDecimal idTipoPagoFk;
@@ -121,12 +129,14 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     private Date fechaTransferencia;
     private BigDecimal idCuentaDestinoFk;
     private BigDecimal recibi;
-    
+    private BigDecimal folioElectronico;
+    private String cuenta;
+
     //-------------- Variables para Registrar Pago ----------//
     @PostConstruct
     public void init() {
-        cambio = new BigDecimal(0);
-        recibido = new BigDecimal(0);
+        //cambio = new BigDecimal(0);
+        //recibido = new BigDecimal(0);
         FacesContext contexts = FacesContext.getCurrentInstance();
         String folio = contexts.getExternalContext().getRequestParameterMap().get("folio");
         System.out.println("FolioPasado: " + folio);
@@ -156,42 +166,43 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
         opcaja.setIdSucursalFk(new BigDecimal(usuario.getIdSucursal()));
         lstTipoAbonos = ifaceTipoAbono.getAll();
     }
-    public void verificarTipo()
-    {
-        switch(idTipoPagoFk.intValue())
-        {
+
+    public void verificarTipo() {
+        switch (idTipoPagoFk.intValue()) {
             case 1:
                 System.out.println("Se ejecuto cobro en efectivo");
                 opcaja.setIdConceptoFk(conceptoMayoreoEfectivo);
                 break;
             case 2:
-                System.out.println("Se ejecuto cobro en cheque");
-                opcaja.setIdConceptoFk(conceptoMayoreoCheques);
-                break;
-            case 3:
-                System.out.println("Se ejecuto cobro en deposito bancario");
-                opcaja.setIdConceptoFk(conceptoMayoreoDeposito);
-                break;
-            case 4:
                 System.out.println("Se ejecuto cobro en transferencia");
                 opcaja.setIdConceptoFk(conceptoMayoreoTransferencia);
+
+                break;
+            case 3:
+                System.out.println("Se ejecuto cobro en cheque");
+                opcaja.setIdConceptoFk(conceptoMayoreoCheques);
+
+                break;
+            case 4:
+                System.out.println("Se ejecuto cobro en deposito bancario");
+                opcaja.setIdConceptoFk(conceptoMayoreoDeposito);
                 break;
             default:
                 System.out.println("Se ejecuto cobro en efectivo");
                 break;
-                
+
         }
-        
+
     }
-    
-    public void addView() 
-    {
+
+    public void addView() {
 
         if (idTipoPagoFk.intValue() == 3) {
             setViewCheque("true");
         } else if (idTipoPagoFk.intValue() == 2) {
             setViewCheque("trans");
-
+        } else if (idTipoPagoFk.intValue() == 4) {
+            setViewCheque("deposito");
         } else {
             setViewCheque("init");
         }
@@ -199,10 +210,12 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     }
 
     public void calculaCambio() {
+        cambio = new BigDecimal(0);
         System.out.println("Cambio: " + cambio);
-        System.out.println("Recibido: "+ recibido);
-        System.out.println("Total Venta: "+ventaMayoreo.getTotalVenta());
+        System.out.println("Recibido: " + recibido);
+        System.out.println("Total Venta: " + ventaMayoreo.getTotalVenta());
         cambio = recibido.subtract(ventaMayoreo.getTotalVenta(), MathContext.UNLIMITED);
+        System.out.println("Cambio: " + cambio);
     }
 
     public void generateReport() {
@@ -313,14 +326,37 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
 
     public void updateVenta() {
         if (opcaja.getIdCajaFk() != null) {
-            if (ifaceBuscaVenta.updateStatusVentaMayoreo(ventaMayoreo.getIdVentaMayoreoPk().intValue(), usuario.getIdUsuarioPk().intValue()) == 1) 
-            {
+            if (ifaceBuscaVenta.updateStatusVentaMayoreo(ventaMayoreo.getIdVentaMayoreoPk().intValue(), usuario.getIdUsuarioPk().intValue()) == 1) {
                 verificarTipo();
                 System.out.println("Se cambió el estatus");
                 opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
                 opcaja.setMonto(ventaMayoreo.getTotalVenta());
-                if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) 
-                {
+                if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
+                    if (idTipoPagoFk.intValue() == 3) 
+                    {
+                        Documento d = new Documento();
+                        d.setIdDocumentoPk(new BigDecimal(ifaceDocumentos.getNextVal()));
+                        //d.setIdAbonoFk(ac.getIdAbonoCreditoPk());
+                        d.setFechaCobro(fechaCobro);
+                        //Credito c = ifaceCredito.getById(ac.getIdCreditoFk());
+                        d.setIdClienteFk(ventaMayoreo.getIdClienteFk());
+                        d.setIdStatusFk(DOCUMENTOACTIVO);
+                        d.setIdTipoDocumento(DOCUMENTOTIPOCHEQUE);
+                        d.setMonto(ventaMayoreo.getTotalVenta());
+                        d.setNumeroCheque(numeroCheque);
+                        d.setFactura(factura);
+                        d.setBanco(banco);
+                        d.setLibrador(librador);
+                        d.setIdFormaCobroFk(new BigDecimal(1));
+                        System.out.println("Documento: " + d.toString());
+                        //--- Insertar Documento -- //
+                        if (ifaceDocumentos.insertarDocumento(d) == 1) {
+                            System.out.println("Se ingreso corractamente el documento por cobrar");
+
+                        } else {
+                            JsfUtil.addErrorMessageClean("Ocurrió un error al registrar el documento por cobrar");
+                        }
+                    }
                     setParameterTicket(ventaMayoreo.getVentaSucursal().intValue());
                     generateReport();
                     ventaMayoreo.reset();
@@ -332,12 +368,10 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
 //                    model = null;
 //                    totalVenta = null;
                     RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
-                } else 
-                {
+                } else {
                     JsfUtil.addErrorMessageClean("Ocurrió un error al registrar el pago de la venta");
                 }
-            } else 
-            {
+            } else {
                 System.out.println("Error al cambiar estaus de la venta");
             }
         } else {
@@ -451,13 +485,6 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
 
     public void setIdVentaTemporal(int idVentaTemporal) {
         this.idVentaTemporal = idVentaTemporal;
-    }
-
-    
-
-    @Override
-    public String update() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public StreamedContent getMedia() {
@@ -691,10 +718,26 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     public void setRecibi(BigDecimal recibi) {
         this.recibi = recibi;
     }
-    
-    
-    
 
-    
-    
+    public BigDecimal getFolioElectronico() {
+        return folioElectronico;
+    }
+
+    public void setFolioElectronico(BigDecimal folioElectronico) {
+        this.folioElectronico = folioElectronico;
+    }
+
+    public String getCuenta() {
+        return cuenta;
+    }
+
+    public void setCuenta(String cuenta) {
+        this.cuenta = cuenta;
+    }
+
+    @Override
+    public String update() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }
