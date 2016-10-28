@@ -77,6 +77,7 @@ public class BeanOperacionesCaja implements Serializable {
     private BigDecimal idCajaBean;
     private BigDecimal idConceptoBean;
     private BigDecimal idTipoOperacionBean;
+    private BigDecimal idInOut;
     private BigDecimal monto;
     private String comentarios;
 
@@ -104,7 +105,7 @@ public class BeanOperacionesCaja implements Serializable {
         listaConceptos = ifaceConceptos.getConceptos();
         listaTiposOperaciones = ifaceTiposOperacion.getOperaciones();
         listaResponsables = ifaceOperacionesCaja.getResponsables(idCajaBean);
-        listaOperaciones = ifaceOperacionesCaja.getOperacionesBy(idCajaBean, idTipoOperacionBean, idConceptoBean, TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicio), TiempoUtil.getFechaDDMMYYYY(fechaFiltroFin), idStatusBean, usuario.getIdUsuario(), idCorteBean);
+        listaOperaciones = ifaceOperacionesCaja.getOperacionesBy(idCajaBean, idTipoOperacionBean, idConceptoBean, TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicio), TiempoUtil.getFechaDDMMYYYY(fechaFiltroFin), idStatusBean, idUsuarioCajaBean, idCorteBean,idInOut);
         System.out.println("IDCAJABEAN: ---------------"+idCajaBean);
         
         if (idCajaBean != null) {
@@ -115,6 +116,17 @@ public class BeanOperacionesCaja implements Serializable {
         }
 
     }
+    public void buscarConceptos()
+    {
+        if(idTipoOperacionBean != null)
+        {
+        listaConceptos = ifaceConceptos.getConceptosByTipoOperacion(idTipoOperacionBean);
+        }
+        else
+        {
+            listaConceptos = ifaceConceptos.getConceptos();
+        }
+    }
 
     public void buscarReponsables() {
         idUsuarioCajaBean = null;
@@ -123,7 +135,7 @@ public class BeanOperacionesCaja implements Serializable {
 
     public void buscar() {
         System.out.println("Entro a buscar");
-        listaOperaciones = ifaceOperacionesCaja.getOperacionesBy(idCajaBean, idTipoOperacionBean, idConceptoBean, TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicio), TiempoUtil.getFechaDDMMYYYY(fechaFiltroFin), idStatusBean, idUsuarioCajaBean, idCorteBean);
+        listaOperaciones = ifaceOperacionesCaja.getOperacionesBy(idCajaBean, idTipoOperacionBean, idConceptoBean, TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicio), TiempoUtil.getFechaDDMMYYYY(fechaFiltroFin), idStatusBean, idUsuarioCajaBean, idCorteBean,idInOut);
     }
 
     public void verificarCombo() {
@@ -357,4 +369,13 @@ public class BeanOperacionesCaja implements Serializable {
         this.idCorteBean = idCorteBean;
     }
 
+    public BigDecimal getIdInOut() {
+        return idInOut;
+    }
+
+    public void setIdInOut(BigDecimal idInOut) {
+        this.idInOut = idInOut;
+    }
+
+    
 }

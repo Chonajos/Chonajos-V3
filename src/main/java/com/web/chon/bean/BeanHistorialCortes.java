@@ -159,8 +159,8 @@ public class BeanHistorialCortes implements Serializable {
     }
     public void searchCortebyIdPk()
     {
-        //lstOperacionesEntrada = ifaceOperacionesCaja.getOperacionesByIdCorteCajaFk(idCortePk, entrada);
-        //lstOperacionesSalida = ifaceOperacionesCaja.getOperacionesByIdCorteCajaFk(idCortePk,salida);
+        lstOperacionesEntrada = ifaceOperacionesCaja.getOperacionesByIdCorteCajaFk(idCortePk, entrada);
+        lstOperacionesSalida = ifaceOperacionesCaja.getOperacionesByIdCorteCajaFk(idCortePk,salida);
         getsumaEntradas();
         getsumaSalidas();
         

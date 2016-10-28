@@ -69,22 +69,7 @@
                             </p:calendar>
                         </div>
 
-                        <!--                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
-                                                    <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="operacionFiltro" value ="Tipo de Operación:" rendered="{beanOperacionesCaja.viewEstate =='init'}" /> 
-                                                    <h:selectOneMenu  id="operacionFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="{beanOperacionesCaja.idTipoOperacionBean}" rendered="{beanOperacionesCaja.viewEstate =='init'}" >
-                                                        <f:selectItem itemLabel="TODAS" itemValue="" />
-                                                        <f:selectItems value="{beanOperacionesCaja.listaTiposOperaciones}" var="operacioncita" itemLabel="{operacioncita.nombre}" itemValue="{operacioncita.idTipoOperacionPk}"/>
-                                                        <p:ajax event="change" listener="{beanOperacionesCaja.printStatus()}" update=":formContent:table" />
-                                                    </h:selectOneMenu>
-                                                </div>
-                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
-                                                    <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="conceptoFiltro" value ="Concepto de Operación:" rendered="{beanOperacionesCaja.viewEstate =='init'}" /> 
-                                                    <h:selectOneMenu  id="conceptoFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="{beanOperacionesCaja.idConceptoBean}" rendered="{beanOperacionesCaja.viewEstate =='init'}" >
-                                                        <f:selectItem itemLabel="TODAS" itemValue="" />
-                                                        <f:selectItems value="{beanOperacionesCaja.listaConceptos}" var="conceptito" itemLabel="{conceptito.nombre}" itemValue="{conceptito.idConceptoPk}"/>
-                                                        <p:ajax event="change" listener="{beanOperacionesCaja.printStatus()}" update=":formContent:table" />
-                                                    </h:selectOneMenu>
-                                                </div>
+                        <!--                        
                         
                         
                                             </div>
@@ -134,6 +119,38 @@
                         
                                                 </p:calendar>
                         -->
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                        <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="operacionFiltro" value ="Tipo de Operación:" rendered="#{beanOperacionesCaja.viewEstate =='init'}" /> 
+                        <h:selectOneMenu  id="operacionFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanOperacionesCaja.idTipoOperacionBean}" rendered="#{beanOperacionesCaja.viewEstate =='init'}" >
+                            <f:selectItem itemLabel="Todas" itemValue="" />
+                            <f:selectItems value="#{beanOperacionesCaja.listaTiposOperaciones}" var="operacioncita" itemLabel="#{operacioncita.nombre}" itemValue="#{operacioncita.idTipoOperacionPk}"/>
+                            <p:ajax event="change" listener="#{beanOperacionesCaja.buscarConceptos()}" update=":formContent:conceptoFiltro" />
+                        </h:selectOneMenu>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                        <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="conceptoFiltro" value ="Concepto de Operación:" rendered="#{beanOperacionesCaja.viewEstate =='init'}" /> 
+                        <h:selectOneMenu  id="conceptoFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanOperacionesCaja.idConceptoBean}" rendered="#{beanOperacionesCaja.viewEstate =='init'}" >
+                            <f:selectItem itemLabel="Todas" itemValue="" />
+                            <f:selectItems value="#{beanOperacionesCaja.listaConceptos}" var="conceptito" itemLabel="#{conceptito.nombre}" itemValue="#{conceptito.idConceptoPk}"/>
+                        </h:selectOneMenu>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                        <p:outputLabel for="txtStatus" value="Estatus Operación:" rendered="#{beanOperacionesCaja.viewEstate =='init'}"/>    
+                        <h:selectOneMenu  id="txtStatus"  value="#{beanOperacionesCaja.idStatusBean}" rendered="#{beanOperacionesCaja.viewEstate =='init'}">
+                            <f:selectItem  itemLabel="Todas" itemValue=""/>
+                            <f:selectItem  itemLabel="Aprobada" itemValue="1"/>
+                            <f:selectItem  itemLabel="Pendiente" itemValue="2"/>
+                            <f:selectItem  itemLabel="Rechazada" itemValue="3"/>
+                        </h:selectOneMenu>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                        <p:outputLabel for="txtEntradaSalida" value="Entrada / Salida:" rendered="#{beanOperacionesCaja.viewEstate =='init'}"/>    
+                        <h:selectOneMenu  id="txtEntradaSalida"  value="#{beanOperacionesCaja.idInOut}" rendered="#{beanOperacionesCaja.viewEstate =='init'}">
+                            <f:selectItem  itemLabel="Todas" itemValue=""/>
+                            <f:selectItem  itemLabel="Entrada" itemValue="1"/>
+                            <f:selectItem  itemLabel="Salida" itemValue="2"/>
+                        </h:selectOneMenu>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <p:dataTable id="tabla" var="model" 

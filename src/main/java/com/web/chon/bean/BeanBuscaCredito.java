@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 package com.web.chon.bean;
-
 import com.web.chon.dominio.AbonoCredito;
 import com.web.chon.dominio.Caja;
 import com.web.chon.dominio.Cliente;
@@ -375,11 +374,21 @@ public class BeanBuscaCredito implements Serializable {
 
     }
 
+    public void clearlista()
+    {
+         for (int i = 0; i < modelo.size(); i++) 
+         {
+             SaldosDeudas item = modelo.get(i);
+             item.setAbonarTemporal(CERO);
+         }
+    }
+    
     public void prepararAbono() {
         JsfUtil.addSuccessMessageClean("Abono Preparado");
         System.out.println("Abono: " + abono);
         BigDecimal to = abono.getMontoAbono();
         System.out.println("Monto abono: " + to);
+        clearlista();
         if (to != null) {
             switch (comboFiltro.intValue()) {
 

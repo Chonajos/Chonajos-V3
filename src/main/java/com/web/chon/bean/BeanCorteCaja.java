@@ -19,7 +19,10 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.PostConstruct;
+import org.primefaces.context.RequestContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -46,11 +49,14 @@ public class BeanCorteCaja implements Serializable {
     private ArrayList<TipoOperacion> lstOperacionesSalida;
     private ArrayList<OperacionesCaja> listaOperaciones;
     private ArrayList<OperacionesCaja> listaDetalleEntradas;
+    private ArrayList<OperacionesCaja> listaDetalleEntradasEfectivo;
+    private ArrayList<OperacionesCaja> listaDetalleEntradasCheques;
+    private ArrayList<OperacionesCaja> listaDetalleEntradasCuentasBancarias;
+
     private ArrayList<OperacionesCaja> listaDetalleSalidas;
 
     private ArrayList<OperacionesCaja> listaChequesEntrada;
     private ArrayList<OperacionesCaja> listaChequesSalida;
-    
 
     private UsuarioDominio usuario;
     private Caja caja;
@@ -65,7 +71,7 @@ public class BeanCorteCaja implements Serializable {
     private static final BigDecimal statusPendiente = new BigDecimal(2);
     private static final BigDecimal statusRechazado = new BigDecimal(3);
     private static final BigDecimal cero = new BigDecimal(0);
-    
+
     private BigDecimal saldoAnterior;
     private BigDecimal saldoAnteriorCheques;
     private BigDecimal saldoAnteriorCuentas;
@@ -76,6 +82,9 @@ public class BeanCorteCaja implements Serializable {
     private BigDecimal totalSalidas;
     private BigDecimal totalChequesEntradas;
     private BigDecimal totalChequesSalidas;
+    private BigDecimal totalEfectivo;
+    private BigDecimal totalCheques;
+    private BigDecimal totalCuentasBancarias;
 
     @PostConstruct
     public void init() {
@@ -92,12 +101,17 @@ public class BeanCorteCaja implements Serializable {
         nuevoSaldo = cero;
         saldoAnteriorCheques = cero;
         totalChequesEntradas = cero;
-        totalChequesSalidas =cero;
+        totalChequesSalidas = cero;
         nuevoSaldoCuentas = cero;
         nuevoSaldoCheques = cero;
         saldoAnteriorCuentas = cero;
         totalChequesEntradas = cero;
         totalChequesSalidas = cero;
+
+        totalEfectivo = cero;
+        totalCheques = cero;
+        totalCuentasBancarias = cero;
+        
         caja = ifaceCaja.getCajaByIdUsuarioPk(usuario.getIdUsuario());
         corteAnterior = ifaceCorteCaja.getLastCorteByCaja(caja.getIdCajaPk());
         listaChequesEntrada = new ArrayList<OperacionesCaja>();
@@ -107,14 +121,13 @@ public class BeanCorteCaja implements Serializable {
         lstOperacionesSalida = new ArrayList<TipoOperacion>();
         lstOperacionesEntrada = ifaceOperacionesCaja.getOperacionesCorteBy(caja.getIdCajaPk(), caja.getIdUsuarioFK(), entrada);
         lstOperacionesSalida = ifaceOperacionesCaja.getOperacionesCorteBy(caja.getIdCajaPk(), caja.getIdUsuarioFK(), salida);
-        
-        
-        
-       
-        
+        listaDetalleEntradasEfectivo = new ArrayList<OperacionesCaja>();
+        listaDetalleEntradasCheques = new ArrayList<OperacionesCaja>();
+        listaDetalleEntradasCuentasBancarias = new ArrayList<OperacionesCaja>();
+
         getsumaEntradas();
         getsumaSalidas();
-         
+
         if (corteAnterior.getSaldoNuevo() == null) {
             corteAnterior.setSaldoNuevo(new BigDecimal(0));
         }
@@ -123,8 +136,14 @@ public class BeanCorteCaja implements Serializable {
         nuevoSaldo = nuevoSaldo.add(saldoAnterior, MathContext.UNLIMITED);
 
     }
-    public void changeView()
-    {
+
+    public void viewDetallesEfectivo() {
+        Map<String, Object> options = new HashMap<String, Object>();
+        options.put("resizable", false);
+        RequestContext.getCurrentInstance().openDialog("detallesEfectivo", options, null);
+    }
+
+    public void changeView() {
         setViewEstate("init");
     }
 
@@ -156,6 +175,7 @@ public class BeanCorteCaja implements Serializable {
             totalSalidas = totalSalidas.add(t.getMontoTotal(), MathContext.UNLIMITED);
         }
     }
+
     public void getsumaChequesEntradas() {
         for (OperacionesCaja t : listaChequesEntrada) {
             totalChequesEntradas = totalChequesEntradas.add(t.getMonto(), MathContext.UNLIMITED);
@@ -167,9 +187,27 @@ public class BeanCorteCaja implements Serializable {
             totalSalidas = totalSalidas.add(t.getMonto(), MathContext.UNLIMITED);
         }
     }
-    public void verDetalle(){
+
+    public void verDetalle() 
+    {
         listaDetalleEntradas = ifaceOperacionesCaja.getDetalles(caja.getIdCajaPk(), caja.getIdUsuarioFK(), entrada, statusAplicado);
         listaDetalleSalidas = ifaceOperacionesCaja.getDetalles(caja.getIdCajaPk(), caja.getIdUsuarioFK(), salida, statusAplicado);
+
+        for (OperacionesCaja ope : listaDetalleEntradas) {
+            System.out.println("Operacion: " + ope);
+            if (ope.getIdConceptoFk().intValue() == 7 || ope.getIdConceptoFk().intValue() == 9) {
+                listaDetalleEntradasEfectivo.add(ope);
+                totalEfectivo = totalEfectivo.add(ope.getMonto(), MathContext.UNLIMITED);
+            } else if (ope.getIdConceptoFk().intValue() == 30 || ope.getIdConceptoFk().intValue() == 27) {
+                listaDetalleEntradasCheques.add(ope);
+                totalCheques = totalCheques.add(ope.getMonto(), MathContext.UNLIMITED);
+            } else if (ope.getIdConceptoFk().intValue() == 12 || ope.getIdConceptoFk().intValue() == 29 || ope.getIdConceptoFk().intValue() == 31 || ope.getIdConceptoFk().intValue() == 28) {
+                listaDetalleEntradasCuentasBancarias.add(ope);
+                totalCuentasBancarias = totalCuentasBancarias.add(ope.getMonto(), MathContext.UNLIMITED);
+            }
+        }
+        
+
         setViewEstate("second");
     }
 
@@ -392,7 +430,52 @@ public class BeanCorteCaja implements Serializable {
         this.nuevoSaldoCuentas = nuevoSaldoCuentas;
     }
 
-   
-    
-     
+    public ArrayList<OperacionesCaja> getListaDetalleEntradasEfectivo() {
+        return listaDetalleEntradasEfectivo;
+    }
+
+    public void setListaDetalleEntradasEfectivo(ArrayList<OperacionesCaja> listaDetalleEntradasEfectivo) {
+        this.listaDetalleEntradasEfectivo = listaDetalleEntradasEfectivo;
+    }
+
+    public ArrayList<OperacionesCaja> getListaDetalleEntradasCheques() {
+        return listaDetalleEntradasCheques;
+    }
+
+    public void setListaDetalleEntradasCheques(ArrayList<OperacionesCaja> listaDetalleEntradasCheques) {
+        this.listaDetalleEntradasCheques = listaDetalleEntradasCheques;
+    }
+
+    public ArrayList<OperacionesCaja> getListaDetalleEntradasCuentasBancarias() {
+        return listaDetalleEntradasCuentasBancarias;
+    }
+
+    public void setListaDetalleEntradasCuentasBancarias(ArrayList<OperacionesCaja> listaDetalleEntradasCuentasBancarias) {
+        this.listaDetalleEntradasCuentasBancarias = listaDetalleEntradasCuentasBancarias;
+    }
+
+    public BigDecimal getTotalEfectivo() {
+        return totalEfectivo;
+    }
+
+    public void setTotalEfectivo(BigDecimal totalEfectivo) {
+        this.totalEfectivo = totalEfectivo;
+    }
+
+    public BigDecimal getTotalCheques() {
+        return totalCheques;
+    }
+
+    public void setTotalCheques(BigDecimal totalCheques) {
+        this.totalCheques = totalCheques;
+    }
+
+    public BigDecimal getTotalCuentasBancarias() {
+        return totalCuentasBancarias;
+    }
+
+    public void setTotalCuentasBancarias(BigDecimal totalCuentasBancarias) {
+        this.totalCuentasBancarias = totalCuentasBancarias;
+    }
+
 }
