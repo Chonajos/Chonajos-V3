@@ -141,6 +141,7 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
 
     public void back(){
         viewEstate ="init";
+        setTitle("Reportes de Ventas.");
     }
     
     @Override
