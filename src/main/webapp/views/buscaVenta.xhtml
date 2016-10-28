@@ -15,10 +15,155 @@
         <h:form id="formContent">
             <p:messages id="messages"   showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:panel>
+                <p:dialog  id="dialogw" header="Registrar Pago" widgetVar="dlg" resizable="false">
+                    <h:panelGrid columns="1" cellpadding="5">
+                        <div class="form-group">
+                            <p:outputLabel   for="comboTipoAbono" value ="Tipo de Pago:" /> 
+                            <h:selectOneMenu  id="comboTipoAbono"  value="#{beanBuscaVenta.idTipoPagoFk}" >
+                                <f:selectItem itemLabel="Selecciona" itemValue="" />
+                                <f:selectItems value="#{beanBuscaVenta.lstTipoAbonos}" var="tipoAbono" itemLabel="#{tipoAbono.nombreTipoAbono}" itemValue="#{tipoAbono.idTipoAbono}"/>
+                                <p:ajax event="change" listener="#{beanBuscaVenta.addView}" update=":formContent:cheques"/>
+                            </h:selectOneMenu>
+                        </div>
+
+                        <div>
+                            <h:outputLabel for="txtCantidad" value="Importe:" />
+                        </div>
+                        <div>
+                            <p:inputText id="txtCantidad" readonly="true" maxlength="10" value="#{beanBuscaVenta.totalVenta}" >
+                                <pe:keyFilter regEx="/[0-9_ .]/i"/>
+                            </p:inputText>
+                        </div>    
+                        <p:fragment id="cheques">
+                            <div>
+                                <h:outputLabel for="txtRecibido" value="Recibí:" rendered="#{beanBuscaVenta.viewCheque =='init'}" />
+                            </div>
+                            <div>
+                                <p:inputText id="txtRecibido" maxlength="10" value="#{beanBuscaVenta.recibido}" rendered="#{beanBuscaVenta.viewCheque =='init'}">
+                                    <pe:keyFilter regEx="/[0-9_ .]/i"/>
+                                    <p:ajax event="blur" update=":formContent:cheques" listener="#{beanBuscaVenta.calculaCambio()}" process="@this" rendered="#{beanBuscaVenta.viewCheque =='init'}"/>
+                                </p:inputText>
+                            </div>
+                            <div>
+                                <h:outputLabel for="txtCambio" value="Cambio:" rendered="#{beanBuscaVenta.viewCheque =='init'}"/>
+                            </div>
+                            <div>
+                                <p:inputText id="txtCambio" maxlength="10" value="#{beanBuscaVenta.cambio}" readonly="true" rendered="#{beanBuscaVenta.viewCheque =='init'}" >         
+                                </p:inputText>
+                            </div>
+                            <div>
+                                <h:outputLabel for="txtnCheque" value="N. Cheque:" rendered="#{beanBuscaVenta.viewCheque =='true'}" />
+                            </div>
+                            <div>   
+                                <p:inputText id="txtnCheque" maxlength="15" value="#{beanBuscaVenta.numeroCheque}" rendered="#{beanBuscaVenta.viewCheque =='true'}" >
+                                    <pe:keyFilter regEx="/[0-9_ .]/i"/>
+                                </p:inputText>
+                            </div>
+                            <div>
+                                <h:outputLabel for="txtLibrador" value="Librador:" rendered="#{beanBuscaVenta.viewCheque =='true'}" />
+                            </div>
+                            <div>
+                                <p:inputText id="txtLibrador"  maxlength="50" value="#{beanBuscaVenta.librador}" rendered="#{beanBuscaVenta.viewCheque =='true'}" />
+                            </div>
+                            <div>
+                                <h:outputLabel  value="Fecha de Cobro:" rendered="#{beanBuscaVenta.viewCheque =='true'}" />
+                            </div>
+                            <div>   
+                                <p:calendar class="calendario" navigator="true" 
+                                            placeholder="dd/mm/yyyy" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" 
+                                            showOn="button"  id="popup" value="#{beanBuscaVenta.fechaCobro}" rendered="#{beanBuscaVenta.viewCheque =='true'}" />
+                            </div>
+
+                            <div>
+                                <p:outputLabel for="txtBancoEmisor" value="Banco Emisor:" rendered="#{beanBuscaVenta.viewCheque =='true'}"/> 
+                            </div>
+                            <div>    
+                                <h:selectOneMenu  id="txtBancoEmisor"  value="#{beanBuscaVenta.banco}" rendered="#{beanBuscaVenta.viewCheque =='true'}">
+                                    <f:selectItem  itemLabel="BANAMEX" itemValue="BANAMEX"/>
+                                    <f:selectItem  itemLabel="BANCOMER" itemValue="BANCOMER"/>
+                                    <f:selectItem  itemLabel="SANTANDER" itemValue="SANTANDER"/>
+                                    <f:selectItem  itemLabel="HSBC" itemValue="HSBC"/>
+                                    <f:selectItem  itemLabel="BANORTE" itemValue="BANORTE"/>
+                                    <f:selectItem  itemLabel="SCOTIABANK" itemValue="SCOTIABANK"/>
+                                    <f:selectItem  itemLabel="INBURSA" itemValue="INBURSA"/>
+                                </h:selectOneMenu>
+                            </div>
+                            <div>
+                                <p:outputLabel   for="cajaFiltro2" value ="Cuenta Deposito:" rendered="#{beanBuscaCredito.viewCheque =='deposito'}" /> 
+                            </div>
+                            <div> 
+                                <h:selectOneMenu  id="cajaFiltro2" value="#{beanBuscaCredito.idCuentaDestinoBean}" rendered="#{beanBuscaCredito.viewCheque =='deposito'}">
+                                    <f:selectItem itemLabel="Selecciona" itemValue="" />
+                                    <f:selectItems value="#{beanBuscaCredito.listaCuentas}" var="cuentita" itemLabel="#{cuentita.nombreBanco}" itemValue="#{cuentita.idCuentaBancariaPk}"/>
+                                </h:selectOneMenu>
+                            </div>
+                            <div>
+                                <h:outputLabel for="txtFolioElectronico" value="Folio Electronico:" rendered="#{beanBuscaVenta.viewCheque =='deposito'}" />
+                            </div>
+                            <div>
+                                <p:inputText id="txtFolioElectronico"  value="#{beanBuscaVenta.folioElectronico}" rendered="#{beanBuscaVenta.viewCheque =='deposito'}" />
+                            </div>
+
+                            <div>
+                                <p:outputLabel   for="cajaFiltro" value ="Cuenta Destino:" rendered="#{beanBuscaVenta.viewCheque =='trans'}"/> 
+                            </div>
+                            <div>    
+                                <h:selectOneMenu  id="cajaFiltro" value="#{beanBuscaVenta.idCuentaDestinoFk}" rendered="#{beanBuscaVenta.viewCheque =='trans'}">
+                                    <f:selectItem itemLabel="Selecciona" itemValue="" />
+                                    <f:selectItems value="#{beanBuscaVenta.listaCuentas}" var="cuentita" itemLabel="#{cuentita.nombreBanco}" itemValue="#{cuentita.idCuentaBancariaPk}"/>
+                                    <!--<p:ajax event="change" listener="{beanOperacionesCaja.printStatus()}" update=":formContent:table" />-->
+                                </h:selectOneMenu>
+                            </div>
+                            <div>
+                                <h:outputLabel for="txtFactura" value="N. Factura:" rendered="#{beanBuscaVenta.viewCheque =='true'}" />
+                            </div>
+                            <div>    
+                                <p:inputText id="txtFactura"  value="#{beanBuscaVenta.factura}" rendered="#{beanBuscaVenta.viewCheque =='true'}" />
+                            </div>
+                            <!--Datos para Transferencia-->
+                            <div>
+                                <h:outputLabel for="txtReferencia" value="N. Referencia:" rendered="#{beanBuscaVenta.viewCheque =='trans'}"/>
+                            </div>
+                            <div>    
+                                <p:inputText id="txtReferencia"  value="#{beanBuscaVenta.referencia}" rendered="#{beanBuscaVenta.viewCheque =='trans'}"/>
+                            </div>
+
+                            <div>
+                                <h:outputLabel for="txtConcepto" value="Concepto:" rendered="#{beanBuscaVenta.viewCheque =='trans'}"/>
+                            </div>
+                            <div>
+                                <p:inputText id="txtConcepto"  value="#{beanBuscaVenta.conceptoTransferencia}" rendered="#{beanBuscaVenta.viewCheque =='trans'}"/>
+                            </div>
+
+                            <div>
+                                <h:outputLabel  value="Fecha de Transferencia:" rendered="#{beanBuscaVenta.viewCheque =='trans'}" />
+                            </div>
+                            <div>
+                                <p:calendar class="calendario" navigator="true" 
+                                            placeholder="dd/mm/yyyy" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" 
+                                            showOn="button"  id="popup2" value="#{beanBuscaVenta.fechaTransferencia}" rendered="#{beanBuscaVenta.viewCheque =='trans'}" />
+                            </div>
+                            <!--Fin Datos para Transferencia-->
+                            <div>
+                                <h:outputLabel  value="Fecha de Depósito:" rendered="#{beanBuscaVenta.viewCheque =='deposito'}" />
+                            </div> <div>     
+                                <p:calendar class="calendario" navigator="true" 
+                                            placeholder="dd/mm/yyyy" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" 
+                                            showOn="button"  id="popup3" value="#{beanBuscaVenta.fechaTransferencia}" rendered="#{beanBuscaVenta.viewCheque =='deposito'}" />
+                            </div>
+                            <!--Datos para A CUENTA-->
+                            <!--FIN Datos A CUENTA -->
+                        </p:fragment>
+                        <f:facet name="footer">
+                            <p:commandButton value="Registrar" update="formContent" action="#{beanBuscaVenta.updateVenta()}" oncomplete="PF('dlg').hide();"/>
+                        </f:facet> 
+                        <!--Fin Datos para Cheque-->
+                    </h:panelGrid>
+                </p:dialog>
                 <div class="container-fluid">
                     <div class="form-group" align="right">
                         <p:commandButton value="Buscar" update=":formContent" ajax="true" action="#{beanBuscaVenta.searchById()}" />
-                        <p:commandButton value="Pagar" update=":formContent" ajax="true" action="#{beanBuscaVenta.updateVenta()}" rendered="#{beanBuscaVenta.viewEstate=='init'}" disabled="#{beanBuscaVenta.statusButtonPagar}"/>
+                        <p:commandButton value="Pagar"  ajax="true" oncomplete="PF('dlg').show();" update =":formContent:dialogw:" rendered="#{beanBuscaVenta.viewEstate=='init'}" disabled="#{beanBuscaVenta.statusButtonPagar}"/>
 
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6"  for="txtid_venta" value ="Número de folio:" /> 

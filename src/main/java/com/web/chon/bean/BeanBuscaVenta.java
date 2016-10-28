@@ -1,14 +1,21 @@
 package com.web.chon.bean;
+
 import com.web.chon.dominio.BuscaVenta;
 import com.web.chon.dominio.Caja;
+import com.web.chon.dominio.CuentaBancaria;
+import com.web.chon.dominio.Documento;
 import com.web.chon.dominio.OperacionesCaja;
+import com.web.chon.dominio.TipoAbono;
 import com.web.chon.dominio.Usuario;
 import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceBuscaVenta;
 import com.web.chon.service.IfaceCaja;
 import com.web.chon.service.IfaceCatUsuario;
+import com.web.chon.service.IfaceCuentasBancarias;
+import com.web.chon.service.IfaceDocumentos;
 import com.web.chon.service.IfaceOperacionesCaja;
+import com.web.chon.service.IfaceTipoAbono;
 import com.web.chon.util.Constantes;
 import com.web.chon.util.JasperReportUtil;
 import com.web.chon.util.JsfUtil;
@@ -20,6 +27,7 @@ import java.io.File;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -47,6 +55,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Scope("view")
 public class BeanBuscaVenta implements Serializable, BeanSimple {
+
     private static final long serialVersionUID = 1L;
     @Autowired
     private IfaceCatUsuario ifaceCatUsuario;
@@ -58,8 +67,15 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
     private IfaceCaja ifaceCaja;
     @Autowired
     private IfaceOperacionesCaja ifaceOperacionesCaja;
+    @Autowired
+    private IfaceCuentasBancarias ifaceCuentasBancarias;
+
+    @Autowired
+    private IfaceTipoAbono ifaceTipoAbono;
 
     private ArrayList<BuscaVenta> model;
+    @Autowired
+    private IfaceDocumentos ifaceDocumentos;
     private ArrayList<BuscaVenta> selectedVenta;
 
     private BuscaVenta data;
@@ -86,7 +102,37 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
     private int idVentaTemporal; //utilizado para comprobacion de venta 
     private static final BigDecimal entradaSalida = new BigDecimal(1);
     private static final BigDecimal statusOperacion = new BigDecimal(1);
-    private static final BigDecimal concepto = new BigDecimal(8);
+    //private static final BigDecimal concepto = new BigDecimal(8);
+
+    private static final BigDecimal conceptoMenudeoEfectivo = new BigDecimal(8);
+    private static final BigDecimal conceptoMenudeoCheques = new BigDecimal(33);
+    private static final BigDecimal conceptoMenudeoDeposito = new BigDecimal(32);
+    private static final BigDecimal conceptoMenudeoTransferencia = new BigDecimal(34);
+
+    private static final BigDecimal DOCUMENTOACTIVO = new BigDecimal(1);
+    private static final BigDecimal DOCUMENTOTIPOCHEQUE = new BigDecimal(1);
+
+    //-- Variables para Realizar Pago ---///
+    private BigDecimal idTipoPagoFk;
+    private BigDecimal folioVenta;
+    private ArrayList<TipoAbono> lstTipoAbonos;
+    private String viewCheque;
+    private BigDecimal montoAbono;
+    private BigDecimal numeroCheque;
+    private String librador;
+    private Date fechaCobro;
+    private String banco;
+    private String factura;
+    private String conceptoTransferencia;
+    private String referencia;
+    private Date fechaTransferencia;
+    private BigDecimal idCuentaDestinoFk;
+    private BigDecimal recibi;
+    private BigDecimal folioElectronico;
+    private String cuenta;
+    private BigDecimal recibido;
+    private BigDecimal cambio;
+    private ArrayList<CuentaBancaria> listaCuentas;
 
     @PostConstruct
     public void init() {
@@ -106,10 +152,66 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
         caja = ifaceCaja.getCajaByIdUsuarioPk(usuario.getIdUsuarioPk());
         opcaja = new OperacionesCaja();
         opcaja.setIdCajaFk(caja.getIdCajaPk());
-        opcaja.setIdConceptoFk(concepto);
+        //opcaja.setIdConceptoFk(concepto);
         opcaja.setIdUserFk(usuario.getIdUsuarioPk());
         opcaja.setEntradaSalida(entradaSalida);
         opcaja.setIdStatusFk(statusOperacion);
+        opcaja.setIdSucursalFk(new BigDecimal(usuario.getIdSucursal()));
+        listaCuentas = ifaceCuentasBancarias.getCuentas();
+        lstTipoAbonos = ifaceTipoAbono.getAll();
+        idTipoPagoFk = new BigDecimal(1);
+        setViewCheque("init");
+    }
+
+    public void addView() {
+
+        if (idTipoPagoFk.intValue() == 3) {
+            setViewCheque("true");
+        } else if (idTipoPagoFk.intValue() == 2) {
+            setViewCheque("trans");
+        } else if (idTipoPagoFk.intValue() == 4) {
+            setViewCheque("deposito");
+        } else {
+            setViewCheque("init");
+        }
+
+    }
+
+    public void calculaCambio() {
+        cambio = new BigDecimal(0);
+        System.out.println("Cambio: " + cambio);
+        System.out.println("Recibido: " + recibido);
+        System.out.println("Total Venta: " + totalVenta);
+        cambio = recibido.subtract(totalVenta, MathContext.UNLIMITED);
+        System.out.println("Cambio: " + cambio);
+    }
+
+    public void verificarTipo() {
+        switch (idTipoPagoFk.intValue()) {
+            case 1:
+                System.out.println("Se ejecuto cobro en efectivo");
+                opcaja.setIdConceptoFk(conceptoMenudeoEfectivo);
+                break;
+            case 2:
+                System.out.println("Se ejecuto cobro en transferencia");
+                opcaja.setIdConceptoFk(conceptoMenudeoTransferencia);
+
+                break;
+            case 3:
+                System.out.println("Se ejecuto cobro en cheque");
+                opcaja.setIdConceptoFk(conceptoMenudeoCheques);
+
+                break;
+            case 4:
+                System.out.println("Se ejecuto cobro en deposito bancario");
+                opcaja.setIdConceptoFk(conceptoMenudeoDeposito);
+                break;
+            default:
+                System.out.println("Se ejecuto cobro en efectivo");
+                break;
+
+        }
+
     }
 
     public void generateReport() {
@@ -233,6 +335,9 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
             JsfUtil.addErrorMessage("Error la venta se encuentra cancelada");
         } else if (opcaja.getIdCajaFk() != null) {
             try {
+                verificarTipo();
+                System.out.println("Se cambió el estatus");
+
                 ifaceBuscaVenta.updateVenta(data.getIdVenta().intValue(), usuario.getIdUsuarioPk().intValue());
                 searchById();
                 JsfUtil.addSuccessMessageClean("La venta se ha pagado exitosamente");
@@ -241,19 +346,47 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
                 System.out.println("====================" + opcaja.toString());
 
                 if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
+                    if (idTipoPagoFk.intValue() == 3) {
+                        Documento d = new Documento();
+                        d.setIdDocumentoPk(new BigDecimal(ifaceDocumentos.getNextVal()));
+                        //d.setIdAbonoFk(ac.getIdAbonoCreditoPk());
+                        d.setFechaCobro(fechaCobro);
+                        //Credito c = ifaceCredito.getById(ac.getIdCreditoFk());
+                        d.setIdClienteFk(model.get(0).getIdClienteFk());
+                        d.setIdStatusFk(DOCUMENTOACTIVO);
+                        d.setIdTipoDocumento(DOCUMENTOTIPOCHEQUE);
+                        d.setMonto(totalVenta);
+                        d.setNumeroCheque(numeroCheque);
+                        d.setFactura(factura);
+                        d.setBanco(banco);
+                        d.setLibrador(librador);
+                        d.setIdFormaCobroFk(new BigDecimal(1));
+                        System.out.println("Documento: " + d.toString());
+                        //--- Insertar Documento -- //
+                        if (ifaceDocumentos.insertarDocumento(d) == 1) {
+                            System.out.println("Se ingreso corractamente el documento por cobrar");
+
+                        } else {
+                            JsfUtil.addErrorMessageClean("Ocurrió un error al registrar el documento por cobrar");
+                        }
+                    }
+
                     setParameterTicket(data.getIdVenta().intValue(), data.getFolioSucursal().intValue());
                     generateReport();
                     RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
+                    JsfUtil.addSuccessMessageClean("Se ha cobrado exitosamente la venta");
+                    data.reset();
+                    model.clear();
+                    statusButtonPagar = true;
+
                 } else {
-                    JsfUtil.addErrorMessageClean("Ocurrió un error al registrar el pago de la venta");
+                    JsfUtil.addErrorMessageClean("Ocurrio un error al agregar operacion en caja, contactar al administrador");
                 }
 
             } catch (Exception ex) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar pagar la venta con el folio:" + data.getIdVenta() + "."));
             }
-        }
-        else
-        {
+        } else {
             JsfUtil.addErrorMessageClean("Su usuario no tiene asignada una caja para cobrar este folio.");
         }
 
@@ -279,6 +412,7 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
             data.setStatusFK(model.get(0).getStatusFK());
             data.setIdVenta(model.get(0).getIdVenta());
             data.setIdSucursalFk(model.get(0).getIdSucursalFk());
+            data.setIdClienteFk(totalVenta);
             idVentaTemporal = data.getIdVenta().intValue();
             calculatotalVenta();
             if (data.getStatusFK() == 2) {
@@ -413,4 +547,181 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
     public void setNumber(String number) {
         this.number = number;
     }
+
+    public Caja getCaja() {
+        return caja;
+    }
+
+    public void setCaja(Caja caja) {
+        this.caja = caja;
+    }
+
+    public OperacionesCaja getOpcaja() {
+        return opcaja;
+    }
+
+    public void setOpcaja(OperacionesCaja opcaja) {
+        this.opcaja = opcaja;
+    }
+
+    public BigDecimal getIdTipoPagoFk() {
+        return idTipoPagoFk;
+    }
+
+    public void setIdTipoPagoFk(BigDecimal idTipoPagoFk) {
+        this.idTipoPagoFk = idTipoPagoFk;
+    }
+
+    public BigDecimal getFolioVenta() {
+        return folioVenta;
+    }
+
+    public void setFolioVenta(BigDecimal folioVenta) {
+        this.folioVenta = folioVenta;
+    }
+
+    public ArrayList<TipoAbono> getLstTipoAbonos() {
+        return lstTipoAbonos;
+    }
+
+    public void setLstTipoAbonos(ArrayList<TipoAbono> lstTipoAbonos) {
+        this.lstTipoAbonos = lstTipoAbonos;
+    }
+
+    public String getViewCheque() {
+        return viewCheque;
+    }
+
+    public void setViewCheque(String viewCheque) {
+        this.viewCheque = viewCheque;
+    }
+
+    public BigDecimal getMontoAbono() {
+        return montoAbono;
+    }
+
+    public void setMontoAbono(BigDecimal montoAbono) {
+        this.montoAbono = montoAbono;
+    }
+
+    public BigDecimal getNumeroCheque() {
+        return numeroCheque;
+    }
+
+    public void setNumeroCheque(BigDecimal numeroCheque) {
+        this.numeroCheque = numeroCheque;
+    }
+
+    public String getLibrador() {
+        return librador;
+    }
+
+    public void setLibrador(String librador) {
+        this.librador = librador;
+    }
+
+    public Date getFechaCobro() {
+        return fechaCobro;
+    }
+
+    public void setFechaCobro(Date fechaCobro) {
+        this.fechaCobro = fechaCobro;
+    }
+
+    public String getBanco() {
+        return banco;
+    }
+
+    public void setBanco(String banco) {
+        this.banco = banco;
+    }
+
+    public String getFactura() {
+        return factura;
+    }
+
+    public void setFactura(String factura) {
+        this.factura = factura;
+    }
+
+    public String getConceptoTransferencia() {
+        return conceptoTransferencia;
+    }
+
+    public void setConceptoTransferencia(String conceptoTransferencia) {
+        this.conceptoTransferencia = conceptoTransferencia;
+    }
+
+    public String getReferencia() {
+        return referencia;
+    }
+
+    public void setReferencia(String referencia) {
+        this.referencia = referencia;
+    }
+
+    public Date getFechaTransferencia() {
+        return fechaTransferencia;
+    }
+
+    public void setFechaTransferencia(Date fechaTransferencia) {
+        this.fechaTransferencia = fechaTransferencia;
+    }
+
+    public BigDecimal getIdCuentaDestinoFk() {
+        return idCuentaDestinoFk;
+    }
+
+    public void setIdCuentaDestinoFk(BigDecimal idCuentaDestinoFk) {
+        this.idCuentaDestinoFk = idCuentaDestinoFk;
+    }
+
+    public BigDecimal getRecibi() {
+        return recibi;
+    }
+
+    public void setRecibi(BigDecimal recibi) {
+        this.recibi = recibi;
+    }
+
+    public BigDecimal getFolioElectronico() {
+        return folioElectronico;
+    }
+
+    public void setFolioElectronico(BigDecimal folioElectronico) {
+        this.folioElectronico = folioElectronico;
+    }
+
+    public String getCuenta() {
+        return cuenta;
+    }
+
+    public void setCuenta(String cuenta) {
+        this.cuenta = cuenta;
+    }
+
+    public BigDecimal getRecibido() {
+        return recibido;
+    }
+
+    public void setRecibido(BigDecimal recibido) {
+        this.recibido = recibido;
+    }
+
+    public BigDecimal getCambio() {
+        return cambio;
+    }
+
+    public void setCambio(BigDecimal cambio) {
+        this.cambio = cambio;
+    }
+
+    public ArrayList<CuentaBancaria> getListaCuentas() {
+        return listaCuentas;
+    }
+
+    public void setListaCuentas(ArrayList<CuentaBancaria> listaCuentas) {
+        this.listaCuentas = listaCuentas;
+    }
+
 }

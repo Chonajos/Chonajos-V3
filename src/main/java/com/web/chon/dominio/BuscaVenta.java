@@ -37,6 +37,7 @@ public class BuscaVenta implements Serializable {
     private BigDecimal idProvedor;
     private BigDecimal idStatus;
     private BigDecimal idExistenciaFk;
+    private BigDecimal idClienteFk;
     
 
     public void reset() {
@@ -58,6 +59,7 @@ public class BuscaVenta implements Serializable {
         carro=null;
         kilosVendidos=null;
         nombreSucursal=null;
+        idClienteFk = null;
     }
 
     @Override
@@ -278,5 +280,15 @@ public class BuscaVenta implements Serializable {
     public void setNombreStatus(String nombreStatus) {
         this.nombreStatus = nombreStatus;
     }
+
+    public BigDecimal getIdClienteFk() {
+        return idClienteFk;
+    }
+
+    public void setIdClienteFk(BigDecimal idClienteFk) {
+        this.idClienteFk = idClienteFk;
+    }
+    
+    
 
 }

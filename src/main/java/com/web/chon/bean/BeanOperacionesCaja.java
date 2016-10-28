@@ -102,7 +102,7 @@ public class BeanOperacionesCaja implements Serializable {
         c = ifaceCaja.getCajaByIdUsuarioPk(usuario.getIdUsuario());
         idCajaBean = c.getIdCajaPk();
 
-        listaConceptos = ifaceConceptos.getConceptos();
+        //listaConceptos = ifaceConceptos.getConceptos();
         listaTiposOperaciones = ifaceTiposOperacion.getOperaciones();
         listaResponsables = ifaceOperacionesCaja.getResponsables(idCajaBean);
         listaOperaciones = ifaceOperacionesCaja.getOperacionesBy(idCajaBean, idTipoOperacionBean, idConceptoBean, TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicio), TiempoUtil.getFechaDDMMYYYY(fechaFiltroFin), idStatusBean, idUsuarioCajaBean, idCorteBean,idInOut);
@@ -122,10 +122,10 @@ public class BeanOperacionesCaja implements Serializable {
         {
         listaConceptos = ifaceConceptos.getConceptosByTipoOperacion(idTipoOperacionBean);
         }
-        else
-        {
-            listaConceptos = ifaceConceptos.getConceptos();
-        }
+//        else
+//        {
+//            listaConceptos = ifaceConceptos.getConceptos();
+//        }
     }
 
     public void buscarReponsables() {

@@ -133,10 +133,12 @@ public class ServiceOperacionesCaja implements IfaceOperacionesCaja {
             op.setMonto(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
             op.setEntradaSalida(obj[10] == null ? null : new BigDecimal(obj[10].toString()));
             op.setIdCuentaDestinoFk(obj[11] == null ? null : new BigDecimal(obj[11].toString()));
-            op.setNombreCaja(obj[12] == null ? null : obj[12].toString());
-            op.setNombreConcepto(obj[13] == null ? "" : obj[13].toString());
-            op.setNombreOperacion(obj[14] == null ? null : obj[14].toString());
-            op.setNombreUsuario(obj[15] == null ? null : obj[15].toString());
+            op.setIdSucursalFk(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
+            
+            op.setNombreCaja(obj[13] == null ? null : obj[13].toString());
+            op.setNombreConcepto(obj[14] == null ? "" : obj[14].toString());
+            op.setNombreOperacion(obj[15] == null ? null : obj[15].toString());
+            op.setNombreUsuario(obj[16] == null ? null : obj[16].toString());
             op.setNumero(i);
             i+=1;
             if(op.getIdStatusFk().intValue()==1)

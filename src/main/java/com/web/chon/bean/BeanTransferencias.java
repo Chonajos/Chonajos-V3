@@ -76,8 +76,10 @@ public class BeanTransferencias implements Serializable {
 
     private static final BigDecimal entrada = new BigDecimal(1);
     private static final BigDecimal salida = new BigDecimal(2);
-    private static final BigDecimal statusOperacion = new BigDecimal(2);
-    private static final BigDecimal idConcepto = new BigDecimal(15);
+    private static final BigDecimal statusOperacionPendiente = new BigDecimal(2);
+    
+    private static final BigDecimal idTransferenciaEfectivo = new BigDecimal(16);
+    private static final BigDecimal idTransferenciaCheques = new BigDecimal(17);
 
     //--Variables para Verificar Maximo en Caja --//
     private ArrayList<TipoOperacion> lstOperacionesEntrada;
@@ -90,6 +92,7 @@ public class BeanTransferencias implements Serializable {
     private BigDecimal totalEntradas;
     private BigDecimal totalSalidas;
     //--Variables para Verificar Maximo en Caja --//
+    private BigDecimal idTipoTransferenciaFk;
 
     @PostConstruct
     public void init() {
@@ -103,7 +106,7 @@ public class BeanTransferencias implements Serializable {
         opcajaOrigen.setIdCajaFk(caja.getIdCajaPk());
         opcajaOrigen.setIdUserFk(usuario.getIdUsuario());
         opcajaOrigen.setEntradaSalida(salida);
-        opcajaOrigen.setIdStatusFk(statusOperacion);
+        opcajaOrigen.setIdStatusFk(statusOperacionPendiente);
 
         //--Maximo Pago--//
         corteAnterior = new CorteCaja();
@@ -159,14 +162,24 @@ public class BeanTransferencias implements Serializable {
     }
 
     //----Funciones para Verificar Maximo de Dinero en Caja --//
-    public void transferir() {
+    public void transferir() 
+    {
         verificarDinero();
 
         if (nuevoSaldo.compareTo(monto) >= 0) {
             opcajaOrigen.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
             opcajaOrigen.setMonto(monto);
             opcajaOrigen.setComentarios(comentarios);
-            opcajaOrigen.setIdConceptoFk(idConcepto);
+            if(idTipoTransferenciaFk.intValue()==1)
+            {
+                opcajaOrigen.setIdConceptoFk(idTransferenciaEfectivo);
+            }
+            else
+            {
+                opcajaOrigen.setIdConceptoFk(idTransferenciaCheques);
+            }
+            
+            
             opcajaOrigen.setIdCajaDestinoFk(idCajaDestinoBean);
 
             if (caja.getIdCajaPk() != null) {
@@ -313,5 +326,14 @@ public class BeanTransferencias implements Serializable {
     public void setOpcajaDestino(OperacionesCaja opcajaDestino) {
         this.opcajaDestino = opcajaDestino;
     }
+
+    public BigDecimal getIdTipoTransferenciaFk() {
+        return idTipoTransferenciaFk;
+    }
+
+    public void setIdTipoTransferenciaFk(BigDecimal idTipoTransferenciaFk) {
+        this.idTipoTransferenciaFk = idTipoTransferenciaFk;
+    }
+    
 
 }

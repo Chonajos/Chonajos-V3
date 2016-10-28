@@ -143,7 +143,7 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
                 + "inner join CONCEPTOS con on con.ID_CONCEPTOS_PK = opc.ID_CONCEPTO_FK\n"
                 + "inner join TIPOS_OPERACION tio on tio.ID_TIPO_OPERACION_PK = con.ID_TIPO_OPERACION_FK\n"
                 + "inner join USUARIO u on u.ID_USUARIO_PK = opc.ID_USER_FK\n"
-                + "where opc.ID_STATUS_FK=2 and opc.E_S=2 and  opc.ID_CONCEPTO_FK = 15 and opc.ID_CAJA_DESTINO_FK= ?");
+                + "where opc.ID_STATUS_FK=2 and opc.E_S=2 and  (opc.ID_CONCEPTO_FK = 16 or opc.ID_CONCEPTO_FK = 17) and opc.ID_CAJA_DESTINO_FK= ?");
         query.setParameter(1, idCorteCajaFk);
         return query.getResultList();
     }

@@ -175,6 +175,7 @@ public class BeanBuscaCredito implements Serializable {
         bandera = false;
         fechaMasProximaPago = new Date();
         abono = new AbonoCredito();
+        abono.setIdtipoAbonoFk(new BigDecimal(1));
         usuarioDominio = context.getUsuarioAutenticado();
         dataAbonar = new SaldosDeudas();
         modelo = new ArrayList<SaldosDeudas>();
@@ -268,7 +269,7 @@ public class BeanBuscaCredito implements Serializable {
         paramReport.put("labelEstatus", "Abono Pagado");
         paramReport.put("fecha", TiempoUtil.getFechaDDMMYYYYHHMM(date));
         paramReport.put("numeroCliente", c.getId_cliente().toString());
-        paramReport.put("nombreCliente", c.getNombreCompleto() == null ? "------" : c.getNombre());
+        paramReport.put("nombreCliente", c.getNombreCompleto());
         paramReport.put("recibimos", nf.format(ac.getMontoAbono()));
         paramReport.put("totalLetra", totalVentaStr);
         paramReport.put("fechaProximoPago", TiempoUtil.getFechaDDMMYYYYHHMM(date));
