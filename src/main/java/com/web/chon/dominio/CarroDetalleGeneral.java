@@ -20,7 +20,7 @@ public class CarroDetalleGeneral extends ValueObject implements Serializable {
     private BigDecimal venta;
     private BigDecimal comision;
 
-//    private ArrayList<EntradaMercanciaProducto> listaProductos;
+
     @Override
     public String toString() {
         return "CarroDetalleGeneral{" + "carro=" + carro + ", idEntradaMercancia=" + idEntradaMercancia + ", fecha=" + fecha + ", identificador=" + identificador + '}';

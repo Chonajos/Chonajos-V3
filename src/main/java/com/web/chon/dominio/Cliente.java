@@ -81,7 +81,7 @@ public class Cliente implements Serializable {
         String nombre = this.nombre == null ? "" : this.nombre + " ";
         String paterno = this.paterno == null ? "" : this.paterno + " ";
         String materno = this.materno == null ? "" : this.materno;
-        return nombre+paterno+materno;
+        return nombreCompleto == null? nombre+paterno+materno:nombreCompleto;
 
     }
 

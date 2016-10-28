@@ -5,8 +5,10 @@
  */
 package com.web.chon.negocio;
 
+import com.web.chon.dominio.CarroDetalle;
 import com.web.chon.dominio.VentaMayoreo;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Remote;
 
@@ -48,6 +50,14 @@ public interface NegocioVentaMayoreo {
      * @return 
      */
     public List<Object[]> getReporteVentas(BigDecimal carro, BigDecimal idSucursal,BigDecimal idTipoVenta);
+    
+    /**
+     * Obtiene un detalle de las ventas realizadas por carro y id de sucursal
+     * @param idSucursal
+     * @param carro
+     * @return 
+     */
+    public List<Object[]> getDetalleVentasCarro(BigDecimal idSucursal, BigDecimal carro);
 
     
     }

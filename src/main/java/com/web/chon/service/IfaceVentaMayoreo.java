@@ -5,6 +5,7 @@
  */
 package com.web.chon.service;
 
+import com.web.chon.dominio.CarroDetalle;
 import com.web.chon.dominio.OperacionesVentasMayoreo;
 import com.web.chon.dominio.VentaMayoreo;
 import java.math.BigDecimal;
@@ -36,7 +37,22 @@ public interface IfaceVentaMayoreo {
 
     public int cancelarVentaMayoreo(BigDecimal idVenta,BigDecimal idUsuario,String comentarios);
     
+    /**
+     * No se ocupa por el momento
+     * @param carro
+     * @param idSucursal
+     * @param idTipoVenta
+     * @return 
+     */
     public ArrayList<OperacionesVentasMayoreo> getReporteVentasByCarroAndIdSucursalAndTipoVenta(BigDecimal carro, BigDecimal idSucursal,BigDecimal idTipoVenta);
+    
+    /**
+     * Obtiene un detalle de las ventas realizadas por carro y id de sucursal
+     * @param idSucursal
+     * @param carro
+     * @return 
+     */
+    public ArrayList<CarroDetalle> getDetalleVentasCarro(BigDecimal idSucursal, BigDecimal carro);
     
 
 }

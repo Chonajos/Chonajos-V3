@@ -155,33 +155,16 @@ public class ServiceVentaMayoreoProducto implements IfaceVentaMayoreoProducto {
 
         switch (dominio.getIdConvenio().intValue()) {
             case 1:
-                System.out.println("1");
                 BigDecimal kiloPromedio = dominio.getKilosEntrada().divide(dominio.getEmpaqueEntrada(), 3);
-                
-                System.out.println("kilos promedio "+kiloPromedio);
-                
                 comision = dominio.getTotalVenta().subtract((kiloPromedio.multiply(dominio.getEmpaquesVendidos()).multiply(dominio.getConvenio())));
-                
-                System.out.println("dominio.getEmpaquesVendidos() "+dominio.getEmpaquesVendidos());
-                System.out.println("convenio "+dominio.getConvenio());
-                System.out.println("comision " + comision);
+
                 break;
             case 2:
-                System.out.println("2");
-                System.out.println("getConvenio 0 "+dominio.getConvenio());
                 dominio.setConvenio(dominio.getConvenio().divide(new BigDecimal(100)));
                 comision = dominio.getTotalVenta().multiply(dominio.getConvenio());
-                System.out.println("getConvenio "+dominio.getConvenio());
-                System.out.println("total venta "+dominio.getTotalVenta());
-                System.out.println("comision "+comision);
                 break;
             case 3:
-                System.out.println("3");
-                System.out.println("kilos vendidos "+dominio.getKilosVendidos());
                 comision = dominio.getKilosVendidos().multiply(dominio.getConvenio());
-                
-                System.out.println("dominio convenio "+dominio.getConvenio());
-                System.out.println("comision "+comision);
                 break;
             default:
                 break;
