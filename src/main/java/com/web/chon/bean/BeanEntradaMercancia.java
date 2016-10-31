@@ -97,6 +97,7 @@ public class BeanEntradaMercancia implements Serializable {
     
     private BigDecimal totalKilos;
     private BigDecimal kilos;
+    private BigDecimal cantidadReal;
     
     private boolean permisionPacto;
     private boolean permisionComision;
@@ -141,6 +142,7 @@ public class BeanEntradaMercancia implements Serializable {
         existencia_repetida = new ArrayList<ExistenciaProducto>();
         listaBodegas = new ArrayList<Bodega>();
         listaBodegas = ifaceCatBodegas.getBodegaByIdSucursal(data.getIdSucursalFK());
+        cantidadReal = new BigDecimal(0);
     }
     
     public void permisions() {
@@ -166,7 +168,14 @@ public class BeanEntradaMercancia implements Serializable {
             }
         }
     }
-    
+    public void calculaCantidadReal()
+    {
+        cantidadReal = new BigDecimal(0);
+        for (EntradaMercanciaProducto p :listaMercanciaProducto)
+        {
+            cantidadReal = cantidadReal.add(p.getCantidadPaquetes(), MathContext.UNLIMITED);
+        }
+    }
     public void inserts() {
         
         int idEntradaMercancia = 0;
@@ -175,6 +184,7 @@ public class BeanEntradaMercancia implements Serializable {
         
         try {
             if (!listaMercanciaProducto.isEmpty() && listaMercanciaProducto.size() > 0) {
+                calculaCantidadReal();
                 idEntradaMercancia = ifaceEntradaMercancia.getNextVal();
                 idCarroSucursal = ifaceEntradaMercancia.getCarroSucursal(data.getIdSucursalFK());
                 entrada_mercancia.setIdEmPK(new BigDecimal(idEntradaMercancia));
@@ -186,6 +196,8 @@ public class BeanEntradaMercancia implements Serializable {
                 entrada_mercancia.setRemision(data.getRemision());
                 entrada_mercancia.setFecha(data.getFecha());
                 entrada_mercancia.setFolio(data.getFolio());
+                entrada_mercancia.setCantidadEmpaquesProvedor(data.getCantidadEmpaquesProvedor());
+                entrada_mercancia.setCantidadEmpaquesReales(cantidadReal);
                 entrada_mercancia.setKilosTotales(data.getKilosTotales());
                 entrada_mercancia.setKilosTotalesProvedor(data.getKilosTotalesProvedor());
                 entrada_mercancia.setComentariosGenerales(data.getComentariosGenerales());
