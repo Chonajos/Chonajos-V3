@@ -36,14 +36,15 @@ public class EntradaMercancia extends ValueObject implements Serializable {
     private Date fechaFiltroInicio;
     private Date fechaFiltroFin;
     private ArrayList<EntradaMercanciaProducto> listaProductos;
+    private BigDecimal cantidadEmpaquesProvedor;
+    private BigDecimal cantidadEmpaquesReales;
 
     @Override
     public String toString() {
-        return "EntradaMercancia{" + "idEmPK=" + idEmPK + ", idProvedorFK=" + idProvedorFK + ", movimiento=" + movimiento + ", fecha=" + fecha + ", remision=" + remision + ", idSucursalFK=" + idSucursalFK + ", fechaRemision=" + fechaRemision + ", comentariosGenerales=" + comentariosGenerales + ", abreviacion=" + abreviacion + ", folio=" + folio + ", idStatusFk=" + idStatusFk + ", kilosTotales=" + kilosTotales + ", kilosTotalesProvedor=" + kilosTotalesProvedor + ", idCarroSucursal=" + idCarroSucursal + ", nombreSucursal=" + nombreSucursal + ", nombreProvedor=" + nombreProvedor + ", idUsuario=" + idUsuario + ", fechaFiltroInicio=" + fechaFiltroInicio + ", fechaFiltroFin=" + fechaFiltroFin + ", listaProductos=" + listaProductos + '}';
+        return "EntradaMercancia{" + "idEmPK=" + idEmPK + ", idProvedorFK=" + idProvedorFK + ", movimiento=" + movimiento + ", fecha=" + fecha + ", remision=" + remision + ", idSucursalFK=" + idSucursalFK + ", fechaRemision=" + fechaRemision + ", comentariosGenerales=" + comentariosGenerales + ", abreviacion=" + abreviacion + ", folio=" + folio + ", idStatusFk=" + idStatusFk + ", kilosTotales=" + kilosTotales + ", kilosTotalesProvedor=" + kilosTotalesProvedor + ", idCarroSucursal=" + idCarroSucursal + ", nombreSucursal=" + nombreSucursal + ", nombreProvedor=" + nombreProvedor + ", idUsuario=" + idUsuario + ", fechaFiltroInicio=" + fechaFiltroInicio + ", fechaFiltroFin=" + fechaFiltroFin + ", listaProductos=" + listaProductos + ", cantidadEmpaquesProvedor=" + cantidadEmpaquesProvedor + ", cantidadEmpaquesReales=" + cantidadEmpaquesReales + '}';
     }
 
-   
-
+    
     @Override
     public void reset() {
         idEmPK = null;
@@ -59,10 +60,11 @@ public class EntradaMercancia extends ValueObject implements Serializable {
         kilosTotalesProvedor = null;
         nombreSucursal = null;
         nombreProvedor = null;
-        fechaRemision=null;
-    comentariosGenerales=null;
-    idCarroSucursal=null;
-    
+        fechaRemision = null;
+        comentariosGenerales = null;
+        idCarroSucursal = null;
+        cantidadEmpaquesReales = null;
+        cantidadEmpaquesProvedor = null;
 
     }
 
@@ -73,7 +75,7 @@ public class EntradaMercancia extends ValueObject implements Serializable {
     public void setListaProductos(ArrayList<EntradaMercanciaProducto> listaProductos) {
         this.listaProductos = listaProductos;
     }
-    
+
     public BigDecimal getIdUsuario() {
         return idUsuario;
     }
@@ -82,7 +84,6 @@ public class EntradaMercancia extends ValueObject implements Serializable {
         this.idUsuario = idUsuario;
     }
 
-    
     public BigDecimal getIdCarroSucursal() {
         return idCarroSucursal;
     }
@@ -91,9 +92,6 @@ public class EntradaMercancia extends ValueObject implements Serializable {
         this.idCarroSucursal = idCarroSucursal;
     }
 
-    
-    
-    
     public Date getFechaRemision() {
         return fechaRemision;
     }
@@ -117,8 +115,6 @@ public class EntradaMercancia extends ValueObject implements Serializable {
     public void setIdStatusFk(BigDecimal idStatusFk) {
         this.idStatusFk = idStatusFk;
     }
-
-    
 
     public BigDecimal getKilosTotalesProvedor() {
         return kilosTotalesProvedor;
@@ -232,8 +228,20 @@ public class EntradaMercancia extends ValueObject implements Serializable {
         this.fechaFiltroFin = fechaFiltroFin;
     }
 
-   
-    
-    
+    public BigDecimal getCantidadEmpaquesProvedor() {
+        return cantidadEmpaquesProvedor;
+    }
+
+    public void setCantidadEmpaquesProvedor(BigDecimal cantidadEmpaquesProvedor) {
+        this.cantidadEmpaquesProvedor = cantidadEmpaquesProvedor;
+    }
+
+    public BigDecimal getCantidadEmpaquesReales() {
+        return cantidadEmpaquesReales;
+    }
+
+    public void setCantidadEmpaquesReales(BigDecimal cantidadEmpaquesReales) {
+        this.cantidadEmpaquesReales = cantidadEmpaquesReales;
+    }
 
 }

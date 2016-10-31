@@ -33,7 +33,7 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
         //System.out.println("EJB_INSERTA_ENTRADAMERCANCIA");
         try {
             //System.out.println("Entrada: " + entrada);
-            Query query = em.createNativeQuery("INSERT INTO ENTRADAMERCANCIA (ID_EM_PK,ID_PROVEDOR_FK,MOVIMIENTO,FECHA,REMISION,ID_SUCURSAL_FK,IDENTIFICADOR,ID_STATUS_FK,KILOSTOTALES,KILOSTOTALESPROVEDOR,COMENTARIOS,FECHAREMISION,CARROSUCURSAL,ID_USUARIO_FK)VALUES (?,?,?,sysdate,?,?,?,1,?,?,?,?,?,?)");
+            Query query = em.createNativeQuery("INSERT INTO ENTRADAMERCANCIA (ID_EM_PK,ID_PROVEDOR_FK,MOVIMIENTO,FECHA,REMISION,ID_SUCURSAL_FK,IDENTIFICADOR,ID_STATUS_FK,KILOSTOTALES,KILOSTOTALESPROVEDOR,COMENTARIOS,FECHAREMISION,CARROSUCURSAL,ID_USUARIO_FK,CANTIDADTOTAL,CANTIDADTOTALPROVEDOR)VALUES (?,?,?,sysdate,?,?,?,1,?,?,?,?,?,?,?,?)");
             query.setParameter(1, entrada.getIdEmPK());
             query.setParameter(2, entrada.getIdProvedorFK());
             query.setParameter(3, entrada.getMovimiento());
@@ -46,6 +46,9 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
             query.setParameter(10, entrada.getFechaRemision());
             query.setParameter(11, entrada.getIdCarroSucursal());
             query.setParameter(12, entrada.getIdUsuario());
+            query.setParameter(13, entrada.getCantidadEmpaquesReales());
+            query.setParameter(14, entrada.getCantidadEmpaquesProvedor());
+            
 
             return query.executeUpdate();
 
