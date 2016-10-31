@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package com.web.chon.bean;
+
 import com.web.chon.dominio.AbonoCredito;
 import com.web.chon.dominio.Caja;
 import com.web.chon.dominio.Cliente;
@@ -166,9 +167,13 @@ public class BeanBuscaCredito implements Serializable {
     private BigDecimal idCuentaDestinoBean;
     private BigDecimal comboFiltro;
     private boolean habilitaBotones;
+    private boolean botonCancelar;
+    private boolean botonActualizar;
 
     @PostConstruct
     public void init() {
+        botonCancelar = true;
+        botonActualizar = true;
         caja = new Caja();
         idCuentaDestinoBean = new BigDecimal(0);
         minimoPago = new BigDecimal(0);
@@ -176,6 +181,7 @@ public class BeanBuscaCredito implements Serializable {
         fechaMasProximaPago = new Date();
         abono = new AbonoCredito();
         abono.setIdtipoAbonoFk(new BigDecimal(1));
+        
         usuarioDominio = context.getUsuarioAutenticado();
         dataAbonar = new SaldosDeudas();
         modelo = new ArrayList<SaldosDeudas>();
@@ -210,6 +216,11 @@ public class BeanBuscaCredito implements Serializable {
             SaldosDeudas item = modelo.get(i);
             item.setAbonarTemporal(null);
         }
+        botonCancelar = true;
+        botonActualizar = true;
+        habilitaBotones = false;
+        abono.setIdtipoAbonoFk(new BigDecimal(1));
+        addView();
         JsfUtil.addSuccessMessageClean("Se ha cancelado el abono");
 
     }
@@ -242,6 +253,9 @@ public class BeanBuscaCredito implements Serializable {
         }
         //Vertificar el monto total del abono que no sobre y que no falte ni un peso
         // verificar el combo hacia que forma se haran los abonos.
+        botonCancelar = true;
+        botonActualizar = true;
+        habilitaBotones = false;
 
     }
 
@@ -290,22 +304,27 @@ public class BeanBuscaCredito implements Serializable {
                 paramReport.put("fechaTrans", TiempoUtil.getFechaDDMMYYYYHHMM(ac.getFechaTransferencia()));
                 break;
             case 3:
+                System.out.println("Entro a Cheque");
                 paramReport.put("folio", ac.getIdAbonoCreditoPk().toString());
                 paramReport.put("numeroCheque", ac.getNumeroCheque().toString());
                 paramReport.put("banco", ac.getBanco());
                 paramReport.put("fechaCobro", TiempoUtil.getFechaDDMMYYYYHHMM(ac.getFechaCobro()));
+                break;
             case 4:
                 //paramReport.put("folio", ac.getIdAbonoCreditoPk().toString());
+                System.out.println("Entro a Ticket Deposito Bancario");
                 paramReport.put("folioElectronico", ac.getFolioElectronico() == null ? "-----" : ac.getFolioElectronico().toString());
                 paramReport.put("cuenta", idCuentaDestinoBean.toString());
                 paramReport.put("fecha", TiempoUtil.getFechaDDMMYYYYHHMM(ac.getFechaCobro()));
-            case 5:
-                paramReport.put("labelEstatus", "PAGO A CUENTA");
-                paramReport.put("folio", ac.getIdCreditoFk().toString());
-                paramReport.put("montoliquidar", nf.format(saldoParaLiquidar));
-
                 break;
+//            case 5:
+//                paramReport.put("labelEstatus", "PAGO A CUENTA");
+//                paramReport.put("folio", ac.getIdCreditoFk().toString());
+//                paramReport.put("montoliquidar", nf.format(saldoParaLiquidar));
+
+              
             default:
+                JsfUtil.addErrorMessageClean("Ocurrio un error contactar al administrador");
                 break;
         }
 
@@ -375,22 +394,22 @@ public class BeanBuscaCredito implements Serializable {
 
     }
 
-    public void clearlista()
-    {
-         for (int i = 0; i < modelo.size(); i++) 
-         {
-             SaldosDeudas item = modelo.get(i);
-             item.setAbonarTemporal(CERO);
-         }
+    public void clearlista() {
+        for (int i = 0; i < modelo.size(); i++) {
+            SaldosDeudas item = modelo.get(i);
+            item.setAbonarTemporal(CERO);
+        }
     }
-    
+
     public void prepararAbono() {
+       
         JsfUtil.addSuccessMessageClean("Abono Preparado");
         System.out.println("Abono: " + abono);
         BigDecimal to = abono.getMontoAbono();
         System.out.println("Monto abono: " + to);
         clearlista();
-        if (to != null) {
+        if (to != null) 
+        {
             switch (comboFiltro.intValue()) {
 
                 case 1:
@@ -455,6 +474,9 @@ public class BeanBuscaCredito implements Serializable {
                     JsfUtil.addErrorMessageClean("Ocurrio un error, contactar al administrador");
                     break;
             }
+            botonCancelar = false;
+        botonActualizar = false;
+        habilitaBotones = true;
         } else {
             JsfUtil.addErrorMessageClean("Primero debes agregar la forma de pago");
         }
@@ -588,39 +610,6 @@ public class BeanBuscaCredito implements Serializable {
                             //insertar el abono
                             if (ifaceAbonoCredito.insert(ac) == 1) {
                                 JsfUtil.addSuccessMessage("Se ha realizado un abono existosamente");
-                                opcaja.setIdConceptoFk(conceptoAbonoCheque);
-                                opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
-                                opcaja.setMonto(ac.getMontoAbono());
-                                opcaja.setIdStatusFk(statusOperacionRealizada);
-
-                                if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
-                                    JsfUtil.addSuccessMessageClean("Se ha registrado el abono correctamente");
-                                } else {
-                                    JsfUtil.addErrorMessageClean("Ocurrió un error al registrar el pago de la venta");
-                                }
-                                //--- Insertar Documento -- //
-                                Documento d = new Documento();
-                                d.setIdDocumentoPk(new BigDecimal(ifaceDocumentos.getNextVal()));
-                                d.setIdAbonoFk(ac.getIdAbonoCreditoPk());
-                                d.setFechaCobro(ac.getFechaCobro());
-                                Credito c = ifaceCredito.getById(ac.getIdCreditoFk());
-                                d.setIdClienteFk(c.getIdClienteFk());
-                                d.setIdStatusFk(DOCUMENTOACTIVO);
-                                d.setIdTipoDocumento(DOCUMENTOTIPOCHEQUE);
-                                d.setMonto(ac.getMontoAbono());
-                                d.setNumeroCheque(ac.getNumeroCheque());
-                                d.setFactura(ac.getFactura());
-                                d.setBanco(ac.getBanco());
-                                d.setLibrador(ac.getLibrador());
-                                d.setIdFormaCobroFk(new BigDecimal(1));
-                                System.out.println("Documento: " + d.toString());
-                                //--- Insertar Documento -- //
-                                if (ifaceDocumentos.insertarDocumento(d) == 1) {
-                                    System.out.println("Se ingreso corractamente el documento por cobrar");
-                                    
-                                } else {
-                                    JsfUtil.addErrorMessageClean("Ocurrió un error al registrar el documento por cobrar");
-                                }
 
                             } else {
                                 JsfUtil.addErrorMessageClean("Ocurrio un error al intentar registrar el abono con el folio: " + ac.getIdAbonoCreditoPk());
@@ -629,6 +618,40 @@ public class BeanBuscaCredito implements Serializable {
 
                     } //fin for
                     ac.setMontoAbono(abono.getMontoAbono());
+                    ac.setIdtipoAbonoFk(abono.getIdtipoAbonoFk());
+                    opcaja.setIdConceptoFk(conceptoAbonoCheque);
+                    opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
+                    opcaja.setMonto(ac.getMontoAbono());
+                    opcaja.setIdStatusFk(statusOperacionRealizada);
+                    if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
+                        JsfUtil.addSuccessMessageClean("Se ha registrado el abono correctamente");
+                    } else {
+                        JsfUtil.addErrorMessageClean("Ocurrió un error al registrar el pago de la venta");
+                    }
+                    //--- Insertar Documento -- //
+                    Documento d = new Documento();
+                    d.setIdDocumentoPk(new BigDecimal(ifaceDocumentos.getNextVal()));
+                    d.setIdAbonoFk(ac.getIdAbonoCreditoPk());
+                    d.setFechaCobro(ac.getFechaCobro());
+                    Credito c = ifaceCredito.getById(ac.getIdCreditoFk());
+                    d.setIdClienteFk(c.getIdClienteFk());
+                    d.setIdStatusFk(DOCUMENTOACTIVO);
+                    d.setIdTipoDocumento(DOCUMENTOTIPOCHEQUE);
+                    d.setMonto(ac.getMontoAbono());
+                    d.setNumeroCheque(ac.getNumeroCheque());
+                    d.setFactura(ac.getFactura());
+                    d.setBanco(ac.getBanco());
+                    d.setLibrador(ac.getLibrador());
+                    d.setIdFormaCobroFk(new BigDecimal(1));
+                    System.out.println("Documento: " + d.toString());
+                    //--- Insertar Documento -- //
+                    if (ifaceDocumentos.insertarDocumento(d) == 1) {
+                        System.out.println("Se ingreso corractamente el documento por cobrar");
+
+                    } else {
+                        JsfUtil.addErrorMessageClean("Ocurrió un error al registrar el documento por cobrar");
+                    }
+
                     finAbonar(ac);
 
                     break;
@@ -674,9 +697,6 @@ public class BeanBuscaCredito implements Serializable {
                     ac.setMontoAbono(abono.getMontoAbono());
                     finAbonar(ac);
                     break;
-                case 5:
-                    System.out.println("a Cuenta");
-                    break;
                 default:
                     System.out.println("Ocurrio un error");
                     break;
@@ -704,9 +724,6 @@ public class BeanBuscaCredito implements Serializable {
                 break;
             case 4:
                 nombreReporte = "abonoDeposito.jasper";
-                break;
-            case 5:
-                nombreReporte = "abonoCuenta.jasper";
                 break;
             default:
                 System.out.println("Ocurrio un error");
@@ -1000,6 +1017,13 @@ public class BeanBuscaCredito implements Serializable {
 
     public void searchByIdCliente() {
         saldoParaLiquidar = new BigDecimal(0);
+        abono.reset();
+        dataAbonar.reset();
+        
+        abono.setIdtipoAbonoFk(new BigDecimal(1));
+        botonActualizar = true;
+        botonCancelar = true;
+        
 
         cliente = ifaceCatCliente.getCreditoClienteByIdCliente(cliente.getId_cliente());
         if (cliente != null && cliente.getId_cliente() != null) {
@@ -1013,8 +1037,11 @@ public class BeanBuscaCredito implements Serializable {
             JsfUtil.addWarnMessage("El cliente no cuenta con creditos activos");
             modelo = new ArrayList<SaldosDeudas>();
             habilitaBotones = true;
+            
+            
             cliente = new Cliente();
         }
+        addView();
 
     }
 
@@ -1335,5 +1362,23 @@ public class BeanBuscaCredito implements Serializable {
     public void setHabilitaBotones(boolean habilitaBotones) {
         this.habilitaBotones = habilitaBotones;
     }
+
+    public boolean isBotonCancelar() {
+        return botonCancelar;
+    }
+
+    public void setBotonCancelar(boolean botonCancelar) {
+        this.botonCancelar = botonCancelar;
+    }
+
+    public boolean isBotonActualizar() {
+        return botonActualizar;
+    }
+
+    public void setBotonActualizar(boolean botonActualizar) {
+        this.botonActualizar = botonActualizar;
+    }
+    
+    
 
 }

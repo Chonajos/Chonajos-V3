@@ -314,7 +314,16 @@ public class ServiceOperacionesCaja implements IfaceOperacionesCaja {
             op.setNombreSucursal(obj[3] == null ? null : obj[3].toString());
             op.setMonto(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
             op.setIdConceptoFk(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
+            op.setEntradaSalida(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
             op.setNumero(count);
+            if(op.getEntradaSalida().intValue()==1)
+            {
+                op.setNombreEntradaSalida("E");
+            }
+            else
+            {
+                op.setNombreEntradaSalida("S");
+            }
             /*op.setIdCorteCajaFk(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
             op.setIdCajaFk(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
             op.setIdCajaDestinoFk(obj[3] == null ? null : new BigDecimal(obj[3].toString()));

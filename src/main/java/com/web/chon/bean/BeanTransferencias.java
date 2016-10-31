@@ -107,6 +107,7 @@ public class BeanTransferencias implements Serializable {
         opcajaOrigen.setIdUserFk(usuario.getIdUsuario());
         opcajaOrigen.setEntradaSalida(salida);
         opcajaOrigen.setIdStatusFk(statusOperacionPendiente);
+        opcajaOrigen.setIdSucursalFk(new BigDecimal(usuario.getSucId()));
 
         //--Maximo Pago--//
         corteAnterior = new CorteCaja();

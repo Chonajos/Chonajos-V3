@@ -64,9 +64,7 @@ public class BeanRecibirTransferencias implements Serializable {
     private static final BigDecimal salida = new BigDecimal(2);
     private static final BigDecimal aprobada = new BigDecimal(1);
     private static final BigDecimal rechazada = new BigDecimal(2);
-    private static final BigDecimal idConceptoTransPendiente = new BigDecimal(15);
-    private static final BigDecimal idConceptoTransRechazada = new BigDecimal(17);
-    private static final BigDecimal idConceptoTransAprobada = new BigDecimal(16);
+
 
     @PostConstruct
     public void init() {
@@ -78,6 +76,7 @@ public class BeanRecibirTransferencias implements Serializable {
         opcaja = new OperacionesCaja();
         opcaja.setIdCajaFk(caja.getIdCajaPk());
         opcaja.setIdUserFk(usuario.getIdUsuario());
+        opcaja.setIdSucursalFk(new BigDecimal(usuario.getSucId()));
         
         opcaja.setEntradaSalida(entrada);
         data = new OperacionesCaja();
@@ -89,12 +88,14 @@ public class BeanRecibirTransferencias implements Serializable {
         if (caja.getIdCajaPk() != null) {
             opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
             opcaja.setMonto(data.getMonto());
-            opcaja.setIdConceptoFk(idConceptoTransAprobada);
+            opcaja.setIdConceptoFk(data.getIdConceptoFk());
+            //opcaja.setIdConceptoFk(idConceptoTransAprobada);
+            
             opcaja.setIdStatusFk(aprobada);
             
             if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) 
             {
-                ifaceOperacionesCaja.updateStatusConcepto(data.getIdOperacionesCajaPk(), aprobada,idConceptoTransAprobada);
+                ifaceOperacionesCaja.updateStatusConcepto(data.getIdOperacionesCajaPk(), aprobada,data.getIdConceptoFk());
                 lstTransferenciasEntrantes = ifaceOperacionesCaja.getTransferenciasEntrantes(opcaja.getIdCajaFk());
                 JsfUtil.addSuccessMessageClean("Transferencia Recibida Correctamente");
             } else {
@@ -109,12 +110,12 @@ public class BeanRecibirTransferencias implements Serializable {
         if (caja.getIdCajaPk() != null) {
             opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
             opcaja.setMonto(data.getMonto());
-            opcaja.setIdConceptoFk(idConceptoTransRechazada);
+            opcaja.setIdConceptoFk(data.getIdConceptoFk());
             opcaja.setIdStatusFk(rechazada);
             if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) 
             {
                 System.out.println("======="+data.getIdOperacionesCajaPk());
-                ifaceOperacionesCaja.updateStatusConcepto(data.getIdOperacionesCajaPk(), rechazada,idConceptoTransRechazada);
+                ifaceOperacionesCaja.updateStatusConcepto(data.getIdOperacionesCajaPk(), rechazada,data.getIdConceptoFk());
                 lstTransferenciasEntrantes = ifaceOperacionesCaja.getTransferenciasEntrantes(opcaja.getIdCajaFk());
                 JsfUtil.addSuccessMessageClean("Transferencia Rechazada Correctamente");
             } else {

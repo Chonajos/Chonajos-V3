@@ -21,30 +21,26 @@
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight form-group">
                             <div>
                                 <p:commandButton value="Generar Corte" update=":formContent" ajax="true" action="#{beanCorteCaja.generarCorte()}"/>
-                            </div>
-                            <div>
                                 <p:commandButton value="Ver Detalle" update=":formContent" ajax="true" action="#{beanCorteCaja.verDetalle()}" rendered="#{beanCorteCaja.viewEstate=='init'}"/>
-                            </div>
-                            <div>
                                 <p:commandButton value="Atrás" update=":formContent" ajax="true" action="#{beanCorteCaja.changeView()}" rendered="#{beanCorteCaja.viewEstate=='second'}"/>
                             </div>
 
                         </div>
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight">
                             <h:outputText  style="font-weight: bold !important" value ="Saldo Anterior :$" /> 
-                            <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanCorteCaja.saldoAnterior}"> 
+                            <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanCorteCaja.saldoAnteriorEfectivo}"> 
                                 <f:convertNumber pattern="#,###"/>
                             </h:outputText>
                         </div>
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight">    
                             <h:outputText  style="font-weight: bold !important" value ="Saldo Anterior Cheques:$" /> 
-                            <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanCorteCaja.saldoAnterior}"> 
+                            <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanCorteCaja.saldoAnteriorCheques}"> 
                                 <f:convertNumber pattern="#,###"/>
                             </h:outputText>
                         </div>
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight">  
                             <h:outputText  style="font-weight: bold !important" value ="Saldo Anterior Cuentas Bancarias:$" /> 
-                            <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanCorteCaja.saldoAnterior}"> 
+                            <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanCorteCaja.saldoAnteriorCuentas}"> 
                                 <f:convertNumber pattern="#,###"/>
                             </h:outputText>
                         </div>
@@ -247,8 +243,11 @@
                 <h:body>
 
                     <p:dataTable var="operacion" value="#{beanCorteCaja.listaDetalleEntradasEfectivo}" >
-                        <p:column headerText="Concepto" width="75%" >
+                        <p:column headerText="Concepto" width="60%" >
                             <h:outputText value="#{operacion.nombreConcepto}" />
+                        </p:column>
+                        <p:column headerText="Entrada / Salida" width="15%" class="alignCenter" >
+                            <h:outputText value="#{operacion.nombreEntradaSalida}" />
                         </p:column>
                         <p:column headerText="Total" width="25%" class="alignRight">
                             <h:outputText value="#{operacion.monto}" >
@@ -259,6 +258,7 @@
                         </p:column>
                         <p:columnGroup type="footer">
                             <p:row>
+                                <p:column colspan="1" />
                                 <p:column colspan="1" style="text-align:right" footerText="Total:" />
                                 <p:column colspan="1" class="alignRight">
                                     <f:facet name="footer">
@@ -280,11 +280,12 @@
         <p:dialog  id="dialogw1" header="Detalle cheques" widgetVar="dlg1"  modal="true" resizable="false" height="250" width="500">
             <h:form id="formContent2">
                 <h:body>
-
-
                     <p:dataTable var="operacion" value="#{beanCorteCaja.listaDetalleEntradasCheques}" >
-                        <p:column headerText="Concepto" width="75%" >
+                        <p:column headerText="Concepto" width="60%" >
                             <h:outputText value="#{operacion.nombreConcepto}" />
+                        </p:column>
+                        <p:column headerText="Entrada / Salida" width="15%" class="alignCenter" >
+                            <h:outputText value="#{operacion.nombreEntradaSalida}" />
                         </p:column>
                         <p:column headerText="Total" width="25%" class="alignRight">
                             <h:outputText value="#{operacion.monto}" >
@@ -295,6 +296,7 @@
                         </p:column>
                         <p:columnGroup type="footer">
                             <p:row>
+                                <p:column colspan="1" />
                                 <p:column colspan="1" style="text-align:right" footerText="Total:" />
                                 <p:column colspan="1" class="alignRight">
                                     <f:facet name="footer">
@@ -318,8 +320,11 @@
                 <h:body>
 
                     <p:dataTable var="operacion" value="#{beanCorteCaja.listaDetalleEntradasCuentasBancarias}" >
-                        <p:column headerText="Concepto" width="75%" >
+                        <p:column headerText="Concepto" width="60%" >
                             <h:outputText value="#{operacion.nombreConcepto}" />
+                        </p:column>
+                        <p:column headerText="Entrada / Salida" width="15%" class="alignCenter" >
+                            <h:outputText value="#{operacion.nombreEntradaSalida}" />
                         </p:column>
                         <p:column headerText="Total" width="25%" class="alignRight">
                             <h:outputText value="#{operacion.monto}" >
@@ -328,8 +333,10 @@
                                 </f:convertNumber>
                             </h:outputText>
                         </p:column>
+                   
                         <p:columnGroup type="footer">
                             <p:row>
+                                <p:column colspan="1" />
                                 <p:column colspan="1" style="text-align:right" footerText="Total:" />
                                 <p:column colspan="1" class="alignRight">
                                     <f:facet name="footer">

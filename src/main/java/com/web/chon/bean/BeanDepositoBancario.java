@@ -50,7 +50,7 @@ public class BeanDepositoBancario {
     private ArrayList<CuentaBancaria> listaCuentas;
     
     private static final BigDecimal salida = new BigDecimal(2);
-    private static final BigDecimal concepto = new BigDecimal(14);
+    private static final BigDecimal concepto = new BigDecimal(7);
     private static final BigDecimal statusOperacion = new BigDecimal(2);
     private BigDecimal monto;
     private String comentarios;
@@ -69,6 +69,7 @@ public class BeanDepositoBancario {
         opcajaOrigen.setIdUserFk(usuario.getIdUsuario());
         opcajaOrigen.setEntradaSalida(salida);
         opcajaOrigen.setIdStatusFk(statusOperacion);
+        opcajaOrigen.setIdSucursalFk(new BigDecimal(usuario.getSucId()));
         
     }
     public void depositar() {
@@ -76,6 +77,7 @@ public class BeanDepositoBancario {
         opcajaOrigen.setMonto(monto);
         opcajaOrigen.setComentarios(comentarios);
         opcajaOrigen.setIdConceptoFk(concepto);
+        
         opcajaOrigen.setIdCuentaDestinoFk(idCuentaDestinoBean);
 
         if (caja.getIdCajaPk() != null) {

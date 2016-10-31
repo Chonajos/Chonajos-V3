@@ -140,7 +140,16 @@ public class BeanDocumentosCobrar implements Serializable {
     private static final BigDecimal entrada = new BigDecimal(1);
     private static final BigDecimal salida = new BigDecimal(2);
     private static final BigDecimal statusOperacion = new BigDecimal(1);
-    private static final BigDecimal conceptoMontoCheques = new BigDecimal(12);
+    
+    private static final BigDecimal conceptoAbonoDocumentoEfectivo = new BigDecimal(13);
+    private static final BigDecimal conceptoAbonoDocumentoTransferencia = new BigDecimal(35);
+    private static final BigDecimal conceptoAbonoDocumentoCheques = new BigDecimal(36);
+    private static final BigDecimal conceptoAbonoDocumentoCuentas = new BigDecimal(37);
+    
+    private static final BigDecimal conceptoAbonoCreditoCheque = new BigDecimal(30);
+    
+    
+    
     private static final BigDecimal entradaSalida = new BigDecimal(1);
 
     //Variables para el pago de Documentos
@@ -186,6 +195,7 @@ public class BeanDocumentosCobrar implements Serializable {
         opcaja.setIdCajaFk(caja.getIdCajaPk());
         opcaja.setIdUserFk(usuario.getIdUsuario());
         opcaja.setIdStatusFk(statusOperacion);
+        opcaja.setIdStatusFk(idSucursalFk);
         
         opcuenta = new OperacionesCuentas();
         opcuenta.setIdUserFk(usuario.getIdUsuario());
@@ -261,7 +271,7 @@ public class BeanDocumentosCobrar implements Serializable {
 
                 if (ifaceDocumentos.insertarDocumento(d) == 1) {
                     opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
-                    opcaja.setIdConceptoFk(conceptoMontoCheques);
+                    verificarAbono();
                     opcaja.setMonto(dataAbonar.getMontoAbono());
                     opcaja.setEntradaSalida(entradaSalida);
 
@@ -331,6 +341,50 @@ public class BeanDocumentosCobrar implements Serializable {
 
         }
     }
+    public void verificarCobro()
+    {
+        switch(cobroCheque.getIdTipoCobro().intValue())
+        {
+            case 1:
+                System.out.println("deposito");
+                opcaja.setIdConceptoFk(conceptoAbonoDocumentoCuentas);
+                break;
+            case 2:
+                System.out.println("efectivo");
+                opcaja.setIdConceptoFk(conceptoAbonoDocumentoEfectivo);
+                break;
+           
+            default:
+                JsfUtil.addErrorMessageClean("Ocurrio un error contactar al administrador");
+                break;
+        }
+        
+    }
+    public void verificarAbono()
+    {
+        switch(dataAbonar.getIdTipoAbonoFk().intValue())
+        {
+            case 1:
+                System.out.println("Efectivo");
+                opcaja.setIdConceptoFk(conceptoAbonoDocumentoEfectivo);
+                break;
+            case 2:
+                System.out.println("Transferencia");
+                opcaja.setIdConceptoFk(conceptoAbonoDocumentoTransferencia);
+                break;
+            case 3:
+                System.out.println("Cheque");
+                opcaja.setIdConceptoFk(conceptoAbonoDocumentoCheques);
+                break;
+            case 4:
+                System.out.println("cuenta");
+                opcaja.setIdConceptoFk(conceptoAbonoDocumentoCuentas);
+                break;
+            default:
+                JsfUtil.addErrorMessageClean("Ocurrio un error contactar al administrador");
+                break;
+        }
+    }
 
     public void cobrarCheque() {
         cobroCheque.setIdCobroChequePk(new BigDecimal(ifaceCobroCheques.nextVal()));
@@ -342,15 +396,21 @@ public class BeanDocumentosCobrar implements Serializable {
             temp.setIdDocumentoPk(cobroCheque.getIdDocumentoFk());
             temp.setIdStatusFk(DOCUMENTOFINALIZADO);
             //si se inserta el cobro del cheque cambiamos el status del documento
-            if (ifaceDocumentos.updateDocumentoById(temp) == 1) {
-                opcaja.setIdConceptoFk(conceptoMontoCheques);
+            if (ifaceDocumentos.updateDocumentoById(temp) == 1) 
+            {
+                verificarCobro();
+                
                 opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
                 opcaja.setMonto(documentoData.getMonto());
                 opcaja.setEntradaSalida(entrada);
 
                 if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
+                    //Generar una salida de dinero por la cantidad de ese cheque.
+                    //para poder cobrar cheques es necesario transferirlos a la caja de Tere.
+                    
                     System.out.println("Se registro primer movimiento");
-                    opcaja.setIdConceptoFk(conceptoMontoCheques);
+                    opcaja.setIdConceptoFk(conceptoAbonoCreditoCheque);
+                    
                     opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
                     opcaja.setMonto(documentoData.getMonto());
                     opcaja.setEntradaSalida(salida);

@@ -33,7 +33,7 @@ public class EjbCorteCaja implements NegocioCorteCaja {
         System.out.println("insert corte :" + cc.toString());
         Query query = em.createNativeQuery("INSERT INTO Corte_Caja(ID_CORTE_CAJA_PK,ID_CAJA_FK,FECHA,CANT_CHEQUES_ANT,"
                 + "                         MONTO_CHEQUES_ANT,SALDO_ANTERIOR,CANT_CHEQUES_NUEVOS,MONTO_CHEQUES_NUEVOS,NUEVO_SALDO,"
-                + "                         COMENTARIOS,ID_USER_FK,ID_STATUS_FK) VALUES(?,?,sysdate,?,?,?,?,?,?,?,?,?)");
+                + "                         COMENTARIOS,ID_USER_FK,ID_STATUS_FK,MONTO_CUENTA_ANT,MONTO_CUENTA_NUEVO) VALUES(?,?,sysdate,?,?,?,?,?,?,?,?,?,?,?)");
        
         query.setParameter(1, cc.getIdCorteCajaPk());
         query.setParameter(2, cc.getIdCajaFk());
@@ -46,6 +46,8 @@ public class EjbCorteCaja implements NegocioCorteCaja {
         query.setParameter(9, cc.getComentarios());
         query.setParameter(10, cc.getIdUserFk());
         query.setParameter(11, cc.getIdStatusFk());
+        query.setParameter(12, cc.getMontoCuentaAnterior());
+        query.setParameter(13, cc.getMontoCuentaNuevo());
         return query.executeUpdate();
 
     }

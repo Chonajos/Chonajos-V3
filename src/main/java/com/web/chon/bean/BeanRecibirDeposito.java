@@ -70,9 +70,7 @@ public class BeanRecibirDeposito implements Serializable {
     private static final BigDecimal salida = new BigDecimal(2);
     private static final BigDecimal statusAprobada = new BigDecimal(1);
     private static final BigDecimal statusRechazada = new BigDecimal(2);
-    private static final BigDecimal depositoPorConfirmar = new BigDecimal(14);
-    private static final BigDecimal depositoRechazado = new BigDecimal(19);
-    private static final BigDecimal depositoRecibido = new BigDecimal(18);
+
 
     @PostConstruct
     public void init() 
@@ -94,10 +92,10 @@ public class BeanRecibirDeposito implements Serializable {
             opcuenta.setIdOperacionCuenta(new BigDecimal(ifaceOperacionesCuentas.getNextVal()));
             opcuenta.setMonto(data.getMonto());
             opcuenta.setIdStatusFk(statusAprobada);
-            opcuenta.setIdConceptoFk(depositoRecibido);
+            opcuenta.setIdConceptoFk(data.getIdConceptoFk());
             if (ifaceOperacionesCuentas.insertaOperacion(opcuenta) == 1) 
             {
-                ifaceOperacionesCaja.updateStatusConcepto(data.getIdOperacionesCajaPk(), statusAprobada,depositoRecibido);
+                ifaceOperacionesCaja.updateStatusConcepto(data.getIdOperacionesCajaPk(), statusAprobada,data.getIdConceptoFk());
                 lstDespositosEntrantes = ifaceOperacionesCaja.getDepositosEntrantes();
                 JsfUtil.addSuccessMessageClean("Se ha recibido el Depósito Correctamente");
             } else {
@@ -110,10 +108,10 @@ public class BeanRecibirDeposito implements Serializable {
         opcuenta.setIdOperacionCuenta(new BigDecimal(ifaceOperacionesCuentas.getNextVal()));
             opcuenta.setMonto(data.getMonto());
             opcuenta.setIdStatusFk(statusRechazada);
-            opcuenta.setIdConceptoFk(depositoRechazado);
+            opcuenta.setIdConceptoFk(data.getIdConceptoFk());
             if (ifaceOperacionesCuentas.insertaOperacion(opcuenta) == 1) 
             {
-                ifaceOperacionesCaja.updateStatusConcepto(data.getIdOperacionesCajaPk(), statusRechazada,depositoRechazado);
+                ifaceOperacionesCaja.updateStatusConcepto(data.getIdOperacionesCajaPk(), statusRechazada,data.getIdConceptoFk());
                 lstDespositosEntrantes = ifaceOperacionesCaja.getDepositosEntrantes();
                 JsfUtil.addSuccessMessageClean("Se ha rechazado el Depósito Correctamente");
             } else {

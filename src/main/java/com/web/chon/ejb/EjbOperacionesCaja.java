@@ -234,7 +234,7 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
                 + "inner join CONCEPTOS con on con.ID_CONCEPTOS_PK = opc.ID_CONCEPTO_FK\n"
                 + "inner join TIPOS_OPERACION tio on tio.ID_TIPO_OPERACION_PK = con.ID_TIPO_OPERACION_FK\n"
                 + "inner join USUARIO u on u.ID_USUARIO_PK = opc.ID_USER_FK\n"
-                + "where opc.ID_STATUS_FK=2 and opc.ID_CAJA_DESTINO_FK is null and opc.E_S=2 and opc.ID_CONCEPTO_FK =14");
+                + "where opc.ID_STATUS_FK=2 and opc.ID_CAJA_DESTINO_FK is null and opc.E_S=2 and opc.ID_CONCEPTO_FK = 10");
         return query.getResultList();
 
     }
@@ -252,11 +252,11 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
 
     @Override
     public List<Object[]> getDetalles(BigDecimal idCajaFk, BigDecimal idUserFk, BigDecimal entrada_salida, BigDecimal idStatusFk) {
-        Query query = em.createNativeQuery("select opc.ID_CONCEPTO_FK,con.NOMBRE, opc.ID_SUCURSAL_FK,sucu.NOMBRE_SUCURSAL,sum(opc.MONTO) as monto,opc.ID_CONCEPTO_FK from OPERACIONES_CAJA opc\n" +
+        Query query = em.createNativeQuery("select opc.ID_CONCEPTO_FK,con.NOMBRE, opc.ID_SUCURSAL_FK,sucu.NOMBRE_SUCURSAL,sum(opc.MONTO) as monto,opc.ID_CONCEPTO_FK,opc.E_S from OPERACIONES_CAJA opc\n" +
 "inner join conceptos con on con.ID_CONCEPTOS_PK = opc.ID_CONCEPTO_FK\n" +
 "inner join SUCURSAL sucu on sucu.ID_SUCURSAL_PK = opc.ID_SUCURSAL_FK\n" +
 "where opc.E_S = ? and opc.ID_STATUS_FK = ? and opc.ID_CAJA_FK = ? and opc.ID_USER_FK = ? and opc.ID_CORTE_CAJA_FK is null\n" +
-"group by opc.ID_CONCEPTO_FK,con.NOMBRE,opc.ID_SUCURSAL_FK,sucu.NOMBRE_SUCURSAL");
+"group by opc.ID_CONCEPTO_FK,con.NOMBRE,opc.ID_SUCURSAL_FK,sucu.NOMBRE_SUCURSAL,opc.E_S");
         System.out.println("===========Consulta=========");
         System.out.println(query);
         System.out.println("Variables: " + "Caja: " + idCajaFk + " User: " + idUserFk +" E/S: "+entrada_salida + " Status: "+idStatusFk);

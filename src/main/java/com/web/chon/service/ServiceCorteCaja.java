@@ -22,8 +22,10 @@ import org.springframework.stereotype.Service;
  * @author JesusAlfredo
  */
 @Service
-public class ServiceCorteCaja implements IfaceCorteCaja{
+public class ServiceCorteCaja implements IfaceCorteCaja {
+
     NegocioCorteCaja ejb;
+
     private void getEjb() {
         if (ejb == null) {
             try {
@@ -33,7 +35,6 @@ public class ServiceCorteCaja implements IfaceCorteCaja{
             }
         }
     }
-    
 
     @Override
     public int insertCorte(CorteCaja cc) {
@@ -41,11 +42,10 @@ public class ServiceCorteCaja implements IfaceCorteCaja{
         return ejb.insertCorte(cc);
     }
 
-
     @Override
     public int updateCorte(CorteCaja cc) {
-       getEjb();
-       return ejb.updateCorte(cc);
+        getEjb();
+        return ejb.updateCorte(cc);
     }
 
     @Override
@@ -53,14 +53,14 @@ public class ServiceCorteCaja implements IfaceCorteCaja{
         getEjb();
         return ejb.getNextVal();
     }
+
     @Override
     public ArrayList<CorteCaja> getCortesByIdCajaFk(BigDecimal idDestinoFK, String fechaIni, String fechaFin) {
-       getEjb();
-        ArrayList<CorteCaja> lstCortes= new ArrayList<CorteCaja>();
+        getEjb();
+        ArrayList<CorteCaja> lstCortes = new ArrayList<CorteCaja>();
         List<Object[]> lstObject = new ArrayList<Object[]>();
         lstObject = ejb.getCortesByIdCajaFk(idDestinoFK, fechaIni, fechaFin);
-        for (Object[] object : lstObject) 
-        {
+        for (Object[] object : lstObject) {
             CorteCaja corte = new CorteCaja();
             corte.setIdCorteCajaPk(object[0] == null ? null : new BigDecimal(object[0].toString()));
             corte.setIdCajaFk(object[1] == null ? null : new BigDecimal(object[1].toString()));
@@ -80,12 +80,12 @@ public class ServiceCorteCaja implements IfaceCorteCaja{
             lstCortes.add(corte);
         }
         return lstCortes;
-        
+
     }
 
     @Override
     public CorteCaja getCorteByidPk(BigDecimal idPk) {
-       getEjb();
+        getEjb();
         List<Object[]> lstObject = new ArrayList<Object[]>();
         lstObject = ejb.getCorteByidPk(idPk);
         CorteCaja corte = new CorteCaja();
@@ -107,7 +107,7 @@ public class ServiceCorteCaja implements IfaceCorteCaja{
             corte.setNombreStatus(object[13] == null ? null : object[13].toString());
         }
         return corte;
-    
+
     }
 
     @Override
@@ -115,33 +115,36 @@ public class ServiceCorteCaja implements IfaceCorteCaja{
         getEjb();
         List<Object[]> lstObject = new ArrayList<Object[]>();
         lstObject = ejb.getLastCorteByCaja(idCajaPk);
+        BigDecimal cero = new BigDecimal(0);
         CorteCaja corte = new CorteCaja();
         for (Object[] object : lstObject) {
             corte.setIdCorteCajaPk(object[0] == null ? null : new BigDecimal(object[0].toString()));
             corte.setIdCajaFk(object[1] == null ? null : new BigDecimal(object[1].toString()));
             corte.setFecha(object[2] == null ? null : (Date) object[2]);
-            corte.setCantChequesAnt(object[3] == null ? null : new BigDecimal(object[3].toString()));
-            corte.setMontoChequesAnt(object[4] == null ? null : new BigDecimal(object[4].toString()));
-            corte.setSaldoAnterior(object[5] == null ? null : new BigDecimal(object[5].toString()));
-            corte.setCantChequesNuevos(object[6] == null ? null : new BigDecimal(object[6].toString()));
-            corte.setMontoChequesNuevos(object[7] == null ? null : new BigDecimal(object[7].toString()));
-            corte.setSaldoNuevo(object[8] == null ? null : new BigDecimal(object[8].toString()));
+            corte.setCantChequesAnt(object[3] == null ? cero : new BigDecimal(object[3].toString()));
+            corte.setMontoChequesAnt(object[4] == null ? cero : new BigDecimal(object[4].toString()));
+            corte.setSaldoAnterior(object[5] == null ? cero : new BigDecimal(object[5].toString()));
+            corte.setCantChequesNuevos(object[6] == null ? cero : new BigDecimal(object[6].toString()));
+            corte.setMontoChequesNuevos(object[7] == null ? cero : new BigDecimal(object[7].toString()));
+            corte.setSaldoNuevo(object[8] == null ? cero : new BigDecimal(object[8].toString()));
             corte.setComentarios(object[9] == null ? null : object[9].toString());
             corte.setIdUserFk(object[10] == null ? null : new BigDecimal(object[10].toString()));
             corte.setIdStatusFk(object[11] == null ? null : new BigDecimal(object[11].toString()));
+            corte.setMontoCuentaAnterior(object[12] == null ? cero : new BigDecimal(object[12].toString()));
+            corte.setMontoCuentaNuevo(object[13] == null ? cero : new BigDecimal(object[13].toString()));
             ///
-           
+
         }
         return corte;
     }
+
     @Override
-    public ArrayList<CorteCaja> getCortesByFechaCajaUsuario(BigDecimal idCajaFk,BigDecimal idUsuarioFk,String fecha) {
+    public ArrayList<CorteCaja> getCortesByFechaCajaUsuario(BigDecimal idCajaFk, BigDecimal idUsuarioFk, String fecha) {
         getEjb();
-        ArrayList<CorteCaja> lstCortes= new ArrayList<CorteCaja>();
+        ArrayList<CorteCaja> lstCortes = new ArrayList<CorteCaja>();
         List<Object[]> lstObject = new ArrayList<Object[]>();
-        lstObject = ejb.getCortesByFechaCajaUsuario(idCajaFk,idUsuarioFk,fecha);
-        for (Object[] object : lstObject) 
-        {
+        lstObject = ejb.getCortesByFechaCajaUsuario(idCajaFk, idUsuarioFk, fecha);
+        for (Object[] object : lstObject) {
             CorteCaja corte = new CorteCaja();
             corte.setIdCorteCajaPk(object[0] == null ? null : new BigDecimal(object[0].toString()));
             corte.setIdCajaFk(object[1] == null ? null : new BigDecimal(object[1].toString()));
@@ -161,5 +164,5 @@ public class ServiceCorteCaja implements IfaceCorteCaja{
         }
         return lstCortes;
     }
-    
+
 }
