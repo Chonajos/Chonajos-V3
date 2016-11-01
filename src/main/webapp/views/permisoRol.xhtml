@@ -11,6 +11,11 @@
 
 
         <h:form id="formContent">
+            <p:ajaxStatus onsuccess="PF('statusDialog').hide()" />
+            <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                      closable="false" resizable="false" showHeader="false">
+                <p:graphicImage value="../resources/img/carga.gif" />
+            </p:dialog>
             <div>
                 <h3>#{beanPermisoRol.title}</h3>
 
@@ -18,7 +23,7 @@
             <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:panel   style="border: 0px;" >
                 <div class="form-group" align="right">
-                    <p:commandButton value="Guardar" update=":formContent" ajax="true" action="#{beanPermisoRol.save}" />
+                    <p:commandButton value="Guardar" update=":formContent" ajax="true" action="#{beanPermisoRol.save}" onclick="PF('statusDialog').show()"/>
                 </div>
                 <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" align="right">
                     <div class="col-lg-4 col-md-5 col-sm-6 col-xs-12">

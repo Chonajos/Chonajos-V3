@@ -42,14 +42,13 @@
                     <!--                        <p:commandButton   value="Agregar a Pedido y Finalizar" update=":formContent" ajax="true" action="{beanVentaMayoreo.addProductoEnd()}" rendered="{beanVentaMayoreo.ventaRapidaButton =='Rapida' and beanVentaMayoreo.viewEstate =='viewAddProducto' }">
                                                     <p:confirm header="Confirmación" message="¿Estás seguro de finalizar la venta?" icon="ui-icon-alert"/>
                                                 </p:commandButton>-->
-                    <p:commandButton value="Aceptar" update=":formContent" ajax="true" class="primaryButton" action="#{beanVentaMayoreo.updateProducto()}" rendered="#{beanVentaMayoreo.viewEstate =='update'}"/>
-                    <p:commandButton value="Cancelar" update=":formContent" ajax="true" class="primaryButton" action="#{beanVentaMayoreo.changeView}" immediate="true" resetValues="true" rendered="#{beanVentaMayoreo.viewEstate =='update'}"/>
-                    <!--<p:commandButton value="Ver Pedido" update=":formContent" id="verCarrito" ajax="true" action="{beanVentaMayoreo.changeView()}"    immediate="true" resetValues="true" rendered="{beanVentaMayoreo.viewEstate =='viewAddProducto'}"/>-->
-                    <p:commandButton value="Agregar" update=":formContent" ajax="true" class="primaryButton" action="#{beanVentaMayoreo.addProducto()}" rendered="#{beanVentaMayoreo.viewEstate =='viewAddProducto'}"/>
-                    <p:commandButton value="Vender" update=":formContent" ajax="true" class="primaryButton" action="#{beanVentaMayoreo.inserts()}"  immediate="true" resetValues="true" rendered="#{beanVentaMayoreo.viewEstate =='viewAddProducto'}">
+                    <p:commandButton value="Aceptar" update=":formContent" ajax="true" class="primaryButton" action="#{beanVentaMayoreo.updateProducto()}" rendered="#{beanVentaMayoreo.viewEstate =='update'}" onclick="PF('statusDialog').show()"/>
+                    <p:commandButton value="Cancelar" update=":formContent" ajax="true" class="primaryButton" action="#{beanVentaMayoreo.changeView}" immediate="true" resetValues="true" rendered="#{beanVentaMayoreo.viewEstate =='update'}" onclick="PF('statusDialog').show()"/>
+                    <p:commandButton value="Agregar" update=":formContent" ajax="true" class="primaryButton" action="#{beanVentaMayoreo.addProducto()}" rendered="#{beanVentaMayoreo.viewEstate =='viewAddProducto'}" onclick="PF('statusDialog').show()"/>
+                    <p:commandButton value="Vender" update=":formContent" ajax="true" class="primaryButton" action="#{beanVentaMayoreo.inserts()}"  immediate="true" resetValues="true" rendered="#{beanVentaMayoreo.viewEstate =='viewAddProducto'}" onclick="PF('statusDialog').show()">
                         <p:confirm header="Confirmación" message="¿Estás seguro de finalizar la venta?" icon="ui-icon-alert" />
                     </p:commandButton>
-                    <p:commandButton value="Cancelar" id="cancelarVenta" ajax="true" update="formContent"   action="#{beanVentaMayoreo.cancelarPedido()}" immediate="true" resetValues="true" rendered="#{beanVentaMayoreo.viewEstate =='viewAddProducto'}">
+                    <p:commandButton value="Cancelar" id="cancelarVenta" ajax="true" update="formContent"   action="#{beanVentaMayoreo.cancelarPedido()}" immediate="true" resetValues="true" rendered="#{beanVentaMayoreo.viewEstate =='viewAddProducto'}" onclick="PF('statusDialog').show()">
                         <p:confirm header="Confirmación" message="¿Estás seguro de cancelar la venta?" icon="ui-icon-alert" />
                     </p:commandButton>
                 </div>
@@ -240,12 +239,12 @@
                                 </h:outputText>
                             </p:column>
                             <p:column headerText="Editar" width="60px;" style="text-align:center">
-                                <p:commandButton id="editar" ajax="true" process="@this" action="#{beanVentaMayoreo.editProducto}" icon="ui-icon-pencil" styleClass="ui-priority-primary" update=":formContent">
+                                <p:commandButton id="editar" ajax="true" process="@this" action="#{beanVentaMayoreo.editProducto}" icon="ui-icon-pencil" styleClass="ui-priority-primary" update=":formContent" onclick="PF('statusDialog').show()">
                                     <f:setPropertyActionListener value="#{model}" target="#{beanVentaMayoreo.dataEdit}"/>
                                 </p:commandButton>
                             </p:column>
                             <p:column headerText="Remover" width="80px;" style="text-align:center">
-                                <p:commandButton id="remover" ajax="true" immediate="true" action="#{beanVentaMayoreo.remove}" icon="ui-icon-close" styleClass="ui-priority-primary" update=":formContent">
+                                <p:commandButton id="remover" ajax="true" immediate="true" action="#{beanVentaMayoreo.remove}" icon="ui-icon-close" styleClass="ui-priority-primary" update=":formContent" onclick="PF('statusDialog').show()">
                                     <f:setPropertyActionListener value="#{model}" target="#{beanVentaMayoreo.dataRemove}"/>
                                 </p:commandButton>
                             </p:column>

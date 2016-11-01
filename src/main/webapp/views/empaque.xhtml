@@ -8,6 +8,11 @@
                 xmlns:p="http://primefaces.org/ui">
 
     <ui:define name="content">
+        <p:ajaxStatus onsuccess="PF('statusDialog').hide()" />
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                  closable="false" resizable="false" showHeader="false">
+            <p:graphicImage value="../resources/img/carga.gif" />
+        </p:dialog>
         <h:form id="formContent">
             <div>
                 <h3>#{beanEmpaque.title}</h3>
@@ -15,8 +20,8 @@
             <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:panel rendered="#{beanEmpaque.viewEstate=='init'}"  style="border: 0px;" >
                 <div class="form-group" align="right">
-                    <p:commandButton value="Nuevo" class="primaryButton" update=":formContent" ajax="true" action="#{beanEmpaque.viewNew}" icon="ui-icon-person" />
-                    <p:commandButton value="Eliminar" class="primaryButton" update=":formContent" ajax="true" action="#{beanEmpaque.delete}" icon="ui-icon-trash" />
+                    <p:commandButton value="Nuevo" class="primaryButton" update=":formContent" ajax="true" action="#{beanEmpaque.viewNew}" icon="ui-icon-person" onclick="PF('statusDialog').show()"/>
+                    <p:commandButton value="Eliminar" class="primaryButton" update=":formContent" ajax="true" action="#{beanEmpaque.delete}" icon="ui-icon-trash" onclick="PF('statusDialog').show()"/>
                 </div>
                 <div class="col-lg-6 col-md-8 col-sm-12 col-xs-12 col-lg-offset-3 col-sm-offset-2">
                     <p:dataTable var="model" value="#{beanEmpaque.model}" rows="12" scrollable="true" paginator="true" selection="#{beanEmpaque.selectedEmpaque}" rowKey="#{model.idTipoEmpaquePk}" emptyMessage="No se encontraron Registros.">
@@ -28,7 +33,7 @@
                             <h:outputText value="#{model.nombreEmpaque}" />
                         </p:column>
                         <p:column headerText="Editar" width="60px;" class="alignCenter">
-                            <p:commandButton id="ajax" ajax="true"  action="#{beanEmpaque.searchById}" icon="ui-icon-pencil" styleClass="ui-priority-primary" update=":formContent">
+                            <p:commandButton id="ajax" ajax="true"  action="#{beanEmpaque.searchById}" icon="ui-icon-pencil" styleClass="ui-priority-primary" update=":formContent" onclick="PF('statusDialog').show()">
                                 <f:setPropertyActionListener value="#{model}" target="#{beanEmpaque.data}"/>
                             </p:commandButton>
                         </p:column>
@@ -38,9 +43,9 @@
             <p:panel rendered="#{beanEmpaque.viewEstate=='searchById' || beanEmpaque.viewEstate=='new'}">
                 <div class="container-fluid">
                     <div class="form-group" align="right">
-                        <p:commandButton value="Guardar" class="primaryButton" update=":formContent" ajax="true" action="#{beanEmpaque.insert}" rendered="#{beanEmpaque.viewEstate=='new'}"/>
-                        <p:commandButton value="Actualizar" class="primaryButton" update=":formContent" ajax="true" action="#{beanEmpaque.update}" rendered="#{beanEmpaque.viewEstate=='searchById'}"/>
-                        <p:commandButton value="Atras" class="primaryButton" immediate="true" resetValues="true" update=":formContent" ajax="true" action="#{beanEmpaque.backView}" />
+                        <p:commandButton value="Guardar" class="primaryButton" update=":formContent" ajax="true" action="#{beanEmpaque.insert}" rendered="#{beanEmpaque.viewEstate=='new'}" onclick="PF('statusDialog').show()"/>
+                        <p:commandButton value="Actualizar" class="primaryButton" update=":formContent" ajax="true" action="#{beanEmpaque.update}" rendered="#{beanEmpaque.viewEstate=='searchById'}" onclick="PF('statusDialog').show()"/>
+                        <p:commandButton value="Atras" class="primaryButton" immediate="true" resetValues="true" update=":formContent" ajax="true" action="#{beanEmpaque.backView}" onclick="PF('statusDialog').show()"/>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-12"  for="txtNombre" value ="Nombre:" /> 

@@ -9,12 +9,17 @@
                 xmlns:pe="http://primefaces.org/ui/extensions">
 
     <ui:define name="content">
+        <p:ajaxStatus onsuccess="PF('statusDialog').hide()" />
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                  closable="false" resizable="false" showHeader="false">
+            <p:graphicImage value="../resources/img/carga.gif" />
+        </p:dialog>
         <div>
             <h3>#{beanRelOperMayoreo.title}</h3>
         </div>
         <h:form id="formContent">
             <div class="form-group" align="right">
-                <p:commandButton value="Buscar" update=":formContent" ajax="true" action="#{beanRelOperMayoreo.buscar()}"/>
+                <p:commandButton value="Buscar" update=":formContent" ajax="true" action="#{beanRelOperMayoreo.buscar()}" onclick="PF('statusDialog').show()"/>
             </div>
             <p:confirmDialog  global="true" showEffect="fade" hideEffect="fade">
                 <div class="alignCenter">
@@ -22,11 +27,6 @@
                     <p:commandButton  value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
                 </div>
             </p:confirmDialog>
-            <p:ajaxStatus onsuccess="PF('statusDialog').hide()" />
-            <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
-                      closable="false" resizable="false" showHeader="false">
-                <p:graphicImage value="../resources/img/carga.gif" />
-            </p:dialog>
             <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <!--<p:growl id="messagess" showDetail="true" life="2000" />-->
             <p:panel>
@@ -129,14 +129,14 @@
                                     <f:convertNumber pattern="#,##0.00" />
                                 </h:outputText>
                             </p:column>
-                            
+
                             <p:column headerText="Imprimir" width="70px;" class="alignCenter">
-                                <p:commandButton id="print" ajax="true" process="@this" action="#{beanRelOperMayoreo.printVenta()}" icon="ui-icon-print" styleClass="ui-priority-primary" update=":formContent">
+                                <p:commandButton id="print" ajax="true" process="@this" action="#{beanRelOperMayoreo.printVenta()}" icon="ui-icon-print" styleClass="ui-priority-primary" update=":formContent" onclick="PF('statusDialog').show()">
                                     <f:setPropertyActionListener value="#{model}" target="#{beanRelOperMayoreo.data}"/>
                                 </p:commandButton>
                             </p:column>
                             <p:column headerText="Cancelar" width="70px;" class="alignCenter">
-                                <p:commandButton id="cancelar" ajax="true" process="@this" action="#{beanRelOperMayoreo.cancelarVenta}" icon="ui-icon-trash" styleClass="ui-priority-primary" update=":formContent" disabled="#{model.idStatusFk.intValue() != 1}"  >
+                                <p:commandButton id="cancelar" ajax="true" process="@this" action="#{beanRelOperMayoreo.cancelarVenta}" icon="ui-icon-trash" styleClass="ui-priority-primary" update=":formContent" disabled="#{model.idStatusFk.intValue() != 1}"  onclick="PF('statusDialog').show()">
                                     <f:setPropertyActionListener value="#{model}" target="#{beanRelOperMayoreo.data}"/>
                                     <p:confirm header="Confirmación" message="¿Estás seguro de cancelar la venta?" icon="ui-icon-alert"/>
                                 </p:commandButton>
@@ -168,8 +168,8 @@
                                         </h:outputText>
                                     </f:facet>
                                 </p:column>
-                                
-                                
+
+
                                 <p:column colspan="1" />
 
                             </p:columnGroup>
@@ -213,7 +213,7 @@
                         </p:dataTable>
                     </div>
                 </div>
-                 <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanRelOperMayoreo.rutaPDF}"/>
+                <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanRelOperMayoreo.rutaPDF}"/>
             </p:panel>
         </h:form>
     </ui:define>

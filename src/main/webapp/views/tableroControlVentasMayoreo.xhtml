@@ -82,7 +82,7 @@
                                 </h:outputText>
                             </p:column>
                             <p:column headerText="Ver Datos" class="alignCenter" width="70px;">
-                                <p:commandButton  update=":formContent"  action="#{beanTableroControlVentaMeyoreo.searchById()}" icon="ui-icon-search" styleClass="ui-priority-primary">
+                                <p:commandButton  update=":formContent"  action="#{beanTableroControlVentaMeyoreo.searchById()}" icon="ui-icon-search" styleClass="ui-priority-primary" onclick="PF('statusDialog').show()">
                                     <f:setPropertyActionListener value="#{model}" target="#{beanTableroControlVentaMeyoreo.carroDetalleGeneral}"/>
                                 </p:commandButton>
                             </p:column>

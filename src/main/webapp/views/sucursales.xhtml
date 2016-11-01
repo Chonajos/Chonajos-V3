@@ -10,6 +10,11 @@
                 xmlns:o="http://omnifaces.org/ui">
 
     <ui:define name="content">
+        <p:ajaxStatus onsuccess="PF('statusDialog').hide()" />
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                  closable="false" resizable="false" showHeader="false">
+            <p:graphicImage value="../resources/img/carga.gif" />
+        </p:dialog>
         <h:form id="formSucursal">
             <div>
                 <h3>#{beanCatSucursal.title}</h3>
@@ -19,7 +24,7 @@
             <p:panel rendered="#{beanCatSucursal.viewEstate=='init'}" style="border: 0px;" >
 
                 <div class="form-group" align="right">
-                    <p:commandButton value="Nuevo" class="primaryButton" update=":formSucursal" resetValues="true" ajax="true" action="#{beanCatSucursal.viewNew}" icon="ui-icon-person" />
+                    <p:commandButton value="Nuevo" class="primaryButton" update=":formSucursal" resetValues="true" ajax="true" action="#{beanCatSucursal.viewNew}" icon="ui-icon-person" onclick="PF('statusDialog').show()"/>
                 </div>
                 <div class="col-lg-8 col-md-10 col-sm-12 col-xs-12 col-lg-offset-2 col-md-offset-1">
                     <p:dataTable id="tableData"  var="model" value="#{beanCatSucursal.model}" rowKey="#{model.idSucursalPk}" rows="12" paginator="true"
@@ -38,13 +43,13 @@
                         </p:column>
 
                         <p:column headerText="Editar" class="alignCenter" style="width:80px;">
-                            <p:commandButton id="ajax" ajax="true"  action="#{beanCatSucursal.searchById}" icon="ui-icon-pencil" styleClass="ui-priority-primary" update=":formSucursal">
+                            <p:commandButton id="ajax" ajax="true"  action="#{beanCatSucursal.searchById}" icon="ui-icon-pencil" styleClass="ui-priority-primary" update=":formSucursal" onclick="PF('statusDialog').show()">
                                 <f:setPropertyActionListener value="#{model}" target="#{beanCatSucursal.data}"/>
                             </p:commandButton>
                         </p:column>
                         <p:column headerText="Ver Datos"  class="alignCenter" style="width:100px;">
 
-                            <p:commandButton  update=":formSucursal" oncomplete="PF('documentDialog').show()" action="#{beanCatSucursal.viewDetails()}" icon="ui-icon-search" styleClass="ui-priority-primary">
+                            <p:commandButton  update=":formSucursal" oncomplete="PF('documentDialog').show()" action="#{beanCatSucursal.viewDetails()}" icon="ui-icon-search" styleClass="ui-priority-primary" onclick="PF('statusDialog').show()">
                                 <f:setPropertyActionListener value="#{model}" target="#{beanCatSucursal.data}"/>
                             </p:commandButton>
                         </p:column>
@@ -57,9 +62,9 @@
             <p:panel rendered="#{beanCatSucursal.viewEstate=='searchById' || beanCatSucursal.viewEstate=='new' || beanCatSucursal.viewEstate=='viewDetails'}">
                 <div class="container-fluid">
                     <div class="form-group" align="right">
-                        <p:commandButton value="Guardar" class="primaryButton" update=":formSucursal"  ajax="true" action="#{beanCatSucursal.save()}" rendered="#{beanCatSucursal.viewEstate=='new'}"/>
-                        <p:commandButton value="Actualizar" class="primaryButton" update=":formSucursal" ajax="true" action="#{beanCatSucursal.update()}" rendered="#{beanCatSucursal.viewEstate=='searchById'}"/>
-                        <p:commandButton value="Atras" class="primaryButton" immediate="true" resetValues="true" update=":formSucursal" ajax="true" action="#{beanCatSucursal.backView}" />
+                        <p:commandButton value="Guardar" class="primaryButton" update=":formSucursal"  ajax="true" action="#{beanCatSucursal.save()}" rendered="#{beanCatSucursal.viewEstate=='new'}" onclick="PF('statusDialog').show()"/>
+                        <p:commandButton value="Actualizar" class="primaryButton" update=":formSucursal" ajax="true" action="#{beanCatSucursal.update()}" rendered="#{beanCatSucursal.viewEstate=='searchById'}" onclick="PF('statusDialog').show()"/>
+                        <p:commandButton value="Atras" class="primaryButton" immediate="true" resetValues="true" update=":formSucursal" ajax="true" action="#{beanCatSucursal.backView}" onclick="PF('statusDialog').show()"/>
                     </div>
                     <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 form-group">
                         <p:outputLabel class="col-lg-6 col-md-6 col-sm-6 col-xs-12"  for="txtNombre" value ="Nombre:" /> 

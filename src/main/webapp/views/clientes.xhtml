@@ -10,8 +10,11 @@
                 xmlns:o="http://omnifaces.org/ui">
 
     <ui:define name="content">
-
-
+        <p:ajaxStatus onsuccess="PF('statusDialog').hide()" />
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                  closable="false" resizable="false" showHeader="false">
+            <p:graphicImage value="../resources/img/carga.gif" />
+        </p:dialog>
         <h:form id="formCliente">
             <div>
                 <h3>#{beanCatCliente.title}</h3>
@@ -19,7 +22,7 @@
             <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:panel rendered="#{beanCatCliente.viewEstate=='init'}" style="border: 0px;" >
                 <div class="form-group" align="right">
-                    <p:commandButton value="Nuevo" update=":formCliente" resetValues="true" ajax="true" action="#{beanCatCliente.viewNew}" icon="ui-icon-person" />
+                    <p:commandButton value="Nuevo" update=":formCliente" resetValues="true" ajax="true" action="#{beanCatCliente.viewNew}" icon="ui-icon-person" onclick="PF('statusDialog').show()"/>
 
                 </div>
                 <div class="col-lg-10 col-md-12 col-sm-12 col-xs-12 col-lg-offset-1">
@@ -32,7 +35,7 @@
                         <!--                        <p:column headerText="Id" class="alignCenter" style="width:70px;">
                                                     <h:outputText value="#{model.id_cliente}" />
                                                 </p:column>-->
-                        
+
                         <p:column headerText="Nombre" filterBy="#{model.nombre} #{model.paterno} #{model.materno}" filterMatchMode="contains" filterMaxLength="120" class="#{model.status_cliente eq 1 ?'statusActivo':'statusInactivo'} alignLeft" style="width:400px;">
                             <h:outputText value="#{model.nombre} #{model.paterno} #{model.materno}" />
                         </p:column>
@@ -47,20 +50,20 @@
 
 
                         <p:column headerText="Editar" class="alignCenter" style="width:80px;">
-                            <p:commandButton id="ajax" ajax="true"  action="#{beanCatCliente.searchById}" icon="ui-icon-pencil" styleClass="ui-priority-primary" update=":formCliente">
+                            <p:commandButton id="ajax" ajax="true"  action="#{beanCatCliente.searchById}" icon="ui-icon-pencil" styleClass="ui-priority-primary" update=":formCliente" onclick="PF('statusDialog').show()">
                                 <f:setPropertyActionListener value="#{model}" target="#{beanCatCliente.data}"/>
                             </p:commandButton>
                         </p:column>
                         <p:column headerText="Ver Contacto" class="alignCenter" style="width:100px;">
 
-                            <p:commandButton  update=":formCliente" action="#{beanCatCliente.viewDetails()}" icon="ui-icon-search" styleClass="ui-priority-primary">
+                            <p:commandButton  update=":formCliente" action="#{beanCatCliente.viewDetails()}" icon="ui-icon-search" styleClass="ui-priority-primary" onclick="PF('statusDialog').show()">
                                 <f:setPropertyActionListener value="#{model}" target="#{beanCatCliente.data}"/>
                             </p:commandButton>
                         </p:column>
 
                         <p:column headerText="Eliminar" class="alignCenter" style="width:100px;">
 
-                            <p:commandButton  update=":formCliente" action="#{beanCatCliente.viewDelete()}" icon="ui-icon-trash" styleClass="ui-priority-primary">
+                            <p:commandButton  update=":formCliente" action="#{beanCatCliente.viewDelete()}" icon="ui-icon-trash" styleClass="ui-priority-primary" onclick="PF('statusDialog').show()">
                                 <f:setPropertyActionListener value="#{model}" target="#{beanCatCliente.data}"/>
                             </p:commandButton>
                         </p:column>
@@ -71,8 +74,8 @@
             <p:panel rendered="#{beanCatCliente.viewEstate=='deleteCliente'}">
                 <div class="container-fluid">
                     <div class="form-group" align="right">
-                        <p:commandButton value="Eliminar" update=":formCliente" ajax="true" action="#{beanCatCliente.delete()}" icon="ui-icon-trash" />
-                        <p:commandButton value="Atras" immediate="true" resetValues="true" update=":formCliente" ajax="true" action="#{beanCatCliente.backView}" />
+                        <p:commandButton value="Eliminar" update=":formCliente" ajax="true" action="#{beanCatCliente.delete()}" icon="ui-icon-trash" onclick="PF('statusDialog').show()"/>
+                        <p:commandButton value="Atras" immediate="true" resetValues="true" update=":formCliente" ajax="true" action="#{beanCatCliente.backView}" onclick="PF('statusDialog').show()"/>
 
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
@@ -106,9 +109,9 @@
 
                 <div class="container-fluid">
                     <div class="form-group" align="right">
-                        <p:commandButton value="Guardar" update=":formCliente" ajax="true" action="#{beanCatCliente.insert()}" rendered="#{beanCatCliente.viewEstate=='new'}"/>
-                        <p:commandButton value="Actualizar" update=":formCliente" ajax="true" action="#{beanCatCliente.update()}" rendered="#{beanCatCliente.viewEstate=='searchById'}"/>
-                        <p:commandButton value="Atras" immediate="true" resetValues="true" update=":formCliente" ajax="true" action="#{beanCatCliente.backView}" />
+                        <p:commandButton value="Guardar" update=":formCliente" ajax="true" action="#{beanCatCliente.insert()}" rendered="#{beanCatCliente.viewEstate=='new'}" onclick="PF('statusDialog').show()"/>
+                        <p:commandButton value="Actualizar" update=":formCliente" ajax="true" action="#{beanCatCliente.update()}" rendered="#{beanCatCliente.viewEstate=='searchById'}" onclick="PF('statusDialog').show()"/>
+                        <p:commandButton value="Atras" immediate="true" resetValues="true" update=":formCliente" ajax="true" action="#{beanCatCliente.backView}" onclick="PF('statusDialog').show()"/>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
 

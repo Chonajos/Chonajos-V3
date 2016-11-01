@@ -347,6 +347,8 @@ public class BeanEntregaMercancia implements Serializable {
             empaquesEntregar = null;
             kilosEntrega = null;
             observaciones = null;
+        }else{
+            JsfUtil.addWarnMessage("No se puden entregar.");
         }
 
     }

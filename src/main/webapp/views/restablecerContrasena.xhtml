@@ -10,6 +10,11 @@
                 xmlns:o="http://omnifaces.org/ui">
 
     <ui:define name="content">
+        <p:ajaxStatus onsuccess="PF('statusDialog').hide()" />
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                  closable="false" resizable="false" showHeader="false">
+            <p:graphicImage value="../resources/img/carga.gif" />
+        </p:dialog>
         <h:form id="formContrasena">
             <p:panel>
                 <div>
@@ -18,7 +23,7 @@
                 <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
 
                 <div class="form-group" align="right">
-                    <p:commandButton value="Restablecer" update=":formContrasena" ajax="true" action="#{beanRestablecerContrasena.restablecer}" />
+                    <p:commandButton value="Restablecer" update=":formContrasena" ajax="true" action="#{beanRestablecerContrasena.restablecer}" onclick="PF('statusDialog').show()"/>
                 </div>
 
                 <div class="container">

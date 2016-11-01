@@ -9,6 +9,11 @@
                 xmlns:pe="http://primefaces.org/ui/extensions">
 
     <ui:define name="content" id="content">
+        <p:ajaxStatus onsuccess="PF('statusDialog').hide()" />
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                  closable="false" resizable="false" showHeader="false">
+            <p:graphicImage value="../resources/img/carga.gif" />
+        </p:dialog>
         <div>
             <h3>#{beanEntregaMercancia.title}</h3>
         </div>
@@ -23,9 +28,9 @@
                             <pe:keyFilter regEx="/[0-9.]/i"/>
                         </p:inputText>
                         <div class="col-lg-8">
-                            <p:commandButton  value="Buscar" class="primaryButton" update=":formContent" action="#{beanEntregaMercancia.buscaFolioVenta}" style="margin-left:30px; "/>
+                            <p:commandButton  value="Buscar" class="primaryButton" update=":formContent" action="#{beanEntregaMercancia.buscaFolioVenta}" style="margin-left:30px; " onclick="PF('statusDialog').show()"/>
                         </div>
-                        <p:commandButton  value="Entregar" class="primaryButton" update=":formContent" action="#{beanEntregaMercancia.print}" style="margin-left:30px; " />
+                        <p:commandButton  value="Entregar" class="primaryButton" update=":formContent" action="#{beanEntregaMercancia.print}" style="margin-left:30px; " onclick="PF('statusDialog').show()"/>
 
                     </div>
                     <div class="col-lg-12 col-md-12 col-md-12 col-xs-12 form-group" style="padding: 0px;">
@@ -69,7 +74,7 @@
                                 </h:outputText>
                             </p:column>
                             <p:column headerText="Entregar"  width="60px;" class="alignCenter">
-                                <p:commandButton icon="ui-icon-transferthick-e-w" onclick ="PF('dlg').show();" action="#{beanEntregaMercancia.setValues}" update=":formContent:panelGrid" disabled="#{!beanEntregaMercancia.permisosEntrega || (model.empaquesRemanente -model.empaquesEntregados == 0) }">
+                                <p:commandButton icon="ui-icon-transferthick-e-w" onclick ="PF('dlg').show();" action="#{beanEntregaMercancia.setValues}" update=":formContent:panelGrid" disabled="#{!beanEntregaMercancia.permisosEntrega || (model.empaquesRemanente -model.empaquesEntregados == 0) }" >
                                     <f:setPropertyActionListener target="#{beanEntregaMercancia.entregaMercancia}" value="${model}" />
                                 </p:commandButton>
                             </p:column>
@@ -104,7 +109,7 @@
                 <h:panelGrid id="panelGrid" columns="1" cellpadding="5">
                     <f:facet name="header">
                         <div class="form-group alignRight">
-                            <p:commandButton value="Aceptar" action="#{beanEntregaMercancia.agregarEntrega}"/>
+                            <p:commandButton value="Aceptar" action="#{beanEntregaMercancia.agregarEntrega}" onclick="PF('statusDialog').show()"/>
                         </div>
                     </f:facet> 
                     <p:outputLabel  for="txtProducto" value ="Producto:" /> 

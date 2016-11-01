@@ -12,15 +12,20 @@
         <div>
             <h3>#{beanAnalisisMercado.title}</h3>
         </div>
+        <p:ajaxStatus onsuccess="PF('statusDialog').hide()" />
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                  closable="false" resizable="false" showHeader="false">
+            <p:graphicImage value="../resources/img/carga.gif" />
+        </p:dialog>
         <h:form id="formContent">
             <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:panel>
                 <div class="container-fluid">
 
                     <div class="form-group" align="right">
-                        <p:commandButton value="Atras" resetValues="true" immediate="true" update=":formContent" action="#{beanAnalisisMercado.cancel}" rendered="#{beanAnalisisMercado.state =='SEARCH'}"/>
-                        <p:commandButton rendered="#{beanAnalisisMercado.state =='INIT'}" value="Guardar" resetValues="true" update=":formContent" action="#{beanAnalisisMercado.save}"/>
-                        <p:commandButton value="Reportes" resetValues="true" update=":formContent" immediate="true" actionListener="#{beanAnalisisMercado.search}" rendered="#{beanAnalisisMercado.state =='INIT'}"/>
+                        <p:commandButton value="Atras" resetValues="true" immediate="true" update=":formContent" action="#{beanAnalisisMercado.cancel}" rendered="#{beanAnalisisMercado.state =='SEARCH'}" onclick="PF('statusDialog').show()"/>
+                        <p:commandButton rendered="#{beanAnalisisMercado.state =='INIT'}" value="Guardar" resetValues="true" update=":formContent" action="#{beanAnalisisMercado.save}" onclick="PF('statusDialog').show()"/>
+                        <p:commandButton value="Reportes" resetValues="true" update=":formContent" immediate="true" actionListener="#{beanAnalisisMercado.search}" rendered="#{beanAnalisisMercado.state =='INIT'}" onclick="PF('statusDialog').show()"/>
                     </div>
                     <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 alignLeftRadioButton">
@@ -125,7 +130,7 @@
                                 <p:ajax event="change" update=":formContent" listener="#{beanAnalisisMercado.filtroPorProducto}"/>
                             </p:selectOneMenu>
                         </div>
-                        
+
                         <p:chart  style="height:500px;" type="line" responsive="true" rendered ="#{beanAnalisisMercado.chartLineByNameDay != null and beanAnalisisMercado.state =='SEARCH' and beanAnalisisMercado.charLine == true}" model="#{beanAnalisisMercado.chartLineByNameDay}"/>
                         <p:chart style="height:500px;" type="bar" responsive="true" rendered ="#{beanAnalisisMercado.chartBarByNameDay != null and beanAnalisisMercado.state =='SEARCH' and beanAnalisisMercado.charLine == false}" model="#{beanAnalisisMercado.chartBarByNameDay}" />
                     </div>

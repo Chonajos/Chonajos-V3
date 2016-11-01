@@ -10,6 +10,11 @@
                 xmlns:o="http://omnifaces.org/ui">
 
     <ui:define name="content">
+        <p:ajaxStatus onsuccess="PF('statusDialog').hide()" />
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                  closable="false" resizable="false" showHeader="false">
+            <p:graphicImage value="../resources/img/carga.gif" />
+        </p:dialog>
         <h:form id="formUsuario">
             <div>
                 <h3>#{beanCatUsuario.title}</h3>
@@ -17,8 +22,8 @@
             <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:panel rendered="#{beanCatUsuario.viewEstate=='init'}" style="border: 0px;" >
                 <div class="form-group" align="right">
-                    <p:commandButton value="Nuevo" update=":formUsuario" ajax="true" action="#{beanCatUsuario.viewNew}" icon="ui-icon-person" />
-                    <p:commandButton value="Eliminar" update=":formUsuario" ajax="true" action="#{beanCatUsuario.delete()}" icon="ui-icon-trash" />
+                    <p:commandButton value="Nuevo" update=":formUsuario" ajax="true" action="#{beanCatUsuario.viewNew}" icon="ui-icon-person" onclick="PF('statusDialog').show()"/>
+                    <p:commandButton value="Eliminar" update=":formUsuario" ajax="true" action="#{beanCatUsuario.delete()}" icon="ui-icon-trash" onclick="PF('statusDialog').show()"/>
                 </div>
                 <p:dataTable var="model" value="#{beanCatUsuario.model}" rows="10" scrollable="true"
                              paginator="true" selection="#{beanCatUsuario.selectedUsuario}" rowKey="#{model.idUsuarioPk}"
@@ -49,7 +54,7 @@
                         <h:outputText value="#{model.rfcUsuario}" />
                     </p:column>
                     <p:column headerText="Editar" width ="45px;" class="alignCenter">
-                        <p:commandButton id="ajax" ajax="true"  action="#{beanCatUsuario.searchById}" icon="ui-icon-pencil" styleClass="ui-priority-primary" update=":formUsuario">
+                        <p:commandButton id="ajax" ajax="true"  action="#{beanCatUsuario.searchById}" icon="ui-icon-pencil" styleClass="ui-priority-primary" update=":formUsuario" onclick="PF('statusDialog').show()">
                             <f:setPropertyActionListener value="#{model}" target="#{beanCatUsuario.data}"/>
                         </p:commandButton>
                     </p:column>
@@ -58,9 +63,9 @@
             <p:panel rendered="#{beanCatUsuario.viewEstate=='searchById' || beanCatUsuario.viewEstate=='new'}">
                 <div class="container">
                     <div class="form-group" align="right">
-                        <p:commandButton value="Guardar" update=":formUsuario" ajax="true" action="#{beanCatUsuario.insert}" rendered="#{beanCatUsuario.viewEstate=='new'}"/>
-                        <p:commandButton value="Actualizar" update=":formUsuario" ajax="true" action="#{beanCatUsuario.update}" rendered="#{beanCatUsuario.viewEstate=='searchById'}"/>
-                        <p:commandButton value="Atras" immediate="true" resetValues="true" update=":formUsuario" ajax="true" action="#{beanCatUsuario.backView}" />
+                        <p:commandButton value="Guardar" update=":formUsuario" ajax="true" action="#{beanCatUsuario.insert}" rendered="#{beanCatUsuario.viewEstate=='new'}" onclick="PF('statusDialog').show()"/>
+                        <p:commandButton value="Actualizar" update=":formUsuario" ajax="true" action="#{beanCatUsuario.update}" rendered="#{beanCatUsuario.viewEstate=='searchById'}" onclick="PF('statusDialog').show()"/>
+                        <p:commandButton value="Atras" immediate="true" resetValues="true" update=":formUsuario" ajax="true" action="#{beanCatUsuario.backView}" onclick="PF('statusDialog').show()"/>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-12"  for="txtNombre" value ="Nombre:" /> 
@@ -98,19 +103,19 @@
                             <f:validateLength maximum="8" minimum="8" />
                         </p:password>
                     </div>-->
-<!--                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                        <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-12"  for="txtConfirmar" value ="Confirmar contraseña:" /> 
-                        <p:password id="txtConfirmar" maxlength="8" class=" col-lg-5 col-md-4 col-sm-8 col-xs-12" value="#{beanCatUsuario.data.confirmaUsuario}" required="true"
-                                    requiredMessage="Confirma el valor para el campo Contraseña del usuario." validatorMessage="La contraseña debe tener como minimo 8 caracteres">
-                            <pe:keyFilter regEx="/[a-z0-9_]/i"/>
-                            <p:ajax event="blur" process="txtContrasena txtConfirmar equal" />
-                            <f:validateLength maximum="8" minimum="8" />
-                        </p:password>
-                        <h:message for="txtConfirmar" />
-
-                        <o:validateEqual id="equal" components="txtContrasena txtConfirmar" message="Las contraseñas escritas no coinciden. Verificar campos." showMessageFor="txtConfirmar" />
-
-                    </div>-->
+                    <!--                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-12"  for="txtConfirmar" value ="Confirmar contraseña:" /> 
+                                            <p:password id="txtConfirmar" maxlength="8" class=" col-lg-5 col-md-4 col-sm-8 col-xs-12" value="#{beanCatUsuario.data.confirmaUsuario}" required="true"
+                                                        requiredMessage="Confirma el valor para el campo Contraseña del usuario." validatorMessage="La contraseña debe tener como minimo 8 caracteres">
+                                                <pe:keyFilter regEx="/[a-z0-9_]/i"/>
+                                                <p:ajax event="blur" process="txtContrasena txtConfirmar equal" />
+                                                <f:validateLength maximum="8" minimum="8" />
+                                            </p:password>
+                                            <h:message for="txtConfirmar" />
+                    
+                                            <o:validateEqual id="equal" components="txtContrasena txtConfirmar" message="Las contraseñas escritas no coinciden. Verificar campos." showMessageFor="txtConfirmar" />
+                    
+                                        </div>-->
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-12"  for="txtRFC" value ="RFC:" /> 
                         <p:inputText id="txtRFC" maxlength="13" class=" col-lg-4 col-md-4 col-sm-8 col-xs-12" value="#{beanCatUsuario.data.rfcUsuario}" required="true"

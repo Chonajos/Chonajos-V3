@@ -10,8 +10,11 @@
                 xmlns:o="http://omnifaces.org/ui">
 
     <ui:define name="content">
-
-
+        <p:ajaxStatus onsuccess="PF('statusDialog').hide()" />
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                  closable="false" resizable="false" showHeader="false">
+            <p:graphicImage value="../resources/img/carga.gif" />
+        </p:dialog>
         <h:form id="formProvedor">
             <div>
                 <h3>#{beanCatProvedor.title}</h3>
@@ -19,7 +22,7 @@
             <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:panel rendered="#{beanCatProvedor.viewEstate=='init'}" style="border: 0px;" >
                 <div class="form-group" align="right">
-                    <p:commandButton value="Nuevo" update=":formProvedor" resetValues="true" ajax="true" action="#{beanCatProvedor.viewNew}" icon="ui-icon-person" />
+                    <p:commandButton value="Nuevo" update=":formProvedor" resetValues="true" ajax="true" action="#{beanCatProvedor.viewNew}" icon="ui-icon-person" onclick="PF('statusDialog').show()"/>
 
                 </div>
                 <div class="col-lg-10 col-md-12 col-sm-12 col-xs-12 col-lg-offset-1">
@@ -39,20 +42,20 @@
                         </p:column>
 
                         <p:column headerText="Editar" class="alignCenter" style="width:80px;">
-                            <p:commandButton id="ajax" ajax="true"  action="#{beanCatProvedor.searchById}" icon="ui-icon-pencil" styleClass="ui-priority-primary" update=":formProvedor">
+                            <p:commandButton id="ajax" ajax="true"  action="#{beanCatProvedor.searchById}" icon="ui-icon-pencil" styleClass="ui-priority-primary" update=":formProvedor" onclick="PF('statusDialog').show()">
                                 <f:setPropertyActionListener value="#{model}" target="#{beanCatProvedor.data}"/>
                             </p:commandButton>
                         </p:column>
                         <p:column headerText="Ver Contacto" class="alignCenter" style="width:100px;">
 
-                            <p:commandButton  update=":formProvedor" action="#{beanCatProvedor.viewDetails()}" icon="ui-icon-search" styleClass="ui-priority-primary">
+                            <p:commandButton  update=":formProvedor" action="#{beanCatProvedor.viewDetails()}" icon="ui-icon-search" styleClass="ui-priority-primary" onclick="PF('statusDialog').show()">
                                 <f:setPropertyActionListener value="#{model}" target="#{beanCatProvedor.data}"/>
                             </p:commandButton>
                         </p:column>
 
                         <p:column headerText="Eliminar" class="alignCenter" style="width:100px;">
 
-                            <p:commandButton  update=":formProvedor" action="#{beanCatProvedor.viewDelete()}" icon="ui-icon-trash" styleClass="ui-priority-primary">
+                            <p:commandButton  update=":formProvedor" action="#{beanCatProvedor.viewDelete()}" icon="ui-icon-trash" styleClass="ui-priority-primary" onclick="PF('statusDialog').show()">
                                 <f:setPropertyActionListener value="#{model}" target="#{beanCatProvedor.data}"/>
                             </p:commandButton>
                         </p:column>
@@ -64,9 +67,9 @@
             <p:panel rendered="#{beanCatProvedor.viewEstate=='searchById' || beanCatProvedor.viewEstate=='new' || beanCatProvedor.viewEstate=='viewDetails'}">
                 <div class="container">
                     <div class="form-group" align="right">
-                        <p:commandButton value="Guardar" update=":formProvedor" ajax="true" action="#{beanCatProvedor.save()}" rendered="#{beanCatProvedor.viewEstate=='new'}"/>
-                        <p:commandButton value="Actualizar" update=":formProvedor" ajax="true" action="#{beanCatProvedor.update()}" rendered="#{beanCatProvedor.viewEstate=='searchById'}"/>
-                        <p:commandButton value="Atras" immediate="true" resetValues="true" update=":formProvedor" ajax="true" action="#{beanCatProvedor.backView}" />
+                        <p:commandButton value="Guardar" update=":formProvedor" ajax="true" action="#{beanCatProvedor.save()}" rendered="#{beanCatProvedor.viewEstate=='new'}" onclick="PF('statusDialog').show()"/>
+                        <p:commandButton value="Actualizar" update=":formProvedor" ajax="true" action="#{beanCatProvedor.update()}" rendered="#{beanCatProvedor.viewEstate=='searchById'}" onclick="PF('statusDialog').show()"/>
+                        <p:commandButton value="Atras" immediate="true" resetValues="true" update=":formProvedor" ajax="true" action="#{beanCatProvedor.backView}" onclick="PF('statusDialog').show()"/>
                     </div>
 
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
