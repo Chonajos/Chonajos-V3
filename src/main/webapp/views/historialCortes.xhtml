@@ -18,6 +18,13 @@
             <p:panel> 
                 <div class="container-fluid">
                     <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 form-group">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight form-group">
+                            <div>
+                                <p:commandButton value="Buscar" update=":formContent" ajax="true" action="#{beanHistorialCortes.searchCortebyIdPk()}"/>
+                                <p:commandButton value="Ver Detalle" update=":formContent" ajax="true" action="#{beanHistorialCortes.verDetalle()}" rendered="#{beanCorteCaja.viewEstate=='init'}"/>
+                                <p:commandButton value="Atrás" update=":formContent" ajax="true" action="#{beanHistorialCortes.changeView()}" rendered="#{beanCorteCaja.viewEstate=='second'}"/>
+                            </div>
+                        </div>
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="cajaFiltro" value ="Caja " rendered="#{beanHistorialCortes.viewEstate =='init'}" /> 
                             <h:selectOneMenu  id="cajaFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanHistorialCortes.idCajaBean}" rendered="#{beanHistorialCortes.viewEstate =='init'}" disabled="#{beanHistorialCortes.usuario.perId != 1}" >
@@ -70,25 +77,23 @@
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight form-group">
-                            <div>
-                                <p:commandButton value="Buscar Corte" update=":formContent" ajax="true" action="#{beanHistorialCortes.searchCortebyIdPk()}"/>
-                            </div>
+                           
          
                             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight">
                                 <h:outputText  style="font-weight: bold !important" value ="Saldo Anterior :$" /> 
-                                <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanHistorialCortes.saldoAnterior}"> 
+                                <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanHistorialCortes.saldoAnteriorEfectivo}"> 
                                     <f:convertNumber pattern="#,###"/>
                                 </h:outputText>
                                  </div>
                             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight ">    
                                 <h:outputText  style="font-weight: bold !important" value ="Saldo Anterior Cheques:$" /> 
-                                <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanHistorialCortes.saldoAnterior}"> 
+                                <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanHistorialCortes.saldoAnteriorCheques}"> 
                                     <f:convertNumber pattern="#,###"/>
                                 </h:outputText>
                                  </div>
                               <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight">  
                                 <h:outputText  style="font-weight: bold !important" value ="Saldo Anterior Cuentas Bancarias:$" /> 
-                                <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanHistorialCortes.saldoAnterior}"> 
+                                <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanHistorialCortes.saldoAnteriorCuentas}"> 
                                     <f:convertNumber pattern="#,###"/>
                                 </h:outputText>
                             </div>
@@ -174,112 +179,236 @@
 
 
                     </div>
-                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight">
-                            <p:dataTable id="tabla3" var="model3" 
-                                         value="#{beanHistorialCortes.listaDetalleEntradas}" 
-                                         scrollable="true"
-                                         scrollHeight="100" styleClass="ui-datatable-hor-scroll" 
-                                         emptyMessage="No se encontraron Registros" 
-                                         rendered="#{beanHistorialCortes.viewEstate =='second'}">
-                                <f:facet name="header">
-                                    Entradas Detalle
-                                </f:facet>
-                                <p:column headerText="N°" width="30px;" class="alignCenter">
-                                    <h:outputText value="#{model3.numero}" />
-                                </p:column>
-                                <p:column headerText="Sucursal" width="150px;" class="alignLeft">
-                                    <h:outputText value="#{model3.nombreSucursal}" />
-                                </p:column>
-                                <p:column headerText="Operacion" width="150px;" class="alignLeft">
-                                    <h:outputText value="#{model3.nombreConcepto}" />
-                                </p:column>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 alignRight">
+                        <p:dataTable id="tabla3" var="model3" 
+                                     value="#{beanHistorialCortes.listaDetalleEntradas}" 
+                                     scrollable="true"
+                                     scrollHeight="200" styleClass="ui-datatable-hor-scroll" 
+                                     emptyMessage="No se encontraron Registros" 
+                                     rendered="#{beanHistorialCortes.viewEstate =='second'}">
+                            <f:facet name="header">
+                                Entradas Detalle
+                            </f:facet>
+                            <p:column headerText="N°" width="30px;" class="alignCenter">
+                                <h:outputText value="#{model3.numero}" />
+                            </p:column>
+                            <p:column headerText="Sucursal" width="100px;" class="alignLeft">
+                                <h:outputText value="#{model3.nombreSucursal}" />
+                            </p:column>
+                            <p:column headerText="Operacion" width="200px;" class="alignLeft">
+                                <h:outputText value="#{model3.nombreConcepto}" />
+                            </p:column>
 
 
-                                <p:column headerText="Monto" width="50px;" class="alignRight">
-                                    <h:outputText value="#{model3.monto}">
-                                        <f:convertNumber type="currency" currencySymbol="$" />
-                                    </h:outputText>
-                                </p:column>
-                                <p:columnGroup type="footer">
-                                    <p:row>
-                                        <p:column colspan="1" />
-                                        <p:column colspan="4" style="text-align:right" footerText="Total:" />
-                                        <p:column colspan="1" class="alignRight">
-                                            <f:facet name="footer">
-                                                <h:outputText value="#{beanHistorialCortes.totalSalidas}" >
-                                                    <f:convertNumber currencySymbol="$" type="currency" />
-                                                </h:outputText>
-                                            </f:facet>
-                                        </p:column>
+                            <p:column headerText="Monto" width="70px;" class="alignRight">
+                                <h:outputText value="#{model3.monto}">
+                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                </h:outputText>
+                            </p:column>
+                            <p:columnGroup type="footer">
+                                <p:row>
+                                    <p:column colspan="1" />
+                                    <p:column colspan="1" />
+                                    <p:column colspan="4" style="text-align:right" footerText="Total:" />
+                                    <p:column colspan="1" class="alignRight">
+                                        <f:facet name="footer">
+                                            <h:outputText value="#{beanHistorialCortes.totalSalidas}" >
+                                                <f:convertNumber currencySymbol="$" type="currency" />
+                                            </h:outputText>
+                                        </f:facet>
+                                    </p:column>
 
-                                    </p:row>
-                                </p:columnGroup>
+                                </p:row>
+                            </p:columnGroup>
 
-                            </p:dataTable>
-                        </div>
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                            <p:dataTable id="tabla4" var="model4" 
-                                         value="#{beanHistorialCortes.listaDetalleSalidas}" 
-                                         scrollable="true"
-                                         scrollHeight="100" styleClass="ui-datatable-hor-scroll" 
-                                         emptyMessage="No se encontraron Registros" 
-                                         rendered="#{beanHistorialCortes.viewEstate =='second'}">
-                                <f:facet name="header">
-                                    Salidas Detalle
-                                </f:facet>
-                                <p:column headerText="N°" width="30px;" class="alignCenter">
-                                    <h:outputText value="#{model4.numero}" />
-                                </p:column>
-                                <p:column headerText="Sucursal" width="150px;" class="alignLeft">
-                                    <h:outputText value="#{model4.nombreSucursal}" />
-                                </p:column>
-                                <p:column headerText="Operacion" width="150px;" class="alignLeft">
-                                    <h:outputText value="#{model4.nombreConcepto}" />
-                                </p:column>
+                        </p:dataTable>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <p:dataTable id="tabla4" var="model4" 
+                                     value="#{beanHistorialCortes.listaDetalleSalidas}" 
+                                     scrollable="true"
+                                     scrollHeight="200" styleClass="ui-datatable-hor-scroll" 
+                                     emptyMessage="No se encontraron Registros" 
+                                     rendered="#{beanHistorialCortes.viewEstate =='second'}">
+                            <f:facet name="header">
+                                Salidas Detalle
+                            </f:facet>
+                            <p:column headerText="N°" width="30px;" class="alignCenter">
+                                <h:outputText value="#{model4.numero}" />
+                            </p:column>
+                            <p:column headerText="Sucursal" width="100px;" class="alignLeft">
+                                <h:outputText value="#{model4.nombreSucursal}" />
+                            </p:column>
+                            <p:column headerText="Operacion" width="200px;" class="alignLeft">
+                                <h:outputText value="#{model4.nombreConcepto}" />
+                            </p:column>
 
-                                <p:column headerText="Monto" width="50px;" class="alignRight">
-                                    <h:outputText value="#{model4.monto}">
-                                        <f:convertNumber type="currency" currencySymbol="$" />
-                                    </h:outputText>
-                                </p:column>
-                                <p:columnGroup type="footer">
-                                    <p:row>
-                                        <p:column colspan="1" />
-                                        <p:column colspan="4" style="text-align:right" footerText="Total:" />
-                                        <p:column colspan="1" class="alignRight">
-                                            <f:facet name="footer">
-                                                <h:outputText value="#{beanHistorialCortes.totalSalidas}" >
-                                                    <f:convertNumber currencySymbol="$" type="currency" />
-                                                </h:outputText>
-                                            </f:facet>
-                                        </p:column>
+                            <p:column headerText="Monto" width="70px;" class="alignRight">
+                                <h:outputText value="#{model4.monto}">
+                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                </h:outputText>
+                            </p:column>
+                            <p:columnGroup type="footer">
+                                <p:row>
+                                    <p:column colspan="1" />
+                                    <p:column colspan="1" />
+                                    <p:column colspan="4" style="text-align:right" footerText="Total:" />
+                                    <p:column colspan="1" class="alignRight">
+                                        <f:facet name="footer">
+                                            <h:outputText value="#{beanHistorialCortes.totalSalidas}" >
+                                                <f:convertNumber currencySymbol="$" type="currency" />
+                                            </h:outputText>
+                                        </f:facet>
+                                    </p:column>
 
-                                    </p:row>
-                                </p:columnGroup>
+                                </p:row>
+                            </p:columnGroup>
 
-                            </p:dataTable>
-                        </div>
+                        </p:dataTable>
+                    </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight">
                         <h:outputText  style="font-weight: bold !important" value ="Saldo Nuevo :$" /> 
-                        <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanHistorialCortes.nuevoSaldo}"> 
-                            <f:convertNumber pattern="#,###"/>
-                        </h:outputText>
-                        </div>
-                       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight"> 
-                        <h:outputText  style="font-weight: bold !important" value ="Saldo Nuevo Cheques :$" /> 
-                        <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanHistorialCortes.nuevoSaldoCheques}"> 
-                            <f:convertNumber pattern="#,###"/>
-                        </h:outputText>
-                        </div>
-                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight">   
-                        <h:outputText  style="font-weight: bold !important" value ="Saldo Nuevo Cuentas:$" /> 
-                        <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanHistorialCortes.nuevoSaldoCuentas}"> 
-                            <f:convertNumber pattern="#,###"/>
-                        </h:outputText>
+                        <p:commandLink id="ajax" update=":formContent1" oncomplete="PF('dlg').show();">
+                            <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanHistorialCortes.nuevoSaldo}" />
+                        </p:commandLink>
                     </div>
-                    
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight"> 
+                        <h:outputText  style="font-weight: bold !important" value ="Saldo Nuevo Cheques :$" /> 
+                        <p:commandLink id="ajax2" update=":formContent2" oncomplete="PF('dlg1').show();">
+                            <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanHistorialCortes.nuevoSaldoCheques}" >
+                            <f:convertNumber pattern="#,###"/>
+                            </h:outputText>
+                        </p:commandLink>
+
+                      </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight">   
+                        <h:outputText  style="font-weight: bold !important" value ="Saldo Nuevo Cuentas:$" /> 
+                        
+                        <p:commandLink id="ajax3" update=":formContent3" oncomplete="PF('dlg2').show();">
+                            <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanHistorialCortes.nuevoSaldoCuentas}" >
+                            <f:convertNumber pattern="#,###"/>
+                            </h:outputText>
+                        </p:commandLink></div>
+
                 </div>
             </p:panel>
         </h:form>
+        <p:dialog  id="dialogw" header="Detalle Efectivo" widgetVar="dlg"  modal="true" resizable="false" height="250" width="500">
+            <h:form id="formContent1">
+                <h:body>
+
+                    <p:dataTable var="operacion" value="#{beanHistorialCortes.listaDetalleEntradasEfectivo}" >
+                        <p:column headerText="Concepto" width="60%" >
+                            <h:outputText value="#{operacion.nombreConcepto}" />
+                        </p:column>
+                        <p:column headerText="Entrada / Salida" width="15%" class="alignCenter" >
+                            <h:outputText value="#{operacion.nombreEntradaSalida}" />
+                        </p:column>
+                        <p:column headerText="Total" width="25%" class="alignRight">
+                            <h:outputText value="#{operacion.monto}" >
+                                <f:convertNumber type="currency" currencySymbol="$">
+
+                                </f:convertNumber>
+                            </h:outputText>
+                        </p:column>
+                        <p:columnGroup type="footer">
+                            <p:row>
+                                <p:column colspan="1" />
+                                <p:column colspan="1" style="text-align:right" footerText="Total:" />
+                                <p:column colspan="1" class="alignRight">
+                                    <f:facet name="footer">
+                                        <h:outputText value="#{beanHistorialCortes.totalEfectivo}" >
+                                            <f:convertNumber currencySymbol="$" type="currency" />
+                                        </h:outputText>
+                                    </f:facet>
+                                </p:column>
+                                <p:column colspan="1" />
+
+                            </p:row>
+                        </p:columnGroup>
+                    </p:dataTable>
+                </h:body>
+
+            </h:form>
+        </p:dialog>
+
+        <p:dialog  id="dialogw1" header="Detalle cheques" widgetVar="dlg1"  modal="true" resizable="false" height="250" width="500">
+            <h:form id="formContent2">
+                <h:body>
+                    <p:dataTable var="operacion" value="#{beanHistorialCortes.listaDetalleEntradasCheques}" >
+                        <p:column headerText="Concepto" width="60%" >
+                            <h:outputText value="#{operacion.nombreConcepto}" />
+                        </p:column>
+                        <p:column headerText="Entrada / Salida" width="15%" class="alignCenter" >
+                            <h:outputText value="#{operacion.nombreEntradaSalida}" />
+                        </p:column>
+                        <p:column headerText="Total" width="25%" class="alignRight">
+                            <h:outputText value="#{operacion.monto}" >
+                                <f:convertNumber type="currency" currencySymbol="$">
+
+                                </f:convertNumber>
+                            </h:outputText>
+                        </p:column>
+                        <p:columnGroup type="footer">
+                            <p:row>
+                                <p:column colspan="1" />
+                                <p:column colspan="1" style="text-align:right" footerText="Total:" />
+                                <p:column colspan="1" class="alignRight">
+                                    <f:facet name="footer">
+                                        <h:outputText value="#{beanHistorialCortes.totalCheques}" >
+                                            <f:convertNumber currencySymbol="$" type="currency" />
+                                        </h:outputText>
+                                    </f:facet>
+                                </p:column>
+                                <p:column colspan="1" />
+
+                            </p:row>
+                        </p:columnGroup>
+                    </p:dataTable>
+                </h:body>
+
+            </h:form>
+        </p:dialog>
+
+        <p:dialog  id="dialogw2" header="Detalle Cuentas Bancarias" widgetVar="dlg2"  modal="true" resizable="false" height="250" width="500">
+            <h:form id="formContent3">
+                <h:body>
+
+                    <p:dataTable var="operacion" value="#{beanHistorialCortes.listaDetalleEntradasCuentasBancarias}" >
+                        <p:column headerText="Concepto" width="60%" >
+                            <h:outputText value="#{operacion.nombreConcepto}" />
+                        </p:column>
+                        <p:column headerText="Entrada / Salida" width="15%" class="alignCenter" >
+                            <h:outputText value="#{operacion.nombreEntradaSalida}" />
+                        </p:column>
+                        <p:column headerText="Total" width="25%" class="alignRight">
+                            <h:outputText value="#{operacion.monto}" >
+                                <f:convertNumber type="currency" currencySymbol="$">
+
+                                </f:convertNumber>
+                            </h:outputText>
+                        </p:column>
+                   
+                        <p:columnGroup type="footer">
+                            <p:row>
+                                <p:column colspan="1" />
+                                <p:column colspan="1" style="text-align:right" footerText="Total:" />
+                                <p:column colspan="1" class="alignRight">
+                                    <f:facet name="footer">
+                                        <h:outputText value="#{beanHistorialCortes.totalCuentasBancarias}" >
+                                            <f:convertNumber currencySymbol="$" type="currency" />
+                                        </h:outputText>
+                                    </f:facet>
+                                </p:column>
+                                <p:column colspan="1" />
+
+                            </p:row>
+                        </p:columnGroup>
+                    </p:dataTable>
+                </h:body>
+
+            </h:form>
+        </p:dialog>
+            
     </ui:define>
 </ui:composition>

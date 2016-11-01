@@ -133,6 +133,26 @@ public class EjbCorteCaja implements NegocioCorteCaja {
             return null;
         }
     }
+    @Override
+    public List<Object[]> getLastCorteByCajaHistorial(BigDecimal idCajaPk,BigDecimal idCorteFk) {
+        System.out.println("IdCaja: "+idCajaPk);
+        try {
+            Query query = em.createNativeQuery("SELECT * FROM\n" +
+"(\n" +
+" SELECT ROW_NUMBER() OVER (ORDER BY cj.ID_CORTE_CAJA_PK desc) AS Orden,cj.*\n" +
+" from CORTE_CAJA cj  where cj.ID_CAJA_FK = ? and cj.ID_CORTE_CAJA_PK < ? \n" +
+") T1\n" +
+"WHERE Orden = 1");
+            query.setParameter(1, idCajaPk);
+            query.setParameter(2, idCorteFk);
+            
+            return query.getResultList();
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbCorteCaja.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
 
     @Override
     public List<Object[]> getCortesByFechaCajaUsuario(BigDecimal idCajaFk, BigDecimal idUsuarioFk, String fecha) {

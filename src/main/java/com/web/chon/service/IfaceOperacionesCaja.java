@@ -34,4 +34,5 @@ public interface IfaceOperacionesCaja {
     public int getNextVal();
     public ArrayList<TipoOperacion> getOperacionesByIdCorteCajaFk(BigDecimal idCorteCajaFk,BigDecimal entrada_salida);
     public ArrayList<OperacionesCaja> getDetalles(BigDecimal idCajaFk,BigDecimal idUserFk,BigDecimal entrada_salida,BigDecimal idStatusFk);
+    public ArrayList<OperacionesCaja> getDetallesCorte(BigDecimal idCajaFk, BigDecimal idUserFk, BigDecimal entrada_salida, BigDecimal idStatusFk,BigDecimal idCorteFk);
 }

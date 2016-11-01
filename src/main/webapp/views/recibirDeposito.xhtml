@@ -23,11 +23,12 @@
                             <p:commandButton  value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
                         </div>
                     </p:confirmDialog>
+                    <div>Recibir Depósitos de Cajas</div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <p:dataTable id="tabla" var="model" 
                                      value="#{beanRecibirDeposito.lstDespositosEntrantes}" 
                                      scrollable="true"
-                                     scrollHeight="280" styleClass="ui-datatable-hor-scroll" 
+                                     scrollHeight="150" styleClass="ui-datatable-hor-scroll" 
                                      emptyMessage="No se encontraron Registros" 
                                      rendered="#{beanRecibirDeposito.viewEstate =='init'}">
                             <p:column headerText="N° Operación" width="60px;" class="alignCenter">
@@ -69,54 +70,54 @@
                             </p:column>
                         </p:dataTable>
                     </div>
+                    <div>Recibir Transferencias Bancarias</div>
                     
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <p:dataTable id="tabla" var="model" 
-                                     value="#{beanRecibirDeposito.lstDespositosEntrantes}" 
+                        <p:dataTable id="tabla2" var="model1" 
+                                     value="#{beanRecibirDeposito.listaDepositosTransferencias}" 
                                      scrollable="true"
-                                     scrollHeight="280" styleClass="ui-datatable-hor-scroll" 
+                                     scrollHeight="150" styleClass="ui-datatable-hor-scroll" 
                                      emptyMessage="No se encontraron Registros" 
                                      rendered="#{beanRecibirDeposito.viewEstate =='init'}">
                             <p:column headerText="N° Operación" width="60px;" class="alignCenter">
-                                <h:outputText value="#{model.numero}" />
+                                <h:outputText value="#{model1.numero}" />
                             </p:column>
                             <p:column headerText="Banco" width="150px;" class="alignLeft">
-                                <h:outputText value="#{model.nombreBanco}" />
+                                <h:outputText value="#{model1.nombreBanco}" />
                             </p:column>
                              <p:column headerText="Cuenta" width="150px;" class="alignLeft">
-                                 <h:outputText value="#{model.cuentaBanco}" />
+                                 <h:outputText value="#{model1.nombreBanco}" />
                             </p:column>
                             <p:column headerText="Origen" width="150px;" class="alignLeft">
-                                <h:outputText value="#{model.nombreCaja}" />
+                                <h:outputText value="#{model1.nombreCaja}" />
                             </p:column>
                             
                             <p:column headerText="Fecha" width="120px;" class="alignCenter">
-                                <h:outputText value="#{model.fecha}">
+                                <h:outputText value="#{model1.fecha}">
                                     <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
                                 </h:outputText>
                             </p:column>
                             
                             <p:column headerText="Monto" width="50px;" class="alignRight">
-                                <h:outputText value="#{model.monto}">
+                                <h:outputText value="#{model1.monto}">
                                     <f:convertNumber type="currency" currencySymbol="$" />
                                 </h:outputText>
                             </p:column>
                             <p:column headerText="Recibir" width="60px;" class="alignCenter">
-                                <p:commandButton id="print" ajax="true" process="@this" action="#{beanRecibirDeposito.aceptar()}" 
+                                <p:commandButton id="print" ajax="true" process="@this" action="#{beanRecibirDeposito.aceptarDeposito()}" 
                                                  icon="ui-icon-transfer-e-w" styleClass="ui-priority-primary" update=":formContent">
-                                    <f:setPropertyActionListener value="#{model}" target="#{beanRecibirDeposito.data}"/>
+                                    <f:setPropertyActionListener value="#{model1}" target="#{beanRecibirDeposito.data1}"/>
                                     <p:confirm header="Confirmación" message="¿Estás seguro que deseas recibir el depósito?" icon="ui-icon-alert"/>
                                 </p:commandButton>
                             </p:column>
                             <p:column headerText="Rechazar" width="60px;" class="alignCenter">
                                 <p:commandButton id="cancel" ajax="true" process="@this" action="#{beanRecibirDeposito.rechazarDeposito()}" icon="ui-icon-trash" styleClass="ui-priority-primary" update=":formContent">
-                                    <f:setPropertyActionListener value="#{model}" target="#{beanRecibirDeposito.data}"/>
+                                    <f:setPropertyActionListener value="#{model1}" target="#{beanRecibirDeposito.data1}"/>
                                     <p:confirm header="Confirmación" message="¿Estás seguro de rechazar el depósito?" icon="ui-icon-alert"/>
                                 </p:commandButton>
                             </p:column>
                         </p:dataTable>
                     </div>
-                    
                     
                 </div>
             </p:panel>

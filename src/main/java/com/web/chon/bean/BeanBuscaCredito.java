@@ -13,6 +13,7 @@ import com.web.chon.dominio.CuentaBancaria;
 import com.web.chon.dominio.Documento;
 import com.web.chon.dominio.OperacionesCaja;
 import com.web.chon.dominio.OperacionesCuentas;
+import com.web.chon.dominio.PagosBancarios;
 import com.web.chon.dominio.SaldosDeudas;
 import com.web.chon.dominio.TipoAbono;
 import com.web.chon.dominio.UsuarioDominio;
@@ -25,6 +26,7 @@ import com.web.chon.service.IfaceCuentasBancarias;
 import com.web.chon.service.IfaceDocumentos;
 import com.web.chon.service.IfaceOperacionesCaja;
 import com.web.chon.service.IfaceOperacionesCuentas;
+import com.web.chon.service.IfacePagosBancarios;
 import com.web.chon.service.IfaceTipoAbono;
 import com.web.chon.util.Constantes;
 import com.web.chon.util.JasperReportUtil;
@@ -90,6 +92,9 @@ public class BeanBuscaCredito implements Serializable {
     private IfaceOperacionesCuentas ifaceOperacionesCuentas;
     @Autowired
     private IfaceCuentasBancarias ifaceCuentasBancarias;
+    
+    @Autowired
+    private IfacePagosBancarios ifacePagosBancarios;
 
     private BigDecimal idCliente;
     private String nombreCompletoCliente;
@@ -169,9 +174,12 @@ public class BeanBuscaCredito implements Serializable {
     private boolean habilitaBotones;
     private boolean botonCancelar;
     private boolean botonActualizar;
+    
+    private PagosBancarios pagoBancario;
 
     @PostConstruct
     public void init() {
+        pagoBancario = new PagosBancarios();
         botonCancelar = true;
         botonActualizar = true;
         caja = new Caja();
@@ -695,6 +703,28 @@ public class BeanBuscaCredito implements Serializable {
 
                     } //fin for
                     ac.setMontoAbono(abono.getMontoAbono());
+                    pagoBancario.setIdCajaFk(opcaja.getIdCajaFk());
+                    pagoBancario.setComentarios("");
+                    pagoBancario.setFechaDeposito(ac.getFechaTransferencia());
+                    pagoBancario.setFechaTranferencia(ac.getFechaTransferencia());
+                    pagoBancario.setFolioElectronico(ac.getFolioElectronico());
+                    pagoBancario.setIdConceptoFk(opcaja.getIdConceptoFk());
+                    pagoBancario.setIdCuentaFk(idCuentaDestinoBean);
+                    pagoBancario.setIdStatusFk(new BigDecimal(2));
+                    pagoBancario.setIdTipoFk(ac.getIdtipoAbonoFk());
+                    pagoBancario.setIdTransBancariasPk(new BigDecimal(ifacePagosBancarios.getNextVal()));
+                    pagoBancario.setIdUserFk(usuarioDominio.getIdUsuario());
+                    pagoBancario.setMonto(ac.getMontoAbono());
+                    pagoBancario.setReferencia(ac.getReferencia());
+                    pagoBancario.setIdOperacionCajaFk(opcaja.getIdOperacionesCajaPk());
+                    
+                    if (ac.getIdtipoAbonoFk().intValue() == 2 || ac.getIdtipoAbonoFk().intValue() == 4) {
+                        if (ifacePagosBancarios.insertaPagoBancario(pagoBancario) == 1) {
+                            System.out.println("Se ingreso correctamente un deposito bancario");
+                        } else {
+                            System.out.println("Ocurrio un error");
+                        }
+                    }
                     finAbonar(ac);
                     break;
                 default:

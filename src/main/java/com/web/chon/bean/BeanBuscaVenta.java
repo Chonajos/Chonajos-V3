@@ -5,6 +5,7 @@ import com.web.chon.dominio.Caja;
 import com.web.chon.dominio.CuentaBancaria;
 import com.web.chon.dominio.Documento;
 import com.web.chon.dominio.OperacionesCaja;
+import com.web.chon.dominio.PagosBancarios;
 import com.web.chon.dominio.TipoAbono;
 import com.web.chon.dominio.Usuario;
 import com.web.chon.dominio.UsuarioDominio;
@@ -15,6 +16,7 @@ import com.web.chon.service.IfaceCatUsuario;
 import com.web.chon.service.IfaceCuentasBancarias;
 import com.web.chon.service.IfaceDocumentos;
 import com.web.chon.service.IfaceOperacionesCaja;
+import com.web.chon.service.IfacePagosBancarios;
 import com.web.chon.service.IfaceTipoAbono;
 import com.web.chon.util.Constantes;
 import com.web.chon.util.JasperReportUtil;
@@ -69,6 +71,8 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
     private IfaceOperacionesCaja ifaceOperacionesCaja;
     @Autowired
     private IfaceCuentasBancarias ifaceCuentasBancarias;
+    @Autowired
+    IfacePagosBancarios ifacePagosBancarios;
 
     @Autowired
     private IfaceTipoAbono ifaceTipoAbono;
@@ -134,8 +138,12 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
     private BigDecimal cambio;
     private ArrayList<CuentaBancaria> listaCuentas;
 
+    private PagosBancarios pagoBancario;
+    private BigDecimal idCuentaDestinoBean;
+
     @PostConstruct
     public void init() {
+        pagoBancario = new PagosBancarios();
         data = new BuscaVenta();
         model = new ArrayList<BuscaVenta>();
         usuario = new Usuario();
@@ -343,9 +351,30 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
                 JsfUtil.addSuccessMessageClean("La venta se ha pagado exitosamente");
                 opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
                 opcaja.setMonto(totalVenta);
-                System.out.println("====================" + opcaja.toString());
 
                 if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
+
+                    pagoBancario.setIdCajaFk(opcaja.getIdCajaFk());
+                    pagoBancario.setComentarios("");
+                    pagoBancario.setFechaDeposito(fechaTransferencia);
+                    pagoBancario.setFechaTranferencia(fechaTransferencia);
+                    pagoBancario.setFolioElectronico(folioElectronico);
+                    pagoBancario.setIdConceptoFk(idTipoPagoFk);
+                    pagoBancario.setIdCuentaFk(idCuentaDestinoBean);
+                    pagoBancario.setIdStatusFk(new BigDecimal(2));
+                    pagoBancario.setIdTipoFk(idTipoPagoFk);
+                    pagoBancario.setIdTransBancariasPk(new BigDecimal(ifacePagosBancarios.getNextVal()));
+                    pagoBancario.setIdUserFk(usuario.getIdUsuarioPk());
+                    pagoBancario.setMonto(totalVenta);
+                    pagoBancario.setReferencia(referencia);
+                    pagoBancario.setIdOperacionCajaFk(opcaja.getIdOperacionesCajaPk());
+                    if (idTipoPagoFk.intValue() == 2 || idTipoPagoFk.intValue() == 4) {
+                        if (ifacePagosBancarios.insertaPagoBancario(pagoBancario) == 1) {
+                            System.out.println("Se ingreso correctamente un deposito bancario");
+                        } else {
+                            System.out.println("Ocurrio un error");
+                        }
+                    }
                     if (idTipoPagoFk.intValue() == 3) {
                         Documento d = new Documento();
                         d.setIdDocumentoPk(new BigDecimal(ifaceDocumentos.getNextVal()));
@@ -722,6 +751,46 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
 
     public void setListaCuentas(ArrayList<CuentaBancaria> listaCuentas) {
         this.listaCuentas = listaCuentas;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public UsuarioDominio getUsuarioDominio() {
+        return usuarioDominio;
+    }
+
+    public void setUsuarioDominio(UsuarioDominio usuarioDominio) {
+        this.usuarioDominio = usuarioDominio;
+    }
+
+    public Map getParamReport() {
+        return paramReport;
+    }
+
+    public void setParamReport(Map paramReport) {
+        this.paramReport = paramReport;
+    }
+
+    public PagosBancarios getPagoBancario() {
+        return pagoBancario;
+    }
+
+    public void setPagoBancario(PagosBancarios pagoBancario) {
+        this.pagoBancario = pagoBancario;
+    }
+
+    public BigDecimal getIdCuentaDestinoBean() {
+        return idCuentaDestinoBean;
+    }
+
+    public void setIdCuentaDestinoBean(BigDecimal idCuentaDestinoBean) {
+        this.idCuentaDestinoBean = idCuentaDestinoBean;
     }
 
 }

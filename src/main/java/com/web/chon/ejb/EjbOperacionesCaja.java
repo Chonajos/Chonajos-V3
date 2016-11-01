@@ -59,6 +59,7 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
             return query.executeUpdate();
 
         } catch (Exception ex) {
+            System.out.println("*****Error en EJB**********");
             Logger.getLogger(EjbEmpaque.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
@@ -264,6 +265,25 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
         query.setParameter(2, idStatusFk);
         query.setParameter(3, idCajaFk);
         query.setParameter(4, idUserFk);
+        
+        return query.getResultList();
+    
+    }
+    @Override
+    public List<Object[]> getDetallesCorte(BigDecimal idCajaFk, BigDecimal idUserFk, BigDecimal entrada_salida, BigDecimal idStatusFk,BigDecimal idCorteFk) {
+        Query query = em.createNativeQuery("select opc.ID_CONCEPTO_FK,con.NOMBRE, opc.ID_SUCURSAL_FK,sucu.NOMBRE_SUCURSAL,sum(opc.MONTO) as monto,opc.ID_CONCEPTO_FK,opc.E_S from OPERACIONES_CAJA opc\n" +
+"inner join conceptos con on con.ID_CONCEPTOS_PK = opc.ID_CONCEPTO_FK\n" +
+"inner join SUCURSAL sucu on sucu.ID_SUCURSAL_PK = opc.ID_SUCURSAL_FK\n" +
+"where opc.E_S = ? and opc.ID_STATUS_FK = ? and opc.ID_CAJA_FK = ? and opc.ID_USER_FK = ? and opc.ID_CORTE_CAJA_FK =? \n" +
+"group by opc.ID_CONCEPTO_FK,con.NOMBRE,opc.ID_SUCURSAL_FK,sucu.NOMBRE_SUCURSAL,opc.E_S");
+        System.out.println("===========Consulta=========");
+        System.out.println(query);
+        System.out.println("Variables: " + "Caja: " + idCajaFk + " User: " + idUserFk +" E/S: "+entrada_salida + " Status: "+idStatusFk + " IdCorte: "+idCorteFk);
+        query.setParameter(1, entrada_salida);
+        query.setParameter(2, idStatusFk);
+        query.setParameter(3, idCajaFk);
+        query.setParameter(4, idUserFk);
+        query.setParameter(5, idCorteFk);
         
         return query.getResultList();
     

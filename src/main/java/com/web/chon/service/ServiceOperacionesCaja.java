@@ -349,6 +349,56 @@ public class ServiceOperacionesCaja implements IfaceOperacionesCaja {
     }
     
     @Override
+    public ArrayList<OperacionesCaja> getDetallesCorte(BigDecimal idCajaFk, BigDecimal idUserFk, BigDecimal entrada_salida, BigDecimal idStatusFk,BigDecimal idCorteFk) {
+        System.out.println("Entro a Metodo Get Detalles");
+        getEjb();
+        ArrayList<OperacionesCaja> listaOperaciones = new ArrayList<OperacionesCaja>();
+        List<Object[]> lstObject = ejb.getDetallesCorte(idCajaFk,idUserFk,entrada_salida,idStatusFk,idCorteFk);
+        int count = 1;
+        for (Object[] obj : lstObject) 
+        {
+            OperacionesCaja op = new OperacionesCaja();
+            
+            op.setIdOperacionesCajaPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+            op.setNombreConcepto(obj[1] == null ? null : obj[1].toString());
+            op.setIdSucursalFk(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
+            op.setNombreSucursal(obj[3] == null ? null : obj[3].toString());
+            op.setMonto(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
+            op.setIdConceptoFk(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
+            op.setEntradaSalida(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
+            op.setNumero(count);
+            if(op.getEntradaSalida().intValue()==1)
+            {
+                op.setNombreEntradaSalida("E");
+            }
+            else
+            {
+                op.setNombreEntradaSalida("S");
+            }
+            /*op.setIdCorteCajaFk(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
+            op.setIdCajaFk(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
+            op.setIdCajaDestinoFk(obj[3] == null ? null : new BigDecimal(obj[3].toString()));
+            
+            op.setFecha(obj[5] == null ? null : (Date)obj[5]);
+            op.setIdStatusFk(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
+            op.setIdUserFk(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
+            op.setComentarios(obj[8] == null ? null : obj[8].toString());
+            op.setMonto(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
+            op.setEntradaSalida(obj[10] == null ? null : new BigDecimal(obj[10].toString()));
+            op.setIdCuentaDestinoFk(obj[11] == null ? null : new BigDecimal(obj[11].toString()));*/
+            System.out.println("Objeto: "+op.toString());
+            count += 1;
+            listaOperaciones.add(op);
+        }
+        for (OperacionesCaja c : listaOperaciones)
+        {
+            System.out.println("c: "+c.toString());
+        }
+        System.out.println("Saliendo de Metodo");
+        return listaOperaciones;
+    
+    }
+    @Override
     public ArrayList<TipoOperacion> getOperacionesByIdCorteCajaFk(BigDecimal idCorteCajaFk,BigDecimal entrada_salida) {
         getEjb();
         getEjb();

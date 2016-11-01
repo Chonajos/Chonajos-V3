@@ -12,6 +12,7 @@ import com.web.chon.dominio.CobroCheques;
 import com.web.chon.dominio.Documento;
 import com.web.chon.dominio.OperacionesCaja;
 import com.web.chon.dominio.OperacionesCuentas;
+import com.web.chon.dominio.PagosBancarios;
 import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.TipoAbono;
 import com.web.chon.dominio.UsuarioDominio;
@@ -25,6 +26,7 @@ import com.web.chon.service.IfaceCobroCheques;
 import com.web.chon.service.IfaceDocumentos;
 import com.web.chon.service.IfaceOperacionesCaja;
 import com.web.chon.service.IfaceOperacionesCuentas;
+import com.web.chon.service.IfacePagosBancarios;
 import com.web.chon.service.IfaceTipoAbono;
 import com.web.chon.util.Constantes;
 import com.web.chon.util.JasperReportUtil;
@@ -91,6 +93,9 @@ public class BeanDocumentosCobrar implements Serializable {
     private IfaceOperacionesCaja ifaceOperacionesCaja;
     @Autowired
     private IfaceOperacionesCuentas ifaceOperacionesCuentas;
+    @Autowired
+    private IfacePagosBancarios ifacePagosBancarios;
+
 
     private ArrayList<Sucursal> listaSucursales;
     private ArrayList<Documento> listaDocumentos;
@@ -162,6 +167,7 @@ public class BeanDocumentosCobrar implements Serializable {
     private static final BigDecimal idStatusCuenta = new BigDecimal(1);
     private static final BigDecimal idConceptoCuenta = new BigDecimal(15);
     private OperacionesCuentas opcuenta;
+    private PagosBancarios pagoBancario;
     
     @PostConstruct
     public void init() {
@@ -269,7 +275,8 @@ public class BeanDocumentosCobrar implements Serializable {
 
                 System.out.println("El nuevo Documento por Entrar será de: " + d.toString());
 
-                if (ifaceDocumentos.insertarDocumento(d) == 1) {
+                if (ifaceDocumentos.insertarDocumento(d) == 1) 
+                {
                     opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
                     verificarAbono();
                     opcaja.setMonto(dataAbonar.getMontoAbono());
@@ -284,6 +291,27 @@ public class BeanDocumentosCobrar implements Serializable {
                 } else {
                     JsfUtil.addErrorMessageClean("Ha ocurrido un error al ingresar el documento por cobrar");
                 }
+                pagoBancario.setIdCajaFk(opcaja.getIdCajaFk());
+                    pagoBancario.setComentarios("");
+                    pagoBancario.setFechaDeposito(dataAbonar.getFechaTransferencia());
+                    pagoBancario.setFechaTranferencia(dataAbonar.getFechaTransferencia());
+                    //pagoBancario.setFolioElectronico(dataAbonar.get);
+                    pagoBancario.setIdConceptoFk(opcaja.getIdConceptoFk());
+                    //pagoBancario.setIdCuentaFk();
+                    pagoBancario.setIdStatusFk(new BigDecimal(2));
+                    pagoBancario.setIdTipoFk(dataAbonar.getIdTipoAbonoFk());
+                    pagoBancario.setIdTransBancariasPk(new BigDecimal(ifacePagosBancarios.getNextVal()));
+                    pagoBancario.setIdUserFk(usuario.getIdUsuario());
+                    pagoBancario.setMonto(dataAbonar.getMontoAbono());
+                    pagoBancario.setReferencia(dataAbonar.getReferencia().toString());
+                    pagoBancario.setIdOperacionCajaFk(opcaja.getIdOperacionesCajaPk());
+                    if (dataAbonar.getIdTipoAbonoFk().intValue() == 2 || dataAbonar.getIdTipoAbonoFk().intValue() == 4) {
+                        if (ifacePagosBancarios.insertaPagoBancario(pagoBancario) == 1) {
+                            System.out.println("Se ingreso correctamente un deposito bancario");
+                        } else {
+                            System.out.println("Ocurrio un error");
+                        }
+                    }
             }
             JsfUtil.addSuccessMessageClean("Se ingreso abono de documento");
         } else {

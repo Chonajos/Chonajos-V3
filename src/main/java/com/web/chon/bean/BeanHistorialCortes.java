@@ -46,19 +46,20 @@ public class BeanHistorialCortes implements Serializable {
     private PlataformaSecurityContext context;
     @Autowired
     private IfaceCorteCaja ifaceCorteCaja;
+    @Autowired
+    private IfaceCatSucursales ifaceCatSucursales;
 
     private ArrayList<TipoOperacion> lstOperacionesEntrada;
     private ArrayList<TipoOperacion> lstOperacionesSalida;
     private ArrayList<OperacionesCaja> listaOperaciones;
     private ArrayList<OperacionesCaja> listaDetalleEntradas;
+    private ArrayList<OperacionesCaja> listaDetalleEntradasEfectivo;
+    private ArrayList<OperacionesCaja> listaDetalleEntradasCheques;
+    private ArrayList<OperacionesCaja> listaDetalleEntradasCuentasBancarias;
     private ArrayList<OperacionesCaja> listaDetalleSalidas;
-
     private ArrayList<OperacionesCaja> listaChequesEntrada;
     private ArrayList<OperacionesCaja> listaChequesSalida;
-    @Autowired
-    private IfaceCatSucursales ifaceCatSucursales;
     
-
     private UsuarioDominio usuario;
     private Caja caja;
     private CorteCaja cj;
@@ -73,7 +74,7 @@ public class BeanHistorialCortes implements Serializable {
     private static final BigDecimal statusRechazado = new BigDecimal(3);
     private static final BigDecimal cero = new BigDecimal(0);
     
-    private BigDecimal saldoAnterior;
+    private BigDecimal saldoAnteriorEfectivo;
     private BigDecimal saldoAnteriorCheques;
     private BigDecimal saldoAnteriorCuentas;
     private BigDecimal nuevoSaldo;
@@ -83,6 +84,9 @@ public class BeanHistorialCortes implements Serializable {
     private BigDecimal totalSalidas;
     private BigDecimal totalChequesEntradas;
     private BigDecimal totalChequesSalidas;
+    private BigDecimal totalEfectivo;
+    private BigDecimal totalCheques;
+    private BigDecimal totalCuentasBancarias;
 
     private BigDecimal idCajaBean;
     private BigDecimal idUsuarioCajaBean;
@@ -99,7 +103,7 @@ public class BeanHistorialCortes implements Serializable {
     @PostConstruct
     public void init() {
         usuario = context.getUsuarioAutenticado();
-        setTitle("Realizar Corte de Caja");
+        setTitle("Historial de Cortes de Caja");
         setViewEstate("init");
         caja = new Caja();
         corteAnterior = new CorteCaja();
@@ -107,18 +111,21 @@ public class BeanHistorialCortes implements Serializable {
         cj = new CorteCaja();
         totalEntradas = cero;
         totalSalidas = cero;
-        saldoAnterior = cero;
+        saldoAnteriorEfectivo = cero;
         nuevoSaldo = cero;
         saldoAnteriorCheques = cero;
         totalChequesEntradas = cero;
-        totalChequesSalidas =cero;
+        totalChequesSalidas = cero;
         nuevoSaldoCuentas = cero;
         nuevoSaldoCheques = cero;
         saldoAnteriorCuentas = cero;
         totalChequesEntradas = cero;
         totalChequesSalidas = cero;
+        totalEfectivo = cero;
+        totalCheques = cero;
+        totalCuentasBancarias = cero;
         caja = ifaceCaja.getCajaByIdUsuarioPk(usuario.getIdUsuario());
-        corteAnterior = ifaceCorteCaja.getLastCorteByCaja(caja.getIdCajaPk());
+        
         listaChequesEntrada = new ArrayList<OperacionesCaja>();
         listaChequesSalida = new ArrayList<OperacionesCaja>();
         listaOperaciones = new ArrayList<OperacionesCaja>();
@@ -155,14 +162,20 @@ public class BeanHistorialCortes implements Serializable {
         if(idCajaBean != null && idUsuarioCajaBean != null && fechaFiltroInicio != null)
         {
             listaCortes = ifaceCorteCaja.getCortesByFechaCajaUsuario(idCajaBean, idUsuarioCajaBean, TiempoUtil.getFechaDDMMYY(fechaFiltroInicio));
+        
         }
     }
     public void searchCortebyIdPk()
     {
+        corteAnterior = ifaceCorteCaja.getLastCorteByCajaHistorial(idCajaBean,idCortePk);
+        saldoAnteriorEfectivo = corteAnterior.getSaldoNuevo();
+        saldoAnteriorCheques  = corteAnterior.getMontoChequesNuevos();
+        saldoAnteriorCuentas = corteAnterior.getMontoCuentaNuevo();
         lstOperacionesEntrada = ifaceOperacionesCaja.getOperacionesByIdCorteCajaFk(idCortePk, entrada);
         lstOperacionesSalida = ifaceOperacionesCaja.getOperacionesByIdCorteCajaFk(idCortePk,salida);
         getsumaEntradas();
         getsumaSalidas();
+        setDetalle();
         
         
     }
@@ -171,22 +184,7 @@ public class BeanHistorialCortes implements Serializable {
         idUsuarioCajaBean = null;
         listaResponsables = ifaceOperacionesCaja.getResponsables(idCajaBean);
     }
-    public void reload() {
-        lstOperacionesEntrada = ifaceOperacionesCaja.getOperacionesCorteBy(caja.getIdCajaPk(), caja.getIdUsuarioFK(), entrada);
-        lstOperacionesSalida = ifaceOperacionesCaja.getOperacionesCorteBy(caja.getIdCajaPk(), caja.getIdUsuarioFK(), salida);
-        getsumaEntradas();
-        getsumaSalidas();
-        if (corteAnterior.getSaldoNuevo() == null) {
-            corteAnterior.setSaldoNuevo(new BigDecimal(0));
-        }
-        saldoAnterior = corteAnterior.getSaldoNuevo();
-        nuevoSaldo = totalEntradas.subtract(totalSalidas, MathContext.UNLIMITED);
-        nuevoSaldo = nuevoSaldo.add(saldoAnterior, MathContext.UNLIMITED);
-        listaChequesEntrada = ifaceOperacionesCaja.getCheques(caja.getIdCajaPk(), caja.getIdUsuarioFK(), entrada);
-        listaChequesSalida = ifaceOperacionesCaja.getCheques(caja.getIdCajaPk(), caja.getIdUsuarioFK(), salida);
-        //getsumaChequesEntradas();
-        //getsumaChequesSalidas();
-    }
+    
 
     public void getsumaEntradas() {
         for (TipoOperacion t : lstOperacionesEntrada) {
@@ -210,38 +208,68 @@ public class BeanHistorialCortes implements Serializable {
             totalSalidas = totalSalidas.add(t.getMonto(), MathContext.UNLIMITED);
         }
     }
-    public void verDetalle(){
-        listaDetalleEntradas = ifaceOperacionesCaja.getDetalles(caja.getIdCajaPk(), caja.getIdUsuarioFK(), entrada, statusAplicado);
-        listaDetalleSalidas = ifaceOperacionesCaja.getDetalles(caja.getIdCajaPk(), caja.getIdUsuarioFK(), salida, statusAplicado);
+//    public void verDetalle(){
+//        listaDetalleEntradas = ifaceOperacionesCaja.getDetalles(caja.getIdCajaPk(), caja.getIdUsuarioFK(), entrada, statusAplicado);
+//        listaDetalleSalidas = ifaceOperacionesCaja.getDetalles(caja.getIdCajaPk(), caja.getIdUsuarioFK(), salida, statusAplicado);
+//        setViewEstate("second");
+//    }
+    public void setDetalle()
+    {
+        listaDetalleEntradas = ifaceOperacionesCaja.getDetallesCorte(caja.getIdCajaPk(), caja.getIdUsuarioFK(), entrada, statusAplicado,idCortePk);
+        listaDetalleSalidas = ifaceOperacionesCaja.getDetallesCorte(caja.getIdCajaPk(), caja.getIdUsuarioFK(), salida, statusAplicado,idCortePk);
+        System.out.println("----------------------------------------------------------------------");
+        listaDetalleEntradasCuentasBancarias = new ArrayList<OperacionesCaja>();
+        listaDetalleEntradasCheques = new ArrayList<OperacionesCaja>();
+        listaDetalleEntradasEfectivo = new ArrayList<OperacionesCaja>();
+        for (OperacionesCaja ope : listaDetalleEntradas) 
+        {
+            System.out.println("Operacion: " + ope);
+            if (ope.getIdConceptoFk().intValue() == 7 || ope.getIdConceptoFk().intValue() == 8 || ope.getIdConceptoFk().intValue() == 9 || ope.getIdConceptoFk().intValue() == 16 || ope.getIdConceptoFk().intValue() == 13) {
+                listaDetalleEntradasEfectivo.add(ope);
+                totalEfectivo = totalEfectivo.add(ope.getMonto(), MathContext.UNLIMITED);
+            } else if (ope.getIdConceptoFk().intValue() == 30 || ope.getIdConceptoFk().intValue() == 33 || ope.getIdConceptoFk().intValue() == 27 || ope.getIdConceptoFk().intValue() == 17 || ope.getIdConceptoFk().intValue() == 36 ) {
+                listaDetalleEntradasCheques.add(ope);
+                totalCheques = totalCheques.add(ope.getMonto(), MathContext.UNLIMITED);
+            } else if (ope.getIdConceptoFk().intValue() == 12 || ope.getIdConceptoFk().intValue() == 29 || ope.getIdConceptoFk().intValue() == 31 || ope.getIdConceptoFk().intValue() == 28 || ope.getIdConceptoFk().intValue() == 32 || ope.getIdConceptoFk().intValue() == 34 || ope.getIdConceptoFk().intValue() == 37 || ope.getIdConceptoFk().intValue() == 35) {
+                listaDetalleEntradasCuentasBancarias.add(ope);
+                totalCuentasBancarias = totalCuentasBancarias.add(ope.getMonto(), MathContext.UNLIMITED);
+            }
+            System.out.println("*******************************************************");
+        }
+        
+        //-- lo mismo para salidas---
+        System.out.println("Comenzando con salidas");
+        for (OperacionesCaja ope : listaDetalleSalidas) 
+        {
+            System.out.println("Operacion: " + ope);
+            if (ope.getIdConceptoFk().intValue() == 7 || ope.getIdConceptoFk().intValue() == 8 || ope.getIdConceptoFk().intValue() == 9 || ope.getIdConceptoFk().intValue() == 16 || ope.getIdConceptoFk().intValue() == 13 || ope.getIdConceptoFk().intValue() == 10) {
+                listaDetalleEntradasEfectivo.add(ope);
+                System.out.println("monto: "+ope.getMonto());
+                totalEfectivo = totalEfectivo.subtract(ope.getMonto(), MathContext.UNLIMITED);
+            } else if (ope.getIdConceptoFk().intValue() == 30 || ope.getIdConceptoFk().intValue() == 33 || ope.getIdConceptoFk().intValue() == 27 || ope.getIdConceptoFk().intValue() == 17 || ope.getIdConceptoFk().intValue() == 36 ) {
+                listaDetalleEntradasCheques.add(ope);
+                totalCheques = totalCheques.subtract(ope.getMonto(), MathContext.UNLIMITED);
+            } else if (ope.getIdConceptoFk().intValue() == 12 || ope.getIdConceptoFk().intValue() == 29 || ope.getIdConceptoFk().intValue() == 31 || ope.getIdConceptoFk().intValue() == 28 || ope.getIdConceptoFk().intValue() == 32 || ope.getIdConceptoFk().intValue() == 34 || ope.getIdConceptoFk().intValue() == 37 || ope.getIdConceptoFk().intValue() == 35) {
+                listaDetalleEntradasCuentasBancarias.add(ope);
+                totalCuentasBancarias = totalCuentasBancarias.subtract(ope.getMonto(), MathContext.UNLIMITED);
+            }
+            System.out.println("*******************************************************");
+        }
+        System.out.println("Total Efectivo: "+totalEfectivo);
+        nuevoSaldo =  totalEfectivo.add(saldoAnteriorEfectivo, MathContext.UNLIMITED);
+        nuevoSaldoCheques = totalCheques.add(saldoAnteriorCheques, MathContext.UNLIMITED);
+        nuevoSaldoCuentas = totalCuentasBancarias.add(saldoAnteriorCuentas, MathContext.UNLIMITED);
+    }
+    
+    
+    public void verDetalle() 
+    {
+       
         setViewEstate("second");
     }
 
-    public void generarCorte() {
 
-        listaOperaciones = ifaceOperacionesCaja.getOperaciones(caja.getIdCajaPk(), usuario.getIdUsuario());
-        boolean bandera = false;
-        int llave = ifaceCorteCaja.getNextVal();
-        cj.setIdCorteCajaPk(new BigDecimal(llave));
-        cj.setSaldoNuevo(nuevoSaldo);
-        cj.setIdCajaFk(caja.getIdCajaPk());
-        cj.setIdStatusFk(new BigDecimal(1));
-        cj.setIdUserFk(usuario.getIdUsuario());
-        if (ifaceCorteCaja.insertCorte(cj) == 1) {
-            for (OperacionesCaja oc : listaOperaciones) {
-                if (ifaceOperacionesCaja.updateCorte(oc.getIdOperacionesCajaPk(), cj.getIdCorteCajaPk()) != 1) {
-                    bandera = true;
-                }
-            }
-            if (bandera != false) {
-                JsfUtil.addErrorMessageClean("Ha ocurrido un error al generar el corte de caja");
-            } else {
-                reload();
-                JsfUtil.addSuccessMessageClean("Se ha realizado el corte de caja correctamente");
-            }
-        } else {
-            JsfUtil.addErrorMessageClean("Error al insertar corte de caja");
-        }
-    }
+    
 
     public ArrayList<TipoOperacion> getLstOperacionesEntrada() {
         return lstOperacionesEntrada;
@@ -299,13 +327,7 @@ public class BeanHistorialCortes implements Serializable {
         this.cj = cj;
     }
 
-    public BigDecimal getSaldoAnterior() {
-        return saldoAnterior;
-    }
-
-    public void setSaldoAnterior(BigDecimal saldoAnterior) {
-        this.saldoAnterior = saldoAnterior;
-    }
+    
 
     public BigDecimal getNuevoSaldo() {
         return nuevoSaldo;
@@ -507,6 +529,63 @@ public class BeanHistorialCortes implements Serializable {
         this.idCortePk = idCortePk;
     }
 
+    public BigDecimal getSaldoAnteriorEfectivo() {
+        return saldoAnteriorEfectivo;
+    }
+
+    public void setSaldoAnteriorEfectivo(BigDecimal saldoAnteriorEfectivo) {
+        this.saldoAnteriorEfectivo = saldoAnteriorEfectivo;
+    }
+
+    public BigDecimal getTotalEfectivo() {
+        return totalEfectivo;
+    }
+
+    public void setTotalEfectivo(BigDecimal totalEfectivo) {
+        this.totalEfectivo = totalEfectivo;
+    }
+
+    public BigDecimal getTotalCheques() {
+        return totalCheques;
+    }
+
+    public void setTotalCheques(BigDecimal totalCheques) {
+        this.totalCheques = totalCheques;
+    }
+
+    public BigDecimal getTotalCuentasBancarias() {
+        return totalCuentasBancarias;
+    }
+
+    public void setTotalCuentasBancarias(BigDecimal totalCuentasBancarias) {
+        this.totalCuentasBancarias = totalCuentasBancarias;
+    }
+
+    public ArrayList<OperacionesCaja> getListaDetalleEntradasEfectivo() {
+        return listaDetalleEntradasEfectivo;
+    }
+
+    public void setListaDetalleEntradasEfectivo(ArrayList<OperacionesCaja> listaDetalleEntradasEfectivo) {
+        this.listaDetalleEntradasEfectivo = listaDetalleEntradasEfectivo;
+    }
+
+    public ArrayList<OperacionesCaja> getListaDetalleEntradasCheques() {
+        return listaDetalleEntradasCheques;
+    }
+
+    public void setListaDetalleEntradasCheques(ArrayList<OperacionesCaja> listaDetalleEntradasCheques) {
+        this.listaDetalleEntradasCheques = listaDetalleEntradasCheques;
+    }
+
+    public ArrayList<OperacionesCaja> getListaDetalleEntradasCuentasBancarias() {
+        return listaDetalleEntradasCuentasBancarias;
+    }
+
+    public void setListaDetalleEntradasCuentasBancarias(ArrayList<OperacionesCaja> listaDetalleEntradasCuentasBancarias) {
+        this.listaDetalleEntradasCuentasBancarias = listaDetalleEntradasCuentasBancarias;
+    }
+
+    
    
     
      

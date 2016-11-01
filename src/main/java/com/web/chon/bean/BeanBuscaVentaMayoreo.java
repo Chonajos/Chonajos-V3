@@ -4,6 +4,7 @@ import com.web.chon.dominio.Caja;
 import com.web.chon.dominio.CuentaBancaria;
 import com.web.chon.dominio.Documento;
 import com.web.chon.dominio.OperacionesCaja;
+import com.web.chon.dominio.PagosBancarios;
 import com.web.chon.dominio.TipoAbono;
 import com.web.chon.dominio.Usuario;
 import com.web.chon.dominio.UsuarioDominio;
@@ -16,6 +17,7 @@ import com.web.chon.service.IfaceCatUsuario;
 import com.web.chon.service.IfaceCuentasBancarias;
 import com.web.chon.service.IfaceDocumentos;
 import com.web.chon.service.IfaceOperacionesCaja;
+import com.web.chon.service.IfacePagosBancarios;
 import com.web.chon.service.IfaceTipoAbono;
 import com.web.chon.service.IfaceVentaMayoreo;
 import com.web.chon.util.Constantes;
@@ -76,6 +78,8 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     private IfaceVentaMayoreo ifaceVentaMayoreo;
     @Autowired
     private IfaceDocumentos ifaceDocumentos;
+    @Autowired
+    private IfacePagosBancarios ifacePagosBancarios;
 
     private ArrayList<CuentaBancaria> listaCuentas;
 
@@ -131,6 +135,10 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     private BigDecimal recibi;
     private BigDecimal folioElectronico;
     private String cuenta;
+    
+    
+    private PagosBancarios pagoBancario;
+    private BigDecimal idCuentaDestinoBean;
 
     //-------------- Variables para Registrar Pago ----------//
     @PostConstruct
@@ -165,6 +173,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
         opcaja.setIdStatusFk(statusOperacion);
         opcaja.setIdSucursalFk(new BigDecimal(usuario.getIdSucursal()));
         lstTipoAbonos = ifaceTipoAbono.getAll();
+        pagoBancario = new PagosBancarios();
     }
 
     public void verificarTipo() {
@@ -331,7 +340,8 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
                 System.out.println("Se cambió el estatus");
                 opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
                 opcaja.setMonto(ventaMayoreo.getTotalVenta());
-                if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
+                if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) 
+                {
                     if (idTipoPagoFk.intValue() == 3) 
                     {
                         Documento d = new Documento();
@@ -348,13 +358,38 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
                         d.setBanco(banco);
                         d.setLibrador(librador);
                         d.setIdFormaCobroFk(new BigDecimal(1));
-                        System.out.println("Documento: " + d.toString());
+                        System.out.println("--------------------Documento: " + d.toString());
                         //--- Insertar Documento -- //
-                        if (ifaceDocumentos.insertarDocumento(d) == 1) {
+                        if (ifaceDocumentos.insertarDocumento(d) == 1) 
+                        {
                             System.out.println("Se ingreso corractamente el documento por cobrar");
 
-                        } else {
+                        } else 
+                        {
+                            System.out.println("Error al ingresar ");
                             JsfUtil.addErrorMessageClean("Ocurrió un error al registrar el documento por cobrar");
+                        }
+                    }
+                    System.out.println("----------------: "+opcaja.toString());
+                    pagoBancario.setIdCajaFk(opcaja.getIdCajaFk());
+                    pagoBancario.setComentarios("");
+                    pagoBancario.setFechaDeposito(fechaTransferencia);
+                    pagoBancario.setFechaTranferencia(fechaTransferencia);
+                    pagoBancario.setFolioElectronico(folioElectronico);
+                    pagoBancario.setIdConceptoFk(idTipoPagoFk);
+                    pagoBancario.setIdCuentaFk(idCuentaDestinoBean);
+                    pagoBancario.setIdStatusFk(new BigDecimal(2));
+                    pagoBancario.setIdTipoFk(idTipoPagoFk);
+                    pagoBancario.setIdTransBancariasPk(new BigDecimal(ifacePagosBancarios.getNextVal()));
+                    pagoBancario.setIdUserFk(usuario.getIdUsuarioPk());
+                    pagoBancario.setMonto(ventaMayoreo.getTotalVenta());
+                    pagoBancario.setReferencia(referencia);
+                    pagoBancario.setIdOperacionCajaFk(opcaja.getIdOperacionesCajaPk());
+                    if (idTipoPagoFk.intValue() == 2 || idTipoPagoFk.intValue() == 4) {
+                        if (ifacePagosBancarios.insertaPagoBancario(pagoBancario) == 1) {
+                            System.out.println("Se ingreso correctamente un deposito bancario");
+                        } else {
+                            System.out.println("Ocurrio un error");
                         }
                     }
                     setParameterTicket(ventaMayoreo.getVentaSucursal().intValue());

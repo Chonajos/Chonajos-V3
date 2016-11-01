@@ -137,6 +137,33 @@ public class ServiceCorteCaja implements IfaceCorteCaja {
         }
         return corte;
     }
+     @Override
+    public CorteCaja getLastCorteByCajaHistorial(BigDecimal idCajaPk,BigDecimal idCorteFk) {
+        getEjb();
+        List<Object[]> lstObject = new ArrayList<Object[]>();
+        lstObject = ejb.getLastCorteByCajaHistorial(idCajaPk,idCorteFk);
+        BigDecimal cero = new BigDecimal(0);
+        CorteCaja corte = new CorteCaja();
+        for (Object[] object : lstObject) {
+            corte.setIdCorteCajaPk(object[1] == null ? null : new BigDecimal(object[1].toString()));
+            corte.setIdCajaFk(object[2] == null ? null : new BigDecimal(object[2].toString()));
+            corte.setFecha(object[3] == null ? null : (Date) object[3]);
+            corte.setCantChequesAnt(object[4] == null ? cero : new BigDecimal(object[4].toString()));
+            corte.setMontoChequesAnt(object[5] == null ? cero : new BigDecimal(object[5].toString()));
+            corte.setSaldoAnterior(object[6] == null ? cero : new BigDecimal(object[6].toString()));
+            corte.setCantChequesNuevos(object[7] == null ? cero : new BigDecimal(object[7].toString()));
+            corte.setMontoChequesNuevos(object[8] == null ? cero : new BigDecimal(object[8].toString()));
+            corte.setSaldoNuevo(object[9] == null ? cero : new BigDecimal(object[9].toString()));
+            corte.setComentarios(object[10] == null ? null : object[10].toString());
+            corte.setIdUserFk(object[11] == null ? null : new BigDecimal(object[11].toString()));
+            corte.setIdStatusFk(object[12] == null ? null : new BigDecimal(object[12].toString()));
+            corte.setMontoCuentaAnterior(object[13] == null ? cero : new BigDecimal(object[13].toString()));
+            corte.setMontoCuentaNuevo(object[14] == null ? cero : new BigDecimal(object[14].toString()));
+            ///
+
+        }
+        return corte;
+    }
 
     @Override
     public ArrayList<CorteCaja> getCortesByFechaCajaUsuario(BigDecimal idCajaFk, BigDecimal idUsuarioFk, String fecha) {
