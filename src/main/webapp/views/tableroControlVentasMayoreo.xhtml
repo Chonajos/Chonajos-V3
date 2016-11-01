@@ -154,9 +154,19 @@
                                 <f:convertNumber type="currency"/>
                             </p:inputText>
                         </div>
+                        <div>
+                            <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+                                <p:selectOneRadio id="console" value="#{beanTableroControlVentaMeyoreo.tipoReporte}">
+                                    <f:selectItem itemLabel="Producto" itemValue="producto" />
+                                    <f:selectItem itemLabel="Cliente" itemValue="cliente" />
+                                    <p:ajax event="change" update=":formContent" />
+                                </p:selectOneRadio>
+                            </h:panelGrid>
+
+                        </div>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <p:dataTable id="tableDetalle" var="model" styleClass="ui-datatable-hor-scroll" paginator="true" rows="16"
+                        <p:dataTable id="tableDetalle" var="model" styleClass="ui-datatable-hor-scroll" paginator="true" rows="16" rendered="#{beanTableroControlVentaMeyoreo.tipoReporte =='cliente'}"
                                      value="#{beanTableroControlVentaMeyoreo.lstCarroDetalle}"
                                      emptyMessage="No se encontraron Registros" >
                             <p:column headerText="Tipo Venta" class="alignLeft"  width="60px;" >
@@ -233,6 +243,128 @@
                                 </p:column>
 
                             </p:columnGroup>
+                        </p:dataTable>
+
+                        <p:dataTable id="tableProducto" var="model" styleClass="ui-datatable-hor-scroll" paginator="true" rows="16" rendered="#{beanTableroControlVentaMeyoreo.tipoReporte =='producto'}"
+                                     value="#{beanTableroControlVentaMeyoreo.lstOperacionesVentasMayoreo}"
+                                     emptyMessage="No se encontraron Registros" >
+                            <p:column style="width:20px">
+                                <p:rowToggler />
+                            </p:column>
+                            <p:column headerText="Producto" class="alignLeft"  width="130px;" >
+                                <h:outputText value="#{model.nombreSubProducto}" />
+                            </p:column>
+
+                            <p:column headerText="Empaques Entrada" width="70px;" class="alignRight">
+                                <h:outputText value="#{model.empaquesEntrada}">
+                                    <f:convertNumber  pattern="###,###"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Kg. Entrada" width="60px;" class="alignRight">
+                                <h:outputText value="#{model.kiloEntrada}">
+                                    <f:convertNumber pattern="###,###.00"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Empaques Vendidos" width="70px;" class="alignRight">
+                                <h:outputText value="#{model.empaqueVendidos}">
+                                    <f:convertNumber  pattern="###,###"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Kg. Vendidos" width="70px;" class="alignRight">
+                                <h:outputText value="#{model.kiloVendidos}" >
+                                    <f:convertNumber  pattern="###,###.00"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="$Promedio de Venta" width="100px;" class="alignRight">
+                                <h:outputText value="#{model.precioVenta}" >
+                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="$Total Venta" width="100px;" class="alignRight">
+                                <h:outputText value="#{model.kiloVendidos.multiply(model.precioVenta)}" >
+                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                </h:outputText>
+                            </p:column>
+                            <p:columnGroup type="footer">
+                                <p:column colspan="1"/>
+                                <p:column colspan="1"/>
+                                <p:column colspan="1"/>
+                                <p:column colspan="1"/>
+                                <p:column colspan="1"/>
+                                <p:column colspan="1"/>
+                                <p:column colspan="1"/>
+                                <p:column colspan="1"/>
+                                <!--                                <p:column colspan="1" footerText="Total:" class="alignRight"/>-->
+                                <!--                                <p:column colspan="1" class="alignRight">
+                                                                    <f:facet name="footer" >
+                                                                        <h:outputText value="{beanTableroControlVentaMeyoreo.totalEmpaquesDetalle}" >
+                                                                            <f:convertNumber pattern="###,###" />
+                                                                        </h:outputText>
+                                                                    </f:facet>
+                                                                </p:column>
+                                                                <p:column  colspan="1" class="alignRight">
+                                                                    <f:facet name="footer" >
+                                                                        <h:outputText value="{beanTableroControlVentaMeyoreo.totalKilosDetalle}" >
+                                                                            <f:convertNumber pattern="###,###.00" /> 
+                                                                        </h:outputText>
+                                                                    </f:facet>
+                                                                </p:column>
+                                                                <p:column  colspan="1" class="alignRight">
+                                                                    <f:facet name="footer" >
+                                                                        <h:outputText value="{beanTableroControlVentaMeyoreo.totalVentaDetalle}" >
+                                                                            <f:convertNumber type="currency" currencySymbol="$" />
+                                                                        </h:outputText>
+                                                                    </f:facet>
+                                                                </p:column>-->
+                                <!--                                <p:column  colspan="1" class="alignRight">
+                                                                    <f:facet name="footer" >
+                                                                        <h:outputText value="{beanTableroControlVentaMeyoreo.totalSaldoPorCobrar}" >
+                                                                            <f:convertNumber type="currency" currencySymbol="$" />
+                                                                        </h:outputText>
+                                                                    </f:facet>
+                                                                </p:column>
+                                                                <p:column colspan="1" class="alignRight">
+                                                                    <f:facet name="footer">
+                                                                        <h:outputText value="{beanTableroControlVentaMeyoreo.totalComisionDetalle}">
+                                                                            <f:convertNumber type="currency" currencySymbol="$" />
+                                                                        </h:outputText>
+                                                                    </f:facet>
+                                                                </p:column>-->
+
+                            </p:columnGroup>
+                            <p:rowExpansion>
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <p:dataTable var="item" value="#{model.lstOperacionesVentasMayoreo}" styleClass="seconTable"  emptyMessage="No se encontraron Registros.">
+                                        <p:column headerText="Fecha Venta" width="80px;" class="alignLeft">
+                                            <h:outputText value="#{item.strFechaVenta}" />
+                                        </p:column>
+                                        <p:column headerText="Cliente" width="120px;" class="alignLeft">
+                                            <h:outputText value="#{item.nombreCliente}" />
+                                        </p:column>
+                                        <p:column headerText="Empaques Vendidos" width="100px;" class="alignRight">
+                                            <h:outputText value="#{item.empaqueVendidos}" >
+                                                <f:convertNumber  pattern="###,###"/>
+                                            </h:outputText>
+                                        </p:column>
+                                        <p:column headerText="Kg. Vendidos" width="70px;" class="alignRight">
+                                            <h:outputText value="#{item.kiloVendidos}" >
+                                                <f:convertNumber  pattern="###,###.00"/>
+                                            </h:outputText>
+                                        </p:column>
+                                        <p:column headerText="Precio" width="85px;" class="alignRight">
+                                            <h:outputText value="#{item.precioVenta}" >
+                                                <f:convertNumber type="currency" currencySymbol="$" />
+                                            </h:outputText>
+                                        </p:column>
+                                        <p:column headerText="Total Venta" width="85px;" class="alignRight">
+                                            <h:outputText value="#{item.kiloVendidos.multiply(item.precioVenta)}" >
+                                                <f:convertNumber type="currency" currencySymbol="$" />
+                                            </h:outputText>
+                                        </p:column>
+
+                                    </p:dataTable>
+                                </div>
+                            </p:rowExpansion>
                         </p:dataTable>
                     </div>
                 </div>

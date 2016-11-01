@@ -3,6 +3,7 @@ package com.web.chon.bean;
 import com.web.chon.dominio.CarroDetalle;
 import com.web.chon.dominio.CarroDetalleGeneral;
 import com.web.chon.dominio.EntradaMercancia;
+import com.web.chon.dominio.OperacionesVentasMayoreo;
 import com.web.chon.dominio.Provedor;
 import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.UsuarioDominio;
@@ -47,6 +48,7 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
     private ArrayList<Provedor> lstProvedor = new ArrayList<Provedor>();
     private ArrayList<CarroDetalleGeneral> lstCarroDetalleGeneral = new ArrayList<CarroDetalleGeneral>();
     private ArrayList<CarroDetalle> lstCarroDetalle = new ArrayList<CarroDetalle>();
+    private ArrayList<OperacionesVentasMayoreo> lstOperacionesVentasMayoreo = new ArrayList<OperacionesVentasMayoreo>();
 
     private CarroDetalleGeneral carroDetalleGeneral;
 
@@ -64,7 +66,8 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
     private UsuarioDominio usuario;
     private String title;
     private String viewEstate;
-    
+    private String tipoReporte;
+
     private Date fechaUltimaVenta;
 
     @PostConstruct
@@ -76,7 +79,7 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
         idSucursal = new BigDecimal(usuario.getSucId());
         lstProvedor = ifaceCatProvedores.getProvedoresByIdSucursal(idSucursal);
         lstCarros = ifaceEntradaMercancia.getCarrosByIdSucursalAnsIdProvedor(idSucursal, null);
-
+        tipoReporte = "cliente";
         carroDetalleGeneral = new CarroDetalleGeneral();
 
         setTitle("Reportes de Ventas.");
@@ -97,6 +100,8 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
         viewEstate = "searchById";
         setTitle("REPORTE DE VENTAS DEL PROVEDOR " + carroDetalleGeneral.getNombreProvedor().toUpperCase() + " CARRO " + carroDetalleGeneral.getCarro() + " REMISION " + carroDetalleGeneral.getIdentificador());
         lstCarroDetalle = ifaceVentaMayoreo.getDetalleVentasCarro(idSucursal, carroDetalleGeneral.getCarro());
+        lstOperacionesVentasMayoreo = ifaceVentaMayoreo.getReporteVentasByCarroAndIdSucursalAndTipoVenta(carroDetalleGeneral.getCarro(), idSucursal, null);
+
         if (lstCarroDetalle != null && !lstCarroDetalle.isEmpty()) {
             fechaUltimaVenta = lstCarroDetalle.get(0).getFecha();
         } else {
@@ -350,6 +355,22 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
         this.fechaUltimaVenta = fechaUltimaVenta;
     }
 
-  
+    public ArrayList<OperacionesVentasMayoreo> getLstOperacionesVentasMayoreo() {
+        return lstOperacionesVentasMayoreo;
+    }
+
+    public void setLstOperacionesVentasMayoreo(ArrayList<OperacionesVentasMayoreo> lstOperacionesVentasMayoreo) {
+        this.lstOperacionesVentasMayoreo = lstOperacionesVentasMayoreo;
+    }
+
+    public String getTipoReporte() {
+        return tipoReporte;
+    }
+
+    public void setTipoReporte(String tipoReporte) {
+        this.tipoReporte = tipoReporte;
+    }
+    
+    
 
 }

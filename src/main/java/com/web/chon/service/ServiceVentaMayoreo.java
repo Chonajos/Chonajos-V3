@@ -186,6 +186,8 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
                 dominio.setStrFechaVenta(TiempoUtil.getFechaDDMMYYYYHHMM(dominio.getFechaVenta()));
                 dominio.setIdCliente(obj[13] == null ? null : new BigDecimal(obj[13].toString()));
                 dominio.setNombreCliente(obj[14] == null ? "" : obj[14].toString());
+                dominio.setIdEmpFk(obj[15] == null ? null : new BigDecimal(obj[15].toString()));
+                
                 lstDetalle.add(dominio);
 
             }
@@ -205,11 +207,12 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
                 dominio.setPrecioVenta(obj[9] == null ? new BigDecimal(0) : new BigDecimal(obj[9].toString()));
                 dominio.setConvenio(obj[10] == null ? null : new BigDecimal(obj[10].toString()));
                 dominio.setIdTipoConvenio(obj[11] == null ? null : new BigDecimal(obj[11].toString()));
+                dominio.setIdEmpFk(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
 
                 lstSecundario = new ArrayList<OperacionesVentasMayoreo>();
                 for (OperacionesVentasMayoreo detalle : lstDetalle) {
 
-                    if (detalle.getIdSubproducto().equals(dominio.getIdSubproducto()) && detalle.getIdTipoEmpaque().equals(dominio.getIdTipoEmpaque()) && detalle.getConvenio().equals(dominio.getConvenio())) {
+                    if (detalle.getIdSubproducto().equals(dominio.getIdSubproducto()) && detalle.getIdTipoEmpaque().equals(dominio.getIdTipoEmpaque()) && detalle.getConvenio().equals(dominio.getConvenio()) && dominio.getIdEmpFk().equals(detalle.getIdEmpFk())) {
                         lstSecundario.add(detalle);
                     }
                 }

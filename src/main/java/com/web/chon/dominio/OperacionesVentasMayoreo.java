@@ -32,6 +32,7 @@ public class OperacionesVentasMayoreo implements Serializable {
     private String strFechaVenta;
     private BigDecimal idCliente;
     private String nombreCliente;
+    private BigDecimal idEmpFk;
     
     private ArrayList lstOperacionesVentasMayoreo;
 
@@ -176,4 +177,13 @@ public class OperacionesVentasMayoreo implements Serializable {
         this.lstOperacionesVentasMayoreo = lstOperacionesVentasMayoreo;
     }
 
+    public BigDecimal getIdEmpFk() {
+        return idEmpFk;
+    }
+
+    public void setIdEmpFk(BigDecimal idEmpFk) {
+        this.idEmpFk = idEmpFk;
+    }
+
+    
 }
