@@ -45,7 +45,9 @@ NegocioPagosBancarios ejb;
 
     @Override
     public int updatePagoBancario(PagosBancarios pb) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        getEjb();
+        return ejb.updatePagoBancario(pb);
+    
     }
 
     @Override

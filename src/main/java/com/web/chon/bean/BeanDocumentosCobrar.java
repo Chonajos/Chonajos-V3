@@ -9,6 +9,7 @@ import com.web.chon.dominio.AbonoDocumentos;
 import com.web.chon.dominio.Caja;
 import com.web.chon.dominio.Cliente;
 import com.web.chon.dominio.CobroCheques;
+import com.web.chon.dominio.CuentaBancaria;
 import com.web.chon.dominio.Documento;
 import com.web.chon.dominio.OperacionesCaja;
 import com.web.chon.dominio.OperacionesCuentas;
@@ -23,6 +24,7 @@ import com.web.chon.service.IfaceCaja;
 import com.web.chon.service.IfaceCatCliente;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceCobroCheques;
+import com.web.chon.service.IfaceCuentasBancarias;
 import com.web.chon.service.IfaceDocumentos;
 import com.web.chon.service.IfaceOperacionesCaja;
 import com.web.chon.service.IfaceOperacionesCuentas;
@@ -95,11 +97,14 @@ public class BeanDocumentosCobrar implements Serializable {
     private IfaceOperacionesCuentas ifaceOperacionesCuentas;
     @Autowired
     private IfacePagosBancarios ifacePagosBancarios;
+    @Autowired
+    private IfaceCuentasBancarias ifaceCuentasBancarias;
 
 
     private ArrayList<Sucursal> listaSucursales;
     private ArrayList<Documento> listaDocumentos;
     private ArrayList<AbonoDocumentos> listaAbonosCheques;
+    private ArrayList<CuentaBancaria> listaCuentas;
     private ArrayList<Cliente> lstCliente;
     private ArrayList<TipoAbono> lstTipoAbonos;
     private UsuarioDominio usuario;
@@ -168,6 +173,7 @@ public class BeanDocumentosCobrar implements Serializable {
     private static final BigDecimal idConceptoCuenta = new BigDecimal(15);
     private OperacionesCuentas opcuenta;
     private PagosBancarios pagoBancario;
+    private BigDecimal idCuentaDestinoBean;
     
     @PostConstruct
     public void init() {
@@ -201,13 +207,14 @@ public class BeanDocumentosCobrar implements Serializable {
         opcaja.setIdCajaFk(caja.getIdCajaPk());
         opcaja.setIdUserFk(usuario.getIdUsuario());
         opcaja.setIdStatusFk(statusOperacion);
-        opcaja.setIdStatusFk(idSucursalFk);
+        opcaja.setIdSucursalFk(idSucursalFk);
         
         opcuenta = new OperacionesCuentas();
         opcuenta.setIdUserFk(usuario.getIdUsuario());
         opcuenta.setIdStatusFk(idStatusCuenta);
         opcuenta.setEntradaSalida(entradaCuenta);
         opcuenta.setIdConceptoFk(idConceptoCuenta);
+        listaCuentas = ifaceCuentasBancarias.getCuentas();
 
     }
 
@@ -297,7 +304,7 @@ public class BeanDocumentosCobrar implements Serializable {
                     pagoBancario.setFechaTranferencia(dataAbonar.getFechaTransferencia());
                     //pagoBancario.setFolioElectronico(dataAbonar.get);
                     pagoBancario.setIdConceptoFk(opcaja.getIdConceptoFk());
-                    //pagoBancario.setIdCuentaFk();
+                    pagoBancario.setIdCuentaFk(idCuentaDestinoBean);
                     pagoBancario.setIdStatusFk(new BigDecimal(2));
                     pagoBancario.setIdTipoFk(dataAbonar.getIdTipoAbonoFk());
                     pagoBancario.setIdTransBancariasPk(new BigDecimal(ifacePagosBancarios.getNextVal()));
@@ -859,4 +866,53 @@ public class BeanDocumentosCobrar implements Serializable {
         this.filtroFormaPago = filtroFormaPago;
     }
 
+    public ArrayList<CuentaBancaria> getListaCuentas() {
+        return listaCuentas;
+    }
+
+    public void setListaCuentas(ArrayList<CuentaBancaria> listaCuentas) {
+        this.listaCuentas = listaCuentas;
+    }
+
+    public Caja getCaja() {
+        return caja;
+    }
+
+    public void setCaja(Caja caja) {
+        this.caja = caja;
+    }
+
+    public OperacionesCaja getOpcaja() {
+        return opcaja;
+    }
+
+    public void setOpcaja(OperacionesCaja opcaja) {
+        this.opcaja = opcaja;
+    }
+
+    public OperacionesCuentas getOpcuenta() {
+        return opcuenta;
+    }
+
+    public void setOpcuenta(OperacionesCuentas opcuenta) {
+        this.opcuenta = opcuenta;
+    }
+
+    public PagosBancarios getPagoBancario() {
+        return pagoBancario;
+    }
+
+    public void setPagoBancario(PagosBancarios pagoBancario) {
+        this.pagoBancario = pagoBancario;
+    }
+
+    public BigDecimal getIdCuentaDestinoBean() {
+        return idCuentaDestinoBean;
+    }
+
+    public void setIdCuentaDestinoBean(BigDecimal idCuentaDestinoBean) {
+        this.idCuentaDestinoBean = idCuentaDestinoBean;
+    }
+
+    
 }

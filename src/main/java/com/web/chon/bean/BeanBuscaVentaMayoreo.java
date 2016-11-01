@@ -145,6 +145,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     public void init() {
         //cambio = new BigDecimal(0);
         //recibido = new BigDecimal(0);
+        idTipoPagoFk = new BigDecimal(1);
         FacesContext contexts = FacesContext.getCurrentInstance();
         String folio = contexts.getExternalContext().getRequestParameterMap().get("folio");
         System.out.println("FolioPasado: " + folio);
@@ -332,9 +333,63 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     public String insert() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    public String  validarCampos()
+    {
+        String cadena = "";
+        switch(idTipoPagoFk.intValue())
+        {
+            case 1:
+                System.out.println("Pago en Efectivo sin campos requeridos");
+                break;
+            case 2:
+                System.out.println("Pago en Transferencia Bancaria");
+                if(idCuentaDestinoFk ==null || referencia == null || conceptoTransferencia ==null || fechaTransferencia ==null)
+                {
+                    cadena = "Faltan algunos campos en transferencia bancaria";
+                }
+                /*Campos Requeridos
+                idCuentaBancariaFk
+                numero de referencia
+                concepto
+                fechaTransferencia
+                */
+                break;
+            case 3:
+                System.out.println("Pago en Cheques");
+                /*
+                Campos Requeridos
+                importe
+                numero de cheque
+                fecha de cobro
+                librador
+                banco emisor
+                */
+                if(ventaMayoreo.getTotalVenta() == null || numeroCheque == null || fechaCobro ==null || librador==null ||banco==null)
+                {
+                    cadena = "Faltan algunos campos en Pago con cheques";
+                }
+                    break;
+            case 4:
+                System.out.println("Pago en Deposito Bancario");
+                if(idCuentaDestinoFk == null || folioElectronico == null  || fechaTransferencia == null)
+                {
+                    cadena = "Faltan algunos datos en Deposito a Cuentas Bancarias";
+                }
+                break;
+            default:
+                break;
+                
+        }
+        return cadena;
+    }
 
     public void updateVenta() {
-        if (opcaja.getIdCajaFk() != null) {
+        if (opcaja.getIdCajaFk() != null)
+        {
+            String cadena = validarCampos();
+            if(cadena.equals(""))
+            {
+            //if(fechaCobro !=null || numeroCheque !=null || banco != null ||  librador != null)
             if (ifaceBuscaVenta.updateStatusVentaMayoreo(ventaMayoreo.getIdVentaMayoreoPk().intValue(), usuario.getIdUsuarioPk().intValue()) == 1) {
                 verificarTipo();
                 System.out.println("Se cambió el estatus");
@@ -346,9 +401,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
                     {
                         Documento d = new Documento();
                         d.setIdDocumentoPk(new BigDecimal(ifaceDocumentos.getNextVal()));
-                        //d.setIdAbonoFk(ac.getIdAbonoCreditoPk());
                         d.setFechaCobro(fechaCobro);
-                        //Credito c = ifaceCredito.getById(ac.getIdCreditoFk());
                         d.setIdClienteFk(ventaMayoreo.getIdClienteFk());
                         d.setIdStatusFk(DOCUMENTOACTIVO);
                         d.setIdTipoDocumento(DOCUMENTOTIPOCHEQUE);
@@ -358,7 +411,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
                         d.setBanco(banco);
                         d.setLibrador(librador);
                         d.setIdFormaCobroFk(new BigDecimal(1));
-                        System.out.println("--------------------Documento: " + d.toString());
+                        System.out.println("Documento: " + d.toString());
                         //--- Insertar Documento -- //
                         if (ifaceDocumentos.insertarDocumento(d) == 1) 
                         {
@@ -376,8 +429,8 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
                     pagoBancario.setFechaDeposito(fechaTransferencia);
                     pagoBancario.setFechaTranferencia(fechaTransferencia);
                     pagoBancario.setFolioElectronico(folioElectronico);
-                    pagoBancario.setIdConceptoFk(idTipoPagoFk);
-                    pagoBancario.setIdCuentaFk(idCuentaDestinoBean);
+                    pagoBancario.setIdConceptoFk(opcaja.getIdConceptoFk());
+                    pagoBancario.setIdCuentaFk(idCuentaDestinoFk);
                     pagoBancario.setIdStatusFk(new BigDecimal(2));
                     pagoBancario.setIdTipoFk(idTipoPagoFk);
                     pagoBancario.setIdTransBancariasPk(new BigDecimal(ifacePagosBancarios.getNextVal()));
@@ -385,7 +438,9 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
                     pagoBancario.setMonto(ventaMayoreo.getTotalVenta());
                     pagoBancario.setReferencia(referencia);
                     pagoBancario.setIdOperacionCajaFk(opcaja.getIdOperacionesCajaPk());
-                    if (idTipoPagoFk.intValue() == 2 || idTipoPagoFk.intValue() == 4) {
+                    System.out.println("Pago Bancario Bean Busca Venta Mayoreo: "+pagoBancario.toString());
+                    if (idTipoPagoFk.intValue() == 2 || idTipoPagoFk.intValue() == 4) 
+                    {
                         if (ifacePagosBancarios.insertaPagoBancario(pagoBancario) == 1) {
                             System.out.println("Se ingreso correctamente un deposito bancario");
                         } else {
@@ -409,12 +464,19 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
             } else {
                 System.out.println("Error al cambiar estaus de la venta");
             }
-        } else {
+        } 
+            else{
+                JsfUtil.addErrorMessageClean(cadena);
+            }
+        }
+            
+            else {
             JsfUtil.addErrorMessageClean("Su usuario no cuenta con caja asignada, no se puede realizar el cobro");
         }
-
+        
         //return "buscaVentas";
     }
+    
 
     @Override
     public void searchById() {

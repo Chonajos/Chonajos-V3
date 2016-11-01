@@ -117,6 +117,9 @@ public class BeanRecibirDeposito implements Serializable {
             {
                 ifaceOperacionesCaja.updateStatusConcepto(data1.getIdOperacionCajaFk(), statusAprobada,data1.getIdConceptoFk());
                 JsfUtil.addSuccessMessageClean("Transferencia Recibida Correctamente");
+                data1.setIdStatusFk(new BigDecimal(3));
+                ifacePagosBancarios.updatePagoBancario(data1);
+                listaDepositosTransferencias = ifacePagosBancarios.getPagosPendientes();
             } else {
                 JsfUtil.addErrorMessageClean("Ocurrió un error al recibir la transferencia");
             }

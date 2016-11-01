@@ -58,7 +58,17 @@ public class EjbPagoBancario implements NegocioPagosBancarios{
 
     @Override
     public int updatePagoBancario(PagosBancarios pb) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       try {
+            System.out.println("ejb UPDATE" + pb.toString());
+            Query query = em.createNativeQuery("UPDATE PAGOS_BANCARIOS SET ID_STATUS_FK = ? WHERE ID_TRANS_BANCARIAS_PK = ?");
+            query.setParameter(1, pb.getIdStatusFk());
+            query.setParameter(2, pb.getIdTransBancariasPk());
+            return query.executeUpdate();
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbEmpaque.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        }
     }
 
     @Override

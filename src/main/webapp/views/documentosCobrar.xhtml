@@ -74,12 +74,16 @@
                                             </h:selectOneMenu>
                                         </div>
                                         <div>
-                                            <h:outputLabel for="cuentaDeposito" value="Cuenta del depósito:"  rendered="#{beanDocumentosCobrar.camposDeposito =='true'}"/>
-                                            <p:inputText maxlength="10" id="cuentaDeposito"  value="#{beanDocumentosCobrar.cobroCheque.cuentaDeposito}"  
-                                                         rendered="#{beanDocumentosCobrar.camposDeposito =='true'}"  >
-                                                <pe:keyFilter regEx="/[0-9_]/i"/>
-                                            </p:inputText>
-                                        </div>
+                                             <p:outputLabel   for="cajaFiltro" value ="Cuenta Destino:" rendered="#{beanDocumentosCobrar.camposDeposito =='true'}"/> 
+                                            </div>
+                                            <div> 
+                                                <h:selectOneMenu  id="cajaFiltro" value="#{beanDocumentosCobrar.idCuentaDestinoBean}" rendered="#{beanDocumentosCobrar.camposDeposito =='true'}">
+                                                    <f:selectItem itemLabel="Selecciona" itemValue="" />
+                                                    <f:selectItems value="#{beanDocumentosCobrar.listaCuentas}" var="cuentita" itemLabel="#{cuentita.nombreBanco}" itemValue="#{cuentita.idCuentaBancariaPk}"/>
+                                                    <!--<p:ajax event="change" listener="{beanOperacionesCaja.printStatus()}" update=":formContent:table" />-->
+                                                </h:selectOneMenu>
+                                            </div>
+                                        
                                         <div>
                                             <h:outputLabel for="importeDeposito" value="Importe del depósito:"  rendered="#{beanDocumentosCobrar.camposDeposito =='true' || beanDocumentosCobrar.camposEfectivo =='true'}"/>
                                             <p:inputText id="importeDeposito" readonly="true" value="#{beanDocumentosCobrar.documentoData.monto}"  rendered="#{beanDocumentosCobrar.camposDeposito =='true' || beanDocumentosCobrar.camposEfectivo =='true'}" />
