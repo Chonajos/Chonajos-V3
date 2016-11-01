@@ -49,7 +49,7 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
 
     }
 
-     @Override
+    @Override
     public ArrayList<ExistenciaProducto> getExistencias(BigDecimal idSucursal, BigDecimal idBodega, BigDecimal idProvedor, String idProducto, BigDecimal idEmpaque, BigDecimal idConvenio, BigDecimal idEmpPK) {
         getEjb();
 
@@ -80,13 +80,11 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
                 expro.setCarroSucursal(obj[18] == null ? null : new BigDecimal(obj[18].toString()));
                 expro.setPrecioSinIteres(obj[11] == null ? null : new BigDecimal(obj[11].toString()));
                 expro.setIdEntradaMercanciaProductoFK(obj[19] == null ? null : new BigDecimal(obj[19].toString()));
-                expro.setComentarios(obj[20] == null ? null :  obj[20].toString());
+                expro.setComentarios(obj[20] == null ? null : obj[20].toString());
                 expro.setIdTipoConvenio(obj[21] == null ? null : new BigDecimal(obj[21].toString()));
                 expro.setKilospromprod(obj[22] == null ? null : new BigDecimal(obj[22].toString()));
                 expro.setIdSucursal(obj[23] == null ? null : new BigDecimal(obj[23].toString()));
 
-
-                
                 lista.add(expro);
             }
             return lista;
@@ -97,15 +95,14 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
         }
     }
 
-
     @Override
     public ArrayList<ExistenciaProducto> getExistenciaProductoRepetidos(BigDecimal idSucursal, String idSubproductoFk, BigDecimal idTipoEmpaqueFk, BigDecimal idBodegaFk, BigDecimal idProvedorFk, BigDecimal idTipoConvenio) {
-        System.out.println("service existencia "+idSucursal +" "+idSubproductoFk+" " +idTipoEmpaqueFk+" " +idBodegaFk+" " +idProvedorFk+ "" +idTipoConvenio);
+        
         getEjb();
 
         try {
             ArrayList<ExistenciaProducto> lista = new ArrayList<ExistenciaProducto>();
-            System.out.println("SerivceNegocioExistencia: getExistenciaProductoRepetidos : " + idSucursal + " idProvedorFk: " + idProvedorFk);
+            
             List<Object[]> lstObject = ejb.getExistenciasRepetidas(idSucursal, idSubproductoFk, idTipoEmpaqueFk, idBodegaFk, idProvedorFk, idTipoConvenio);
             for (Object[] obj : lstObject) {
                 ExistenciaProducto expro = new ExistenciaProducto();
@@ -117,8 +114,14 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
                 expro.setComentarios(obj[5] == null ? "" : obj[5].toString());
                 expro.setIdBodegaFK(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
                 expro.setIdTipoConvenio(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
-                expro.setPrecio(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
+                expro.setConvenio(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
                 expro.setKilospromprod(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
+                expro.setPrecioMinimo(obj[10] == null ? null : new BigDecimal(obj[10].toString()));
+                expro.setPrecioVenta(obj[11] == null ? null : new BigDecimal(obj[11].toString()));
+                expro.setPrecioMaximo(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
+                expro.setEstatusBloqueo(obj[13] == null ? false : (new BigDecimal(obj[13].toString()).equals(new BigDecimal(0)) ? false : true));
+                expro.setIdSucursal(obj[14] == null ? null : new BigDecimal(obj[14].toString()));
+                expro.setIdEntradaMercanciaProductoFK(obj[15] == null ? null : new BigDecimal(obj[15].toString()));
 
                 lista.add(expro);
             }
@@ -144,19 +147,18 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
 
     @Override
     public ArrayList<ExistenciaProducto> getExistenciaById(BigDecimal idExistencia) {
-         getEjb();
+        getEjb();
 
         try {
             ArrayList<ExistenciaProducto> lista = new ArrayList<ExistenciaProducto>();
             List<Object[]> lstObject = ejb.getExistenciaById(idExistencia);
-            for (Object[] obj : lstObject) 
-            {
+            for (Object[] obj : lstObject) {
                 ExistenciaProducto expro = new ExistenciaProducto();
                 expro.setIdExistenciaProductoPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
                 expro.setKilosTotalesProducto(obj[3] == null ? null : new BigDecimal(obj[3].toString()));
                 expro.setCantidadPaquetes(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
                 expro.setIdBodegaFK(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
-                System.out.println("Existencia Service: "+expro.toString());
+                System.out.println("Existencia Service: " + expro.toString());
                 lista.add(expro);
             }
             return lista;
@@ -165,14 +167,12 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
             return null;
 
         }
-    
-    }
 
-   
+    }
 
     @Override
     public ArrayList<ExistenciaProducto> getExistenciasCancelar(BigDecimal idExistencia) {
-       getEjb();
+        getEjb();
         System.out.println("Ejecuto Service GetExistencias Cancelar");
 
         try {
@@ -192,15 +192,15 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
             return null;
         }
     }
-        @Override
+
+    @Override
     public int deleteExistenciaProducto(ExistenciaProducto ep) {
         getEjb();
         return ejb.deleteExistenciaProducto(ep);
     }
 
     @Override
-    public ExistenciaProducto getExistenciaByIdEmpFk(BigDecimal idEmpFk) 
-    {
+    public ExistenciaProducto getExistenciaByIdEmpFk(BigDecimal idEmpFk) {
         getEjb();
         try {
             getEjb();
@@ -226,9 +226,7 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
                 existencia.setIdEntradaMercanciaProductoFK(object[15] == null ? null : new BigDecimal(object[15].toString()));
             }
             return existencia;
-        }
-        catch (Exception ex) 
-        {
+        } catch (Exception ex) {
             Logger.getLogger(ServiceNegocioExistencia.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
@@ -236,10 +234,9 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
 
     @Override
     public int update(ExistenciaProducto ep) {
-       getEjb();
+        getEjb();
         return ejb.update(ep);
 
-    
     }
 
     @Override

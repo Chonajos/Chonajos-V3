@@ -39,7 +39,7 @@
                         <p:dataTable id="table" var="model" value="#{beanTransferenciaMerca.lstExistenciaProducto}" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." rendered="#{beanTransferenciaMerca.viewEstate =='init'}" scrollable="true" scrollHeight="280">
 
                             <p:column  headerText="Carro" width="40px;" class="alignCenter">
-                                <h:outputText value="#{model.idEmFK}">
+                                <h:outputText value="#{model.carroSucursal}">
                                 </h:outputText>
                             </p:column>
                             <p:column headerText="Clave" width="100px;" class="alignCenter">

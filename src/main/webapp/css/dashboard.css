@@ -103,7 +103,7 @@ color: #FACC2E;
 } 
 .ui-datatable-selectable thead th{
 
-    font-size: 14px!important;
+    font-size: 12px!important;
 }
 
 /*Se cambio el tamaño del contenido de las tablas*/
@@ -140,6 +140,7 @@ color: #FACC2E;
 /*Color azul en autocomplete*/
 ul .ui-state-highlight {
     background-image:-webkit-linear-gradient(top, #0088cc, #0077b3) !important;
+    color: white !important;
 
 }
 

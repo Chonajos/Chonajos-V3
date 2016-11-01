@@ -30,9 +30,7 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
     public int insertaExistencia(ExistenciaProducto e) {
 
         //System.out.println("Entrada_Porducto Existencia Nuevo =============: " + e.toString());
-
-        try 
-        {          
+        try {
 
             Query query = em.createNativeQuery("INSERT INTO EXISTENCIA_PRODUCTO (ID_EXP_PK,ID_SUBPRODUCTO_FK,ID_TIPO_EMPAQUE_FK,KILOS_TOTALES,CANTIDAD_EMPACAQUE,COMENTARIOS,ID_BODEGA_FK,ID_TIPO_CONVENIO_FK,CONVENIO,KILOSPROMPROD,ID_SUCURSAL_FK,ID_EMP_FK,PRECIO_MINIMO,PRECIO_VENTA,PRECIO_MAXIMO,ESTATUS_BLOQUEO)VALUES (S_EXISTENCIA_PRODUCTO.NextVal,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
@@ -43,14 +41,14 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
             query.setParameter(5, e.getComentarios());
             query.setParameter(6, e.getIdBodegaFK());
             query.setParameter(7, e.getIdTipoConvenio());
-            query.setParameter(8, e.getConvenio() == null ? e.getPrecio():e.getConvenio());
+            query.setParameter(8, e.getConvenio() == null ? e.getPrecio() : e.getConvenio());
             query.setParameter(9, e.getKilospromprod());
             query.setParameter(10, e.getIdSucursal());
             query.setParameter(11, e.getIdEntradaMercanciaProductoFK());
             query.setParameter(12, e.getPrecioMinimo());
             query.setParameter(13, e.getPrecioVenta());
             query.setParameter(14, e.getPrecioMaximo());
-            query.setParameter(15, e.isEstatusBloqueo() == true ? "0":"1");
+            query.setParameter(15, e.isEstatusBloqueo() == true ? "0" : "1");
 
             return query.executeUpdate();
 
@@ -92,7 +90,7 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
 
         //System.out.println("EJBUPDATEPRODUCTO:--------------------"+e.toString());
         try {
-            
+
             Query query = em.createNativeQuery("update EXISTENCIA_PRODUCTO SET CANTIDAD_EMPACAQUE=?, KILOS_TOTALES=? WHERE ID_EXP_PK=?");
             query.setParameter(1, e.getCantidadPaquetes());
             query.setParameter(2, e.getKilosTotalesProducto());
@@ -100,19 +98,18 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
             return query.executeUpdate();
 
         } catch (Exception ex) {
-            System.out.println("error 0"+ex.getMessage().toUpperCase());
+            System.out.println("error 0" + ex.getMessage().toUpperCase());
             Logger.getLogger(EjbExistenciaProducto.class.getName()).log(Level.SEVERE, null, ex);
 
             return 0;
         }
     }
-    
+
     @Override
     public int update(ExistenciaProducto e) {
 
-        //System.out.println("EJBUPDATEPRODUCTO:--------------------"+e.toString());
         try {
-            
+
             Query query = em.createNativeQuery("update EXISTENCIA_PRODUCTO SET ID_SUBPRODUCTO_FK = ?, ID_TIPO_EMPAQUE_FK = ?, KILOS_TOTALES = ?, CANTIDAD_EMPACAQUE = ?, COMENTARIOS = ?,"
                     + "ID_BODEGA_FK = ?, ID_TIPO_CONVENIO_FK = ?, CONVENIO = ?, KILOSPROMPROD = ?, PRECIO_MINIMO = ?, PRECIO_VENTA = ?,"
                     + "PRECIO_MAXIMO = ?, ESTATUS_BLOQUEO = ?, ID_SUCURSAL_FK = ?, ID_EMP_FK=?  WHERE ID_EXP_PK=?");
@@ -132,17 +129,16 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
             query.setParameter(14, e.getIdSucursal());
             query.setParameter(15, e.getIdEntradaMercanciaProductoFK());
             query.setParameter(16, e.getIdExistenciaProductoPk());
+
             return query.executeUpdate();
 
         } catch (Exception ex) {
-            System.out.println("error 0"+ex.getMessage().toUpperCase());
+            System.out.println("error 0" + ex.getMessage().toUpperCase());
             Logger.getLogger(EjbExistenciaProducto.class.getName()).log(Level.SEVERE, null, ex);
 
             return 0;
         }
     }
-    
-    
 
     @Override
     public List<Object[]> getExistencias(BigDecimal idSucursal, BigDecimal idBodega, BigDecimal idProvedor, String idProducto, BigDecimal idEmpaque, BigDecimal idConvenio, BigDecimal idEmpPK) {
@@ -151,28 +147,28 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
 
             Query query;
             int cont = 0;
-            StringBuffer cadena = new StringBuffer("select ex.ID_EXP_PK,em.IDENTIFICADOR,subp.NOMBRE_SUBPRODUCTO, te.NOMBRE_EMPAQUE,\n" +
-"  ex.CANTIDAD_EMPACAQUE,ex.KILOS_TOTALES,tc.DESCRIPCION_TIPO,\n" +
-"  prove.nombre_provedor ||' '|| prove.A_PATERNO_PROVE || ' ' || prove.A_MATERNO_PROVE as nombreProvedor,\n" +
-"  sucu.NOMBRE_SUCURSAL,bod.NOMBRE, ex.PRECIO_MINIMO, ex.PRECIO_VENTA, ex.PRECIO_MAXIMO,\n" +
-"  ex.ESTATUS_BLOQUEO,ex.ID_SUBPRODUCTO_FK,ex.ID_TIPO_EMPAQUE_FK,bod.ID_BD_PK,ex.CONVENIO,em.CARROSUCURSAL, ex.ID_EMP_FK,ex.COMENTARIOS,ex.ID_TIPO_CONVENIO_FK,ex.KILOSPROMPROD,ex.ID_SUCURSAL_FK" +
-" from EXISTENCIA_PRODUCTO ex\n" +
-" join ENTRADAMERCANCIAPRODUCTO emp\n" +
-" on emp.ID_EMP_PK = ex.ID_EMP_FK\n" +
-"join ENTRADAMERCANCIA em\n" +
-"on em.ID_EM_PK = emp.ID_EM_FK\n" +
-"join SUBPRODUCTO subp\n" +
-"  on subp.ID_SUBPRODUCTO_PK = ex.ID_SUBPRODUCTO_FK\n" +
-"  join TIPO_EMPAQUE te\n" +
-"  on te.ID_TIPO_EMPAQUE_PK = ex.ID_TIPO_EMPAQUE_FK\n" +
-"  join BODEGA bod\n" +
-"  on bod.ID_BD_PK = ex.ID_BODEGA_FK\n" +
-"join TIPO_CONVENIO tc\n" +
-" on tc.ID_TC_PK = ex.ID_TIPO_CONVENIO_FK\n" +
-"join SUCURSAL sucu\n" +
-"on sucu.ID_SUCURSAL_PK = ex.ID_SUCURSAL_FK\n" +
-"join provedores prove\n" +
-"on prove.id_provedor_pk = em.id_provedor_fk");
+            StringBuffer cadena = new StringBuffer("select ex.ID_EXP_PK,em.IDENTIFICADOR,subp.NOMBRE_SUBPRODUCTO, te.NOMBRE_EMPAQUE,\n"
+                    + "  ex.CANTIDAD_EMPACAQUE,ex.KILOS_TOTALES,tc.DESCRIPCION_TIPO,\n"
+                    + "  prove.nombre_provedor ||' '|| prove.A_PATERNO_PROVE || ' ' || prove.A_MATERNO_PROVE as nombreProvedor,\n"
+                    + "  sucu.NOMBRE_SUCURSAL,bod.NOMBRE, ex.PRECIO_MINIMO, ex.PRECIO_VENTA, ex.PRECIO_MAXIMO,\n"
+                    + "  ex.ESTATUS_BLOQUEO,ex.ID_SUBPRODUCTO_FK,ex.ID_TIPO_EMPAQUE_FK,bod.ID_BD_PK,ex.CONVENIO,em.CARROSUCURSAL, ex.ID_EMP_FK,ex.COMENTARIOS,ex.ID_TIPO_CONVENIO_FK,ex.KILOSPROMPROD,ex.ID_SUCURSAL_FK"
+                    + " from EXISTENCIA_PRODUCTO ex\n"
+                    + " join ENTRADAMERCANCIAPRODUCTO emp\n"
+                    + " on emp.ID_EMP_PK = ex.ID_EMP_FK\n"
+                    + "join ENTRADAMERCANCIA em\n"
+                    + "on em.ID_EM_PK = emp.ID_EM_FK\n"
+                    + "join SUBPRODUCTO subp\n"
+                    + "  on subp.ID_SUBPRODUCTO_PK = ex.ID_SUBPRODUCTO_FK\n"
+                    + "  join TIPO_EMPAQUE te\n"
+                    + "  on te.ID_TIPO_EMPAQUE_PK = ex.ID_TIPO_EMPAQUE_FK\n"
+                    + "  join BODEGA bod\n"
+                    + "  on bod.ID_BD_PK = ex.ID_BODEGA_FK\n"
+                    + "join TIPO_CONVENIO tc\n"
+                    + " on tc.ID_TC_PK = ex.ID_TIPO_CONVENIO_FK\n"
+                    + "join SUCURSAL sucu\n"
+                    + "on sucu.ID_SUCURSAL_PK = ex.ID_SUCURSAL_FK\n"
+                    + "join provedores prove\n"
+                    + "on prove.id_provedor_pk = em.id_provedor_fk");
             if (idEmpPK == null) {
                 BigDecimal cero = new BigDecimal(0);
 
@@ -284,12 +280,11 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
         }
     }
 
-    
     @Override
     public List<Object[]> getExistenciasCancelar(BigDecimal idExistencia) {
         System.out.println("Ejecuto Get Existencias para Cancelar");
         try {
-           
+
             Query query = em.createNativeQuery("select exp.ID_EXP_PK,exp.CANTIDAD_EMPACAQUE,exp.KILOS_TOTALES from EXISTENCIA_PRODUCTO exp where exp.ID_EXP_PK=?");
             query.setParameter(1, idExistencia);
             System.out.println(query);
@@ -300,11 +295,12 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
             return null;
         }
     }
-        @Override
+
+    @Override
     public int deleteExistenciaProducto(ExistenciaProducto exp) {
-       try {
-           System.out.println("===============================");
-           System.out.println(exp.toString());
+        try {
+            System.out.println("===============================");
+            System.out.println(exp.toString());
             Query query = em.createNativeQuery("delete from EXISTENCIA_PRODUCTO exp where exp.ID_EMP_FK = ?");
             query.setParameter(1, exp.getIdEntradaMercanciaProductoFK());
             return query.executeUpdate();
@@ -312,12 +308,12 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
             Logger.getLogger(EjbExistenciaProducto.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
-    
+
     }
 
     @Override
     public List<Object[]> getExistenciaByIdEmpFk(BigDecimal idEmpFk) {
-       try {
+        try {
             Query query = em.createNativeQuery("select exp.* from EXISTENCIA_PRODUCTO exp where exp.ID_EMP_FK =?");
             query.setParameter(1, idEmpFk);
             //System.out.println("Parametro: "+idEmpFk);
@@ -328,9 +324,10 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
             Logger.getLogger(EjbExistenciaProducto.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
-    
+
     }
-     @Override
+
+    @Override
     public int getNextVal() {
         try {
             Query query = em.createNativeQuery("select S_EXISTENCIA_PRODUCTO.NextVal from dual");
