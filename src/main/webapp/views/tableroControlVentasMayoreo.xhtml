@@ -27,15 +27,15 @@
                 <div class="container-fluid">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
                         <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                            <p:outputLabel value="Sucursal:"/>
-                            <p:selectOneMenu value="#{beanTableroControlVentaMeyoreo.idSucursal}" id="selectSucursal">
+                            <p:outputLabel value="Sucursal:" class="col-lg-4 col-md-4 col-sm-6 col-xs-12"/>
+                            <p:selectOneMenu value="#{beanTableroControlVentaMeyoreo.idSucursal}" id="selectSucursal" style="width:50% !important;" class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                                 <f:selectItems  value="#{beanTableroControlVentaMeyoreo.lstSucursal}" var="lst" itemValue="#{lst.idSucursalPk}" itemLabel="#{lst.nombreSucursal}" />
                                 <p:ajax event="change" update=":formContent:selectCarro :formContent:selectProveedor :formContent:table" listener="#{beanTableroControlVentaMeyoreo.getProvedores()}" />
                             </p:selectOneMenu>
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                            <p:outputLabel value="Proveedor:"/>
-                            <p:selectOneMenu value="#{beanTableroControlVentaMeyoreo.idProvedor}" id="selectProveedor">
+                            <p:outputLabel value="Proveedor:" class="col-lg-4 col-md-4 col-sm-6 col-xs-12"/>
+                            <p:selectOneMenu value="#{beanTableroControlVentaMeyoreo.idProvedor}" id="selectProveedor" style="width:50% !important;" class="col-lg-8 col-md-8 col-sm-6 col-xs-12">
                                 <f:selectItem itemLabel="Todos" itemValue=""/>
                                 <f:selectItems value="#{beanTableroControlVentaMeyoreo.lstProvedor}" var="lst" itemValue="#{lst.idProvedorPK}" itemLabel="#{lst.nombreProvedor}" actionListener="#{beanTableroControlVentaMeyoreo.getCarros}"/>
                                 <p:ajax event="change" update=":formContent:selectCarro :formContent:table" listener="#{beanTableroControlVentaMeyoreo.getCarros()}"/>
@@ -43,7 +43,7 @@
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
                             <p:outputLabel value="Carro:"/>
-                            <p:selectOneMenu value="#{beanTableroControlVentaMeyoreo.carroSucursal}" id="selectCarro">
+                            <p:selectOneMenu value="#{beanTableroControlVentaMeyoreo.carroSucursal}" id="selectCarro" style="width:20% !important;">
                                 <f:selectItem itemLabel="Todos" itemValue=""/>
                                 <f:selectItems value="#{beanTableroControlVentaMeyoreo.lstCarros}" var="lst" itemValue="#{lst.idCarroSucursal}" itemLabel="#{lst.idCarroSucursal}"/>
                                 <p:ajax event="change" update=":formContent:table"/>
@@ -118,38 +118,38 @@
             </p:panel>
             <p:panel rendered="#{beanTableroControlVentaMeyoreo.viewEstate =='searchById'}">
                 <div class="container-fluid">
-                    <div class="form-group">
-                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                            <p:outputLabel value="Fecha Remisión:" class="col-lg-4 col-md-4 col-sm-4 col-xs-6"/>
+                    <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <p:outputLabel value="Fecha Remisión:" class="col-lg-5 col-md-4 col-sm-4 col-xs-6"/>
                             <p:inputText value="#{beanTableroControlVentaMeyoreo.carroDetalleGeneral.fecha}" class="col-lg-3 col-md-4 col-sm-4 col-xs-6" readonly="true">
-                                <f:convertDateTime pattern="dd/MM/yyyy hh:mm"/>
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </p:inputText>
                         </div>
-                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                            <p:outputLabel value="Fecha Ultima Venta:" class="col-lg-4 col-md-4 col-sm-4 col-xs-6"/>
-                            <p:inputText value="#{beanTableroControlVentaMeyoreo.lstCarroDetalle.get(beanTableroControlVentaMeyoreo.lstCarroDetalle.size()-1).strFecha}" class="col-lg-3 col-md-4 col-sm-4 col-xs-6" readonly="true">
-                                <f:convertDateTime pattern="dd/MM/yyyy hh:mm"/>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <p:outputLabel value="Fecha Ultima Venta:" class="col-lg-5 col-md-4 col-sm-4 col-xs-6"/>
+                            <p:inputText value="#{beanTableroControlVentaMeyoreo.fechaUltimaVenta}" class="col-lg-3 col-md-4 col-sm-4 col-xs-6" readonly="true">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </p:inputText>
                         </div>
-                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                            <p:outputLabel value="Status:" class="col-lg-4 col-md-4 col-sm-4 col-xs-6"/>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 form-group">
+                            <p:outputLabel value="Status:" class="col-lg-5 col-md-4 col-sm-4 col-xs-6"/>
                             <p:inputText value="#{beanTableroControlVentaMeyoreo.carroDetalleGeneral.status}" class="col-lg-3 col-md-4 col-sm-4 col-xs-6" readonly="true"/>
                         </div>
 
-                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                            <p:outputLabel value="Venta Total:" class="col-lg-4 col-md-3 col-sm-4 col-xs-6"/>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <p:outputLabel value="Venta Total:" class="col-lg-5 col-md-3 col-sm-4 col-xs-6"/>
                             <p:inputText value="#{beanTableroControlVentaMeyoreo.totalVentaDetalle}" class="col-lg-3 col-md-4 col-sm-4 col-xs-6" readonly="true">
                                 <f:convertNumber type="currency"/>
                             </p:inputText>
                         </div>
-                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                            <p:outputLabel value="$Saldo por Cobrar:" class="col-lg-4 col-md-4 col-sm-4 col-xs-6"/>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <p:outputLabel value="$Saldo por Cobrar:" class="col-lg-5 col-md-4 col-sm-4 col-xs-6"/>
                             <p:inputText value="#{beanTableroControlVentaMeyoreo.totalSaldoPorCobrar}" class="col-lg-3 col-md-4 col-sm-4 col-xs-6" readonly="true">
                                 <f:convertNumber type="currency"/>
                             </p:inputText>
                         </div>
-                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                            <p:outputLabel value="$Comisión:" class="col-lg-4 col-md-4 col-sm-4 col-xs-6"/>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <p:outputLabel value="$Comisión:" class="col-lg-5 col-md-4 col-sm-4 col-xs-6"/>
                             <p:inputText value="#{beanTableroControlVentaMeyoreo.totalComisionDetalle}" class="col-lg-3 col-md-4 col-sm-4 col-xs-6" readonly="true">
                                 <f:convertNumber type="currency"/>
                             </p:inputText>
@@ -174,7 +174,7 @@
                             </p:column>
                             <p:column headerText="Kg." width="60px;" class="alignRight">
                                 <h:outputText value="#{model.kilosVendidos}">
-                                    <f:convertNumber pattern="###,###.000"/>
+                                    <f:convertNumber pattern="###,###.00"/>
                                 </h:outputText>
                             </p:column>
                             <p:column headerText="$Venta" width="100px;" class="alignRight">
@@ -187,7 +187,7 @@
                                     <f:convertNumber type="currency" currencySymbol="$" />
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="$Comisión" width="100px;" class="alignRight">
+                            <p:column headerText="$Comisión Recuperada" width="100px;" class="alignRight">
                                 <h:outputText value="#{model.comisio.subtract(model.saldoPorCobrar)}" >
                                     <f:convertNumber type="currency" currencySymbol="$" />
                                 </h:outputText>
@@ -196,17 +196,17 @@
                                 <p:column colspan="1" />
                                 <p:column colspan="1"/>
                                 <p:column colspan="1" footerText="Total:" class="alignRight"/>
-                                <p:column colspan="1">
+                                <p:column colspan="1" class="alignRight">
                                     <f:facet name="footer" >
                                         <h:outputText value="#{beanTableroControlVentaMeyoreo.totalEmpaquesDetalle}" >
-                                            <f:convertNumber type="currency" currencySymbol="$" />
+                                            <f:convertNumber pattern="###,###" />
                                         </h:outputText>
                                     </f:facet>
                                 </p:column>
-                                <p:column  colspan="1" >
+                                <p:column  colspan="1" class="alignRight">
                                     <f:facet name="footer" >
                                         <h:outputText value="#{beanTableroControlVentaMeyoreo.totalKilosDetalle}" >
-                                            <f:convertNumber type="currency" currencySymbol="$" />
+                                            <f:convertNumber pattern="###,###.00" /> 
                                         </h:outputText>
                                     </f:facet>
                                 </p:column>
@@ -236,8 +236,6 @@
                         </p:dataTable>
                     </div>
                 </div>
-                <!--<iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="{beanTableroControlVentaMeyoreo.rutaPDF}"/>-->
-
             </p:panel>
         </h:form>
     </ui:define>

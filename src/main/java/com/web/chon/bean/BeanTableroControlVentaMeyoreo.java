@@ -14,6 +14,7 @@ import com.web.chon.service.IfaceVentaMayoreo;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -63,6 +64,8 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
     private UsuarioDominio usuario;
     private String title;
     private String viewEstate;
+    
+    private Date fechaUltimaVenta;
 
     @PostConstruct
     public void init() {
@@ -92,12 +95,16 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
     @Override
     public void searchById() {
         viewEstate = "searchById";
-        setTitle("REPORTE DE VENTAS DEL PROVEDOR "+carroDetalleGeneral.getNombreProvedor().toUpperCase()+" CARRO "+carroDetalleGeneral.getCarro()+" REMISION "+carroDetalleGeneral.getIdentificador());
+        setTitle("REPORTE DE VENTAS DEL PROVEDOR " + carroDetalleGeneral.getNombreProvedor().toUpperCase() + " CARRO " + carroDetalleGeneral.getCarro() + " REMISION " + carroDetalleGeneral.getIdentificador());
         lstCarroDetalle = ifaceVentaMayoreo.getDetalleVentasCarro(idSucursal, carroDetalleGeneral.getCarro());
+        if (lstCarroDetalle != null && !lstCarroDetalle.isEmpty()) {
+            fechaUltimaVenta = lstCarroDetalle.get(0).getFecha();
+        } else {
+            fechaUltimaVenta = null;
+        }
         calcularTotalesDetalle();
 
     }
-    
 
     public void buscar() {
         lstCarroDetalleGeneral = ifaceEntradaMercancia.getReporteGeneralCarro(idSucursal, idProvedor, carroSucursal);
@@ -126,24 +133,23 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
         totalSaldoPorCobrar = new BigDecimal(0);
         totalEmpaquesDetalle = new BigDecimal(0);
         totalKilosDetalle = new BigDecimal(0);
-        
+
         for (CarroDetalle dominio : lstCarroDetalle) {
             totalComisionDetalle = totalComisionDetalle.add(dominio.getComisio().subtract(dominio.getSaldoPorCobrar()));
             totalVentaDetalle = totalVentaDetalle.add(dominio.getTotalVenta());
-            totalSaldoPorCobrar =totalSaldoPorCobrar.add(dominio.getSaldoPorCobrar());
+            totalSaldoPorCobrar = totalSaldoPorCobrar.add(dominio.getSaldoPorCobrar());
             totalEmpaquesDetalle = totalEmpaquesDetalle.add(dominio.getPaquetesVendidos());
             totalKilosDetalle = totalKilosDetalle.add(dominio.getKilosVendidos());
-                    
 
         }
 
     }
 
-    public void back(){
-        viewEstate ="init";
+    public void back() {
+        viewEstate = "init";
         setTitle("Reportes de Ventas.");
     }
-    
+
     @Override
     public String delete() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -335,8 +341,15 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
     public void setTotalKilosDetalle(BigDecimal totalKilosDetalle) {
         this.totalKilosDetalle = totalKilosDetalle;
     }
-    
-    
-    
+
+    public Date getFechaUltimaVenta() {
+        return fechaUltimaVenta;
+    }
+
+    public void setFechaUltimaVenta(Date fechaUltimaVenta) {
+        this.fechaUltimaVenta = fechaUltimaVenta;
+    }
+
+  
 
 }
