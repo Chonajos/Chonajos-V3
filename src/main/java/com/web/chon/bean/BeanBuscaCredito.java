@@ -92,7 +92,7 @@ public class BeanBuscaCredito implements Serializable {
     private IfaceOperacionesCuentas ifaceOperacionesCuentas;
     @Autowired
     private IfaceCuentasBancarias ifaceCuentasBancarias;
-    
+
     @Autowired
     private IfacePagosBancarios ifacePagosBancarios;
 
@@ -174,7 +174,7 @@ public class BeanBuscaCredito implements Serializable {
     private boolean habilitaBotones;
     private boolean botonCancelar;
     private boolean botonActualizar;
-    
+
     private PagosBancarios pagoBancario;
 
     @PostConstruct
@@ -189,7 +189,7 @@ public class BeanBuscaCredito implements Serializable {
         fechaMasProximaPago = new Date();
         abono = new AbonoCredito();
         abono.setIdtipoAbonoFk(new BigDecimal(1));
-        
+
         usuarioDominio = context.getUsuarioAutenticado();
         dataAbonar = new SaldosDeudas();
         modelo = new ArrayList<SaldosDeudas>();
@@ -216,6 +216,7 @@ public class BeanBuscaCredito implements Serializable {
         opcuenta.setIdConceptoFk(idConceptoCuenta);
         comboFiltro = new BigDecimal(1);
         habilitaBotones = true;
+        idCuentaDestinoBean = new BigDecimal(1);
     }
 
     public void cancelarAbonar() {
@@ -330,7 +331,6 @@ public class BeanBuscaCredito implements Serializable {
 //                paramReport.put("folio", ac.getIdCreditoFk().toString());
 //                paramReport.put("montoliquidar", nf.format(saldoParaLiquidar));
 
-              
             default:
                 JsfUtil.addErrorMessageClean("Ocurrio un error contactar al administrador");
                 break;
@@ -409,84 +409,132 @@ public class BeanBuscaCredito implements Serializable {
         }
     }
 
+    public String validarCampos() {
+        String cadena = "";
+        switch (abono.getIdtipoAbonoFk().intValue()) {
+            case 1:
+                System.out.println("Pago en Efectivo sin campos requeridos");
+                break;
+            case 2:
+                System.out.println("Pago en Transferencia Bancaria");
+                if (idCuentaDestinoBean == null || abono.getReferencia() == null || abono.getConcepto() == null || abono.getFechaTransferencia() == null) {
+                    cadena = "Faltan algunos campos en transferencia bancaria";
+                }
+                /*Campos Requeridos
+                idCuentaBancariaFk
+                numero de referencia
+                concepto
+                fechaTransferencia
+                 */
+                break;
+            case 3:
+                System.out.println("Pago en Cheques");
+                /*
+                Campos Requeridos
+                importe
+                numero de cheque
+                fecha de cobro
+                librador
+                banco emisor
+                 */
+                if (abono.getMontoAbono() == null || abono.getNumeroCheque() == null || abono.getFechaCobro() == null || abono.getLibrador() == null || abono.getBanco() == null) {
+                    cadena = "Faltan algunos campos en Pago con cheques";
+                }
+                break;
+            case 4:
+                System.out.println("Pago en Deposito Bancario");
+                if (idCuentaDestinoBean == null || abono.getFolioElectronico() == null || abono.getFechaTransferencia() == null) {
+                    cadena = "Faltan algunos datos en Deposito a Cuentas Bancarias";
+                }
+                break;
+            default:
+                break;
+
+        }
+        return cadena;
+    }
+
     public void prepararAbono() {
-       
-        JsfUtil.addSuccessMessageClean("Abono Preparado");
-        System.out.println("Abono: " + abono);
-        BigDecimal to = abono.getMontoAbono();
-        System.out.println("Monto abono: " + to);
-        clearlista();
-        if (to != null) 
-        {
-            switch (comboFiltro.intValue()) {
+        String cadena = validarCampos();
+        if (cadena.equals("")) {
+            JsfUtil.addSuccessMessageClean("Abono Preparado");
+            System.out.println("Abono: " + abono);
+            BigDecimal to = abono.getMontoAbono();
+            System.out.println("Monto abono: " + to);
+            clearlista();
+            if (to != null) {
+                switch (comboFiltro.intValue()) {
 
-                case 1:
-                    System.out.println("Entro a case 1");
-                    for (int i = 0; i < modelo.size(); i++) {
+                    case 1:
+                        System.out.println("Entro a case 1");
+                        for (int i = 0; i < modelo.size(); i++) {
 
-                        SaldosDeudas item = modelo.get(i);
-                        to = to.subtract(item.getSaldoAtrasado(), MathContext.UNLIMITED);
-                        if (to.compareTo(new BigDecimal(0)) >= 0) {
-
-                            item.setAbonarTemporal(item.getSaldoAtrasado());
-                        } else {
-                            to = to.add(item.getSaldoAtrasado(), MathContext.UNLIMITED);
-                            item.setAbonarTemporal(to);
+                            SaldosDeudas item = modelo.get(i);
                             to = to.subtract(item.getSaldoAtrasado(), MathContext.UNLIMITED);
-                            break;
+                            if (to.compareTo(new BigDecimal(0)) >= 0) {
+
+                                item.setAbonarTemporal(item.getSaldoAtrasado());
+                            } else {
+                                to = to.add(item.getSaldoAtrasado(), MathContext.UNLIMITED);
+                                item.setAbonarTemporal(to);
+                                to = to.subtract(item.getSaldoAtrasado(), MathContext.UNLIMITED);
+                                break;
+                            }
+
                         }
 
-                    }
+                        System.out.println("Sobrante Final:  " + to);
+                        break;
+                    case 2:
+                        System.out.println("Entro a case 2");
+                        for (int i = 0; i < modelo.size(); i++) {
 
-                    System.out.println("Sobrante Final:  " + to);
-                    break;
-                case 2:
-                    System.out.println("Entro a case 2");
-                    for (int i = 0; i < modelo.size(); i++) {
-
-                        SaldosDeudas item = modelo.get(i);
-                        to = to.subtract(item.getMinimoPago(), MathContext.UNLIMITED);
-                        if (to.compareTo(new BigDecimal(0)) >= 0) {
-
-                            item.setAbonarTemporal(item.getMinimoPago());
-                        } else {
-                            to = to.add(item.getMinimoPago(), MathContext.UNLIMITED);
-                            item.setAbonarTemporal(to);
+                            SaldosDeudas item = modelo.get(i);
                             to = to.subtract(item.getMinimoPago(), MathContext.UNLIMITED);
-                            break;
+                            if (to.compareTo(new BigDecimal(0)) >= 0) {
+
+                                item.setAbonarTemporal(item.getMinimoPago());
+                            } else {
+                                to = to.add(item.getMinimoPago(), MathContext.UNLIMITED);
+                                item.setAbonarTemporal(to);
+                                to = to.subtract(item.getMinimoPago(), MathContext.UNLIMITED);
+                                break;
+                            }
+
                         }
 
-                    }
+                        break;
+                    case 3:
 
-                    break;
-                case 3:
+                        System.out.println("Entro a case 3");
+                        for (int i = 0; i < modelo.size(); i++) {
 
-                    System.out.println("Entro a case 3");
-                    for (int i = 0; i < modelo.size(); i++) {
-
-                        SaldosDeudas item = modelo.get(i);
-                        to = to.subtract(item.getSaldoLiquidar(), MathContext.UNLIMITED);
-                        if (to.compareTo(new BigDecimal(0)) >= 0) {
-                            item.setAbonarTemporal(item.getSaldoLiquidar());
-                        } else {
-                            to = to.add(item.getSaldoLiquidar(), MathContext.UNLIMITED);
-                            item.setAbonarTemporal(to);
+                            SaldosDeudas item = modelo.get(i);
                             to = to.subtract(item.getSaldoLiquidar(), MathContext.UNLIMITED);
-                            break;
+                            if (to.compareTo(new BigDecimal(0)) >= 0) {
+                                item.setAbonarTemporal(item.getSaldoLiquidar());
+                            } else {
+                                to = to.add(item.getSaldoLiquidar(), MathContext.UNLIMITED);
+                                item.setAbonarTemporal(to);
+                                to = to.subtract(item.getSaldoLiquidar(), MathContext.UNLIMITED);
+                                break;
+                            }
+
                         }
 
-                    }
-
-                    break;
-                default:
-                    JsfUtil.addErrorMessageClean("Ocurrio un error, contactar al administrador");
-                    break;
+                        break;
+                    default:
+                        JsfUtil.addErrorMessageClean("Ocurrio un error, contactar al administrador");
+                        break;
+                }
+                botonCancelar = false;
+                botonActualizar = false;
+                habilitaBotones = true;
+            } else {
+                JsfUtil.addErrorMessageClean("Primero debes agregar la forma de pago");
             }
-            botonCancelar = false;
-        botonActualizar = false;
-        habilitaBotones = true;
         } else {
-            JsfUtil.addErrorMessageClean("Primero debes agregar la forma de pago");
+            JsfUtil.addErrorMessageClean(cadena);
         }
     }
 
@@ -573,7 +621,7 @@ public class BeanBuscaCredito implements Serializable {
                                 opcaja.setIdConceptoFk(conceptoAbonoTransferencia);
                                 opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
                                 opcaja.setMonto(ac.getMontoAbono());
-                                opcaja.setIdStatusFk(statusOperacionPendiente);
+                                opcaja.setIdStatusFk(statusOperacionRealizada);
 
                                 if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
                                     JsfUtil.addSuccessMessageClean("Se ha registrado el abono correctamente");
@@ -689,7 +737,7 @@ public class BeanBuscaCredito implements Serializable {
                                 opcaja.setIdConceptoFk(conceptoAbonoDeposito);
                                 opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
                                 opcaja.setMonto(ac.getMontoAbono());
-                                opcaja.setIdStatusFk(statusOperacionPendiente);
+                                opcaja.setIdStatusFk(statusOperacionRealizada);
                                 if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
                                     JsfUtil.addSuccessMessageClean("Se ha registrado el abono correctamente");
                                 } else {
@@ -717,7 +765,7 @@ public class BeanBuscaCredito implements Serializable {
                     pagoBancario.setMonto(ac.getMontoAbono());
                     pagoBancario.setReferencia(ac.getReferencia());
                     pagoBancario.setIdOperacionCajaFk(opcaja.getIdOperacionesCajaPk());
-                    
+
                     if (ac.getIdtipoAbonoFk().intValue() == 2 || ac.getIdtipoAbonoFk().intValue() == 4) {
                         if (ifacePagosBancarios.insertaPagoBancario(pagoBancario) == 1) {
                             System.out.println("Se ingreso correctamente un deposito bancario");
@@ -1049,11 +1097,10 @@ public class BeanBuscaCredito implements Serializable {
         saldoParaLiquidar = new BigDecimal(0);
         abono.reset();
         dataAbonar.reset();
-        
+
         abono.setIdtipoAbonoFk(new BigDecimal(1));
         botonActualizar = true;
         botonCancelar = true;
-        
 
         cliente = ifaceCatCliente.getCreditoClienteByIdCliente(cliente.getId_cliente());
         if (cliente != null && cliente.getId_cliente() != null) {
@@ -1067,8 +1114,7 @@ public class BeanBuscaCredito implements Serializable {
             JsfUtil.addWarnMessage("El cliente no cuenta con creditos activos");
             modelo = new ArrayList<SaldosDeudas>();
             habilitaBotones = true;
-            
-            
+
             cliente = new Cliente();
         }
         addView();
@@ -1408,7 +1454,5 @@ public class BeanBuscaCredito implements Serializable {
     public void setBotonActualizar(boolean botonActualizar) {
         this.botonActualizar = botonActualizar;
     }
-    
-    
 
 }

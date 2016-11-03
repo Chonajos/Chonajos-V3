@@ -273,6 +273,12 @@ public class ServiceOperacionesCaja implements IfaceOperacionesCaja {
             op.setNombreBanco(obj[7] == null ? null : obj[7].toString());
             op.setCuentaBanco(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
             op.setComentarios(obj[9] == null ? null : obj[9].toString());
+            op.setIdConceptoFk(obj[10] == null ? null : new BigDecimal(obj[10].toString()));
+            op.setIdCajaFk(obj[11] == null ? null : new BigDecimal(obj[11].toString()));
+            op.setIdCuentaDestinoFk(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
+            op.setIdUserFk(obj[13] == null ? null : new BigDecimal(obj[13].toString()));
+            op.setIdSucursalFk(obj[14] == null ? null : new BigDecimal(obj[14].toString()));
+            
             op.setNumero(i);
             i+=1;
             listaOperaciones.add(op);

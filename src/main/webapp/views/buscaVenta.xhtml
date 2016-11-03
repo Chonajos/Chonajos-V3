@@ -92,7 +92,16 @@
                                 <p:outputLabel   for="cajaFiltro2" value ="Cuenta Deposito:" rendered="#{beanBuscaCredito.viewCheque =='deposito'}" /> 
                             </div>
                             <div> 
-                                <h:selectOneMenu  id="cajaFiltro2" value="#{beanBuscaVenta.idCuentaDestinoBean}" rendered="#{beanBuscaCredito.viewCheque =='deposito'}">
+                                <h:selectOneMenu  id="cajaFiltro2" value="#{beanBuscaVenta.idCuentaDestinoFk}" rendered="#{beanBuscaCredito.viewCheque =='deposito'}">
+                                    <f:selectItem itemLabel="Selecciona" itemValue="" />
+                                    <f:selectItems value="#{beanBuscaVenta.listaCuentas}" var="cuentita" itemLabel="#{cuentita.nombreBanco}" itemValue="#{cuentita.idCuentaBancariaPk}"/>
+                                </h:selectOneMenu>
+                            </div>
+                            <div>
+                                <p:outputLabel   for="cajaFiltro3" value ="Cuenta Deposito:" rendered="#{beanBuscaCredito.viewCheque =='trans'}" /> 
+                            </div>
+                            <div> 
+                                <h:selectOneMenu  id="cajaFiltro3" value="#{beanBuscaVenta.idCuentaDestinoFk}" rendered="#{beanBuscaCredito.viewCheque =='trans'}">
                                     <f:selectItem itemLabel="Selecciona" itemValue="" />
                                     <f:selectItems value="#{beanBuscaVenta.listaCuentas}" var="cuentita" itemLabel="#{cuentita.nombreBanco}" itemValue="#{cuentita.idCuentaBancariaPk}"/>
                                 </h:selectOneMenu>
@@ -155,7 +164,7 @@
                             <!--FIN Datos A CUENTA -->
                         </p:fragment>
                         <f:facet name="footer">
-                            <p:commandButton value="Registrar" update="formContent" action="#{beanBuscaVenta.updateVenta()}" oncomplete="PF('dlg').hide();"/>
+                            <p:commandButton value="Registrar" update=":formContent" action="#{beanBuscaVenta.updateVenta()}" oncomplete="PF('dlg').hide();"/>
                         </f:facet> 
                         <!--Fin Datos para Cheque-->
                     </h:panelGrid>
