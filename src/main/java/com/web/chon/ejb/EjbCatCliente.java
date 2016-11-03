@@ -32,23 +32,23 @@ public class EjbCatCliente implements NegocioCatCliente {
         try {
 
             //System.out.println("EJB_GET_CLIENTE");
-            Query query = em.createNativeQuery("select c.* ,en.ID_ENTIDAD_PK, en.NOMBRE_ENTIDAD ,en1.ID_ENTIDAD_PK, \n" +
-"en1.NOMBRE_ENTIDAD,m.NOMBRE_MUNICIPIO,m1.NOMBRE_MUNICIPIO,cp.NOMBRE_COLONIA,\n" +
-"cp.CODIGO_POSTAL,cp1.NOMBRE_COLONIA,cp1.CODIGO_POSTAL,m.ID_MUNICIPIO_PK,m.ID_MUNICIPIO_PK,cp.ID_PK,cp1.ID_PK \n" +
-"from Cliente c \n" +
-"INNER JOIN CODIGOS_POSTALES cp \n" +
-"on c.ID_CP=cp.ID_PK \n" +
-"INNER JOIN Municipios m \n" +
-"on cp.ID_MUNICIPIO_FK=m.id_municipio_pk \n" +
-"INNER JOIN ENTIDAD en \n" +
-"on en.ID_ENTIDAD_PK=m.ID_ENTIDAD_FK \n" +
-"INNER JOIN CODIGOS_POSTALES cp1 \n" +
-"on c.ID_CP_FISCAL=cp1.ID_PK \n" +
-"INNER JOIN Municipios m1 \n" +
-"on cp.ID_MUNICIPIO_FK=m1.id_municipio_pk \n" +
-"INNER JOIN ENTIDAD en1 \n" +
-"on en1.ID_ENTIDAD_PK=m1.ID_ENTIDAD_FK\n" +
-"order by c.NOMBRE");
+            Query query = em.createNativeQuery("select c.* ,en.ID_ENTIDAD_PK, en.NOMBRE_ENTIDAD ,en1.ID_ENTIDAD_PK, \n"
+                    + "en1.NOMBRE_ENTIDAD,m.NOMBRE_MUNICIPIO,m1.NOMBRE_MUNICIPIO,cp.NOMBRE_COLONIA,\n"
+                    + "cp.CODIGO_POSTAL,cp1.NOMBRE_COLONIA,cp1.CODIGO_POSTAL,m.ID_MUNICIPIO_PK,m.ID_MUNICIPIO_PK,cp.ID_PK,cp1.ID_PK \n"
+                    + "from Cliente c "
+                    + "LEFT JOIN CODIGOS_POSTALES cp "
+                    + "on c.ID_CP=cp.ID_PK "
+                    + "LEFT JOIN Municipios m "
+                    + "on cp.ID_MUNICIPIO_FK=m.id_municipio_pk "
+                    + "LEFT JOIN ENTIDAD en "
+                    + "on en.ID_ENTIDAD_PK=m.ID_ENTIDAD_FK "
+                    + "LEFT JOIN CODIGOS_POSTALES cp1 "
+                    + "on c.ID_CP_FISCAL=cp1.ID_PK "
+                    + "LEFT JOIN Municipios m1 "
+                    + "on cp.ID_MUNICIPIO_FK=m1.id_municipio_pk "
+                    + "LEFT JOIN ENTIDAD en1 "
+                    + "on en1.ID_ENTIDAD_PK=m1.ID_ENTIDAD_FK "
+                    + "order by c.NOMBRE");
             List<Object[]> resultList = null;
             resultList = query.getResultList();
             return resultList;
@@ -135,7 +135,7 @@ public class EjbCatCliente implements NegocioCatCliente {
         } catch (Exception ex) {
 
             System.out.println("error ");
-            System.out.println("error >> "+ex.getMessage().toString());
+            System.out.println("error >> " + ex.getMessage().toString());
             Logger.getLogger(EjbCatCliente.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
@@ -167,7 +167,7 @@ public class EjbCatCliente implements NegocioCatCliente {
             //query.setParameter(15, clie.getColonia());
             query.setParameter(14, clie.getClavecelular());
             query.setParameter(15, clie.getLadacelular());
-            query.setParameter(16, clie.getID_CP() ==new BigDecimal(0) ? new BigDecimal(100000) : clie.getID_CP());
+            query.setParameter(16, clie.getID_CP() == new BigDecimal(0) ? new BigDecimal(100000) : clie.getID_CP());
             query.setParameter(17, clie.getCalleFiscal());
             query.setParameter(18, clie.getNum_int_fiscal());
             query.setParameter(19, clie.getNum_ext_fiscal());
@@ -243,24 +243,24 @@ public class EjbCatCliente implements NegocioCatCliente {
     public List<Object[]> getCreditoClienteByIdCliente(BigDecimal idCliente) {
         try {
 
-            Query query = em.createNativeQuery("select c.ID_CLIENTE, c.NOMBRE ||' '|| c.APELLIDO_PATERNO ||' '|| c.APELLIDO_MATERNO AS NOMBRE_COMPLETO,NVL(c.MONTO_CREDITO,0) \n" +
-"AS MONTO_CREDITO, \n" +
-"NVL((SELECT SUM(CRE.MONTO_CREDITO) FROM CREDITO CRE WHERE CRE.ID_CLIENTE_FK =c.ID_CLIENTE AND CRE.ESTATUS_CREDITO = 1 ),0)\n" +
-"AS CREDITO_UTILIZADO,\n" +
-"(select sum(dc.monto) as DOCUMENTOS from DOCUMENTOS_COBRAR dc where dc.ID_STATUS_FK=1 and dc.ID_CLIENTE_FK=c.ID_CLIENTE) as Documentos\n" +
-"FROM CLIENTE c \n" +
-"WHERE c.ID_CLIENTE = ? AND c.STATUS =1");
+            Query query = em.createNativeQuery("select c.ID_CLIENTE, c.NOMBRE ||' '|| c.APELLIDO_PATERNO ||' '|| c.APELLIDO_MATERNO AS NOMBRE_COMPLETO,NVL(c.MONTO_CREDITO,0) \n"
+                    + "AS MONTO_CREDITO, \n"
+                    + "NVL((SELECT SUM(CRE.MONTO_CREDITO) FROM CREDITO CRE WHERE CRE.ID_CLIENTE_FK =c.ID_CLIENTE AND CRE.ESTATUS_CREDITO = 1 ),0)\n"
+                    + "AS CREDITO_UTILIZADO,\n"
+                    + "(select sum(dc.monto) as DOCUMENTOS from DOCUMENTOS_COBRAR dc where dc.ID_STATUS_FK=1 and dc.ID_CLIENTE_FK=c.ID_CLIENTE) as Documentos\n"
+                    + "FROM CLIENTE c \n"
+                    + "WHERE c.ID_CLIENTE = ? AND c.STATUS =1");
             query.setParameter(1, idCliente);
             return query.getResultList();
 
         } catch (Exception ex) {
-            
+
             Logger.getLogger(EjbCatCliente.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
     }
-    
-     @Override
+
+    @Override
     public List<Object[]> getClientesActivos() {
         try {
 
@@ -287,6 +287,5 @@ public class EjbCatCliente implements NegocioCatCliente {
             return null;
         }
     }
-
 
 }

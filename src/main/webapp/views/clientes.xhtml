@@ -32,12 +32,8 @@
                                  rowsPerPageTemplate="5,10,15" emptyMessage="No se encontraron Registros.">
 
 
-                        <!--                        <p:column headerText="Id" class="alignCenter" style="width:70px;">
-                                                    <h:outputText value="#{model.id_cliente}" />
-                                                </p:column>-->
-
-                        <p:column headerText="Nombre" filterBy="#{model.nombre} #{model.paterno} #{model.materno}" filterMatchMode="contains" filterMaxLength="120" class="#{model.status_cliente eq 1 ?'statusActivo':'statusInactivo'} alignLeft" style="width:400px;">
-                            <h:outputText value="#{model.nombre} #{model.paterno} #{model.materno}" />
+                        <p:column headerText="Id" class="alignCenter" style="width:70px;">
+                            <h:outputText value="#{model.id_cliente}" />
                         </p:column>
 
                         <p:column headerText="Nombre" filterBy="#{model.nombre} #{model.paterno} #{model.materno}" filterMatchMode="contains" filterMaxLength="120" class="#{model.status_cliente eq 1 ?'statusActivo':'statusInactivo'} alignLeft" style="width:400px;">
@@ -92,10 +88,10 @@
 
                     <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12">
                         <p:outputLabel class="col-lg-3 col-md-4 col-sm-4 col-xs-12"  for="txtselmovito" value ="Motivo de baja :" /> 
-                        <h:selectOneMenu  id="txtselmovito" class=" col-lg-5 col-md-8 col-sm-8 col-xs-12" value="#{beanCatCliente.bajaCliente.id_motivo_fk}" required="true">
+                        <p:selectOneMenu  id="txtselmovito" class=" col-lg-5 col-md-8 col-sm-8 col-xs-12" value="#{beanCatCliente.bajaCliente.id_motivo_fk}" required="true" style="width:97% !important;">
                             <f:selectItem itemLabel="Selecciona un motivo de baja" itemValue="" />
                             <f:selectItems value="#{beanCatCliente.lista_motivos}" var="motivo" itemLabel="#{motivo.nombre_motivo}" itemValue="#{motivo.id_motivo}"/>
-                        </h:selectOneMenu>
+                        </p:selectOneMenu>
                     </div>
                     <p:outputLabel class="col-lg-3 col-md-4 col-sm-4 col-xs-12"  for="txtcomentarios" value ="Comentarios:" /> 
                     <p:inputTextarea id ="txtcomentarios" rows="3" cols="25" maxlength="200" value="#{beanCatCliente.bajaCliente.comentarios}" required="true"/>
@@ -167,13 +163,13 @@
                             </div>
                             <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12" rendered="#{beanCatCliente.banderaTipoCliente=='pf'}" >
                                 <p:outputLabel class="col-lg-6 col-md-5 col-sm-4 col-xs-12 "  for="comboSexo" value ="Sexo" rendered="#{beanCatCliente.banderaTipoCliente=='pf'}" /> 
-                                <h:selectOneMenu  id="comboSexo" class="col-lg-12 col-md-7 col-sm-8 col-xs-12" 
+                                <p:selectOneMenu  id="comboSexo" class="col-lg-12 col-md-7 col-sm-8 col-xs-12" style="width:97% !important;" 
                                                   value="#{beanCatCliente.data.sexo}"
                                                   disabled="#{beanCatCliente.permissionToWrite}" rendered="#{beanCatCliente.banderaTipoCliente=='pf'}" >
                                     <f:selectItem itemLabel="MASCULINO (M)" itemValue="m"/>
                                     <f:selectItem itemLabel="FEMENINO (F)" itemValue="f"/>
 
-                                </h:selectOneMenu>
+                                </p:selectOneMenu>
                             </div>
 
                             <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 form-group" rendered="#{beanCatCliente.banderaTipoCliente=='pm'}">
@@ -217,32 +213,33 @@
                             <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 form-group">
                                 <p:outputLabel class="col-lg-12 col-md-2 col-sm-3 col-xs-12 alignLeft" style="padding: 0px !important;"  for="txtCP" value ="Código Postal" /> 
                                 <p:inputText id="txtCP" maxlength="5" class="col-lg-6 col-md-1 col-sm-3 col-xs-12" value="#{beanCatCliente.data.codigoPostal}" disabled="#{beanCatCliente.permissionToWrite}">
+                                    <p:ajax event="blur" update=":formCliente:txtMunicipio1 :formCliente:txtColonia :formCliente:txtCP :formCliente:txtEstado1" listener="#{beanCatCliente.buscaColonias}"/>
                                     <pe:keyFilter regEx="/[0-9_]/i"/>
                                 </p:inputText>
                             </div>
                             <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12">
                                 <p:outputLabel class="col-lg-12 col-md-2 col-sm-3 col-xs-12"  for="txtEstado1" value ="Estado" /> 
-                                <h:selectOneMenu  id="txtEstado1" class=" col-lg-12 col-md-2 col-sm-3 col-xs-12" value="#{beanCatCliente.data.estado_id}" disabled="#{beanCatCliente.permissionToWrite}">
+                                <p:selectOneMenu  id="txtEstado1" class=" col-lg-12 col-md-2 col-sm-3 col-xs-12" value="#{beanCatCliente.data.estado_id}" disabled="#{beanCatCliente.permissionToWrite}" style="width:97% !important;">
                                     <f:selectItem itemLabel="Selecciona un Estado" itemValue="" />
                                     <f:selectItems value="#{beanCatCliente.lista_entidades}" var="estadito" itemLabel="#{estadito.nombreEntidad}" itemValue="#{estadito.idEntidadPk}"/>
-                                    <p:ajax event="change" update=":formCliente:txtMunicipio1 " listener="#{beanCatCliente.buscaMunicipios()}" />
-                                </h:selectOneMenu>
+                                    <p:ajax event="change" update=":formCliente:txtMunicipio1 :formCliente:txtColonia :formCliente:txtCP" listener="#{beanCatCliente.buscaMunicipios(0)}" />
+                                </p:selectOneMenu>
                             </div>
                             <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12">
                                 <p:outputLabel class="col-lg-12 col-md-2 col-sm-3 col-xs-12"  for="txtMunicipio1" value ="Municipio" /> 
-                                <h:selectOneMenu  id="txtMunicipio1" class=" col-lg-12 col-md-2 col-sm-3 col-xs-12" value="#{beanCatCliente.data.municipio}" disabled="#{beanCatCliente.permissionToWrite}">
+                                <p:selectOneMenu  id="txtMunicipio1" class=" col-lg-12 col-md-2 col-sm-3 col-xs-12" value="#{beanCatCliente.data.municipio}" disabled="#{beanCatCliente.permissionToWrite}" style="width:97% !important;">
                                     <f:selectItem itemLabel="Selecciona un Municipio" itemValue="" />
                                     <f:selectItems  value="#{beanCatCliente.lista_municipios}" var="municipito" itemLabel="#{municipito.nombreMunicipio}" itemValue="#{municipito.idMunicipioPk}"/>
-                                    <p:ajax event="change" update=":formCliente:txtColonia" listener="#{beanCatCliente.buscaColoniasMun()}" />
-                                </h:selectOneMenu>
+                                    <p:ajax event="change" update=":formCliente:txtColonia :formCliente:txtCP" listener="#{beanCatCliente.buscaColoniasMun(0)}" />
+                                </p:selectOneMenu>
                             </div>
                             <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12">
                                 <p:outputLabel class="col-lg-12 col-md-2 col-sm-3 col-xs-12"  for="txtColonia" value ="Colonia" /> 
-                                <h:selectOneMenu  id="txtColonia" class=" col-lg-12 col-md-2 col-sm-3 col-xs-12" value="#{beanCatCliente.data.ID_CP}" disabled="#{beanCatCliente.permissionToWrite}">
+                                <p:selectOneMenu  id="txtColonia" class=" col-lg-12 col-md-2 col-sm-3 col-xs-12" value="#{beanCatCliente.data.ID_CP}" disabled="#{beanCatCliente.permissionToWrite}" style="width:97% !important;">
                                     <f:selectItem itemLabel="Selecciona un Colonia" itemValue="" />
                                     <f:selectItems value="#{beanCatCliente.lista_codigos_postales}" var="colonita" itemLabel="#{colonita.nombreColonia}" itemValue="#{colonita.id_cp}"/>
-                                    <p:ajax event="change" update=":formCliente:txtCP" listener="#{beanCatCliente.ActualizaCodigoPostal()}"/>     
-                                </h:selectOneMenu>
+                                    <p:ajax event="change" update=":formCliente:txtCP" listener="#{beanCatCliente.ActualizaCodigoPostal}"/>     
+                                </p:selectOneMenu>
                             </div>
                         </div>
 

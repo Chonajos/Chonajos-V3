@@ -51,15 +51,12 @@ public class BeanCatSucursal extends SimpleViewBean<Sucursal> implements Seriali
     @Autowired
     private IfaceCatCodigosPostales ifaceCatCodigosPostales;
     private ArrayList<CodigoPostal> lista_codigos_postales;
-    
-    
 
     @Override
-    public void initModel() 
-    {
+    public void initModel() {
 
         data = new Sucursal();
-        
+
         model = new PaginationLazyDataModel<Sucursal, BigDecimal>(ifaceCatSucursales, new Sucursal());
         setTitle("Catálogo de Sucursales");
         setViewEstate("init");
@@ -71,12 +68,12 @@ public class BeanCatSucursal extends SimpleViewBean<Sucursal> implements Seriali
     }
 
     public void searchById() {
-        buscaMunicipios();
+        buscaMunicipios(1);
         setTitle("Editar Sucursal");
         setViewEstate("searchById");
         permissionToWrite = false;
         permissionToWriteStatus = false;
-        System.out.println("Data: "+data);
+        System.out.println("Data: " + data);
 
     }
 
@@ -91,12 +88,12 @@ public class BeanCatSucursal extends SimpleViewBean<Sucursal> implements Seriali
     }
 
     public void viewDetails() {
-        buscaMunicipios();
+        buscaMunicipios(1);
         setTitle("Detalles de Sucursal");
         setViewEstate("viewDetails");
         permissionToWrite = true;
         permissionToWriteStatus = true;
-        System.out.println("Data: "+data);
+        System.out.println("Data: " + data);
 
     }
 
@@ -130,14 +127,39 @@ public class BeanCatSucursal extends SimpleViewBean<Sucursal> implements Seriali
 
     }
 
-    public void buscaMunicipios() {
-        lista_municipios = ifaceCatMunicipio.getMunicipios(data.getIdEntidadFk().intValue());
-        buscaColonias();
+    public void buscaMunicipios(int edit) {
+
+        if (data.getIdEntidadFk() != null) {
+            lista_municipios = ifaceCatMunicipio.getMunicipios(data.getIdEntidadFk().intValue());
+
+            for (Municipios muni : lista_municipios) {
+                System.out.println("muni " + muni.toString());
+            }
+
+        } else {
+            lista_municipios = null;
+        }
+
+        if (edit != 1) {
+            data.setIdMunicipioFK(null);
+        }
+
+        buscaColoniasMun(1);
+
     }
 
-    public void buscaColoniasMun() {
-        lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalByIdMun(data.getIdMunicipioFK().intValue());
-        data.setCodigoPostal(lista_codigos_postales.get(0).getNumeropostal());
+    public void buscaColoniasMun(int edit) {
+        if (data.getIdMunicipioFK() != null) {
+            lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalByIdMun(data.getIdMunicipioFK().intValue());
+
+        } else {
+            lista_codigos_postales = null;
+        }
+
+        if (edit != 1) {
+            data.setCpSucursal(null);
+            data.setCodigoPostal(null);
+        }
     }
 
     public void ActualizaCodigoPostal() {
@@ -153,13 +175,11 @@ public class BeanCatSucursal extends SimpleViewBean<Sucursal> implements Seriali
 
         lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalById(data.getCodigoPostal());
 
-        if (lista_codigos_postales.isEmpty()) 
-        {
+        if (lista_codigos_postales.isEmpty()) {
 
             lista_entidades = ifaceCatEntidad.getEntidades();
 
-            if (data.getIdEntidadFk() == null) 
-            {
+            if (data.getIdEntidadFk() == null) {
                 data.setIdEntidadFk(new BigDecimal(0));
             }
             lista_municipios = ifaceCatMunicipio.getMunicipios(data.getIdEntidadFk().intValue());
@@ -167,15 +187,12 @@ public class BeanCatSucursal extends SimpleViewBean<Sucursal> implements Seriali
             data.setIdMunicipioFK(null);
             lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalById("");
             data.setCodigoPostal("");
-        } 
-        else 
-        {
+        } else {
             data.setIdEntidadFk(new BigDecimal(lista_codigos_postales.get(0).getIdEntidad()));
             data.setIdMunicipioFK(new BigDecimal(lista_codigos_postales.get(0).getIdMunicipio()));
             data.setCpSucursal(new BigDecimal(lista_codigos_postales.get(0).getId_cp()));
             lista_municipios = ifaceCatMunicipio.getMunicipios(data.getIdEntidadFk().intValue());
         }
-
     }
 
     @Override

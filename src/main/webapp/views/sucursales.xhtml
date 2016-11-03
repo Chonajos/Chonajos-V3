@@ -100,35 +100,35 @@
                     <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 form-group">
                         <p:outputLabel class="col-lg-6 col-md-6 col-sm-6 col-xs-12"  for="txtCP" value ="Código Postal:" /> 
                         <p:inputText id="txtCP" maxlength="5" class="col-lg-6 col-md-6 col-sm-6 col-xs-12" value="#{beanCatSucursal.data.codigoPostal}" disabled="#{beanCatSucursal.permissionToWrite}">
-                            <p:ajax event="blur" update=":formSucursal:txtEstado1 :formSucursal:txtMunicipio1 :formSucursal:txtColonia :formSucursal:txtCP" listener="#{beanCatSucursal.buscaColonias()}"/>
+                            <p:ajax event="blur" update=":formSucursal:selectOneMenuEstado :formSucursal:selectOneMenuMunicipio :formSucursal:selectOneMenuColonia :formSucursal:txtCP" listener="#{beanCatSucursal.buscaColonias()}"/>
                             <pe:keyFilter regEx="/[0-9_]/i"/>
                         </p:inputText>
                     </div>
                     <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 form-group">
-                        <p:outputLabel class="col-lg-6 col-md-6 col-sm-6 col-xs-12"  for="txtEstado1" value ="Estado:" /> 
+                        <p:outputLabel class="col-lg-6 col-md-6 col-sm-6 col-xs-12"  for="selectOneMenuEstado" value ="Estado:" /> 
                         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 zeroPadding">
-                            <p:selectOneMenu  id="txtEstado1" value="#{beanCatSucursal.data.idEntidadFk}" disabled="#{beanCatSucursal.permissionToWrite}" style="width:100% !important;">
+                            <p:selectOneMenu  id="selectOneMenuEstado" value="#{beanCatSucursal.data.idEntidadFk}" disabled="#{beanCatSucursal.permissionToWrite}" style="width:100% !important;">
                                 <f:selectItem itemLabel="Selecciona un Estado" itemValue="" />
                                 <f:selectItems value="#{beanCatSucursal.lista_entidades}" var="estadito" itemLabel="#{estadito.nombreEntidad}" itemValue="#{estadito.idEntidadPk}"/>
-                                <p:ajax event="change" update=":formSucursal:txtMunicipio1 " listener="#{beanCatSucursal.buscaMunicipios()}" />
+                                <p:ajax event="change" update=":formSucursal:selectOneMenuMunicipio :formSucursal:selectOneMenuColonia :formSucursal:txtCP" listener="#{beanCatSucursal.buscaMunicipios(0)}" />
                             </p:selectOneMenu>
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 form-group">
-                        <p:outputLabel class="col-lg-6 col-md-6 col-sm-6 col-xs-12"  for="txtMunicipio1" value ="Municipio:" /> 
+                        <p:outputLabel class="col-lg-6 col-md-6 col-sm-6 col-xs-12"  for="selectOneMenuMunicipio" value ="Municipio:" /> 
                         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 zeroPadding">
-                            <p:selectOneMenu  id="txtMunicipio1" value="#{beanCatSucursal.data.idMunicipioFK}" disabled="#{beanCatSucursal.permissionToWrite}" style="width:100% !important;">
+                            <p:selectOneMenu  id="selectOneMenuMunicipio" value="#{beanCatSucursal.data.idMunicipioFK}" disabled="#{beanCatSucursal.permissionToWrite}" style="width:100% !important;">
                                 <f:selectItem itemLabel="Selecciona un Municipio" itemValue="" />
                                 <f:selectItems  value="#{beanCatSucursal.lista_municipios}" var="municipito" itemLabel="#{municipito.nombreMunicipio}" itemValue="#{municipito.idMunicipioPk}"/>
-                                <p:ajax event="change" update=":formSucursal:txtColonia" listener="#{beanCatSucursal.buscaColoniasMun()}" />
+                                <p:ajax event="change" update=":formSucursal:selectOneMenuColonia" listener="#{beanCatSucursal.buscaColoniasMun(0)}" />
                             </p:selectOneMenu>
                         </div>
                     </div>
 
                     <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 form-group">
-                        <p:outputLabel class="col-lg-6 col-md-6 col-sm-6 col-xs-12"  for="txtColonia" value ="Colonia:" /> 
+                        <p:outputLabel class="col-lg-6 col-md-6 col-sm-6 col-xs-12"  for="selectOneMenuColonia" value ="Colonia:" /> 
                         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 zeroPadding">
-                            <p:selectOneMenu  id="txtColonia"  value="#{beanCatSucursal.data.cpSucursal}" disabled="#{beanCatSucursal.permissionToWrite}" style="width:100% !important;">
+                            <p:selectOneMenu  id="selectOneMenuColonia"  value="#{beanCatSucursal.data.cpSucursal}" disabled="#{beanCatSucursal.permissionToWrite}" style="width:100% !important;">
                                 <f:selectItem itemLabel="Selecciona un Colonia" itemValue="" />
                                 <f:selectItems value="#{beanCatSucursal.lista_codigos_postales}" var="colonita" itemLabel="#{colonita.nombreColonia}" itemValue="#{colonita.id_cp}"/>
                                 <p:ajax event="change" update=":formSucursal:txtCP" listener="#{beanCatSucursal.ActualizaCodigoPostal()}"/> 

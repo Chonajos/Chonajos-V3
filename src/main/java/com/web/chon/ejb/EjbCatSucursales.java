@@ -121,16 +121,13 @@ public class EjbCatSucursales implements NegocioCatSucursales {
     }
 
     @Override
-    public int getNextVal() 
-    {
+    public int getNextVal() {
         Query query = em.createNativeQuery("SELECT S_SUCURSAL.nextVal FROM DUAL");
         return Integer.parseInt(query.getSingleResult().toString());
     }
 
-    
     @Override
-    public Long  getSizeListSucursales() 
-    {
+    public Long getSizeListSucursales() {
 
         try {
             Query query = em.createNativeQuery("select count(id_sucursal_pk) from sucursal");
@@ -138,44 +135,40 @@ public class EjbCatSucursales implements NegocioCatSucursales {
             System.out.printf(value.toString());
 //            Object[] o= (Object[]) query.getSingleResult();
             return value.longValue();
-            
-        } catch (Exception ex) 
-        {
+
+        } catch (Exception ex) {
             Logger.getLogger(EjbCatSucursales.class.getName()).log(Level.SEVERE, null, ex);
             return 0l;
         }
     }
 
     @Override
-    public List<Object[]> getSucursalesDetalle(int first, int pageSize) 
-    {
+    public List<Object[]> getSucursalesDetalle(int first, int pageSize) {
         try {
             System.out.println("EJB_getSucursalesDetalle");
-            
-            Query query = em.createNativeQuery("select * from (select s.*,sta.DESCRIPCION_STATUS,en.ID_ENTIDAD_PK,en.NOMBRE_ENTIDAD,m.ID_MUNICIPIO_PK,m.NOMBRE_MUNICIPIO,cp.NOMBRE_COLONIA,cp.CODIGO_POSTAL,\n" +
-"        row_number() over (order by s.ID_SUCURSAL_PK ASC) rn \n" +
-"        from sucursal s \n" +
-"				inner join STATUS sta\n" +
-"				on s.STATUS_SUCURSAL = sta.ID_PK\n" +
-"				INNER JOIN CODIGOS_POSTALES cp\n" +
-"				on s.CP_SUCURSAL=cp.ID_PK\n" +
-"				INNER JOIN Municipios m\n" +
-"				on cp.ID_MUNICIPIO_FK=m.id_municipio_pk\n" +
-"				INNER JOIN ENTIDAD en\n" +
-"				on en.ID_ENTIDAD_PK=m.ID_ENTIDAD_FK) \n" +
-"        \n" +
-"        where rn between ? and ? + ?");
-            query.setParameter(1,first);
-            query.setParameter(2,first);
-            query.setParameter(3,pageSize);
+
+            Query query = em.createNativeQuery("select * from (select s.*,sta.DESCRIPCION_STATUS,en.ID_ENTIDAD_PK,en.NOMBRE_ENTIDAD,m.ID_MUNICIPIO_PK,m.NOMBRE_MUNICIPIO,cp.NOMBRE_COLONIA,cp.CODIGO_POSTAL, "
+                    + "row_number() over (order by s.ID_SUCURSAL_PK ASC) rn "
+                    + "from sucursal s "
+                    + "LEFT join STATUS sta "
+                    + "on s.STATUS_SUCURSAL = sta.ID_PK "
+                    + "LEFT JOIN CODIGOS_POSTALES cp "
+                    + "on s.CP_SUCURSAL=cp.ID_PK "
+                    + "LEFT JOIN Municipios m "
+                    + "on cp.ID_MUNICIPIO_FK=m.id_municipio_pk "
+                    + "LEFT JOIN ENTIDAD en "
+                    + "on en.ID_ENTIDAD_PK=m.ID_ENTIDAD_FK) "
+                    + "where rn between ? and ? + ?");
+            query.setParameter(1, first);
+            query.setParameter(2, first);
+            query.setParameter(3, pageSize);
             List<Object[]> resultList = null;
             resultList = query.getResultList();
             return resultList;
-        } catch (Exception ex) 
-        {
+        } catch (Exception ex) {
             Logger.getLogger(EjbCatSucursales.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
     }
-    
+
 }
