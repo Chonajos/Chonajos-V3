@@ -35,6 +35,9 @@ public class AbonoDocumentos implements Serializable {
     private String nombreStatus;
     private BigDecimal idStatusDocumento;
     private BigDecimal idClienteFk;
+    private Date fechaDeposito;
+    private BigDecimal folioElectronico;
+    private BigDecimal idCuentaDestinoFk;
 
     public void reset() {
         idAbonoDocumentoPk = null;
@@ -56,11 +59,26 @@ public class AbonoDocumentos implements Serializable {
         nombreStatus = null;
         idStatusDocumento = null;
         idClienteFk=null;
+        fechaDeposito= null;
+        folioElectronico=null;
+        idCuentaDestinoFk=null;
     }
 
     @Override
     public String toString() {
-        return "AbonoDocumentos{" + "idAbonoDocumentoPk=" + idAbonoDocumentoPk + ", idDocumentoFk=" + idDocumentoFk + ", montoAbono=" + montoAbono + ", fechaAbono=" + fechaAbono + ", idTipoAbonoFk=" + idTipoAbonoFk + ", estatus=" + estatus + ", numeroCheque=" + numeroCheque + ", librador=" + librador + ", fechaCobro=" + fechaCobro + ", banco=" + banco + ", numeroFactura=" + numeroFactura + ", referencia=" + referencia + ", concepto=" + concepto + ", fechaTransferencia=" + fechaTransferencia + ", idUsuarioFk=" + idUsuarioFk + ", nombreCliente=" + nombreCliente + ", nombreStatus=" + nombreStatus + ", idStatusDocumento=" + idStatusDocumento + ", idClienteFk=" + idClienteFk + '}';
+        return "AbonoDocumentos{" + "idAbonoDocumentoPk=" + idAbonoDocumentoPk + ", idDocumentoFk=" + idDocumentoFk + ", montoAbono=" + montoAbono + ", fechaAbono=" + fechaAbono + ", idTipoAbonoFk=" + idTipoAbonoFk + ", estatus=" + estatus + ", numeroCheque=" + numeroCheque + ", librador=" + librador + ", fechaCobro=" + fechaCobro + ", banco=" + banco + ", numeroFactura=" + numeroFactura + ", referencia=" + referencia + ", concepto=" + concepto + ", fechaTransferencia=" + fechaTransferencia + ", idUsuarioFk=" + idUsuarioFk + ", nombreCliente=" + nombreCliente + ", nombreStatus=" + nombreStatus + ", idStatusDocumento=" + idStatusDocumento + ", idClienteFk=" + idClienteFk + ", fechaDeposito=" + fechaDeposito + ", folioElectronico=" + folioElectronico + ", idCuentaDestinoFk=" + idCuentaDestinoFk + '}';
+    }
+    
+
+    
+    
+
+    public Date getFechaDeposito() {
+        return fechaDeposito;
+    }
+
+    public void setFechaDeposito(Date fechaDeposito) {
+        this.fechaDeposito = fechaDeposito;
     }
 
     
@@ -219,5 +237,22 @@ public class AbonoDocumentos implements Serializable {
     public void setFechaTransferencia(Date fechaTransferencia) {
         this.fechaTransferencia = fechaTransferencia;
     }
+
+    public BigDecimal getFolioElectronico() {
+        return folioElectronico;
+    }
+
+    public void setFolioElectronico(BigDecimal folioElectronico) {
+        this.folioElectronico = folioElectronico;
+    }
+
+    public BigDecimal getIdCuentaDestinoFk() {
+        return idCuentaDestinoFk;
+    }
+
+    public void setIdCuentaDestinoFk(BigDecimal idCuentaDestinoFk) {
+        this.idCuentaDestinoFk = idCuentaDestinoFk;
+    }
+    
 
 }
