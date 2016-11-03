@@ -13,7 +13,8 @@ import java.util.Date;
  *
  * @author freddy
  */
-public class PagosBancarios implements Serializable{
+public class PagosBancarios implements Serializable {
+
     private static final long serialVersionUID = 1L;
     private BigDecimal idTransBancariasPk;
     private BigDecimal idCajaFk;
@@ -38,7 +39,6 @@ public class PagosBancarios implements Serializable{
     private BigDecimal numero;
     private String nombreStatus;
     private BigDecimal idOperacionCajaFk;
-    
 
     @Override
     public String toString() {
@@ -52,27 +52,23 @@ public class PagosBancarios implements Serializable{
     public void setNumero(BigDecimal numero) {
         this.numero = numero;
     }
-    
-    
-    
-    
-    public void reset()
-    {
-    idTransBancariasPk= null;
-     idCajaFk= null;
-     idConceptoFk= null;
-     idTipoFk= null;
-     comentarios= null;
-     idUserFk= null;
-     monto= null;
-      fecha= null;
-     idStatusFk= null;
-    fechaTranferencia= null;
-     folioElectronico= null;
-     fechaDeposito= null;
-     idCuentaFk= null;
-    concepto= null;
-    referencia = null;
+
+    public void reset() {
+        idTransBancariasPk = null;
+        idCajaFk = null;
+        idConceptoFk = null;
+        idTipoFk = null;
+        comentarios = null;
+        idUserFk = null;
+        monto = null;
+        fecha = null;
+        idStatusFk = null;
+        fechaTranferencia = null;
+        folioElectronico = null;
+        fechaDeposito = null;
+        idCuentaFk = null;
+        concepto = null;
+        referencia = null;
     }
 
     public BigDecimal getIdOperacionCajaFk() {
@@ -82,8 +78,6 @@ public class PagosBancarios implements Serializable{
     public void setIdOperacionCajaFk(BigDecimal idOperacionCajaFk) {
         this.idOperacionCajaFk = idOperacionCajaFk;
     }
-    
-    
 
     public String getNombreCaja() {
         return nombreCaja;
@@ -124,7 +118,6 @@ public class PagosBancarios implements Serializable{
     public void setNombreBanco(String nombreBanco) {
         this.nombreBanco = nombreBanco;
     }
-    
 
     public BigDecimal getIdTransBancariasPk() {
         return idTransBancariasPk;
@@ -253,8 +246,5 @@ public class PagosBancarios implements Serializable{
     public void setNombreStatus(String nombreStatus) {
         this.nombreStatus = nombreStatus;
     }
-    
-     
-    
-    
+
 }

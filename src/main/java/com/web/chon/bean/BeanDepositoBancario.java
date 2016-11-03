@@ -50,7 +50,7 @@ public class BeanDepositoBancario {
     private ArrayList<CuentaBancaria> listaCuentas;
     
     private static final BigDecimal salida = new BigDecimal(2);
-    private static final BigDecimal concepto = new BigDecimal(7);
+    private static final BigDecimal concepto = new BigDecimal(10);
     private static final BigDecimal statusOperacion = new BigDecimal(2);
     private BigDecimal monto;
     private String comentarios;

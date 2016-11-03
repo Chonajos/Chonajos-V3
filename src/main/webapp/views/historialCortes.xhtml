@@ -21,8 +21,8 @@
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight form-group">
                             <div>
                                 <p:commandButton value="Buscar" update=":formContent" ajax="true" action="#{beanHistorialCortes.searchCortebyIdPk()}"/>
-                                <p:commandButton value="Ver Detalle" update=":formContent" ajax="true" action="#{beanHistorialCortes.verDetalle()}" rendered="#{beanCorteCaja.viewEstate=='init'}"/>
-                                <p:commandButton value="Atrás" update=":formContent" ajax="true" action="#{beanHistorialCortes.changeView()}" rendered="#{beanCorteCaja.viewEstate=='second'}"/>
+                                <p:commandButton value="Ver Detalle" update=":formContent" ajax="true" action="#{beanHistorialCortes.verDetalle()}" rendered="#{beanHistorialCortes.viewEstate=='init'}"/>
+                                <p:commandButton value="Atrás" update=":formContent" ajax="true" action="#{beanHistorialCortes.changeView()}" rendered="#{beanHistorialCortes.viewEstate=='second'}"/>
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">

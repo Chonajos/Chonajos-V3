@@ -218,6 +218,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
         }
 
     }
+    
 
     public void calculaCambio() {
         cambio = new BigDecimal(0);

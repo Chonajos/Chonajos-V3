@@ -139,7 +139,6 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
     private ArrayList<CuentaBancaria> listaCuentas;
 
     private PagosBancarios pagoBancario;
-    private BigDecimal idCuentaDestinoBean;
 
     @PostConstruct
     public void init() {
@@ -169,6 +168,11 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
         lstTipoAbonos = ifaceTipoAbono.getAll();
         idTipoPagoFk = new BigDecimal(1);
         setViewCheque("init");
+        idCuentaDestinoFk = new BigDecimal(1);
+        fechaTransferencia = context.getFechaSistema();
+        fechaCobro = context.getFechaSistema();
+        referencia = null;
+        conceptoTransferencia = null;
     }
 
     public void addView() {
@@ -332,6 +336,70 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    public String validarCampos() {
+        String cadena = "";
+        switch (idTipoPagoFk.intValue()) {
+            case 1:
+                System.out.println("Pago en Efectivo sin campos requeridos");
+                break;
+            case 2:
+                System.out.println("Pago en Transferencia Bancaria");
+                if (idCuentaDestinoFk == null || referencia == null || conceptoTransferencia == null || fechaTransferencia == null) {
+                    cadena = "Faltan algunos campos en transferencia bancaria";
+                }
+                /*Campos Requeridos
+                idCuentaBancariaFk
+                numero de referencia
+                concepto
+                fechaTransferencia
+                 */
+                break;
+            case 3:
+                System.out.println("Pago en Cheques");
+                /*
+                Campos Requeridos
+                importe
+                numero de cheque
+                fecha de cobro
+                librador
+                banco emisor
+                 */
+                if (totalVenta == null || numeroCheque == null || fechaCobro == null || librador == null || banco == null) {
+                    cadena = "Faltan algunos campos en Pago con cheques";
+                }
+                break;
+            case 4:
+                System.out.println("Pago en Deposito Bancario");
+                if (idCuentaDestinoFk == null || folioElectronico == null || fechaTransferencia == null) {
+                    cadena = "Faltan algunos datos en Deposito a Cuentas Bancarias";
+                }
+                break;
+            default:
+                break;
+
+        }
+        return cadena;
+    }
+
+    public void resetDatos() {
+        data.reset();
+        pagoBancario.reset();
+        data.reset();
+        model.clear();
+        statusButtonPagar = true;
+        referencia = null;
+        banco = null;
+        fechaCobro = null;
+        fechaTransferencia = context.getFechaSistema();
+        fechaCobro = context.getFechaSistema();
+        folioElectronico = null;
+        factura = null;
+        conceptoTransferencia = null;
+        idTipoPagoFk = new BigDecimal(1);
+        addView();
+
+    }
+
     public void updateVenta() {
         if (data.getStatusFK() == 2) {
             JsfUtil.addErrorMessageClean("Error la venta con el folio: " + data.getFolioSucursal() + " Ya se encuentra pagada");
@@ -343,73 +411,72 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
             JsfUtil.addErrorMessage("Error la venta se encuentra cancelada");
         } else if (opcaja.getIdCajaFk() != null) {
             try {
-                verificarTipo();
-                System.out.println("Se cambió el estatus");
-
-                ifaceBuscaVenta.updateVenta(data.getIdVenta().intValue(), usuario.getIdUsuarioPk().intValue());
-                searchById();
-                JsfUtil.addSuccessMessageClean("La venta se ha pagado exitosamente");
-                opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
-                opcaja.setMonto(totalVenta);
-
-                if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
-
-                    pagoBancario.setIdCajaFk(opcaja.getIdCajaFk());
-                    pagoBancario.setComentarios("");
-                    pagoBancario.setFechaDeposito(fechaTransferencia);
-                    pagoBancario.setFechaTranferencia(fechaTransferencia);
-                    pagoBancario.setFolioElectronico(folioElectronico);
-                    pagoBancario.setIdConceptoFk(idTipoPagoFk);
-                    pagoBancario.setIdCuentaFk(idCuentaDestinoBean);
-                    pagoBancario.setIdStatusFk(new BigDecimal(2));
-                    pagoBancario.setIdTipoFk(idTipoPagoFk);
-                    pagoBancario.setIdTransBancariasPk(new BigDecimal(ifacePagosBancarios.getNextVal()));
-                    pagoBancario.setIdUserFk(usuario.getIdUsuarioPk());
-                    pagoBancario.setMonto(totalVenta);
-                    pagoBancario.setReferencia(referencia);
-                    pagoBancario.setIdOperacionCajaFk(opcaja.getIdOperacionesCajaPk());
-                    if (idTipoPagoFk.intValue() == 2 || idTipoPagoFk.intValue() == 4) {
-                        if (ifacePagosBancarios.insertaPagoBancario(pagoBancario) == 1) {
-                            System.out.println("Se ingreso correctamente un deposito bancario");
-                        } else {
-                            System.out.println("Ocurrio un error");
+                String cadena = validarCampos();
+                if (cadena.equals("")) {
+                    verificarTipo();
+                    System.out.println("Se cambió el estatus");
+                    ifaceBuscaVenta.updateVenta(data.getIdVenta().intValue(), usuario.getIdUsuarioPk().intValue());
+                    searchById();
+                    JsfUtil.addSuccessMessageClean("La venta se ha pagado exitosamente");
+                    opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
+                    opcaja.setMonto(totalVenta);
+                    if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
+                        pagoBancario.setIdCajaFk(opcaja.getIdCajaFk());
+                        pagoBancario.setComentarios("");
+                        pagoBancario.setFechaDeposito(fechaTransferencia);
+                        pagoBancario.setFechaTranferencia(fechaTransferencia);
+                        pagoBancario.setFolioElectronico(folioElectronico);
+                        pagoBancario.setIdConceptoFk(idTipoPagoFk);
+                        pagoBancario.setIdCuentaFk(idCuentaDestinoFk);
+                        pagoBancario.setIdStatusFk(new BigDecimal(2));
+                        pagoBancario.setIdTipoFk(idTipoPagoFk);
+                        pagoBancario.setIdTransBancariasPk(new BigDecimal(ifacePagosBancarios.getNextVal()));
+                        pagoBancario.setIdUserFk(usuario.getIdUsuarioPk());
+                        pagoBancario.setMonto(totalVenta);
+                        pagoBancario.setReferencia(referencia);
+                        pagoBancario.setIdOperacionCajaFk(opcaja.getIdOperacionesCajaPk());
+                        if (idTipoPagoFk.intValue() == 2 || idTipoPagoFk.intValue() == 4) {
+                            if (ifacePagosBancarios.insertaPagoBancario(pagoBancario) == 1) {
+                                System.out.println("Se ingreso correctamente un deposito bancario");
+                            } else {
+                                System.out.println("Ocurrio un error");
+                            }
                         }
-                    }
-                    if (idTipoPagoFk.intValue() == 3) {
-                        Documento d = new Documento();
-                        d.setIdDocumentoPk(new BigDecimal(ifaceDocumentos.getNextVal()));
-                        //d.setIdAbonoFk(ac.getIdAbonoCreditoPk());
-                        d.setFechaCobro(fechaCobro);
-                        //Credito c = ifaceCredito.getById(ac.getIdCreditoFk());
-                        d.setIdClienteFk(model.get(0).getIdClienteFk());
-                        d.setIdStatusFk(DOCUMENTOACTIVO);
-                        d.setIdTipoDocumento(DOCUMENTOTIPOCHEQUE);
-                        d.setMonto(totalVenta);
-                        d.setNumeroCheque(numeroCheque);
-                        d.setFactura(factura);
-                        d.setBanco(banco);
-                        d.setLibrador(librador);
-                        d.setIdFormaCobroFk(new BigDecimal(1));
-                        System.out.println("Documento: " + d.toString());
-                        //--- Insertar Documento -- //
-                        if (ifaceDocumentos.insertarDocumento(d) == 1) {
-                            System.out.println("Se ingreso corractamente el documento por cobrar");
+                        if (idTipoPagoFk.intValue() == 3) {
+                            Documento d = new Documento();
+                            d.setIdDocumentoPk(new BigDecimal(ifaceDocumentos.getNextVal()));
+                            //d.setIdAbonoFk(ac.getIdAbonoCreditoPk());
+                            d.setFechaCobro(fechaCobro);
+                            //Credito c = ifaceCredito.getById(ac.getIdCreditoFk());
+                            d.setIdClienteFk(model.get(0).getIdClienteFk());
+                            d.setIdStatusFk(DOCUMENTOACTIVO);
+                            d.setIdTipoDocumento(DOCUMENTOTIPOCHEQUE);
+                            d.setMonto(totalVenta);
+                            d.setNumeroCheque(numeroCheque);
+                            d.setFactura(factura);
+                            d.setBanco(banco);
+                            d.setLibrador(librador);
+                            d.setIdFormaCobroFk(new BigDecimal(1));
+                            System.out.println("Documento: " + d.toString());
+                            //--- Insertar Documento -- //
+                            if (ifaceDocumentos.insertarDocumento(d) == 1) {
+                                System.out.println("Se ingreso corractamente el documento por cobrar");
 
-                        } else {
-                            JsfUtil.addErrorMessageClean("Ocurrió un error al registrar el documento por cobrar");
+                            } else {
+                                JsfUtil.addErrorMessageClean("Ocurrió un error al registrar el documento por cobrar");
+                            }
                         }
+                        setParameterTicket(data.getIdVenta().intValue(), data.getFolioSucursal().intValue());
+                        generateReport();
+                        RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
+                        JsfUtil.addSuccessMessageClean("Se ha cobrado exitosamente la venta");
+
+                    } else {
+                        JsfUtil.addErrorMessageClean("Ocurrio un error al agregar operacion en caja, contactar al administrador");
                     }
-
-                    setParameterTicket(data.getIdVenta().intValue(), data.getFolioSucursal().intValue());
-                    generateReport();
-                    RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
-                    JsfUtil.addSuccessMessageClean("Se ha cobrado exitosamente la venta");
-                    data.reset();
-                    model.clear();
-                    statusButtonPagar = true;
-
+                    resetDatos();
                 } else {
-                    JsfUtil.addErrorMessageClean("Ocurrio un error al agregar operacion en caja, contactar al administrador");
+                    JsfUtil.addErrorMessageClean(cadena);
                 }
 
             } catch (Exception ex) {
@@ -436,6 +503,7 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
             JsfUtil.addWarnMessage("No se encontraron Registros.");
 
         } else {
+
             data.setNombreCliente(model.get(0).getNombreCliente());
             data.setNombreVendedor(model.get(0).getNombreVendedor());
             data.setStatusFK(model.get(0).getStatusFK());
@@ -444,17 +512,20 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
             data.setIdClienteFk(totalVenta);
             idVentaTemporal = data.getIdVenta().intValue();
             calculatotalVenta();
-            if (data.getStatusFK() == 2) {
+            System.out.println("Data: " + data.toString());
+            if (data.getStatusFK() == 2 || data.getStatusFK() == 3 || data.getStatusFK() == 4) {
                 statusButtonPagar = true;
-            }
-            System.out.println("data:" + data.getIdSucursalFk());
-            System.out.println("usuario: " + usuario.getIdSucursal());
-            if (data.getIdSucursalFk().equals(new BigDecimal(usuario.getIdSucursal()))) {
+                System.out.println("Entro aqui perro");
+                JsfUtil.addErrorMessageClean("No puedes cobrar esta venta, ya fue pagada o cancelada");
 
-                statusButtonPagar = false;
             } else {
-                JsfUtil.addWarnMessage("No puedes cobrar el folio de otra sucursal.");
-                statusButtonPagar = true;
+                if (data.getIdSucursalFk().equals(new BigDecimal(usuario.getIdSucursal()))) {
+                    statusButtonPagar = false;
+                    System.out.println("Bandera 3");
+                } else {
+                    JsfUtil.addWarnMessage("No puedes cobrar el folio de otra sucursal.");
+                    statusButtonPagar = true;
+                }
             }
         }
 
@@ -783,14 +854,6 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
 
     public void setPagoBancario(PagosBancarios pagoBancario) {
         this.pagoBancario = pagoBancario;
-    }
-
-    public BigDecimal getIdCuentaDestinoBean() {
-        return idCuentaDestinoBean;
-    }
-
-    public void setIdCuentaDestinoBean(BigDecimal idCuentaDestinoBean) {
-        this.idCuentaDestinoBean = idCuentaDestinoBean;
     }
 
 }
