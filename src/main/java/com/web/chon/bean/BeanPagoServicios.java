@@ -63,6 +63,7 @@ public class BeanPagoServicios implements Serializable {
     //--Variables para Verificar Maximo en Caja --//
     private ArrayList<TipoOperacion> lstOperacionesEntrada;
     private ArrayList<TipoOperacion> lstOperacionesSalida;
+    private ArrayList<Caja> listaSucursales;
     private CorteCaja corteAnterior;
     @Autowired
     private IfaceCorteCaja ifaceCorteCaja;
@@ -98,6 +99,9 @@ public class BeanPagoServicios implements Serializable {
         totalSalidas = new BigDecimal(0);
         saldoAnterior = new BigDecimal(0);
         nuevoSaldo = new BigDecimal(0);
+        listaSucursales = new ArrayList<Caja>();
+        System.out.println("=================idCaja: "+caja.getIdCajaPk());
+        listaSucursales = ifaceCaja.getSucursalesByIdCaja(caja.getIdCajaPk());
 
         
     }
@@ -288,5 +292,30 @@ public class BeanPagoServicios implements Serializable {
         this.idSucursalFk = idSucursalFk;
     }
 
+    public ArrayList<TipoOperacion> getLstOperacionesEntrada() {
+        return lstOperacionesEntrada;
+    }
+
+    public void setLstOperacionesEntrada(ArrayList<TipoOperacion> lstOperacionesEntrada) {
+        this.lstOperacionesEntrada = lstOperacionesEntrada;
+    }
+
+    public ArrayList<TipoOperacion> getLstOperacionesSalida() {
+        return lstOperacionesSalida;
+    }
+
+    public void setLstOperacionesSalida(ArrayList<TipoOperacion> lstOperacionesSalida) {
+        this.lstOperacionesSalida = lstOperacionesSalida;
+    }
+
+    public ArrayList<Caja> getListaSucursales() {
+        return listaSucursales;
+    }
+
+    public void setListaSucursales(ArrayList<Caja> listaSucursales) {
+        this.listaSucursales = listaSucursales;
+    }
+
+    
     
 }

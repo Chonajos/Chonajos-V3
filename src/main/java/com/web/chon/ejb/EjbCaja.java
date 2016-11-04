@@ -76,4 +76,19 @@ public class EjbCaja implements NegocioCaja {
         }
 
     }
+    @Override
+    public List<Object[]> getSucursalesByIdCaja(BigDecimal idCajaFk) {
+        try {
+            Query query = em.createNativeQuery("select sucu.ID_SUCURSAL_PK,sucu.NOMBRE_SUCURSAL from CAJA_SUCURSAL cs \n" +
+"inner join sucursal sucu on sucu.ID_SUCURSAL_PK = cs.ID_SUCURSAL_FK  where cs.ID_CAJA_FK = ? ");
+            query.setParameter(1, idCajaFk);
+            System.out.println("Query: "+query);
+            System.out.println("Variable: "+idCajaFk);
+            return query.getResultList();
+        } catch (Exception ex) {
+            Logger.getLogger(EjbCaja.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+
+    }
 }

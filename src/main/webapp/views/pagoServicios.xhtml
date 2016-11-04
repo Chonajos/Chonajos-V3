@@ -30,11 +30,11 @@
                                 <f:selectItems value="#{beanPagoServicios.listaConceptos}" var="conceptito" itemLabel="#{conceptito.nombre}" itemValue="#{conceptito.idConceptoPk}"/>
                             </h:selectOneMenu>
                         </div>
-                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12 alignLeft">
-                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12" for="txtSucursal" value="Sucursal:"/> 
-                            <h:selectOneMenu  class="col-lg-6 col-md-8 col-sm-8 col-xs-12" id="txtSucursal"  value="#{beanPagoServicios.idSucursalFk}" >
-                                <f:selectItem  itemLabel="Q-85 Mayoreo" itemValue="1"/>
-                                <f:selectItem  itemLabel="Q-85 Kilo" itemValue="2"/>
+                        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="comboSucursal" value ="Sucursal:" rendered="#{beanPagoServicios.viewEstate =='init'}" /> 
+                            <h:selectOneMenu  id="comboSucursal" class="col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanPagoServicios.idConceptoBean}" rendered="#{beanPagoServicios.viewEstate =='init'}" required="true">
+                                
+                                <f:selectItems value="#{beanPagoServicios.listaSucursales}" var="sucu" itemLabel="#{sucu.nombre}" itemValue="#{sucu.idSucursalFk}"/>
                             </h:selectOneMenu>
                         </div>
                         <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
