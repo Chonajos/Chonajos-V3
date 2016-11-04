@@ -15,6 +15,7 @@ import com.web.chon.service.IfaceCuentasBancarias;
 
 import com.web.chon.service.IfaceOperacionesCaja;
 import com.web.chon.util.JsfUtil;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import javax.annotation.PostConstruct;
@@ -28,7 +29,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Scope("view")
-public class BeanDepositoBancario {
+public class BeanDepositoBancario implements Serializable{
     private static final long serialVersionUID = 1L;
     @Autowired
     private IfaceCaja ifaceCaja;

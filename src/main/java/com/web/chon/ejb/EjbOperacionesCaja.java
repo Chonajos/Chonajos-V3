@@ -245,10 +245,9 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
 
     @Override
     public List<Object[]> getResponsables(BigDecimal idCajaFk) {
-        Query query = em.createNativeQuery("select  distinct opc.ID_USER_FK,(u.NOMBRE_USUARIO||' '||u.APATERNO_USUARIO||' '||u.AMATERNO_USUARIO) AS nombreCompleto\n"
-                + "from operaciones_caja opc\n"
-                + "inner join USUARIO u on u.ID_USUARIO_PK = opc.ID_USER_FK\n"
-                + "where opc.ID_CAJA_FK=?");
+        Query query = em.createNativeQuery("select u.ID_USUARIO_PK,(u.NOMBRE_USUARIO||' '||u.APATERNO_USUARIO||' '||u.AMATERNO_USUARIO) AS nombreCompleto \n" +
+"from caja cj inner join USUARIO u on u.ID_USUARIO_PK = cj.ID_USER_FK\n" +
+"where cj.ID_CAJA_PK = ?");
         query.setParameter(1, idCajaFk);
         return query.getResultList();
 

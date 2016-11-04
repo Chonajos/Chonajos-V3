@@ -59,7 +59,7 @@
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 "  for="autocompleteCliente" value ="Cliente:" /> 
                             <p:autoComplete  placeholder="Seleccione un Cliente" id="autocompleteCliente"  required="false" requiredMessage="Ingresa un valor para el campo Cliente." styleClass="autocomplete-input-text-media"
                                              value="#{beanVentaMayoreoRapido.cliente}" completeMethod="#{beanVentaMayoreoRapido.autoCompleteCliente}" forceSelection="true" var="cliente"  inputStyle="width: 200px"
-                                             itemLabel="#{cliente.nombreCombleto}"
+                                             itemLabel="#{cliente.nombreCompleto}"
                                              itemValue="#{cliente.id_cliente}" converter="#{clienteConverter}">
                                 
                             </p:autoComplete>
