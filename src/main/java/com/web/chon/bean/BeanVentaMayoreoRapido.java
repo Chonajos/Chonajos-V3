@@ -204,6 +204,7 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
         opcaja.setIdUserFk(usuario.getIdUsuarioPk());
         opcaja.setEntradaSalida(entradaSalida);
         opcaja.setIdStatusFk(statusOperacion);
+        opcaja.setIdSucursalFk(new BigDecimal(usuario.getIdSucursal()));
 
     }
 

@@ -32,18 +32,18 @@
                                 <f:convertNumber pattern="#,###"/>
                             </h:outputText>
                         </div>
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight">    
-                            <h:outputText  style="font-weight: bold !important" value ="Saldo Anterior Cheques:$" /> 
-                            <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanCorteCaja.saldoAnteriorCheques}"> 
-                                <f:convertNumber pattern="#,###"/>
-                            </h:outputText>
-                        </div>
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight">  
-                            <h:outputText  style="font-weight: bold !important" value ="Saldo Anterior Cuentas Bancarias:$" /> 
-                            <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanCorteCaja.saldoAnteriorCuentas}"> 
-                                <f:convertNumber pattern="#,###"/>
-                            </h:outputText>
-                        </div>
+                        <!--                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight">    
+                                                    <h:outputText  style="font-weight: bold !important" value ="Saldo Anterior Cheques:$" /> 
+                                                    <h:outputText  style="font-weight: bold !important; color: green !important;" value ="{beanCorteCaja.saldoAnteriorCheques}"> 
+                                                        <f:convertNumber pattern="#,###"/>
+                                                    </h:outputText>
+                                                </div>
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight">  
+                                                    <h:outputText  style="font-weight: bold !important" value ="Saldo Anterior Cuentas Bancarias:$" /> 
+                                                    <h:outputText  style="font-weight: bold !important; color: green !important;" value ="{beanCorteCaja.saldoAnteriorCuentas}"> 
+                                                        <f:convertNumber pattern="#,###"/>
+                                                    </h:outputText>
+                                                </div>-->
                         <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
                             <p:dataTable id="tabla" var="model" 
                                          value="#{beanCorteCaja.lstOperacionesEntrada}" 
@@ -52,7 +52,7 @@
                                          emptyMessage="No se encontraron Registros" 
                                          rendered="#{beanCorteCaja.viewEstate =='init'}">
                                 <f:facet name="header">
-                                    Entradas
+                                    (+) Entradas
                                 </f:facet>
                                 <p:column headerText="N°" width="30px;" class="alignCenter">
                                     <h:outputText value="#{model.numero}" />
@@ -90,7 +90,7 @@
                                          emptyMessage="No se encontraron Registros" 
                                          rendered="#{beanCorteCaja.viewEstate =='init'}">
                                 <f:facet name="header">
-                                    Salidas
+                                    (-) Salidas
                                 </f:facet>
                                 <p:column headerText="N°" width="30px;" class="alignCenter">
                                     <h:outputText value="#{model1.numero}" />
@@ -210,30 +210,38 @@
                             </p:columnGroup>
 
                         </p:dataTable>
-                    </div>
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight">
-                        <h:outputText  style="font-weight: bold !important" value ="Saldo Nuevo :$" /> 
-                        <p:commandLink id="ajax" update=":formContent1" oncomplete="PF('dlg').show();">
-                            <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanCorteCaja.nuevoSaldo}" />
-                        </p:commandLink>
-                    </div>
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight"> 
-                        <h:outputText  style="font-weight: bold !important" value ="Saldo Nuevo Cheques :$" /> 
-                        <p:commandLink id="ajax2" update=":formContent2" oncomplete="PF('dlg1').show();">
-                            <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanCorteCaja.nuevoSaldoCheques}" >
-                            <f:convertNumber pattern="#,###"/>
-                            </h:outputText>
-                        </p:commandLink>
-
-                      </div>
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight">   
-                        <h:outputText  style="font-weight: bold !important" value ="Saldo Nuevo Cuentas:$" /> 
                         
-                        <p:commandLink id="ajax3" update=":formContent3" oncomplete="PF('dlg2').show();">
-                            <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanCorteCaja.nuevoSaldoCuentas}" >
-                            <f:convertNumber pattern="#,###"/>
-                            </h:outputText>
-                        </p:commandLink></div>
+                    </div>
+                    <div class="col-lg-offset-9 col-md-12 col-sm-12 col-xs-12 ">
+                        <h:outputLabel class="col-lg-2 col-md-12 col-sm-12 col-xs-12"   for="txtSaldoActual" value="Saldo Actual:"/>
+                            <p:inputText  class="col-lg-1 col-md-3 col-sm-4 col-xs-6 alignRight" id="txtSaldoActual"  value ="#{beanCorteCaja.nuevoSaldo}" >
+                            <f:convertNumber type="currency" currencySymbol="$" />
+                            </p:inputText>
+<!--                            
+                        <h:outputText  style="font-weight: bold !important" value ="Saldo Actual :$" /> 
+
+                        <p:commandLink id="ajax" update=":formContent1" oncomplete="PF('dlg').show();">
+                            <h:outputText  style="font-weight: bold !important; color: green !important;" value ="{beanCorteCaja.nuevoSaldo}" />
+                        </p:commandLink>-->
+                    </div>
+                    <!--                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight"> 
+                                            <h:outputText  style="font-weight: bold !important" value ="Saldo Nuevo Cheques :$" /> 
+                                            <p:commandLink id="ajax2" update=":formContent2" oncomplete="PF('dlg1').show();">
+                                                <h:outputText  style="font-weight: bold !important; color: green !important;" value ="{beanCorteCaja.nuevoSaldoCheques}" >
+                                                <f:convertNumber pattern="#,###"/>
+                                                </h:outputText>
+                                            </p:commandLink>
+                    
+                                          </div>
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight">   
+                                            <h:outputText  style="font-weight: bold !important" value ="Saldo Nuevo Cuentas:$" /> 
+                                            
+                                            <p:commandLink id="ajax3" update=":formContent3" oncomplete="PF('dlg2').show();">
+                                                <h:outputText  style="font-weight: bold !important; color: green !important;" value ="{beanCorteCaja.nuevoSaldoCuentas}" >
+                                                <f:convertNumber pattern="#,###"/>
+                                                </h:outputText>
+                                            </p:commandLink>
+                                        </div>-->
 
                 </div>
             </p:panel>
@@ -333,7 +341,7 @@
                                 </f:convertNumber>
                             </h:outputText>
                         </p:column>
-                   
+
                         <p:columnGroup type="footer">
                             <p:row>
                                 <p:column colspan="1" />

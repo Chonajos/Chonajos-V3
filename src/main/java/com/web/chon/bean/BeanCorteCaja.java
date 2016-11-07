@@ -52,9 +52,7 @@ public class BeanCorteCaja implements Serializable {
     private ArrayList<OperacionesCaja> listaDetalleEntradasEfectivo;
     private ArrayList<OperacionesCaja> listaDetalleEntradasCheques;
     private ArrayList<OperacionesCaja> listaDetalleEntradasCuentasBancarias;
-
     private ArrayList<OperacionesCaja> listaDetalleSalidas;
-
     private ArrayList<OperacionesCaja> listaChequesEntrada;
     private ArrayList<OperacionesCaja> listaChequesSalida;
 
