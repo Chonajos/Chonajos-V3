@@ -32,7 +32,7 @@
                         </div>
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="comboSucursal" value ="Sucursal:" rendered="#{beanPagoServicios.viewEstate =='init'}" /> 
-                            <h:selectOneMenu  id="comboSucursal" class="col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanPagoServicios.idConceptoBean}" rendered="#{beanPagoServicios.viewEstate =='init'}" required="true">
+                            <h:selectOneMenu  id="comboSucursal" class="col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanPagoServicios.idSucursalFk}" rendered="#{beanPagoServicios.viewEstate =='init'}" required="true">
                                 
                                 <f:selectItems value="#{beanPagoServicios.listaSucursales}" var="sucu" itemLabel="#{sucu.nombre}" itemValue="#{sucu.idSucursalFk}"/>
                             </h:selectOneMenu>

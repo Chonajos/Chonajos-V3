@@ -83,6 +83,9 @@ public class BeanCorteCaja implements Serializable {
     private BigDecimal totalEfectivo;
     private BigDecimal totalCheques;
     private BigDecimal totalCuentasBancarias;
+    
+    private BigDecimal sumaMegaAnterior;
+    private BigDecimal sumaMegaActual;
 
     @PostConstruct
     public void init() {
@@ -109,6 +112,8 @@ public class BeanCorteCaja implements Serializable {
         totalEfectivo = cero;
         totalCheques = cero;
         totalCuentasBancarias = cero;
+        sumaMegaAnterior = cero;
+   sumaMegaActual = cero;
 
         caja = ifaceCaja.getCajaByIdUsuarioPk(usuario.getIdUsuario());
         corteAnterior = ifaceCorteCaja.getLastCorteByCaja(caja.getIdCajaPk());
@@ -148,6 +153,7 @@ public class BeanCorteCaja implements Serializable {
         //nuevoSaldo = totalEntradas.subtract(totalSalidas, MathContext.UNLIMITED);
         //nuevoSaldo = nuevoSaldo.add(saldoAnterior, MathContext.UNLIMITED);
         setDetalle();
+        sumaMegas();
 
     }
 
@@ -201,6 +207,16 @@ public class BeanCorteCaja implements Serializable {
             totalSalidas = totalSalidas.add(t.getMonto(), MathContext.UNLIMITED);
         }
     }
+    public void sumaMegas()
+    {
+        sumaMegaAnterior  = sumaMegaAnterior.add(saldoAnteriorEfectivo, MathContext.UNLIMITED);
+        sumaMegaAnterior  = sumaMegaAnterior.add(saldoAnteriorCheques, MathContext.UNLIMITED);
+        sumaMegaAnterior  = sumaMegaAnterior.add(saldoAnteriorCuentas, MathContext.UNLIMITED);
+        
+        sumaMegaActual = sumaMegaActual.add(nuevoSaldo, MathContext.UNLIMITED);
+        sumaMegaActual = sumaMegaActual.add(nuevoSaldoCheques, MathContext.UNLIMITED);
+        sumaMegaActual = sumaMegaActual.add(nuevoSaldoCuentas, MathContext.UNLIMITED);
+    }
 
     public void setDetalle() {
         listaDetalleEntradas = ifaceOperacionesCaja.getDetalles(caja.getIdCajaPk(), caja.getIdUsuarioFK(), entrada, statusAplicado);
@@ -211,7 +227,7 @@ public class BeanCorteCaja implements Serializable {
         listaDetalleEntradasEfectivo = new ArrayList<OperacionesCaja>();
         for (OperacionesCaja ope : listaDetalleEntradas) {
             System.out.println("Operacion: " + ope);
-            if (ope.getIdConceptoFk().intValue() == 10 || ope.getIdConceptoFk().intValue() == 11 || ope.getIdConceptoFk().intValue() == 7 || ope.getIdConceptoFk().intValue() == 8 || ope.getIdConceptoFk().intValue() == 9 || ope.getIdConceptoFk().intValue() == 16 || ope.getIdConceptoFk().intValue() == 13) {
+            if (ope.getIdConceptoFk().intValue() == 10 || ope.getIdConceptoFk().intValue() == 6 || ope.getIdConceptoFk().intValue() == 11 || ope.getIdConceptoFk().intValue() == 7 || ope.getIdConceptoFk().intValue() == 8 || ope.getIdConceptoFk().intValue() == 9 || ope.getIdConceptoFk().intValue() == 16 || ope.getIdConceptoFk().intValue() == 13) {
                 listaDetalleEntradasEfectivo.add(ope);
                 totalEfectivo = totalEfectivo.add(ope.getMonto(), MathContext.UNLIMITED);
             } else if (ope.getIdConceptoFk().intValue() == 30 || ope.getIdConceptoFk().intValue() == 33 || ope.getIdConceptoFk().intValue() == 27 || ope.getIdConceptoFk().intValue() == 17 || ope.getIdConceptoFk().intValue() == 36) {
@@ -228,10 +244,10 @@ public class BeanCorteCaja implements Serializable {
         System.out.println("Comenzando con salidas");
         for (OperacionesCaja ope : listaDetalleSalidas) {
             System.out.println("Operacion: " + ope);
-            if (ope.getIdConceptoFk().intValue() == 7 || ope.getIdConceptoFk().intValue() == 11 || ope.getIdConceptoFk().intValue() == 10 || ope.getIdConceptoFk().intValue() == 8 || ope.getIdConceptoFk().intValue() == 9 || ope.getIdConceptoFk().intValue() == 16 || ope.getIdConceptoFk().intValue() == 13 || ope.getIdConceptoFk().intValue() == 2 || ope.getIdConceptoFk().intValue() == 25 || ope.getIdConceptoFk().intValue() == 24
+            if (ope.getIdConceptoFk().intValue() == 7 || ope.getIdConceptoFk().intValue() == 1 || ope.getIdConceptoFk().intValue() == 3 || ope.getIdConceptoFk().intValue() == 4 || ope.getIdConceptoFk().intValue() == 6 || ope.getIdConceptoFk().intValue() == 11 || ope.getIdConceptoFk().intValue() == 10 || ope.getIdConceptoFk().intValue() == 8 || ope.getIdConceptoFk().intValue() == 9 || ope.getIdConceptoFk().intValue() == 16 || ope.getIdConceptoFk().intValue() == 13 || ope.getIdConceptoFk().intValue() == 2 || ope.getIdConceptoFk().intValue() == 25 || ope.getIdConceptoFk().intValue() == 24
                     || ope.getIdConceptoFk().intValue() == 21 || ope.getIdConceptoFk().intValue() == 20 || ope.getIdConceptoFk().intValue() == 23
-                    || ope.getIdConceptoFk().intValue() == 22 || ope.getIdConceptoFk().intValue() == 1 || ope.getIdConceptoFk().intValue() == 4
-                    || ope.getIdConceptoFk().intValue() == 3) {
+                    || ope.getIdConceptoFk().intValue() == 22 
+                   ) {
                 listaDetalleEntradasEfectivo.add(ope);
                 System.out.println("monto: " + ope.getMonto());
                 totalEfectivo = totalEfectivo.subtract(ope.getMonto(), MathContext.UNLIMITED);
@@ -532,4 +548,22 @@ public class BeanCorteCaja implements Serializable {
         this.saldoAnteriorEfectivo = saldoAnteriorEfectivo;
     }
 
+    public BigDecimal getSumaMegaAnterior() {
+        return sumaMegaAnterior;
+    }
+
+    public void setSumaMegaAnterior(BigDecimal sumaMegaAnterior) {
+        this.sumaMegaAnterior = sumaMegaAnterior;
+    }
+
+    public BigDecimal getSumaMegaActual() {
+        return sumaMegaActual;
+    }
+
+    public void setSumaMegaActual(BigDecimal sumaMegaActual) {
+        this.sumaMegaActual = sumaMegaActual;
+    }
+
+    
+    
 }

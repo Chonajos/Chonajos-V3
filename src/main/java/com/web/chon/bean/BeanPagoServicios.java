@@ -82,7 +82,7 @@ public class BeanPagoServicios implements Serializable {
         usuario = context.getUsuarioAutenticado();
         setTitle("Pago de Servicios");
         setViewEstate("init");
-        idSucursalFk = new BigDecimal(1);
+        
         listaConceptos = ifaceConceptos.getConceptosByTipoOperacion(new BigDecimal(1));
         caja = new Caja();
         caja = ifaceCaja.getCajaByIdUsuarioPk(usuario.getIdUsuario());

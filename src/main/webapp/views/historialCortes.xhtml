@@ -24,6 +24,15 @@
                                 <p:commandButton value="Ver Detalle" update=":formContent" ajax="true" action="#{beanHistorialCortes.verDetalle()}" rendered="#{beanHistorialCortes.viewEstate=='init'}"/>
                                 <p:commandButton value="Atrás" update=":formContent" ajax="true" action="#{beanHistorialCortes.changeView()}" rendered="#{beanHistorialCortes.viewEstate=='second'}"/>
                             </div>
+                             <div class="col-lg-offset-8 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <p:commandLink id="ajax2" update=":formContent10" oncomplete="PF('dlg10').show();">
+                            <h:outputText  class="col-lg-3 col-md-3 col-sm-4 col-xs-6" value ="Saldo Anterior = " />
+                        </p:commandLink>
+                                <p:inputText  class="col-lg-1 col-md-3 col-sm-4 col-xs-6 alignRight" id="txtSaldoAnterior"  value ="#{beanHistorialCortes.sumaMegaAnterior}" >
+                            <f:convertNumber type="currency" currencySymbol="$" />
+                        </p:inputText>
+                            </div>
+
                         </div>
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="cajaFiltro" value ="Caja " rendered="#{beanHistorialCortes.viewEstate =='init'}" /> 
@@ -76,29 +85,7 @@
                        
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight form-group">
-                           
-         
-                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight">
-                                <h:outputText  style="font-weight: bold !important" value ="Saldo Anterior :$" /> 
-                                <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanHistorialCortes.saldoAnteriorEfectivo}"> 
-                                    <f:convertNumber pattern="#,###"/>
-                                </h:outputText>
-                                 </div>
-                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight ">    
-                                <h:outputText  style="font-weight: bold !important" value ="Saldo Anterior Cheques:$" /> 
-                                <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanHistorialCortes.saldoAnteriorCheques}"> 
-                                    <f:convertNumber pattern="#,###"/>
-                                </h:outputText>
-                                 </div>
-                              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight">  
-                                <h:outputText  style="font-weight: bold !important" value ="Saldo Anterior Cuentas Bancarias:$" /> 
-                                <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanHistorialCortes.saldoAnteriorCuentas}"> 
-                                    <f:convertNumber pattern="#,###"/>
-                                </h:outputText>
-                            </div>
-                            
-                        </div>
+                        
                         <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
                             <p:dataTable id="tabla" var="model" 
                                          value="#{beanHistorialCortes.lstOperacionesEntrada}" 
@@ -265,32 +252,18 @@
                             </p:columnGroup>
 
                         </p:dataTable>
-                    </div>
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight">
-                        <h:outputText  style="font-weight: bold !important" value ="Saldo Nuevo :$" /> 
-                        <p:commandLink id="ajax" update=":formContent1" oncomplete="PF('dlg').show();">
-                            <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanHistorialCortes.nuevoSaldo}" />
+                        <div class="col-lg-offset-7 col-md-12 col-sm-12 col-xs-12 ">
+                        <p:commandLink id="ajax" update=":formContent11" oncomplete="PF('dlg11').show();">
+                            <h:outputText  class="col-lg-3 col-md-3 col-sm-4 col-xs-6" value ="Saldo Actual = " />
                         </p:commandLink>
+                            <p:inputText  class="col-lg-2 col-md-3 col-sm-4 col-xs-6 alignRight" id="txtSaldoActual"  value ="#{beanHistorialCortes.sumaMegaActual}" >
+                            <f:convertNumber type="currency" currencySymbol="$" />
+                        </p:inputText>
+                            </div>
                     </div>
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight"> 
-                        <h:outputText  style="font-weight: bold !important" value ="Saldo Nuevo Cheques :$" /> 
-                        <p:commandLink id="ajax2" update=":formContent2" oncomplete="PF('dlg1').show();">
-                            <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanHistorialCortes.nuevoSaldoCheques}" >
-                            <f:convertNumber pattern="#,###"/>
-                            </h:outputText>
-                        </p:commandLink>
-
-                      </div>
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight">   
-                        <h:outputText  style="font-weight: bold !important" value ="Saldo Nuevo Cuentas:$" /> 
-                        
-                        <p:commandLink id="ajax3" update=":formContent3" oncomplete="PF('dlg2').show();">
-                            <h:outputText  style="font-weight: bold !important; color: green !important;" value ="#{beanHistorialCortes.nuevoSaldoCuentas}" >
-                            <f:convertNumber pattern="#,###"/>
-                            </h:outputText>
-                        </p:commandLink></div>
-
-                </div>
+                    </div>
+                   
+                    
             </p:panel>
         </h:form>
         <p:dialog  id="dialogw" header="Detalle Efectivo" widgetVar="dlg"  modal="true" resizable="false" height="250" width="500">
@@ -409,6 +382,58 @@
 
             </h:form>
         </p:dialog>
+               <p:dialog  id="dialogw10" header="Detalle Saldo Anterior" widgetVar="dlg10"  modal="true" resizable="false" height="150" width="300">
+            <h:form id="formContent10">
+                <h:body>
+                    <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 form-group" >
+                            <p:outputLabel class="col-lg-8 col-md-4 col-sm-4 col-xs-12 alignLeft" id="labelEmpaque" for="txtCantidadEmpaque" value ="Efectivo: "  /> 
+                            <p:inputText id="txtCantidadEmpaque" maxlength="6" class=" col-lg-4 col-md-8 col-sm-8 col-xs-12 alignRight"  value="#{beanHistorialCortes.saldoAnteriorEfectivo}"> 
+                           <f:convertNumber type="currency" currencySymbol="$" />
+                        </p:inputText>
+                    </div>
+                    <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 form-group" >
+                            <p:outputLabel class="col-lg-8 col-md-4 col-sm-4 col-xs-12 alignLeft" for="txtAnteriorCheques" value ="Cheques: "  /> 
+                            <p:inputText id="txtAnteriorCheques" maxlength="6" class=" col-lg-4 col-md-8 col-sm-8 col-xs-12 alignRight"  value="#{beanHistorialCortes.saldoAnteriorCheques}"> 
+                           <f:convertNumber type="currency" currencySymbol="$" />
+                        </p:inputText>
+                    </div>
+                    <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 form-group" >
+                            <p:outputLabel class="col-lg-8 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="txtChequesAnteior" value ="Cuentas Bancarias: "  /> 
+                            <p:inputText id="txtChequesAnteior" maxlength="6" class=" col-lg-4 col-md-8 col-sm-8 col-xs-12 alignRight"  value="#{beanHistorialCortes.saldoAnteriorCuentas}"> 
+                           <f:convertNumber type="currency" currencySymbol="$" />
+                        </p:inputText>
+                    </div>
+                </h:body>
+
+            </h:form>
+        </p:dialog>
+        
+        <p:dialog  id="dialogw11" header="Detalle Saldo Aactual" widgetVar="dlg11"  modal="true" resizable="false" height="150" width="300">
+            <h:form id="formContent11">
+                <h:body>
+                    <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 form-group" >
+                            <p:outputLabel class="col-lg-8 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="txtActualEfectivo" value ="Efectivo: "  /> 
+                            <p:inputText id="txtActualEfectivo" maxlength="6" class=" col-lg-4 col-md-8 col-sm-8 col-xs-12 alignRight"  value="#{beanHistorialCortes.nuevoSaldo}"> 
+                           <f:convertNumber type="currency" currencySymbol="$" />
+                        </p:inputText>
+                    </div>
+                    <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 form-group" >
+                            <p:outputLabel class="col-lg-8 col-md-4 col-sm-4 col-xs-12 alignLeft" for="txtActualCheques" value ="Cheques: "  /> 
+                            <p:inputText id="txtActualCheques" maxlength="6" class=" col-lg-4 col-md-8 col-sm-8 col-xs-12 alignRight"  value="#{beanHistorialCortes.nuevoSaldoCheques}"> 
+                           <f:convertNumber type="currency" currencySymbol="$" />
+                        </p:inputText>
+                    </div>
+                    <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 form-group" >
+                            <p:outputLabel class="col-lg-8 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="txtActualCuentas" value ="Cuentas Bancarias: "  /> 
+                            <p:inputText id="txtActualCuentas" maxlength="6" class=" col-lg-4 col-md-8 col-sm-8 col-xs-12 alignRight"  value="#{beanHistorialCortes.nuevoSaldoCuentas}"> 
+                           <f:convertNumber type="currency" currencySymbol="$" />
+                        </p:inputText>
+                    </div>
+                </h:body>
+
+            </h:form>
+        </p:dialog>
+
             
     </ui:define>
 </ui:composition>

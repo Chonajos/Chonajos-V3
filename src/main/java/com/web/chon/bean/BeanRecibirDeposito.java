@@ -108,12 +108,14 @@ public class BeanRecibirDeposito implements Serializable {
 
         opcaja.setIdStatusFk(statusAprobada);
 
-        if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
-            ifaceOperacionesCaja.updateStatusConcepto(data1.getIdOperacionCajaFk(), statusAprobada, data1.getIdConceptoFk());
-            JsfUtil.addSuccessMessageClean("Transferencia Recibida Correctamente");
-            data1.setIdStatusFk(new BigDecimal(3));
-            ifacePagosBancarios.updatePagoBancario(data1);
-            listaDepositosTransferencias = ifacePagosBancarios.getPagosPendientes();
+       // if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) 
+       // {
+            if(ifaceOperacionesCaja.updateStatusConcepto(data1.getIdOperacionCajaFk(), statusAprobada, data1.getIdConceptoFk())==1)
+            {
+                JsfUtil.addSuccessMessageClean("Transferencia Recibida Correctamente");
+                data1.setIdStatusFk(new BigDecimal(3));
+                ifacePagosBancarios.updatePagoBancario(data1);
+                listaDepositosTransferencias = ifacePagosBancarios.getPagosPendientes();
         } else {
             JsfUtil.addErrorMessageClean("Ocurrió un error al recibir la transferencia");
         }
@@ -131,23 +133,6 @@ public class BeanRecibirDeposito implements Serializable {
              {
                 JsfUtil.addSuccessMessageClean("Se ha recibido el Depósito Correctamente");
                 lstDespositosEntrantes = ifaceOperacionesCaja.getDepositosEntrantes();
-//                opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
-//                opcaja.setIdCajaFk(data.getIdCajaFk());
-//                opcaja.setIdUserFk(data.getIdUserFk());
-//                opcaja.setIdConceptoFk(data.getIdConceptoFk());
-//                opcaja.setEntradaSalida(new BigDecimal(2));
-//                opcaja.setIdStatusFk(new BigDecimal(1));
-//                opcaja.setMonto(data.getMonto());
-//                opcaja.setEntradaSalida(entrada);
-//
-//                System.out.println("-----------------------OpCaja: " + opcaja.toString());
-//                if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) 
-//                {
-//                    JsfUtil.addSuccessMessageClean("Deposito Recibido Correctamente");
-//                    lstDespositosEntrantes = ifaceOperacionesCaja.getDepositosEntrantes();
-//                } else {
-//                    JsfUtil.addErrorMessageClean("Ocurrió un error al recibir el deposito");
-//                }
             }
             else
             {

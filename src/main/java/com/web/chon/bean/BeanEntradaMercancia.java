@@ -202,17 +202,16 @@ public class BeanEntradaMercancia implements Serializable {
                 entrada_mercancia.setIdCarroSucursal(new BigDecimal(idCarroSucursal + 1));
 
                 int mercanciaOrdenada = ifaceEntradaMercancia.insertEntradaMercancia(entrada_mercancia);
-                if (mercanciaOrdenada != 0) {
-                    for (int i = 0; i < listaMercanciaProducto.size(); i++) {
-
+                if (mercanciaOrdenada != 0) 
+                {
+                    for (int i = 0; i < listaMercanciaProducto.size(); i++) 
+                    {
                         EntradaMercanciaProducto producto = new EntradaMercanciaProducto();
-
                         producto = listaMercanciaProducto.get(i);
                         int idEnTMerPro = ifaceEntradaMercanciaProducto.getNextVal();
                         producto.setIdEmpPK(new BigDecimal(idEnTMerPro));
                         producto.setIdEmFK(new BigDecimal(idEntradaMercancia));
                         producto.setKilospromprod(producto.getKilosTotalesProducto().divide(producto.getCantidadPaquetes(), 2, RoundingMode.HALF_EVEN));
-
                         //int idEntradaMercanciaProducto = ifaceEntradaMercanciaProducto.getNextVal();
                         if (ifaceEntradaMercanciaProducto.insertEntradaMercanciaProducto(producto) != 0) {
                             //BUSCAR SI YA EXISTE EN LA TABLA EXISTENCIA PRODUCTO.
@@ -221,7 +220,7 @@ public class BeanEntradaMercancia implements Serializable {
                             ep.setIdTipoEmpaqueFK(producto.getIdTipoEmpaqueFK());
                             ep.setKilosTotalesProducto(producto.getKilosTotalesProducto());
                             ep.setCantidadPaquetes(producto.getCantidadPaquetes());
-                            //ep.setComentarios(producto.getComentarios());
+                            ep.setComentarios(producto.getComentarios());
                             ep.setIdBodegaFK(producto.getIdBodegaFK());
                             ep.setIdTipoConvenio(producto.getIdTipoConvenio());
                             ep.setPrecio(producto.getPrecio());
@@ -229,24 +228,8 @@ public class BeanEntradaMercancia implements Serializable {
                             ep.setIdSucursal(entrada_mercancia.getIdSucursalFK());
                             ep.setIdProvedor(entrada_mercancia.getIdProvedorFK());
                             ep.setIdEntradaMercanciaProductoFK(new BigDecimal(idEnTMerPro));
-
-//                            existencia_repetida = ifaceNegocioExistencia.getExistenciaProductoRepetidos(entrada_mercancia.getIdSucursalFK(), producto.getIdSubProductoFK(), producto.getIdTipoEmpaqueFK(), producto.getIdBodegaFK(), entrada_mercancia.getIdProvedorFK(), producto.getIdTipoConvenio());
-//                            int bandera = 0;
-//                            if (existencia_repetida == null || existencia_repetida.isEmpty()) 
-//                            {
-//                                System.out.println("No existe ese registro y se agrega uno  nuevo.");
-//                                bandera = ifaceNegocioExistencia.insertExistenciaProducto(ep);
-//                            } else 
-//                            {
-//                                System.out.println("Ya existe y sumamos cantidades y kilos");
-//                                ExistenciaProducto existencia_temporal = new ExistenciaProducto();
-//                                existencia_temporal = existencia_repetida.get(0);
-//                                ep.setIdExistenciaProductoPk(existencia_temporal.getIdExistenciaProductoPk());
-//                                ep.setCantidadPaquetes(ep.getCantidadPaquetes().add(existencia_temporal.getCantidadPaquetes(), MathContext.UNLIMITED));
-//                                ep.setKilosTotalesProducto(ep.getKilosTotalesProducto().add(existencia_temporal.getKilosTotalesProducto(), MathContext.UNLIMITED));
-//                                bandera = ifaceNegocioExistencia.updateCantidadKilo(ep);
-//                            }
-                            if (ifaceNegocioExistencia.insertExistenciaProducto(ep) == 1) {
+                            if (ifaceNegocioExistencia.insertExistenciaProducto(ep) == 1) 
+                            {
                                 JsfUtil.addSuccessMessageClean("¡Registro de Mercancias correcto !");
                             } else {
                                 JsfUtil.addErrorMessage("Error!", "Ocurrio un error al registrar la mercancia en existencias");
@@ -714,14 +697,7 @@ public class BeanEntradaMercancia implements Serializable {
         this.listaBodegas = listaBodegas;
     }
 
-    public IfaceNegocioExistencia getIfaceNegocioExistencia() {
-        return ifaceNegocioExistencia;
-    }
-
-    public void setIfaceNegocioExistencia(IfaceNegocioExistencia ifaceNegocioExistencia) {
-        this.ifaceNegocioExistencia = ifaceNegocioExistencia;
-    }
-
+  
     public BigDecimal getKilos() {
         return kilos;
     }
