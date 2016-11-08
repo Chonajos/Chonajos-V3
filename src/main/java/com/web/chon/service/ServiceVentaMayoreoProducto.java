@@ -119,11 +119,11 @@ public class ServiceVentaMayoreoProducto implements IfaceVentaMayoreoProducto {
     }
 
     @Override
-    public ArrayList<MayoreoProductoEntradaProducto> getVentaByIdSucursalAndCarro(BigDecimal idSucursal, BigDecimal carro) {
+    public ArrayList<MayoreoProductoEntradaProducto> getVentaByIdSucursalAndCarro(BigDecimal idSucursal, BigDecimal carro,String fechaInicio,String fechaFin) {
         getEjb();
         try {
             ArrayList<MayoreoProductoEntradaProducto> lstMayoreoProductoEntradaProducto = new ArrayList<MayoreoProductoEntradaProducto>();
-            List<Object[]> lstObject = ejb.getVentaByIdSucursalAndCarro(idSucursal, carro);
+            List<Object[]> lstObject = ejb.getVentaByIdSucursalAndCarro(idSucursal, carro,fechaInicio,fechaFin);
             for (Object[] obj : lstObject) {
                 MayoreoProductoEntradaProducto dominio = new MayoreoProductoEntradaProducto();
 

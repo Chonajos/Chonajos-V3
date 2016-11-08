@@ -12,11 +12,14 @@ import com.web.chon.service.IfaceCatProvedores;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceEntradaMercancia;
 import com.web.chon.service.IfaceVentaMayoreo;
+import com.web.chon.util.JsfUtil;
+import com.web.chon.util.TiempoUtil;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.annotation.PostConstruct;
+import net.sf.jasperreports.compilers.JavaScriptEvaluatorScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -67,8 +70,12 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
     private String title;
     private String viewEstate;
     private String tipoReporte;
+    private String strFechaInicio;
+    private String strFechaFin;
 
     private Date fechaUltimaVenta;
+    private Date fechaFin;
+    private Date fechaInicio;
 
     @PostConstruct
     public void init() {
@@ -81,6 +88,9 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
         lstCarros = ifaceEntradaMercancia.getCarrosByIdSucursalAnsIdProvedor(idSucursal, null);
         tipoReporte = "cliente";
         carroDetalleGeneral = new CarroDetalleGeneral();
+
+        fechaInicio = context.getFechaSistema();
+        fechaFin = context.getFechaSistema();
 
         setTitle("Reportes de Ventas.");
         setViewEstate("init");
@@ -112,7 +122,20 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
     }
 
     public void buscar() {
-        lstCarroDetalleGeneral = ifaceEntradaMercancia.getReporteGeneralCarro(idSucursal, idProvedor, carroSucursal);
+
+        //Si el no se a selecionado un carro ni un rango de fecha se ponen el rango de fechas con el dia de hoy
+        if (carroSucursal == null && (fechaInicio == null || fechaFin == null)) {
+            fechaFin = context.getFechaSistema();
+            fechaInicio = context.getFechaSistema();
+        }
+
+        //validamos que el ramgo de fecha no sobrepase 90 dias
+        if (TiempoUtil.diferenciasDeFechas(fechaInicio, fechaFin) > 90) {
+            JsfUtil.addErrorMessage("No se puede realizar una busqueda con un intervalo de fechas mayor a 90 dias.");
+            return;
+        }
+
+        lstCarroDetalleGeneral = ifaceEntradaMercancia.getReporteGeneralCarro(idSucursal, idProvedor, carroSucursal, strFechaInicio, strFechaFin);
         calcularTotalesGeneral();
 
     }
@@ -370,7 +393,21 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
     public void setTipoReporte(String tipoReporte) {
         this.tipoReporte = tipoReporte;
     }
-    
-    
+
+    public Date getFechaFin() {
+        return fechaFin;
+    }
+
+    public void setFechaFin(Date fechaFin) {
+        this.fechaFin = fechaFin;
+    }
+
+    public Date getFechaInicio() {
+        return fechaInicio;
+    }
+
+    public void setFechaInicio(Date fechaInicio) {
+        this.fechaInicio = fechaInicio;
+    }
 
 }

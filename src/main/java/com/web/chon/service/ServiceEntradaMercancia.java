@@ -302,7 +302,7 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
     }
 
     @Override
-    public ArrayList<CarroDetalleGeneral> getReporteGeneralCarro(BigDecimal idSucursal, BigDecimal idProvedor, BigDecimal carro) {
+    public ArrayList<CarroDetalleGeneral> getReporteGeneralCarro(BigDecimal idSucursal, BigDecimal idProvedor, BigDecimal carro,String fechaInicio,String fechaFin) {
 
         getEjb();
 
@@ -320,7 +320,7 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
             dominio.setFecha(obj[2] == null ? null : (Date) obj[2]);
             dominio.setNombreProvedor(obj[3] == null ? "" : obj[3].toString());
 
-            ArrayList<MayoreoProductoEntradaProducto> lstMayoreoProductoEntradaProducto = ifaceVentaMayoreoProducto.getVentaByIdSucursalAndCarro(idSucursal, dominio.getCarro());
+            ArrayList<MayoreoProductoEntradaProducto> lstMayoreoProductoEntradaProducto = ifaceVentaMayoreoProducto.getVentaByIdSucursalAndCarro(idSucursal, dominio.getCarro(),fechaInicio,fechaFin);
             //Se calculan las ventas, comisiones y el status del  carro
             String status = "Vendido";
             BigDecimal venta = new BigDecimal(0);
