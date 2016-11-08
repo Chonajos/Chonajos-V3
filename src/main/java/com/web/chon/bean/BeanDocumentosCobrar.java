@@ -148,7 +148,10 @@ public class BeanDocumentosCobrar implements Serializable {
 
     private static final BigDecimal entrada = new BigDecimal(1);
     private static final BigDecimal salida = new BigDecimal(2);
-    private static final BigDecimal statusOperacion = new BigDecimal(1);
+
+    private static final BigDecimal statusOperacionRealizada = new BigDecimal(1);
+    private static final BigDecimal statusOperacionPendiente = new BigDecimal(2);
+    private static final BigDecimal statusOperacionRechazada = new BigDecimal(3);
 
     private static final BigDecimal conceptoAbonoDocumentoEfectivo = new BigDecimal(13);
     private static final BigDecimal conceptoAbonoDocumentoTransferencia = new BigDecimal(35);
@@ -203,7 +206,7 @@ public class BeanDocumentosCobrar implements Serializable {
         opcaja = new OperacionesCaja();
         opcaja.setIdCajaFk(caja.getIdCajaPk());
         opcaja.setIdUserFk(usuario.getIdUsuario());
-        opcaja.setIdStatusFk(statusOperacion);
+        opcaja.setIdStatusFk(statusOperacionRealizada);
         opcaja.setIdSucursalFk(idSucursalFk);
 
         opcuenta = new OperacionesCuentas();

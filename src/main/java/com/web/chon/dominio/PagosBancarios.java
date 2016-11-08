@@ -42,15 +42,7 @@ public class PagosBancarios implements Serializable {
 
     @Override
     public String toString() {
-        return "PagosBancarios{" + "idTransBancariasPk=" + idTransBancariasPk + ", idCajaFk=" + idCajaFk + ", idConceptoFk=" + idConceptoFk + ", idTipoFk=" + idTipoFk + ", comentarios=" + comentarios + ", idUserFk=" + idUserFk + ", monto=" + monto + ", fecha=" + fecha + ", idStatusFk=" + idStatusFk + ", fechaTranferencia=" + fechaTranferencia + ", folioElectronico=" + folioElectronico + ", fechaDeposito=" + fechaDeposito + ", idCuentaFk=" + idCuentaFk + ", concepto=" + concepto + ", referencia=" + referencia + '}';
-    }
-
-    public BigDecimal getNumero() {
-        return numero;
-    }
-
-    public void setNumero(BigDecimal numero) {
-        this.numero = numero;
+        return "PagosBancarios{" + "idTransBancariasPk=" + idTransBancariasPk + ", idCajaFk=" + idCajaFk + ", idConceptoFk=" + idConceptoFk + ", idTipoFk=" + idTipoFk + ", comentarios=" + comentarios + ", idUserFk=" + idUserFk + ", monto=" + monto + ", fecha=" + fecha + ", idStatusFk=" + idStatusFk + ", fechaTranferencia=" + fechaTranferencia + ", folioElectronico=" + folioElectronico + ", fechaDeposito=" + fechaDeposito + ", idCuentaFk=" + idCuentaFk + ", concepto=" + concepto + ", referencia=" + referencia + ", nombreCaja=" + nombreCaja + ", nombreConcepto=" + nombreConcepto + ", nombreTipoAbono=" + nombreTipoAbono + ", nombreUsuario=" + nombreUsuario + ", nombreBanco=" + nombreBanco + ", numero=" + numero + ", nombreStatus=" + nombreStatus + ", idOperacionCajaFk=" + idOperacionCajaFk + '}';
     }
 
     public void reset() {
@@ -69,8 +61,18 @@ public class PagosBancarios implements Serializable {
         idCuentaFk = null;
         concepto = null;
         referencia = null;
+        idOperacionCajaFk=null;
+    }
+    public BigDecimal getNumero() {
+        return numero;
     }
 
+    public void setNumero(BigDecimal numero) {
+        this.numero = numero;
+    }
+
+
+    
     public BigDecimal getIdOperacionCajaFk() {
         return idOperacionCajaFk;
     }

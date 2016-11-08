@@ -28,7 +28,7 @@
                         <p:dataTable id="tabla" var="model" 
                                      value="#{beanRecibirDeposito.lstDespositosEntrantes}" 
                                      scrollable="true"
-                                     scrollHeight="150" styleClass="ui-datatable-hor-scroll" 
+                                      styleClass="ui-datatable-hor-scroll" 
                                      emptyMessage="No se encontraron Registros" 
                                      rendered="#{beanRecibirDeposito.viewEstate =='init'}">
                             <p:column headerText="N° Operación" width="60px;" class="alignCenter">
@@ -76,7 +76,8 @@
                         <p:dataTable id="tabla2" var="model1" 
                                      value="#{beanRecibirDeposito.listaDepositosTransferencias}" 
                                      scrollable="true"
-                                     scrollHeight="150" styleClass="ui-datatable-hor-scroll" 
+                                     
+                                     styleClass="ui-datatable-hor-scroll" 
                                      emptyMessage="No se encontraron Registros" 
                                      rendered="#{beanRecibirDeposito.viewEstate =='init'}">
                             <p:column headerText="N° Operación" width="60px;" class="alignCenter">

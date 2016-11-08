@@ -105,7 +105,9 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
 
     private int idVentaTemporal; //utilizado para comprobacion de venta 
     private static final BigDecimal entradaSalida = new BigDecimal(1);
-    private static final BigDecimal statusOperacion = new BigDecimal(1);
+    private static final BigDecimal statusOperacionRealizada = new BigDecimal(1);
+    private static final BigDecimal statusOperacionPendiente = new BigDecimal(2);
+    private static final BigDecimal statusOperacionRechazada = new BigDecimal(3);
     //private static final BigDecimal concepto = new BigDecimal(8);
 
     private static final BigDecimal conceptoMenudeoEfectivo = new BigDecimal(8);
@@ -162,7 +164,7 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
         //opcaja.setIdConceptoFk(concepto);
         opcaja.setIdUserFk(usuario.getIdUsuarioPk());
         opcaja.setEntradaSalida(entradaSalida);
-        opcaja.setIdStatusFk(statusOperacion);
+        opcaja.setIdStatusFk(statusOperacionRealizada);
         opcaja.setIdSucursalFk(new BigDecimal(usuario.getIdSucursal()));
         listaCuentas = ifaceCuentasBancarias.getCuentas();
         lstTipoAbonos = ifaceTipoAbono.getAll();

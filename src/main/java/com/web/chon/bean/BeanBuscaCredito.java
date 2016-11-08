@@ -641,6 +641,28 @@ public class BeanBuscaCredito implements Serializable {
                         JsfUtil.addErrorMessageClean("Ocurrió un error al registrar el pago de la venta");
                     }
                     ac.setMontoAbono(abono.getMontoAbono());
+                    pagoBancario.setIdCajaFk(opcaja.getIdCajaFk());
+                    pagoBancario.setComentarios("");
+                    pagoBancario.setFechaDeposito(ac.getFechaTransferencia());
+                    pagoBancario.setFechaTranferencia(ac.getFechaTransferencia());
+                    pagoBancario.setFolioElectronico(ac.getFolioElectronico());
+                    pagoBancario.setIdConceptoFk(opcaja.getIdConceptoFk());
+                    pagoBancario.setIdCuentaFk(idCuentaDestinoBean);
+                    pagoBancario.setIdStatusFk(new BigDecimal(2));
+                    pagoBancario.setIdTipoFk(ac.getIdtipoAbonoFk());
+                    pagoBancario.setIdTransBancariasPk(new BigDecimal(ifacePagosBancarios.getNextVal()));
+                    pagoBancario.setIdUserFk(usuarioDominio.getIdUsuario());
+                    pagoBancario.setMonto(ac.getMontoAbono());
+                    pagoBancario.setReferencia(ac.getReferencia());
+                    pagoBancario.setIdOperacionCajaFk(opcaja.getIdOperacionesCajaPk());
+
+                    if (ac.getIdtipoAbonoFk().intValue() == 2 || ac.getIdtipoAbonoFk().intValue() == 4) {
+                        if (ifacePagosBancarios.insertaPagoBancario(pagoBancario) == 1) {
+                            System.out.println("Se ingreso correctamente un deposito bancario");
+                        } else {
+                            System.out.println("Ocurrio un error");
+                        }
+                    }
                     finAbonar(ac);
                     break;
                 case 3:

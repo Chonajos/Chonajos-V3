@@ -99,28 +99,50 @@ public class BeanRecibirDeposito implements Serializable {
     }
 
     public void aceptarDeposito() {
+        System.out.println("Data 1: " + data1);
         opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
-        opcaja.setMonto(data1.getMonto());
-        opcaja.setIdConceptoFk(data1.getIdConceptoFk());
+        
         opcaja.setIdCajaFk(data1.getIdCajaFk());
+        
+        opcaja.setIdConceptoFk(data1.getIdConceptoFk());
+        
+        opcaja.setIdStatusFk(statusAprobada);
         opcaja.setIdUserFk(data1.getIdUserFk());
+        opcaja.setMonto(data1.getMonto());
+        opcaja.setEntradaSalida(salida);
+        //opcaja.setIdSucursalFk();
         //opcaja.setIdConceptoFk(idConceptoTransAprobada);
 
-        opcaja.setIdStatusFk(statusAprobada);
+        
 
-       // if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) 
-       // {
-            if(ifaceOperacionesCaja.updateStatusConcepto(data1.getIdOperacionCajaFk(), statusAprobada, data1.getIdConceptoFk())==1)
-            {
-                JsfUtil.addSuccessMessageClean("Transferencia Recibida Correctamente");
+        if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) 
+        {
+//            if (ifaceOperacionesCaja.updateStatusConcepto(data1.getIdOperacionCajaFk(), statusAprobada, data1.getIdConceptoFk()) == 1) 
+//            {
+                System.out.println("Se cambio concepto de operacion de caja");
                 data1.setIdStatusFk(new BigDecimal(3));
-                ifacePagosBancarios.updatePagoBancario(data1);
-                listaDepositosTransferencias = ifacePagosBancarios.getPagosPendientes();
-        } else {
-            JsfUtil.addErrorMessageClean("Ocurrió un error al recibir la transferencia");
-        }
+                if (ifacePagosBancarios.updatePagoBancario(data1) == 1) 
+                {
+                    System.out.println("Se actualizo el pago bancario.");
+                    
+                    JsfUtil.addSuccessMessageClean("Transferencia Recibida Correctamente");
+                } else {
+                    JsfUtil.addErrorMessageClean("3-Ocurrió un error al recibir la transferencia o depósito bancario");
+                }
 
+//            } else 
+//            {
+//                JsfUtil.addErrorMessageClean("2-Ocurrió un error al recibir la transferencia o depósito bancario");
+//            }
+        }
+        else
+        {
+            JsfUtil.addErrorMessageClean("1-Ocurrió un error al recibir la transferencia o depósito bancario");
+        }
+        listaDepositosTransferencias = ifacePagosBancarios.getPagosPendientes();
     }
+
+    
 
     public void aceptar() {
         opcuenta.setIdOperacionCuenta(new BigDecimal(ifaceOperacionesCuentas.getNextVal()));
@@ -129,14 +151,11 @@ public class BeanRecibirDeposito implements Serializable {
         opcuenta.setIdConceptoFk(data.getIdConceptoFk());
         System.out.println("Data :" + data.toString());
         if (ifaceOperacionesCuentas.insertaOperacion(opcuenta) == 1) {
-            if (ifaceOperacionesCaja.updateStatusConcepto(data.getIdOperacionesCajaPk(), statusAprobada, data.getIdConceptoFk()) == 1)
-             {
+            if (ifaceOperacionesCaja.updateStatusConcepto(data.getIdOperacionesCajaPk(), statusAprobada, data.getIdConceptoFk()) == 1) {
                 JsfUtil.addSuccessMessageClean("Se ha recibido el Depósito Correctamente");
                 lstDespositosEntrantes = ifaceOperacionesCaja.getDepositosEntrantes();
-            }
-            else
-            {
-                 JsfUtil.addErrorMessageClean("Ocurrio un error al cambiar de estatus la operacion");
+            } else {
+                JsfUtil.addErrorMessageClean("Ocurrio un error al cambiar de estatus la operacion");
             }
         } else {
             JsfUtil.addErrorMessageClean("Ocurrió un error al recibir el Depósito");
