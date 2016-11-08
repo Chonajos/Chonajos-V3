@@ -96,14 +96,14 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
     }
 
     @Override
-    public ArrayList<ExistenciaProducto> getExistenciaProductoRepetidos(BigDecimal idSucursal, String idSubproductoFk, BigDecimal idTipoEmpaqueFk, BigDecimal idBodegaFk, BigDecimal idProvedorFk, BigDecimal idTipoConvenio) {
+    public ArrayList<ExistenciaProducto> getExistenciaProductoRepetidos(BigDecimal idSucursal, String idSubproductoFk, BigDecimal idTipoEmpaqueFk, BigDecimal idBodegaFk, BigDecimal idProvedorFk, BigDecimal idTipoConvenio,BigDecimal idEMProducto) {
         
         getEjb();
 
         try {
             ArrayList<ExistenciaProducto> lista = new ArrayList<ExistenciaProducto>();
             
-            List<Object[]> lstObject = ejb.getExistenciasRepetidas(idSucursal, idSubproductoFk, idTipoEmpaqueFk, idBodegaFk, idProvedorFk, idTipoConvenio);
+            List<Object[]> lstObject = ejb.getExistenciasRepetidas(idSucursal, idSubproductoFk, idTipoEmpaqueFk, idBodegaFk, idProvedorFk, idTipoConvenio,idEMProducto);
             for (Object[] obj : lstObject) {
                 ExistenciaProducto expro = new ExistenciaProducto();
                 expro.setIdExistenciaProductoPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));

@@ -246,14 +246,22 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
     }
 
     @Override
-    public List<Object[]> getExistenciasRepetidas(BigDecimal idSucursal, String idSubproductoFk, BigDecimal idTipoEmpaqueFk, BigDecimal idBodegaFk, BigDecimal idProvedorFk, BigDecimal idTipoConvenio) {
+    public List<Object[]> getExistenciasRepetidas(BigDecimal idSucursal, String idSubproductoFk, BigDecimal idTipoEmpaqueFk, BigDecimal idBodegaFk, BigDecimal idProvedorFk, BigDecimal idTipoConvenio, BigDecimal idEMProducto) {
 
         try {
-            Query query = em.createNativeQuery("select * from existencia_producto where id_sucursal_fk='" + idSucursal + "'and id_subproducto_Fk = '" + idSubproductoFk + "' and id_Tipo_Empaque_Fk='" + idTipoEmpaqueFk + "'and  id_Bodega_Fk='" + idBodegaFk + "' and  ID_TIPO_CONVENIO_FK = '" + idTipoConvenio + "'");
+
+            Query query = em.createNativeQuery("select * from existencia_producto where id_sucursal_fk = ? AND id_subproducto_Fk = ? "
+                    + " AND id_Tipo_Empaque_Fk = ? AND id_Bodega_Fk = ? AND ID_TIPO_CONVENIO_FK = ? AND ID_EMP_FK = ?");
+            
+            query.setParameter(1, idSucursal);
+            query.setParameter(2, idSubproductoFk);
+            query.setParameter(3, idTipoEmpaqueFk);
+            query.setParameter(4, idBodegaFk);
+            query.setParameter(5, idTipoConvenio);
+            query.setParameter(6, idEMProducto);
 
             return query.getResultList();
         } catch (Exception ex) {
-            System.out.println("Encontro null ejb");
             Logger.getLogger(EjbExistenciaProducto.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }

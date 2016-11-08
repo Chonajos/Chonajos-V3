@@ -24,9 +24,11 @@ public interface IfaceVentaMayoreoProducto {
      * Obtiene las ventas de los productos por medio del id de sucursal y el numero del carro
      * @param idSucursal
      * @param carro
+     * @param fechaInicio
+     * @param fechaFin
      * @return ArrayList<MayoreoProductoEntradaProducto>
      */
-    public ArrayList<MayoreoProductoEntradaProducto> getVentaByIdSucursalAndCarro(BigDecimal idSucursal, BigDecimal carro);
+    public ArrayList<MayoreoProductoEntradaProducto> getVentaByIdSucursalAndCarro(BigDecimal idSucursal, BigDecimal carro,String fechaInicio,String fechaFin);
     
     
     

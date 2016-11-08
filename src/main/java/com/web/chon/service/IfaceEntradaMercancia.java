@@ -57,5 +57,5 @@ public interface IfaceEntradaMercancia extends PaginacionService<EntradaMercanci
      * @param idProvedor
      * @return 
      */
-    public ArrayList<CarroDetalleGeneral> getReporteGeneralCarro(BigDecimal idSucursal ,BigDecimal idProvedor,BigDecimal carro);
+    public ArrayList<CarroDetalleGeneral> getReporteGeneralCarro(BigDecimal idSucursal ,BigDecimal idProvedor,BigDecimal carro,String fechaInicio,String fechaFin);
 }

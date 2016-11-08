@@ -15,18 +15,41 @@ import java.util.List;
  * @author freddy
  */
 public interface IfaceNegocioExistencia {
+
     public int insertExistenciaProducto(ExistenciaProducto ep);
-    public ArrayList<ExistenciaProducto> getExistencias(BigDecimal idSucursal, BigDecimal idBodega, BigDecimal idProvedor,String idProducto, BigDecimal idEmpaque, BigDecimal idConvenio,BigDecimal idEmpPK);
-     public ArrayList<ExistenciaProducto> getExistenciasCancelar(BigDecimal idExistencia);
+
+    public ArrayList<ExistenciaProducto> getExistencias(BigDecimal idSucursal, BigDecimal idBodega, BigDecimal idProvedor, String idProducto, BigDecimal idEmpaque, BigDecimal idConvenio, BigDecimal idEmpPK);
+
+    public ArrayList<ExistenciaProducto> getExistenciasCancelar(BigDecimal idExistencia);
+
     public ArrayList<ExistenciaProducto> getExistenciasbyIdSubProducto(String idSubproductoFk);
-    public ArrayList<ExistenciaProducto> getExistenciaProductoRepetidos(BigDecimal idSucursal,String idSubproductoFk,BigDecimal idTipoEmpaqueFk, BigDecimal idBodegaFk, BigDecimal idProvedorFk,BigDecimal idTipoConvenio);
+
+    /**
+     * Trae las existencias repetidas con la misma sucursal, subproducto, tipo
+     * de empaque, bodega, provedor, convenio, id de entrada producto
+     *
+     * @param idSucursal
+     * @param idSubproductoFk
+     * @param idTipoEmpaqueFk
+     * @param idBodegaFk
+     * @param idProvedorFk
+     * @param idTipoConvenio
+     * @return
+     */
+    public ArrayList<ExistenciaProducto> getExistenciaProductoRepetidos(BigDecimal idSucursal, String idSubproductoFk, BigDecimal idTipoEmpaqueFk, BigDecimal idBodegaFk, BigDecimal idProvedorFk, BigDecimal idTipoConvenio, BigDecimal idEMProducto);
+
     public int updateCantidadKilo(ExistenciaProducto ep);
+
     public int update(ExistenciaProducto ep);
+
     public int updatePrecio(ExistenciaProducto ep);
+
     public ArrayList<ExistenciaProducto> getExistenciaById(BigDecimal idExistencia);
+
     public int deleteExistenciaProducto(ExistenciaProducto ep);
+
     public ExistenciaProducto getExistenciaByIdEmpFk(BigDecimal idEmpFk);
+
     public int getNextVal();
-    
-    
-    }
+
+}

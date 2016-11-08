@@ -26,11 +26,13 @@ public interface NegocioVentaMayoreoProducto {
     public int getNextVal();
 
     /**
-     * Obtiene el total de ventas por producto por medio del id de sucursal y el carro
+     * Obtiene el total de ventas por producto por medio del id de sucursal y el carro y un intervalo de fechas
      * @param idSucursal
      * @param carro
+     * @param fechaInicio
+     * @param fechaFin
      * @return 
      */
-    public List<Object[]> getVentaByIdSucursalAndCarro(BigDecimal idSucursal, BigDecimal carro);
+    public List<Object[]> getVentaByIdSucursalAndCarro(BigDecimal idSucursal, BigDecimal carro,String fechaInicio,String fechaFin);
 
 }

@@ -36,7 +36,7 @@ html{
 }
 .conAdeudos{
     /* status = 2 */
-color: #FACC2E;
+    color: #FACC2E;
 }
 
 
@@ -68,7 +68,7 @@ color: #FACC2E;
     border-color: black !important;
     background-image:-webkit-linear-gradient(top, #A9E2F3, #04B404) !important;
     font-weight:bold
-    
+
 }
 .statusPedido
 {
@@ -115,6 +115,11 @@ color: #FACC2E;
     font-weight: normal ;    
     font-size: 12px!important;
     text-align:center !important;
+}
+
+.ui-datatable tfoot td
+{
+    font-size: 13px!important;
 }
 
 /*Se cambio el tamaño del componente h4*/
