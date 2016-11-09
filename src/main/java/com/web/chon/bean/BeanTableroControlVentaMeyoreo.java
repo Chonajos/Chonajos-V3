@@ -19,7 +19,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.annotation.PostConstruct;
-import net.sf.jasperreports.compilers.JavaScriptEvaluatorScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -129,14 +128,16 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
             fechaInicio = context.getFechaSistema();
         }
 
+        strFechaInicio = TiempoUtil.getFechaDDMMYYYY(fechaInicio);
+        strFechaFin = TiempoUtil.getFechaDDMMYYYY(fechaFin);
+
         //validamos que el ramgo de fecha no sobrepase 90 dias
         if (TiempoUtil.diferenciasDeFechas(fechaInicio, fechaFin) > 90) {
             JsfUtil.addErrorMessage("No se puede realizar una busqueda con un intervalo de fechas mayor a 90 dias.");
-            return;
+        } else {
+            lstCarroDetalleGeneral = ifaceEntradaMercancia.getReporteGeneralCarro(idSucursal, idProvedor, carroSucursal, strFechaInicio, strFechaFin);
+            calcularTotalesGeneral();
         }
-
-        lstCarroDetalleGeneral = ifaceEntradaMercancia.getReporteGeneralCarro(idSucursal, idProvedor, carroSucursal, strFechaInicio, strFechaFin);
-        calcularTotalesGeneral();
 
     }
 

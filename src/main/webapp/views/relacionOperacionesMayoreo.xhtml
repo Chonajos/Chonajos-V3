@@ -124,11 +124,11 @@
                                     <f:convertNumber type="currency" currencySymbol="$" />
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Utilidad Bruta" width="85px;" class="alignCenter">
-                                <h:outputText value="#{model.ganciaVenta}">
+<!--                            <p:column headerText="Utilidad Bruta" width="85px;" class="alignCenter">
+                                <h:outputText value="{model.ganciaVenta}">
                                     <f:convertNumber pattern="#,##0.00" />
                                 </h:outputText>
-                            </p:column>
+                            </p:column>-->
 
                             <p:column headerText="Imprimir" width="70px;" class="alignCenter">
                                 <p:commandButton id="print" ajax="true" process="@this" action="#{beanRelOperMayoreo.printVenta()}" icon="ui-icon-print" styleClass="ui-priority-primary" update=":formContent" onclick="PF('statusDialog').show()">
@@ -155,23 +155,21 @@
                                         </h:outputText>
                                     </f:facet>
                                 </p:column>
-                                <p:column colspan="1" >
+<!--                                <p:column colspan="1" >
                                     <f:facet name="footer">
-                                        <h:outputText value="#{beanRelOperMayoreo.totalUtilidad}">
+                                        <h:outputText value="{beanRelOperMayoreo.totalUtilidad}">
                                             <f:convertNumber pattern="#,###.00"/>
                                         </h:outputText>
                                     </f:facet>
-                                </p:column>
-                                <p:column colspan="1" >
+                                </p:column>-->
+<!--                                <p:column colspan="1" >
                                     <f:facet name="footer">
-                                        <h:outputText value="#{beanRelOperMayoreo.porcentajeUtilidad}%">
+                                        <h:outputText value="{beanRelOperMayoreo.porcentajeUtilidad}%">
                                         </h:outputText>
                                     </f:facet>
-                                </p:column>
-
-
+                                </p:column>-->
                                 <p:column colspan="1" />
-
+                                <p:column colspan="1" />
                             </p:columnGroup>
 
                             <p:rowExpansion>

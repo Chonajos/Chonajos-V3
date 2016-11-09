@@ -128,14 +128,13 @@ public class EjbVentaMayoreoProducto implements NegocioVentaMayoreoProducto {
 //            query.setParameter(1, idSucursal);
 //            query.setParameter(2, carro);
             if (fechaInicio != null) {
-                txtQuery.append(" WHERE TO_DATE(TO_CHAR(VM.FECHA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "' ");
+                txtQuery.append(" AND TO_DATE(TO_CHAR(VM.FECHA_VENTA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "' ");
             }
             txtQuery.append("GROUP BY EM.CARROSUCURSAL,EMP.CONVENIO,EMP.ID_TIPO_CONVENIO_FK,VMP.ID_SUBPRODUCTO_FK "
                     + ",EMP.CANTIDAD_EMPACAQUE,EMP.KILOS_TOTALES,EMP.ID_TIPO_EMPAQUE_FK ORDER BY EM.CARROSUCURSAL ");
 
             Query query = em.createNativeQuery(txtQuery.toString());
 
-            System.out.println(txtQuery.toString());
             return query.getResultList();
 
         } catch (Exception ex) {
