@@ -428,7 +428,7 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
                         pagoBancario.setFechaDeposito(fechaTransferencia);
                         pagoBancario.setFechaTranferencia(fechaTransferencia);
                         pagoBancario.setFolioElectronico(folioElectronico);
-                        pagoBancario.setIdConceptoFk(idTipoPagoFk);
+                        pagoBancario.setIdConceptoFk(opcaja.getIdConceptoFk());
                         pagoBancario.setIdCuentaFk(idCuentaDestinoFk);
                         pagoBancario.setIdStatusFk(new BigDecimal(2));
                         pagoBancario.setIdTipoFk(idTipoPagoFk);
