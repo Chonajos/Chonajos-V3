@@ -254,6 +254,9 @@ public class BeanBuscaCredito implements Serializable {
             if (!bandera) {
                 System.out.println("La suma es exacta");
                 abonarCreditos();
+                botonCancelar = true;
+                botonActualizar = true;
+                habilitaBotones = false;
             } else {
                 JsfUtil.addErrorMessageClean("No puedes abonar un credito con mas dinero del que liquida");
             }
@@ -263,9 +266,6 @@ public class BeanBuscaCredito implements Serializable {
         }
         //Vertificar el monto total del abono que no sobre y que no falte ni un peso
         // verificar el combo hacia que forma se haran los abonos.
-        botonCancelar = true;
-        botonActualizar = true;
-        habilitaBotones = false;
 
     }
 
@@ -464,32 +464,27 @@ public class BeanBuscaCredito implements Serializable {
                 BigDecimal to = abono.getMontoAbono().setScale(2, RoundingMode.CEILING);
                 System.out.println("Monto abono: " + to);
                 clearlista();
-                if (to != null)
-                {
+                if (to != null) {
                     switch (comboFiltro.intValue()) {
                         case 1:
                             System.out.println("Entro a case 1");
-                               for (int i = 0; i < modelo.size(); i++) 
-                            {
+                            for (int i = 0; i < modelo.size(); i++) {
                                 SaldosDeudas item = modelo.get(i);
-                                
+
                                 BigDecimal deuda = item.getSaldoAtrasado().setScale(2, RoundingMode.CEILING);
-                                System.out.println("Abono: "+to);
-                                System.out.println("Deuda: "+deuda);
-                                
-                                if(deuda.compareTo(to)<1)
-                                {
+                                System.out.println("Abono: " + to);
+                                System.out.println("Deuda: " + deuda);
+
+                                if (deuda.compareTo(to) < 1) {
                                     System.out.println("La deuda es meno al abono por lo tanto abonar.");
                                     to = to.subtract(item.getSaldoAtrasado().setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
                                     item.setAbonarTemporal(item.getSaldoAtrasado().setScale(2, RoundingMode.CEILING));
-                                }
-                                else
-                                {
+                                } else {
                                     System.out.println("La deuda es mayor al monto del abono por lo tanto es sobrante de abono.");
                                     item.setAbonarTemporal(to.setScale(2, RoundingMode.CEILING));
                                     to = to.subtract(to.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
                                     break;
-                                
+
                                 }
 //                            for (int i = 0; i < modelo.size(); i++)
 //                            {
@@ -508,27 +503,23 @@ public class BeanBuscaCredito implements Serializable {
                             break;
                         case 2:
                             System.out.println("Entro a case 2");
-                            for (int i = 0; i < modelo.size(); i++) 
-                            {
+                            for (int i = 0; i < modelo.size(); i++) {
                                 SaldosDeudas item = modelo.get(i);
-                                
+
                                 BigDecimal deuda = item.getMinimoPago().setScale(2, RoundingMode.CEILING);
-                                System.out.println("Abono: "+to);
-                                System.out.println("Deuda: "+deuda);
-                                
-                                if(deuda.compareTo(to)<1)
-                                {
+                                System.out.println("Abono: " + to);
+                                System.out.println("Deuda: " + deuda);
+
+                                if (deuda.compareTo(to) < 1) {
                                     System.out.println("La deuda es meno al abono por lo tanto abonar.");
                                     to = to.subtract(item.getMinimoPago().setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
                                     item.setAbonarTemporal(item.getMinimoPago().setScale(2, RoundingMode.CEILING));
-                                }
-                                else
-                                {
+                                } else {
                                     System.out.println("La deuda es mayor al monto del abono por lo tanto es sobrante de abono.");
                                     item.setAbonarTemporal(to.setScale(2, RoundingMode.CEILING));
                                     to = to.subtract(to.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
                                     break;
-                                
+
                                 }
 //
 //                                SaldosDeudas item = modelo.get(i);
@@ -548,29 +539,25 @@ public class BeanBuscaCredito implements Serializable {
                         case 3:
 
                             System.out.println("Entro a case 3");
-                            for (int i = 0; i < modelo.size(); i++) 
-                            {
+                            for (int i = 0; i < modelo.size(); i++) {
                                 SaldosDeudas item = modelo.get(i);
-                                
+
                                 BigDecimal deuda = item.getSaldoLiquidar().setScale(2, RoundingMode.CEILING);
-                                System.out.println("Abono: "+to);
-                                System.out.println("Deuda: "+deuda);
-                                
-                                if(deuda.compareTo(to)<1)
-                                {
+                                System.out.println("Abono: " + to);
+                                System.out.println("Deuda: " + deuda);
+
+                                if (deuda.compareTo(to) < 1) {
                                     System.out.println("La deuda es meno al abono por lo tanto abonar.");
                                     to = to.subtract(item.getSaldoLiquidar().setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
                                     item.setAbonarTemporal(item.getSaldoLiquidar().setScale(2, RoundingMode.CEILING));
-                                }
-                                else
-                                {
+                                } else {
                                     System.out.println("La deuda es mayor al monto del abono por lo tanto es sobrante de abono.");
                                     item.setAbonarTemporal(to.setScale(2, RoundingMode.CEILING));
                                     to = to.subtract(to.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
                                     break;
-                                
+
                                 }
-                                
+
 //                                if (to.compareTo(new BigDecimal(0).setScale(2, RoundingMode.CEILING)) >= 0) {
 //                                    item.setAbonarTemporal(item.getSaldoLiquidar().setScale(2, RoundingMode.CEILING));
 //                                } else {
@@ -579,7 +566,6 @@ public class BeanBuscaCredito implements Serializable {
 //                                    //to = to.subtract(item.getSaldoLiquidar().setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
 //                                    break;
 //                                }
-
                             }
                             break;
                         default:
@@ -590,9 +576,8 @@ public class BeanBuscaCredito implements Serializable {
 //                    {
 //                        abonarRestante(to);
 //                    }
-                    
-                        //llamar a funcion llenadora de datos
-                    
+
+                    //llamar a funcion llenadora de datos
                     System.out.println("================Sobrante: " + to);
                     //abonarRestante(to);
                     botonCancelar = false;
@@ -620,44 +605,33 @@ public class BeanBuscaCredito implements Serializable {
         }
     }
 
-    public void abonarRestante(BigDecimal saldoSobrante) 
-    {
+    public void abonarRestante(BigDecimal saldoSobrante) {
         System.out.println("Entro a funcion llenadora");
-        System.out.println("Abono Sobrante: "+saldoSobrante);
+        System.out.println("Abono Sobrante: " + saldoSobrante);
 
-        for (int i = 0; i < modelo.size(); i++) 
-        {
+        for (int i = 0; i < modelo.size(); i++) {
             SaldosDeudas item = modelo.get(i);
             BigDecimal resta = item.getSaldoLiquidar().setScale(2, RoundingMode.CEILING).subtract(item.getAbonarTemporal().setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
-            System.out.println("Resta: "+resta);
-            if ((resta).compareTo(CERO) <= 0) 
-            {
+            System.out.println("Resta: " + resta);
+            if ((resta).compareTo(CERO) <= 0) {
                 System.out.println("Ya no se le puede abonar más a este folio");
-            } 
-            else 
-            {
-                if (resta.compareTo(saldoSobrante) >= 0) 
-                {
-                    System.out.println("Si se le puede abonar mas a este folio");
-                    item.setAbonarTemporal(item.getAbonarTemporal().setScale(2, RoundingMode.CEILING).add(resta.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED));
-                }
-                else
-                {
-                    System.out.println("Se le abona el total + saldo sobrante");
-                    saldoSobrante = saldoSobrante.subtract(resta, MathContext.UNLIMITED);
-                    if(saldoSobrante.compareTo(CERO)>0)
-                    {
+            } else if (resta.compareTo(saldoSobrante) >= 0) {
+                System.out.println("Si se le puede abonar mas a este folio");
+                item.setAbonarTemporal(item.getAbonarTemporal().setScale(2, RoundingMode.CEILING).add(resta.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED));
+            } else {
+                System.out.println("Se le abona el total + saldo sobrante");
+                saldoSobrante = saldoSobrante.subtract(resta, MathContext.UNLIMITED);
+                if (saldoSobrante.compareTo(CERO) > 0) {
                     BigDecimal suma = item.getAbonarTemporal().setScale(2, RoundingMode.CEILING).add(resta.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
-                    System.out.println("SUMA: "+suma);
+                    System.out.println("SUMA: " + suma);
                     //saldoSobrante = saldoSobrante.subtract(resta, MathContext.UNLIMITED);
                     item.setAbonarTemporal(resta);
-                    }
-                    
                 }
+
             }
 
         }
-        System.out.println("FIN  Abono Sobrante: "+saldoSobrante);
+        System.out.println("FIN  Abono Sobrante: " + saldoSobrante);
 
     }
 
@@ -1265,7 +1239,7 @@ public class BeanBuscaCredito implements Serializable {
             modelo = new ArrayList<SaldosDeudas>();
             habilitaBotones = true;
 
-            cliente = new Cliente();
+            //cliente = new Cliente();
         }
         addView();
 
