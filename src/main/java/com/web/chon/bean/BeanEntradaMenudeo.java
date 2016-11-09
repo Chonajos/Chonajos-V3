@@ -593,7 +593,7 @@ public class BeanEntradaMenudeo implements Serializable {
             exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, outputStream);
 //            exporter.setParameter(JRPdfExporterParameter.PDF_JAVASCRIPT, "this.print();");
             byte[] bytes = outputStream.toByteArray();
-            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf", folio, idSucu);
+            rutaPDF = UtilUpload.saveFileTemp(bytes, "entradaMercanciaMenudeo", folio, idSucu);
             con.close();
         } catch (Exception exception) {
             System.out.println("Error >" + exception.getMessage());
