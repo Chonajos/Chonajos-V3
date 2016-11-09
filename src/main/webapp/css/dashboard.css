@@ -236,6 +236,10 @@ select{
 
 }
 
+.paddingZero{
+    padding: 2px !important;
+}
+
 .zeroPadding{
     padding: 0px !important;
 }
