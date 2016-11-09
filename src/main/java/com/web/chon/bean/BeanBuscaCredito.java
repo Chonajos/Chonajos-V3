@@ -241,9 +241,9 @@ public class BeanBuscaCredito implements Serializable {
             if (fila.getAbonarTemporal() != null) {
                 totalAabonar = totalAabonar.add(fila.getAbonarTemporal(), MathContext.UNLIMITED);
                 if (fila.getSaldoLiquidar().setScale(2, RoundingMode.CEILING).compareTo(fila.getAbonarTemporal().setScale(2, RoundingMode.CEILING)) == -1) {
-                    
-                    System.out.println("Fila: "+fila.getSaldoLiquidar().setScale(2, RoundingMode.CEILING));
-                    System.out.println("Temporal: "+fila.getAbonarTemporal().setScale(2, RoundingMode.CEILING));
+
+                    System.out.println("Fila: " + fila.getSaldoLiquidar().setScale(2, RoundingMode.CEILING));
+                    System.out.println("Temporal: " + fila.getAbonarTemporal().setScale(2, RoundingMode.CEILING));
                     bandera = true;
                 }
             }
@@ -251,8 +251,7 @@ public class BeanBuscaCredito implements Serializable {
 //        System.out.println("Abono: " + abono.getMontoAbono());
 //        System.out.println("TotalLista: " + totalAabonar);
         if (abono.getMontoAbono().setScale(2, RoundingMode.CEILING).equals(totalAabonar.setScale(2, RoundingMode.CEILING))) {
-            if (!bandera)
-            {
+            if (!bandera) {
                 System.out.println("La suma es exacta");
                 abonarCreditos();
             } else {
@@ -458,86 +457,108 @@ public class BeanBuscaCredito implements Serializable {
 
     public void prepararAbono() {
         String cadena = validarCampos();
-        if (cadena.equals("")) {
-            JsfUtil.addSuccessMessageClean("Abono Preparado");
-            System.out.println("Abono: " + abono);
-            BigDecimal to = abono.getMontoAbono().setScale(2, RoundingMode.CEILING);
-            System.out.println("Monto abono: " + to);
-            clearlista();
-            if (to != null) {
-                switch (comboFiltro.intValue()) {
-                    case 1:
-                        System.out.println("Entro a case 1");
-                        for (int i = 0; i < modelo.size(); i++) {
-                            SaldosDeudas item = modelo.get(i);
-                            System.out.println("Saldo Atrasado: "+item.getSaldoAtrasado());
-                            
-                            to = to.subtract(item.getSaldoAtrasado().setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
-                            if (to.compareTo(new BigDecimal(0)) >= 0) {
+        if (verificarMaximoAbono()) {
+            if (cadena.equals("")) {
+                JsfUtil.addSuccessMessageClean("Abono Preparado");
+                System.out.println("Abono: " + abono);
+                BigDecimal to = abono.getMontoAbono().setScale(2, RoundingMode.CEILING);
+                System.out.println("Monto abono: " + to);
+                clearlista();
+                if (to != null) {
+                    switch (comboFiltro.intValue()) {
+                        case 1:
+                            System.out.println("Entro a case 1");
+                            for (int i = 0; i < modelo.size(); i++) {
+                                SaldosDeudas item = modelo.get(i);
 
-                                item.setAbonarTemporal(item.getSaldoAtrasado().setScale(2, RoundingMode.CEILING));
-                            } else {
-                                to = to.add(item.getSaldoAtrasado().setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
-                                item.setAbonarTemporal(to);
                                 to = to.subtract(item.getSaldoAtrasado().setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
-                                break;
+                                if (to.compareTo(new BigDecimal(0).setScale(2, RoundingMode.CEILING)) >= 0) {
+                                    item.setAbonarTemporal(item.getSaldoAtrasado().setScale(2, RoundingMode.CEILING));
+                                } else {
+                                    to = to.add(item.getSaldoAtrasado().setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
+                                    item.setAbonarTemporal(to.setScale(2, RoundingMode.CEILING));
+                                    to = to.subtract(item.getSaldoAtrasado().setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
+                                    break;
+                                }
+                            }
+                            break;
+                        case 2:
+                            System.out.println("Entro a case 2");
+                            for (int i = 0; i < modelo.size(); i++) {
+
+                                SaldosDeudas item = modelo.get(i);
+                                to = to.subtract(item.getMinimoPago().setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
+                                if (to.compareTo(new BigDecimal(0).setScale(2, RoundingMode.CEILING)) >= 0) {
+
+                                    item.setAbonarTemporal(item.getMinimoPago().setScale(2, RoundingMode.CEILING));
+                                } else {
+                                    to = to.add(item.getMinimoPago().setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
+                                    item.setAbonarTemporal(to.setScale(2, RoundingMode.CEILING));
+                                    to = to.subtract(item.getMinimoPago().setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
+                                    break;
+                                }
                             }
 
-                        }
+                            break;
+                        case 3:
 
-                        System.out.println("Sobrante Final:  " + to);
-                        break;
-                    case 2:
-                        System.out.println("Entro a case 2");
-                        for (int i = 0; i < modelo.size(); i++) {
+                            System.out.println("Entro a case 3");
+                            for (int i = 0; i < modelo.size(); i++) {
 
-                            SaldosDeudas item = modelo.get(i);
-                            to = to.subtract(item.getMinimoPago(), MathContext.UNLIMITED);
-                            if (to.compareTo(new BigDecimal(0)) >= 0) {
-
-                                item.setAbonarTemporal(item.getMinimoPago());
-                            } else {
-                                to = to.add(item.getMinimoPago(), MathContext.UNLIMITED);
-                                item.setAbonarTemporal(to);
-                                to = to.subtract(item.getMinimoPago(), MathContext.UNLIMITED);
-                                break;
-                            }
-
-                        }
-
-                        break;
-                    case 3:
-
-                        System.out.println("Entro a case 3");
-                        for (int i = 0; i < modelo.size(); i++) {
-
-                            SaldosDeudas item = modelo.get(i);
-                            to = to.subtract(item.getSaldoLiquidar(), MathContext.UNLIMITED);
-                            if (to.compareTo(new BigDecimal(0)) >= 0) {
-                                item.setAbonarTemporal(item.getSaldoLiquidar());
-                            } else {
-                                to = to.add(item.getSaldoLiquidar(), MathContext.UNLIMITED);
-                                item.setAbonarTemporal(to);
+                                SaldosDeudas item = modelo.get(i);
                                 to = to.subtract(item.getSaldoLiquidar(), MathContext.UNLIMITED);
-                                break;
+                                if (to.compareTo(new BigDecimal(0).setScale(2, RoundingMode.CEILING)) >= 0) {
+                                    item.setAbonarTemporal(item.getSaldoLiquidar().setScale(2, RoundingMode.CEILING));
+                                } else {
+                                    to = to.add(item.getSaldoLiquidar().setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
+                                    item.setAbonarTemporal(to.setScale(2, RoundingMode.CEILING));
+                                    to = to.subtract(item.getSaldoLiquidar().setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
+                                    break;
+                                }
+
                             }
-
-                        }
-
-                        break;
-                    default:
-                        JsfUtil.addErrorMessageClean("Ocurrio un error, contactar al administrador");
-                        break;
+                            break;
+                        default:
+                            JsfUtil.addErrorMessageClean("Ocurrio un error, contactar al administrador");
+                            break;
+                    }
+                    if (to.compareTo(CERO) == 1) {
+                        //llamar a funcion llenadora de datos
+                    }
+                    System.out.println("================Sobrante: " + to);
+                    botonCancelar = false;
+                    botonActualizar = false;
+                    habilitaBotones = true;
+                } else {
+                    JsfUtil.addErrorMessageClean("Primero debes agregar la forma de pago");
                 }
-                botonCancelar = false;
-                botonActualizar = false;
-                habilitaBotones = true;
             } else {
-                JsfUtil.addErrorMessageClean("Primero debes agregar la forma de pago");
+                JsfUtil.addErrorMessageClean(cadena);
             }
         } else {
-            JsfUtil.addErrorMessageClean(cadena);
+            JsfUtil.addErrorMessageClean("No puedes abonar con mas dinero del saldo a liquidar, aún no no existe saldo a favor");
         }
+    }
+
+    public boolean verificarMaximoAbono() {
+        System.out.println("Abono: " + abono.getMontoAbono().setScale(2, RoundingMode.CEILING));
+        System.out.println("Saldo para Liquidar:" + saldoParaLiquidar.setScale(2, RoundingMode.CEILING));
+
+        if (abono.getMontoAbono().setScale(2, RoundingMode.CEILING).compareTo(saldoParaLiquidar.setScale(2, RoundingMode.CEILING)) == 1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public void AbonarRestante(BigDecimal saldoSobrante) {
+        
+        for (int i = 0; i < modelo.size(); i++) 
+        {
+            SaldosDeudas item = modelo.get(i);
+            
+        }
+
     }
 
     public void abonarCreditos() {
