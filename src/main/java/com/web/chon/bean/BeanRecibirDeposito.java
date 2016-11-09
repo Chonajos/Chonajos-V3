@@ -101,11 +101,8 @@ public class BeanRecibirDeposito implements Serializable {
     public void aceptarDeposito() {
         System.out.println("Data 1: " + data1);
         opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
-        
         opcaja.setIdCajaFk(data1.getIdCajaFk());
-        
         opcaja.setIdConceptoFk(data1.getIdConceptoFk());
-        
         opcaja.setIdStatusFk(statusAprobada);
         opcaja.setIdUserFk(data1.getIdUserFk());
         opcaja.setMonto(data1.getMonto());
@@ -113,36 +110,22 @@ public class BeanRecibirDeposito implements Serializable {
         //opcaja.setIdSucursalFk();
         //opcaja.setIdConceptoFk(idConceptoTransAprobada);
 
-        
+        if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
+            System.out.println("Se cambio concepto de operacion de caja");
+            data1.setIdStatusFk(new BigDecimal(3));
+            if (ifacePagosBancarios.updatePagoBancario(data1) == 1)
+            {
+                System.out.println("Se actualizo el pago bancario.");
 
-        if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) 
-        {
-//            if (ifaceOperacionesCaja.updateStatusConcepto(data1.getIdOperacionCajaFk(), statusAprobada, data1.getIdConceptoFk()) == 1) 
-//            {
-                System.out.println("Se cambio concepto de operacion de caja");
-                data1.setIdStatusFk(new BigDecimal(3));
-                if (ifacePagosBancarios.updatePagoBancario(data1) == 1) 
-                {
-                    System.out.println("Se actualizo el pago bancario.");
-                    
-                    JsfUtil.addSuccessMessageClean("Transferencia Recibida Correctamente");
-                } else {
-                    JsfUtil.addErrorMessageClean("3-Ocurrió un error al recibir la transferencia o depósito bancario");
-                }
-
-//            } else 
-//            {
-//                JsfUtil.addErrorMessageClean("2-Ocurrió un error al recibir la transferencia o depósito bancario");
-//            }
-        }
-        else
-        {
+                JsfUtil.addSuccessMessageClean("Transacción Recibida Correctamente");
+            } else {
+                JsfUtil.addErrorMessageClean("3-Ocurrió un error al recibir la transferencia o depósito bancario");
+            }
+        } else {
             JsfUtil.addErrorMessageClean("1-Ocurrió un error al recibir la transferencia o depósito bancario");
         }
         listaDepositosTransferencias = ifacePagosBancarios.getPagosPendientes();
     }
-
-    
 
     public void aceptar() {
         opcuenta.setIdOperacionCuenta(new BigDecimal(ifaceOperacionesCuentas.getNextVal()));

@@ -116,20 +116,20 @@ public class BeanPagoServicios implements Serializable {
     //----Funciones para Verificar Maximo de Dinero en Caja --//
     public void verificarDinero() {
         
-        lstOperacionesEntrada = new ArrayList<TipoOperacion>();
-        lstOperacionesSalida = new ArrayList<TipoOperacion>();
-        lstOperacionesEntrada = ifaceOperacionesCaja.getOperacionesCorteBy(caja.getIdCajaPk(), caja.getIdUsuarioFK(), entrada);
-        lstOperacionesSalida = ifaceOperacionesCaja.getOperacionesCorteBy(caja.getIdCajaPk(), caja.getIdUsuarioFK(), salida);
-        getsumaEntradas();
-        getsumaSalidas();
-
-        if (corteAnterior.getSaldoNuevo() == null) 
-        {
-            corteAnterior.setSaldoNuevo(new BigDecimal(0));
-        }
-        saldoAnterior = corteAnterior.getSaldoNuevo();
-        nuevoSaldo = totalEntradas.subtract(totalSalidas, MathContext.UNLIMITED);
-        nuevoSaldo = nuevoSaldo.add(saldoAnterior, MathContext.UNLIMITED);
+//        lstOperacionesEntrada = new ArrayList<TipoOperacion>();
+//        lstOperacionesSalida = new ArrayList<TipoOperacion>();
+//        lstOperacionesEntrada = ifaceOperacionesCaja.getOperacionesCorteBy(caja.getIdCajaPk(), caja.getIdUsuarioFK(), entrada);
+//        lstOperacionesSalida = ifaceOperacionesCaja.getOperacionesCorteBy(caja.getIdCajaPk(), caja.getIdUsuarioFK(), salida);
+//        getsumaEntradas();
+//        getsumaSalidas();
+//
+//        if (corteAnterior.getSaldoNuevo() == null) 
+//        {
+//            corteAnterior.setSaldoNuevo(new BigDecimal(0));
+//        }
+//        saldoAnterior = corteAnterior.getSaldoNuevo();
+//        nuevoSaldo = totalEntradas.subtract(totalSalidas, MathContext.UNLIMITED);
+//        nuevoSaldo = nuevoSaldo.add(saldoAnterior, MathContext.UNLIMITED);
     }
 
     public void getsumaEntradas() {
@@ -147,16 +147,18 @@ public class BeanPagoServicios implements Serializable {
     //----Funciones para Verificar Maximo de Dinero en Caja --//
     public void pagar() {
 
-        verificarDinero();
-
-        if (nuevoSaldo.compareTo(totalServicio) >= 0) {
+//        verificarDinero();
+//
+//        if (nuevoSaldo.compareTo(totalServicio) >= 0) 
+//        {
             opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
             opcaja.setMonto(totalServicio);
             opcaja.setComentarios(comentarios);
             opcaja.setIdConceptoFk(idConceptoBean);
             opcaja.setIdSucursalFk(idSucursalFk);
 
-            if (caja.getIdCajaPk() != null) {
+            if (caja.getIdCajaPk() != null) 
+            {
                 if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
 
                     JsfUtil.addSuccessMessageClean("Pago de Servicio Registrado Correctamente");
@@ -167,9 +169,9 @@ public class BeanPagoServicios implements Serializable {
             } else {
                 JsfUtil.addErrorMessageClean("Su usuario no cuenta con caja registrada para realizar el pago de servicios");
             }
-        } else {
-            JsfUtil.addErrorMessageClean("No hay suficiente dinero en caja");
-        }
+//        } else {
+//            JsfUtil.addErrorMessageClean("No hay suficiente dinero en caja");
+//        }
     }
 
     public ArrayList<ConceptosES> getListaConceptos() {
