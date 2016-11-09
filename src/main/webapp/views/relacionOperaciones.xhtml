@@ -112,14 +112,15 @@
                         <p:dataTable id="table" var="model" styleClass="ui-datatable-hor-scroll" rowStyleClass="#{model.idStatusVenta eq 1 ? 'alert-info': (model.idStatusVenta eq 2 ? 'alert-warning':(model.idStatusVenta eq 3 ? 'alert-success':'alert-danger'))}"
                                      value="#{beanRelacionOperaciones.listaVentas}" 
                                      scrollable="true"
-                                     scrollHeight="320" 
+                                     scrollHeight="400" 
+                                     paginator="true" rows="50"
                                      emptyMessage="No se encontraron Registros" >
 
                             <p:column style="width:16px">
                                 <p:rowToggler />
                             </p:column>
 
-                            <p:column headerText="Folio alert" class="alignCenter"  width="60px;" >
+                            <p:column headerText="Folio" class="alignCenter"  width="60px;" >
                                 <h:outputText value="#{model.folio}" />
                             </p:column>
 
@@ -179,7 +180,7 @@
                             </p:columnGroup>
                             <p:rowExpansion>
                                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                    <p:dataTable var="item" value="#{model.lstVentaProducto}" styleClass="seconTable"  emptyMessage="No se encontraron Registros.">
+                                    <p:dataTable var="item" value="#{model.lstVentaProducto}"  styleClass="seconTable"  emptyMessage="No se encontraron Registros.">
                                         <p:column headerText="N°" width="10px;" class="alignCenter">
                                             <h:outputText value="#{item.count}" />
                                         </p:column>
