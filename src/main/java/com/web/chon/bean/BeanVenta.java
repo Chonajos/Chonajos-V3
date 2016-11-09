@@ -161,7 +161,7 @@ public class BeanVenta implements Serializable, BeanSimple {
         dejaACuenta = new BigDecimal(0);
         totalVentaDescuento = new BigDecimal(0);
         //JavaScript que actualiza el combo de tipo de venta a contado ya que la actualizacion de la vista no lo hace pero en el back si tiene el valor
-        RequestContext.getCurrentInstance().execute("document.getElementsByClassName('tipoVenta')[0][0].setAttribute('selected', 'selected'); document.getElementById('formContent:autocompleteProducto_input').focus();");
+//        RequestContext.getCurrentInstance().execute("document.getElementsByClassName('tipoVenta')[0][0].setAttribute('selected', 'selected'); document.getElementById('formContent:autocompleteProducto_input').focus();");
 
         folioCredito = 0;
 
@@ -392,7 +392,7 @@ public class BeanVenta implements Serializable, BeanSimple {
             permisionToEdit = true;
         }
 
-        RequestContext.getCurrentInstance().execute("document.getElementById('formContent:txtPrecioVenta').focus();");
+//        RequestContext.getCurrentInstance().execute("document.getElementById('formContent:txtPrecioVenta').focus();");
         data.setIdProductoFk(idSubProducto);
         data.setIdTipoEmpaqueFk(new BigDecimal(idEmpaque));
 
