@@ -6,6 +6,7 @@
 package com.web.chon.bean;
 
 import com.web.chon.dominio.AbonoCredito;
+import com.web.chon.dominio.Cliente;
 import com.web.chon.dominio.Credito;
 import com.web.chon.dominio.ExistenciaProducto;
 import com.web.chon.dominio.StatusVenta;
@@ -17,10 +18,12 @@ import com.web.chon.dominio.VentaMayoreo;
 import com.web.chon.dominio.VentaProductoMayoreo;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceAbonoCredito;
+import com.web.chon.service.IfaceCatCliente;
 import com.web.chon.service.IfaceCatStatusVenta;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceCredito;
 import com.web.chon.service.IfaceNegocioExistencia;
+import com.web.chon.service.IfaceSubProducto;
 import com.web.chon.service.IfaceTipoVenta;
 import com.web.chon.service.IfaceVentaMayoreo;
 import com.web.chon.service.IfaceVentaMayoreoProducto;
@@ -85,28 +88,38 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
     private IfaceAbonoCredito ifaceAbonoCredito;
     @Autowired
     private IfaceCredito ifaceCredito;
+    @Autowired
+    private IfaceCatCliente ifaceCatCliente;
+    @Autowired
+    private IfaceSubProducto ifaceSubProducto;
 
     private UsuarioDominio usuario;
+    private Subproducto subProducto;
+    private VentaMayoreo data;
+    private Cliente cliente;
+
     private ArrayList<VentaProductoMayoreo> lstVenta;
     private ArrayList<TipoVenta> lstTipoVenta;
-    private VentaMayoreo data;
     private ArrayList<VentaMayoreo> listaVentasMayoreo;
     private ArrayList<Sucursal> listaSucursales;
     private ArrayList<StatusVenta> listaStatusVenta;
+    private ArrayList<Subproducto> lstProducto;
+    private ArrayList<Cliente> lstCliente;
+
     private String title;
     private String viewEstate;
     private int filtro;
+
     private Date fechaInicio;
     private Date fechaFin;
-
     private Date fechaFiltroInicio;
     private Date fechaFiltroFin;
+
     private boolean enableCalendar;
-    private Subproducto subProducto;
+
     private BigDecimal idStatusBean;
     private BigDecimal idSucursalBean;
     private BigDecimal idTipoVentaBean;
-
     private BigDecimal totalVenta;
     private BigDecimal totalUtilidad;
     private BigDecimal totalVentaDetalle;
@@ -131,10 +144,8 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
     private Credito c;
     private boolean variableInicial;
     private boolean credito;
-    
 
     private Date date;
-    
 
     @PostConstruct
     public void init() {
@@ -194,14 +205,21 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
     }
 
     public void buscar() {
+
+        if (cliente == null) {
+            cliente = new Cliente();
+            cliente.setId_cliente(null);
+        }
+
+        if (subProducto == null) {
+            subProducto = new Subproducto();
+            subProducto.setIdProductoFk("");
+        }
         if (fechaFiltroInicio == null || fechaFiltroFin == null) {
             JsfUtil.addErrorMessageClean("Favor de ingresar un rango de fechas");
         } else {
-            if (subProducto == null) {
-                subProducto = new Subproducto();
-                subProducto.setIdProductoFk("");
-            }
-            listaVentasMayoreo = ifaceVentaMayoreo.getVentasByIntervalDate(fechaFiltroInicio, fechaFiltroFin, idSucursalBean, idStatusBean, idTipoVentaBean, subProducto.getIdSubproductoPk());
+
+            listaVentasMayoreo = ifaceVentaMayoreo.getVentasByIntervalDate(fechaFiltroInicio, fechaFiltroFin, idSucursalBean, idStatusBean, idTipoVentaBean, subProducto.getIdSubproductoPk(), cliente.getId_cliente());
             getTotalVentaByInterval();
         }
     }
@@ -255,65 +273,62 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
         if (ac != null && ac.getIdAbonoCreditoPk() != null) {
             JsfUtil.addErrorMessageClean("Este crédito ya cuenta con abonos, no se puede cancelar");
 
-        } else {
-            if (data.getIdStatusFk().intValue() != 4 && data.getIdStatusFk().intValue() != 2 && data.getIdStatusFk().intValue() != 3) {
-                boolean banderaError = false;
-                lstVenta = ifaceVentaMayoreoProducto.buscaVentaCancelar(data.getVentaSucursal(), data.getIdSucursalFk());
-                for (VentaProductoMayoreo producto : lstVenta) {
-                    BigDecimal cantidad = producto.getCantidadEmpaque();
-                    BigDecimal kilos = producto.getKilosVendidos();
-                    BigDecimal idExistencia = producto.getIdExistenciaFk();
-                    BigDecimal idBodega = producto.getIdBodegaFk();
-                    //Obtenemos la existencia real del producto.
-                    ArrayList<ExistenciaProducto> exis = new ArrayList<ExistenciaProducto>();
-                    //public ArrayList<ExistenciaProducto> getExistencias(BigDecimal idSucursal, BigDecimal idBodega, BigDecimal idProvedor,String idProducto, BigDecimal idEmpaque, BigDecimal idConvenio,BigDecimal idEmPK);
-                    exis = ifaceNegocioExistencia.getExistenciasCancelar(idExistencia);
-                    //Primero obtenemos la cantidad de kilos y paquetes en Existencias
-                    //sumamos los kilos y paquetes al nuevo update.
-                    cantidad = cantidad.add(exis.get(0).getCantidadPaquetes(), MathContext.UNLIMITED);
-                    kilos = kilos.add(exis.get(0).getKilosTotalesProducto(), MathContext.UNLIMITED);
-                    //Creamos el nuevo objeto para hacer el update
-                    ExistenciaProducto ep = new ExistenciaProducto();
-                    ep.setCantidadPaquetes(cantidad);
-                    ep.setKilosTotalesProducto(kilos);
-                    ep.setIdExistenciaProductoPk(idExistencia);
-                    ep.setIdBodegaFK(idBodega);
-                    if (ifaceNegocioExistencia.updateCantidadKilo(ep) == 1) {
-                        System.out.println("Regreso Producto Correctamente");
-                    } else {
-                        banderaError = true;
-                    }
-
+        } else if (data.getIdStatusFk().intValue() != 4 && data.getIdStatusFk().intValue() != 2 && data.getIdStatusFk().intValue() != 3) {
+            boolean banderaError = false;
+            lstVenta = ifaceVentaMayoreoProducto.buscaVentaCancelar(data.getVentaSucursal(), data.getIdSucursalFk());
+            for (VentaProductoMayoreo producto : lstVenta) {
+                BigDecimal cantidad = producto.getCantidadEmpaque();
+                BigDecimal kilos = producto.getKilosVendidos();
+                BigDecimal idExistencia = producto.getIdExistenciaFk();
+                BigDecimal idBodega = producto.getIdBodegaFk();
+                //Obtenemos la existencia real del producto.
+                ArrayList<ExistenciaProducto> exis = new ArrayList<ExistenciaProducto>();
+                //public ArrayList<ExistenciaProducto> getExistencias(BigDecimal idSucursal, BigDecimal idBodega, BigDecimal idProvedor,String idProducto, BigDecimal idEmpaque, BigDecimal idConvenio,BigDecimal idEmPK);
+                exis = ifaceNegocioExistencia.getExistenciasCancelar(idExistencia);
+                //Primero obtenemos la cantidad de kilos y paquetes en Existencias
+                //sumamos los kilos y paquetes al nuevo update.
+                cantidad = cantidad.add(exis.get(0).getCantidadPaquetes(), MathContext.UNLIMITED);
+                kilos = kilos.add(exis.get(0).getKilosTotalesProducto(), MathContext.UNLIMITED);
+                //Creamos el nuevo objeto para hacer el update
+                ExistenciaProducto ep = new ExistenciaProducto();
+                ep.setCantidadPaquetes(cantidad);
+                ep.setKilosTotalesProducto(kilos);
+                ep.setIdExistenciaProductoPk(idExistencia);
+                ep.setIdBodegaFK(idBodega);
+                if (ifaceNegocioExistencia.updateCantidadKilo(ep) == 1) {
+                    System.out.println("Regreso Producto Correctamente");
+                } else {
+                    banderaError = true;
                 }
 
-                if (ifaceVentaMayoreo.cancelarVentaMayoreo(data.getIdVentaMayoreoPk(), usuario.getIdUsuario(), data.getComentariosCancel()) != 0 && banderaError == false) {
+            }
 
-                    Credito c = new Credito();
-                    c = ifaceCredito.getCreditosByIdVentaMayoreo(data.getIdVentaMayoreoPk());
-                    System.out.println("Credito: " + c.toString());
-                    if (c != null && c.getIdCreditoPk() != null) {
-                        if (ifaceCredito.eliminarCreditoByIdCreditoPk(c.getIdCreditoPk()) == 1) {
-                            JsfUtil.addSuccessMessageClean("Se ha cancelado la venta  y credito correctamente ");
-                            data.setIdStatusFk(null);
-                            lstVenta.clear();
-                            buscar();
-                        } else {
-                            JsfUtil.addErrorMessageClean("Ha ocurrido un error al eliminar el credito");
-                        }
-                    } else {
-                        JsfUtil.addSuccessMessageClean("Se ha cancelado la venta correctamente");
+            if (ifaceVentaMayoreo.cancelarVentaMayoreo(data.getIdVentaMayoreoPk(), usuario.getIdUsuario(), data.getComentariosCancel()) != 0 && banderaError == false) {
+
+                Credito c = new Credito();
+                c = ifaceCredito.getCreditosByIdVentaMayoreo(data.getIdVentaMayoreoPk());
+                System.out.println("Credito: " + c.toString());
+                if (c != null && c.getIdCreditoPk() != null) {
+                    if (ifaceCredito.eliminarCreditoByIdCreditoPk(c.getIdCreditoPk()) == 1) {
+                        JsfUtil.addSuccessMessageClean("Se ha cancelado la venta  y credito correctamente ");
                         data.setIdStatusFk(null);
                         lstVenta.clear();
                         buscar();
+                    } else {
+                        JsfUtil.addErrorMessageClean("Ha ocurrido un error al eliminar el credito");
                     }
-
                 } else {
-                    JsfUtil.addErrorMessageClean("Ocurrió un error al intentar cancelar la venta.");
+                    JsfUtil.addSuccessMessageClean("Se ha cancelado la venta correctamente");
+                    data.setIdStatusFk(null);
+                    lstVenta.clear();
+                    buscar();
                 }
-            } else {
-                JsfUtil.addErrorMessageClean("No puedes volver a cancelar la venta, o cancelar una venta ya pagada");
 
+            } else {
+                JsfUtil.addErrorMessageClean("Ocurrió un error al intentar cancelar la venta.");
             }
+        } else {
+            JsfUtil.addErrorMessageClean("No puedes volver a cancelar la venta, o cancelar una venta ya pagada");
 
         }
     }
@@ -459,6 +474,18 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
 //            totalVentaDetalle = totalVentaDetalle.add(venta.getTotal());
 //        }
 //    }
+    public ArrayList<Cliente> autoCompleteCliente(String nombreCliente) {
+        lstCliente = ifaceCatCliente.getClienteByNombreCompleto(nombreCliente.toUpperCase());
+        return lstCliente;
+
+    }
+
+    public ArrayList<Subproducto> autoComplete(String nombreProducto) {
+        lstProducto = ifaceSubProducto.getSubProductoByNombre(nombreProducto.toUpperCase());
+        return lstProducto;
+
+    }
+
     @Override
     public String delete() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -805,6 +832,30 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
 
     public void setC(Credito c) {
         this.c = c;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public ArrayList<Subproducto> getLstProducto() {
+        return lstProducto;
+    }
+
+    public void setLstProducto(ArrayList<Subproducto> lstProducto) {
+        this.lstProducto = lstProducto;
+    }
+
+    public ArrayList<Cliente> getLstCliente() {
+        return lstCliente;
+    }
+
+    public void setLstCliente(ArrayList<Cliente> lstCliente) {
+        this.lstCliente = lstCliente;
     }
 
 }

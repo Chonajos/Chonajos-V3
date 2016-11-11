@@ -59,10 +59,10 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
     }
 
     @Override
-    public ArrayList<VentaMayoreo> getVentasByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idStatusVenta, BigDecimal idTipoVenta, String idSubProductoFk) {
+    public ArrayList<VentaMayoreo> getVentasByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idStatusVenta, BigDecimal idTipoVenta, String idSubProductoFk,BigDecimal idCliente) {
         getEjb();
         ArrayList<VentaMayoreo> lstVenta = new ArrayList<VentaMayoreo>();
-        List<Object[]> lstObject = ejb.getVentasByInterval(TiempoUtil.getFechaDDMMYYYY(fechaInicio), TiempoUtil.getFechaDDMMYYYY(fechaFin), idSucursal, idStatusVenta, idTipoVenta);
+        List<Object[]> lstObject = ejb.getVentasByInterval(TiempoUtil.getFechaDDMMYYYY(fechaInicio), TiempoUtil.getFechaDDMMYYYY(fechaFin), idSucursal, idStatusVenta, idTipoVenta,idSubProductoFk,idCliente);
         BigDecimal ganacias = new BigDecimal(0);
         for (Object[] obj : lstObject) {
 

@@ -2,6 +2,7 @@ package com.web.chon.bean;
 
 import com.web.chon.dominio.AbonoCredito;
 import com.web.chon.dominio.Caja;
+import com.web.chon.dominio.Cliente;
 import com.web.chon.dominio.Credito;
 import com.web.chon.dominio.ExistenciaMenudeo;
 import com.web.chon.dominio.StatusVenta;
@@ -13,6 +14,7 @@ import com.web.chon.dominio.VentaProducto;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceAbonoCredito;
 import com.web.chon.service.IfaceCaja;
+import com.web.chon.service.IfaceCatCliente;
 import com.web.chon.service.IfaceCatStatusVenta;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceCredito;
@@ -83,16 +85,21 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     private IfaceCredito ifaceCredito;
     @Autowired
     private IfaceAbonoCredito ifaceAbonoCredito;
+    @Autowired
+    private IfaceCatCliente ifaceCatCliente;
 
     private ArrayList<Sucursal> listaSucursales;
     private ArrayList<Venta> listaVentas;
     private ArrayList<StatusVenta> listaStatusVenta;
     private ArrayList<VentaProducto> listaProductoCancel;
     private ArrayList<Subproducto> lstProducto;
+    private ArrayList<Cliente> lstCliente;
 
     private UsuarioDominio usuario;
     private Venta ventaImpresion;
     private Venta ventaCancelar;
+    private Subproducto subProducto;
+    private Cliente cliente;
     private Caja caja;
 
     private String title;
@@ -127,7 +134,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     private boolean enableCalendar;
     private String comentarioCancelacion;
 
-    private Subproducto subProducto;
+    
     private static final BigDecimal TIPO = new BigDecimal(1);
 
     @PostConstruct
@@ -301,14 +308,21 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     }
 
     public void buscar() {
+
+        if (cliente == null) {
+            cliente = new Cliente();
+            cliente.setId_cliente(null);
+        }
+
+        if (subProducto == null) {
+            subProducto = new Subproducto();
+            subProducto.setIdProductoFk("");
+        }
+
         if (fechaFiltroInicio == null || fechaFiltroFin == null) {
             JsfUtil.addErrorMessageClean("Favor de ingresar un rango de fechas");
         } else {
-            if (subProducto == null) {
-                subProducto = new Subproducto();
-                subProducto.setIdProductoFk("");
-            }
-            listaVentas = ifaceVenta.getVentasByIntervalDate(fechaFiltroInicio, fechaFiltroFin, idSucursal, idStatusVenta, subProducto.getIdSubproductoPk(), idTipoVenta);
+            listaVentas = ifaceVenta.getVentasByIntervalDate(fechaFiltroInicio, fechaFiltroFin, idSucursal, idStatusVenta, subProducto.getIdSubproductoPk(), idTipoVenta, cliente.getId_cliente());
             getTotalVentaByInterval();
         }
     }
@@ -399,6 +413,12 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
         for (VentaProducto item : vp) {
             totalVenta = totalVenta.add(item.getTotal(), MathContext.UNLIMITED);
         }
+    }
+
+    public ArrayList<Cliente> autoCompleteCliente(String nombreCliente) {
+        lstCliente = ifaceCatCliente.getClienteByNombreCompleto(nombreCliente.toUpperCase());
+        return lstCliente;
+
     }
 
     @Override
@@ -681,8 +701,20 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
         this.idTipoVenta = idTipoVenta;
     }
 
-   
-    
-    
+    public ArrayList<Cliente> getLstCliente() {
+        return lstCliente;
+    }
+
+    public void setLstCliente(ArrayList<Cliente> lstCliente) {
+        this.lstCliente = lstCliente;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
 
 }

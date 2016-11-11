@@ -38,17 +38,19 @@
 
             <p:panel>
                 <div class="container-fluid">
-
-                    <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 ">
+                    <div class="form-group" align="right">
+                        <p:commandButton value="Atras" update=":formContent" ajax="true" action="#{beanRelOperMayoreo.cancel}" rendered="#{beanRelOperMayoreo.viewEstate =='searchById'}"/>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
                         <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="sucursalFiltro" value ="Sucursal:" /> 
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="sucursalFiltro" value ="Sucursal:" /> 
                             <h:selectOneMenu  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanRelacionOperaciones.idSucursal}"  disabled="#{beanRelacionOperaciones.usuario.perId != 1}">
                                 <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="" />
                                 <f:selectItems value="#{beanRelacionOperaciones.listaSucursales}" var="sucursal" itemLabel="#{sucursal.nombreSucursal}" itemValue="#{sucursal.idSucursalPk}"/>
                             </h:selectOneMenu>
                         </div>
                         <div class="col-lg-3 col-md-2 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-6 col-md-5 col-sm-4 col-xs-12 "  for="selectFiltro" value ="Fecha:" /> 
+                            <p:outputLabel class="col-lg-6 col-md-5 col-sm-4 col-xs-12 alignRight"  for="selectFiltro" value ="Fecha:" /> 
                             <h:selectOneMenu  id="selectFiltro" class="col-lg-6 col-md-7 col-sm-8 col-xs-12" value="#{beanRelacionOperaciones.filtro}" >
                                 <f:selectItem itemLabel="Selecciona" itemValue="-1" />
                                 <f:selectItem itemLabel="Día" itemValue="1"/>
@@ -57,26 +59,38 @@
                                 <p:ajax event="change" update=":formContent:calendarInicio formContent:calendarFin" listener="#{beanRelacionOperaciones.verificarCombo()}"/>
                             </h:selectOneMenu>
                         </div>
-                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft "  for="calendarInicio" value ="Fecha de Inicio:" /> 
-                            <p:calendar disabled="#{beanRelacionOperaciones.enableCalendar}" id="calendarInicio" 
-                                        class="col-lg-8 col-md-8 col-sm-8 col-xs-12 
-                                        calendario alignRight" navigator="true" placeholder="dd/mm/yyyy"
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-5 col-md-4 col-sm-4 col-xs-12"  for="calendarInicio" value ="Fecha de Inicio:" /> 
+                            <p:calendar id="calendarInicio" 
+                                        class="col-lg-7 col-md-8 col-sm-8 col-xs-12 
+                                        calendario " navigator="true" placeholder="dd/mm/yyyy"
                                         value="#{beanRelacionOperaciones.fechaFiltroInicio}" locale="es" pattern="dd/MM/yyyy" readonlyInput="false" showOn="button" >
 
                             </p:calendar>
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 ">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 " 
+                            <p:outputLabel class="col-lg-5 col-md-4 col-sm-4 col-xs-12" 
                                            for="calendarFin" value ="Fecha de Fin:" /> 
-                            <p:calendar disabled="#{beanRelacionOperaciones.enableCalendar}" 
-                                        id="calendarFin" class="col-lg-8 col-md-8 col-sm-8 
-                                        col-xs-12 calendario alignRight" navigator="true" placeholder="dd/mm/yyyy"
+                            <p:calendar id="calendarFin" class="col-lg-7 col-md-8 col-sm-8 
+                                        col-xs-12 calendario" navigator="true" placeholder="dd/mm/yyyy"
                                         value="#{beanRelacionOperaciones.fechaFiltroFin}" locale="es" pattern="dd/MM/yyyy" readonlyInput="false" showOn="button" >
 
                             </p:calendar>
                         </div>
-                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 form-group">
+
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 "  for="autocompleteCliente" value ="Cliente:" /> 
+                            <p:autoComplete  placeholder="Seleccione un Cliente" id="autocompleteCliente"  styleClass="autocomplete-input-text-media ui-state-highlight-autocomplete" class="ui-state-highlight-autocomplete"
+                                             value="#{beanRelacionOperaciones.cliente}" completeMethod="#{beanRelacionOperaciones.autoCompleteCliente}" forceSelection="true" var="cliente"  inputStyle="width: 180px"
+                                             itemLabel="#{cliente.nombreCompleto}"
+                                             itemValue="#{cliente.id_cliente}" converter="#{clienteConverter}">
+                            </p:autoComplete>
+
+                            <pe:keyFilter for="autocompleteCliente" regEx="/[a-z0-9-_Ã±\s]/i" />
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignRight"  for="autocompletePoducto" 
                                            value ="Productos:" /> 
                             <p:autoComplete  placeholder="Seleccione un Producto" id="autocompletePoducto"  
@@ -91,15 +105,17 @@
                             </p:autoComplete>
                             <pe:keyFilter for="autocompletePoducto" regEx="/[a-z0-9-_Ã±\s]/i" />
                         </div>
-                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="tipoVentaFiltro" value =" Tipo de Venta:"  /> 
-                            <h:selectOneMenu  id="tipoVentaFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanRelacionOperaciones.idTipoVenta}"  >
+                        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-5 col-md-4 col-sm-4 col-xs-12"  for="tipoVentaFiltro" value =" Tipo de Venta:"  /> 
+                            <h:selectOneMenu  id="tipoVentaFiltro" class="col-lg-7 col-md-8 col-sm-8 col-xs-12" value="#{beanRelacionOperaciones.idTipoVenta}"  >
                                 <f:selectItem itemLabel="Selecciona" itemValue="" />
                                 <f:selectItem itemLabel="CONTADO" itemValue="1" />
                                 <f:selectItem itemLabel="CREDITO" itemValue="2" />
                             </h:selectOneMenu>
                         </div>
-                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+
+
+                        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="statusFiltro" value ="Status de Venta:"  /> 
                             <h:selectOneMenu  id="statusFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanRelacionOperaciones.idStatusVenta}"  >
                                 <f:selectItem itemLabel="Selecciona" itemValue="" />
@@ -108,6 +124,7 @@
                             </h:selectOneMenu>
                         </div>
                     </div>
+
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <p:dataTable id="table" var="model" styleClass="ui-datatable-hor-scroll" rowStyleClass="#{model.idStatusVenta eq 1 ? 'alert-info': (model.idStatusVenta eq 2 ? 'alert-warning':(model.idStatusVenta eq 3 ? 'alert-success':'alert-danger'))}"
                                      value="#{beanRelacionOperaciones.listaVentas}" 

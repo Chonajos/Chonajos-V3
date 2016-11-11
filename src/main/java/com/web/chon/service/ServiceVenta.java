@@ -54,14 +54,14 @@ public class ServiceVenta implements IfaceVenta {
     }
 
     @Override
-    public ArrayList<Venta> getVentasByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idStatusVenta, String idProducto, BigDecimal idTipoVenta) {
+    public ArrayList<Venta> getVentasByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idStatusVenta, String idProducto, BigDecimal idTipoVenta,BigDecimal idCliente) {
         getEjb();
         ArrayList<Venta> lstVenta = new ArrayList<Venta>();
         BigDecimal count = new BigDecimal(0);
         BigDecimal B_CONTADO = new BigDecimal(1);
         String S_CONTADO ="CONTADO";
         String S_CREDITO ="CREDITO";
-        List<Object[]> lstObject = ejb.getVentasByInterval(TiempoUtil.getFechaDDMMYYYY(fechaInicio), TiempoUtil.getFechaDDMMYYYY(fechaFin), idSucursal, idStatusVenta, idProducto, idTipoVenta);
+        List<Object[]> lstObject = ejb.getVentasByInterval(TiempoUtil.getFechaDDMMYYYY(fechaInicio), TiempoUtil.getFechaDDMMYYYY(fechaFin), idSucursal, idStatusVenta, idProducto, idTipoVenta,idCliente);
         for (Object[] obj : lstObject) {
             Venta venta = new Venta();
             venta.setIdVentaPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));

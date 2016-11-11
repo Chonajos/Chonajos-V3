@@ -22,7 +22,7 @@ public interface IfaceVentaMayoreo {
 
     public int getNextVal();
 
-    public ArrayList<VentaMayoreo> getVentasByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idStatusVenta, BigDecimal idTipoVenta,String idSubproductoFk);
+    public ArrayList<VentaMayoreo> getVentasByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idStatusVenta, BigDecimal idTipoVenta,String idSubproductoFk,BigDecimal idCliente);
     
     public VentaMayoreo getVentaMayoreoByFolioidSucursalFk(BigDecimal idFolio,BigDecimal idSucursal);
 
