@@ -148,6 +148,7 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
 
         for (CarroDetalleGeneral dominio : lstCarroDetalleGeneral) {
 
+            System.out.println("domj "+dominio.toString());
             totalComisionGeneral = totalComisionGeneral.add(dominio.getComision());
             totalVentaGeneral = totalVentaGeneral.add(dominio.getVenta());
 

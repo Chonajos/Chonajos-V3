@@ -52,7 +52,6 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
     public int buscaMaxMovimiento(EntradaMercancia entrada) {
         getEjb();
         try {
-            System.out.println("Entrada Service: " + entrada.toString());
             return ejb.buscaMaxMovimiento(entrada);
         } catch (Exception ex) {
             //Logger.getLogger(NegocioEntradaMercancia.class.getName()).log(Level.SEVERE, null, ex);
@@ -164,7 +163,6 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
 
     @Override
     public ArrayList<EntradaMercancia> getSubEntradaByNombre(String nombre) {
-        System.out.println("Entro a Servicio, clave: " + nombre);
         try {
             ArrayList<EntradaMercancia> lstEntradas = new ArrayList<EntradaMercancia>();
 
@@ -329,7 +327,7 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
 
                 venta = venta.add(mayoreoProducto.getTotalVenta());
                 comision = comision.add(mayoreoProducto.getComision());
-                if (!mayoreoProducto.getEmpaqueEntrada().equals(mayoreoProducto.getEmpaquesVendidos())) {
+                if (mayoreoProducto.getEmpaqueEntrada().intValue() > mayoreoProducto.getEmpaquesVendidos().intValue()) {
                     status = "En Proceso";
                 }
             }

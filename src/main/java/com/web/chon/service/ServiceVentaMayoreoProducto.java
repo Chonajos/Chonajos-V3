@@ -11,6 +11,7 @@ import com.web.chon.negocio.NegocioVentaMayoreoProducto;
 import com.web.chon.util.Utilidades;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -53,7 +54,6 @@ public class ServiceVentaMayoreoProducto implements IfaceVentaMayoreoProducto {
     public ArrayList<VentaProductoMayoreo> getProductosbyIdVmFk(BigDecimal idVmFk) {
         try {
             getEjb();
-            System.out.println("VariableService: " + idVmFk);
             ArrayList<VentaProductoMayoreo> lstProductos = new ArrayList<VentaProductoMayoreo>();
             List<Object[]> lstObject = ejb.getProductos(idVmFk);
             for (Object[] obj : lstObject) {
@@ -84,8 +84,7 @@ public class ServiceVentaMayoreoProducto implements IfaceVentaMayoreoProducto {
                 //busca_venta.setIdProvedor(obj[21] == null ? null : new BigDecimal(obj[21].toString()));
                 producto.setIdVentaMayProdPk(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
                 producto.setIdVentaMayoreoFk(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
-                System.out.println("###################################");
-                System.out.println(producto.toString());
+                
                 lstProductos.add(producto);
             }
             return lstProductos;
@@ -155,8 +154,9 @@ public class ServiceVentaMayoreoProducto implements IfaceVentaMayoreoProducto {
 
         switch (dominio.getIdConvenio().intValue()) {
             case 1:
-                BigDecimal kiloPromedio = dominio.getKilosEntrada().divide(dominio.getEmpaqueEntrada(), 3);
-                comision = dominio.getTotalVenta().subtract((kiloPromedio.multiply(dominio.getEmpaquesVendidos()).multiply(dominio.getConvenio())));
+                BigDecimal kiloPromedio = dominio.getKilosEntrada().divide(dominio.getEmpaqueEntrada(),10,RoundingMode.HALF_UP);
+                BigDecimal costoCompra = kiloPromedio.multiply(dominio.getEmpaquesVendidos()).multiply(dominio.getConvenio());
+                comision = dominio.getTotalVenta().subtract(costoCompra);
 
                 break;
             case 2:

@@ -346,7 +346,7 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
             exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, outputStream);
 
             byte[] bytes = outputStream.toByteArray();
-            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf", folio, usuario.getSucId());
+            rutaPDF = UtilUpload.saveFileTemp(bytes, "relacionMayoreo", folio, usuario.getSucId());
 
         } catch (Exception exception) {
             System.out.println("Error >" + exception.getMessage());

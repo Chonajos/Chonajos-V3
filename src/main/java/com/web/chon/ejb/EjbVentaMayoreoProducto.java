@@ -30,7 +30,7 @@ public class EjbVentaMayoreoProducto implements NegocioVentaMayoreoProducto {
     @Override
     public int insertarVentaProducto(VentaProductoMayoreo ventaproducto) {
         Query query = em.createNativeQuery("INSERT INTO VENTAMAYOREOPRODUCTO(ID_V_M_P_PK,ID_VENTA_MAYOREO_FK,ID_SUBPRODUCTO_FK,PRECIO_PRODUCTO,KILOS_VENDIDOS,CANTIDAD_EMPAQUE,TOTAL_VENTA,ID_TIPO_EMPAQUE_FK,ID_ENTRADA_MERCANCIA_FK,ID_EXISTENCIA_FK) VALUES(?,?,?,?,?,?,?,?,?,?)");
-        System.out.println("venta_mayoreo_producto ejb :" + ventaproducto.toString());
+        
         query.setParameter(1, ventaproducto.getIdVentaMayProdPk());
         query.setParameter(2, ventaproducto.getIdVentaMayoreoFk());
         query.setParameter(3, ventaproducto.getIdSubProductofk());
@@ -53,7 +53,6 @@ public class EjbVentaMayoreoProducto implements NegocioVentaMayoreoProducto {
 
     @Override
     public List<Object[]> getProductos(BigDecimal idVmFk) {
-        System.out.println("=====================Entro a metodo GetProductos==================0");
         try {
             Query query = em.createNativeQuery("select em.CARROSUCURSAL,em.IDENTIFICADOR,sp.NOMBRE_SUBPRODUCTO,tem.NOMBRE_EMPAQUE,vmp.CANTIDAD_EMPAQUE,\n"
                     + "vmp.KILOS_VENDIDOS,vmp.PRECIO_PRODUCTO,vmp.TOTAL_VENTA, vmp.ID_V_M_P_PK,vmp.ID_VENTA_MAYOREO_FK from VENTAMAYOREOPRODUCTO vmp\n"
@@ -71,8 +70,6 @@ public class EjbVentaMayoreoProducto implements NegocioVentaMayoreoProducto {
                     + "on em.ID_EM_PK = emp.ID_EM_FK\n"
                     + "where vmp.ID_VENTA_MAYOREO_FK =?");
             query.setParameter(1, idVmFk);
-            System.out.println("Query: " + query.toString());
-            System.out.println("Parametro: " + idVmFk);
             return query.getResultList();
         } catch (Exception ex) {
             System.out.println("-----------------------Entro a Error----------------");
@@ -84,7 +81,6 @@ public class EjbVentaMayoreoProducto implements NegocioVentaMayoreoProducto {
 
     @Override
     public List<Object[]> buscaVentaCancelar(BigDecimal idVenta, BigDecimal idSucursal) {
-        System.out.println("EJB BuscaVentaCancelar ");
         try {
 
             Query query = em.createNativeQuery("select vmp.ID_EXISTENCIA_FK,vmp.CANTIDAD_EMPAQUE,vmp.KILOS_VENDIDOS from VENTAMAYOREOPRODUCTO vmp\n"
@@ -93,7 +89,6 @@ public class EjbVentaMayoreoProducto implements NegocioVentaMayoreoProducto {
                     + "where vm.VENTASUCURSAL = ? and vm.ID_SUCURSAL_FK=?");
             query.setParameter(1, idVenta);
             query.setParameter(2, idSucursal);
-            System.out.println(query);
             return query.getResultList();
 
         } catch (Exception ex) {

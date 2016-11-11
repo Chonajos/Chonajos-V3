@@ -180,7 +180,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
             exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, outputStream);
 
             byte[] bytes = outputStream.toByteArray();
-            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf", v.getIdVentaPk().intValue(), idSucursalImpresion.intValue());
+            rutaPDF = UtilUpload.saveFileTemp(bytes, "operacionMenudeo", v.getIdVentaPk().intValue(), idSucursalImpresion.intValue());
 
         } catch (Exception exception) {
             System.out.println("Error >" + exception.getMessage());

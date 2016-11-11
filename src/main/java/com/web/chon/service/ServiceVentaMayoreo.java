@@ -14,6 +14,7 @@ import com.web.chon.util.TiempoUtil;
 import com.web.chon.util.Utilidades;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -117,7 +118,6 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
     @Override
     public VentaMayoreo getVentaMayoreoByFolioidSucursalFk(BigDecimal idFolio, BigDecimal idSucursal) {
         getEjb();
-        System.out.println("Entro a ServiceVentaMayoreo: Folio: " + idFolio + "IdSucursal: " + idSucursal);
         List<Object[]> Object = ejb.getVentaMayoreoByFolioidSucursalFk(idFolio, idSucursal);
         VentaMayoreo venta = new VentaMayoreo();
         for (Object[] obj : Object) {
@@ -310,7 +310,8 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
 
         switch (dominio.getIdConvenio().intValue()) {
             case 1:
-                BigDecimal kiloPromedio = dominio.getKilosEntrada().divide(dominio.getPaquetesEntrada(), 3);
+//                BigDecimal kiloPromedio = dominio.getKilosEntrada().divide(dominio.getPaquetesEntrada(), 3);
+                BigDecimal kiloPromedio = dominio.getKilosEntrada().divide(dominio.getPaquetesEntrada(),10,RoundingMode.HALF_UP);
                 comision = dominio.getTotalVenta().subtract((kiloPromedio.multiply(dominio.getPaquetesVendidos()).multiply(dominio.getConvenio())));
 
                 break;
