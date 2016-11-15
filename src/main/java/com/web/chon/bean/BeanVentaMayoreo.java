@@ -599,7 +599,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
             exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, outputStream);
 
             byte[] bytes = outputStream.toByteArray();
-            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf", folio, usuarioDominio.getSucId());
+            rutaPDF = UtilUpload.saveFileTemp(bytes, "ventaMayoreo", folio, usuarioDominio.getSucId());
 
         } catch (Exception exception) {
             System.out.println("Error >" + exception.getMessage());

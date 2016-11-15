@@ -46,7 +46,7 @@ public class EjbVenta implements NegocioVenta {
     }
 
     @Override
-    public List<Object[]> getVentasByInterval(String fechaInicio, String fechaFin, BigDecimal idSucursal, BigDecimal idStatusVenta, String idProducto, BigDecimal idTipoVenta) {
+    public List<Object[]> getVentasByInterval(String fechaInicio, String fechaFin, BigDecimal idSucursal, BigDecimal idStatusVenta, String idProducto, BigDecimal idTipoVenta, BigDecimal idCliente) {
         Query query;
         int cont = 0;
 
@@ -114,6 +114,20 @@ public class EjbVenta implements NegocioVenta {
             }
 
             cadena.append(" ven.TIPO_VENTA  = '" + idTipoVenta + "' ");
+            cont++;
+
+        }
+
+        if (idCliente != null) {
+
+            if (cont == 0) {
+                cadena.append(" WHERE ");
+            } else {
+                cadena.append(" AND ");
+            }
+
+            cadena.append(" ven.ID_CLIENTE_FK = '" + idCliente + "' ");
+            cont++;
 
         }
 

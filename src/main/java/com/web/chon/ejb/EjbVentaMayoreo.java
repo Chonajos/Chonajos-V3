@@ -48,7 +48,7 @@ public class EjbVentaMayoreo implements NegocioVentaMayoreo {
     }
 
     @Override
-    public List<Object[]> getVentasByInterval(String fechaInicio, String fechaFin, BigDecimal idSucursal, BigDecimal idStatusVenta, BigDecimal idTipoVenta) {
+    public List<Object[]> getVentasByInterval(String fechaInicio, String fechaFin, BigDecimal idSucursal, BigDecimal idStatusVenta, BigDecimal idTipoVenta, String idSubProducto, BigDecimal idCliente) {
         Query query;
         int cont = 0;
 
@@ -63,23 +63,23 @@ public class EjbVentaMayoreo implements NegocioVentaMayoreo {
                 + " INNER JOIN CLIENTE CLI ON CLI.ID_CLIENTE = ven.ID_CLIENTE_FK "
                 + " INNER JOIN USUARIO USU ON USU.ID_USUARIO_PK = ven.ID_VENDEDOR_FK "
                 + " INNER JOIN TIPO_VENTA TV ON TV.ID_TIPO_VENTA_PK = ven.ID_TIPO_VENTA_FK ");
-//SE COMENTO YA QUE NO FUNCIONO POR TIPOS DE COMISION        StringBuffer cadena = new StringBuffer("SELECT VEN.*, (CLI.NOMBRE||' '||CLI.APELLIDO_PATERNO ||' '||CLI.APELLIDO_MATERNO ) AS CLIENTE, "
-//                + " (USU.NOMBRE_USUARIO||' '||USU.APATERNO_USUARIO ||' '||USU.AMATERNO_USUARIO ) AS VENDEDOR, (select NVL(sum(VTP.TOTAL_VENTA),0) "
-//                + " FROM VENTAMAYOREOPRODUCTO VTP WHERE VTP.ID_VENTA_MAYOREO_FK=ven.ID_VENTA_MAYOREO_PK) AS TOTAL_VENTA, TV.NOMBRE_TIPO_VENTA , "
-//                + " (select CASE WHEN exp.ID_TIPO_CONVENIO_FK =1 THEN SUM(((emp.KILOS_TOTALES/emp.CANTIDAD_EMPACAQUE)*emp.CONVENIO*vmp.CANTIDAD_EMPAQUE)) "
-//                + " WHEN exp.ID_TIPO_CONVENIO_FK =2 THEN SUM((vmp.TOTAL_VENTA * (100-exp.CONVENIO)/100))"
-//                + " WHEN exp.ID_TIPO_CONVENIO_FK =3 THEN SUM((vmp.KILOS_VENDIDOS* (vmp.PRECIO_PRODUCTO-emp.CONVENIO))) "
-//                + " END AS COSTO_VENTA from VENTA_MAYOREO VENC "
-//                + " inner join VENTAMAYOREOPRODUCTO vmp on vmp.ID_VENTA_MAYOREO_FK = VENC.ID_VENTA_MAYOREO_PK"
-//                + " inner join EXISTENCIA_PRODUCTO exp on exp.ID_EXP_PK = vmp.ID_EXISTENCIA_FK "
-//                + " inner join ENTRADAMERCANCIAPRODUCTO emp on emp.ID_EMP_PK = exp.ID_EMP_FK where VENC.ID_VENTA_MAYOREO_PK =ven.ID_VENTA_MAYOREO_PK AND ROWNUM =1  GROUP BY EXP.ID_TIPO_CONVENIO_FK) AS COSTO_TOTAL FROM VENTA_MAYOREO ven "
-//                + " INNER JOIN CLIENTE CLI ON CLI.ID_CLIENTE = ven.ID_CLIENTE_FK "
-//                + " INNER JOIN USUARIO USU ON USU.ID_USUARIO_PK = ven.ID_VENDEDOR_FK "
-//                + " INNER JOIN TIPO_VENTA TV ON TV.ID_TIPO_VENTA_PK = ven.ID_TIPO_VENTA_FK ");
 
-        if (!fechaInicio.equals("")) {
+        if (idSubProducto != null && !idSubProducto.equals("")) {
+            cadena.append(" INNER JOIN VENTAMAYOREOPRODUCTO VMPP ON VMPP.ID_VENTA_MAYOREO_FK = ven.ID_VENTA_MAYOREO_PK WHERE VMPP.ID_SUBPRODUCTO_FK ='" + idSubProducto + "'");
             cont++;
-            cadena.append(" WHERE TO_DATE(TO_CHAR(ven.FECHA_VENTA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "' ");
+
+        }
+        
+        if (!fechaInicio.equals("")) {
+            if (cont == 0) {
+                cadena.append(" WHERE ");
+            } else {
+                cadena.append(" AND ");
+            }
+            
+            cadena.append(" TO_DATE(TO_CHAR(ven.FECHA_VENTA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "' ");
+            cont++;
+
         }
 
         if (idSucursal != null && idSucursal.intValue() != 0) {
@@ -113,6 +113,17 @@ public class EjbVentaMayoreo implements NegocioVentaMayoreo {
             }
 
             cadena.append(" ven.ID_STATUS_FK  = '" + idStatusVenta + "' ");
+            cont++;
+        }
+
+        if (idCliente != null) {
+            if (cont == 0) {
+                cadena.append(" WHERE ");
+            } else {
+                cadena.append(" AND ");
+            }
+
+            cadena.append(" ven.ID_CLIENTE_FK  = '" + idCliente + "' ");
             cont++;
         }
 
@@ -241,7 +252,7 @@ public class EjbVentaMayoreo implements NegocioVentaMayoreo {
         try {
             StringBuffer txtQuery = new StringBuffer("SELECT ENM.CARROSUCURSAL,EMP.ID_SUBPRODUCTO_FK,SUB.NOMBRE_SUBPRODUCTO, "
                     + "EMP.ID_TIPO_EMPAQUE_FK,TE.NOMBRE_EMPAQUE,EMP.CANTIDAD_EMPACAQUE,EMP.KILOS_TOTALES,SUM(VMP.CANTIDAD_EMPAQUE),SUM(VMP.KILOS_VENDIDOS), "
-                    + "ROUND(AVG(VMP.PRECIO_PRODUCTO),2),EMP.CONVENIO,EMP.ID_TIPO_CONVENIO_FK,EMP.ID_EMP_PK FROM ENTRADAMERCANCIA ENM "
+                    + "SUM(VMP.KILOS_VENDIDOS*VMP.PRECIO_PRODUCTO) AS TOTAL_VENTA,EMP.CONVENIO,EMP.ID_TIPO_CONVENIO_FK,EMP.ID_EMP_PK FROM ENTRADAMERCANCIA ENM "
                     + "RIGHT JOIN ENTRADAMERCANCIAPRODUCTO EMP ON EMP.ID_EM_FK = ENM.ID_EM_PK "
                     + "RIGHT JOIN SUBPRODUCTO SUB ON SUB.ID_SUBPRODUCTO_PK = EMP.ID_SUBPRODUCTO_FK "
                     + "RIGHT JOIN TIPO_EMPAQUE TE ON TE.ID_TIPO_EMPAQUE_PK = EMP.ID_TIPO_EMPAQUE_FK "

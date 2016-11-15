@@ -652,7 +652,7 @@ public class BeanVenta implements Serializable, BeanSimple {
 //            exporter.setParameter(JRPdfExporterParameter.PDF_JAVASCRIPT, "this.print();");
             byte[] bytes = outputStream.toByteArray();
 
-            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf", idVenta, idSucu);
+            rutaPDF = UtilUpload.saveFileTemp(bytes, "ventaMenudeo", idVenta, idSucu);
 
         } catch (Exception exception) {
             System.out.println("Error >" + exception.getMessage());
@@ -729,6 +729,7 @@ public class BeanVenta implements Serializable, BeanSimple {
 
         BigDecimal tipoPago = new BigDecimal("1");
         BigDecimal idClienteVenta = new BigDecimal("1");
+        
         if (cliente.getId_cliente().equals(idClienteVenta)) {
             credito = false;
             data.setIdTipoVentaFk(tipoPago);

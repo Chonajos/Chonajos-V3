@@ -10,6 +10,7 @@
 
     <ui:define name="content">
         <h:form id="formContent">
+            <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <div class="col-lg-9 col-md-10 col-sm-10 col-xs-12">
                 <h3>#{beanTableroControlVentaMeyoreo.title}</h3>
             </div>
@@ -18,7 +19,7 @@
                       closable="false" resizable="false" showHeader="false">
                 <p:graphicImage value="../resources/img/carga.gif" />
             </p:dialog>
-            <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
+
             <div class="col-lg-3 col-md-2 col-sm-2 col-xs-12" align="right" style="margin-top: 5px !important;">
                 <p:commandButton value="Consultar" onclick="PF('statusDialog').show()" update=":formContent" ajax="true" action="#{beanTableroControlVentaMeyoreo.buscar}" rendered="#{beanTableroControlVentaMeyoreo.viewEstate=='init'}" />
                 <p:commandButton value="Regresar" onclick="PF('statusDialog').show()" update=":formContent" ajax="true" action="#{beanTableroControlVentaMeyoreo.back}" rendered="#{beanTableroControlVentaMeyoreo.viewEstate=='searchById'}" />
@@ -268,7 +269,7 @@
                                 <p:rowToggler />
                             </p:column>
                             <p:column headerText="Producto" class="alignLeft"  width="130px;" >
-                                <h:outputText value="#{model.nombreSubProducto}" />
+                                <h:outputText value="#{model.nombreSubProducto} #{model.nombreEmpaque}" />
                             </p:column>
 
                             <p:column headerText="Empaques Entrada" width="70px;" class="alignRight">

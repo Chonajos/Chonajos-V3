@@ -14,6 +14,7 @@ import com.web.chon.util.TiempoUtil;
 import com.web.chon.util.Utilidades;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -58,10 +59,10 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
     }
 
     @Override
-    public ArrayList<VentaMayoreo> getVentasByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idStatusVenta, BigDecimal idTipoVenta, String idSubProductoFk) {
+    public ArrayList<VentaMayoreo> getVentasByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idStatusVenta, BigDecimal idTipoVenta, String idSubProductoFk,BigDecimal idCliente) {
         getEjb();
         ArrayList<VentaMayoreo> lstVenta = new ArrayList<VentaMayoreo>();
-        List<Object[]> lstObject = ejb.getVentasByInterval(TiempoUtil.getFechaDDMMYYYY(fechaInicio), TiempoUtil.getFechaDDMMYYYY(fechaFin), idSucursal, idStatusVenta, idTipoVenta);
+        List<Object[]> lstObject = ejb.getVentasByInterval(TiempoUtil.getFechaDDMMYYYY(fechaInicio), TiempoUtil.getFechaDDMMYYYY(fechaFin), idSucursal, idStatusVenta, idTipoVenta,idSubProductoFk,idCliente);
         BigDecimal ganacias = new BigDecimal(0);
         for (Object[] obj : lstObject) {
 
@@ -117,7 +118,6 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
     @Override
     public VentaMayoreo getVentaMayoreoByFolioidSucursalFk(BigDecimal idFolio, BigDecimal idSucursal) {
         getEjb();
-        System.out.println("Entro a ServiceVentaMayoreo: Folio: " + idFolio + "IdSucursal: " + idSucursal);
         List<Object[]> Object = ejb.getVentaMayoreoByFolioidSucursalFk(idFolio, idSucursal);
         VentaMayoreo venta = new VentaMayoreo();
         for (Object[] obj : Object) {
@@ -169,7 +169,6 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
 
             for (Object[] obj : lstObjectSecundario) {
                 OperacionesVentasMayoreo dominio = new OperacionesVentasMayoreo();
-
                 dominio.setCarroSucursal(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
                 dominio.setIdSubproducto(obj[1] == null ? null : obj[1].toString());
                 dominio.setNombreSubProducto(obj[2] == null ? null : obj[2].toString());
@@ -187,10 +186,11 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
                 dominio.setIdCliente(obj[13] == null ? null : new BigDecimal(obj[13].toString()));
                 dominio.setNombreCliente(obj[14] == null ? "" : obj[14].toString());
                 dominio.setIdEmpFk(obj[15] == null ? null : new BigDecimal(obj[15].toString()));
-                
+
                 lstDetalle.add(dominio);
 
             }
+            BigDecimal ventaTotal = new BigDecimal(0);
             for (Object[] obj : lstObjectPrincipal) {
                 OperacionesVentasMayoreo dominio = new OperacionesVentasMayoreo();
                 ArrayList<OperacionesVentasMayoreo> lstSecundario = new ArrayList<OperacionesVentasMayoreo>();
@@ -204,7 +204,13 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
                 dominio.setKiloEntrada(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
                 dominio.setEmpaqueVendidos(obj[7] == null ? new BigDecimal(0) : new BigDecimal(obj[7].toString()));
                 dominio.setKiloVendidos(obj[8] == null ? new BigDecimal(0) : new BigDecimal(obj[8].toString()));
-                dominio.setPrecioVenta(obj[9] == null ? new BigDecimal(0) : new BigDecimal(obj[9].toString()));
+                ventaTotal = obj[9] == null ? new BigDecimal(0) : new BigDecimal(obj[9].toString());
+
+                if (ventaTotal.intValue() > 0 && dominio.getKiloVendidos().intValue() > 0) {
+                    dominio.setPrecioVenta(ventaTotal.divide(dominio.getKiloVendidos(), 10, RoundingMode.UP));
+                }
+
+//                dominio.setPrecioVenta(obj[9] == null ? new BigDecimal(0) : new BigDecimal(obj[9].toString()));
                 dominio.setConvenio(obj[10] == null ? null : new BigDecimal(obj[10].toString()));
                 dominio.setIdTipoConvenio(obj[11] == null ? null : new BigDecimal(obj[11].toString()));
                 dominio.setIdEmpFk(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
@@ -310,7 +316,8 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
 
         switch (dominio.getIdConvenio().intValue()) {
             case 1:
-                BigDecimal kiloPromedio = dominio.getKilosEntrada().divide(dominio.getPaquetesEntrada(), 3);
+//                BigDecimal kiloPromedio = dominio.getKilosEntrada().divide(dominio.getPaquetesEntrada(), 3);
+                BigDecimal kiloPromedio = dominio.getKilosEntrada().divide(dominio.getPaquetesEntrada(), 10, RoundingMode.HALF_UP);
                 comision = dominio.getTotalVenta().subtract((kiloPromedio.multiply(dominio.getPaquetesVendidos()).multiply(dominio.getConvenio())));
 
                 break;

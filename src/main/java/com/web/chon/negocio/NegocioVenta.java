@@ -28,7 +28,7 @@ public interface NegocioVenta {
      * @param fechaFin
      * @return
      */
-    public List<Object[]> getVentasByInterval(String fechaInicio, String fechaFin, BigDecimal idSucursal, BigDecimal idStatusVenta,String idProducto,BigDecimal idTipoVenta); //default todo
+    public List<Object[]> getVentasByInterval(String fechaInicio, String fechaFin, BigDecimal idSucursal, BigDecimal idStatusVenta,String idProducto,BigDecimal idTipoVenta,BigDecimal idCliente); //default todo
 
     /**
      * Regresa el siguiente numero de folio de venta de la sucursal

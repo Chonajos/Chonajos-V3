@@ -276,7 +276,7 @@ public class BeanEntregaMercancia implements Serializable {
             exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, outputStream);
             byte[] bytes = outputStream.toByteArray();
 
-            rutaPDF = UtilUpload.saveFileTemp(bytes, "entregaMercancia", folioVenta, usuarioDominio.getSucId());
+            rutaPDF = UtilUpload.saveFileTemp(bytes, "entregaMercancia"+totalRemanente, folioVenta, usuarioDominio.getSucId());
 
         } catch (Exception exception) {
             System.out.println("Error >" + exception.getMessage());
