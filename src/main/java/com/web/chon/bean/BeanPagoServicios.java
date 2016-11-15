@@ -154,6 +154,7 @@ public class BeanPagoServicios implements Serializable {
             opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
             opcaja.setMonto(totalServicio);
             opcaja.setComentarios(comentarios);
+            
             opcaja.setIdConceptoFk(idConceptoBean);
             opcaja.setIdSucursalFk(idSucursalFk);
 

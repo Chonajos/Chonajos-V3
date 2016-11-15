@@ -18,6 +18,7 @@ import com.web.chon.util.JsfUtil;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -68,7 +69,7 @@ public class BeanCorteCaja implements Serializable {
     private static final BigDecimal statusAplicado = new BigDecimal(1);
     private static final BigDecimal statusPendiente = new BigDecimal(2);
     private static final BigDecimal statusRechazado = new BigDecimal(3);
-    private static final BigDecimal cero = new BigDecimal(0);
+    private static final BigDecimal cero = new BigDecimal(0).setScale(2, RoundingMode.CEILING);
 
     private BigDecimal saldoAnteriorEfectivo;
     private BigDecimal saldoAnteriorCheques;
@@ -83,7 +84,7 @@ public class BeanCorteCaja implements Serializable {
     private BigDecimal totalEfectivo;
     private BigDecimal totalCheques;
     private BigDecimal totalCuentasBancarias;
-    
+
     private BigDecimal sumaMegaAnterior;
     private BigDecimal sumaMegaActual;
 
@@ -113,7 +114,7 @@ public class BeanCorteCaja implements Serializable {
         totalCheques = cero;
         totalCuentasBancarias = cero;
         sumaMegaAnterior = cero;
-   sumaMegaActual = cero;
+        sumaMegaActual = cero;
 
         caja = ifaceCaja.getCajaByIdUsuarioPk(usuario.getIdUsuario());
         corteAnterior = ifaceCorteCaja.getLastCorteByCaja(caja.getIdCajaPk());
@@ -132,21 +133,18 @@ public class BeanCorteCaja implements Serializable {
         getsumaSalidas();
 
         if (corteAnterior.getSaldoNuevo() == null) {
-            corteAnterior.setSaldoNuevo(new BigDecimal(0));
+            corteAnterior.setSaldoNuevo(cero);
         }
         saldoAnteriorEfectivo = corteAnterior.getSaldoNuevo();
         saldoAnteriorCheques = corteAnterior.getMontoChequesNuevos();
         saldoAnteriorCuentas = corteAnterior.getMontoCuentaNuevo();
-        if(saldoAnteriorCheques==null)
-        {
+        if (saldoAnteriorCheques == null) {
             saldoAnteriorCheques = cero;
         }
-        if(saldoAnteriorEfectivo==null)
-        {
+        if (saldoAnteriorEfectivo == null) {
             saldoAnteriorEfectivo = cero;
         }
-        if(saldoAnteriorCuentas==null)
-        {
+        if (saldoAnteriorCuentas == null) {
             saldoAnteriorCuentas = cero;
         }
 
@@ -207,12 +205,12 @@ public class BeanCorteCaja implements Serializable {
             totalSalidas = totalSalidas.add(t.getMonto(), MathContext.UNLIMITED);
         }
     }
-    public void sumaMegas()
-    {
-        sumaMegaAnterior  = sumaMegaAnterior.add(saldoAnteriorEfectivo, MathContext.UNLIMITED);
-        sumaMegaAnterior  = sumaMegaAnterior.add(saldoAnteriorCheques, MathContext.UNLIMITED);
-        sumaMegaAnterior  = sumaMegaAnterior.add(saldoAnteriorCuentas, MathContext.UNLIMITED);
-        
+
+    public void sumaMegas() {
+        sumaMegaAnterior = sumaMegaAnterior.add(saldoAnteriorEfectivo, MathContext.UNLIMITED);
+        sumaMegaAnterior = sumaMegaAnterior.add(saldoAnteriorCheques, MathContext.UNLIMITED);
+        sumaMegaAnterior = sumaMegaAnterior.add(saldoAnteriorCuentas, MathContext.UNLIMITED);
+
         sumaMegaActual = sumaMegaActual.add(nuevoSaldo, MathContext.UNLIMITED);
         sumaMegaActual = sumaMegaActual.add(nuevoSaldoCheques, MathContext.UNLIMITED);
         sumaMegaActual = sumaMegaActual.add(nuevoSaldoCuentas, MathContext.UNLIMITED);
@@ -233,7 +231,7 @@ public class BeanCorteCaja implements Serializable {
             } else if (ope.getIdConceptoFk().intValue() == 30 || ope.getIdConceptoFk().intValue() == 33 || ope.getIdConceptoFk().intValue() == 27 || ope.getIdConceptoFk().intValue() == 17 || ope.getIdConceptoFk().intValue() == 36) {
                 listaDetalleEntradasCheques.add(ope);
                 totalCheques = totalCheques.add(ope.getMonto(), MathContext.UNLIMITED);
-            } else if ( ope.getIdConceptoFk().intValue() == 12 || ope.getIdConceptoFk().intValue() == 29 || ope.getIdConceptoFk().intValue() == 31 || ope.getIdConceptoFk().intValue() == 28 || ope.getIdConceptoFk().intValue() == 32 || ope.getIdConceptoFk().intValue() == 34 || ope.getIdConceptoFk().intValue() == 37 || ope.getIdConceptoFk().intValue() == 35) {
+            } else if (ope.getIdConceptoFk().intValue() == 12 || ope.getIdConceptoFk().intValue() == 29 || ope.getIdConceptoFk().intValue() == 31 || ope.getIdConceptoFk().intValue() == 28 || ope.getIdConceptoFk().intValue() == 32 || ope.getIdConceptoFk().intValue() == 34 || ope.getIdConceptoFk().intValue() == 37 || ope.getIdConceptoFk().intValue() == 35) {
                 listaDetalleEntradasCuentasBancarias.add(ope);
                 totalCuentasBancarias = totalCuentasBancarias.add(ope.getMonto(), MathContext.UNLIMITED);
             }
@@ -246,15 +244,14 @@ public class BeanCorteCaja implements Serializable {
             System.out.println("Operacion: " + ope);
             if (ope.getIdConceptoFk().intValue() == 7 || ope.getIdConceptoFk().intValue() == 1 || ope.getIdConceptoFk().intValue() == 3 || ope.getIdConceptoFk().intValue() == 4 || ope.getIdConceptoFk().intValue() == 6 || ope.getIdConceptoFk().intValue() == 11 || ope.getIdConceptoFk().intValue() == 10 || ope.getIdConceptoFk().intValue() == 8 || ope.getIdConceptoFk().intValue() == 9 || ope.getIdConceptoFk().intValue() == 16 || ope.getIdConceptoFk().intValue() == 13 || ope.getIdConceptoFk().intValue() == 2 || ope.getIdConceptoFk().intValue() == 25 || ope.getIdConceptoFk().intValue() == 24
                     || ope.getIdConceptoFk().intValue() == 21 || ope.getIdConceptoFk().intValue() == 20 || ope.getIdConceptoFk().intValue() == 23
-                    || ope.getIdConceptoFk().intValue() == 22 
-                   ) {
+                    || ope.getIdConceptoFk().intValue() == 22) {
                 listaDetalleEntradasEfectivo.add(ope);
                 System.out.println("monto: " + ope.getMonto());
                 totalEfectivo = totalEfectivo.subtract(ope.getMonto(), MathContext.UNLIMITED);
             } else if (ope.getIdConceptoFk().intValue() == 30 || ope.getIdConceptoFk().intValue() == 33 || ope.getIdConceptoFk().intValue() == 27 || ope.getIdConceptoFk().intValue() == 17 || ope.getIdConceptoFk().intValue() == 36) {
                 listaDetalleEntradasCheques.add(ope);
                 totalCheques = totalCheques.subtract(ope.getMonto(), MathContext.UNLIMITED);
-            } else if ( ope.getIdConceptoFk().intValue() == 12 || ope.getIdConceptoFk().intValue() == 29 || ope.getIdConceptoFk().intValue() == 31 || ope.getIdConceptoFk().intValue() == 28 || ope.getIdConceptoFk().intValue() == 32 || ope.getIdConceptoFk().intValue() == 34 || ope.getIdConceptoFk().intValue() == 37 || ope.getIdConceptoFk().intValue() == 35) {
+            } else if (ope.getIdConceptoFk().intValue() == 12 || ope.getIdConceptoFk().intValue() == 29 || ope.getIdConceptoFk().intValue() == 31 || ope.getIdConceptoFk().intValue() == 28 || ope.getIdConceptoFk().intValue() == 32 || ope.getIdConceptoFk().intValue() == 34 || ope.getIdConceptoFk().intValue() == 37 || ope.getIdConceptoFk().intValue() == 35) {
                 listaDetalleEntradasCuentasBancarias.add(ope);
                 totalCuentasBancarias = totalCuentasBancarias.subtract(ope.getMonto(), MathContext.UNLIMITED);
             }
@@ -564,6 +561,4 @@ public class BeanCorteCaja implements Serializable {
         this.sumaMegaActual = sumaMegaActual;
     }
 
-    
-    
 }
