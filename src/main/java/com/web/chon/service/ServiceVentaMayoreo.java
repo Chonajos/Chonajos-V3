@@ -200,20 +200,23 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
                 dominio.setNombreSubProducto(obj[2] == null ? null : obj[2].toString());
                 dominio.setIdTipoEmpaque(obj[3] == null ? null : new BigDecimal(obj[3].toString()));
                 dominio.setNombreEmpaque(obj[4] == null ? null : obj[4].toString());
-                dominio.setEmpaquesEntrada(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
-                dominio.setKiloEntrada(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
+                dominio.setEmpaquesEntrada(obj[5] == null ? new BigDecimal(0) : new BigDecimal(obj[5].toString()));
+                dominio.setKiloEntrada(obj[6] == null ? new BigDecimal(0) : new BigDecimal(obj[6].toString()));
                 dominio.setEmpaqueVendidos(obj[7] == null ? new BigDecimal(0) : new BigDecimal(obj[7].toString()));
                 dominio.setKiloVendidos(obj[8] == null ? new BigDecimal(0) : new BigDecimal(obj[8].toString()));
                 ventaTotal = obj[9] == null ? new BigDecimal(0) : new BigDecimal(obj[9].toString());
 
                 if (ventaTotal.intValue() > 0 && dominio.getKiloVendidos().intValue() > 0) {
                     dominio.setPrecioVenta(ventaTotal.divide(dominio.getKiloVendidos(), 10, RoundingMode.UP));
+                }else{
+                     dominio.setPrecioVenta(new BigDecimal(0));
                 }
 
 //                dominio.setPrecioVenta(obj[9] == null ? new BigDecimal(0) : new BigDecimal(obj[9].toString()));
                 dominio.setConvenio(obj[10] == null ? null : new BigDecimal(obj[10].toString()));
                 dominio.setIdTipoConvenio(obj[11] == null ? null : new BigDecimal(obj[11].toString()));
                 dominio.setIdEmpFk(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
+                dominio.setPrecioMinimo(obj[13] == null ? new BigDecimal(0) : new BigDecimal(obj[13].toString()));
 
                 lstSecundario = new ArrayList<OperacionesVentasMayoreo>();
                 for (OperacionesVentasMayoreo detalle : lstDetalle) {

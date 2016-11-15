@@ -11,7 +11,7 @@
     <ui:define name="content">
         <h:form id="formContent">
             <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
-            <div class="col-lg-9 col-md-10 col-sm-10 col-xs-12">
+            <div class="col-lg-10 col-md-10 col-sm-10 col-xs-12">
                 <h3>#{beanTableroControlVentaMeyoreo.title}</h3>
             </div>
             <p:ajaxStatus onsuccess="PF('statusDialog').hide()" oncomplete="PF('statusDialog').hide()" onerror="PF('statusDialog').hide()" />
@@ -20,7 +20,7 @@
                 <p:graphicImage value="../resources/img/carga.gif" />
             </p:dialog>
 
-            <div class="col-lg-3 col-md-2 col-sm-2 col-xs-12" align="right" style="margin-top: 5px !important;">
+            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12" align="right" style="margin-top: 5px !important;">
                 <p:commandButton value="Consultar" onclick="PF('statusDialog').show()" update=":formContent" ajax="true" action="#{beanTableroControlVentaMeyoreo.buscar}" rendered="#{beanTableroControlVentaMeyoreo.viewEstate=='init'}" />
                 <p:commandButton value="Regresar" onclick="PF('statusDialog').show()" update=":formContent" ajax="true" action="#{beanTableroControlVentaMeyoreo.back}" rendered="#{beanTableroControlVentaMeyoreo.viewEstate=='searchById'}" />
             </div>
@@ -136,38 +136,38 @@
             <p:panel rendered="#{beanTableroControlVentaMeyoreo.viewEstate =='searchById'}">
                 <div class="container-fluid">
                     <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                            <p:outputLabel value="Fecha Remisión:" class="col-lg-5 col-md-4 col-sm-4 col-xs-6"/>
-                            <p:inputText value="#{beanTableroControlVentaMeyoreo.carroDetalleGeneral.fecha}" class="col-lg-3 col-md-4 col-sm-4 col-xs-6" readonly="true">
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                            <p:outputLabel value="Fecha Remisión:" class="col-lg-6 col-md-4 col-sm-4 col-xs-6"/>
+                            <p:inputText value="#{beanTableroControlVentaMeyoreo.carroDetalleGeneral.fecha}" class="col-lg-4 col-md-4 col-sm-4 col-xs-6" readonly="true">
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </p:inputText>
                         </div>
-                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                            <p:outputLabel value="Fecha Ultima Venta:" class="col-lg-5 col-md-4 col-sm-4 col-xs-6"/>
-                            <p:inputText value="#{beanTableroControlVentaMeyoreo.fechaUltimaVenta}" class="col-lg-3 col-md-4 col-sm-4 col-xs-6" readonly="true">
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                            <p:outputLabel value="Fecha Ultima Venta:" class="col-lg-7 col-md-4 col-sm-4 col-xs-6"/>
+                            <p:inputText value="#{beanTableroControlVentaMeyoreo.fechaUltimaVenta}" class="col-lg-4 col-md-4 col-sm-4 col-xs-6" readonly="true">
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </p:inputText>
                         </div>
-                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 form-group">
-                            <p:outputLabel value="Status:" class="col-lg-5 col-md-4 col-sm-4 col-xs-6"/>
-                            <p:inputText value="#{beanTableroControlVentaMeyoreo.carroDetalleGeneral.status}" class="col-lg-3 col-md-4 col-sm-4 col-xs-6" readonly="true"/>
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 form-group">
+                            <p:outputLabel value="Status:" class="col-lg-4 col-md-4 col-sm-4 col-xs-6"/>
+                            <p:inputText value="#{beanTableroControlVentaMeyoreo.carroDetalleGeneral.status}" class="col-lg-4 col-md-4 col-sm-4 col-xs-6" readonly="true"/>
                         </div>
 
-                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                            <p:outputLabel value="Venta Total:" class="col-lg-5 col-md-3 col-sm-4 col-xs-6"/>
-                            <p:inputText value="#{beanTableroControlVentaMeyoreo.totalVentaDetalle}" class="col-lg-3 col-md-4 col-sm-4 col-xs-6" readonly="true">
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 form-group">
+                            <p:outputLabel value="Venta Realizada:" class="col-lg-6 col-md-3 col-sm-4 col-xs-6"/>
+                            <p:inputText value="#{beanTableroControlVentaMeyoreo.totalVentaDetalle}" class="col-lg-4 col-md-4 col-sm-4 col-xs-6" readonly="true">
                                 <f:convertNumber type="currency"/>
                             </p:inputText>
                         </div>
-                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                            <p:outputLabel value="$Saldo por Cobrar:" class="col-lg-5 col-md-4 col-sm-4 col-xs-6"/>
-                            <p:inputText value="#{beanTableroControlVentaMeyoreo.totalSaldoPorCobrar}" class="col-lg-3 col-md-4 col-sm-4 col-xs-6" readonly="true">
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                            <p:outputLabel value="$Saldo por Cobrar:" class="col-lg-6 col-md-4 col-sm-4 col-xs-6"/>
+                            <p:inputText value="#{beanTableroControlVentaMeyoreo.totalSaldoPorCobrar}" class="col-lg-4 col-md-4 col-sm-4 col-xs-6" readonly="true">
                                 <f:convertNumber type="currency"/>
                             </p:inputText>
                         </div>
-                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                            <p:outputLabel value="$Comisión:" class="col-lg-5 col-md-4 col-sm-4 col-xs-6"/>
-                            <p:inputText value="#{beanTableroControlVentaMeyoreo.totalComisionDetalle}" class="col-lg-3 col-md-4 col-sm-4 col-xs-6" readonly="true">
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                            <p:outputLabel value="$Comisión:" class="col-lg-7 col-md-4 col-sm-4 col-xs-6"/>
+                            <p:inputText value="#{beanTableroControlVentaMeyoreo.totalComisionDetalle}" class="col-lg-4 col-md-4 col-sm-4 col-xs-6" readonly="true">
                                 <f:convertNumber type="currency"/>
                             </p:inputText>
                         </div>

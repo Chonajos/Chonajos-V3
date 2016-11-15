@@ -26,7 +26,7 @@ public class SaldosDeudas implements Serializable {
     private String periodo;
     private BigDecimal plazo;
     private BigDecimal periodosAtraso;
-    private String diasAtraso;
+    private int diasAtraso;
     private BigDecimal saldoDeudor;
     private BigDecimal saldoAtrasado;
     private BigDecimal idEstatus;
@@ -42,7 +42,7 @@ public class SaldosDeudas implements Serializable {
     private BigDecimal chequesPorCobrar;
 
     //Datos para consula de Creditos
-    private int numeroTelefono;
+    private BigDecimal numeroTelefono;
     private String nombreCompleto;
     private String correo;
     private int dias;
@@ -63,7 +63,7 @@ public class SaldosDeudas implements Serializable {
         periodo = null;
         plazo = null;
         periodosAtraso = null;
-        diasAtraso = null;
+        diasAtraso = 0;
         saldoDeudor = null;
         saldoAtrasado = null;
         idEstatus = null;
@@ -77,7 +77,7 @@ public class SaldosDeudas implements Serializable {
         numeroPagos = null;
         statusFechaProxima = null;
         chequesPorCobrar = null;
-        numeroTelefono = 0;
+        numeroTelefono = new BigDecimal(0);
         nombreCompleto = null;
         correo = null;
         dias = 0;
@@ -263,11 +263,11 @@ public class SaldosDeudas implements Serializable {
         this.periodosAtraso = periodosAtraso;
     }
 
-    public String getDiasAtraso() {
+    public int getDiasAtraso() {
         return diasAtraso;
     }
 
-    public void setDiasAtraso(String diasAtraso) {
+    public void setDiasAtraso(int diasAtraso) {
         this.diasAtraso = diasAtraso;
     }
 
@@ -295,11 +295,11 @@ public class SaldosDeudas implements Serializable {
         this.saldoTotal = saldoTotal;
     }
 
-    public int getNumeroTelefono() {
+    public BigDecimal getNumeroTelefono() {
         return numeroTelefono;
     }
 
-    public void setNumeroTelefono(int numeroTelefono) {
+    public void setNumeroTelefono(BigDecimal numeroTelefono) {
         this.numeroTelefono = numeroTelefono;
     }
 

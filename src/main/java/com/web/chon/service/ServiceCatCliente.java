@@ -108,9 +108,9 @@ public class ServiceCatCliente implements IfaceCatCliente {
 
             for (Object[] obj : lstObject) {
                 cliente.setId_cliente(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
-                cliente.setNombre(obj[1] == null ? "" : obj[1].toString());
-                cliente.setPaterno(obj[2] == null ? "" : obj[2].toString());
-                cliente.setMaterno(obj[3] == null ? "" : obj[3].toString());
+                cliente.setNombre(obj[1] == null ? "" : obj[1].toString().trim());
+                cliente.setPaterno(obj[2] == null ? "" : obj[2].toString().trim());
+                cliente.setMaterno(obj[3] == null ? "" : obj[3].toString().trim());
                 /*cliente.setEmpresa(obj[4] == null ? "":obj[4].toString());
                 cliente.setCalle(obj[5] == null ? "":obj[5].toString());           
                 String auxiliar_sexo=obj[6] == null ? "M":obj[6].toString();
@@ -182,9 +182,9 @@ public class ServiceCatCliente implements IfaceCatCliente {
 
                 Cliente cliente = new Cliente();
                 cliente.setId_cliente(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
-                cliente.setNombre(obj[1] == null ? "" : obj[1].toString());
-                cliente.setPaterno(obj[2] == null ? "" : obj[2].toString());
-                cliente.setMaterno(obj[3] == null ? "" : obj[3].toString());
+                cliente.setNombre(obj[1] == null ? "" : obj[1].toString().trim());
+                cliente.setPaterno(obj[2] == null ? "" : obj[2].toString().trim());
+                cliente.setMaterno(obj[3] == null ? "" : obj[3].toString().trim());
 
                 lstCliente.add(cliente);
             }

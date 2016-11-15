@@ -64,6 +64,10 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
     private BigDecimal totalSaldoPorCobrar;
     private BigDecimal totalEmpaquesDetalle;
     private BigDecimal totalKilosDetalle;
+    private BigDecimal costoCarro;
+    private BigDecimal valorCarro;
+    private BigDecimal inventarioCosto;
+    private BigDecimal inventarioVenta;
 
     private UsuarioDominio usuario;
     private String title;
@@ -148,7 +152,7 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
 
         for (CarroDetalleGeneral dominio : lstCarroDetalleGeneral) {
 
-            System.out.println("domj "+dominio.toString());
+            System.out.println("domj " + dominio.toString());
             totalComisionGeneral = totalComisionGeneral.add(dominio.getComision());
             totalVentaGeneral = totalVentaGeneral.add(dominio.getVenta());
 
@@ -163,6 +167,10 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
         totalSaldoPorCobrar = new BigDecimal(0);
         totalEmpaquesDetalle = new BigDecimal(0);
         totalKilosDetalle = new BigDecimal(0);
+        costoCarro = new BigDecimal(0);
+        valorCarro = new BigDecimal(0);
+        inventarioCosto = new BigDecimal(0);
+        inventarioVenta = new BigDecimal(0);
 
         for (CarroDetalle dominio : lstCarroDetalle) {
             totalComisionDetalle = totalComisionDetalle.add(dominio.getComisio().subtract(dominio.getSaldoPorCobrar()));
@@ -172,6 +180,32 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
             totalKilosDetalle = totalKilosDetalle.add(dominio.getKilosVendidos());
 
         }
+
+        for (OperacionesVentasMayoreo dominio : lstOperacionesVentasMayoreo) {
+            System.out.println("lst for "+dominio.toString());
+            System.out.println("dominio.getConvenio() : "+dominio.getConvenio());
+            System.out.println("dominio.getKiloEntrada() : "+dominio.getKiloEntrada());
+            System.out.println("dominio.getPrecioMinimo() : "+dominio.getPrecioMinimo());
+//Calcula los costos del carro
+            switch (dominio.getIdTipoConvenio().intValue()) {
+                case 1://Para costo
+                    costoCarro = costoCarro.add(dominio.getConvenio().multiply(dominio.getKiloEntrada()));
+                    break;
+                default://Para comision y pacto
+                    costoCarro = costoCarro.add(dominio.getKiloEntrada().multiply(dominio.getPrecioMinimo()));
+                    break;
+            }
+
+            valorCarro = valorCarro.add(dominio.getKiloEntrada().multiply(dominio.getPrecioMinimo()));
+            inventarioCosto = totalVentaDetalle.subtract(costoCarro);
+            inventarioVenta = totalVentaDetalle.subtract(valorCarro);
+        }
+        
+        System.out.println("valor del carro costo: $"+costoCarro);
+        System.out.println("valor del carro venta: $"+valorCarro);
+        System.out.println("inversion actual ventas - costo : $"+inventarioCosto);
+        System.out.println("inversion actual ventas -valorCarro : $"+inventarioVenta);
+        System.out.println("total de ventas: $"+totalVentaDetalle);
 
     }
 

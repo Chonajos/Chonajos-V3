@@ -33,6 +33,7 @@ public class OperacionesVentasMayoreo implements Serializable {
     private BigDecimal idCliente;
     private String nombreCliente;
     private BigDecimal idEmpFk;
+    private BigDecimal precioMinimo;
     
     private ArrayList lstOperacionesVentasMayoreo;
 
@@ -185,5 +186,14 @@ public class OperacionesVentasMayoreo implements Serializable {
         this.idEmpFk = idEmpFk;
     }
 
+    public BigDecimal getPrecioMinimo() {
+        return precioMinimo;
+    }
+
+    public void setPrecioMinimo(BigDecimal precioMinimo) {
+        this.precioMinimo = precioMinimo;
+    }
+
+    
     
 }

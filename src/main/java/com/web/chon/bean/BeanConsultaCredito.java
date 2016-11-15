@@ -95,58 +95,100 @@ public class BeanConsultaCredito implements Serializable {
         Date fechaTemporal = null;
 
         for (SaldosDeudas saldos : modelo) {
-            switch (numFiltro) {
-                case 1:
-                    if (saldos.getPeriodosAtraso().equals(zero)) {
-                        diasDiferencia = TiempoUtil.diferenciasDeFechas(fechaSystema, saldos.getFechaProximaAbonar());
+            if (numFiltro == 0) {
+//                modelTemp.add(saldos);
+//                totalLiquidar = totalLiquidar.add(saldos.getSaldoLiquidar());
 
-                        if (diasDiferencia <= numDias) {
-                            saldos.setDiasAtraso(Integer.toString(0));
-                            saldos.setStatusFechaProxima(new BigDecimal(UNO));
-                            totalLiquidar = totalLiquidar.add(saldos.getSaldoLiquidar());
-                            modelTemp.add(saldos);
-                        }
+                if (saldos.getPeriodosAtraso().equals(zero)) {
+                    diasDiferencia = TiempoUtil.diferenciasDeFechas(fechaSystema, saldos.getFechaProximaAbonar());
+                    saldos.setDiasAtraso(0);
+                    saldos.setStatusFechaProxima(new BigDecimal(UNO));
+                    totalLiquidar = totalLiquidar.add(saldos.getSaldoLiquidar());
+                    modelTemp.add(saldos);
 
+                } else if (saldos.getPeriodosAtraso().compareTo(zero) == UNO && saldos.getPeriodosAtraso().compareTo(saldos.getNumeroPagos()) == -UNO) {
+                    diasDiferencia = TiempoUtil.diferenciasDeFechas(fechaSystema, saldos.getFechaProximaAbonar());
+                    diasDiferencia = (saldos.getPeriodosAtraso().intValue() - UNO) * (saldos.getPlazo().divide(saldos.getNumeroPagos())).intValue();
+
+                    fechaTemporal = TiempoUtil.sumarRestarDias(saldos.getFechaVenta(), diasDiferencia);
+                    diasDiferencia = TiempoUtil.diferenciasDeFechas(fechaTemporal, fechaSystema) + diasDiferencia;
+                    diasDiferencia -= (saldos.getPlazo().divide(saldos.getNumeroPagos())).intValue();
+                    saldos.setDiasAtraso(diasDiferencia);
+                    saldos.setStatusFechaProxima(new BigDecimal(2));
+                    totalLiquidar = totalLiquidar.add(saldos.getSaldoLiquidar());
+                    modelTemp.add(saldos);
+
+                } else if (saldos.getPeriodosAtraso().equals(saldos.getNumeroPagos())) {
+                    diasDiferencia = TiempoUtil.diferenciasDeFechas(saldos.getFechaPromesaFinPago(), fechaSystema);
+
+                    saldos.setDiasAtraso(diasDiferencia);
+                    if (diasDiferencia < 0) {
+                        diasDiferencia = TiempoUtil.diferenciasDeFechas(TiempoUtil.sumarRestarDias(saldos.getFechaVenta(), saldos.getPlazo().intValue()), fechaSystema);
+                        saldos.setStatusFechaProxima(new BigDecimal(1));
+                        saldos.setDiasAtraso(diasDiferencia);
+                    } else {
+                        saldos.setStatusFechaProxima(new BigDecimal(4));
                     }
-                    break;
-                case 2:
-                    if (saldos.getPeriodosAtraso().compareTo(zero) == UNO && saldos.getPeriodosAtraso().compareTo(saldos.getNumeroPagos()) == -UNO) {
-                        diasDiferencia = TiempoUtil.diferenciasDeFechas(fechaSystema, saldos.getFechaProximaAbonar());
-                        diasDiferencia = (saldos.getPeriodosAtraso().intValue() - UNO) * (saldos.getPlazo().divide(saldos.getNumeroPagos())).intValue();
 
-                        fechaTemporal = TiempoUtil.sumarRestarDias(saldos.getFechaVenta(), diasDiferencia);
-                        diasDiferencia = TiempoUtil.diferenciasDeFechas(fechaTemporal, fechaSystema) + diasDiferencia;
-                        diasDiferencia -= (saldos.getPlazo().divide(saldos.getNumeroPagos())).intValue();
-                        if (diasDiferencia <= numDias) {
-                            saldos.setDiasAtraso(Integer.toString(diasDiferencia));
-                            saldos.setStatusFechaProxima(new BigDecimal(2));
-                            totalLiquidar = totalLiquidar.add(saldos.getSaldoLiquidar());
-                            modelTemp.add(saldos);
-                        }
+                    saldos.setFechaProximaAbonar(saldos.getFechaPromesaFinPago());
+                    totalLiquidar = totalLiquidar.add(saldos.getSaldoLiquidar());
+                    modelTemp.add(saldos);
+                }
 
-                    }
-                    break;
-                case 3:
-                    if (saldos.getPeriodosAtraso().equals(saldos.getNumeroPagos())) {
-                        diasDiferencia = TiempoUtil.diferenciasDeFechas(saldos.getFechaPromesaFinPago(), fechaSystema);
+            } else {
+                switch (numFiltro) {
+                    case 1:
+                        if (saldos.getPeriodosAtraso().equals(zero)) {
+                            diasDiferencia = TiempoUtil.diferenciasDeFechas(fechaSystema, saldos.getFechaProximaAbonar());
 
-                        if (diasDiferencia <= numDias) {
-                            saldos.setDiasAtraso(Integer.toString(diasDiferencia));
-                            if (diasDiferencia < 0) {
-                                diasDiferencia = TiempoUtil.diferenciasDeFechas(TiempoUtil.sumarRestarDias(saldos.getFechaVenta(), saldos.getPlazo().intValue()), fechaSystema);
-                                saldos.setStatusFechaProxima(new BigDecimal(1));
-                                saldos.setDiasAtraso(Integer.toString(diasDiferencia));
-                            } else {
-                                saldos.setStatusFechaProxima(new BigDecimal(4));
+                            if (diasDiferencia <= numDias) {
+                                saldos.setDiasAtraso(0);
+                                saldos.setStatusFechaProxima(new BigDecimal(UNO));
+                                totalLiquidar = totalLiquidar.add(saldos.getSaldoLiquidar());
+                                modelTemp.add(saldos);
                             }
 
-                            saldos.setFechaProximaAbonar(saldos.getFechaPromesaFinPago());
-                            totalLiquidar = totalLiquidar.add(saldos.getSaldoLiquidar());
-                            modelTemp.add(saldos);
                         }
+                        break;
+                    case 2:
+                        if (saldos.getPeriodosAtraso().compareTo(zero) == UNO && saldos.getPeriodosAtraso().compareTo(saldos.getNumeroPagos()) == -UNO) {
+                            diasDiferencia = TiempoUtil.diferenciasDeFechas(fechaSystema, saldos.getFechaProximaAbonar());
+                            diasDiferencia = (saldos.getPeriodosAtraso().intValue() - UNO) * (saldos.getPlazo().divide(saldos.getNumeroPagos())).intValue();
 
-                    }
-                    break;
+                            fechaTemporal = TiempoUtil.sumarRestarDias(saldos.getFechaVenta(), diasDiferencia);
+                            diasDiferencia = TiempoUtil.diferenciasDeFechas(fechaTemporal, fechaSystema) + diasDiferencia;
+                            diasDiferencia -= (saldos.getPlazo().divide(saldos.getNumeroPagos())).intValue();
+                            if (diasDiferencia <= numDias) {
+                                saldos.setDiasAtraso(diasDiferencia);
+                                saldos.setStatusFechaProxima(new BigDecimal(2));
+                                totalLiquidar = totalLiquidar.add(saldos.getSaldoLiquidar());
+                                modelTemp.add(saldos);
+                            }
+
+                        }
+                        break;
+                    case 3:
+                        if (saldos.getPeriodosAtraso().equals(saldos.getNumeroPagos())) {
+                            diasDiferencia = TiempoUtil.diferenciasDeFechas(saldos.getFechaPromesaFinPago(), fechaSystema);
+
+                            if (diasDiferencia <= numDias) {
+                                saldos.setDiasAtraso(diasDiferencia);
+                                if (diasDiferencia < 0) {
+                                    diasDiferencia = TiempoUtil.diferenciasDeFechas(TiempoUtil.sumarRestarDias(saldos.getFechaVenta(), saldos.getPlazo().intValue()), fechaSystema);
+                                    saldos.setStatusFechaProxima(new BigDecimal(1));
+                                    saldos.setDiasAtraso(diasDiferencia);
+                                } else {
+                                    saldos.setStatusFechaProxima(new BigDecimal(4));
+                                }
+
+                                saldos.setFechaProximaAbonar(saldos.getFechaPromesaFinPago());
+                                totalLiquidar = totalLiquidar.add(saldos.getSaldoLiquidar());
+                                modelTemp.add(saldos);
+                            }
+
+                        }
+                        break;
+                }
             }
 
         }
