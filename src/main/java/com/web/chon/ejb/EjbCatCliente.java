@@ -201,7 +201,7 @@ public class EjbCatCliente implements NegocioCatCliente {
 
     @Override
     public List<Object[]> getClienteByNombreCompleto(String nombreCliente) {
-        Query query = em.createNativeQuery("SELECT * FROM CLIENTE WHERE UPPER(NOMBRE ||' '|| APELLIDO_PATERNO ||' '|| APELLIDO_MATERNO )  LIKE UPPER('%" + nombreCliente + "%') and STATUS =1");
+        Query query = em.createNativeQuery("SELECT * FROM CLIENTE WHERE UPPER(TRIM(NOMBRE) ||' '|| TRIM(APELLIDO_PATERNO) ||' '|| TRIM(APELLIDO_MATERNO) )  LIKE UPPER('%" + nombreCliente + "%') and STATUS =1");
 
         return query.getResultList();
     }
@@ -243,12 +243,12 @@ public class EjbCatCliente implements NegocioCatCliente {
     public List<Object[]> getCreditoClienteByIdCliente(BigDecimal idCliente) {
         try {
 
-            Query query = em.createNativeQuery("select c.ID_CLIENTE, c.NOMBRE ||' '|| c.APELLIDO_PATERNO ||' '|| c.APELLIDO_MATERNO AS NOMBRE_COMPLETO,NVL(c.MONTO_CREDITO,0) \n"
-                    + "AS MONTO_CREDITO, \n"
-                    + "NVL((SELECT SUM(CRE.MONTO_CREDITO) FROM CREDITO CRE WHERE CRE.ID_CLIENTE_FK =c.ID_CLIENTE AND CRE.ESTATUS_CREDITO = 1 ),0)\n"
-                    + "AS CREDITO_UTILIZADO,\n"
-                    + "(select sum(dc.monto) as DOCUMENTOS from DOCUMENTOS_COBRAR dc where dc.ID_STATUS_FK=1 and dc.ID_CLIENTE_FK=c.ID_CLIENTE) as Documentos\n"
-                    + "FROM CLIENTE c \n"
+            Query query = em.createNativeQuery("select c.ID_CLIENTE, TRIM(c.NOMBRE) ||' '|| TRIM(c.APELLIDO_PATERNO) ||' '|| TRIM(c.APELLIDO_MATERNO) AS NOMBRE_COMPLETO,NVL(c.MONTO_CREDITO,0) "
+                    + "AS MONTO_CREDITO, "
+                    + "NVL((SELECT SUM(CRE.MONTO_CREDITO) FROM CREDITO CRE WHERE CRE.ID_CLIENTE_FK =c.ID_CLIENTE AND CRE.ESTATUS_CREDITO = 1 ),0) "
+                    + "AS CREDITO_UTILIZADO, "
+                    + "(select sum(dc.monto) as DOCUMENTOS from DOCUMENTOS_COBRAR dc where dc.ID_STATUS_FK=1 and dc.ID_CLIENTE_FK=c.ID_CLIENTE) as Documentos "
+                    + "FROM CLIENTE c "
                     + "WHERE c.ID_CLIENTE = ? AND c.STATUS =1");
             query.setParameter(1, idCliente);
             return query.getResultList();

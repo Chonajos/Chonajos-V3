@@ -78,10 +78,10 @@ public class Cliente implements Serializable {
     }
 
     public String getNombreCompleto() {
-        String nombre = this.nombre == null ? "" : this.nombre + " ";
-        String paterno = this.paterno == null ? "" : this.paterno + " ";
+        String nombre = this.nombre == null ? "" : this.nombre;
+        String paterno = this.paterno == null ? "" : this.paterno;
         String materno = this.materno == null ? "" : this.materno;
-        return nombreCompleto == null? nombre.trim()+paterno.trim()+materno.trim():nombreCompleto.trim();
+        return nombreCompleto == null? nombre.trim()+" "+paterno.trim()+" "+materno.trim():nombreCompleto.trim();
 
     }
 

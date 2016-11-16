@@ -5,9 +5,11 @@ import com.web.chon.dominio.Credito;
 import com.web.chon.dominio.GestionCredito;
 import com.web.chon.dominio.ResultadoGestion;
 import com.web.chon.dominio.SaldosDeudas;
+import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceAcionGestion;
+import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceCredito;
 import com.web.chon.service.IfaceGestionCredito;
 import com.web.chon.service.IfaceResultadoGestion;
@@ -42,6 +44,8 @@ public class BeanConsultaCredito implements Serializable {
     IfaceGestionCredito ifaceGestionCredito;
     @Autowired
     IfaceResultadoGestion ifaceResultadoGestion;
+    @Autowired
+    private IfaceCatSucursales ifaceCatSucursales;
 
     private String title;
     private String viewEstate;
@@ -51,8 +55,10 @@ public class BeanConsultaCredito implements Serializable {
     private ArrayList<SaldosDeudas> modelo;
     private ArrayList<AcionGestion> lstAcionGestion;
     private ArrayList<ResultadoGestion> lstResultadoGestion;
+    private ArrayList<Sucursal> lstSucursales;
 
     private SaldosDeudas data;
+    private UsuarioDominio usuario;
     private UsuarioDominio usuarioDominio;
     private GestionCredito gestionCredito;
 
@@ -60,9 +66,11 @@ public class BeanConsultaCredito implements Serializable {
 
     private BigDecimal idResultadoGestio;
     private BigDecimal totalLiquidar;
+    private BigDecimal idSucursal;
 
     private int numDias;
     private int numFiltro;
+
     private int UNO = 1;
 
     @PostConstruct
@@ -71,8 +79,12 @@ public class BeanConsultaCredito implements Serializable {
         data = new SaldosDeudas();
         gestionCredito = new GestionCredito();
         modelo = new ArrayList<SaldosDeudas>();
+        usuario = context.getUsuarioAutenticado();
+        idSucursal = new BigDecimal(usuario.getSucId());
         lstAcionGestion = new ArrayList<AcionGestion>();
         lstResultadoGestion = new ArrayList<ResultadoGestion>();
+
+        lstSucursales = ifaceCatSucursales.getSucursales();
 
         fechaSystema = context.getFechaSistema();
         usuarioDominio = context.getUsuarioAutenticado();
@@ -86,8 +98,9 @@ public class BeanConsultaCredito implements Serializable {
     }
 
     public void consultaCredito() {
-        modelo = ifaceCredito.getCreditosByEstatus(numFiltro, numDias);
+        modelo = ifaceCredito.getCreditosByEstatus(numFiltro, numDias, idSucursal);
         ArrayList<SaldosDeudas> modelTemp = new ArrayList<SaldosDeudas>();
+        ArrayList<SaldosDeudas> modelTempPrincipal = new ArrayList<SaldosDeudas>();
 
         BigDecimal zero = new BigDecimal(0);
         totalLiquidar = zero;
@@ -96,15 +109,11 @@ public class BeanConsultaCredito implements Serializable {
 
         for (SaldosDeudas saldos : modelo) {
             if (numFiltro == 0) {
-//                modelTemp.add(saldos);
-//                totalLiquidar = totalLiquidar.add(saldos.getSaldoLiquidar());
-
                 if (saldos.getPeriodosAtraso().equals(zero)) {
                     diasDiferencia = TiempoUtil.diferenciasDeFechas(fechaSystema, saldos.getFechaProximaAbonar());
                     saldos.setDiasAtraso(0);
                     saldos.setStatusFechaProxima(new BigDecimal(UNO));
                     totalLiquidar = totalLiquidar.add(saldos.getSaldoLiquidar());
-                    modelTemp.add(saldos);
 
                 } else if (saldos.getPeriodosAtraso().compareTo(zero) == UNO && saldos.getPeriodosAtraso().compareTo(saldos.getNumeroPagos()) == -UNO) {
                     diasDiferencia = TiempoUtil.diferenciasDeFechas(fechaSystema, saldos.getFechaProximaAbonar());
@@ -116,7 +125,6 @@ public class BeanConsultaCredito implements Serializable {
                     saldos.setDiasAtraso(diasDiferencia);
                     saldos.setStatusFechaProxima(new BigDecimal(2));
                     totalLiquidar = totalLiquidar.add(saldos.getSaldoLiquidar());
-                    modelTemp.add(saldos);
 
                 } else if (saldos.getPeriodosAtraso().equals(saldos.getNumeroPagos())) {
                     diasDiferencia = TiempoUtil.diferenciasDeFechas(saldos.getFechaPromesaFinPago(), fechaSystema);
@@ -132,10 +140,35 @@ public class BeanConsultaCredito implements Serializable {
 
                     saldos.setFechaProximaAbonar(saldos.getFechaPromesaFinPago());
                     totalLiquidar = totalLiquidar.add(saldos.getSaldoLiquidar());
-                    modelTemp.add(saldos);
                 }
 
+                //Se recorre para sacar solo un registro para la tabla principal
+                boolean exist = false;
+                SaldosDeudas saldosDeudasTemp = new SaldosDeudas();
+                for (SaldosDeudas dominio : modelTempPrincipal) {
+                    if (dominio.getNombreCompleto().trim().equals(saldos.getNombreCompleto().trim())) {
+                        exist = true;
+                        dominio.getSaldoLiquidar().add(saldos.getSaldoLiquidar());
+                    } else {
+
+                        exist = false;
+                    }
+                }
+                if (!exist) {
+                    saldosDeudasTemp.setCorreo(saldos.getCorreo());
+                    saldosDeudasTemp.setSaldoLiquidar(saldos.getSaldoLiquidar());
+                    saldosDeudasTemp.setNumeroTelefono(saldos.getNumeroTelefono());
+                    saldosDeudasTemp.setNombreCompleto(saldos.getNombreCompleto());
+                    modelTempPrincipal.add(saldosDeudasTemp);
+                }
+
+//                }
+                modelTemp.add(saldos);
+
             } else {
+                boolean exist = false;
+                SaldosDeudas saldosDeudasTemp = new SaldosDeudas();
+                boolean add = false;
                 switch (numFiltro) {
                     case 1:
                         if (saldos.getPeriodosAtraso().equals(zero)) {
@@ -145,7 +178,10 @@ public class BeanConsultaCredito implements Serializable {
                                 saldos.setDiasAtraso(0);
                                 saldos.setStatusFechaProxima(new BigDecimal(UNO));
                                 totalLiquidar = totalLiquidar.add(saldos.getSaldoLiquidar());
+                                add = true;
                                 modelTemp.add(saldos);
+                            } else {
+                                add = false;
                             }
 
                         }
@@ -163,6 +199,9 @@ public class BeanConsultaCredito implements Serializable {
                                 saldos.setStatusFechaProxima(new BigDecimal(2));
                                 totalLiquidar = totalLiquidar.add(saldos.getSaldoLiquidar());
                                 modelTemp.add(saldos);
+                                add = true;
+                            } else {
+                                add = false;
                             }
 
                         }
@@ -184,11 +223,36 @@ public class BeanConsultaCredito implements Serializable {
                                 saldos.setFechaProximaAbonar(saldos.getFechaPromesaFinPago());
                                 totalLiquidar = totalLiquidar.add(saldos.getSaldoLiquidar());
                                 modelTemp.add(saldos);
+                                add = true;
+
+                            } else {
+                                add = false;
                             }
 
                         }
                         break;
                 }
+                //Se recorre para sacar solo un registro para la tabla principal
+                for (SaldosDeudas dominio : modelTempPrincipal) {
+                    if (dominio.getNombreCompleto().trim().equals(saldos.getNombreCompleto().trim()) && add) {
+                        exist = true;
+                        dominio.getSaldoLiquidar().add(saldos.getSaldoLiquidar());
+                    } else {
+
+                        exist = false;
+                    }
+                }
+
+//                }
+                if (!exist && add) {
+                    saldosDeudasTemp.setCorreo(saldos.getCorreo());
+                    saldosDeudasTemp.setSaldoLiquidar(saldos.getSaldoLiquidar());
+                    saldosDeudasTemp.setNumeroTelefono(saldos.getNumeroTelefono());
+                    saldosDeudasTemp.setNombreCompleto(saldos.getNombreCompleto());
+
+                    modelTempPrincipal.add(saldosDeudasTemp);
+                }
+
             }
 
         }
@@ -196,6 +260,22 @@ public class BeanConsultaCredito implements Serializable {
         if (modelTemp.isEmpty()) {
             JsfUtil.addWarnMessage("No se Encontraron Registros.");
             modelo.clear();
+        } else if (modelTempPrincipal != null || !modelTempPrincipal.isEmpty()) {
+
+            modelo = modelTempPrincipal;
+
+            for (SaldosDeudas dominioPrincipal : modelo) {
+                BigDecimal saldoUtilizado = new BigDecimal(0);
+                ArrayList<SaldosDeudas> lstTemp = new ArrayList<SaldosDeudas>();
+                for (SaldosDeudas dominio : modelTemp) {
+                    if (dominioPrincipal.getNombreCompleto().equals(dominio.getNombreCompleto())) {
+                        lstTemp.add(dominio);
+                        saldoUtilizado = saldoUtilizado.add(dominio.getSaldoLiquidar());
+                    }
+                }
+                dominioPrincipal.setLstSaldosDeudas(lstTemp);
+                dominioPrincipal.setSaldoLiquidar(saldoUtilizado);
+            }
         } else {
             modelo = modelTemp;
         }
@@ -355,4 +435,29 @@ public class BeanConsultaCredito implements Serializable {
         this.totalLiquidar = totalLiquidar;
     }
 
+    public BigDecimal getIdSucursal() {
+        return idSucursal;
+    }
+
+    public void setIdSucursal(BigDecimal idSucursal) {
+        this.idSucursal = idSucursal;
+    }
+
+    public ArrayList<Sucursal> getLstSucursales() {
+        return lstSucursales;
+    }
+
+    public void setLstSucursales(ArrayList<Sucursal> lstSucursales) {
+        this.lstSucursales = lstSucursales;
+    }
+
+    public UsuarioDominio getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(UsuarioDominio usuario) {
+        this.usuario = usuario;
+    }
+
+    
 }

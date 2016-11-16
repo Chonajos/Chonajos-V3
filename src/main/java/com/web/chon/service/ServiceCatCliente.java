@@ -176,7 +176,7 @@ public class ServiceCatCliente implements IfaceCatCliente {
         try {
             ArrayList<Cliente> lstCliente = new ArrayList<Cliente>();
             ejb = (NegocioCatCliente) Utilidades.getEJBRemote("ejbCatCliente", NegocioCatCliente.class.getName());
-            List<Object[]> object = ejb.getClienteByNombreCompleto(nombre);
+            List<Object[]> object = ejb.getClienteByNombreCompleto(nombre.trim());
 
             for (Object[] obj : object) {
 

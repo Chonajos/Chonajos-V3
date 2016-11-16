@@ -41,7 +41,7 @@ public interface NegocioCredito {
      * Obtiene todos los creditos activos
      *
      */
-    public List<Object[]> getAllCreditosActivos();
+    public List<Object[]> getAllCreditosActivos(BigDecimal idSucursal);
     
     
     public List<Object[]> getCreditosByIdVentaMenudeo(BigDecimal idVenta);

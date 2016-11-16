@@ -111,7 +111,7 @@ public class ServiceCredito implements IfaceCredito {
     public int insert(Credito credito) {
         try {
             getEjb();
-            System.out.println("credito "+credito.toString());
+            System.out.println("credito " + credito.toString());
             int idCredito = ejb.nextVal();
 
             if (ejb.insert(credito, idCredito) == 0) {
@@ -175,7 +175,6 @@ public class ServiceCredito implements IfaceCredito {
                 switch (hoy.compareTo(fechas_pagos.get(x))) {
                     //Compara la fecha de hoy con la primer fecha de pago 
                     case 1:
-                        System.out.println("Case 1: " + " Hoy: " + hoy + " Fecha: " + fechas_pagos.get(x));
 
                         if (credito.getTotalAbonado().compareTo(pagos_por_fecha.get(x)) == -1) {
                             contador_periodos_atrasados = contador_periodos_atrasados + 1;
@@ -202,14 +201,12 @@ public class ServiceCredito implements IfaceCredito {
                         //revisar que este al corriente con su primer pago  si no aumentar el periodo atrasado
                         break;
                     case 0:
-                        System.out.println("Case 0: " + " Hoy: " + hoy + " Fecha: " + fechas_pagos.get(x));
                         if (fechaPagoMayoraHoy == false) {
                             credito.setFechaProximaAbonar(fechas_pagos.get(x));
                             credito.setStatusFechaProxima(CREDITONOATRASADO);
                             fechaPagoMayoraHoy = true;
                         }
                     default:
-                        System.out.println("entro aqui");
                         break;
                 }
 //                if (hoy.compareTo(fechas_pagos.get(x)) == 1) {//si hoy es menor que la primer fecha de pago
@@ -280,13 +277,13 @@ public class ServiceCredito implements IfaceCredito {
     }
 
     @Override
-    public ArrayList<SaldosDeudas> getCreditosByEstatus(int estatus, int dias) {
+    public ArrayList<SaldosDeudas> getCreditosByEstatus(int estatus, int dias, BigDecimal idSucursal) {
 
         List<Object[]> lstObject = new ArrayList<Object[]>();
         ArrayList<SaldosDeudas> lstSaldoDeuda = new ArrayList<SaldosDeudas>();
         getEjb();
 
-        lstObject = ejb.getAllCreditosActivos();
+        lstObject = ejb.getAllCreditosActivos(idSucursal);
 
         try {
             for (Object[] obj : lstObject) {
@@ -417,7 +414,7 @@ public class ServiceCredito implements IfaceCredito {
 
     @Override
     public Credito getCreditosByIdVentaMayoreo(BigDecimal idVentaMayoreo) {
-         getEjb();
+        getEjb();
         Credito credito = new Credito();
         List<Object[]> lstObject = new ArrayList<Object[]>();
         lstObject = ejb.getCreditosByIdVentaMayoreo(idVentaMayoreo);
@@ -442,8 +439,9 @@ public class ServiceCredito implements IfaceCredito {
         }
 
         return credito;
-    
+
     }
+
     @Override
     public int eliminarCreditoByIdCreditoPk(BigDecimal idCreditoPk) {
         getEjb();

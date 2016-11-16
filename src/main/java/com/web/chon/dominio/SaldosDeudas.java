@@ -7,6 +7,7 @@ package com.web.chon.dominio;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -51,6 +52,7 @@ public class SaldosDeudas implements Serializable {
     private String nombreSucursal;
     private BigDecimal idSucursal;
     private BigDecimal abonarTemporal;
+    private ArrayList<SaldosDeudas> lstSaldosDeudas;
 
     public void reset() {
         folioCredito = null;
@@ -101,7 +103,6 @@ public class SaldosDeudas implements Serializable {
     public void setAbonarTemporal(BigDecimal abonarTemporal) {
         this.abonarTemporal = abonarTemporal;
     }
-    
 
     public BigDecimal getChequesPorCobrar() {
         return chequesPorCobrar;
@@ -350,5 +351,23 @@ public class SaldosDeudas implements Serializable {
     public void setNombreSucursal(String nombreSucursal) {
         this.nombreSucursal = nombreSucursal;
     }
+
+    public BigDecimal getIdSucursal() {
+        return idSucursal;
+    }
+
+    public void setIdSucursal(BigDecimal idSucursal) {
+        this.idSucursal = idSucursal;
+    }
+
+    public ArrayList<SaldosDeudas> getLstSaldosDeudas() {
+        return lstSaldosDeudas;
+    }
+
+    public void setLstSaldosDeudas(ArrayList<SaldosDeudas> lstSaldosDeudas) {
+        this.lstSaldosDeudas = lstSaldosDeudas;
+    }
     
+    
+
 }

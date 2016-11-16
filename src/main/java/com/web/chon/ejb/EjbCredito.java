@@ -147,10 +147,10 @@ public class EjbCredito implements NegocioCredito {
                     + "from credito cre "
                     + "inner join STATUS_CREDITO stc "
                     + "on stc.ID_STATUS_CREDITO_PK = cre.ESTATUS_CREDITO "
-                    +" inner join USUARIO usu "
-                    +" on usu.ID_USUARIO_PK = cre.ID_USUARIO_CREDITO "
-                    +" inner join SUCURSAL suc "
-                    +" on suc.ID_SUCURSAL_PK = usu.ID_SUCURSAL_FK "
+                    + " inner join USUARIO usu "
+                    + " on usu.ID_USUARIO_PK = cre.ID_USUARIO_CREDITO "
+                    + " inner join SUCURSAL suc "
+                    + " on suc.ID_SUCURSAL_PK = usu.ID_SUCURSAL_FK "
                     + "where cre.ESTATUS_CREDITO=1 and cre.ID_CLIENTE_FK ='" + idCliente + "' order by cre.FECHA_INICIO_CREDITO");
             List<Object[]> resultList = null;
             resultList = query.getResultList();
@@ -231,8 +231,8 @@ public class EjbCredito implements NegocioCredito {
         }
     }
 
-    public List<Object[]> getAllCreditosActivos() {
-        Query query = em.createNativeQuery("SELECT CRE.ID_CREDITO_PK AS FOLIO,STC.NOMBRE_STATUS,CRE.FECHA_INICIO_CREDITO,CRE.PLAZOS,CRE.MONTO_CREDITO, "
+    public List<Object[]> getAllCreditosActivos(BigDecimal idSucursal) {
+        StringBuffer txtQuery = new StringBuffer("SELECT CRE.ID_CREDITO_PK AS FOLIO,STC.NOMBRE_STATUS,CRE.FECHA_INICIO_CREDITO,CRE.PLAZOS,CRE.MONTO_CREDITO, "
                 + " (SELECT NVL(SUM(ac.MONTO_ABONO),0)FROM ABONO_CREDITO AC "
                 + " WHERE AC.ID_CREDITO_FK= CRE.ID_CREDITO_PK AND AC.ESTATUS=1) "
                 + " AS Total_Abonado, "
@@ -245,9 +245,17 @@ public class EjbCredito implements NegocioCredito {
                 + " INNER JOIN STATUS_CREDITO STC "
                 + " ON STC.ID_STATUS_CREDITO_PK = CRE.ESTATUS_CREDITO "
                 + " INNER JOIN CLIENTE C ON C.ID_CLIENTE = CRE.ID_CLIENTE_FK "
-                + " WHERE CRE.ESTATUS_CREDITO=1 ORDER BY C.NOMBRE");
+                + " INNER JOIN USUARIO US ON US.ID_USUARIO_PK = CRE.ID_USUARIO_CREDITO "
+                + " INNER JOIN SUCURSAL SUC ON SUC.ID_SUCURSAL_PK =US.ID_SUCURSAL_FK"
+                + " WHERE CRE.ESTATUS_CREDITO=1 ");
+
+        if (idSucursal != null) {
+            txtQuery.append(" AND SUC.ID_SUCURSAL_PK = " + idSucursal);
+        }
+        txtQuery.append(" ORDER BY C.NOMBRE");
 
         try {
+            Query query = em.createNativeQuery(txtQuery.toString());
 
             return query.getResultList();
 
@@ -275,14 +283,14 @@ public class EjbCredito implements NegocioCredito {
             return null;
         }
     }
-     @Override
-    public List<Object[]> getCreditosByIdVentaMayoreo(BigDecimal idVentaMayoreo) 
-    {
-        System.out.println("entro ejbCredito: "+idVentaMayoreo);
+
+    @Override
+    public List<Object[]> getCreditosByIdVentaMayoreo(BigDecimal idVentaMayoreo) {
+        System.out.println("entro ejbCredito: " + idVentaMayoreo);
         try {
-            Query query = em.createNativeQuery("select c.ID_CREDITO_PK,c.ID_CLIENTE_FK,c.ID_VENTA_MENUDEO,c.ID_VENTA_MAYOREO,c.ID_USUARIO_CREDITO,\n" +
-"c.ESTATUS_CREDITO,c.NUMERO_PROMESA_PAGO,c.FECHA_INICIO_CREDITO,c.FECHA_FIN_CREDITO,c.FECHA_PROMESA_FIN_PAGO,\n" +
-"c.TAZA_INTERES,c.PLAZOS,c.MONTO_CREDITO,c.ACUENTA,c.STATUSACUENTA,c.NUMERO_PAGOS  FROM CREDITO c WHERE c.ID_VENTA_MAYOREO = ?");
+            Query query = em.createNativeQuery("select c.ID_CREDITO_PK,c.ID_CLIENTE_FK,c.ID_VENTA_MENUDEO,c.ID_VENTA_MAYOREO,c.ID_USUARIO_CREDITO,\n"
+                    + "c.ESTATUS_CREDITO,c.NUMERO_PROMESA_PAGO,c.FECHA_INICIO_CREDITO,c.FECHA_FIN_CREDITO,c.FECHA_PROMESA_FIN_PAGO,\n"
+                    + "c.TAZA_INTERES,c.PLAZOS,c.MONTO_CREDITO,c.ACUENTA,c.STATUSACUENTA,c.NUMERO_PAGOS  FROM CREDITO c WHERE c.ID_VENTA_MAYOREO = ?");
             List<Object[]> resultList = null;
             query.setParameter(1, idVentaMayoreo);
             resultList = query.getResultList();
@@ -292,9 +300,10 @@ public class EjbCredito implements NegocioCredito {
             return null;
         }
     }
+
     @Override
     public int eliminarCreditoByIdCreditoPk(BigDecimal idCreditoPk) {
-        System.out.println("Parametro : "+idCreditoPk);
+        System.out.println("Parametro : " + idCreditoPk);
         try {
             Query query = em.createNativeQuery("DELETE FROM  CREDITO WHERE ID_CREDITO_PK = ?");
             query.setParameter(1, idCreditoPk);
@@ -303,7 +312,7 @@ public class EjbCredito implements NegocioCredito {
             Logger.getLogger(EjbCredito.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
-    
+
     }
 
 }

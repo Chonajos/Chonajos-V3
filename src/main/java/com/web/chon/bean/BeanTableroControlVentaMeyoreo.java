@@ -64,6 +64,8 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
     private BigDecimal totalSaldoPorCobrar;
     private BigDecimal totalEmpaquesDetalle;
     private BigDecimal totalKilosDetalle;
+    private BigDecimal totalEntradaEmpaquesDetalle;
+    private BigDecimal totalEntradaKilosDetalle;
     private BigDecimal costoCarro;
     private BigDecimal valorCarro;
     private BigDecimal inventarioCosto;
@@ -167,6 +169,8 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
         totalSaldoPorCobrar = new BigDecimal(0);
         totalEmpaquesDetalle = new BigDecimal(0);
         totalKilosDetalle = new BigDecimal(0);
+        totalEntradaEmpaquesDetalle = new BigDecimal(0);
+        totalEntradaKilosDetalle = new BigDecimal(0);
         costoCarro = new BigDecimal(0);
         valorCarro = new BigDecimal(0);
         inventarioCosto = new BigDecimal(0);
@@ -178,14 +182,12 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
             totalSaldoPorCobrar = totalSaldoPorCobrar.add(dominio.getSaldoPorCobrar());
             totalEmpaquesDetalle = totalEmpaquesDetalle.add(dominio.getPaquetesVendidos());
             totalKilosDetalle = totalKilosDetalle.add(dominio.getKilosVendidos());
+            totalEntradaEmpaquesDetalle = totalEntradaEmpaquesDetalle.add(dominio.getPaquetesEntrada());
+            totalEntradaKilosDetalle = totalEntradaKilosDetalle.add(dominio.getKilosEntrada());
 
         }
 
         for (OperacionesVentasMayoreo dominio : lstOperacionesVentasMayoreo) {
-            System.out.println("lst for "+dominio.toString());
-            System.out.println("dominio.getConvenio() : "+dominio.getConvenio());
-            System.out.println("dominio.getKiloEntrada() : "+dominio.getKiloEntrada());
-            System.out.println("dominio.getPrecioMinimo() : "+dominio.getPrecioMinimo());
 //Calcula los costos del carro
             switch (dominio.getIdTipoConvenio().intValue()) {
                 case 1://Para costo
@@ -200,12 +202,6 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
             inventarioCosto = totalVentaDetalle.subtract(costoCarro);
             inventarioVenta = totalVentaDetalle.subtract(valorCarro);
         }
-        
-        System.out.println("valor del carro costo: $"+costoCarro);
-        System.out.println("valor del carro venta: $"+valorCarro);
-        System.out.println("inversion actual ventas - costo : $"+inventarioCosto);
-        System.out.println("inversion actual ventas -valorCarro : $"+inventarioVenta);
-        System.out.println("total de ventas: $"+totalVentaDetalle);
 
     }
 
@@ -445,5 +441,55 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
     public void setFechaInicio(Date fechaInicio) {
         this.fechaInicio = fechaInicio;
     }
+
+    public BigDecimal getTotalEntradaEmpaquesDetalle() {
+        return totalEntradaEmpaquesDetalle;
+    }
+
+    public void setTotalEntradaEmpaquesDetalle(BigDecimal totalEntradaEmpaquesDetalle) {
+        this.totalEntradaEmpaquesDetalle = totalEntradaEmpaquesDetalle;
+    }
+
+    public BigDecimal getTotalEntradaKilosDetalle() {
+        return totalEntradaKilosDetalle;
+    }
+
+    public void setTotalEntradaKilosDetalle(BigDecimal totalEntradaKilosDetalle) {
+        this.totalEntradaKilosDetalle = totalEntradaKilosDetalle;
+    }
+
+    public BigDecimal getCostoCarro() {
+        return costoCarro;
+    }
+
+    public void setCostoCarro(BigDecimal costoCarro) {
+        this.costoCarro = costoCarro;
+    }
+
+    public BigDecimal getValorCarro() {
+        return valorCarro;
+    }
+
+    public void setValorCarro(BigDecimal valorCarro) {
+        this.valorCarro = valorCarro;
+    }
+
+    public BigDecimal getInventarioCosto() {
+        return inventarioCosto;
+    }
+
+    public void setInventarioCosto(BigDecimal inventarioCosto) {
+        this.inventarioCosto = inventarioCosto;
+    }
+
+    public BigDecimal getInventarioVenta() {
+        return inventarioVenta;
+    }
+
+    public void setInventarioVenta(BigDecimal inventarioVenta) {
+        this.inventarioVenta = inventarioVenta;
+    }
+    
+    
 
 }

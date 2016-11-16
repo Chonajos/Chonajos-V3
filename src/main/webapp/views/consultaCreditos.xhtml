@@ -24,9 +24,16 @@
                 <div class="container-fluid" style="padding: 0px">
                     <div class="form-group" style="padding: 0px">
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 form-group">
+                                <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="sucursalFiltro" value ="Sucursal:"/> 
+                                <p:selectOneMenu  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanConsultaCredito.idSucursal}" disabled="#{beanConsultaCredito.usuario.getPerId() != 1}" panelStyleClass="selects" style="width:60% !important;">
+                                    <f:selectItem itemLabel="Todas" itemValue="" />
+                                    <f:selectItems value="#{beanConsultaCredito.lstSucursales}" var="sucursal" itemLabel="#{sucursal.nombreSucursal}" itemValue="#{sucursal.idSucursalPk}"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                 <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="comboFiltro" value ="Filtro:" /> 
-                                <p:selectOneMenu  id="comboFiltro" panelStyleClass="selects" class="col-lg-8 col-md-8 col-sm-8 col-xs-12 " value="#{beanConsultaCredito.numFiltro}" >
+                                <p:selectOneMenu  id="comboFiltro" panelStyleClass="selects" class="col-lg-8 col-md-8 col-sm-8 col-xs-12 " value="#{beanConsultaCredito.numFiltro}" style="width:60% !important;" >
                                     <f:selectItem  itemLabel="Todos" itemValue="0"/>
                                     <f:selectItem  itemLabel="Preventiva" itemValue="1"/>
                                     <f:selectItem  itemLabel="Atrasada" itemValue="2"/>
@@ -34,101 +41,41 @@
                                     <p:ajax event="change" process="@this" update="@this"/>
                                 </p:selectOneMenu>
                             </div>
-                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 form-group">
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 form-group">
                                 <p:outputLabel class="col-lg-5 col-md-6 col-sm-6 col-xs-12  "  for="txtNumero" value ="N°. dias de crédito:" /> 
                                 <p:inputText id="txtNumero" class=" col-lg-3 col-md-3 col-sm-4 col-xs-12 " value="#{beanConsultaCredito.numDias}">
                                 </p:inputText>
                             </div>
-                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignRight">
+                            <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12 alignRight">
                                 <p:commandButton value="Buscar" onclick="PF('statusDialog').show()" class="primaryButton" update="table" actionListener="#{beanConsultaCredito.consultaCredito()}"/>
                             </div>
                         </div>
 
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding: 0px">
-                            <p:dataTable id="table" var="model" style="width:100%;" value="#{beanConsultaCredito.modelo}"  scrollable="true"  emptyMessage="No se encontraron registros." scrollHeight="500" 
-                                         rowStyleClass="#{model.statusFechaProxima eq 1 ? 'alert-info': (model.statusFechaProxima eq 2 ? 'alert-warning':(model.statusFechaProxima eq 3 ? 'alert-success':'alert-danger'))}">
-                                <p:column headerText="Folio" width="5%" class="alignCenter">
-                                    <p:commandLink value="#{model.folioCredito}" class="checkedFontColor commandLinkColor" actionListener="#{beanConsultaCredito.search}" update=":formContent">
-                                        <f:setPropertyActionListener value="#{model}" target="#{beanConsultaCredito.data}"/>
-                                    </p:commandLink>
+                            <p:dataTable id="table" var="model" styleClass="ui-datatable-hor-scroll" value="#{beanConsultaCredito.modelo}"  
+                                         scrollable="true"
+                                         scrollHeight="500" 
+                                         emptyMessage="No se encontraron Registros" >
+
+                                <p:column width="2%;">
+                                    <p:rowToggler />
                                 </p:column>
-                                <p:column headerText="Cliente" width="10%;" sortBy="#{model.nombreCompleto}" class="alignLeft">
+                                <p:column headerText="Cliente" width="43%;" sortBy="#{model.nombreCompleto}" class="alignLeft">
                                     <h:outputText value="#{model.nombreCompleto}" />
                                 </p:column>
-                                <p:column headerText="Teléfono" width="9%;" class="alignLeft">
+                                <p:column headerText="Teléfono" width="10%;" class="alignLeft">
                                     <h:outputText value="#{model.numeroTelefono}" />
                                 </p:column>
-                                <p:column headerText="Correo" width="25%;" class="alignLeft">
+                                <p:column headerText="Correo" width="35%;" class="alignLeft">
                                     <h:outputText value="#{model.correo}" />
                                 </p:column>
-                                <p:column headerText="Fecha de Venta" width="8%;" sortBy="#{model.fechaVenta}" class="alignCenter">
-                                    <h:outputText value="#{model.fechaVenta}" >                             
-                                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
-                                    </h:outputText>
-                                </p:column>
-                                <p:column headerText="Venta" width="10%;" class="alignRight">
-                                    <h:outputText value="#{model.saldoTotal}"> 
-                                        <f:convertNumber type="currency" currencySymbol="$" />
-                                    </h:outputText>
-                                </p:column>
-                                <p:column headerText="N° Pagos" width="6%;" class="alignCenter">
-                                    <h:outputText value="#{model.numeroPagos}" />
-                                </p:column>
-                                <p:column headerText="Dias" width="5%" sortBy="#{model.plazo}" class="alignCenter">
-                                    <h:outputText value="#{model.plazo}" />
-                                </p:column>
-                                <p:column headerText="Importe de Abono" width="10%;" class="alignRight">
-                                    <h:outputText value="#{model.montoAbonar}"> 
-                                        <f:convertNumber type="currency" currencySymbol="$" />
-                                    </h:outputText>
-                                </p:column>
-                                <p:column headerText="Total Abonado" width="8%" class="alignRight">
-                                    <h:outputText value="#{model.totalAbonado}"> 
-                                        <f:convertNumber type="currency" currencySymbol="$" />
-                                    </h:outputText>
-                                </p:column>
-                                <p:column headerText="Pagos Atrasados" width="8%;" sortBy="#{model.periodosAtraso}" class="alignRight">
-                                    <h:outputText value="#{model.periodosAtraso}"> 
-                                    </h:outputText>
-                                </p:column>
-                                <p:column headerText="Dias de atraso" width="7%;" sortBy="#{model.diasAtraso}" class="alignRight">
-                                    <h:outputText value="#{model.diasAtraso}"> 
-                                    </h:outputText>
-                                </p:column>
-                                <p:column headerText="Saldo Atrasado" width="8%;" class="alignRight">
-                                    <h:outputText value="#{model.saldoAtrasado}"> 
-                                        <f:convertNumber type="currency" currencySymbol="$" />
-                                    </h:outputText>
-                                </p:column>
-                                <p:column headerText="Fecha de Próximo Pago" width="9%;" class="alignCenter">
-                                    <h:outputText value="#{model.fechaProximaAbonar}"> 
-                                        <f:convertDateTime pattern="dd/MM/yyyy"/>
-                                    </h:outputText>
-                                </p:column>
-                                <p:column headerText="Pago Requerido" width="9%;" class="alignRight">
-                                    <h:outputText value="#{model.minimoPago}"> 
-                                        <f:convertNumber type="currency" currencySymbol="$" />
-                                    </h:outputText>
-                                </p:column>
-
-                                <p:column headerText="Saldo a Liquidar" width="9%;" class="alignRight">
-                                    <h:outputText value="#{model.saldoLiquidar}"> 
+                                <p:column headerText="Saldo Utilizado" width="10%;" class="alignRight">
+                                    <h:outputText value="#{model.saldoLiquidar}" >
                                         <f:convertNumber type="currency" currencySymbol="$" />
                                     </h:outputText>
                                 </p:column>
                                 <p:columnGroup type="footer">
                                     <p:row>
-                                        <p:column colspan="1"/>
-                                        <p:column colspan="1"/>
-                                        <p:column colspan="1"/>
-                                        <p:column colspan="1"/>
-                                        <p:column colspan="1"/>
-                                        <p:column colspan="1"/>
-                                        <p:column colspan="1"/>
-                                        <p:column colspan="1"/>
-                                        <p:column colspan="1"/>
-                                        <p:column colspan="1"/>
-                                        <p:column colspan="1"/>
                                         <p:column colspan="1"/>
                                         <p:column colspan="1"/>
                                         <p:column colspan="1"/>
@@ -142,6 +89,109 @@
                                         </p:column>
                                     </p:row>
                                 </p:columnGroup>
+                                <p:rowExpansion>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding: 0px">
+                                        <p:dataTable id="table" var="modelSecond" style="width:100%;" value="#{model.lstSaldosDeudas}"  scrollable="true"  emptyMessage="No se encontraron registros."
+                                                     rowStyleClass="#{modelSecond.statusFechaProxima eq 1 ? 'alert-info': (modelSecond.statusFechaProxima eq 2 ? 'alert-warning':(modelSecond.statusFechaProxima eq 3 ? 'alert-success':(modelSecond.statusFechaProxima eq 4 ? 'alert-danger':'')))}">
+
+                                            <p:column headerText="Folio" width="5%" class="alignCenter">
+                                                <p:commandLink value="#{modelSecond.folioCredito}" class="checkedFontColor commandLinkColor" actionListener="#{beanConsultaCredito.search}" update=":formContent">
+                                                    <f:setPropertyActionListener value="#{modelSecond}" target="#{beanConsultaCredito.data}"/>
+                                                </p:commandLink>
+                                            </p:column>
+                                            <!--                                            <p:column headerText="Cliente" width="15%;" sortBy="{model.nombreCompleto}" class="alignLeft">
+                                                                                            <h:outputText value="{model.nombreCompleto}" />
+                                                                                        </p:column>
+                                                                                        <p:column headerText="Teléfono" width="9%;" class="alignLeft">
+                                                                                            <h:outputText value="{model.numeroTelefono}" />
+                                                                                        </p:column>-->
+                                            <!--                                <p:column headerText="Correo" width="25%;" class="alignLeft">
+                                                                                <h:outputText value="{model.correo}" />
+                                                                            </p:column>-->
+                                            <p:column headerText="Fecha de Venta" width="15%;" sortBy="#{modelSecond.fechaVenta}" class="alignCenter">
+                                                <h:outputText value="#{modelSecond.fechaVenta}" >                             
+                                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+                                                </h:outputText>
+                                            </p:column>
+                                            <p:column headerText="Venta" width="10%;" class="alignRight">
+                                                <h:outputText value="#{modelSecond.saldoTotal}"> 
+                                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                                </h:outputText>
+                                            </p:column>
+                                            <p:column headerText="N° Pagos" width="6%;" class="alignCenter">
+                                                <h:outputText value="#{modelSecond.numeroPagos}" />
+                                            </p:column>
+                                            <p:column headerText="Dias" width="5%" sortBy="#{model.plazo}" class="alignCenter">
+                                                <h:outputText value="#{modelSecond.plazo}" />
+                                            </p:column>
+                                            <p:column headerText="Importe de Abono" width="10%;" class="alignRight">
+                                                <h:outputText value="#{modelSecond.montoAbonar}"> 
+                                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                                </h:outputText>
+                                            </p:column>
+                                            <p:column headerText="Total Abonado" width="8%" class="alignRight">
+                                                <h:outputText value="#{modelSecond.totalAbonado}"> 
+                                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                                </h:outputText>
+                                            </p:column>
+                                            <p:column headerText="Pagos Atrasados" width="8%;" sortBy="#{model.periodosAtraso}" class="alignRight">
+                                                <h:outputText value="#{modelSecond.periodosAtraso}"> 
+                                                </h:outputText>
+                                            </p:column>
+                                            <p:column headerText="Dias de atraso" width="7%;" sortBy="#{model.diasAtraso}" class="alignRight">
+                                                <h:outputText value="#{modelSecond.diasAtraso}"> 
+                                                </h:outputText>
+                                            </p:column>
+                                            <p:column headerText="Saldo Atrasado" width="8%;" class="alignRight">
+                                                <h:outputText value="#{modelSecond.saldoAtrasado}"> 
+                                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                                </h:outputText>
+                                            </p:column>
+                                            <p:column headerText="Fecha de Próximo Pago" width="9%;" class="alignCenter">
+                                                <h:outputText value="#{modelSecond.fechaProximaAbonar}"> 
+                                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                                </h:outputText>
+                                            </p:column>
+                                            <p:column headerText="Pago Requerido" width="9%;" class="alignRight">
+                                                <h:outputText value="#{modelSecond.minimoPago}"> 
+                                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                                </h:outputText>
+                                            </p:column>
+
+                                            <p:column headerText="Saldo a Liquidar" width="9%;" class="alignRight">
+                                                <h:outputText value="#{modelSecond.saldoLiquidar}"> 
+                                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                                </h:outputText>
+                                            </p:column>
+                                            <p:columnGroup type="footer">
+                                                <p:row>
+                                                    <p:column colspan="1"/>
+                                                    <p:column colspan="1"/>
+                                                    <p:column colspan="1"/>
+                                                    <p:column colspan="1"/>
+                                                    <p:column colspan="1"/>
+                                                    <!--<p:column colspan="1"/>-->
+                                                    <p:column colspan="1"/>
+                                                    <p:column colspan="1"/>
+                                                    <p:column colspan="1"/>
+                                                    <p:column colspan="1"/>
+                                                    <p:column colspan="1"/>
+                                                    <p:column colspan="1"/>
+                                                    <p:column colspan="1"/>
+                                                    <p:column colspan="1"/>
+                                                    <p:column colspan="1" style="text-align:right" footerText="Totales:"/>
+                                                    <p:column colspan="1" class="alignRight">
+                                                        <f:facet name="footer">
+                                                            <h:outputText value="#{beanConsultaCredito.totalLiquidar}">
+                                                                <f:convertNumber type="currency" currencySymbol="$" />
+                                                            </h:outputText>
+                                                        </f:facet>
+                                                    </p:column>
+                                                </p:row>
+                                            </p:columnGroup>
+                                        </p:dataTable>
+                                    </div>
+                                </p:rowExpansion>
                             </p:dataTable>
                         </div>
                     </div>
