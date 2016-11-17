@@ -237,5 +237,40 @@ public class ServiceAbonoCredito implements IfaceAbonoCredito {
         return lstAbonoCredito;
     }
 
+    @Override
+    public ArrayList<AbonoCredito> getHistorialAbonos(BigDecimal idClienteFk, BigDecimal idCajeroFk, Date fechaInicio, Date fechaFin, BigDecimal idTipoPagoFk, BigDecimal idAbonoPk, BigDecimal idCreditoFk) {
+        getEjb();
+        ArrayList<AbonoCredito> lstAbonoCredito = new ArrayList<AbonoCredito>();
+        List<Object[]> lstObject = new ArrayList<Object[]>();
+        lstObject = ejb.getHistorialAbonos(idClienteFk, idCajeroFk, TiempoUtil.getFechaDDMMYYYY(fechaInicio),  TiempoUtil.getFechaDDMMYYYY(fechaFin),  idTipoPagoFk,  idAbonoPk,  idCreditoFk);
+        for (Object[] object : lstObject) 
+        {
+            AbonoCredito abonoCredito = new AbonoCredito();
+            abonoCredito.setIdAbonoCreditoPk(object[0] == null ? null : new BigDecimal(object[0].toString()));
+            abonoCredito.setNombreCliente(object[1] == null ? "" : object[1].toString());
+            abonoCredito.setNombreCajero(object[2] == null ? "" : object[2].toString());
+            abonoCredito.setIdCreditoFk(object[3] == null ? null : new BigDecimal(object[3].toString()));
+            abonoCredito.setFechaAbono(object[4] == null ? null : (Date) object[4]);
+            abonoCredito.setNombreAbono(object[5] == null ? "" : object[5].toString());
+            abonoCredito.setMontoAbono(object[6] == null ? null : new BigDecimal(object[6].toString()));
+            
+//            abonoCredito.setIdUsuarioFk(object[4] == null ? null : new BigDecimal(object[4].toString()));
+//            abonoCredito.setIdtipoAbonoFk(object[5] == null ? null : new BigDecimal(object[5].toString()));
+//            abonoCredito.setEstatusAbono(object[6] == null ? null : new BigDecimal(object[6].toString()));
+//            abonoCredito.setNumeroCheque(object[7] == null ? null : new BigDecimal(object[7].toString()));
+//            abonoCredito.setLibrador(object[8] == null ? "" : object[8].toString());
+//            abonoCredito.setFechaCobro(object[9] == null ? null : (Date) object[9]);
+//            abonoCredito.setBanco(object[10] == null ? "" : object[10].toString());
+//            abonoCredito.setFactura(object[11] == null ? "" : object[11].toString());
+//            abonoCredito.setReferencia(object[12] == null ? "" : object[12].toString());
+//            abonoCredito.setConcepto(object[13] == null ? "" : object[13].toString());
+//            abonoCredito.setFechaTransferencia(object[14] == null ? null : (Date) object[14]);
+            
+            lstAbonoCredito.add(abonoCredito);
+        }
+        return lstAbonoCredito;
+    
+    }
+
 
 }

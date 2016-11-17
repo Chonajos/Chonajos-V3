@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="./../templates/main.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content">
+        <div>
+            <h3>#{beanHistorialAbonos.title}</h3>
+        </div>
+
+        <h:form id="formContent">
+            <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
+            <div class="form-group" align="right">
+                <div>
+                    <p:commandButton value="Buscar" update=":formContent" ajax="true" disabled="false" action="#{beanHistorialAbonos.buscar()}"/>
+                </div>
+            </div>
+            <p:panel> 
+                <div class="container-fluid">
+                    <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 form-group">
+                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 "  for="autocompleteCliente" value ="Cliente:" /> 
+                            <p:autoComplete  placeholder="Seleccione un Cliente" id="autocompleteCliente"  styleClass="autocomplete-input-text-media ui-state-highlight-autocomplete" class="ui-state-highlight-autocomplete"
+                                             value="#{beanHistorialAbonos.cliente}" completeMethod="#{beanHistorialAbonos.autoCompleteCliente}" forceSelection="true" var="cliente"  inputStyle="width: 179px"
+                                             itemLabel="#{cliente.nombreCompleto}"
+                                             itemValue="#{cliente.id_cliente}" converter="#{clienteConverter}">
+                            </p:autoComplete>
+                            <pe:keyFilter for="autocompleteCliente" regEx="/[a-z0-9-_Ã±\s]/i" />
+                        </div>
+
+                        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-3 col-md-4 col-sm-4 col-xs-12"  for="operacionFiltro" value ="Cajero:" rendered="#{beanHistorialAbonos.viewEstate =='init'}" /> 
+                            <h:selectOneMenu  id="operacionFiltro" class="col-lg-9 col-md-8 col-sm-8 col-xs-12" value="#{beanHistorialAbonos.idCobradorFk}" rendered="#{beanHistorialAbonos.viewEstate =='init'}" >
+                                <f:selectItem itemLabel="TODOS" itemValue="" />
+                                <f:selectItems value="#{beanHistorialAbonos.lstUsuariosCaja}" var="cobrador" itemLabel="#{cobrador.nombreCompletoUsuario}" itemValue="#{cobrador.idUsuarioPk}"/>
+                            </h:selectOneMenu>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft "  
+                                           for="calendarInicio" value ="Fecha Inicio" 
+                                           rendered="#{beanHistorialAbonos.viewEstate =='init'}"/> 
+                            <p:calendar disabled="#{beanHistorialAbonos.enableCalendar}" id="calendarInicio" 
+                                        class="col-lg-8 col-md-8 col-sm-8 col-xs-12 
+                                        calendario alignRight" navigator="true" placeholder="dd/mm/yyyy"
+                                        value="#{beanHistorialAbonos.fechaFiltroInicio}" locale="es" pattern="dd/MM/yyyy" 
+                                        readonlyInput="true" showOn="button" rendered="#{beanHistorialAbonos.viewEstate =='init'}">
+                            </p:calendar>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft "  
+                                           for="calendarFin" value ="Fecha Fin" 
+                                           rendered="#{beanHistorialAbonos.viewEstate =='init'}"/> 
+                            <p:calendar disabled="#{beanHistorialAbonos.enableCalendar}" id="calendarFin" 
+                                        class="col-lg-8 col-md-8 col-sm-8 col-xs-12 
+                                        calendario alignRight" navigator="true" placeholder="dd/mm/yyyy"
+                                        value="#{beanHistorialAbonos.fechaFiltroFin}" locale="es" pattern="dd/MM/yyyy" 
+                                        readonlyInput="true" showOn="button" rendered="#{beanHistorialAbonos.viewEstate =='init'}">
+                            </p:calendar>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 form-group">
+                        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="comboTipoAbono" value ="Forma de Pago:" /> 
+                            <h:selectOneMenu  id="comboTipoAbono" class="col-lg-6 col-md-8 col-sm-8 col-xs-12 " value="#{beanHistorialAbonos.idTipoAbonoFk}" >
+                                <f:selectItem itemLabel="TODOS" itemValue="" />
+                                <f:selectItems value="#{beanHistorialAbonos.lstTipoAbonos}" var="tipoAbono" itemLabel="#{tipoAbono.nombreTipoAbono}" itemValue="#{tipoAbono.idTipoAbono}"/>
+                            </h:selectOneMenu>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-6 col-md-7 col-sm-6 col-xs-12"  for="txtFolioAbono" value ="Folio Abono:" /> 
+                            <p:inputText id="txtFolioAbono"   class="col-lg-3 col-md-4 col-sm-6 col-xs-12" value="#{beanHistorialAbonos.idAbonoPk}" /> 
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-6 col-md-7 col-sm-6 col-xs-12"  for="txtFolioCredito" value ="Folio Crédito:" /> 
+                            <p:inputText id="txtFolioCredito"   class="col-lg-3 col-md-4 col-sm-6 col-xs-12" value="#{beanHistorialAbonos.idCreditoFk}"/> 
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <p:dataTable id="tabla" var="model"
+                                     value="#{beanHistorialAbonos.lstAbonosCreditos}" 
+                                     rows="10"
+                                     paginator="true" styleClass="ui-datatable-hor-scroll" 
+                                     emptyMessage="No se encontraron Registros" 
+                                     rendered="#{beanHistorialAbonos.viewEstate =='init'}">
+                            <p:column headerText="Folio Abono" width="60px;" class="alignCenter">
+                                <h:outputText value="#{model.idAbonoCreditoPk}" />
+                            </p:column>
+
+                            <p:column headerText="Cliente" width="200px;" class="alignLeft">
+                                <h:outputText value="#{model.nombreCliente}">
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Folio Crédito" width="60px;" class="alignCenter">
+                                <h:outputText value="#{model.idCreditoFk}" />
+                            </p:column>
+                            <p:column headerText="Cajero" width="200px;" class="alignLeft">
+                                <h:outputText value="#{model.nombreCajero}">
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="Fecha de Abono" width="120px;" class="alignCenter">
+                                <h:outputText value="#{model.fechaAbono}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Forma de Pago" width="150px;" class="alignLeft">
+                                <h:outputText value="#{model.nombreAbono}" />
+                            </p:column>   
+                            <p:column headerText="Monto" width="100px;" class="alignRight">
+                                <h:outputText value="#{model.montoAbono}">
+                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                </h:outputText>
+                            </p:column>
+                            <p:columnGroup type="footer">
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                                <p:column colspan="1" footerText="Total: " style="text-align:right"/>
+                                <p:column colspan="1" class="alignRight">
+                                    <f:facet name="footer">
+                                        <h:outputText value="#{beanHistorialAbonos.total}" class="alignRight">
+                                            <f:convertNumber type="currency" currencySymbol="$" />
+                                        </h:outputText>
+                                    </f:facet>
+                                </p:column>
+                            </p:columnGroup>
+                        </p:dataTable>
+
+                    </div>
+                </div>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>

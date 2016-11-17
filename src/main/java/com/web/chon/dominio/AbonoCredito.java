@@ -31,6 +31,8 @@ public class AbonoCredito extends ValueObject {
     private BigDecimal idStatusDocumentoFk;
     private BigDecimal idClienteFk;
     private BigDecimal folioElectronico;
+    private String nombreAbono;
+    private String nombreCajero;
 
     @Override
     public String toString() {
@@ -62,6 +64,8 @@ public class AbonoCredito extends ValueObject {
         nombreStatus=null;
         idClienteFk=null;
         folioElectronico=null; 
+        nombreAbono = null;
+        nombreCajero=null;
     }
 
     public BigDecimal getFolioElectronico() {
@@ -246,6 +250,24 @@ public class AbonoCredito extends ValueObject {
     public void setReferencia(String referencia) {
         this.referencia = referencia;
     }
+
+    public String getNombreAbono() {
+        return nombreAbono;
+    }
+
+    public void setNombreAbono(String nombreAbono) {
+        this.nombreAbono = nombreAbono;
+    }
+
+    public String getNombreCajero() {
+        return nombreCajero;
+    }
+
+    public void setNombreCajero(String nombreCajero) {
+        this.nombreCajero = nombreCajero;
+    }
+    
+    
 
     
 }

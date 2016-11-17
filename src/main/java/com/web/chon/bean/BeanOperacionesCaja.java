@@ -21,6 +21,7 @@ import com.web.chon.service.IfaceTiposOperacion;
 import com.web.chon.util.TiempoUtil;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.annotation.PostConstruct;
@@ -82,10 +83,12 @@ public class BeanOperacionesCaja implements Serializable {
     private String comentarios;
 
     private BigDecimal idCorteBean;
+    private BigDecimal total;
 
     @PostConstruct
     public void init() {
         idCajaBean = new BigDecimal(0);
+        total = new BigDecimal(0);
         idCorteBean = new BigDecimal(1);
         idUsuarioCajaBean = new BigDecimal(0);
         usuario = context.getUsuarioAutenticado();
@@ -136,6 +139,13 @@ public class BeanOperacionesCaja implements Serializable {
     public void buscar() {
         System.out.println("Entro a buscar");
         listaOperaciones = ifaceOperacionesCaja.getOperacionesBy(idCajaBean, idTipoOperacionBean, idConceptoBean, TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicio), TiempoUtil.getFechaDDMMYYYY(fechaFiltroFin), idStatusBean, idUsuarioCajaBean, idCorteBean,idInOut);
+        sumaTotal();
+    }
+    public void sumaTotal() {
+        total = new BigDecimal(0);
+        for (OperacionesCaja objeto : listaOperaciones) {
+            total = total.add(objeto.getMonto(), MathContext.UNLIMITED);
+        }
     }
 
     public void verificarCombo() {
@@ -375,6 +385,14 @@ public class BeanOperacionesCaja implements Serializable {
 
     public void setIdInOut(BigDecimal idInOut) {
         this.idInOut = idInOut;
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
     }
 
     

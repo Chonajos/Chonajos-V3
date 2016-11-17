@@ -20,6 +20,7 @@ import com.web.chon.util.JsfUtil;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,13 +69,29 @@ public class BeanPagoServicios implements Serializable {
     @Autowired
     private IfaceCorteCaja ifaceCorteCaja;
     private BigDecimal saldoAnterior;
-    private BigDecimal nuevoSaldo;
     private BigDecimal totalEntradas;
     private BigDecimal totalSalidas;
     private static final BigDecimal entrada = new BigDecimal(1);
     private static final BigDecimal salida = new BigDecimal(2);
     private BigDecimal idSucursalFk;
     //--Variables para Verificar Maximo en Caja --//
+    
+     //==========codigo para verificar dinero en caja =========//
+    private ArrayList<OperacionesCaja> listaDetalleEntradas;
+    private ArrayList<OperacionesCaja> listaDetalleSalidas;
+    private static final BigDecimal statusAplicado = new BigDecimal(1);
+    private static final BigDecimal statusPendiente = new BigDecimal(2);
+    private static final BigDecimal CERO = new BigDecimal(0).setScale(2, RoundingMode.CEILING);
+    private BigDecimal nuevoSaldo;
+    private BigDecimal nuevoSaldoCheques;
+    private BigDecimal nuevoSaldoCuentas;
+    private BigDecimal saldoAnteriorEfectivo;
+    private BigDecimal saldoAnteriorCheques;
+    private BigDecimal saldoAnteriorCuentas;
+    private BigDecimal totalEfectivo;
+    private BigDecimal totalCheques;
+    private BigDecimal totalCuentasBancarias;
+    //========codigo para verificar dinero en caja ============//
 
     @PostConstruct
     public void init() 
@@ -95,13 +112,44 @@ public class BeanPagoServicios implements Serializable {
         //--Maximo Pago--//
         corteAnterior = new CorteCaja();
         corteAnterior = ifaceCorteCaja.getLastCorteByCaja(caja.getIdCajaPk());
-        totalEntradas = new BigDecimal(0);
-        totalSalidas = new BigDecimal(0);
-        saldoAnterior = new BigDecimal(0);
-        nuevoSaldo = new BigDecimal(0);
+        totalEntradas = CERO;
+        totalSalidas = CERO;
+        saldoAnterior = CERO;
+       
         listaSucursales = new ArrayList<Caja>();
         System.out.println("=================idCaja: "+caja.getIdCajaPk());
         listaSucursales = ifaceCaja.getSucursalesByIdCaja(caja.getIdCajaPk());
+         nuevoSaldo = CERO;
+        nuevoSaldoCheques = CERO;
+        nuevoSaldoCuentas = CERO;
+        saldoAnteriorEfectivo = CERO;
+        saldoAnteriorCheques = CERO;
+        saldoAnteriorCuentas = CERO;
+        totalEfectivo = CERO;
+        totalCheques = CERO;
+        totalCuentasBancarias = CERO;
+
+        if (corteAnterior.getSaldoNuevo() == null) {
+            corteAnterior.setSaldoNuevo(CERO);
+        }
+        saldoAnteriorEfectivo = corteAnterior.getSaldoNuevo();
+        saldoAnteriorCheques = corteAnterior.getMontoChequesNuevos();
+        saldoAnteriorCuentas = corteAnterior.getMontoCuentaNuevo();
+        if (saldoAnteriorCheques == null) {
+            saldoAnteriorCheques = CERO;
+        }
+        if (saldoAnteriorEfectivo == null) {
+            saldoAnteriorEfectivo = CERO;
+        }
+        if (saldoAnteriorCuentas == null) {
+            saldoAnteriorCuentas = CERO;
+        }
+
+        //---codigo para verificar dinero en caja --//
+        System.out.println("Saldo Anterior: " + saldoAnteriorEfectivo.setScale(2, RoundingMode.CEILING));
+        System.out.println("Saldo Anterior Cheques: " + saldoAnteriorCheques.setScale(2, RoundingMode.CEILING));
+        System.out.println("Saldo Anterior Cuentas: " + saldoAnteriorCuentas.setScale(2, RoundingMode.CEILING));
+
 
         
     }
@@ -115,64 +163,83 @@ public class BeanPagoServicios implements Serializable {
 
     //----Funciones para Verificar Maximo de Dinero en Caja --//
     public void verificarDinero() {
+        totalEfectivo = CERO;
+        totalCheques = CERO;
+        totalCuentasBancarias = CERO;
+        nuevoSaldo=CERO;
+        nuevoSaldoCheques=CERO;
+        nuevoSaldoCuentas=CERO;
         
-//        lstOperacionesEntrada = new ArrayList<TipoOperacion>();
-//        lstOperacionesSalida = new ArrayList<TipoOperacion>();
-//        lstOperacionesEntrada = ifaceOperacionesCaja.getOperacionesCorteBy(caja.getIdCajaPk(), caja.getIdUsuarioFK(), entrada);
-//        lstOperacionesSalida = ifaceOperacionesCaja.getOperacionesCorteBy(caja.getIdCajaPk(), caja.getIdUsuarioFK(), salida);
-//        getsumaEntradas();
-//        getsumaSalidas();
-//
-//        if (corteAnterior.getSaldoNuevo() == null) 
-//        {
-//            corteAnterior.setSaldoNuevo(new BigDecimal(0));
-//        }
-//        saldoAnterior = corteAnterior.getSaldoNuevo();
-//        nuevoSaldo = totalEntradas.subtract(totalSalidas, MathContext.UNLIMITED);
-//        nuevoSaldo = nuevoSaldo.add(saldoAnterior, MathContext.UNLIMITED);
+        listaDetalleEntradas= new ArrayList<OperacionesCaja>();
+        listaDetalleEntradas =new ArrayList<OperacionesCaja>();
+        listaDetalleSalidas=new ArrayList<OperacionesCaja>();
+        
+        listaDetalleEntradas = ifaceOperacionesCaja.getDetalles(caja.getIdCajaPk(), caja.getIdUsuarioFK(), entrada, statusAplicado);
+        listaDetalleSalidas = ifaceOperacionesCaja.getDetalles(caja.getIdCajaPk(), caja.getIdUsuarioFK(), salida, statusAplicado);
+
+        for (OperacionesCaja ope : listaDetalleEntradas) {
+            if (ope.getIdConceptoFk().intValue() == 10 || ope.getIdConceptoFk().intValue() == 6 || ope.getIdConceptoFk().intValue() == 11 || ope.getIdConceptoFk().intValue() == 7 || ope.getIdConceptoFk().intValue() == 8 || ope.getIdConceptoFk().intValue() == 9 || ope.getIdConceptoFk().intValue() == 16 || ope.getIdConceptoFk().intValue() == 13) {
+
+                totalEfectivo = totalEfectivo.add(ope.getMonto(), MathContext.UNLIMITED);
+            } else if (ope.getIdConceptoFk().intValue() == 30 || ope.getIdConceptoFk().intValue() == 33 || ope.getIdConceptoFk().intValue() == 27 || ope.getIdConceptoFk().intValue() == 17 || ope.getIdConceptoFk().intValue() == 36) {
+
+                totalCheques = totalCheques.add(ope.getMonto(), MathContext.UNLIMITED);
+            } else if (ope.getIdConceptoFk().intValue() == 12 || ope.getIdConceptoFk().intValue() == 29 || ope.getIdConceptoFk().intValue() == 31 || ope.getIdConceptoFk().intValue() == 28 || ope.getIdConceptoFk().intValue() == 32 || ope.getIdConceptoFk().intValue() == 34 || ope.getIdConceptoFk().intValue() == 37 || ope.getIdConceptoFk().intValue() == 35) {
+                totalCuentasBancarias = totalCuentasBancarias.add(ope.getMonto(), MathContext.UNLIMITED);
+            }
+
+        }
+        for (OperacionesCaja ope : listaDetalleSalidas) {
+            if (ope.getIdConceptoFk().intValue() == 7 || ope.getIdConceptoFk().intValue() == 1 || ope.getIdConceptoFk().intValue() == 3 || ope.getIdConceptoFk().intValue() == 4 || ope.getIdConceptoFk().intValue() == 6 || ope.getIdConceptoFk().intValue() == 11 || ope.getIdConceptoFk().intValue() == 10 || ope.getIdConceptoFk().intValue() == 8 || ope.getIdConceptoFk().intValue() == 9 || ope.getIdConceptoFk().intValue() == 16 || ope.getIdConceptoFk().intValue() == 13 || ope.getIdConceptoFk().intValue() == 2 || ope.getIdConceptoFk().intValue() == 25 || ope.getIdConceptoFk().intValue() == 24
+                    || ope.getIdConceptoFk().intValue() == 21 || ope.getIdConceptoFk().intValue() == 20 || ope.getIdConceptoFk().intValue() == 23
+                    || ope.getIdConceptoFk().intValue() == 22) {
+                totalEfectivo = totalEfectivo.subtract(ope.getMonto(), MathContext.UNLIMITED);
+            } else if (ope.getIdConceptoFk().intValue() == 30 || ope.getIdConceptoFk().intValue() == 33 || ope.getIdConceptoFk().intValue() == 27 || ope.getIdConceptoFk().intValue() == 17 || ope.getIdConceptoFk().intValue() == 36) {
+
+                totalCheques = totalCheques.subtract(ope.getMonto(), MathContext.UNLIMITED);
+            } else if (ope.getIdConceptoFk().intValue() == 12 || ope.getIdConceptoFk().intValue() == 29 || ope.getIdConceptoFk().intValue() == 31 || ope.getIdConceptoFk().intValue() == 28 || ope.getIdConceptoFk().intValue() == 32 || ope.getIdConceptoFk().intValue() == 34 || ope.getIdConceptoFk().intValue() == 37 || ope.getIdConceptoFk().intValue() == 35) {
+
+                totalCuentasBancarias = totalCuentasBancarias.subtract(ope.getMonto(), MathContext.UNLIMITED);
+            }
+
+        }
+        nuevoSaldo = totalEfectivo.add(saldoAnteriorEfectivo.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
+        nuevoSaldoCheques = totalCheques.add(saldoAnteriorCheques.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
+        nuevoSaldoCuentas = totalCuentasBancarias.add(saldoAnteriorCuentas.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
     }
 
-    public void getsumaEntradas() {
-        for (TipoOperacion t : lstOperacionesEntrada) {
-            totalEntradas = totalEntradas.add(t.getMontoTotal(), MathContext.UNLIMITED);
-        }
-    }
-
-    public void getsumaSalidas() {
-        for (TipoOperacion t : lstOperacionesSalida) {
-            totalSalidas = totalSalidas.add(t.getMontoTotal(), MathContext.UNLIMITED);
-        }
-    }
+  
 
     //----Funciones para Verificar Maximo de Dinero en Caja --//
     public void pagar() {
-
-//        verificarDinero();
-//
-//        if (nuevoSaldo.compareTo(totalServicio) >= 0) 
-//        {
+        verificarDinero();
+        System.out.println("Saldo Actual: " + nuevoSaldo.setScale(2, RoundingMode.CEILING));
+        System.out.println("Saldo Actual Cheques: " + nuevoSaldoCheques.setScale(2, RoundingMode.CEILING));
+        System.out.println("Saldo Actual Cuentas: " + nuevoSaldoCuentas.setScale(2, RoundingMode.CEILING));
+        
+        if (nuevoSaldo.setScale(2, RoundingMode.CEILING).compareTo(totalServicio.setScale(2, RoundingMode.CEILING)) >= 0) 
+        {
             opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
             opcaja.setMonto(totalServicio);
             opcaja.setComentarios(comentarios);
-            
             opcaja.setIdConceptoFk(idConceptoBean);
             opcaja.setIdSucursalFk(idSucursalFk);
-
             if (caja.getIdCajaPk() != null) 
             {
                 if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
-
-                    JsfUtil.addSuccessMessageClean("Pago de Servicio Registrado Correctamente");
+                    JsfUtil.addSuccessMessageClean("Pago de servicio registrado correctamente");
                     reset();
                 } else {
-                    JsfUtil.addErrorMessageClean("Ocurrió un error al registrar el pago de servicio");
+                    JsfUtil.addErrorMessageClean("Ocurrio un error al registrar el pago de servicio, contactar al administrador");
                 }
+
             } else {
                 JsfUtil.addErrorMessageClean("Su usuario no cuenta con caja registrada para realizar el pago de servicios");
             }
-//        } else {
-//            JsfUtil.addErrorMessageClean("No hay suficiente dinero en caja");
-//        }
+        } else {
+            JsfUtil.addErrorMessageClean("No hay suficiente dinero en caja");
+        }
+       
     }
 
     public ArrayList<ConceptosES> getListaConceptos() {
@@ -319,6 +386,95 @@ public class BeanPagoServicios implements Serializable {
         this.listaSucursales = listaSucursales;
     }
 
+    public CorteCaja getCorteAnterior() {
+        return corteAnterior;
+    }
+
+    public void setCorteAnterior(CorteCaja corteAnterior) {
+        this.corteAnterior = corteAnterior;
+    }
+
+    public ArrayList<OperacionesCaja> getListaDetalleEntradas() {
+        return listaDetalleEntradas;
+    }
+
+    public void setListaDetalleEntradas(ArrayList<OperacionesCaja> listaDetalleEntradas) {
+        this.listaDetalleEntradas = listaDetalleEntradas;
+    }
+
+    public ArrayList<OperacionesCaja> getListaDetalleSalidas() {
+        return listaDetalleSalidas;
+    }
+
+    public void setListaDetalleSalidas(ArrayList<OperacionesCaja> listaDetalleSalidas) {
+        this.listaDetalleSalidas = listaDetalleSalidas;
+    }
+
+    public BigDecimal getNuevoSaldoCheques() {
+        return nuevoSaldoCheques;
+    }
+
+    public void setNuevoSaldoCheques(BigDecimal nuevoSaldoCheques) {
+        this.nuevoSaldoCheques = nuevoSaldoCheques;
+    }
+
+    public BigDecimal getNuevoSaldoCuentas() {
+        return nuevoSaldoCuentas;
+    }
+
+    public void setNuevoSaldoCuentas(BigDecimal nuevoSaldoCuentas) {
+        this.nuevoSaldoCuentas = nuevoSaldoCuentas;
+    }
+
+    public BigDecimal getSaldoAnteriorEfectivo() {
+        return saldoAnteriorEfectivo;
+    }
+
+    public void setSaldoAnteriorEfectivo(BigDecimal saldoAnteriorEfectivo) {
+        this.saldoAnteriorEfectivo = saldoAnteriorEfectivo;
+    }
+
+    public BigDecimal getSaldoAnteriorCheques() {
+        return saldoAnteriorCheques;
+    }
+
+    public void setSaldoAnteriorCheques(BigDecimal saldoAnteriorCheques) {
+        this.saldoAnteriorCheques = saldoAnteriorCheques;
+    }
+
+    public BigDecimal getSaldoAnteriorCuentas() {
+        return saldoAnteriorCuentas;
+    }
+
+    public void setSaldoAnteriorCuentas(BigDecimal saldoAnteriorCuentas) {
+        this.saldoAnteriorCuentas = saldoAnteriorCuentas;
+    }
+
+    public BigDecimal getTotalEfectivo() {
+        return totalEfectivo;
+    }
+
+    public void setTotalEfectivo(BigDecimal totalEfectivo) {
+        this.totalEfectivo = totalEfectivo;
+    }
+
+    public BigDecimal getTotalCheques() {
+        return totalCheques;
+    }
+
+    public void setTotalCheques(BigDecimal totalCheques) {
+        this.totalCheques = totalCheques;
+    }
+
+    public BigDecimal getTotalCuentasBancarias() {
+        return totalCuentasBancarias;
+    }
+
+    public void setTotalCuentasBancarias(BigDecimal totalCuentasBancarias) {
+        this.totalCuentasBancarias = totalCuentasBancarias;
+    }
+
+    
     
     
 }

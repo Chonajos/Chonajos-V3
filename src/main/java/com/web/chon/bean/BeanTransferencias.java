@@ -228,18 +228,13 @@ public class BeanTransferencias implements Serializable {
         System.out.println("Saldo Actual Cuentas: " + nuevoSaldoCuentas.setScale(2, RoundingMode.CEILING));
 
         boolean bandera = false;
-        if (nuevoSaldo.compareTo(monto.setScale(2, RoundingMode.CEILING)) >= 0) {
+//        if (nuevoSaldo.compareTo(monto.setScale(2, RoundingMode.CEILING)) >= 0) {
             opcajaOrigen.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
             opcajaOrigen.setMonto(monto);
             opcajaOrigen.setComentarios(comentarios);
-            System.out.println("Monto: " + opcajaOrigen.getMonto().setScale(2, RoundingMode.CEILING));
+
             if (idTipoTransferenciaFk.intValue() == 1) {
-                System.out.println("monto: " + opcajaOrigen.getMonto());
-                System.out.println("nuevoSaldo: " + nuevoSaldo);
                 if ((opcajaOrigen.getMonto().setScale(2, RoundingMode.CEILING)).compareTo((nuevoSaldo.setScale(2, RoundingMode.CEILING))) >= 0) {
-                    System.out.println("efectivo se puede transferir");
-                    System.out.println("monto: " + opcajaOrigen.getMonto().setScale(2, RoundingMode.CEILING));
-                    System.out.println("nuevoSaldo: " + nuevoSaldo.setScale(2, RoundingMode.CEILING));
                     bandera = true;
                 }
                 opcajaOrigen.setIdConceptoFk(idTransferenciaEfectivo);
@@ -270,9 +265,9 @@ public class BeanTransferencias implements Serializable {
             } else {
                 JsfUtil.addErrorMessageClean("Su usuario no cuenta con caja registrada para realizar el pago de servicios");
             }
-        } else {
-            JsfUtil.addErrorMessageClean("No hay suficiente dinero en caja");
-        }
+//        } else {
+//            JsfUtil.addErrorMessageClean("No hay suficiente dinero en caja");
+//        }
     }
 
     public OperacionesCaja getData() {

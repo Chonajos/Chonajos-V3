@@ -40,6 +40,7 @@ import java.io.File;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -174,6 +175,7 @@ public class BeanDocumentosCobrar implements Serializable {
     private OperacionesCuentas opcuenta;
     private PagosBancarios pagoBancario;
     private BigDecimal idCuentaDestinoBean;
+    private BigDecimal total;
 
     @PostConstruct
     public void init() {
@@ -192,6 +194,7 @@ public class BeanDocumentosCobrar implements Serializable {
 
         filtroStatus = DOCUMENTOACTIVO;
         listaDocumentos = ifaceDocumentos.getDocumentos(fechaInicio, fechaFin, idSucursalFk, null, filtroFormaPago, filtroStatus, filtroFecha);
+        sumaTotal();
         generarQuery();
         camposDeposito = true;
         camposEfectivo = false;
@@ -219,6 +222,7 @@ public class BeanDocumentosCobrar implements Serializable {
         cobroCheque.setFechaDeposito(context.getFechaSistema());
         pagoBancario = new PagosBancarios();
         dataAbonar.setIdTipoAbonoFk(new BigDecimal(1));
+        total = new BigDecimal(0);
 
     }
 
@@ -363,7 +367,7 @@ public class BeanDocumentosCobrar implements Serializable {
         cobroCheque.setFechaDeposito(context.getFechaSistema());
         addView();
         buscar();
-        
+
     }
 
     public void buscar() {
@@ -372,7 +376,17 @@ public class BeanDocumentosCobrar implements Serializable {
             idCliente = cliente.getId_cliente();
         }
         listaDocumentos = ifaceDocumentos.getDocumentos(fechaInicio, fechaFin, idSucursalFk, idCliente, filtroFormaPago, filtroStatus, filtroFecha);
+        sumaTotal();
+    }
 
+    public void sumaTotal() {
+        System.out.println("Entro a Sumar");
+        total = new BigDecimal(0);
+        for (Documento objeto : listaDocumentos) {
+            total = total.add(objeto.getMonto(), MathContext.UNLIMITED);
+        }
+        System.out.println("Total: "+total);
+        
     }
 
     public ArrayList<Cliente> autoCompleteCliente(String nombreCliente) {
@@ -961,6 +975,14 @@ public class BeanDocumentosCobrar implements Serializable {
 
     public void setIdCuentaDestinoBean(BigDecimal idCuentaDestinoBean) {
         this.idCuentaDestinoBean = idCuentaDestinoBean;
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
     }
 
 }

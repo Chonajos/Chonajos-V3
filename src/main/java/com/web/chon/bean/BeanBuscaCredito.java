@@ -579,7 +579,7 @@ public class BeanBuscaCredito implements Serializable {
 
                     //llamar a funcion llenadora de datos
                     System.out.println("================Sobrante: " + to);
-                    //abonarRestante(to);
+                    abonarRestante(to);
                     botonCancelar = false;
                     botonActualizar = false;
                     habilitaBotones = true;
@@ -605,32 +605,59 @@ public class BeanBuscaCredito implements Serializable {
         }
     }
 
-    public void abonarRestante(BigDecimal saldoSobrante) {
+    public void abonarRestante(BigDecimal saldoSobrante) 
+    {
         System.out.println("Entro a funcion llenadora");
         System.out.println("Abono Sobrante: " + saldoSobrante);
 
-        for (int i = 0; i < modelo.size(); i++) {
+        for (int i = 0; i < modelo.size(); i++) 
+        {
             SaldosDeudas item = modelo.get(i);
-            BigDecimal resta = item.getSaldoLiquidar().setScale(2, RoundingMode.CEILING).subtract(item.getAbonarTemporal().setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
-            System.out.println("Resta: " + resta);
-            if ((resta).compareTo(CERO) <= 0) {
-                System.out.println("Ya no se le puede abonar más a este folio");
-            } else if (resta.compareTo(saldoSobrante) >= 0) {
-                System.out.println("Si se le puede abonar mas a este folio");
-                item.setAbonarTemporal(item.getAbonarTemporal().setScale(2, RoundingMode.CEILING).add(resta.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED));
-            } else {
-                System.out.println("Se le abona el total + saldo sobrante");
-                saldoSobrante = saldoSobrante.subtract(resta, MathContext.UNLIMITED);
-                if (saldoSobrante.compareTo(CERO) > 0) {
-                    BigDecimal suma = item.getAbonarTemporal().setScale(2, RoundingMode.CEILING).add(resta.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
-                    System.out.println("SUMA: " + suma);
-                    //saldoSobrante = saldoSobrante.subtract(resta, MathContext.UNLIMITED);
-                    item.setAbonarTemporal(resta);
+            BigDecimal minimoPago = CERO;
+            minimoPago = item.getMinimoPago().setScale(2, RoundingMode.CEILING);
+            if(minimoPago.compareTo(saldoSobrante.setScale(2, RoundingMode.CEILING))<=0)
+            {
+                //falta opci{on que valide el maximo a abonar.
+                if(item.getAbonarTemporal().add(minimoPago, MathContext.UNLIMITED).compareTo(item.getSaldoLiquidar())<=0)
+                {
+                    item.setAbonarTemporal(item.getAbonarTemporal().add(minimoPago, MathContext.UNLIMITED));
+                    saldoSobrante = saldoSobrante.subtract(minimoPago, MathContext.UNLIMITED);
+                    System.out.println("sobrante: "+saldoSobrante);
                 }
-
             }
-
+            else
+            {
+                if(saldoSobrante.compareTo(CERO)==1)
+                {
+                    item.setAbonarTemporal(item.getAbonarTemporal().add(saldoSobrante, MathContext.UNLIMITED));
+                    saldoSobrante= saldoSobrante.subtract(minimoPago, MathContext.UNLIMITED);
+                }
+            }
         }
+
+        
+//        for (int i = 0; i < modelo.size(); i++) {
+//            SaldosDeudas item = modelo.get(i);
+//            BigDecimal resta = item.getSaldoLiquidar().setScale(2, RoundingMode.CEILING).subtract(item.getAbonarTemporal().setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
+//            System.out.println("Resta: " + resta);
+//            if ((resta).compareTo(CERO) <= 0) {
+//                System.out.println("Ya no se le puede abonar más a este folio");
+//            } else if (resta.compareTo(saldoSobrante) >= 0) {
+//                System.out.println("Si se le puede abonar mas a este folio");
+//                item.setAbonarTemporal(item.getAbonarTemporal().setScale(2, RoundingMode.CEILING).add(resta.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED));
+//            } else {
+//                System.out.println("Se le abona el total + saldo sobrante");
+//                saldoSobrante = saldoSobrante.subtract(resta, MathContext.UNLIMITED);
+//                if (saldoSobrante.compareTo(CERO) > 0) {
+//                    BigDecimal suma = item.getAbonarTemporal().setScale(2, RoundingMode.CEILING).add(resta.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
+//                    System.out.println("SUMA: " + suma);
+//                    //saldoSobrante = saldoSobrante.subtract(resta, MathContext.UNLIMITED);
+//                    item.setAbonarTemporal(resta);
+//                }
+//
+//            }
+//
+//        }
         System.out.println("FIN  Abono Sobrante: " + saldoSobrante);
 
     }

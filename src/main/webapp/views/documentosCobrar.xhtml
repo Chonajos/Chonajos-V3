@@ -354,6 +354,27 @@
                                     <f:setPropertyActionListener value="#{model}" target="#{beanDocumentosCobrar.documentoData}"/>
                                 </p:commandButton>
                             </p:column>
+                            <p:columnGroup type="footer">
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                                
+                                <p:column colspan="1" footerText="Total: " style="text-align:right"/>
+                                <p:column colspan="1" class="alignRight">
+                                    <f:facet name="footer">
+                                        <h:outputText value="#{beanDocumentosCobrar.total}" class="alignRight">
+                                            <f:convertNumber type="currency" currencySymbol="$" />
+                                        </h:outputText>
+                                    </f:facet>
+                                </p:column>
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                            </p:columnGroup>
                         </p:dataTable>
                     </div>
 

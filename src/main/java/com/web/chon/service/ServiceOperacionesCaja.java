@@ -297,7 +297,6 @@ public class ServiceOperacionesCaja implements IfaceOperacionesCaja {
             Usuario u = new Usuario();
             u.setIdUsuarioPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
             u.setNombreUsuario(obj[1] == null ? null : obj[1].toString());
-            System.out.println("-------------------------------------"+u.toString());
             listaResponsables.add(u);
         }
         return listaResponsables;

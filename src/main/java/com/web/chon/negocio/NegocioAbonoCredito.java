@@ -3,6 +3,7 @@ package com.web.chon.negocio;
 
 import com.web.chon.dominio.AbonoCredito;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Remote;
 
@@ -39,6 +40,8 @@ public interface NegocioAbonoCredito
      * @return 
      */
     public List<Object[]> getAbonosByIdCredito(BigDecimal idCredito) ;
+    
+    public List<Object[]> getHistorialAbonos(BigDecimal idClienteFk, BigDecimal idCajeroFk, String fechaInicio, String fechaFin, BigDecimal idTipoPagoFk, BigDecimal idAbonoPk, BigDecimal idCreditoFk);
     
 
     
