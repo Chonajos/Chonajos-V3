@@ -43,6 +43,9 @@
                                 <p:spacer height="60"/>
                                 <p:commandButton id="btnLogin" value="iniciar" action="#{securityBean.doLogin}" ajax="false" styleClass="btnLoginPanel" update=":growl" icon="ui-icon-circle-check"/>
                             </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                <p:captcha label="Captcha" theme="clean" language="es" requiredMessage="Necesita Solucionar el Capcha." validatorMessage="Error de validación."/>    
+                            </div>
                         </div>
 
 

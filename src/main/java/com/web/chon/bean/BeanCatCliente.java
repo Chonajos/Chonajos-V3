@@ -21,6 +21,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.primefaces.event.RowEditEvent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -312,7 +313,6 @@ public class BeanCatCliente implements BeanSimple {
 //        lista_municipios_2 = ifaceCatMunicipio.getMunicipios(Integer.parseInt(data.getEstadoFiscal()));
 //        buscaColonias2();
 //    }
-
     public void buscaColonias() {
 
         lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalById(data.getCodigoPostal());
@@ -357,7 +357,6 @@ public class BeanCatCliente implements BeanSimple {
 //        }
 //
 //    }
-
     public void buscaColoniasMun(int edit) {
         if (data.getMunicipio() != null) {
             lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalByIdMun(Integer.parseInt(data.getMunicipio()));

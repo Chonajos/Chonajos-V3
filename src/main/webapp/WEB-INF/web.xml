@@ -2,13 +2,6 @@
 <web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
     <!-- Add Support for Spring -->
     
-    
-    
-    
-    
-    
-    
-    
     <filter>
         <filter-name>springSecurityFilterChain</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
@@ -24,6 +17,15 @@
         <dispatcher>REQUEST</dispatcher>
     </filter-mapping>
  
+    <context-param>
+        <param-name>primefaces.PUBLIC_CAPTCHA_KEY</param-name>
+        <param-value>6LcrrAwUAAAAAKOG9BqdkULfyuIrabwvXqmK7iTE</param-value>
+    </context-param>
+   
+    <context-param> 
+        <param-name>primefaces.PRIVATE_CAPTCHA_KEY</param-name>
+        <param-value>6LcrrAwUAAAAAIi4Rp33j-oFsqLbcbOsHVWvQk_J</param-value>
+    </context-param> 
   
     <context-param>
         <param-name>contextConfigLocation</param-name>
@@ -183,8 +185,10 @@
         <param-value>casablanca</param-value>  
     </context-param> 
     
--->    <context-param>
+    -->    
+    <context-param>
         <param-name>javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE</param-name>
         <param-value>true</param-value>
     </context-param> 
+    
 </web-app>

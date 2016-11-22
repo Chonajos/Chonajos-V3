@@ -93,6 +93,8 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
         setTitle("Análisis de Mercado");
         setInsertar("precioPromedio");
 
+        fechaRemanente = context.getFechaSistema();
+
 
         /*Pantalla principal welcome.xhtml*/
         lstEntradaMercancia = ifaceEntradaProductoCentral.getEntradaMercanciaByFiltro(28, 1, TiempoUtil.sumarRestarDias(context.getFechaSistema(), -14), "00000001");
@@ -122,21 +124,25 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
     @Override
     public String save() {
         try {
+
+            data.setFecha(fechaRemanente);
+
+            if (data.getFecha() == null) {
+                data.setFecha(context.getFechaSistema());
+            }
             if (insertar.equals("precioPromedio")) {
                 if (data.getIdEntrada() != null) {
+
                     ifaceEntradaProductoCentral.update(data);
                     JsfUtil.addSuccessMessage("Registro actualizado Correctamente.");
 
                 } else {
 
-                    if (data.getFecha() == null) {
-                        data.setFecha(context.getFechaSistema());
-                    }
                     ifaceEntradaProductoCentral.saveEntradaProductoCentral(data);
                     JsfUtil.addSuccessMessage("Registro insertado Correctamente.");
                 }
             } else {
-                data.setFecha(fechaRemanente);
+
                 ifaceEntradaProductoCentral.updateByIdProductoAndFecha(data);
                 JsfUtil.addSuccessMessage("Registro actualizado Correctamente.");
             }
@@ -349,7 +355,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
             index++;
 
         }
-        
+
         maxChartValue += 50;
 
         model.addSeries(toneladas);
@@ -799,6 +805,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
     }
 
     public String searchDatabyIdProducto() {
+        
         String idProducto = data.getIdProductoFk();
         data = ifaceEntradaProductoCentral.getEntradaProductoByIdProducto(data.getIdProductoFk(), TiempoUtil.getFechaDDMMYYYY(fechaRemanente));
         data.setIdProductoFk(idProducto);

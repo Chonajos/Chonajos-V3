@@ -22,8 +22,7 @@
             <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:panel rendered="#{beanCatCliente.viewEstate=='init'}" style="border: 0px;" >
                 <div class="form-group" align="right">
-                    <p:commandButton value="Nuevo" update=":formCliente" resetValues="true" ajax="true" action="#{beanCatCliente.viewNew}" icon="ui-icon-person" onclick="PF('statusDialog').show()"/>
-
+                    <p:commandButton value="Nuevo" update=":formCliente" resetValues="true" ajax="false" action="#{beanCatCliente.viewNew}" icon="ui-icon-person" onclick="PF('statusDialog').show()"/>
                 </div>
                 <div class="col-lg-10 col-md-12 col-sm-12 col-xs-12 col-lg-offset-1">
                     <p:dataTable var="model" value="#{beanCatCliente.model}" rows="10" scrollable="true"
