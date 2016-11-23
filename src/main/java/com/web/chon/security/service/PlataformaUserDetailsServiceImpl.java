@@ -1,31 +1,23 @@
 package com.web.chon.security.service;
 
 import com.web.chon.dominio.Menu;
-import com.web.chon.dominio.Usuario;
 import com.web.chon.dominio.UsuarioDominio;
-import com.web.chon.negocio.NegocioAnalisisMercado;
 import com.web.chon.negocio.NegocioUsuarioLogin;
-import com.web.chon.service.ServiceAnalisisMercado;
 import com.web.chon.util.Utilidades;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;

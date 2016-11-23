@@ -294,8 +294,9 @@ public class BeanCatCliente implements BeanSimple {
     }
 
     public void buscaMunicipios(int edit) {
+        int idEstado = (data.getEstado_id() == null || data.getEstado_id() == "") ? 0 : Integer.parseInt(data.getEstado_id());
         if (data.getEstado_id() != null) {
-            lista_municipios = ifaceCatMunicipio.getMunicipios(Integer.parseInt(data.getEstado_id()));
+            lista_municipios = ifaceCatMunicipio.getMunicipios(idEstado);
         } else {
             lista_municipios = null;
         }
@@ -358,8 +359,10 @@ public class BeanCatCliente implements BeanSimple {
 //
 //    }
     public void buscaColoniasMun(int edit) {
+        int idMunicipio = (data.getMunicipio() == null || data.getMunicipio() == "") ? 0:Integer.parseInt(data.getMunicipio());
+        
         if (data.getMunicipio() != null) {
-            lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalByIdMun(Integer.parseInt(data.getMunicipio()));
+            lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalByIdMun(idMunicipio);
         } else {
             lista_codigos_postales = null;
         }
@@ -370,8 +373,9 @@ public class BeanCatCliente implements BeanSimple {
     }
 
     public void buscaColoniasMun2() {
+        int idMunicipio = (data.getMunicipio() == null || data.getMunicipio() == "" ) ? 0:Integer.parseInt(data.getMunicipioFiscal());
         if (data.getMunicipioFiscal() != null) {
-            lista_codigos_postales_2 = ifaceCatCodigosPostales.getCodigoPostalByIdMun(Integer.parseInt(data.getMunicipioFiscal()));
+            lista_codigos_postales_2 = ifaceCatCodigosPostales.getCodigoPostalByIdMun(idMunicipio);
 
         } else {
             lista_codigos_postales_2 = null;

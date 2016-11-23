@@ -19,12 +19,12 @@
  
     <context-param>
         <param-name>primefaces.PUBLIC_CAPTCHA_KEY</param-name>
-        <param-value>6LcrrAwUAAAAAKOG9BqdkULfyuIrabwvXqmK7iTE</param-value>
+        <param-value>6LepxgwUAAAAACDFTM-nd6klwUJ2kRBvaqTWOhbr</param-value>
     </context-param>
    
     <context-param> 
         <param-name>primefaces.PRIVATE_CAPTCHA_KEY</param-name>
-        <param-value>6LcrrAwUAAAAAIi4Rp33j-oFsqLbcbOsHVWvQk_J</param-value>
+        <param-value>6LepxgwUAAAAACEDpiCDtwAEjEjwKC2AjRh_4KBr</param-value>
     </context-param> 
   
     <context-param>

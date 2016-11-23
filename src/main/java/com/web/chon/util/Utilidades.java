@@ -19,6 +19,25 @@ public class Utilidades {
         Context context;
         Properties properties = new Properties();
         properties.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
+        properties.put(Context.PROVIDER_URL, "http://localhost:80");//TODO arreglar para que tome la url por defecto
+
+        try {
+            context = new InitialContext(properties);
+            String lookup = nameEJB + "#" + iface;
+            System.out.println("Lookup: " + lookup);
+            return context.lookup(lookup);
+        } catch (Exception ex) {
+            //si ocurre una exepcion intentar con el puerto 7001 o el que este configurado 
+            return getEJBRemotePort(nameEJB, iface);
+
+        }
+
+    }
+
+    public static Object getEJBRemotePort(String nameEJB, String iface) throws Exception {
+        Context context;
+        Properties properties = new Properties();
+        properties.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
         properties.put(Context.PROVIDER_URL, "http://localhost:7001");//TODO arreglar para que tome la url por defecto
 
         try {
@@ -31,6 +50,5 @@ public class Utilidades {
         }
 
     }
-    
 
 }
