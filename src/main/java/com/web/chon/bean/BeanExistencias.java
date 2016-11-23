@@ -38,14 +38,22 @@ public class BeanExistencias implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Autowired private IfaceEmpaque ifaceEmpaque;
-    @Autowired private IfaceTipoCovenio ifaceCovenio;
-    @Autowired private IfaceCatBodegas ifaceCatBodegas;
-    @Autowired private IfaceSubProducto ifaceSubProducto;
-    @Autowired private IfaceCatProvedores ifaceCatProvedores;
-    @Autowired private IfaceCatSucursales ifaceCatSucursales;
-    @Autowired private IfaceEntradaMercancia ifaceEntradaMercancia;
-    @Autowired private IfaceNegocioExistencia ifaceNegocioExistencia;
+    @Autowired
+    private IfaceEmpaque ifaceEmpaque;
+    @Autowired
+    private IfaceTipoCovenio ifaceCovenio;
+    @Autowired
+    private IfaceCatBodegas ifaceCatBodegas;
+    @Autowired
+    private IfaceSubProducto ifaceSubProducto;
+    @Autowired
+    private IfaceCatProvedores ifaceCatProvedores;
+    @Autowired
+    private IfaceCatSucursales ifaceCatSucursales;
+    @Autowired
+    private IfaceEntradaMercancia ifaceEntradaMercancia;
+    @Autowired
+    private IfaceNegocioExistencia ifaceNegocioExistencia;
     @Autowired
     private PlataformaSecurityContext context;
 
@@ -64,12 +72,17 @@ public class BeanExistencias implements Serializable {
 
     private String title = "";
     private String viewEstate = "";
-    
+
     private BigDecimal totalKilos;
     private BigDecimal totalCajas;
+    private BigDecimal totalCosto;
+    private BigDecimal totalPrecioMinimo;
+    private BigDecimal totalPrecioVenta;
 
     private UsuarioDominio usuario;
     private int filtro;
+
+    private BigDecimal ZERO = new BigDecimal(0);
 
     @PostConstruct
     public void init() {
@@ -87,19 +100,20 @@ public class BeanExistencias implements Serializable {
         listaSucursales = ifaceCatSucursales.getSucursales();
         listaProvedores = ifaceCatProvedores.getProvedores();
 
-        model = ifaceNegocioExistencia.getExistencias(null, null, null, null, null, null, null);
-        getTotalCajasKilos();
-
+        //no se ocupa ya que se repite lo mismo en el metodo buscaExistencias
+//        model = ifaceNegocioExistencia.getExistencias(null, null, null, null, null, null, null);
+//        
+//        getTotalCajasKilos();
         listaBodegas = ifaceCatBodegas.getBodegas();
         lstTipoEmpaque = ifaceEmpaque.getEmpaques();
         listaTiposConvenio = ifaceCovenio.getTipos();
 
-        data.setIdSucursal( new BigDecimal(usuario.getSucId()));
+        data.setIdSucursal(new BigDecimal(usuario.getSucId()));
         setViewEstate("init");
         setTitle("Existencias");
         filtro = 1;
         buscaExistencias();
-        
+
     }
 
     public void buscaExistencias() {
@@ -108,12 +122,14 @@ public class BeanExistencias implements Serializable {
             idEntrada = null;
         } else {
             idEntrada = entradaMercancia.getIdEmPK();
-            if(idEntrada != null){subProducto = null;}
+            if (idEntrada != null) {
+                subProducto = null;
+            }
         }
 
         String idproductito = subProducto == null ? null : subProducto.getIdSubproductoPk();
         model = ifaceNegocioExistencia.getExistencias(data.getIdSucursal(), data.getIdBodegaFK(), data.getIdProvedor(), idproductito, data.getIdTipoEmpaqueFK(), data.getIdTipoConvenio(), idEntrada);
-        getTotalCajasKilos();
+        getTotalCajasKilosAndCostoExistencia();
 
     }
 
@@ -178,7 +194,7 @@ public class BeanExistencias implements Serializable {
 
     }
 
-    public void resetValuesFilter(){
+    public void resetValuesFilter() {
         data.setIdSucursal(null);
         data.setIdBodegaFK(null);
         data.setIdProvedor(null);
@@ -188,20 +204,58 @@ public class BeanExistencias implements Serializable {
         buscaExistencias();
 
     }
-    
-    public void getTotalCajasKilos(){
-        
-        totalCajas = new BigDecimal(0);
-        totalKilos = new BigDecimal(0);
-        
-        for(ExistenciaProducto dominio: model){
-            
+
+    public void getTotalCajasKilosAndCostoExistencia() {
+
+        totalPrecioMinimo = ZERO;
+        totalPrecioVenta = ZERO;
+        totalCosto = ZERO;
+        totalCajas = ZERO;
+        totalKilos = ZERO;
+
+        for (ExistenciaProducto dominio : model) {
+
+            //Obtiene el total de kilos y cajas que hay en existencias
             totalCajas = totalCajas.add(dominio.getCantidadPaquetes());
             totalKilos = totalKilos.add(dominio.getKilosTotalesProducto());
-            
+
+            //Calcula existencias en costo
+            dominio = calculaCostos(dominio);
+            totalCosto = totalCosto.add(dominio.getInventariocosto());
+            totalPrecioVenta = totalPrecioVenta.add(dominio.getInventarioPrecioVenta());
+            totalPrecioMinimo = totalPrecioMinimo.add(dominio.getInventarioPrecioMinimo());
+
         }
     }
-    
+
+    private ExistenciaProducto calculaCostos(ExistenciaProducto dominio) {
+        BigDecimal precioMinimo = ZERO;
+        BigDecimal precioVenta = ZERO;
+        if (!dominio.getCantidadPaquetes().equals(ZERO)) {
+            precioMinimo = dominio.getPrecioMinimo() == null ? ZERO : dominio.getPrecioMinimo();
+            precioVenta = dominio.getPrecioVenta() == null ? ZERO : dominio.getPrecioVenta();
+            switch (dominio.getIdTipoConvenio().intValue()) {
+                case 1://costo
+                    dominio.setInventariocosto(dominio.getConvenio().multiply(dominio.getKilosTotalesProducto()));
+                    break;
+                default:// default 2 y 3 pacto y comision
+                    dominio.setInventariocosto(precioMinimo.multiply(dominio.getKilosTotalesProducto()));
+                    break;
+            }
+
+            dominio.setInventarioPrecioVenta(precioVenta.multiply(dominio.getKilosTotalesProducto()));
+            dominio.setInventarioPrecioMinimo(precioMinimo.multiply(dominio.getKilosTotalesProducto()));
+
+        } else {
+
+            dominio.setInventariocosto(ZERO);
+            dominio.setInventarioPrecioVenta(ZERO);
+            dominio.setInventarioPrecioMinimo(ZERO);
+        }
+
+        return dominio;
+    }
+
     public ArrayList<Bodega> getListaBodegas() {
         return listaBodegas;
     }
@@ -330,6 +384,28 @@ public class BeanExistencias implements Serializable {
         this.totalCajas = totalCajas;
     }
 
-    
-    
+    public BigDecimal getTotalCosto() {
+        return totalCosto;
+    }
+
+    public void setTotalCosto(BigDecimal totalCosto) {
+        this.totalCosto = totalCosto;
+    }
+
+    public BigDecimal getTotalPrecioMinimo() {
+        return totalPrecioMinimo;
+    }
+
+    public void setTotalPrecioMinimo(BigDecimal totalPrecioMinimo) {
+        this.totalPrecioMinimo = totalPrecioMinimo;
+    }
+
+    public BigDecimal getTotalPrecioVenta() {
+        return totalPrecioVenta;
+    }
+
+    public void setTotalPrecioVenta(BigDecimal totalPrecioVenta) {
+        this.totalPrecioVenta = totalPrecioVenta;
+    }
+
 }

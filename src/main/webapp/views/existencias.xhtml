@@ -104,7 +104,7 @@
 
 
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <p:dataTable id="table" var="model" value="#{beanExistencias.model}" editable="true" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." >
+                        <p:dataTable id="table" var="model" value="#{beanExistencias.model}" editable="true" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." scrollable="true" scrollHeight="500">
                             <p:ajax event="rowEdit" listener="#{beanExistencias.onRowEdit}" update="table" />
                             <p:ajax event="rowEditCancel" listener="#{beanExistencias.onRowCancel}" update="table" />
                             <p:column headerText="Carro"   width="45px;" style="text-align:center">
@@ -132,12 +132,27 @@
                                     <f:convertNumber pattern="#,##0.00" />
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Convenio" width="120px;" class="alignLeft">
+                            <p:column headerText="Costo Inventario" width="100px;" class="alignRight">
+                                <h:outputText value="#{model.inventariocosto}">
+                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Valor Minimo" width="100px;" class="alignRight">
+                                <h:outputText value="#{model.inventarioPrecioMinimo}">
+                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Valor Venta" width="100px;" class="alignRight">
+                                <h:outputText value="#{model.inventarioPrecioVenta}">
+                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Convenio" width="70px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreTipoConvenio}">
                                     <f:convertNumber pattern="#,##0.00" />
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Provedor" width="120px;" class="alignLeft">
+                            <p:column headerText="Provedor" width="110px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreProvedorCompleto}">
                                     <f:convertNumber pattern="#,##0.00" />
                                 </h:outputText>
@@ -152,7 +167,10 @@
                             </p:column>
                             <p:columnGroup type="footer">
                                 <p:row>
-                                    <p:column colspan="4" style="text-align:right" footerText="Totales:" />
+                                    <p:column colspan="1" />
+                                    <p:column colspan="1" />
+                                    <p:column colspan="1" />
+                                    <p:column colspan="1" style="text-align:right" footerText="Totales:" />
                                     <p:column colspan="1">
                                         <f:facet name="footer">
                                             <h:outputText value="#{beanExistencias.totalCajas}">
@@ -167,7 +185,32 @@
                                             </h:outputText>
                                         </f:facet>
                                     </p:column>
-                                    <p:column colspan="4" />
+
+                                    <p:column colspan="1">
+                                        <f:facet name="footer">
+                                            <h:outputText value="#{beanExistencias.totalCosto}">
+                                                <f:convertNumber for="totalVenta" pattern="#,##0.00"/>
+                                            </h:outputText>
+                                        </f:facet>
+                                    </p:column>
+                                    <p:column colspan="1">
+                                        <f:facet name="footer">
+                                            <h:outputText value="#{beanExistencias.totalPrecioMinimo}">
+                                                <f:convertNumber for="totalVenta" pattern="#,##0.00"/>
+                                            </h:outputText>
+                                        </f:facet>
+                                    </p:column>
+                                    <p:column colspan="1">
+                                        <f:facet name="footer">
+                                            <h:outputText value="#{beanExistencias.totalPrecioVenta}">
+                                                <f:convertNumber for="totalVenta" pattern="#,##0.00"/>
+                                            </h:outputText>
+                                        </f:facet>
+                                    </p:column>
+                                    <p:column colspan="1" />
+                                    <p:column colspan="1" />
+                                    <p:column colspan="1" />
+                                    <p:column colspan="1" />
                                 </p:row>
                             </p:columnGroup>
                         </p:dataTable>

@@ -33,7 +33,7 @@
                             <img alt="" src="/resources/img/user.png" />
                         </div>
                         <div align="left"  class="col-lg-3 col-md-4 col-sm-4 col-xs-12 ">
-                            <h:outputLabel style="" for="j_username" value=" Usuario :" class="col-lg-12 col-md-12 col-sm-12 col-xs-12"/>
+                            <h:outputLabel style="" for="j_username" value=" Usuario:" class="col-lg-12 col-md-12 col-sm-12 col-xs-12"/>
                             <p:inputText value="#{securityBean.userName}" class="col-lg-12 col-md-12 col-sm-12 col-xs-12"
                                          id="j_username" required="true" maxlength="15" requiredMessage="Usuario Requerido" label="username" autocomplete="off"/>
                             <p:spacer height="10"/>
@@ -45,7 +45,7 @@
                                 <p:commandButton id="btnLogin" value="iniciar" action="#{securityBean.doLogin}" ajax="false" styleClass="btnLoginPanel" update=":growl" icon="ui-icon-circle-check"/>
                             </div>
                             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
-                                <!--<p:captcha label="Captcha"  theme="clean" language="es" requiredMessage="Necesita Solucionar el Capcha." validatorMessage="Error de validación."/>-->    
+                                <p:captcha label="Captcha"  theme="clean" language="es" requiredMessage="Necesita Solucionar el Capcha." validatorMessage="Error de validación."/>    
                                 <div class="g-recaptcha" data-sitekey="6LepxgwUAAAAACDFTM-nd6klwUJ2kRBvaqTWOhbr"></div>
                             </div>
                         </div>
