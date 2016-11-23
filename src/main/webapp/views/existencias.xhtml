@@ -132,17 +132,17 @@
                                     <f:convertNumber pattern="#,##0.00" />
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Costo Inventario" width="100px;" class="alignRight">
+                            <p:column headerText="Costo Inventario" width="100px;" class="alignRight" rendered="#{beanExistencias.usuario.perId == 1}">
                                 <h:outputText value="#{model.inventariocosto}">
                                     <f:convertNumber type="currency" currencySymbol="$" />
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Valor Minimo" width="100px;" class="alignRight">
+                            <p:column headerText="Valor Minimo" width="100px;" class="alignRight" rendered="#{beanExistencias.usuario.perId == 1}">
                                 <h:outputText value="#{model.inventarioPrecioMinimo}">
                                     <f:convertNumber type="currency" currencySymbol="$" />
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Valor Venta" width="100px;" class="alignRight">
+                            <p:column headerText="Valor Venta" width="100px;" class="alignRight" rendered="#{beanExistencias.usuario.perId == 1}">
                                 <h:outputText value="#{model.inventarioPrecioVenta}">
                                     <f:convertNumber type="currency" currencySymbol="$" />
                                 </h:outputText>
@@ -186,21 +186,21 @@
                                         </f:facet>
                                     </p:column>
 
-                                    <p:column colspan="1">
+                                    <p:column colspan="1" rendered="#{beanExistencias.usuario.perId == 1}">
                                         <f:facet name="footer">
-                                            <h:outputText value="#{beanExistencias.totalCosto}">
+                                            <h:outputText value="#{beanExistencias.totalCosto}" >
                                                 <f:convertNumber for="totalVenta" pattern="#,##0.00"/>
                                             </h:outputText>
                                         </f:facet>
                                     </p:column>
-                                    <p:column colspan="1">
+                                    <p:column colspan="1" rendered="#{beanExistencias.usuario.perId == 1}">
                                         <f:facet name="footer">
                                             <h:outputText value="#{beanExistencias.totalPrecioMinimo}">
                                                 <f:convertNumber for="totalVenta" pattern="#,##0.00"/>
                                             </h:outputText>
                                         </f:facet>
                                     </p:column>
-                                    <p:column colspan="1">
+                                    <p:column colspan="1" rendered="#{beanExistencias.usuario.perId == 1}">
                                         <f:facet name="footer">
                                             <h:outputText value="#{beanExistencias.totalPrecioVenta}">
                                                 <f:convertNumber for="totalVenta" pattern="#,##0.00"/>

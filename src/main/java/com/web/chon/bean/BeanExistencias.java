@@ -38,24 +38,15 @@ public class BeanExistencias implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Autowired
-    private IfaceEmpaque ifaceEmpaque;
-    @Autowired
-    private IfaceTipoCovenio ifaceCovenio;
-    @Autowired
-    private IfaceCatBodegas ifaceCatBodegas;
-    @Autowired
-    private IfaceSubProducto ifaceSubProducto;
-    @Autowired
-    private IfaceCatProvedores ifaceCatProvedores;
-    @Autowired
-    private IfaceCatSucursales ifaceCatSucursales;
-    @Autowired
-    private IfaceEntradaMercancia ifaceEntradaMercancia;
-    @Autowired
-    private IfaceNegocioExistencia ifaceNegocioExistencia;
-    @Autowired
-    private PlataformaSecurityContext context;
+    @Autowired private IfaceEmpaque ifaceEmpaque;
+    @Autowired private IfaceTipoCovenio ifaceCovenio;
+    @Autowired private IfaceCatBodegas ifaceCatBodegas;
+    @Autowired private IfaceSubProducto ifaceSubProducto;
+    @Autowired private IfaceCatProvedores ifaceCatProvedores;
+    @Autowired private IfaceCatSucursales ifaceCatSucursales;
+    @Autowired private IfaceEntradaMercancia ifaceEntradaMercancia;
+    @Autowired private IfaceNegocioExistencia ifaceNegocioExistencia;
+    @Autowired private PlataformaSecurityContext context;
 
     private ArrayList<Bodega> listaBodegas;
     private ArrayList<Subproducto> lstProducto;
@@ -78,11 +69,10 @@ public class BeanExistencias implements Serializable {
     private BigDecimal totalCosto;
     private BigDecimal totalPrecioMinimo;
     private BigDecimal totalPrecioVenta;
+    private BigDecimal ZERO = new BigDecimal(0);
 
     private UsuarioDominio usuario;
     private int filtro;
-
-    private BigDecimal ZERO = new BigDecimal(0);
 
     @PostConstruct
     public void init() {
@@ -100,10 +90,6 @@ public class BeanExistencias implements Serializable {
         listaSucursales = ifaceCatSucursales.getSucursales();
         listaProvedores = ifaceCatProvedores.getProvedores();
 
-        //no se ocupa ya que se repite lo mismo en el metodo buscaExistencias
-//        model = ifaceNegocioExistencia.getExistencias(null, null, null, null, null, null, null);
-//        
-//        getTotalCajasKilos();
         listaBodegas = ifaceCatBodegas.getBodegas();
         lstTipoEmpaque = ifaceEmpaque.getEmpaques();
         listaTiposConvenio = ifaceCovenio.getTipos();
@@ -183,8 +169,6 @@ public class BeanExistencias implements Serializable {
     public void onRowEdit(RowEditEvent event) {
 
         data = (ExistenciaProducto) event.getObject();
-
-        System.out.println("editado " + data.toString());
         updatePrecio();
 
     }
@@ -408,4 +392,13 @@ public class BeanExistencias implements Serializable {
         this.totalPrecioVenta = totalPrecioVenta;
     }
 
+    public UsuarioDominio getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(UsuarioDominio usuario) {
+        this.usuario = usuario;
+    }
+
+    
 }
