@@ -244,4 +244,52 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
         getEjb();
         return ejb.getNextVal();
     }
+
+    @Override
+    public ArrayList<ExistenciaProducto> getExistenciaByBarCode(String idSubProducto, BigDecimal idTipoEmpaqueFk, BigDecimal idTipoConvenioFk, BigDecimal idCarro, BigDecimal idSucursalFk) {
+       
+        getEjb();
+        try {
+            ArrayList<ExistenciaProducto> lista = new ArrayList<ExistenciaProducto>();
+            //System.out.println("SerivceNegocioExistencia: getExistencias : "+idSucursal+ " idProvedorFk: "+idProvedorFk);
+            List<Object[]> lstObject = ejb.getExistenciaByBarCode(idSubProducto, idTipoEmpaqueFk,  idTipoConvenioFk,  idCarro, idSucursalFk);
+            for (Object[] obj : lstObject) {
+                ExistenciaProducto expro = new ExistenciaProducto();
+                expro.setIdExistenciaProductoPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+                expro.setIdentificador(obj[1] == null ? "" : obj[1].toString());
+                expro.setNombreProducto(obj[2] == null ? "" : obj[2].toString());
+                expro.setNombreEmpaque(obj[3] == null ? "" : obj[3].toString());
+                expro.setCantidadPaquetes(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
+                expro.setKilosTotalesProducto(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
+                expro.setNombreTipoConvenio(obj[6] == null ? "" : obj[6].toString());
+                expro.setNombreProvedorCompleto(obj[7] == null ? "" : obj[7].toString());
+                expro.setNombreSucursal(obj[8] == null ? "" : obj[8].toString());
+                expro.setNombreBodega(obj[9] == null ? "" : obj[9].toString());
+                expro.setPrecioMinimo(obj[10] == null ? null : new BigDecimal(obj[10].toString()));
+                expro.setPrecioVenta(obj[11] == null ? null : new BigDecimal(obj[11].toString()));
+                expro.setPrecioMaximo(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
+                expro.setEstatusBloqueo(obj[13] == null ? false : (obj[13].toString().equals("0")));
+                expro.setIdSubProductoFK(obj[14] == null ? "" : obj[14].toString());
+                expro.setIdTipoEmpaqueFK(obj[15] == null ? null : new BigDecimal(obj[15].toString()));
+                expro.setIdBodegaFK(obj[16] == null ? null : new BigDecimal(obj[16].toString()));
+                expro.setConvenio(obj[17] == null ? null : new BigDecimal(obj[17].toString()));
+                expro.setCarroSucursal(obj[18] == null ? null : new BigDecimal(obj[18].toString()));
+                expro.setPrecioSinIteres(obj[11] == null ? null : new BigDecimal(obj[11].toString()));
+                expro.setIdEntradaMercanciaProductoFK(obj[19] == null ? null : new BigDecimal(obj[19].toString()));
+                expro.setComentarios(obj[20] == null ? null : obj[20].toString());
+                expro.setIdTipoConvenio(obj[21] == null ? null : new BigDecimal(obj[21].toString()));
+                expro.setKilospromprod(obj[22] == null ? null : new BigDecimal(obj[22].toString()));
+                expro.setIdSucursal(obj[23] == null ? null : new BigDecimal(obj[23].toString()));
+
+                lista.add(expro);
+            }
+            return lista;
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceNegocioExistencia.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+
+        }
+        
+    
+    }
 }

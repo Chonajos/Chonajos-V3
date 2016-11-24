@@ -346,4 +346,50 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
         }
 
     }
+
+    @Override
+    public List<Object[]> getExistenciaByBarCode(String idSubProducto, BigDecimal idTipoEmpaqueFk, BigDecimal idTipoConvenioFk, BigDecimal idCarro, BigDecimal idSucursalFk) {
+       try {
+
+            Query query = em.createNativeQuery("select ex.ID_EXP_PK,em.IDENTIFICADOR,subp.NOMBRE_SUBPRODUCTO, te.NOMBRE_EMPAQUE,\n" +
+"ex.CANTIDAD_EMPACAQUE,ex.KILOS_TOTALES,tc.DESCRIPCION_TIPO,\n" +
+"prove.nombre_provedor ||' '|| prove.A_PATERNO_PROVE || ' ' || prove.A_MATERNO_PROVE as nombreProvedor,\n" +
+"sucu.NOMBRE_SUCURSAL,bod.NOMBRE, ex.PRECIO_MINIMO, ex.PRECIO_VENTA, ex.PRECIO_MAXIMO,\n" +
+"ex.ESTATUS_BLOQUEO,ex.ID_SUBPRODUCTO_FK,ex.ID_TIPO_EMPAQUE_FK,bod.ID_BD_PK,ex.CONVENIO,em.CARROSUCURSAL, \n" +
+"ex.ID_EMP_FK,ex.COMENTARIOS,ex.ID_TIPO_CONVENIO_FK,ex.KILOSPROMPROD,ex.ID_SUCURSAL_FK\n" +
+"from EXISTENCIA_PRODUCTO ex\n" +
+"join ENTRADAMERCANCIAPRODUCTO emp\n" +
+"on emp.ID_EMP_PK = ex.ID_EMP_FK\n" +
+"join ENTRADAMERCANCIA em\n" +
+"on em.ID_EM_PK = emp.ID_EM_FK\n" +
+"join SUBPRODUCTO subp\n" +
+"on subp.ID_SUBPRODUCTO_PK = ex.ID_SUBPRODUCTO_FK\n" +
+"join TIPO_EMPAQUE te\n" +
+"on te.ID_TIPO_EMPAQUE_PK = ex.ID_TIPO_EMPAQUE_FK\n" +
+"join BODEGA bod\n" +
+"on bod.ID_BD_PK = ex.ID_BODEGA_FK\n" +
+"join TIPO_CONVENIO tc\n" +
+"on tc.ID_TC_PK = ex.ID_TIPO_CONVENIO_FK\n" +
+"join SUCURSAL sucu\n" +
+"on sucu.ID_SUCURSAL_PK = ex.ID_SUCURSAL_FK\n" +
+"join provedores prove\n" +
+"on prove.id_provedor_pk = em.id_provedor_fk\n" +
+"where ex.ID_SUBPRODUCTO_FK = '"+idSubProducto+"' \n" +
+"and ex.ID_TIPO_EMPAQUE_FK = ? and ex.ID_TIPO_CONVENIO_FK=? \n" +
+"and em.CARROSUCURSAL=? and em.ID_SUCURSAL_FK=?");
+            
+            
+            query.setParameter(1, idTipoEmpaqueFk);
+            query.setParameter(2, idTipoConvenioFk);
+            query.setParameter(3, idCarro);
+            query.setParameter(4, idSucursalFk);
+
+            return query.getResultList();
+        } catch (Exception ex) {
+            Logger.getLogger(EjbExistenciaProducto.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+        
+    
+    }
 }

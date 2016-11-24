@@ -157,6 +157,13 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     private boolean permisionToEdit;
     private boolean variableInicial;
     private boolean credito;
+    private String codigoBarras;
+    //---Variables Codigo de Barras --//
+    private String idSubpProducto;
+    private BigDecimal idTipoempaqueFk;
+    private BigDecimal idTipoConvenioFk;
+    private BigDecimal idCarro;
+    private BigDecimal idSucursalfk;
 
     private Date date;
 
@@ -217,6 +224,35 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
     }
 
+    public void searchByBarCode() {
+        System.out.println("Codigo Barras: " + codigoBarras);
+        subProducto = new Subproducto();
+        selectedExistencia = new ExistenciaProducto();
+        lstExistencias = new ArrayList<ExistenciaProducto>();
+        String diaArray[] = codigoBarras.split("'");
+        if (diaArray.length == 5) {
+            idSucursalfk = new BigDecimal(diaArray[0]);
+            idCarro = new BigDecimal(diaArray[1]);
+            idSubpProducto = diaArray[2];
+            idTipoempaqueFk = new BigDecimal(diaArray[3]);
+            idTipoConvenioFk = new BigDecimal(diaArray[4]);
+
+            lstExistencias = ifaceNegocioExistencia.getExistenciaByBarCode(idSubpProducto, idTipoempaqueFk, idTipoConvenioFk, idCarro, idSucursalfk);
+            if (lstExistencias.size() == 1) {
+                selectedExistencia = new ExistenciaProducto();
+                selectedExistencia = lstExistencias.get(0);
+                habilitarBotones();
+            } else {
+                selectedExistencia = new ExistenciaProducto();
+            }
+            if (lstExistencias.isEmpty()) {
+                JsfUtil.addWarnMessage("No se encontraron existencias de este producto");
+            }
+        } else {
+            JsfUtil.addWarnMessage("Código de Barras Incorrecto");
+        }
+    }
+
     public void calculaCambio() {
         cambio = recibido.subtract(totalVentaGeneral, MathContext.UNLIMITED);
     }
@@ -224,6 +260,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     public void habilitarBotones() {
         permisionToWrite = false;
         data.setPrecioProducto(selectedExistencia.getPrecioVenta());
+        System.out.println("Precio :"+selectedExistencia.getPrecioVenta().toString());
     }
 
     public void calculaTotalTemporal() {
@@ -370,6 +407,9 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     }
 
     public void buscaExistencias() {
+        codigoBarras = null;
+        selectedExistencia = new ExistenciaProducto();
+        lstExistencias = new ArrayList<ExistenciaProducto>();
         BigDecimal idEntrada;
         lstExistencias = new ArrayList<ExistenciaProducto>();
 
@@ -453,53 +493,51 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
             JsfUtil.addErrorMessage("Seleccione un Producto de la tabla o peso en 0 Kg.");
 
         } else //            System.out.println("idSubProducto:" + selectedExistencia.getIdSubProductoFK());
-        if (selectedExistencia.getPrecioVenta() == null) {
-            JsfUtil.addErrorMessage("No se tiene precio de venta para este producto. Contactar al administrador.");
-        } else if (data.getPrecioProducto().intValue() < selectedExistencia.getPrecioMinimo().intValue() || data.getPrecioProducto().intValue() > selectedExistencia.getPrecioMaximo().intValue()) {
-            JsfUtil.addErrorMessage("Precio de Venta fuera de Rango \n Precio Maximo =" + selectedExistencia.getPrecioMaximo() + " Precio minimo =" + selectedExistencia.getPrecioMinimo());
-        } else if (data.getCantidadEmpaque().intValue() > selectedExistencia.getCantidadPaquetes().intValue()) {
-            JsfUtil.addErrorMessage("Cantidad de Empaque insuficiente");
-        } else if (data.getKilosVendidos().intValue() > selectedExistencia.getKilosTotalesProducto().intValue()) {
-            JsfUtil.addErrorMessage("Cantidad de Kilos insuficiente");
-        } else if (lstVenta.isEmpty()) {
-            System.out.println("=======================Entro aqui perro ======================");
+         if (selectedExistencia.getPrecioVenta() == null) {
+                JsfUtil.addErrorMessage("No se tiene precio de venta para este producto. Contactar al administrador.");
+            } else if (data.getPrecioProducto().intValue() < selectedExistencia.getPrecioMinimo().intValue() || data.getPrecioProducto().intValue() > selectedExistencia.getPrecioMaximo().intValue()) {
+                JsfUtil.addErrorMessage("Precio de Venta fuera de Rango \n Precio Maximo =" + selectedExistencia.getPrecioMaximo() + " Precio minimo =" + selectedExistencia.getPrecioMinimo());
+            } else if (data.getCantidadEmpaque().intValue() > selectedExistencia.getCantidadPaquetes().intValue()) {
+                JsfUtil.addErrorMessage("Cantidad de Empaque insuficiente");
+            } else if (data.getKilosVendidos().intValue() > selectedExistencia.getKilosTotalesProducto().intValue()) {
+                JsfUtil.addErrorMessage("Cantidad de Kilos insuficiente");
+            } else if (lstVenta.isEmpty()) {
+                System.out.println("=======================Entro aqui perro ======================");
 
-            add();
-            limpia();
+                add();
+                limpia();
 
-        } else {
-            boolean banderaRepetido = false;
-            for (int i = 0; i < lstVenta.size(); i++) {
-                VentaProductoMayoreo productoRepetido = lstVenta.get(i);
-                System.out.println("Producto Repetido: " + productoRepetido.toString());
-                System.out.println("Selected Existencia: " + selectedExistencia.toString());
-                if (productoRepetido.getIdExistenciaFk().intValue() == selectedExistencia.getIdExistenciaProductoPk().intValue()) {
-                    System.out.println("Entro a Producto Repetido.......");
-                    banderaRepetido = true;
-                    addRepetido(productoRepetido,i);
+            } else {
+                boolean banderaRepetido = false;
+                for (int i = 0; i < lstVenta.size(); i++) {
+                    VentaProductoMayoreo productoRepetido = lstVenta.get(i);
+                    System.out.println("Producto Repetido: " + productoRepetido.toString());
+                    System.out.println("Selected Existencia: " + selectedExistencia.toString());
+                    if (productoRepetido.getIdExistenciaFk().intValue() == selectedExistencia.getIdExistenciaProductoPk().intValue()) {
+                        System.out.println("Entro a Producto Repetido.......");
+                        banderaRepetido = true;
+                        addRepetido(productoRepetido, i);
 
-                    break;
-                } else {
-                    System.out.println("No es producto Repetido");
-                    banderaRepetido = false;
-                   // add();
+                        break;
+                    } else {
+                        System.out.println("No es producto Repetido");
+                        banderaRepetido = false;
+                        // add();
+                    }
+
+                }
+                //fin for
+                if (!banderaRepetido) {
+                    add();
+                    limpia();
                 }
 
             }
-            //fin for
-            if(!banderaRepetido)
-            {
-                add();
-                limpia();
-            }
-           
-        }
         calculaAhorro(null);
 
     }
 
-    public void addRepetido(VentaProductoMayoreo productoRepetido,int i) 
-    {
+    public void addRepetido(VentaProductoMayoreo productoRepetido, int i) {
         BigDecimal enlista = productoRepetido.getCantidadEmpaque();
         BigDecimal totalexistencia = selectedExistencia.getCantidadPaquetes();
         BigDecimal suma = enlista.add(data.getCantidadEmpaque(), MathContext.UNLIMITED);
@@ -1383,6 +1421,14 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
     public void setDejaACuenta(BigDecimal dejaACuenta) {
         this.dejaACuenta = dejaACuenta;
+    }
+
+    public String getCodigoBarras() {
+        return codigoBarras;
+    }
+
+    public void setCodigoBarras(String codigoBarras) {
+        this.codigoBarras = codigoBarras;
     }
 
 }

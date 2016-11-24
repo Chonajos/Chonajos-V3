@@ -53,4 +53,6 @@ public interface NegocioExistenciaProducto {
     public List<Object[]> getExistenciaByIdEmpFk(BigDecimal idEmpFk);
 
     public int getNextVal();
+    
+    public List<Object[]> getExistenciaByBarCode(String idSubProducto, BigDecimal idTipoEmpaqueFk, BigDecimal idTipoConvenioFk, BigDecimal idCarro, BigDecimal idSucursalFk);
 }
