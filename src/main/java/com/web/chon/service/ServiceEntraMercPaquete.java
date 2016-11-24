@@ -58,6 +58,7 @@ public class ServiceEntraMercPaquete implements IfaceEntMerProPaq {
             paquete.setTara(obj[3] == null ? null : new BigDecimal(obj[3].toString()));
             paquete.setPesoNeto(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
             paquete.setIdEmpFK(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
+            paquete.setIdStatusFk(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
             count = count.add(new BigDecimal(1), MathContext.UNLIMITED);
             paquete.setFolio(count);
             paquetes.add(paquete);

@@ -59,7 +59,7 @@ public class EjbEntradaMerProPaquete  implements NegocioEntradaMerProPaquete{
 
     @Override
     public List<Object[]> getPaquetesById(BigDecimal id) {
-       Query query = em.createNativeQuery("select * from ENTRADA_PAQUETES where ID_EMP_FK = ? AND ID_STATUS_FK = 1");
+       Query query = em.createNativeQuery("select * from ENTRADA_PAQUETES where ID_EMP_FK = ?");
         query.setParameter(1, id);
         return query.getResultList();
     }

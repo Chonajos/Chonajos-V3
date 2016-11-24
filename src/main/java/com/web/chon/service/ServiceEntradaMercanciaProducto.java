@@ -139,8 +139,10 @@ public class ServiceEntradaMercanciaProducto implements IfaceEntradaMercanciaPro
             BigDecimal totalcantPaquetes = new BigDecimal(0);
             for(EntradaMercanciaProductoPaquete paquete:dominio.getListaPaquetes())
             {
+                if (paquete.getIdStatusFk().intValue()==1){
                 totalkilosPaquetes = totalkilosPaquetes.add(paquete.getPesoNeto(), MathContext.UNLIMITED);
                 totalcantPaquetes = totalcantPaquetes.add(paquete.getPaquetes(), MathContext.UNLIMITED);
+                }
             }
             dominio.setKilosPaquetes(totalkilosPaquetes);
             dominio.setCantPaquetes(totalcantPaquetes);

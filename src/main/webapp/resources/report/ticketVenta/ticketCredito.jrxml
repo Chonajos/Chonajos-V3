@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-10-12T11:48:55 -->
+<!-- 2016-11-24T09:49:13 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ticketCredito" pageWidth="219" pageHeight="1224" whenNoDataType="BlankPage" columnWidth="179" leftMargin="20" rightMargin="20" topMargin="4" bottomMargin="20" isIgnorePagination="true" uuid="cce07992-6ec7-4616-8caf-ceb4ee12975b">
 	<property name="ireport.zoom" value="2.5937424601000028"/>
 	<property name="ireport.x" value="0"/>
@@ -112,7 +112,7 @@
 				<text><![CDATA[Cliente:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="68" y="0" width="31" height="14" uuid="f1054343-5398-4da7-bbbd-d49445d7b31b"/>
+				<reportElement x="53" y="0" width="46" height="14" uuid="f1054343-5398-4da7-bbbd-d49445d7b31b"/>
 				<textElement textAlignment="Left">
 					<font size="10" isBold="false" isUnderline="false"/>
 				</textElement>
@@ -133,7 +133,7 @@
 				<textFieldExpression><![CDATA[$P{vendedor}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="1" y="0" width="68" height="14" uuid="6a2ab568-f51e-4c1f-911d-13ce7bdcc253"/>
+				<reportElement x="1" y="0" width="52" height="14" uuid="6a2ab568-f51e-4c1f-911d-13ce7bdcc253"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
@@ -156,7 +156,7 @@
 				<text><![CDATA[Folio Credito:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="151" y="0" width="29" height="14" uuid="f36102cd-cc36-41d5-95bb-aac94707e52a">
+				<reportElement x="151" y="0" width="27" height="14" uuid="f36102cd-cc36-41d5-95bb-aac94707e52a">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<textElement>

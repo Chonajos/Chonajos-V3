@@ -165,6 +165,74 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         buscar();
 
     }
+    public void imprimirCodigoBarras()
+    {
+        System.out.println("dataProducto: "+dataProducto.toString());
+        String codigo = "";
+        int folio = 0;
+        int idSucursal =0;
+        for(EntradaMercancia entrada: lstEntradaMercancia )
+        {
+            if(dataProducto.getIdEmFK().intValue()==entrada.getIdEmPK().intValue())
+            {
+                codigo += entrada.getIdSucursalFK().toString()+"-";
+                idSucursal = entrada.getIdSucursalFK().intValue();
+                folio = entrada.getIdEmPK().intValue();
+                codigo += entrada.getIdCarroSucursal().toString()+"-";
+                codigo += dataProducto.getIdSubProductoFK().toString()+"-";
+                codigo += dataProducto.getIdTipoEmpaqueFK().toString()+"-";
+                codigo += dataProducto.getIdTipoConvenio().toString();
+            }
+        }
+        System.out.println("Codigo: "+codigo);
+        paramReport.put("codigo", codigo);
+        generateReportBarCode(idSucursal, folio);
+        RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
+    }
+    public void generateReportBarCode(int idSucursal,int folio) {
+        JRExporter exporter = null;
+
+        try {
+            ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+            String temporal = "";
+            if (servletContext.getRealPath("") == null) {
+                temporal = Constantes.PATHSERVER;
+            } else {
+                temporal = servletContext.getRealPath("");
+            }
+            pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "codigoBarras" + File.separatorChar + "codigoBarras.jasper";
+            Context initContext;
+            Connection con = null;
+            try {
+                javax.sql.DataSource datasource = null;
+                Context initialContext = new InitialContext();
+                datasource = (DataSource) initialContext.lookup("DataChon");
+
+                try {
+                    con = datasource.getConnection();
+                    //System.out.println("datsource" + con.toString());
+                } catch (SQLException ex) {
+                    Logger.getLogger(BeanVenta.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } catch (NamingException ex) {
+                Logger.getLogger(BeanVenta.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            JasperPrint jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport, con);
+            outputStream = JasperReportUtil.getOutputStreamFromReport(paramReport, getPathFileJasper());
+            exporter = new JRPdfExporter();
+            exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
+            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, outputStream);
+//            exporter.setParameter(JRPdfExporterParameter.PDF_JAVASCRIPT, "this.print();");
+            byte[] bytes = outputStream.toByteArray();
+            rutaPDF = UtilUpload.saveFileTemp(bytes, "barCode", folio, idSucursal);
+            con.close();
+        } catch (Exception exception) {
+            System.out.println("Error >" + exception.getMessage());
+            exception.getStackTrace();
+        }
+
+    }
+
 
     public void cerrarEntrada() {
         data.setIdStatusFk(new BigDecimal(2));
@@ -176,11 +244,14 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
     }
 
-    public void imprimirEntrada() {
+    public void imprimirEntrada() 
+    {
         setParameterTicket(data);
         generateReport(data.getIdCarroSucursal().intValue());
         RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
+        
     }
+    
 
     private void setParameterTicket(EntradaMercancia em) {
 
@@ -227,10 +298,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
             Connection con = null;
             try {
                 javax.sql.DataSource datasource = null;
-
                 Context initialContext = new InitialContext();
-
-                // "jdbc/MyDBname" >> is a JNDI Name of DataSource on weblogic
                 datasource = (DataSource) initialContext.lookup("DataChon");
 
                 try {
