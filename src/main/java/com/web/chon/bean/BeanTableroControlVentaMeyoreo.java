@@ -154,7 +154,6 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
 
         for (CarroDetalleGeneral dominio : lstCarroDetalleGeneral) {
 
-            System.out.println("domj " + dominio.toString());
             totalComisionGeneral = totalComisionGeneral.add(dominio.getComision());
             totalVentaGeneral = totalVentaGeneral.add(dominio.getVenta());
 
@@ -175,15 +174,14 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
         valorCarro = new BigDecimal(0);
         inventarioCosto = new BigDecimal(0);
         inventarioVenta = new BigDecimal(0);
-
+        ArrayList<BigDecimal> lstExist = new ArrayList<BigDecimal>();
         for (CarroDetalle dominio : lstCarroDetalle) {
             totalComisionDetalle = totalComisionDetalle.add(dominio.getComisio().subtract(dominio.getSaldoPorCobrar()));
             totalVentaDetalle = totalVentaDetalle.add(dominio.getTotalVenta());
             totalSaldoPorCobrar = totalSaldoPorCobrar.add(dominio.getSaldoPorCobrar());
+
             totalEmpaquesDetalle = totalEmpaquesDetalle.add(dominio.getPaquetesVendidos());
             totalKilosDetalle = totalKilosDetalle.add(dominio.getKilosVendidos());
-            totalEntradaEmpaquesDetalle = totalEntradaEmpaquesDetalle.add(dominio.getPaquetesEntrada());
-            totalEntradaKilosDetalle = totalEntradaKilosDetalle.add(dominio.getKilosEntrada());
 
         }
 
@@ -201,6 +199,8 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
             valorCarro = valorCarro.add(dominio.getKiloEntrada().multiply(dominio.getPrecioMinimo()));
             inventarioCosto = totalVentaDetalle.subtract(costoCarro);
             inventarioVenta = totalVentaDetalle.subtract(valorCarro);
+            totalEntradaEmpaquesDetalle = totalEntradaEmpaquesDetalle.add(dominio.getEmpaquesEntrada());
+                totalEntradaKilosDetalle = totalEntradaKilosDetalle.add(dominio.getKiloEntrada());
         }
 
     }
@@ -489,7 +489,5 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
     public void setInventarioVenta(BigDecimal inventarioVenta) {
         this.inventarioVenta = inventarioVenta;
     }
-    
-    
 
 }

@@ -16,7 +16,7 @@ import javax.persistence.Query;
 
 /**
  *
- * Ejb para el catalogo de Productos
+ * Ejb para ventas menudeo
  *
  * @author Juan de la Cruz
  */

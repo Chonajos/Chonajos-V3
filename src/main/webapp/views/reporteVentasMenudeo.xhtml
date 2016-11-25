@@ -1,0 +1,158 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="./../templates/main.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content">
+        <div>
+            <h3>#{beanReporteVentaMenudeo.title}</h3>
+        </div>
+        <p:ajaxStatus onsuccess="PF('statusDialog').hide()" oncomplete="PF('statusDialog').hide()" onerror="PF('statusDialog').hide()" />
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                  closable="false" resizable="false" showHeader="false">
+            <p:graphicImage value="../resources/img/carga.gif" />
+        </p:dialog>
+        <h:form id="formContent">
+            <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
+            <div class="form-group" align="right">
+                <p:commandButton value="Buscar" onclick="PF('statusDialog').show()" update=":formContent" ajax="true" action="#{beanReporteVentaMenudeo.searchById}"/>
+            </div>
+            <p:panel>
+                <div class="container-fluid">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="sucursalFiltro" value ="Sucursal:" /> 
+                            <h:selectOneMenu  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanReporteVentaMenudeo.idSucursal}"  disabled="#{beanReporteVentaMenudeo.usuario.perId != 1}">
+                                <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="" />
+                                <f:selectItems value="#{beanReporteVentaMenudeo.lstSucursales}" var="sucursal" itemLabel="#{sucursal.nombreSucursal}" itemValue="#{sucursal.idSucursalPk}"/>
+                            </h:selectOneMenu>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-5 col-md-4 col-sm-4 col-xs-12"  for="calendarInicio" value ="Fecha de Inicio:" /> 
+                            <p:calendar id="calendarInicio" class="col-lg-7 col-md-8 col-sm-8 col-xs-12 calendario " navigator="true" placeholder="dd/mm/yyyy"
+                                        value="#{beanReporteVentaMenudeo.fechaInicio}" locale="es" pattern="dd/MM/yyyy" readonlyInput="false" showOn="button" >
+                            </p:calendar>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 ">
+                            <p:outputLabel class="col-lg-5 col-md-4 col-sm-4 col-xs-12" 
+                                           for="calendarFin" value ="Fecha de Fin:" /> 
+                            <p:calendar id="calendarFin" class="col-lg-7 col-md-8 col-sm-8 col-xs-12 calendario" navigator="true" placeholder="dd/mm/yyyy"
+                                        value="#{beanReporteVentaMenudeo.fechaFin}" locale="es" pattern="dd/MM/yyyy" readonlyInput="false" showOn="button" >
+                            </p:calendar>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <p:dataTable id="table" var="model" styleClass="ui-datatable-hor-scroll" 
+                                 value="#{beanReporteVentaMenudeo.model}" 
+                                 scrollable="true"
+                                 scrollHeight="400" 
+                                 paginator="true" rows="50"
+                                 emptyMessage="No se encontraron Registros" >
+
+                        <p:column headerText="Num" class="alignCenter"  width="40px;" >
+                            <h:outputText value="#{model.count}" />
+                        </p:column>
+                        <p:column headerText="Producto" sortBy="#{model.nombreProducto}" class="alignLeft"  width="120px;" >
+                            <h:outputText value="#{model.nombreProducto}" />
+                        </p:column>
+
+                        <p:column headerText="Kg. Vendidos" sortBy="#{model.kilosVenta}" width="100px;" class="alignRight">
+                            <h:outputText value="#{model.kilosVenta}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Precio Promedio" sortBy="#{model.precioProducto}" width="100px;" class="alignRight">
+                            <h:outputText value="#{model.precioProducto}">
+                                <f:convertNumber type="currency" currencySymbol="$" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Existencia" sortBy="#{model.existencia}" width="120px;" class="alignRight">
+                            <h:outputText value="#{model.existencia}" />
+                        </p:column>
+                        <p:column headerText="Costo" sortBy="#{model.costoMerma}" width="120px;" class="alignRight">
+                            <h:outputText value="#{model.costoMerma}" >
+                                <f:convertNumber type="currency" currencySymbol="$" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Kilos Ajustados" sortBy="#{model.ajuste}" width="120px;" class="alignRight">
+                            <h:outputText value="#{model.ajuste}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Kilos Entrada" sortBy="#{model.entrada}" width="120px;" class="alignRight">
+                            <h:outputText value="#{model.entrada}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Total Costo" sortBy="#{model.totalCosto}" width="120px;" class="alignRight">
+                            <h:outputText value="#{model.totalCosto}">
+                                <f:convertNumber type="currency" currencySymbol="$" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Total Venta" sortBy="#{model.total}" width="120px;" class="alignRight">
+                            <h:outputText value="#{model.total}">
+                                <f:convertNumber type="currency" currencySymbol="$" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Comisión" sortBy="#{model.total.subtract(model.totalCosto)}" width="120px;" class="alignRight">
+                            <h:outputText value="#{model.total.subtract(model.totalCosto)}">
+                                <f:convertNumber type="currency" currencySymbol="$" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Comisión 1" sortBy="#{model.total.subtract(model.totalCosto)}" width="120px;" class="alignRight">
+                            <h:outputText value="#{model.total.subtract(model.totalCosto).add(model.existencia.multiply(model.costoMerma))}">
+                                <f:convertNumber type="currency" currencySymbol="$" />
+                            </h:outputText>
+                        </p:column>
+                        <p:columnGroup type="footer">
+
+                            <p:column colspan="1" />
+                            <p:column colspan="1" />
+                            <p:column colspan="1" />
+                            <p:column colspan="1" />
+                            <p:column colspan="1" />
+                            <p:column colspan="1" />
+                            <p:column colspan="1" />
+                            <p:column colspan="1" footerText="Total: " style="text-align:right"/>
+                            <p:column colspan="1" class="alignRight">
+                                <f:facet name="footer">
+                                    <h:outputText value="#{beanReporteVentaMenudeo.totalCosto}" class="alignRight">
+                                        <f:convertNumber type="currency" currencySymbol="$" />
+                                    </h:outputText>
+                                </f:facet>
+                            </p:column>
+                            <p:column colspan="1" class="alignRight">
+                                <f:facet name="footer">
+                                    <h:outputText value="#{beanReporteVentaMenudeo.totalVenta}" class="alignRight">
+                                        <f:convertNumber type="currency" currencySymbol="$" />
+                                    </h:outputText>
+                                </f:facet>
+                            </p:column>
+                            <p:column colspan="1" class="alignRight">
+                                <f:facet name="footer">
+                                    <h:outputText value="#{beanReporteVentaMenudeo.totalVenta.subtract(beanReporteVentaMenudeo.totalCosto)}" class="alignRight">
+                                        <f:convertNumber type="currency" currencySymbol="$" />
+                                    </h:outputText>
+                                </f:facet>
+                            </p:column>
+                            <p:column colspan="1" class="alignRight">
+                                <f:facet name="footer">
+                                    <h:outputText value="#{beanReporteVentaMenudeo.comisionExistencia}" class="alignRight">
+                                        <f:convertNumber type="currency" currencySymbol="$" />
+                                    </h:outputText>
+                                </f:facet>
+                            </p:column>
+                        </p:columnGroup>
+                    </p:dataTable>
+                </div>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>

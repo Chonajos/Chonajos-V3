@@ -14,6 +14,7 @@ public interface NegocioVentaProducto {
     
     public List<Object[]> getVentaProductoByIdVenta(BigDecimal idVentaFK);
     public List<Object[]> getProductosByIdVentaFK(BigDecimal idVentaFK);
+    public List<Object[]> getReporteVenta(String fechaInicio,String fechaFin,BigDecimal idSucursal);
     public int insertarVentaProducto(VentaProducto ventaProducto,int idVenta);
     
 
