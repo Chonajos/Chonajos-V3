@@ -3,6 +3,7 @@ package com.web.chon.bean;
 import com.web.chon.dominio.Cliente;
 import com.web.chon.dominio.Credito;
 import com.web.chon.dominio.ExistenciaMenudeo;
+import com.web.chon.dominio.ExistenciaProducto;
 import com.web.chon.dominio.MantenimientoPrecios;
 import com.web.chon.dominio.Subproducto;
 import com.web.chon.dominio.TipoEmpaque;
@@ -148,6 +149,7 @@ public class BeanVenta implements Serializable, BeanSimple {
     private boolean variableInicial;
     private boolean credito;
 
+    private String codigoBarras;
     Date date = new Date();
 
     @PostConstruct
@@ -208,6 +210,55 @@ public class BeanVenta implements Serializable, BeanSimple {
 
         validaCreditoCliente();
 
+    }
+
+    public void searchByBarCode() {
+        subProducto = new Subproducto();
+        System.out.println("Codigo Barras: " + codigoBarras);
+
+        if (codigoBarras.length() == 8) {
+            searchByBarCode(codigoBarras);
+            subProducto = ifaceSubProducto.getSubProductoById(codigoBarras);
+
+        } else {
+            JsfUtil.addWarnMessage("Código de Barras Incorrecto");
+        }
+    }
+
+    public void searchByBarCode(String idSubProducto) {
+
+        MantenimientoPrecios mantenimentoPrecio = new MantenimientoPrecios();
+        BigDecimal pc = new BigDecimal(0);
+        mantenimentoPrecio.setPrecioVenta(pc);
+        int idEmpaque = data.getIdTipoEmpaqueFk() == null ? 0 : data.getIdTipoEmpaqueFk().intValue();
+        mantenimentoPrecio = ifaceMantenimientoPrecio.getMantenimientoPrecioById(idSubProducto.trim(), idEmpaque, idSucu);
+
+        if (mantenimentoPrecio.getPrecioMinimo() == mantenimentoPrecio.getPrecioMaximo()) {
+            permisionToEdit = true;
+
+        } else if (mantenimentoPrecio.getPrecioMinimo().intValue() == mantenimentoPrecio.getPrecioMaximo().intValue()) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "El precio de este producto no es Ajustable"));
+            max = precioProducto(mantenimentoPrecio.getPrecioMaximo());
+            min = precioProducto(mantenimentoPrecio.getPrecioMinimo());
+            permisionToEdit = true;
+
+        } else {
+            max = precioProducto(mantenimentoPrecio.getPrecioMaximo());
+            min = precioProducto(mantenimentoPrecio.getPrecioMinimo());
+            permisionToEdit = false;
+        }
+
+        if (mantenimentoPrecio.getPrecioVenta() == null && variableInicial == false) {
+            JsfUtil.addErrorMessage("No se tiene el precio de este prodcuto, favor de contactar al gerente.");
+            permisionToEdit = true;
+        }
+
+//        RequestContext.getCurrentInstance().execute("document.getElementById('formContent:txtPrecioVenta').focus();");
+        data.setIdProductoFk(idSubProducto);
+        data.setIdTipoEmpaqueFk(new BigDecimal(idEmpaque));
+
+        data.setPrecioProducto(mantenimentoPrecio.getPrecioVenta() == null ? null : precioProducto(mantenimentoPrecio.getPrecioVenta()));
+        data.setPrecioSinInteres(mantenimentoPrecio.getPrecioVenta() == null ? null : mantenimentoPrecio.getPrecioVenta());
     }
 
     public void selectedTipoEmpaque() {
@@ -328,6 +379,7 @@ public class BeanVenta implements Serializable, BeanSimple {
 
                     lstVenta.clear();
                     totalVenta = new BigDecimal(0);
+                    codigoBarras = null;
 
                     RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
 
@@ -370,6 +422,7 @@ public class BeanVenta implements Serializable, BeanSimple {
         int idEmpaque = data.getIdTipoEmpaqueFk() == null ? 0 : data.getIdTipoEmpaqueFk().intValue();
 
         String idSubProducto = subProducto == null ? "" : (subProducto.getIdSubproductoPk() == null ? "" : subProducto.getIdSubproductoPk());
+
         mantenimentoPrecio = ifaceMantenimientoPrecio.getMantenimientoPrecioById(idSubProducto.trim(), idEmpaque, idSucu);
 
         if (mantenimentoPrecio.getPrecioMinimo() == mantenimentoPrecio.getPrecioMaximo()) {
@@ -432,6 +485,7 @@ public class BeanVenta implements Serializable, BeanSimple {
                 subProducto = new Subproducto();
                 selectedTipoEmpaque();
                 variableInicial = false;
+                codigoBarras = null;
             }
 
         } else {
@@ -729,7 +783,7 @@ public class BeanVenta implements Serializable, BeanSimple {
 
         BigDecimal tipoPago = new BigDecimal("1");
         BigDecimal idClienteVenta = new BigDecimal("1");
-        
+
         if (cliente.getId_cliente().equals(idClienteVenta)) {
             credito = false;
             data.setIdTipoVentaFk(tipoPago);
@@ -1163,6 +1217,14 @@ public class BeanVenta implements Serializable, BeanSimple {
         setDejaACuenta(valueStr);
         // prevent setter being called again during update-model phase
         ((UIInput) ev.getComponent()).setLocalValueSet(false);
+    }
+
+    public String getCodigoBarras() {
+        return codigoBarras;
+    }
+
+    public void setCodigoBarras(String codigoBarras) {
+        this.codigoBarras = codigoBarras;
     }
 
 }

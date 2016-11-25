@@ -62,6 +62,7 @@ public class ServiceEntraMercPaquete implements IfaceEntMerProPaq {
             count = count.add(new BigDecimal(1), MathContext.UNLIMITED);
             paquete.setFolio(count);
             paquetes.add(paquete);
+            System.out.println("Paquete: "+paquete);
         }
         return paquetes;
 

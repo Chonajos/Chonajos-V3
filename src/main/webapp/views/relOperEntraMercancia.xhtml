@@ -441,8 +441,8 @@
                                                 <p:dataTable id="tabla4" var="paquete" 
                                                              value="#{item.listaPaquetes}" 
                                                              scrollable="true"
-                                                             editable="true" styleClass="seconTable" 
-                                                             rowStyleClass="#{model.idStatusFk eq 1 ? 'alert-info': 'alert-warning'}"
+                                                             editable="true"
+                                                             rowStyleClass="#{paquete.idStatusFk.intValue() eq 1 ? 'alert-success': 'alert-info'}"
                                                              emptyMessage="No se encontraron Registros">
                                                     <p:column headerText="N°" width="30px;" class="alignCenter">
                                                         <h:outputText value="#{paquete.folio}" />

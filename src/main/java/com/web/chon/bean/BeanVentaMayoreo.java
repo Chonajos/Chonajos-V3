@@ -258,9 +258,14 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     }
 
     public void habilitarBotones() {
-        permisionToWrite = false;
+
+        if (selectedExistencia.getPrecioVenta() != null) {
+            permisionToWrite = false;
+        
         data.setPrecioProducto(selectedExistencia.getPrecioVenta());
-        System.out.println("Precio :"+selectedExistencia.getPrecioVenta().toString());
+        System.out.println("Precio :" + selectedExistencia.getPrecioVenta().toString());
+        }
+        JsfUtil.addErrorMessageClean("No se tiene precio de venta para este producto");
     }
 
     public void calculaTotalTemporal() {
@@ -493,7 +498,8 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
             JsfUtil.addErrorMessage("Seleccione un Producto de la tabla o peso en 0 Kg.");
 
         } else //            System.out.println("idSubProducto:" + selectedExistencia.getIdSubProductoFK());
-         if (selectedExistencia.getPrecioVenta() == null) {
+        {
+            if (selectedExistencia.getPrecioVenta() == null) {
                 JsfUtil.addErrorMessage("No se tiene precio de venta para este producto. Contactar al administrador.");
             } else if (data.getPrecioProducto().intValue() < selectedExistencia.getPrecioMinimo().intValue() || data.getPrecioProducto().intValue() > selectedExistencia.getPrecioMaximo().intValue()) {
                 JsfUtil.addErrorMessage("Precio de Venta fuera de Rango \n Precio Maximo =" + selectedExistencia.getPrecioMaximo() + " Precio minimo =" + selectedExistencia.getPrecioMinimo());
@@ -533,6 +539,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                 }
 
             }
+        }
         calculaAhorro(null);
 
     }

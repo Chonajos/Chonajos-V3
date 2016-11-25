@@ -14,6 +14,7 @@
             <p:graphicImage value="../resources/img/carga.gif" />
         </p:dialog>
         <h:form id="formProducto">
+            <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanSubProducto.rutaPDF}"/>
             <div>
                 <h3>#{beanSubProducto.title}</h3>
             </div>
@@ -36,6 +37,12 @@
                         </p:column>
                         <p:column headerText="Nombre de Producto" filterMaxLength="90" filterBy="#{model.nombreSubproducto}" filterMatchMode="contains" width="350px; !important" class="alignLeft">
                             <h:outputText value="#{model.nombreSubproducto}" />
+                        </p:column>
+                        <p:column headerText="Código" width="70px;" class="alignCenter">
+                            <p:commandButton id="codigo" ajax="true" process="@this" action="#{beanSubProducto.imprimirCodigoBarras()}" 
+                                             icon="ui-icon-print" styleClass="ui-priority-primary" update=":formProducto">
+                                <f:setPropertyActionListener value="#{model}" target="#{beanSubProducto.data}"/>
+                            </p:commandButton>
                         </p:column>
                         <p:column headerText="Editar" width="60px; !important" class="alignCenter">
                             <p:commandButton id="ajax" ajax="true"  action="#{beanSubProducto.searchById}" icon="ui-icon-pencil" styleClass="ui-priority-primary" update=":formProducto" onclick="PF('statusDialog').show()">
@@ -67,6 +74,7 @@
                         </div>
                     </div>
                 </div>
+                
             </p:panel>
         </h:form>
     </ui:define>
