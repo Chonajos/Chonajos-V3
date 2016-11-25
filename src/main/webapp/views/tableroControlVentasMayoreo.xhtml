@@ -332,21 +332,22 @@
                                 <p:column colspan="1" footerText="Total:" class="alignRight"/>
                                 <p:column colspan="1" class="alignRight">
                                     <f:facet name="footer" >
-                                        <h:outputText value="#{beanTableroControlVentaMeyoreo.totalEmpaquesDetalle}" >
-                                            <f:convertNumber pattern="###,###" />
-                                        </h:outputText>
-                                    </f:facet>
-                                </p:column>
-                                <p:column colspan="1" class="alignRight">
-                                    <f:facet name="footer" >
                                         <h:outputText value="#{beanTableroControlVentaMeyoreo.totalEntradaEmpaquesDetalle}" >
                                             <f:convertNumber pattern="###,###" />
                                         </h:outputText>
                                     </f:facet>
                                 </p:column>
+                              
                                 <p:column colspan="1" class="alignRight">
                                     <f:facet name="footer" >
                                         <h:outputText value="#{beanTableroControlVentaMeyoreo.totalEntradaKilosDetalle}" >
+                                            <f:convertNumber pattern="###,###" />
+                                        </h:outputText>
+                                    </f:facet>
+                                </p:column>
+                                  <p:column colspan="1" class="alignRight">
+                                    <f:facet name="footer" >
+                                        <h:outputText value="#{beanTableroControlVentaMeyoreo.totalEmpaquesDetalle}" >
                                             <f:convertNumber pattern="###,###" />
                                         </h:outputText>
                                     </f:facet>

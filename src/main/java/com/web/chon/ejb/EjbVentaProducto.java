@@ -79,4 +79,38 @@ public class EjbVentaProducto implements NegocioVentaProducto {
         }
     }
 
+    @Override
+    public List<Object[]> getReporteVenta(String fechaInicio, String fechaFin, BigDecimal idSucursal) {
+        try {
+            StringBuffer txtQuery = new StringBuffer("SELECT exm.ID_EXMEN_PK,sp.NOMBRE_SUBPRODUCTO,SUM(vp.CANTIDAD_EMPAQUE)AS kilo_vendidos,SUM(vp.PRECIO_PRODUCTO*vp.CANTIDAD_EMPAQUE) venta_total,"
+                    + " SUM(vp.PRECIO_PRODUCTO*vp.CANTIDAD_EMPAQUE)/SUM(vp.CANTIDAD_EMPAQUE) AS precio_promedio,exm.KILOS,mt.COSTOMERMA,"
+                    + " (SELECT NVL(SUM(AEM.KILOS_AJUSTADOS-AEM.KILOS_ANTERIOR),0) FROM AJUSTE_EXISTENCIA_MENUDEO AEM WHERE AEM.ID_EXISTENCIA_MENUDEO_FK = exm.ID_EXMEN_PK ) AS AJUSTES,"
+                    + " (SELECT NVL(SUM(EMP.KILOS_TOTALES),0) FROM ENTRADAMENUDEOPRODUCTO EMP"
+                    + " INNER JOIN ENTRADAMERCANCIAMENUDEO EMM ON EMM.ID_EMM_PK = EMP.ID_EMM_FK"
+                    + " WHERE EMP.ID_SUBPRODUCTO_FK = sp.ID_SUBPRODUCTO_PK AND EMM.ID_SUCURSAL_FK =exm.ID_SUCURSAL_FK) AS ENTRADA,"
+                    + " (SELECT NVL(SUM(EMP.KILOS_TOTALES*EMP.PRECIO),0) FROM ENTRADAMENUDEOPRODUCTO EMP"
+                    + " INNER JOIN ENTRADAMERCANCIAMENUDEO EMM ON EMM.ID_EMM_PK = EMP.ID_EMM_FK"
+                    + " WHERE EMP.ID_SUBPRODUCTO_FK = sp.ID_SUBPRODUCTO_PK AND EMM.ID_SUCURSAL_FK =exm.ID_SUCURSAL_FK) AS COSTO_TOTAL_ENTRADA"
+                    + " FROM VENTA_PRODUCTO vp"
+                    + " INNER JOIN SUBPRODUCTO sp ON sp.ID_SUBPRODUCTO_PK =VP.ID_SUBPRODUCTO_FK"
+                    + " INNER JOIN VENTA v ON v.ID_VENTA_PK  = vp.ID_VENTA_FK AND v.STATUS_FK !='4' AND v.ID_SUCURSAL_FK ='" + idSucursal + "'"
+                    + " INNER JOIN MANTENIMIENTO_PRECIO mt ON mt.ID_SUBPRODUCTO_FK = sp.ID_SUBPRODUCTO_PK AND mt.ID_SUCURSAL_FK = '" + idSucursal + "'"
+                    + " INNER JOIN EXISTENCIAMENUDEO exm ON exm.ID_SUBPRODUCTO_FK =sp.ID_SUBPRODUCTO_PK AND exm.ID_SUCURSAL_FK ='" + idSucursal + "'"
+                    + " AND v.STATUS_FK !=4");
+
+            if (fechaInicio != null && fechaFin != null) {
+                txtQuery.append(" AND TO_DATE(TO_CHAR(v.FECHA_VENTA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "'");
+            }
+            txtQuery.append(" GROUP BY exm.ID_SUCURSAL_FK,sp.ID_SUBPRODUCTO_PK,sp.NOMBRE_SUBPRODUCTO,exm.KILOS,mt.COSTOMERMA,exm.ID_EXMEN_PK, exm.ID_SUBPRODUCTO_FK ORDER BY kilo_vendidos DESC");
+
+            Query query = em.createNativeQuery(txtQuery.toString());
+
+            return query.getResultList();
+
+        } catch (Exception ex) {
+            System.out.println("error > " + ex.getMessage());
+            return null;
+        }
+    }
+
 }

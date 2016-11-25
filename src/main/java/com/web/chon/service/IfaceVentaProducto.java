@@ -25,5 +25,14 @@ public interface IfaceVentaProducto {
      */
     public int insertarVentaProducto(VentaProducto ventaProducto, int idVenta);
     
+    /**
+     * Obtiene el reporte de ventas de menudeo 
+     * @param fechaInicio
+     * @param fechaFin
+     * @param idSucursal
+     * @return 
+     */
+    public ArrayList<VentaProducto> getReporteVenta(String fechaInicio,String fechaFin,BigDecimal idSucursal);
+    
    
 }

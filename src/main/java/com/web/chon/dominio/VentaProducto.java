@@ -21,11 +21,19 @@ public class VentaProducto implements Serializable {
     private String nombreEmpaque;
     private BigDecimal idTipoVentaFk;
     private BigDecimal count; //
-    
+
     //Variable para venta a Credito
     private BigDecimal numeroPagos;
     private BigDecimal precioSinInteres;
     private BigDecimal tipoPago;
+
+    //Variables para el reporte de ventas 
+    private BigDecimal idExistencia;
+    private BigDecimal existencia;
+    private BigDecimal costoMerma;
+    private BigDecimal ajuste;
+    private BigDecimal entrada;
+    private BigDecimal totalCosto;
 
     public VentaProducto() {
     }
@@ -49,6 +57,7 @@ public class VentaProducto implements Serializable {
     public void setPrecioProducto(BigDecimal precioProducto) {
         this.precioProducto = precioProducto;
     }
+
     public String getIdProductoFk() {
         return idProductoFk;
     }
@@ -121,7 +130,6 @@ public class VentaProducto implements Serializable {
         this.numeroPagos = numeroPagos;
     }
 
-
     public BigDecimal getPrecioSinInteres() {
         return precioSinInteres;
     }
@@ -146,6 +154,55 @@ public class VentaProducto implements Serializable {
         this.count = count;
     }
 
+    public BigDecimal getIdExistencia() {
+        return idExistencia;
+    }
+
+    public void setIdExistencia(BigDecimal idExistencia) {
+        this.idExistencia = idExistencia;
+    }
+
+    public BigDecimal getExistencia() {
+        return existencia;
+    }
+
+    public void setExistencia(BigDecimal existencia) {
+        this.existencia = existencia;
+    }
+
+    public BigDecimal getCostoMerma() {
+        return costoMerma;
+    }
+
+    public void setCostoMerma(BigDecimal costoMerma) {
+        this.costoMerma = costoMerma;
+    }
+
+    public BigDecimal getAjuste() {
+        return ajuste;
+    }
+
+    public void setAjuste(BigDecimal ajuste) {
+        this.ajuste = ajuste;
+    }
+
+    public BigDecimal getEntrada() {
+        return entrada;
+    }
+
+    public void setEntrada(BigDecimal entrada) {
+        this.entrada = entrada;
+    }
+
+    public BigDecimal getTotalCosto() {
+        return totalCosto;
+    }
+
+    public void setTotalCosto(BigDecimal totalCosto) {
+        this.totalCosto = totalCosto;
+    }
+    
+
     @Override
     public String toString() {
         return "VentaProducto{" + "idVentaProductoPk=" + idVentaProductoPk + ", precioProducto=" + precioProducto + ", idProductoFk=" + idProductoFk + ", idTipoEmpaqueFk=" + idTipoEmpaqueFk + ", idTipoVentaFk=" + idTipoVentaFk + ", cantidadEmpaque=" + cantidadEmpaque + ", kilosVenta=" + kilosVenta + ", total=" + total + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + '}';
@@ -159,6 +216,12 @@ public class VentaProducto implements Serializable {
         cantidadEmpaque = null;
         kilosVenta = null;
         total = null;
+        idExistencia = null;
+        existencia = null;
+        costoMerma = null;
+        ajuste = null;
+        entrada = null;
+        totalCosto = null;
 
     }
 
