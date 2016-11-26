@@ -171,10 +171,16 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         String codigo = "";
         int folio = 0;
         int idSucursal =0;
+        BigDecimal carro = new BigDecimal(0);
+        String nombreProducto = "";
+        String nombreEmpaque = "";
         for(EntradaMercancia entrada: lstEntradaMercancia )
         {
             if(dataProducto.getIdEmFK().intValue()==entrada.getIdEmPK().intValue())
             {
+                carro = entrada.getIdCarroSucursal();
+                nombreEmpaque = dataProducto.getNombreEmpaque();
+                nombreProducto = dataProducto.getNombreProducto();
                 codigo += entrada.getIdSucursalFK().toString()+"-";
                 idSucursal = entrada.getIdSucursalFK().intValue();
                 folio = entrada.getIdEmPK().intValue();
@@ -186,6 +192,10 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         }
         System.out.println("Codigo: "+codigo);
         paramReport.put("codigo", codigo);
+        paramReport.put("carro", carro.toString());
+        paramReport.put("producto", nombreProducto);
+        paramReport.put("empaque", nombreEmpaque);
+        
         generateReportBarCode(idSucursal, folio);
         RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
     }
