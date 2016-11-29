@@ -743,7 +743,9 @@ public class BeanVenta implements Serializable, BeanSimple {
 
             BigDecimal totalDiasPagar = data.getTipoPago() == null ? DIAS_PLAZO : data.getTipoPago();
             BigDecimal interesDiasPagar = (INTERES_VENTA.divide(diasAnio, 8, RoundingMode.HALF_UP).multiply(totalDiasPagar)).add(new BigDecimal(1));
-            data.setNumeroPagos(totalDiasPagar.divide(DIAS_PLAZO));
+//            data.setNumeroPagos(totalDiasPagar.divide(DIAS_PLAZO)); descomentar cuando se aplique el pago por semana
+            data.setNumeroPagos(new BigDecimal(1));
+            
             for (VentaProducto dominio : lstVenta) {
 
                 dominio.setPrecioProducto(dominio.getPrecioSinInteres().multiply(interesDiasPagar));

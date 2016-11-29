@@ -36,6 +36,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -148,8 +149,10 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     private BigDecimal descuento;
     private BigDecimal dejaACuenta;
     private BigDecimal totalVentaDescuento;
-    private BigDecimal INTERES_VENTA = new BigDecimal("0.60");
     private BigDecimal DIAS_PLAZO = new BigDecimal("7");
+    private BigDecimal ZERO = new BigDecimal(0);
+    private BigDecimal INTERES_VENTA = new BigDecimal("0.60");
+    private BigDecimal PORCENTAJE_RANGO_VENTA = new BigDecimal(0.15);
     private int folioCredito = 0;
 
     private boolean permisionToWrite;
@@ -263,12 +266,10 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
             permisionToWrite = false;
             data.setPrecioProducto(selectedExistencia.getPrecioVenta());
             System.out.println("Precio :" + selectedExistencia.getPrecioVenta().toString());
-        }
-        else
-        {
+        } else {
             JsfUtil.addErrorMessageClean("No se tiene precio de venta para este producto");
         }
-        
+
     }
 
     public void calculaTotalTemporal() {
@@ -468,11 +469,22 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     }
 
     public int validar() {
+
+        BigDecimal kilosPromedioMinimo = ZERO;
+        BigDecimal kilosPromedioMaximo = ZERO;
+        BigDecimal kilosPromedio = ZERO;
+
+        kilosPromedio = selectedExistencia.getKilospromprod();
+
+        kilosPromedioMinimo = kilosPromedio.subtract(kilosPromedio.multiply(PORCENTAJE_RANGO_VENTA));
+        kilosPromedioMaximo = kilosPromedio.add(kilosPromedio.multiply(PORCENTAJE_RANGO_VENTA));
+        kilosPromedioMinimo = kilosPromedioMinimo.multiply(data.getCantidadEmpaque());
+        kilosPromedioMaximo = kilosPromedioMaximo.multiply(data.getCantidadEmpaque());
+
         if (selectedExistencia == null || data.getKilosVendidos().compareTo(BigDecimal.ZERO) == 0) {
             JsfUtil.addErrorMessage("Seleccione un Producto de la tabla o peso en 0 Kg.");
             return 0;
-        } else //            System.out.println("idSubProducto:" + selectedExistencia.getIdSubProductoFK());
-        {
+        } else {
             if (selectedExistencia.getPrecioVenta() == null) {
                 JsfUtil.addErrorMessage("No se tiene precio de venta para este producto. Contactar al administrador.");
                 return 0;
@@ -489,6 +501,9 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
             } else if (lstVenta.isEmpty()) {
                 JsfUtil.addErrorMessage("Seleccione un producto");
                 return 0;
+            } else if (data.getKilosVendidos().intValue() > kilosPromedioMaximo.intValue() || data.getKilosVendidos().intValue() < kilosPromedioMinimo.intValue()) {
+                JsfUtil.addErrorMessage("Cantidad de Kilos a vender no validos ");
+                return 0;
             }
             return 1;
 
@@ -497,11 +512,23 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     }
 
     public void addProducto() {
+
+        BigDecimal kilosPromedioMinimo = ZERO;
+        BigDecimal kilosPromedioMaximo = ZERO;
+        BigDecimal kilosPromedio = ZERO;
+
+        kilosPromedio = selectedExistencia.getKilospromprod();
+
+        kilosPromedioMinimo = kilosPromedio.subtract(kilosPromedio.multiply(PORCENTAJE_RANGO_VENTA));
+        kilosPromedioMaximo = kilosPromedio.add(kilosPromedio.multiply(PORCENTAJE_RANGO_VENTA));
+        kilosPromedioMinimo = kilosPromedioMinimo.multiply(data.getCantidadEmpaque());
+        kilosPromedioMaximo = kilosPromedioMaximo.multiply(data.getCantidadEmpaque());
+
         if (selectedExistencia == null || data.getKilosVendidos().compareTo(BigDecimal.ZERO) == 0) {
             JsfUtil.addErrorMessage("Seleccione un Producto de la tabla o peso en 0 Kg.");
 
-        } else //            System.out.println("idSubProducto:" + selectedExistencia.getIdSubProductoFK());
-         if (selectedExistencia.getPrecioVenta() == null) {
+        } else {
+            if (selectedExistencia.getPrecioVenta() == null) {
                 JsfUtil.addErrorMessage("No se tiene precio de venta para este producto. Contactar al administrador.");
             } else if (data.getPrecioProducto().intValue() < selectedExistencia.getPrecioMinimo().intValue() || data.getPrecioProducto().intValue() > selectedExistencia.getPrecioMaximo().intValue()) {
                 JsfUtil.addErrorMessage("Precio de Venta fuera de Rango \n Precio Maximo =" + selectedExistencia.getPrecioMaximo() + " Precio minimo =" + selectedExistencia.getPrecioMinimo());
@@ -509,9 +536,9 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                 JsfUtil.addErrorMessage("Cantidad de Empaque insuficiente");
             } else if (data.getKilosVendidos().intValue() > selectedExistencia.getKilosTotalesProducto().intValue()) {
                 JsfUtil.addErrorMessage("Cantidad de Kilos insuficiente");
+            } else if (data.getKilosVendidos().intValue() > kilosPromedioMaximo.intValue() || data.getKilosVendidos().intValue() < kilosPromedioMinimo.intValue()) {
+                JsfUtil.addErrorMessage("Cantidad de Kilos a vender no validos ");
             } else if (lstVenta.isEmpty()) {
-                System.out.println("=======================Entro aqui perro ======================");
-
                 add();
                 limpia();
 
@@ -519,18 +546,14 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                 boolean banderaRepetido = false;
                 for (int i = 0; i < lstVenta.size(); i++) {
                     VentaProductoMayoreo productoRepetido = lstVenta.get(i);
-                    System.out.println("Producto Repetido: " + productoRepetido.toString());
-                    System.out.println("Selected Existencia: " + selectedExistencia.toString());
+
                     if (productoRepetido.getIdExistenciaFk().intValue() == selectedExistencia.getIdExistenciaProductoPk().intValue()) {
-                        System.out.println("Entro a Producto Repetido.......");
                         banderaRepetido = true;
                         addRepetido(productoRepetido, i);
 
                         break;
                     } else {
-                        System.out.println("No es producto Repetido");
                         banderaRepetido = false;
-                        // add();
                     }
 
                 }
@@ -541,6 +564,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                 }
 
             }
+        }
         calculaAhorro(null);
 
     }
@@ -821,7 +845,8 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
             BigDecimal diasAnio = new BigDecimal(365);
 
             BigDecimal totalDiasPagar = data.getTipoPago() == null ? DIAS_PLAZO : data.getTipoPago();
-            data.setNumeroPagos(totalDiasPagar.divide(DIAS_PLAZO));
+              data.setNumeroPagos(new BigDecimal("1"));
+//            data.setNumeroPagos(totalDiasPagar.divide(DIAS_PLAZO)); descomentar cuando se pongan los plazos por semana
         }
 
         for (VentaProductoMayoreo dominio : lstVenta) {

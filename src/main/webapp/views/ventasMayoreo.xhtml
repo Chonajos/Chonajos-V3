@@ -42,10 +42,6 @@
                             </p:fragment> 
                         </div>
                         <div class="col-lg-4 col-md-5 col-sm-4 col-xs-12 form-group" align="right">
-                            <!--                    <p:commandButton value="Agregar más Productos" id="regresar" ajax="true" action="{beanVentaMayoreo.changeViewToAddProducto()}"  update=":formContent"  immediate="true" resetValues="true" rendered="{beanVentaMayoreo.viewEstate =='viewCarrito'}"/>  -->
-                            <!--                        <p:commandButton   value="Agregar a Pedido y Finalizar" update=":formContent" ajax="true" action="{beanVentaMayoreo.addProductoEnd()}" rendered="{beanVentaMayoreo.ventaRapidaButton =='Rapida' and beanVentaMayoreo.viewEstate =='viewAddProducto' }">
-                                                            <p:confirm header="Confirmación" message="¿Estás seguro de finalizar la venta?" icon="ui-icon-alert"/>
-                                                        </p:commandButton>-->
                             <p:commandButton value="Aceptar" update=":formContent" ajax="true" class="primaryButton" action="#{beanVentaMayoreo.updateProducto()}" rendered="#{beanVentaMayoreo.viewEstate =='update'}" onclick="PF('statusDialog').show()"/>
                             <p:commandButton value="Cancelar" update=":formContent" ajax="true" class="primaryButton" action="#{beanVentaMayoreo.changeView}" immediate="true" resetValues="true" rendered="#{beanVentaMayoreo.viewEstate =='update'}" onclick="PF('statusDialog').show()"/>
                             <p:commandButton value="Agregar" update=":formContent" ajax="true" class="primaryButton" action="#{beanVentaMayoreo.addProducto()}" rendered="#{beanVentaMayoreo.viewEstate =='viewAddProducto'}" onclick="PF('statusDialog').show()"/>

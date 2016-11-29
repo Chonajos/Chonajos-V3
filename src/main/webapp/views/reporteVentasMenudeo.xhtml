@@ -73,10 +73,10 @@
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
                         </p:column>
-                        <p:column headerText="Existencia" sortBy="#{model.existencia}" width="120px;" class="alignRight">
+                        <p:column headerText="Existencia" sortBy="#{model.existencia}" width="100px;" class="alignRight">
                             <h:outputText value="#{model.existencia}" />
                         </p:column>
-                        <p:column headerText="Costo" sortBy="#{model.costoMerma}" width="120px;" class="alignRight">
+                        <p:column headerText="Costo" sortBy="#{model.costoMerma}" width="65px;" class="alignRight">
                             <h:outputText value="#{model.costoMerma}" >
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
@@ -101,12 +101,12 @@
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
                         </p:column>
-                        <p:column headerText="Comisión" sortBy="#{model.total.subtract(model.totalCosto)}" width="120px;" class="alignRight">
+                        <p:column headerText="Comisión Vendido" sortBy="#{model.total.subtract(model.totalCosto)}" width="120px;" class="alignRight">
                             <h:outputText value="#{model.total.subtract(model.totalCosto)}">
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
                         </p:column>
-                        <p:column headerText="Comisión 1" sortBy="#{model.total.subtract(model.totalCosto)}" width="120px;" class="alignRight">
+                        <p:column headerText="Comisión por Vender" sortBy="#{model.total.subtract(model.totalCosto)}" width="120px;" class="alignRight">
                             <h:outputText value="#{model.total.subtract(model.totalCosto).add(model.existencia.multiply(model.costoMerma))}">
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
