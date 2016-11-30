@@ -59,7 +59,7 @@
                         <p:column headerText="Num" class="alignCenter"  width="40px;" >
                             <h:outputText value="#{model.count}" />
                         </p:column>
-                        <p:column headerText="Producto" sortBy="#{model.nombreProducto}" class="alignLeft"  width="120px;" >
+                        <p:column headerText="Producto" sortBy="#{model.nombreProducto}" class="alignLeft"  width="140px;" >
                             <h:outputText value="#{model.nombreProducto}" />
                         </p:column>
 
@@ -68,12 +68,12 @@
                                 <f:convertNumber pattern="#,##0.00"/>
                             </h:outputText>
                         </p:column>
-                        <p:column headerText="Precio Promedio" sortBy="#{model.precioProducto}" width="100px;" class="alignRight">
+                        <p:column headerText="Precio Promedio" sortBy="#{model.precioProducto}" width="70px;" class="alignRight">
                             <h:outputText value="#{model.precioProducto}">
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
                         </p:column>
-                        <p:column headerText="Existencia" sortBy="#{model.existencia}" width="100px;" class="alignRight">
+                        <p:column headerText="Existencia" sortBy="#{model.existencia}" width="80px;" class="alignRight">
                             <h:outputText value="#{model.existencia}" />
                         </p:column>
                         <p:column headerText="Costo" sortBy="#{model.costoMerma}" width="65px;" class="alignRight">
@@ -81,7 +81,7 @@
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
                         </p:column>
-                        <p:column headerText="Kilos Ajustados" sortBy="#{model.ajuste}" width="120px;" class="alignRight">
+                        <p:column headerText="Kilos Ajustados" sortBy="#{model.ajuste}" width="90px;" class="alignRight">
                             <h:outputText value="#{model.ajuste}">
                                 <f:convertNumber pattern="#,##0.00"/>
                             </h:outputText>

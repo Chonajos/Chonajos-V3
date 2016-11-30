@@ -1,11 +1,8 @@
 package com.web.chon.ejb;
 
-import com.web.chon.dominio.Subproducto;
 import com.web.chon.dominio.Venta;
-import com.web.chon.negocio.NegocioSubProducto;
 import com.web.chon.negocio.NegocioVenta;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
