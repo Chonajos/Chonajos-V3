@@ -232,7 +232,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
         System.out.println("Cambio: " + cambio);
     }
 
-    public void generateReport() {
+    public void generateReport(BigDecimal idVentaMayoreoPK) {
         JRExporter exporter = null;
 
         try {
@@ -254,7 +254,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
             exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, outputStream);
 
             byte[] bytes = outputStream.toByteArray();
-            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf", idVentaTemporal, usuarioDominio.getSucId());
+            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketMayoreo", idVentaMayoreoPK.intValue(), usuarioDominio.getSucId());
 
         } catch (Exception exception) {
             System.out.println("Error >" + exception.getMessage());
@@ -452,7 +452,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
                         }
                     }
                     setParameterTicket(ventaMayoreo.getVentaSucursal().intValue());
-                    generateReport();
+                    generateReport(ventaMayoreo.getIdVentaMayoreoPk());
                     ventaMayoreo.reset();
 //                    data.setNombreCliente("");
 //                    data.setNombreVendedor("");

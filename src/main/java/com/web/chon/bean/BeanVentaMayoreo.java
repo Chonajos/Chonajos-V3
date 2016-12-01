@@ -58,6 +58,7 @@ import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
+import org.bouncycastle.asn1.ocsp.Request;
 import org.primefaces.component.inputtext.InputText;
 import org.primefaces.context.RequestContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -224,36 +225,69 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
             permisionVentaRapida = true;
             lstExistencias = new ArrayList<ExistenciaProducto>();
         }
+        selectedExistencia = new ExistenciaProducto();
 
     }
 
-    public void searchByBarCode() {
-        System.out.println("Codigo Barras: " + codigoBarras);
-        subProducto = new Subproducto();
-        selectedExistencia = new ExistenciaProducto();
-        lstExistencias = new ArrayList<ExistenciaProducto>();
-        String diaArray[] = codigoBarras.split("'");
-        if (diaArray.length == 5) {
-            idSucursalfk = new BigDecimal(diaArray[0]);
-            idCarro = new BigDecimal(diaArray[1]);
-            idSubpProducto = diaArray[2];
-            idTipoempaqueFk = new BigDecimal(diaArray[3]);
-            idTipoConvenioFk = new BigDecimal(diaArray[4]);
+    public void searchByBarCode() {;
+        codigoBarras = codigoBarras.trim();
 
-            lstExistencias = ifaceNegocioExistencia.getExistenciaByBarCode(idSubpProducto, idTipoempaqueFk, idTipoConvenioFk, idCarro, idSucursalfk);
-            if (lstExistencias.size() == 1) {
-                selectedExistencia = new ExistenciaProducto();
-                selectedExistencia = lstExistencias.get(0);
-                habilitarBotones();
-            } else {
-                selectedExistencia = new ExistenciaProducto();
+        if (codigoBarras != null && !codigoBarras.isEmpty()) {
+            String diaArray[] = codigoBarras.split("'");
+            subProducto = new Subproducto();
+            selectedExistencia = new ExistenciaProducto();
+            lstExistencias = new ArrayList<ExistenciaProducto>();
+            switch (diaArray.length) {
+
+                case 1:
+                    System.out.println("Entro Case 1");
+                    String segArray[] = codigoBarras.split("-");
+                    idSucursalfk = new BigDecimal(segArray[0]);
+                    idCarro = new BigDecimal(segArray[1]);
+                    idSubpProducto = segArray[2];
+                    idTipoempaqueFk = new BigDecimal(segArray[3]);
+                    idTipoConvenioFk = new BigDecimal(segArray[4]);
+                    lstExistencias = ifaceNegocioExistencia.getExistenciaByBarCode(idSubpProducto, idTipoempaqueFk, idTipoConvenioFk, idCarro, idSucursalfk);
+                    if (lstExistencias.size() == 1) {
+                        selectedExistencia = new ExistenciaProducto();
+                        selectedExistencia = lstExistencias.get(0);
+                        habilitarBotones();
+                    } else {
+                        selectedExistencia = new ExistenciaProducto();
+                    }
+                    if (lstExistencias.isEmpty()) {
+                        JsfUtil.addWarnMessage("No se encontraron existencias de este producto");
+                    }
+
+                    break;
+                case 5:
+                    System.out.println("Entro Case 1");
+                    idSucursalfk = new BigDecimal(diaArray[0]);
+                    idCarro = new BigDecimal(diaArray[1]);
+                    idSubpProducto = diaArray[2];
+                    idTipoempaqueFk = new BigDecimal(diaArray[3]);
+                    idTipoConvenioFk = new BigDecimal(diaArray[4]);
+                    lstExistencias = ifaceNegocioExistencia.getExistenciaByBarCode(idSubpProducto, idTipoempaqueFk, idTipoConvenioFk, idCarro, idSucursalfk);
+                    if (lstExistencias.size() == 1) {
+                        selectedExistencia = new ExistenciaProducto();
+                        selectedExistencia = lstExistencias.get(0);
+                        habilitarBotones();
+                        RequestContext.getCurrentInstance().update("formContent:model2");
+                        RequestContext.getCurrentInstance().update("formContent:autocompleteProducto");
+
+                    } else {
+                        selectedExistencia = new ExistenciaProducto();
+                    }
+                    if (lstExistencias.isEmpty()) {
+                        JsfUtil.addWarnMessage("No se encontraron existencias de este producto");
+                    }
+                    break;
+                default:
+                    JsfUtil.addErrorMessageClean("Código de Barras Inválido");
+                    break;
             }
-            if (lstExistencias.isEmpty()) {
-                JsfUtil.addWarnMessage("No se encontraron existencias de este producto");
-            }
-        } else {
-            JsfUtil.addWarnMessage("Código de Barras Incorrecto");
         }
+
     }
 
     public void calculaCambio() {
@@ -261,7 +295,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     }
 
     public void habilitarBotones() {
-
+        System.out.println("SELEccionado " + selectedExistencia.toString());
         if (selectedExistencia.getPrecioVenta() != null) {
             permisionToWrite = false;
             data.setPrecioProducto(selectedExistencia.getPrecioVenta());
@@ -527,43 +561,41 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         if (selectedExistencia == null || data.getKilosVendidos().compareTo(BigDecimal.ZERO) == 0) {
             JsfUtil.addErrorMessage("Seleccione un Producto de la tabla o peso en 0 Kg.");
 
+        } else if (selectedExistencia.getPrecioVenta() == null) {
+            JsfUtil.addErrorMessage("No se tiene precio de venta para este producto. Contactar al administrador.");
+        } else if (data.getPrecioProducto().intValue() < selectedExistencia.getPrecioMinimo().intValue() || data.getPrecioProducto().intValue() > selectedExistencia.getPrecioMaximo().intValue()) {
+            JsfUtil.addErrorMessage("Precio de Venta fuera de Rango \n Precio Maximo =" + selectedExistencia.getPrecioMaximo() + " Precio minimo =" + selectedExistencia.getPrecioMinimo());
+        } else if (data.getCantidadEmpaque().intValue() > selectedExistencia.getCantidadPaquetes().intValue()) {
+            JsfUtil.addErrorMessage("Cantidad de Empaque insuficiente");
+        } else if (data.getKilosVendidos().intValue() > selectedExistencia.getKilosTotalesProducto().intValue()) {
+            JsfUtil.addErrorMessage("Cantidad de Kilos insuficiente");
+        } else if (data.getKilosVendidos().intValue() > kilosPromedioMaximo.intValue() || data.getKilosVendidos().intValue() < kilosPromedioMinimo.intValue()) {
+            JsfUtil.addErrorMessage("Cantidad de Kilos a vender no validos ");
+        } else if (lstVenta.isEmpty()) {
+            add();
+            limpia();
+
         } else {
-            if (selectedExistencia.getPrecioVenta() == null) {
-                JsfUtil.addErrorMessage("No se tiene precio de venta para este producto. Contactar al administrador.");
-            } else if (data.getPrecioProducto().intValue() < selectedExistencia.getPrecioMinimo().intValue() || data.getPrecioProducto().intValue() > selectedExistencia.getPrecioMaximo().intValue()) {
-                JsfUtil.addErrorMessage("Precio de Venta fuera de Rango \n Precio Maximo =" + selectedExistencia.getPrecioMaximo() + " Precio minimo =" + selectedExistencia.getPrecioMinimo());
-            } else if (data.getCantidadEmpaque().intValue() > selectedExistencia.getCantidadPaquetes().intValue()) {
-                JsfUtil.addErrorMessage("Cantidad de Empaque insuficiente");
-            } else if (data.getKilosVendidos().intValue() > selectedExistencia.getKilosTotalesProducto().intValue()) {
-                JsfUtil.addErrorMessage("Cantidad de Kilos insuficiente");
-            } else if (data.getKilosVendidos().intValue() > kilosPromedioMaximo.intValue() || data.getKilosVendidos().intValue() < kilosPromedioMinimo.intValue()) {
-                JsfUtil.addErrorMessage("Cantidad de Kilos a vender no validos ");
-            } else if (lstVenta.isEmpty()) {
-                add();
-                limpia();
+            boolean banderaRepetido = false;
+            for (int i = 0; i < lstVenta.size(); i++) {
+                VentaProductoMayoreo productoRepetido = lstVenta.get(i);
 
-            } else {
-                boolean banderaRepetido = false;
-                for (int i = 0; i < lstVenta.size(); i++) {
-                    VentaProductoMayoreo productoRepetido = lstVenta.get(i);
+                if (productoRepetido.getIdExistenciaFk().intValue() == selectedExistencia.getIdExistenciaProductoPk().intValue()) {
+                    banderaRepetido = true;
+                    addRepetido(productoRepetido, i);
 
-                    if (productoRepetido.getIdExistenciaFk().intValue() == selectedExistencia.getIdExistenciaProductoPk().intValue()) {
-                        banderaRepetido = true;
-                        addRepetido(productoRepetido, i);
-
-                        break;
-                    } else {
-                        banderaRepetido = false;
-                    }
-
-                }
-                //fin for
-                if (!banderaRepetido) {
-                    add();
-                    limpia();
+                    break;
+                } else {
+                    banderaRepetido = false;
                 }
 
             }
+            //fin for
+            if (!banderaRepetido) {
+                add();
+                limpia();
+            }
+
         }
         calculaAhorro(null);
 
@@ -845,7 +877,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
             BigDecimal diasAnio = new BigDecimal(365);
 
             BigDecimal totalDiasPagar = data.getTipoPago() == null ? DIAS_PLAZO : data.getTipoPago();
-              data.setNumeroPagos(new BigDecimal("1"));
+            data.setNumeroPagos(new BigDecimal("1"));
 //            data.setNumeroPagos(totalDiasPagar.divide(DIAS_PLAZO)); descomentar cuando se pongan los plazos por semana
         }
 

@@ -65,6 +65,7 @@ public class ServiceEntregaMercancia implements IfaceEntregaMercancia {
                 dominio.setKilosEntregados(object[18] == null ? null : new BigDecimal(object[18].toString()));
                 dominio.setIdTipoVenta(object[19] == null ? null : new BigDecimal(object[19].toString()));
                 dominio.setNombreTipoVenta(object[10] == null ? null : object[20].toString());
+                dominio.setIdCarroFk(object[22] == null ? null : new BigDecimal(object[22].toString()));
                 dominio.setLstEntregaMercancia(getByIdVentaMayoreoProducto(dominio.getIdVPMayoreo()));
 
                 lstEntregaMercancia.add(dominio);

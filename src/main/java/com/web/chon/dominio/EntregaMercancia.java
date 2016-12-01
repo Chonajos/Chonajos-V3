@@ -45,6 +45,7 @@ public class EntregaMercancia implements Serializable {
     private String marcaCliente;
     private String nombreUsuarioEntrega;
     private String fechaStr;
+    private BigDecimal idCarroFk;
     
     private ArrayList<EntregaMercancia> lstEntregaMercancia;
     
@@ -77,6 +78,7 @@ public class EntregaMercancia implements Serializable {
         nombreUsuarioEntrega = null;
         fechaStr = null;
 
+        idCarroFk = null;
     }
 
     @Override
@@ -333,6 +335,14 @@ public class EntregaMercancia implements Serializable {
 
     public void setFechaStr(String fechaStr) {
         this.fechaStr = fechaStr;
+    }
+
+    public BigDecimal getIdCarroFk() {
+        return idCarroFk;
+    }
+
+    public void setIdCarroFk(BigDecimal idCarroFk) {
+        this.idCarroFk = idCarroFk;
     }
     
     

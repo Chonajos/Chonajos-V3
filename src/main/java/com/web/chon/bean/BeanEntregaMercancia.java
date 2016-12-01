@@ -61,7 +61,7 @@ public class BeanEntregaMercancia implements Serializable {
     private EntregaMercancia data;
     private EntregaMercancia entregaMercancia;
     private ArrayList<EntregaMercancia> model;
-    private ArrayList<EntregaMercancia> lstEntregaMercancia;
+//    private ArrayList<EntregaMercancia> lstEntregaMercancia;
 
     private String title = "";
     private String viewEstate = "";
@@ -93,6 +93,8 @@ public class BeanEntregaMercancia implements Serializable {
     private String rutaPDF;
     private ByteArrayOutputStream outputStream;
 
+    private String codigoBarras;
+    
     @PostConstruct
     public void init() {
         usuarioDominio = context.getUsuarioAutenticado();
@@ -107,6 +109,50 @@ public class BeanEntregaMercancia implements Serializable {
         setTitle("Entrega Mercancia");
         setViewEstate("init");
 
+    }
+    public void searchByBarCode()
+    {
+        System.out.println("Codigo Barras: " + codigoBarras);
+        String diaArray[] = codigoBarras.split("'");
+        BigDecimal carro = null;
+        String producto = null;
+        BigDecimal idEmpaque = null;
+        BigDecimal idSucursal = null;
+        
+        switch (diaArray.length) 
+        {
+            case 1:
+                String segArray[] = codigoBarras.split("-");
+                idSucursal = new BigDecimal(segArray[0]);
+                carro = new BigDecimal(segArray[1]);
+                producto = segArray[2];
+                idEmpaque = new BigDecimal(segArray[3]);
+                //idTipoConvenioFk = new BigDecimal(segArray[4]);
+                break;
+            case 5:
+                idSucursal = new BigDecimal(diaArray[0]);
+                carro = new BigDecimal(diaArray[1]);
+                producto = diaArray[2];
+                idEmpaque = new BigDecimal(diaArray[3]);
+                //idTipoConvenioFk = new BigDecimal(diaArray[4]);
+                break;
+            default:
+                JsfUtil.addErrorMessageClean("Código de Barras Inválido");
+                break;
+        }
+        
+        for(EntregaMercancia mercancia : model)
+        {
+            if(mercancia.getIdCarroFk().intValue()==carro.intValue() && mercancia.getIdProducto().equals(producto) && mercancia.getIdTipoEmpaque().intValue()==idEmpaque.intValue())
+            {
+                JsfUtil.addSuccessMessageClean("Esté código se encuentra en la lista de entrega de mercancia");
+                mercancia.getLstEntregaMercancia();
+            }
+            else
+            {
+                JsfUtil.addErrorMessageClean("Este código de producto no se encuentra en la lista de entrega");
+            }
+        }
     }
 
     public void print() {
@@ -400,13 +446,13 @@ public class BeanEntregaMercancia implements Serializable {
         this.model = model;
     }
 
-    public ArrayList<EntregaMercancia> getLstEntregaMercancia() {
-        return lstEntregaMercancia;
-    }
-
-    public void setLstEntregaMercancia(ArrayList<EntregaMercancia> lstEntregaMercancia) {
-        this.lstEntregaMercancia = lstEntregaMercancia;
-    }
+//    public ArrayList<EntregaMercancia> getLstEntregaMercancia() {
+//        return lstEntregaMercancia;
+//    }
+//
+//    public void setLstEntregaMercancia(ArrayList<EntregaMercancia> lstEntregaMercancia) {
+//        this.lstEntregaMercancia = lstEntregaMercancia;
+//    }
 
     public EntregaMercancia getEntregaMercancia() {
         return entregaMercancia;
@@ -463,5 +509,22 @@ public class BeanEntregaMercancia implements Serializable {
     public void setPathFileJasper(String pathFileJasper) {
         this.pathFileJasper = pathFileJasper;
     }
+
+    public String getCodigoBarras() {
+        return codigoBarras;
+    }
+
+    public void setCodigoBarras(String codigoBarras) {
+        this.codigoBarras = codigoBarras;
+    }
+
+    public UsuarioDominio getUsuarioDominio() {
+        return usuarioDominio;
+    }
+
+    public void setUsuarioDominio(UsuarioDominio usuarioDominio) {
+        this.usuarioDominio = usuarioDominio;
+    }
+    
 
 }

@@ -167,6 +167,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     }
     public void imprimirCodigoBarras()
     {
+        rutaPDF = null;
         System.out.println("dataProducto: "+dataProducto.toString());
         String codigo = "";
         int folio = 0;
@@ -183,7 +184,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
                 nombreProducto = dataProducto.getNombreProducto();
                 codigo += entrada.getIdSucursalFK().toString()+"-";
                 idSucursal = entrada.getIdSucursalFK().intValue();
-                folio = entrada.getIdEmPK().intValue();
+                folio = dataProducto.getIdEmpPK().intValue();
                 codigo += entrada.getIdCarroSucursal().toString()+"-";
                 codigo += dataProducto.getIdSubProductoFK().toString()+"-";
                 codigo += dataProducto.getIdTipoEmpaqueFK().toString()+"-";

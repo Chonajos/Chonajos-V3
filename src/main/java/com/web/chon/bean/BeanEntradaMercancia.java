@@ -202,10 +202,8 @@ public class BeanEntradaMercancia implements Serializable {
                 entrada_mercancia.setIdCarroSucursal(new BigDecimal(idCarroSucursal + 1));
 
                 int mercanciaOrdenada = ifaceEntradaMercancia.insertEntradaMercancia(entrada_mercancia);
-                if (mercanciaOrdenada != 0) 
-                {
-                    for (int i = 0; i < listaMercanciaProducto.size(); i++) 
-                    {
+                if (mercanciaOrdenada != 0) {
+                    for (int i = 0; i < listaMercanciaProducto.size(); i++) {
                         EntradaMercanciaProducto producto = new EntradaMercanciaProducto();
                         producto = listaMercanciaProducto.get(i);
                         int idEnTMerPro = ifaceEntradaMercanciaProducto.getNextVal();
@@ -228,8 +226,7 @@ public class BeanEntradaMercancia implements Serializable {
                             ep.setIdSucursal(entrada_mercancia.getIdSucursalFK());
                             ep.setIdProvedor(entrada_mercancia.getIdProvedorFK());
                             ep.setIdEntradaMercanciaProductoFK(new BigDecimal(idEnTMerPro));
-                            if (ifaceNegocioExistencia.insertExistenciaProducto(ep) == 1) 
-                            {
+                            if (ifaceNegocioExistencia.insertExistenciaProducto(ep) == 1) {
                                 JsfUtil.addSuccessMessageClean("¡Registro de Mercancias correcto !");
                             } else {
                                 JsfUtil.addErrorMessage("Error!", "Ocurrio un error al registrar la mercancia en existencias");
@@ -281,8 +278,9 @@ public class BeanEntradaMercancia implements Serializable {
 
     public void remove() {
 
-        kilos = kilos.subtract(dataRemove.getKilosTotalesProducto(), MathContext.UNLIMITED);
+        //kilos = kilos.subtract(dataRemove.getKilosTotalesProducto(), MathContext.UNLIMITED);
         listaMercanciaProducto.remove(dataRemove);
+        sumaTotales();
 
     }
 
@@ -303,7 +301,15 @@ public class BeanEntradaMercancia implements Serializable {
         dataProducto.setNombreTipoConvenio(dataEdit.getNombreTipoConvenio());
         viewEstate = "update";
         dataProducto.setPesoNeto(dataEdit.getPesoNeto());
-        kilos = kilos.subtract(dataEdit.getPesoNeto(), MathContext.UNLIMITED);
+
+        //kilos = kilos.subtract(dataEdit.getPesoNeto(), MathContext.UNLIMITED);
+    }
+
+    public void sumaTotales() {
+        kilos = new BigDecimal(0);
+        for (EntradaMercanciaProducto producto : listaMercanciaProducto) {
+            kilos = kilos.add(producto.getPesoNeto(), MathContext.UNLIMITED);
+        }
     }
 
     public void cancel() {
@@ -341,6 +347,7 @@ public class BeanEntradaMercancia implements Serializable {
         viewEstate = "init";
         subProducto = new Subproducto();
         dataProducto.reset();
+        sumaTotales();
 
     }
 
@@ -371,39 +378,48 @@ public class BeanEntradaMercancia implements Serializable {
         p.setNombreEmpaque(empaque.getNombreEmpaque());
         p.setCantidadPaquetes(dataProducto.getCantidadPaquetes());
         p.setPrecio(dataProducto.getPrecio());
-        p.setKilosTotalesProducto(dataProducto.getKilosTotalesProducto().subtract((dataProducto.getPesoTara() == null ? new BigDecimal(0) : dataProducto.getPesoTara()), MathContext.UNLIMITED));
-        kilos = kilos.add(p.getKilosTotalesProducto(), MathContext.UNLIMITED);
-        data.setKilosTotales(kilos);
-        p.setComentarios(dataProducto.getComentarios());
-        to = getTipoConvenio(dataProducto.getIdTipoConvenio());
-        p.setNombreTipoConvenio(to.getNombreTipoConvenio());
-        p.setIdTipoConvenio(dataProducto.getIdTipoConvenio());
-        Bodega b = new Bodega();
-        b = getBodega(dataProducto.getIdBodegaFK());
-        p.setNombreBodega(b.getNombreBodega());
-        p.setIdBodegaFK(dataProducto.getIdBodegaFK());
-        p.setPesoTara(dataProducto.getPesoTara());
-        p.setPesoNeto(dataProducto.getPesoNeto());
-        boolean bandera = false;
-        for (EntradaMercanciaProducto producto : listaMercanciaProducto) {
-            if (producto.getIdSubProductoFK().equals(p.getIdSubProductoFK()) && producto.getIdTipoEmpaqueFK().intValue() == p.getIdTipoEmpaqueFK().intValue() && producto.getIdTipoConvenio().intValue() == p.getIdTipoConvenio().intValue() && producto.getIdBodegaFK().intValue() == p.getIdBodegaFK().intValue()) {
-                if(producto.getPrecio().setScale(2, RoundingMode.CEILING).compareTo(p.getPrecio().setScale(2, RoundingMode.CEILING))==0)
-                {
-                    bandera = true;
+        p.setPesoNeto(dataProducto.getKilosTotalesProducto().subtract((dataProducto.getPesoTara() == null ? new BigDecimal(0) : dataProducto.getPesoTara()), MathContext.UNLIMITED));
+        p.setKilosTotalesProducto(dataProducto.getKilosTotalesProducto());
+        
+        if (p.getPesoNeto().compareTo(new BigDecimal(0)) <= 0) 
+        {
+            JsfUtil.addErrorMessageClean("El peso de la tara es mayor que el producto");
+        } else 
+        {
+//kilos = kilos.add(p.getKilosTotalesProducto(), MathContext.UNLIMITED);
+            //data.setKilosTotales(kilos);
+            p.setComentarios(dataProducto.getComentarios());
+            to = getTipoConvenio(dataProducto.getIdTipoConvenio());
+            p.setNombreTipoConvenio(to.getNombreTipoConvenio());
+            p.setIdTipoConvenio(dataProducto.getIdTipoConvenio());
+            Bodega b = new Bodega();
+            b = getBodega(dataProducto.getIdBodegaFK());
+            p.setNombreBodega(b.getNombreBodega());
+            p.setIdBodegaFK(dataProducto.getIdBodegaFK());
+            p.setPesoTara(dataProducto.getPesoTara() == null ? new BigDecimal(0) : dataProducto.getPesoTara());
+            //p.setPesoNeto(dataProducto.getPesoNeto());
+            boolean bandera = false;
+            for (EntradaMercanciaProducto producto : listaMercanciaProducto) {
+                if (producto.getIdSubProductoFK().equals(p.getIdSubProductoFK()) && producto.getIdTipoEmpaqueFK().intValue() == p.getIdTipoEmpaqueFK().intValue() && producto.getIdTipoConvenio().intValue() == p.getIdTipoConvenio().intValue() && producto.getIdBodegaFK().intValue() == p.getIdBodegaFK().intValue()) {
+                    if (producto.getPrecio().setScale(2, RoundingMode.CEILING).compareTo(p.getPrecio().setScale(2, RoundingMode.CEILING)) == 0) {
+                        bandera = true;
+                    }
                 }
             }
+            if (!bandera) {
+                listaMercanciaProducto.add(p);
+                permisionToGenerate = false;
+                dataProducto.reset();
+                subProducto = new Subproducto();
+                listaTiposConvenio = ifaceCovenio.getTipos();
+                //listaBodegas = ifaceCatBodegas.getBodegas();
+                JsfUtil.addSuccessMessageClean("Producto agregado correctamente");
+            } else {
+                JsfUtil.addErrorMessageClean("Este Producto ya se encuentra en la lista, modificar existente");
+            }
+            sumaTotales();
         }
-        if (!bandera) {
-            listaMercanciaProducto.add(p);
-            permisionToGenerate = false;
-            dataProducto.reset();
-            subProducto = new Subproducto();
-            listaTiposConvenio = ifaceCovenio.getTipos();
-            //listaBodegas = ifaceCatBodegas.getBodegas();
-            JsfUtil.addSuccessMessageClean("Producto agregado correctamente");
-        } else {
-            JsfUtil.addErrorMessageClean("Este Producto ya se encuentra en la lista");
-        }
+        
 
     }
 
@@ -697,7 +713,6 @@ public class BeanEntradaMercancia implements Serializable {
         this.listaBodegas = listaBodegas;
     }
 
-  
     public BigDecimal getKilos() {
         return kilos;
     }

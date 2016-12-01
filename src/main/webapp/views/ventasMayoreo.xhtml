@@ -101,7 +101,6 @@
                         <p:fragment rendered="#{beanVentaMayoreo.data.idTipoVenta == 2}">
                             <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12" >
                                 <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="txtNumeroPagos" value ="Pagos:" rendered="#{beanVentaMayoreo.data.idTipoVenta == 2}"/> 
-
                                 <p:inputText id="txtNumeroPagos"  class=" col-lg-4 col-md-4 col-sm-4 col-xs-12" value="#{beanVentaMayoreo.data.numeroPagos}" required="true"
                                              requiredMessage="Ingresa un valor para el campo Numero de Pagos." rendered="#{beanVentaMayoreo.data.idTipoVenta == 2}">
                                     <p:ajax event="blur" update="@this" listener="#{beanVentaMayoreo.validarNumeroPagos}" immediate="true"/>
@@ -142,7 +141,7 @@
                             </p:inputText>
                         </div>
                         <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="txtPrecioVenta" value ="Precio de venta:" /> 
+                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="txtPrecioVenta" value ="Precio:" /> 
                             <p:inputText id="txtPrecioVenta"  class=" col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanVentaMayoreo.data.precioProducto}" disabled="#{beanVentaMayoreo.permisionToWrite}" required="true"
                                          requiredMessage="Ingresa un valor para el campo Precio de venta.">
                                 <p:ajax event="blur" update="formContent:txtPrecioNeto" listener ="#{beanVentaMayoreo.validaPrecioMinimoMaximo}"/>
@@ -156,9 +155,9 @@
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group  " >
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" >
-                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12" id="codigo" for="txtCodigoBarras" value ="Código de Barras:"  /> 
-                            <p:inputText id="txtCodigoBarras" maxlength="30" class=" col-lg-6 col-md-8 col-sm-8 col-xs-12"  value="#{beanVentaMayoreo.codigoBarras}">
-                                <p:ajax event="blur" update=":formContent:autocompleteProducto :formContent:modelo2 :formContent:txtCantidadEmpaque :formContent:txtKilos :formContent:txtPrecioVenta" listener ="#{beanVentaMayoreo.searchByBarCode()}"/>
+                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12" id="codigo" for="txtCodigoBarras" value ="Código de Barras:"  rendered="#{beanVentaMayoreo.usuario.idSucursal==1}"/> 
+                            <p:inputText id="txtCodigoBarras" maxlength="30" class=" col-lg-6 col-md-8 col-sm-8 col-xs-12"  value="#{beanVentaMayoreo.codigoBarras}" rendered="#{beanVentaMayoreo.usuario.idSucursal==1}">
+                                <p:ajax event="blur" update=":formContent:txtCantidadEmpaque :formContent:txtKilos :formContent:txtPrecioVenta" listener ="#{beanVentaMayoreo.searchByBarCode()}"/>
                             </p:inputText> 
                         </div>
                     </div>
