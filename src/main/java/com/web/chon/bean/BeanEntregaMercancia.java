@@ -16,6 +16,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
@@ -146,7 +147,16 @@ public class BeanEntregaMercancia implements Serializable {
             if(mercancia.getIdCarroFk().intValue()==carro.intValue() && mercancia.getIdProducto().equals(producto) && mercancia.getIdTipoEmpaque().intValue()==idEmpaque.intValue())
             {
                 JsfUtil.addSuccessMessageClean("Esté código se encuentra en la lista de entrega de mercancia");
-                mercancia.getLstEntregaMercancia();
+                System.out.println("Mercancia: "+mercancia.toString());
+                //
+                 empaquesEntregar = empaquesEntregar.add(new BigDecimal(1), MathContext.UNLIMITED);
+                 System.out.println("Contando : "+empaquesEntregar);
+                    //setKilosPromedio
+                    //System.out.println("Paquete: "+paquete.toString());
+//                    paquete.getKilosEntregados();
+//                    paquete.getEmpaquesEntregados();
+                
+                
             }
             else
             {

@@ -59,6 +59,7 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import org.bouncycastle.asn1.ocsp.Request;
+import org.primefaces.component.datatable.DataTable;
 import org.primefaces.component.inputtext.InputText;
 import org.primefaces.context.RequestContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -251,9 +252,14 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                     if (lstExistencias.size() == 1) {
                         selectedExistencia = new ExistenciaProducto();
                         selectedExistencia = lstExistencias.get(0);
-                        habilitarBotones();
+                         habilitarBotones();
+                        RequestContext.getCurrentInstance().update("formContent:modelo2");
+                        RequestContext.getCurrentInstance().update("formContent:autocompleteProducto");
                     } else {
                         selectedExistencia = new ExistenciaProducto();
+                        habilitarBotones();
+                        RequestContext.getCurrentInstance().update("formContent:modelo2");
+                        RequestContext.getCurrentInstance().update("formContent:autocompleteProducto");
                     }
                     if (lstExistencias.isEmpty()) {
                         JsfUtil.addWarnMessage("No se encontraron existencias de este producto");
@@ -272,11 +278,14 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                         selectedExistencia = new ExistenciaProducto();
                         selectedExistencia = lstExistencias.get(0);
                         habilitarBotones();
-                        RequestContext.getCurrentInstance().update("formContent:model2");
+                        RequestContext.getCurrentInstance().update("formContent:modelo2");
                         RequestContext.getCurrentInstance().update("formContent:autocompleteProducto");
 
                     } else {
                         selectedExistencia = new ExistenciaProducto();
+                        habilitarBotones();
+                        RequestContext.getCurrentInstance().update("formContent:modelo2");
+                        RequestContext.getCurrentInstance().update("formContent:autocompleteProducto");
                     }
                     if (lstExistencias.isEmpty()) {
                         JsfUtil.addWarnMessage("No se encontraron existencias de este producto");

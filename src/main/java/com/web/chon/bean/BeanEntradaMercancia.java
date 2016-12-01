@@ -195,7 +195,7 @@ public class BeanEntradaMercancia implements Serializable {
                 entrada_mercancia.setFolio(data.getFolio());
                 entrada_mercancia.setCantidadEmpaquesProvedor(data.getCantidadEmpaquesProvedor());
                 entrada_mercancia.setCantidadEmpaquesReales(cantidadReal);
-                entrada_mercancia.setKilosTotales(data.getKilosTotales());
+                entrada_mercancia.setKilosTotales(kilos);
                 entrada_mercancia.setKilosTotalesProvedor(data.getKilosTotalesProvedor());
                 entrada_mercancia.setComentariosGenerales(data.getComentariosGenerales());
                 entrada_mercancia.setFechaRemision(data.getFechaRemision());
