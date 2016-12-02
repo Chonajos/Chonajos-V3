@@ -147,8 +147,13 @@ public class BeanEntregaMercancia implements Serializable {
             if(mercancia.getIdCarroFk().intValue()==carro.intValue() && mercancia.getIdProducto().equals(producto) && mercancia.getIdTipoEmpaque().intValue()==idEmpaque.intValue())
             {
                 JsfUtil.addSuccessMessageClean("Esté código se encuentra en la lista de entrega de mercancia");
-                System.out.println("Mercancia: "+mercancia.toString());
-                //
+                //System.out.println("Mercancia: "+mercancia.toString());
+                //89
+                
+                if(empaquesEntregar==null)
+                {
+                    empaquesEntregar = new BigDecimal(0);
+                }
                  empaquesEntregar = empaquesEntregar.add(new BigDecimal(1), MathContext.UNLIMITED);
                  System.out.println("Contando : "+empaquesEntregar);
                     //setKilosPromedio

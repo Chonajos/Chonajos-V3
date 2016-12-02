@@ -44,10 +44,10 @@
                         <p:inputText id="txtTipoVenta" value="#{beanEntregaMercancia.data.nombreTipoVenta}" class="col-lg-1 col-md-3 col-sm-3 col-xs-12" readonly="true"/>
                         <p:outputLabel value="Estatus Venta:" class="col-lg-1 col-md-3 col-sm-3 col-xs-12" for="txtEstatusVenta" style="padding-left: 5px; padding-right:8px; "/>
                         <p:inputText id="txtEstatusVenta" value="#{beanEntregaMercancia.data.estatusVenta}" class="col-lg-1 col-md-3 col-sm-3 col-xs-12" readonly="true"/>
-                        <!--<p:outputLabel class="col-lg-1 col-md-3 col-sm-3 col-xs-12" id="codigo" for="txtCodigoBarras" value ="Código de Barras:"  rendered="{beanEntregaMercancia.usuarioDominio.sucId ==1}"/> 
-                        <p:inputText id="txtCodigoBarras" maxlength="30" class="col-lg-1 col-md-3 col-sm-3 col-xs-12"  value="{beanEntregaMercancia.codigoBarras}" rendered="{beanEntregaMercancia.usuarioDominio.sucId==1}">
-                        <p:ajax event="blur" update=":formContent" listener ="{beanEntregaMercancia.searchByBarCode()}"/>
-                        </p:inputText>-->
+                        <p:outputLabel class="col-lg-1 col-md-3 col-sm-3 col-xs-12" id="codigo" for="txtCodigoBarras" value ="Código de Barras:"  rendered="#{beanEntregaMercancia.usuarioDominio.sucId ==1}"/> 
+                        <p:inputText id="txtCodigoBarras" maxlength="30" class="col-lg-1 col-md-3 col-sm-3 col-xs-12"  value="#{beanEntregaMercancia.codigoBarras}" rendered="#{beanEntregaMercancia.usuarioDominio.sucId==1}">
+                        <p:ajax event="blur" update=":formContent" listener ="#{beanEntregaMercancia.searchByBarCode()}"/>
+                        </p:inputText>
 
                     </div>
                     <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12 col-lg-offset-1 col-md-offset-1" style="padding: 0px;">
