@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="./../templates/main.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content">
+        <h:form id="formContent">
+            <div><h3>Precios de los Productos</h3>
+            </div>
+            <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
+            <p:panel>
+                <div class="container">
+                    <p:poll update="formContent" listener="#{beanInfoTv.generarListaMostrar}" interval="3"/>
+                    <ui:repeat value="#{beanInfoTv.lstTempShow}" var="producto">
+                        <div class="col-xs-3 col-md-4 col-sm-6 col-xs-12">
+                            <div class="col-xs-12 col-md-12 col-sm-12 col-xs-12 alignLeft noPadding">
+                                <h1><p:outputLabel value="$:#{producto.precioProducto}"/></h1>
+                            </div>
+                            <img style="height:200px; width:300px;" src="#{producto.urlImagenSubproducto}" alt="logo"/>
+                            <div class="col-xs-12 col-md-12 col-sm-12 col-xs-12 noPadding">
+                                <div class="col-xs-12 col-md-12 col-sm-12 col-xs-12 alignLeft noPadding">
+                                    <h3 class="alignLeft"><p:outputLabel class="alignLeft" value="#{producto.nombreSubproducto}"/></h3>
+                                </div>
+
+                            </div>
+                        </div>  
+                    </ui:repeat>
+<!--                    <p:contentFlow value="#{beanInfoTv.lstTempShow}" var="producto">
+                        <p:graphicImage  name="#{producto.urlImagenSubproducto}" alt="logo" styleClass="content"/>
+                        <img style="height:200px; width:300px;" name="producto" src="#{producto.urlImagenSubproducto}" alt="logo"/>
+                        <div class="caption">#{producto}</div>
+                    </p:contentFlow>-->
+                    <p:galleria value="#{beanInfoTv.lstTempShow}" var="producto" panelWidth="500" panelHeight="313" showCaption="true">
+                        <p:graphicImage  alt="#{producto.nombreSubproducto}" title="#{producto.precioProducto}"/>
+                        <img style="height:200px; width:300px;" src="#{producto.urlImagenSubproducto}" name="#{producto.nombreSubproducto}" alt="#{producto.precioProducto}" />
+                    </p:galleria>
+                    <!--<img style="height:200px; width:300px;" src="../resources/img/PRODUCTOS/IMG_20161205_120458229.jpg" alt="logo"/>-->
+                </div>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>

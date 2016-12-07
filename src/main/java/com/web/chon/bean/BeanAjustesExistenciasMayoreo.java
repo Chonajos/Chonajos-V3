@@ -26,6 +26,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import javax.annotation.PostConstruct;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.RowEditEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -189,25 +190,25 @@ public class BeanAjustesExistenciasMayoreo implements Serializable {
         ExistenciaProducto existenciaMayoreoOld = new ExistenciaProducto();
         ExistenciaProducto existenciaProductoNew = new ExistenciaProducto();
         ArrayList<ExistenciaProducto> lstExistenciaProducto = new ArrayList<ExistenciaProducto>();
-
-        System.out.println("inicializadas las variables.");
+        
+        if (existenciaProductoNew.getSalidaEntrada() == null) {
+            JsfUtil.addErrorMessage("Selecione si es una salida o es una entrada.");
+            return;
+        }
 
         ajusteExistenciaMayoreo = new AjusteExistenciaMayoreo();
 
         existenciaProductoNew = (ExistenciaProducto) event.getObject();
         lstExistenciaProducto = ifaceNegocioExistencia.getExistenciaById(existenciaProductoNew.getIdExistenciaProductoPk());
-        System.out.println("se hace consulta para traer existencia productopro id existenciaproducto. " + existenciaProductoNew.getIdExistenciaProductoPk());
+
         if (lstExistenciaProducto != null && !lstExistenciaProducto.isEmpty()) {
-            System.out.println("se encontro existencia. ");
-            existenciaProductoOld = lstExistenciaProducto.get(0);
+            existenciaMayoreoOld = lstExistenciaProducto.get(0);
         }
 
         if (existenciaProductoNew.getSalidaEntrada().trim().equalsIgnoreCase("Entrada")) {
-            System.out.println("entrada. ");
             existenciaProductoNew.setKilosTotalesProducto(existenciaProductoNew.getKilosTotalesProducto().add(existenciaProductoNew.getKilosAjustar()));
             existenciaProductoNew.setCantidadPaquetes(existenciaProductoNew.getCantidadPaquetes().add(existenciaProductoNew.getEmpaquesAjustar()));
         } else {
-            System.out.println("salida. ");
             existenciaProductoNew.setKilosTotalesProducto(existenciaProductoNew.getKilosTotalesProducto().subtract(existenciaProductoNew.getKilosAjustar()));
             existenciaProductoNew.setCantidadPaquetes(existenciaProductoNew.getCantidadPaquetes().subtract(existenciaProductoNew.getEmpaquesAjustar()));
         }
@@ -223,16 +224,21 @@ public class BeanAjustesExistenciasMayoreo implements Serializable {
             ajusteExistenciaMayoreo.setKilosAnteior(existenciaMayoreoOld.getKilosTotalesProducto());
             ajusteExistenciaMayoreo.setObservaciones(existenciaProductoNew.getObservaciones());
             ajusteExistenciaMayoreo.setMotivoAjuste(existenciaProductoNew.getMotivoAjuste());
-            System.out.println("ajusteExistenciaMayoreo. " + ajusteExistenciaMayoreo.toString());
+            
             if (ifaceAjusteExistenciaMayoreo.insert(ajusteExistenciaMayoreo) == 0) {
-                System.out.println("Incercion. " );
                 JsfUtil.addErrorMessage("Error al Modificar el Registro.");
             }
         }
 
-        JsfUtil.addSuccessMessage("Se Modifico el Registro Exitosamente.");
+        
+
+        model.clear();
+        existenciaMayoreoOld = new ExistenciaProducto();
+        existenciaProductoNew = new ExistenciaProducto();
+        lstExistenciaProducto.clear();
 
         buscaExistencias();
+        JsfUtil.addSuccessMessage("Se Modifico el Registro Exitosamente.");
 
     }
 

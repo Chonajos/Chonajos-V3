@@ -87,8 +87,7 @@ public class EjbMantenimientoPrecio implements NegocioMantenimientoPrecio {
 
         String fechaTemporalFin = TiempoUtil.getFechaDDMMYYYY(fechaMercado);
         String fechaTemporalInicio = TiempoUtil.getFechaDDMMYYYY(TiempoUtil.sumarRestarDias(fechaMercado, -7));
-        System.out.println("Fecha Inicio: "+fechaTemporalInicio);
-        System.out.println("Fecha Fin: "+fechaTemporalFin);
+
         try {
             StringBuilder queryStr;
 

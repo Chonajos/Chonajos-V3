@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.web.chon.bean;
 
 import com.web.chon.dominio.Cliente;
@@ -16,7 +11,6 @@ import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.dominio.VentaMayoreo;
 import com.web.chon.dominio.VentaProductoMayoreo;
 import com.web.chon.security.service.PlataformaSecurityContext;
-
 import com.web.chon.service.IfaceCatCliente;
 import com.web.chon.service.IfaceCatUsuario;
 import com.web.chon.service.IfaceCredito;
@@ -36,7 +30,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -58,8 +51,6 @@ import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
-import org.bouncycastle.asn1.ocsp.Request;
-import org.primefaces.component.datatable.DataTable;
 import org.primefaces.component.inputtext.InputText;
 import org.primefaces.context.RequestContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,74 +67,57 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
     private static final long serialVersionUID = 1L;
 
-    @Autowired
-    private IfaceVenta ifaceVenta;
-    @Autowired
-    private IfaceVentaMayoreo ifaceVentaMayoreo;
-    @Autowired
-    private IfaceSubProducto ifaceSubProducto;
-    @Autowired
-    IfaceCatCliente ifaceCatCliente;
-    @Autowired
-    IfaceCatUsuario ifaceCatUsuario;
-    @Autowired
-    private IfaceNegocioExistencia ifaceNegocioExistencia;
-    @Autowired
-    private IfaceTipoVenta ifaceTipoVenta;
-    @Autowired
-    private PlataformaSecurityContext context;
-    @Autowired
-    private IfaceVentaMayoreoProducto ifaceVentaMayoreoProducto;
-    @Autowired
-    private IfaceCredito ifaceCredito;
-
-    private ArrayList<TipoVenta> lstTipoVenta;
+    @Autowired private IfaceVenta ifaceVenta;
+    @Autowired private IfaceCredito ifaceCredito;
+    @Autowired private IfaceTipoVenta ifaceTipoVenta;
+    @Autowired private IfaceCatCliente ifaceCatCliente;
+    @Autowired private IfaceCatUsuario ifaceCatUsuario;
+    @Autowired private IfaceSubProducto ifaceSubProducto;
+    @Autowired private PlataformaSecurityContext context;
+    @Autowired private IfaceVentaMayoreo ifaceVentaMayoreo;
+    @Autowired private IfaceNegocioExistencia ifaceNegocioExistencia;
+    @Autowired private IfaceVentaMayoreoProducto ifaceVentaMayoreoProducto;
+    
     private ArrayList<Cliente> lstCliente;
     private ArrayList<Usuario> lstUsuario;
+    private ArrayList<TipoVenta> lstTipoVenta;
     private ArrayList<Subproducto> lstProducto;
-    private ArrayList<ExistenciaProducto> lstExistencias;
     private ArrayList<VentaProductoMayoreo> lstVenta;
-    private ExistenciaProducto selectedExistencia;
-
-    private UsuarioDominio usuarioDominio;
-
+    private ArrayList<ExistenciaProducto> lstExistencias;
+    
+    private Credito c;
     private Cliente cliente;
     private Usuario usuario;
-    private Credito c;
+    private ExistenciaProducto ep;
     private Subproducto subProducto;
     private VentaProductoMayoreo data;
-    private EntradaMercancia entradaMercancia;
-    private ExistenciaProducto ep;
     private VentaMayoreo ventaGeneral;
-    private VentaProductoMayoreo dataRemove;
     private VentaProductoMayoreo dataEdit;
+    private UsuarioDominio usuarioDominio;
+    private VentaProductoMayoreo dataRemove;
+    private EntradaMercancia entradaMercancia;
+    private ExistenciaProducto selectedExistencia;
 
-    private BigDecimal totalVenta;
     private BigDecimal idSucu;
-    private BigDecimal idExistencia;
+    private BigDecimal totalVenta;
     private BigDecimal idTipoVenta;
+    private BigDecimal idExistencia;
+    private BigDecimal totalVentaGeneral;
     private BigDecimal totalProductoTemporal;
+    
 
     private String title = "";
     private String viewEstate = "";
-    private String ventaRapidaButton = "";
-
-    private BigDecimal totalVentaGeneral;
 
     //Variables para Generar el pdf
     private String rutaPDF;
-    private Map paramReport = new HashMap();
     private String number;
     private String pathFileJasper = "C:/Users/Juan/Documents/NetBeansProjects/Chonajos-V2/ticket.jasper";
+    
+    private Map paramReport = new HashMap();
+    
     private ByteArrayOutputStream outputStream;
 
-    private String ventaRapida;
-    private String focus;
-
-    private BigDecimal recibido;
-    private BigDecimal cambio;
-
-    private boolean pruaba;
     private boolean charLine = true;
 
     private BigDecimal max;
@@ -151,20 +125,22 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     private BigDecimal descuento;
     private BigDecimal dejaACuenta;
     private BigDecimal totalVentaDescuento;
-    private BigDecimal DIAS_PLAZO = new BigDecimal("7");
-    private BigDecimal ZERO = new BigDecimal(0);
-    private BigDecimal INTERES_VENTA = new BigDecimal("0.60");
-    private BigDecimal PORCENTAJE_RANGO_VENTA = new BigDecimal(0.15);
+    
+    private final BigDecimal DIAS_PLAZO = new BigDecimal("7");
+    private final BigDecimal ZERO = new BigDecimal(0);
+    private final BigDecimal INTERES_VENTA = new BigDecimal("0.60");
+    private final BigDecimal PORCENTAJE_RANGO_VENTA = new BigDecimal("0.20");
+    
     private int folioCredito = 0;
 
     private boolean permisionToWrite;
-    private boolean permisionVentaRapida;
     private boolean permisionToEdit;
-    private boolean variableInicial;
     private boolean credito;
-    private String codigoBarras;
+    
     //---Variables Codigo de Barras --//
+    private String codigoBarras;
     private String idSubpProducto;
+    
     private BigDecimal idTipoempaqueFk;
     private BigDecimal idTipoConvenioFk;
     private BigDecimal idCarro;
@@ -174,9 +150,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
     @PostConstruct
     public void init() {
-
-//        pruaba = false;
-        ventaRapida = "0";
+        
         credito = false;
         date = context.getFechaSistema();
         cliente = new Cliente();
@@ -185,8 +159,6 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         usuario = new Usuario();
         usuarioDominio = context.getUsuarioAutenticado();
         idSucu = new BigDecimal(usuarioDominio.getSucId());
-
-        focus = "autocompleteProducto";
 
         usuario.setIdUsuarioPk(usuarioDominio.getIdUsuario());
         usuario.setIdSucursal(idSucu.intValue());
@@ -213,19 +185,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         totalVentaDescuento = new BigDecimal(0);
         permisionToEdit = false;
 
-        ventaRapida = (usuario.getIdRolFk()).toString();
-
-        if (ventaRapida.equals("4")) {
-
-            lstExistencias = ifaceNegocioExistencia.getExistencias(idSucu, null, null, null, null, null, null);
-            ventaRapidaButton = "Rapida";
-            permisionVentaRapida = false;
-
-        } else {
-            ventaRapida = "2";
-            permisionVentaRapida = true;
-            lstExistencias = new ArrayList<ExistenciaProducto>();
-        }
+        lstExistencias = new ArrayList<ExistenciaProducto>();
         selectedExistencia = new ExistenciaProducto();
 
     }
@@ -297,10 +257,6 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
             }
         }
 
-    }
-
-    public void calculaCambio() {
-        cambio = recibido.subtract(totalVentaGeneral, MathContext.UNLIMITED);
     }
 
     public void habilitarBotones() {
@@ -462,16 +418,9 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         codigoBarras = null;
         selectedExistencia = new ExistenciaProducto();
         lstExistencias = new ArrayList<ExistenciaProducto>();
-        BigDecimal idEntrada;
-        lstExistencias = new ArrayList<ExistenciaProducto>();
-
-        if (entradaMercancia == null) {
-            idEntrada = null;
-        } else {
-            idEntrada = entradaMercancia.getIdEmPK();
-        }
 
         String idproductito = subProducto == null ? null : subProducto.getIdSubproductoPk();
+        
         if (idproductito != null) {
             lstExistencias = ifaceNegocioExistencia.getExistencias(idSucu, null, null, idproductito, null, null, null);
             if (lstExistencias.size() == 1) {
@@ -493,12 +442,8 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
             data.setKilosVendidos(null);
             selectedExistencia = new ExistenciaProducto();
             permisionToWrite = true;
-            if (ventaRapida.equals("4")) {
 
-                lstExistencias = ifaceNegocioExistencia.getExistencias(idSucu, null, null, null, null, null, null);
-            } else {
-                lstExistencias.clear();
-            }
+            lstExistencias.clear();
 
         }
 
@@ -729,7 +674,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
         for (VentaProductoMayoreo venta : lstVenta) {
             String cantidad = venta.getCantidadEmpaque() + " - " + venta.getKilosVendidos() + "Kg.";
-            productos.add(venta.getNombreProducto().toUpperCase() + " " + venta.getNombreEmpaque());
+            productos.add(venta.getNombreProducto() + " " + venta.getNombreEmpaque()+" ->"+venta.getClave()+"("+venta.getFolioCarro()+")");
             productos.add("  " + cantidad + "                     " + nf.format(venta.getPrecioProducto()) + "    " + nf.format(venta.getTotalVenta()));
         }
 
@@ -747,6 +692,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         DecimalFormat df = new DecimalFormat("#,###.00");
         paramReport.clear();
         paramReport.put("fechaVenta", dateTime);
+        System.out.println("idventa "+idVenta);
         paramReport.put("noVenta", Integer.toString(idVenta));
         paramReport.put("cliente", cliente.getNombreCompleto());
         paramReport.put("vendedor", usuario.getNombreCompletoUsuario());
@@ -1405,56 +1351,6 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
     public void setTotalProductoTemporal(BigDecimal totalProductoTemporal) {
         this.totalProductoTemporal = totalProductoTemporal;
-    }
-
-    public String getVentaRapida() {
-        return ventaRapida;
-    }
-
-    public void setVentaRapida(String ventaRapida) {
-        this.ventaRapida = ventaRapida;
-    }
-
-    public String getVentaRapidaButton() {
-        return ventaRapidaButton;
-    }
-
-    public void setVentaRapidaButton(String ventaRapidaButton) {
-        this.ventaRapidaButton = ventaRapidaButton;
-    }
-
-    public boolean isPermisionVentaRapida() {
-        return permisionVentaRapida;
-    }
-
-    public void setPermisionVentaRapida(boolean permisionVentaRapida) {
-        this.permisionVentaRapida = permisionVentaRapida;
-    }
-
-    public BigDecimal getRecibido() {
-        return recibido;
-    }
-
-    public void setRecibido(BigDecimal recibido) {
-        this.recibido = recibido;
-    }
-
-    public BigDecimal getCambio() {
-        return cambio;
-    }
-
-    public void setCambio(BigDecimal cambio) {
-        this.cambio = cambio;
-    }
-
-    public boolean isPruaba() {
-        System.out.println("prubea is:" + pruaba);
-        return pruaba;
-    }
-
-    public void setPruaba(boolean pruaba) {
-        System.out.println("prubea set:" + pruaba);
-        this.pruaba = pruaba;
     }
 
     public boolean isCharLine() {

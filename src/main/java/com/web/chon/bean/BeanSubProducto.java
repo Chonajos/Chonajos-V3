@@ -1,21 +1,28 @@
 package com.web.chon.bean;
 
-import com.web.chon.dominio.EntradaMercancia;
+import com.web.chon.dominio.FileDominio;
 import com.web.chon.dominio.Subproducto;
 import com.web.chon.dominio.Producto;
 import com.web.chon.service.IfaceProducto;
 import com.web.chon.service.IfaceSubProducto;
 import com.web.chon.util.Constantes;
+import com.web.chon.util.FileUtils;
 import com.web.chon.util.JasperReportUtil;
+import com.web.chon.util.JsfUtil;
 import com.web.chon.util.TiempoUtil;
 import com.web.chon.util.UtilUpload;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,7 +40,10 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
+import org.primefaces.model.UploadedFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -53,15 +63,16 @@ public class BeanSubProducto implements Serializable, BeanSimple {
     private IfaceSubProducto ifaceSubProducto;
     @Autowired
     private IfaceProducto ifaceProducto;
-    
+
     private ArrayList<Subproducto> model;
     private ArrayList<Subproducto> selectedSubProducto;
     private ArrayList<Producto> lstProducto;
+    private List<FileDominio> filesUser = new ArrayList<FileDominio>();
 
     private String title = "";
     public String viewEstate = "";
     public Subproducto data;
-    
+
     //---Variables de Impresión----//
     private Map paramReport = new HashMap();
     private String rutaPDF;
@@ -70,6 +81,16 @@ public class BeanSubProducto implements Serializable, BeanSimple {
     private String number;
     private int idSucu;
     private String pathFileJasper = "";
+
+    private InputStream inputStream;
+    private int fileSaved = 0;
+    private DefaultStreamedContent download;
+//    private String path = "/opt/wls/wls12210/user_projects/domains/base_domain/servers/AdminServer/tmp/_WL_user/Chonajos-1.0-SNAPSHOT/kkoz5u/war/resources/img"; DESCOMENTAR CUANDO SE SUBA AL SERVIDOR PARA QUE FUNCIONE
+    private String path = "C:/Users/Juan/Documents/NetBeansProjects/Chonajos-V2/src/main/webapp/resources/img";//path de prueba comentar cuando se suba al servidor
+//    
+    private File[] files = null;
+    private String carpeta = "PRODUCTOS";
+    private String destPath;
 
     @PostConstruct
     public void init() {
@@ -93,7 +114,7 @@ public class BeanSubProducto implements Serializable, BeanSimple {
                 try {
                     if (ifaceSubProducto.deleteSubProducto(producto.getIdSubproductoPk()) == 1) {
                         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro eliminado."));
-                    }else{
+                    } else {
                         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar eliminar el registro :" + producto.getNombreSubproducto() + "."));
                     }
 
@@ -106,18 +127,18 @@ public class BeanSubProducto implements Serializable, BeanSimple {
         }
         return "producto";
     }
-    
-    public void imprimirCodigoBarras()
-    {
-        
+
+    public void imprimirCodigoBarras() {
+
         String codigo = "";
         codigo = data.getIdSubproductoPk();
         paramReport.put("codigo", codigo);
         paramReport.put("nombreProducto", data.getNombreSubproducto());
-        generateReportBarCode(1,Integer.parseInt(codigo));
+        generateReportBarCode(1, Integer.parseInt(codigo));
         RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
     }
-    public void generateReportBarCode(int idSucursal,int folio) {
+
+    public void generateReportBarCode(int idSucursal, int folio) {
         JRExporter exporter = null;
 
         try {
@@ -202,6 +223,143 @@ public class BeanSubProducto implements Serializable, BeanSimple {
 
         return nombreCategoria;
 
+    }
+
+    /**
+     * ** Archivo ****
+     */
+    private boolean existFileOnFolder(String fileName) {
+        boolean exist = false;
+        getFiles();
+        for (FileDominio o : filesUser) {
+            if (fileName.equals(o.getFileName())) {
+                exist = true;
+            }
+        }
+        return exist;
+    }
+
+    public void handleFileUpload(FileUploadEvent event) {
+        String fileName = event.getFile().getFileName().trim();
+
+        if (existFileOnFolder(fileName)) {
+            JsfUtil.addErrorMessage("Archivo existente, seleccione otro.");
+        } else {
+            UploadedFile uploadedFile = (UploadedFile) event.getFile();
+            InputStream inputStr = null;
+            try {
+//                logger.debug("selecciona archivo");
+                inputStr = uploadedFile.getInputstream();
+            } catch (IOException e) {
+                JsfUtil.addErrorMessage("No se permite guardar valores nulos. ");
+                manageException(e);
+            }
+            try {
+                if (carpeta.trim() == null) {
+                    carpeta = "PRODUCTOS";
+                    FileUtils.creaCarpeta(path + "/" + carpeta + "/");
+                    System.out.println("");
+                } else {
+                    FileUtils.creaCarpeta(path + "/" + carpeta.trim() + "/");
+                }
+
+            } catch (Exception e) {
+
+            }
+
+            if (carpeta.trim() == null) {
+                carpeta = "PRODUCTOS";
+                destPath = path + "/" + carpeta + "/" + fileName;
+            } else {
+                destPath = path + "/" + carpeta.trim() + "/" + fileName;
+            }
+
+            try {
+//                if (state == ViewState.NEW) {
+                FileUtils.guardaArchivo(destPath, inputStr);
+                System.out.println("archivo guardado en " + destPath);
+//                } else {
+//
+//                    inputStream = inputStr;
+//                }
+
+                FacesMessage message = new FacesMessage("exito", "El archivo "
+                        + event.getFile().getFileName().trim()
+                        + " fue cargado.");
+                FacesContext.getCurrentInstance().addMessage(null, message);
+                fileSaved = 1;
+
+                String filePath = (data.getUrlImagenSubproducto() != null ? data
+                        .getUrlImagenSubproducto() : null);
+
+                if (filePath != null && data.getIdProductoFk() != null) {
+                    if (existFile(filePath)) {
+                        deleteFile(filePath);
+                    }
+
+                }
+                
+                //Se cambia la ruta a guardar en la bd 
+                String strPath = "";
+                String splitPath[] = destPath.split("/resources/");
+                strPath ="../resources/"+splitPath[1];
+                System.out.println("str path "+strPath);
+
+                data.setUrlImagenSubproducto(strPath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void getFiles() {
+        File folder = new File(path + carpeta.trim());
+        if (folder.exists()) {
+            files = new File(path + carpeta.trim()).listFiles();
+            if (files.length > 0) {
+                filesUser.clear();
+                for (File file : files) {
+                    FileDominio fileDto = new FileDominio();
+                    if (file.isFile()) {
+                        fileDto.setFileName(file.getName());
+                        filesUser.add(fileDto);
+                    }
+                }
+            }
+        } else {
+            try {
+                FileUtils.creaCarpeta(path + carpeta.trim() + "/");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public boolean existFile(String filePath) throws Exception {
+        File file = new File(filePath);
+        return file.exists();
+    }
+
+    public void descarga(Subproducto dominio) throws Exception {
+        try {
+
+            if (dominio.getUrlImagenSubproducto() != null && !dominio.getUrlImagenSubproducto().isEmpty()) {
+                File file = new File(dominio.getUrlImagenSubproducto().trim());
+                InputStream input = new FileInputStream(file);
+                setDownload(new DefaultStreamedContent(input, file.getName(), file.getName()));
+            }
+
+        } catch (FileNotFoundException e) {
+            JsfUtil.addErrorMessage(e.toString());
+        }
+
+    }
+
+    public void deleteFile(String filePath) throws Exception {
+        File file = new File(filePath);
+        file.delete();
     }
 
     @Override
@@ -318,6 +476,16 @@ public class BeanSubProducto implements Serializable, BeanSimple {
         this.pathFileJasper = pathFileJasper;
     }
 
- 
-    
+    public DefaultStreamedContent getDownload() {
+        return download;
+    }
+
+    public void setDownload(DefaultStreamedContent download) {
+        this.download = download;
+    }
+
+    private void manageException(IOException e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

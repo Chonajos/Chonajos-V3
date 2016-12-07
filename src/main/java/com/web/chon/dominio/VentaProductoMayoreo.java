@@ -30,8 +30,6 @@ public class VentaProductoMayoreo implements Serializable {
     private BigDecimal idExistenciaFk;
     private BigDecimal idBodegaFk;
 
-    
-    
     //Variables para credito
     private BigDecimal idTipoVenta;
     private BigDecimal tipoPago;

@@ -6,6 +6,7 @@
 package com.web.chon.service;
 
 import com.web.chon.dominio.Subproducto;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 /**
@@ -16,6 +17,8 @@ import java.util.ArrayList;
 public interface IfaceSubProducto {
     
     public ArrayList<Subproducto> getSubProductos();
+    
+    public ArrayList<Subproducto> getSubProductosIdSucursal(BigDecimal idSucursal);
     
     public Subproducto getSubProductoById(String idSubProducto);
     

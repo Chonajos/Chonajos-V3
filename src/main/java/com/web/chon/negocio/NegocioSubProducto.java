@@ -1,6 +1,7 @@
 package com.web.chon.negocio;
 
 import com.web.chon.dominio.Subproducto;
+import java.math.BigDecimal;
 import java.util.List;
 import javax.ejb.Remote;
 
@@ -16,6 +17,8 @@ public interface NegocioSubProducto {
      * @return 
      */
     public List<Object[]> getSubProductos();
+    
+    public List<Object[]> getSubProductosIdSucursal(BigDecimal idSucursal);
     
     /**
      * Elimina un producto de la bd
@@ -57,6 +60,7 @@ public interface NegocioSubProducto {
      * @return 
      */
     public List<Object[]> getSubProductoByNombre(String idProducto);
+    
     
 
 }

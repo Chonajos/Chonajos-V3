@@ -6,6 +6,7 @@
 package com.web.chon.dominio;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 /**
@@ -21,6 +22,7 @@ public class Subproducto implements Serializable {
     private String urlImagenSubproducto;
     private String idProductoFk;
     private String nombreCategoria;
+    private BigDecimal precioProducto;
 
     public Subproducto() {
     }
@@ -81,6 +83,15 @@ public class Subproducto implements Serializable {
     public void setNombreCategoria(String nombreCategoria) {
         this.nombreCategoria = nombreCategoria;
     }
+
+    public BigDecimal getPrecioProducto() {
+        return precioProducto;
+    }
+
+    public void setPrecioProducto(BigDecimal precioProducto) {
+        this.precioProducto = precioProducto;
+    }
+    
     
  
     @Override

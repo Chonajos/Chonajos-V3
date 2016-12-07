@@ -3,7 +3,7 @@ package com.web.chon.service;
 import com.web.chon.dominio.Subproducto;
 import com.web.chon.negocio.NegocioSubProducto;
 import com.web.chon.util.Utilidades;
-import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -117,6 +117,35 @@ public class ServiceSubProducto implements IfaceSubProducto {
                 Subproducto subProducto = new Subproducto();
                 subProducto.setIdSubproductoPk(obj[0] == null ? null : obj[0].toString());
                 subProducto.setNombreSubproducto(obj[1] == null ? "" : obj[1].toString());
+
+                lstSubProducto.add(subProducto);
+            }
+
+            return lstSubProducto;
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceSubProducto.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
+    @Override
+    public ArrayList<Subproducto> getSubProductosIdSucursal(BigDecimal idSucursal) {
+        try {
+            ArrayList<Subproducto> lstSubProducto = new ArrayList<Subproducto>();
+            ejb = (NegocioSubProducto) Utilidades.getEJBRemote("ejbSubProducto", NegocioSubProducto.class.getName());
+
+            List<Object[]> lstObject = ejb.getSubProductosIdSucursal(idSucursal);
+
+            for (Object[] obj : lstObject) {
+
+                Subproducto subProducto = new Subproducto();
+                subProducto.setIdSubproductoPk(obj[0] == null ? null : obj[0].toString());
+                subProducto.setNombreSubproducto(obj[1] == null ? "" : obj[1].toString());
+                subProducto.setDescripcionSubproducto(obj[2] == null ? "" : obj[2].toString());
+                subProducto.setUrlImagenSubproducto(obj[3] == null ? null : obj[3].toString());
+                subProducto.setIdProductoFk(obj[4] == null ? null : obj[4].toString());
+                subProducto.setNombreCategoria(obj[5] == null ? "" : obj[5].toString());
+                subProducto.setPrecioProducto(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
 
                 lstSubProducto.add(subProducto);
             }

@@ -10,7 +10,7 @@
 
     <ui:define name="content">
         <h:form id="formContent" rendered="#{beanAnalisisMercado.usuario.perId =='1' || beanAnalisisMercado.usuario.perId =='2'}">
-
+            <p:poll autoStart="true" interval="5" update=""/>
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
                 <h:outputText value="Grafica Lineal:" class="col-lg-6 col-md-5 col-sm-6 col-xs-6"/>
                 <p:selectBooleanCheckbox value="#{beanAnalisisMercado.charLine}">
