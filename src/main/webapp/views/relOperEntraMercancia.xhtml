@@ -199,10 +199,15 @@
                                         value="#{beanRelOperEntradaMercancia.fechaFiltroFin}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button" rendered="#{beanRelOperEntradaMercancia.viewEstate =='init'}">
                             </p:calendar>
                         </div>
+                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12 form-group" >
+                            <p:outputLabel class="col-lg-6 col-md-6 col-sm-4 col-xs-12" id="labelCarro" for="txtCarro" value ="N° Carro:"  /> 
+                            <p:inputText id="txtCarro" maxlength="3" class=" col-lg-3 col-md-3 col-sm-8 col-xs-12" value="#{beanRelOperEntradaMercancia.carro}"/>
+                            <pe:keyFilter regEx="/[0-9]/i"/> 
+                        </div>
                     </div>
 
 
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <p:dataTable id="table" var="model" 
                                      value="#{beanRelOperEntradaMercancia.lstEntradaMercancia}"
                                      scrollable="true"
@@ -220,13 +225,25 @@
                             <p:column headerText="Folio de Remisión" width="150px;" class="alignCenter">
                                 <h:outputText value="#{model.folio}"/>
                             </p:column>
-                            <p:column headerText="Fecha" width="90px;" class="alignCenter">
+                            <p:column headerText="Fecha de Entrada" width="90px;" class="alignCenter">
                                 <h:outputText value="#{model.fecha}">
                                     <f:convertDateTime pattern="dd/MM/yyyy"/>
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Sucursal" width="180px;" class="alignLeft">
-                                <h:outputText value="#{model.nombreSucursal}"/>
+                            
+                             <p:column headerText="Provedor" width="140px;" class="alignLeft">
+                                <h:outputText value="#{model.nombreProvedor}"/>
+                            </p:column>
+                            <p:column headerText="Fecha de Pago" width="90px;" class="alignCenter">
+                                <h:outputText value="#{model.fechaPago}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Empaques Provedor" width="80px;" class="alignCenter">
+                                <h:outputText value="#{model.cantidadEmpaquesProvedor}" />
+                            </p:column>
+                            <p:column headerText="Empaques Bodega" width="80px;" class="alignCenter">
+                                <h:outputText value="#{model.cantidadEmpaquesReales}"/>
                             </p:column>
                             <p:column headerText="Kilos Provedor" width="120px;" class="alignCenter">
                                 <h:outputText value="#{model.kilosTotalesProvedor}" />
@@ -234,9 +251,7 @@
                             <p:column headerText="Kilos Bodega" width="120px;" class="alignCenter">
                                 <h:outputText value="#{model.kilosTotales}"/>
                             </p:column>
-                            <p:column headerText="Provedor" width="200px;" class="alignLeft">
-                                <h:outputText value="#{model.nombreProvedor}"/>
-                            </p:column>
+                           
                             <p:column headerText="Agregar" width="70px;" class="alignCenter">
                                 <p:commandButton id="agregarProducto"  
                                                  disabled="#{model.idStatusFk.intValue() != 1}"   

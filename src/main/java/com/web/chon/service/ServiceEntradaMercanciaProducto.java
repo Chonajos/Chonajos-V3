@@ -126,11 +126,13 @@ public class ServiceEntradaMercanciaProducto implements IfaceEntradaMercanciaPro
             dominio.setIdBodegaFK(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
             dominio.setIdTipoConvenio(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
             dominio.setPrecio(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
-            dominio.setNombreProducto(obj[11] == null ? "" : obj[11].toString());
-            dominio.setNombreEmpaque(obj[12] == null ? "" : obj[12].toString());
-            dominio.setNombreBodega(obj[13] == null ? "" : obj[13].toString());
-            dominio.setNombreTipoConvenio(obj[14] == null ? "" : obj[14].toString());
-            dominio.setIdSucursalFk(obj[15] == null ? null : new BigDecimal(obj[15].toString()));
+            dominio.setEmpaquesProProvedor(obj[11] == null ? null : new BigDecimal(obj[11].toString()));
+            dominio.setKilosProProvedor(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
+            dominio.setNombreProducto(obj[13] == null ? "" : obj[13].toString());
+            dominio.setNombreEmpaque(obj[14] == null ? "" : obj[14].toString());
+            dominio.setNombreBodega(obj[15] == null ? "" : obj[15].toString());
+            dominio.setNombreTipoConvenio(obj[16] == null ? "" : obj[16].toString());
+            dominio.setIdSucursalFk(obj[17] == null ? null : new BigDecimal(obj[17].toString()));
             dominio.setNumeroMovimiento(numeroMovimiento);
             dominio.setListaBodegas(ifaceCatBodegas.getBodegaByIdSucursal(dominio.getIdSucursalFk()));
             dominio.setSubProducto(ifaceSubProducto.getSubProductoById(dominio.getIdSubProductoFK()));

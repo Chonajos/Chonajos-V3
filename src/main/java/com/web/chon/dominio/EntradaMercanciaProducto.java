@@ -35,6 +35,8 @@ public class EntradaMercanciaProducto extends ValueObject implements Serializabl
     private BigDecimal pesoNeto;
     private BigDecimal idSucursalFk;
     private ArrayList<Bodega> listaBodegas;
+    private BigDecimal empaquesProProvedor;
+    private BigDecimal kilosProProvedor;
     
     private Subproducto subProducto;
     private ArrayList<EntradaMercanciaProductoPaquete> listaPaquetes;
@@ -325,6 +327,23 @@ public class EntradaMercanciaProducto extends ValueObject implements Serializabl
     public void setCantPaquetes(BigDecimal cantPaquetes) {
         this.cantPaquetes = cantPaquetes;
     }
+
+    public BigDecimal getEmpaquesProProvedor() {
+        return empaquesProProvedor;
+    }
+
+    public void setEmpaquesProProvedor(BigDecimal empaquesProProvedor) {
+        this.empaquesProProvedor = empaquesProProvedor;
+    }
+
+    public BigDecimal getKilosProProvedor() {
+        return kilosProProvedor;
+    }
+
+    public void setKilosProProvedor(BigDecimal kilosProProvedor) {
+        this.kilosProProvedor = kilosProProvedor;
+    }
+    
 
     
     

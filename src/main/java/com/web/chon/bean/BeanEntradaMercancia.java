@@ -32,7 +32,6 @@ import java.math.BigDecimal;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -144,6 +143,12 @@ public class BeanEntradaMercancia implements Serializable {
         listaBodegas = ifaceCatBodegas.getBodegaByIdSucursal(data.getIdSucursalFK());
         cantidadReal = new BigDecimal(0);
     }
+    public void sumaDias()
+    {
+        Date hoy = context.getFechaSistema();
+        data.setFechaPago(TiempoUtil.sumarRestarDias(hoy, data.getDiasPago().intValue()));
+        System.out.println("Fecha de Pago: "+data.getFechaPago());
+    }
 
     public void permisions() {
 
@@ -200,6 +205,7 @@ public class BeanEntradaMercancia implements Serializable {
                 entrada_mercancia.setComentariosGenerales(data.getComentariosGenerales());
                 entrada_mercancia.setFechaRemision(data.getFechaRemision());
                 entrada_mercancia.setIdCarroSucursal(new BigDecimal(idCarroSucursal + 1));
+                entrada_mercancia.setFechaPago(data.getFechaPago());
 
                 int mercanciaOrdenada = ifaceEntradaMercancia.insertEntradaMercancia(entrada_mercancia);
                 if (mercanciaOrdenada != 0) {
@@ -210,6 +216,8 @@ public class BeanEntradaMercancia implements Serializable {
                         producto.setIdEmpPK(new BigDecimal(idEnTMerPro));
                         producto.setIdEmFK(new BigDecimal(idEntradaMercancia));
                         producto.setKilospromprod(producto.getKilosTotalesProducto().divide(producto.getCantidadPaquetes(), 2, RoundingMode.HALF_EVEN));
+                        producto.setKilosProProvedor(producto.getKilosTotalesProducto());
+                        producto.setEmpaquesProProvedor(producto.getCantidadPaquetes());
                         //int idEntradaMercanciaProducto = ifaceEntradaMercanciaProducto.getNextVal();
                         if (ifaceEntradaMercanciaProducto.insertEntradaMercanciaProducto(producto) != 0) {
                             //BUSCAR SI YA EXISTE EN LA TABLA EXISTENCIA PRODUCTO.

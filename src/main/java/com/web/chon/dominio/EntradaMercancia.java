@@ -23,6 +23,7 @@ public class EntradaMercancia extends ValueObject implements Serializable {
     private String remision;
     private BigDecimal idSucursalFK;
     private Date fechaRemision;
+    private Date fechaPago;
     private String comentariosGenerales;
     private String abreviacion;
     private String folio; //identificacion
@@ -38,12 +39,15 @@ public class EntradaMercancia extends ValueObject implements Serializable {
     private ArrayList<EntradaMercanciaProducto> listaProductos;
     private BigDecimal cantidadEmpaquesProvedor;
     private BigDecimal cantidadEmpaquesReales;
+    private BigDecimal diasPago;
 
     @Override
     public String toString() {
-        return "EntradaMercancia{" + "idEmPK=" + idEmPK + ", idProvedorFK=" + idProvedorFK + ", movimiento=" + movimiento + ", fecha=" + fecha + ", remision=" + remision + ", idSucursalFK=" + idSucursalFK + ", fechaRemision=" + fechaRemision + ", comentariosGenerales=" + comentariosGenerales + ", abreviacion=" + abreviacion + ", folio=" + folio + ", idStatusFk=" + idStatusFk + ", kilosTotales=" + kilosTotales + ", kilosTotalesProvedor=" + kilosTotalesProvedor + ", idCarroSucursal=" + idCarroSucursal + ", nombreSucursal=" + nombreSucursal + ", nombreProvedor=" + nombreProvedor + ", idUsuario=" + idUsuario + ", fechaFiltroInicio=" + fechaFiltroInicio + ", fechaFiltroFin=" + fechaFiltroFin + ", listaProductos=" + listaProductos + ", cantidadEmpaquesProvedor=" + cantidadEmpaquesProvedor + ", cantidadEmpaquesReales=" + cantidadEmpaquesReales + '}';
+        return "EntradaMercancia{" + "idEmPK=" + idEmPK + ", idProvedorFK=" + idProvedorFK + ", movimiento=" + movimiento + ", fecha=" + fecha + ", remision=" + remision + ", idSucursalFK=" + idSucursalFK + ", fechaRemision=" + fechaRemision + ", fechaPago=" + fechaPago + ", comentariosGenerales=" + comentariosGenerales + ", abreviacion=" + abreviacion + ", folio=" + folio + ", idStatusFk=" + idStatusFk + ", kilosTotales=" + kilosTotales + ", kilosTotalesProvedor=" + kilosTotalesProvedor + ", idCarroSucursal=" + idCarroSucursal + ", nombreSucursal=" + nombreSucursal + ", nombreProvedor=" + nombreProvedor + ", idUsuario=" + idUsuario + ", fechaFiltroInicio=" + fechaFiltroInicio + ", fechaFiltroFin=" + fechaFiltroFin + ", listaProductos=" + listaProductos + ", cantidadEmpaquesProvedor=" + cantidadEmpaquesProvedor + ", cantidadEmpaquesReales=" + cantidadEmpaquesReales + '}';
     }
-
+    
+   
+    
     
     @Override
     public void reset() {
@@ -244,4 +248,24 @@ public class EntradaMercancia extends ValueObject implements Serializable {
         this.cantidadEmpaquesReales = cantidadEmpaquesReales;
     }
 
+    public Date getFechaPago() {
+        return fechaPago;
+    }
+
+    public void setFechaPago(Date fechaPago) {
+        this.fechaPago = fechaPago;
+    }
+
+    public BigDecimal getDiasPago() {
+        return diasPago;
+    }
+
+    public void setDiasPago(BigDecimal diasPago) {
+        this.diasPago = diasPago;
+    }
+
+    
+    
+
+    
 }

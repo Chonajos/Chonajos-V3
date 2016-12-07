@@ -83,9 +83,20 @@
                                 <pe:keyFilter regEx="/[0-9_ .]/i"/>
                             </p:inputText>
                         </div>
-                        <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12 alignLeft">
+                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 alignLeft">
                             <p:outputLabel  class="col-lg-12 col-md-3 col-sm-4 col-xs-6 alignLeft"  for="txtComentariosGenerales" value ="Comentarios:" /> 
                             <p:inputTextarea  style=" width:90%; height:25px;" rows="1" cols="15" id="txtComentariosGenerales" maxlength="100" class=" col-lg-8 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMercancia.data.comentariosGenerales}"/>
+                        </div>
+                        <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
+                            <p:outputLabel class="col-lg-12 col-md-3 col-sm-4 col-xs-6 alignLeft"  for="txtDiasPago" value ="Días de Pago:" /> 
+                            <p:inputText id="txtDiasPago" maxlength="3" class=" col-lg-6 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMercancia.data.diasPago}" >
+                             <pe:keyFilter regEx="/[0-9]/i"/>
+                             <p:ajax event="blur" update="formContent:popup2" listener ="#{beanEntradaMercancia.sumaDias()}"/>
+                            </p:inputText>
+                        </div>
+                        <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
+                            <p:outputLabel class="col-lg-12 col-md-3 col-sm-4 col-xs-5 alignLeft" for="popup2" value="Fecha de Pago:"  />
+                            <p:calendar class="col-lg-12 col-md-12 col-sm-12 col-xs-7 calendario" navigator="true" placeholder="dd/mm/yyyy" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button"  id="popup2" value="#{beanEntradaMercancia.data.fechaPago}" />
                         </div>
                     </div>
 
@@ -157,7 +168,7 @@
                         </div>
                         <div class="col-lg-1 col-md-12 col-sm-12 col-xs-12 ">
                             <p:outputLabel  class="col-lg-12 col-md-3 col-sm-4 col-xs-6"  for="txtkilosProducto"  value ="Kilos:" /> 
-                            <p:inputText id="txtkilosProducto" maxlength="6" class=" col-lg-12 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMercancia.dataProducto.kilosTotalesProducto}">
+                            <p:inputText id="txtkilosProducto" maxlength="6" class=" col-lg-12 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMercancia.dataProducto.kilosTotalesProducto}" required ="true">
                                 <pe:keyFilter regEx="/[0-9 .]/i"/>
                                 <p:ajax event="blur" update="formContent:txtPesoNeto" listener ="#{beanEntradaMercancia.calculaPesoNeto()}"/>
 
