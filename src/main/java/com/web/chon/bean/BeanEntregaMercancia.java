@@ -74,6 +74,7 @@ public class BeanEntregaMercancia implements Serializable {
     private BigDecimal totalEmpaques;
 
     private Date date;
+    private BigDecimal cantidad;
 
     private UsuarioDominio usuarioDominio;
 
@@ -539,4 +540,13 @@ public class BeanEntregaMercancia implements Serializable {
         this.usuarioDominio = usuarioDominio;
     }
 
+    public BigDecimal getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(BigDecimal cantidad) {
+        this.cantidad = cantidad;
+    }
+
+    
 }

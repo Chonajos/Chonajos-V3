@@ -28,7 +28,7 @@ public interface NegocioEntradaMercancia {
 
     public int buscaMaxMovimiento(EntradaMercancia entrada);
 
-    public List<Object[]> getEntradaProductoByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idProvedor);
+    public List<Object[]> getEntradaProductoByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idProvedor,BigDecimal carro);
 
     public List<Object[]> getSubEntradaByNombre(String clave);
     
