@@ -21,6 +21,7 @@ public interface NegocioCredito {
     public int delete(BigDecimal idCredito);
 
     public List<Object[]> getAll();
+     public int activarCredito(Credito credito);
 
     /**
      * Obtiene todos los creditos activos por id de Cliente

@@ -448,4 +448,10 @@ public class ServiceCredito implements IfaceCredito {
         return ejb.eliminarCreditoByIdCreditoPk(idCreditoPk);
     }
 
+    @Override
+    public int activarCredito(Credito credito) {
+        getEjb();
+        return ejb.activarCredito(credito);
+    }
+
 }

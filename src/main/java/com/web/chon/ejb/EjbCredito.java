@@ -82,6 +82,22 @@ public class EjbCredito implements NegocioCredito {
     }
 
     @Override
+    public int activarCredito(Credito credito) {
+        try {
+            System.out.println(credito.toString());
+            Query query = em.createNativeQuery("UPDATE CREDITO SET  ESTATUS_CREDITO = 1 WHERE ID_CREDITO_PK = ?");
+            query.setParameter(11, credito.getIdCreditoPk());
+            return query.executeUpdate();
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbCredito.class
+                    .getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        }
+    }
+       
+    
+    @Override
     public int delete(BigDecimal idCredito) {
         try {
 

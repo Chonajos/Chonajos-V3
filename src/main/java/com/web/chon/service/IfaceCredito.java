@@ -48,6 +48,7 @@ public interface IfaceCredito {
      
      public int eliminarCreditoByIdCreditoPk(BigDecimal idCreditoPk);
     
+     public int activarCredito(Credito credito);
     
     
 }

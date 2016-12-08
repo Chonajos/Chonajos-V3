@@ -80,8 +80,8 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
     public int delete(BigDecimal idAbonoCredito) {
         try {
 
-            Query query = em.createNativeQuery("DELETE ABONO_CREDITO WHERE ID_ABONO_CREDITO_PK  = ?");
-
+            Query query = em.createNativeQuery("UPDATE ABONO_CREDITO SET ESTATUS=2 WHERE ID_ABONO_CREDITO_PK = ?");
+           
             query.setParameter(1, idAbonoCredito);
 
             return query.executeUpdate();

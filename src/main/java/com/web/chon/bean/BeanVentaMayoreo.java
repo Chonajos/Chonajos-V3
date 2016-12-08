@@ -209,19 +209,27 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                     idTipoempaqueFk = new BigDecimal(segArray[3]);
                     idTipoConvenioFk = new BigDecimal(segArray[4]);
                     lstExistencias = ifaceNegocioExistencia.getExistenciaByBarCode(idSubpProducto, idTipoempaqueFk, idTipoConvenioFk, idCarro, idSucursalfk);
-                    if (lstExistencias.size() == 1) {
+                    if (lstExistencias.size() == 1)
+                    {
                         selectedExistencia = new ExistenciaProducto();
                         selectedExistencia = lstExistencias.get(0);
-                         habilitarBotones();
+                        habilitarBotones();
                         RequestContext.getCurrentInstance().update("formContent:modelo2");
                         RequestContext.getCurrentInstance().update("formContent:autocompleteProducto");
-                    } else {
+                    } else  if (lstExistencias.size() > 1)
+                    {
                         selectedExistencia = new ExistenciaProducto();
                         habilitarBotones();
                         RequestContext.getCurrentInstance().update("formContent:modelo2");
                         RequestContext.getCurrentInstance().update("formContent:autocompleteProducto");
                     }
-                    if (lstExistencias.isEmpty()) {
+                    else 
+                    {
+                        System.out.println("Lista: ");
+                        for(ExistenciaProducto e:lstExistencias)
+                        {
+                            System.out.println("Existencia: "+e.toString());
+                        }
                         JsfUtil.addWarnMessage("No se encontraron existencias de este producto");
                     }
 
@@ -234,20 +242,27 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                     idTipoempaqueFk = new BigDecimal(diaArray[3]);
                     idTipoConvenioFk = new BigDecimal(diaArray[4]);
                     lstExistencias = ifaceNegocioExistencia.getExistenciaByBarCode(idSubpProducto, idTipoempaqueFk, idTipoConvenioFk, idCarro, idSucursalfk);
-                    if (lstExistencias.size() == 1) {
+                    if (lstExistencias.size() == 1)
+                    {
                         selectedExistencia = new ExistenciaProducto();
                         selectedExistencia = lstExistencias.get(0);
                         habilitarBotones();
                         RequestContext.getCurrentInstance().update("formContent:modelo2");
                         RequestContext.getCurrentInstance().update("formContent:autocompleteProducto");
-
-                    } else {
+                    } else  if (lstExistencias.size() > 1)
+                    {
                         selectedExistencia = new ExistenciaProducto();
                         habilitarBotones();
                         RequestContext.getCurrentInstance().update("formContent:modelo2");
                         RequestContext.getCurrentInstance().update("formContent:autocompleteProducto");
                     }
-                    if (lstExistencias.isEmpty()) {
+                    else 
+                    {
+                        System.out.println("Lista: ");
+                        for(ExistenciaProducto e:lstExistencias)
+                        {
+                            System.out.println("Existencia: "+e.toString());
+                        }
                         JsfUtil.addWarnMessage("No se encontraron existencias de este producto");
                     }
                     break;
@@ -533,8 +548,8 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
             boolean banderaRepetido = false;
             for (int i = 0; i < lstVenta.size(); i++) {
                 VentaProductoMayoreo productoRepetido = lstVenta.get(i);
-
-                if (productoRepetido.getIdExistenciaFk().intValue() == selectedExistencia.getIdExistenciaProductoPk().intValue()) {
+                
+                if (productoRepetido.getIdExistenciaFk().intValue() == selectedExistencia.getIdExistenciaProductoPk().intValue() && productoRepetido.getPrecioProducto().compareTo(data.getPrecioProducto())==0 ) {
                     banderaRepetido = true;
                     addRepetido(productoRepetido, i);
 

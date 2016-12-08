@@ -14,6 +14,7 @@ import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceAbonoCredito;
 import com.web.chon.service.IfaceCatCliente;
+import com.web.chon.service.IfaceCredito;
 import com.web.chon.service.IfaceOperacionesCaja;
 import com.web.chon.service.IfaceTipoAbono;
 import java.io.Serializable;
@@ -44,6 +45,7 @@ public class BeanHistorialAbonos implements Serializable {
     private IfaceAbonoCredito ifaceAbonoCredito;
     @Autowired
     private PlataformaSecurityContext context;
+    private IfaceCredito ifaceCredito;
     @Autowired
     private IfaceOperacionesCaja IfaceOperacionesCaja;
 
@@ -69,9 +71,18 @@ public class BeanHistorialAbonos implements Serializable {
 
     private boolean enableCalendar;
     private BigDecimal total;
-
+    AbonoCredito abono;
+    
+    private static final BigDecimal conceptoAbonoEfectivo = new BigDecimal(7);
+    private static final BigDecimal conceptoAbonoTransferencia = new BigDecimal(12);
+    private static final BigDecimal conceptoAbonoCheque = new BigDecimal(30);
+    private static final BigDecimal conceptoAbonoDeposito = new BigDecimal(31);
+    
+    private static final BigDecimal salida = new BigDecimal(2);
     @PostConstruct
-    public void init() {
+    public void init() 
+    {
+         abono= new AbonoCredito();
         total = new BigDecimal(0);
         setTitle("Historial de Abonos");
         setViewEstate("init");
@@ -94,6 +105,19 @@ public class BeanHistorialAbonos implements Serializable {
         }
         lstAbonosCreditos = ifaceAbonoCredito.getHistorialAbonos(cliente.getId_cliente(), idCobradorFk, fechaFiltroInicio, fechaFiltroFin, idTipoAbonoFk, idAbonoPk, idCreditoFk);
         sumaTotal();
+    }
+    public void cancelarAbono()
+    {
+        //cambiar estatus de abono a cancelado = 2
+        //cambiar el estatus de credito a o finalizado
+        //insertar una operacion de caja de salida ( abono credito) 
+        //en caso de haber documento por cobrar cambiar el estatus del documento por cobrar a cancelado
+        
+        System.out.println("Abono a Eliminar: "+abono.toString());
+        //ifaceAbonoCredito.delete(abono.getIdAbonoCreditoPk());
+        
+        //ifaceCredito.activarCredito(abono.getIdCreditoFk());
+        
     }
 
     public void buscar() {
@@ -253,5 +277,15 @@ public class BeanHistorialAbonos implements Serializable {
     public void setTotal(BigDecimal total) {
         this.total = total;
     }
+
+    public AbonoCredito getAbono() {
+        return abono;
+    }
+
+    public void setAbono(AbonoCredito abono) {
+        this.abono = abono;
+    }
+    
+    
 
 }

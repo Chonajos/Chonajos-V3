@@ -19,6 +19,10 @@
                 <div>
                     <p:commandButton value="Buscar" update=":formContent" ajax="true" disabled="false" action="#{beanHistorialAbonos.buscar()}"/>
                 </div>
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Si" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
             </div>
             <p:panel> 
                 <div class="container-fluid">
@@ -118,6 +122,16 @@
                                     <f:convertNumber type="currency" currencySymbol="$" />
                                 </h:outputText>
                             </p:column>
+                           <!--<p:column headerText="Cancelar" width="60px;" class="alignCenter">
+                                <p:commandButton id="cancel"  ajax="true"
+                                                 process="@this" action="{beanHistorialAbonos.cancelarAbono()}"
+                                                 icon="ui-icon-trash" styleClass="ui-priority-primary" update=":formContent"
+                                                 disabled="{model.estatusAbono.intValue() == 1}">
+                                    <f:setPropertyActionListener value="{model}" target="{beanHistorialAbonos.abono}"/>
+                                    <p:confirm header="Confirmación" message="¿Estás seguro de cancelar el abono?" icon="ui-icon-alert"/>
+                                </p:commandButton>
+                            </p:column>-->
+                           
                             <p:columnGroup type="footer">
                                 <p:column colspan="1" />
                                 <p:column colspan="1" />
@@ -132,6 +146,7 @@
                                         </h:outputText>
                                     </f:facet>
                                 </p:column>
+                                <p:column colspan="1" />
                             </p:columnGroup>
                         </p:dataTable>
 
