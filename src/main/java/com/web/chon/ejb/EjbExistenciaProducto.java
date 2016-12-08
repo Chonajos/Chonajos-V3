@@ -235,7 +235,6 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
             cadena.append("  and (ex.CANTIDAD_EMPACAQUE > 0 or ex.KILOS_TOTALES > 0) ORDER BY  em.ID_EM_PK ");
 
             query = em.createNativeQuery(cadena.toString());
-            System.out.println(query);
 
             return query.getResultList();
         } catch (Exception ex) {
@@ -295,10 +294,10 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
 
             Query query = em.createNativeQuery("select exp.ID_EXP_PK,exp.CANTIDAD_EMPACAQUE,exp.KILOS_TOTALES from EXISTENCIA_PRODUCTO exp where exp.ID_EXP_PK=?");
             query.setParameter(1, idExistencia);
-            System.out.println(query);
+
             return query.getResultList();
         } catch (Exception ex) {
-            System.out.println("Encontro null ejb");
+            System.out.println("error >"+ex.getMessage());
             Logger.getLogger(EjbExistenciaProducto.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
@@ -307,8 +306,6 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
     @Override
     public int deleteExistenciaProducto(ExistenciaProducto exp) {
         try {
-            System.out.println("===============================");
-            System.out.println(exp.toString());
             Query query = em.createNativeQuery("delete from EXISTENCIA_PRODUCTO exp where exp.ID_EMP_FK = ?");
             query.setParameter(1, exp.getIdEntradaMercanciaProductoFK());
             return query.executeUpdate();

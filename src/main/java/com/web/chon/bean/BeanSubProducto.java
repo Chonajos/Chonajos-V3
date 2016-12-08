@@ -85,11 +85,9 @@ public class BeanSubProducto implements Serializable, BeanSimple {
     private InputStream inputStream;
     private int fileSaved = 0;
     private DefaultStreamedContent download;
-//    private String path = "/opt/wls/wls12210/user_projects/domains/base_domain/servers/AdminServer/tmp/_WL_user/Chonajos-1.0-SNAPSHOT/kkoz5u/war/resources/img"; DESCOMENTAR CUANDO SE SUBA AL SERVIDOR PARA QUE FUNCIONE
     private String path = "C:/Users/Juan/Documents/NetBeansProjects/Chonajos-V2/src/main/webapp/resources/img";//path de prueba comentar cuando se suba al servidor
-//    
     private File[] files = null;
-    private String carpeta = "PRODUCTOS";
+    private String carpeta = "RODUCTOS";
     private String destPath;
 
     @PostConstruct
@@ -249,6 +247,7 @@ public class BeanSubProducto implements Serializable, BeanSimple {
             temporal = Constantes.PATHSERVER;
         } else {
             temporal = servletContext.getRealPath("");
+            System.out.println("temporal: "+temporal);
         }
         path = temporal + File.separatorChar + "resources" + File.separatorChar + "img" + File.separatorChar + "RODUCTOS";
 
