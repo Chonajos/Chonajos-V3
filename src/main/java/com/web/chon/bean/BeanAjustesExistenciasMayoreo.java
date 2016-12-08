@@ -191,11 +191,10 @@ public class BeanAjustesExistenciasMayoreo implements Serializable {
         ExistenciaProducto existenciaProductoNew = new ExistenciaProducto();
         ArrayList<ExistenciaProducto> lstExistenciaProducto = new ArrayList<ExistenciaProducto>();
         
-        if (existenciaProductoNew.getSalidaEntrada() == null) {
-            JsfUtil.addErrorMessage("Selecione si es una salida o es una entrada.");
-            return;
-        }
-
+//        if (existenciaProductoNew.getSalidaEntrada() == null) {
+//            JsfUtil.addErrorMessage("Selecione si es una salida o es una entrada.");
+//            return;
+//        }
         ajusteExistenciaMayoreo = new AjusteExistenciaMayoreo();
 
         existenciaProductoNew = (ExistenciaProducto) event.getObject();
@@ -206,15 +205,17 @@ public class BeanAjustesExistenciasMayoreo implements Serializable {
         }
 
         if (existenciaProductoNew.getSalidaEntrada().trim().equalsIgnoreCase("Entrada")) {
+            System.out.println("enreada");
             existenciaProductoNew.setKilosTotalesProducto(existenciaProductoNew.getKilosTotalesProducto().add(existenciaProductoNew.getKilosAjustar()));
             existenciaProductoNew.setCantidadPaquetes(existenciaProductoNew.getCantidadPaquetes().add(existenciaProductoNew.getEmpaquesAjustar()));
         } else {
+            System.out.println("salida");
             existenciaProductoNew.setKilosTotalesProducto(existenciaProductoNew.getKilosTotalesProducto().subtract(existenciaProductoNew.getKilosAjustar()));
             existenciaProductoNew.setCantidadPaquetes(existenciaProductoNew.getCantidadPaquetes().subtract(existenciaProductoNew.getEmpaquesAjustar()));
         }
 
         if (ifaceNegocioExistencia.update(existenciaProductoNew) != 0) {
-
+            System.out.println("Existencia modificada");
             ajusteExistenciaMayoreo.setEmpaqueAjustados(existenciaProductoNew.getCantidadPaquetes());
             ajusteExistenciaMayoreo.setEmpaqueAnterior(existenciaMayoreoOld.getCantidadPaquetes());
             ajusteExistenciaMayoreo.setFechaAjuste(context.getFechaSistema());
@@ -224,13 +225,12 @@ public class BeanAjustesExistenciasMayoreo implements Serializable {
             ajusteExistenciaMayoreo.setKilosAnteior(existenciaMayoreoOld.getKilosTotalesProducto());
             ajusteExistenciaMayoreo.setObservaciones(existenciaProductoNew.getObservaciones());
             ajusteExistenciaMayoreo.setMotivoAjuste(existenciaProductoNew.getMotivoAjuste());
-            
+
             if (ifaceAjusteExistenciaMayoreo.insert(ajusteExistenciaMayoreo) == 0) {
                 JsfUtil.addErrorMessage("Error al Modificar el Registro.");
             }
         }
 
-        
 
         model.clear();
         existenciaMayoreoOld = new ExistenciaProducto();

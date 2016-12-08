@@ -85,11 +85,9 @@ public class BeanSubProducto implements Serializable, BeanSimple {
     private InputStream inputStream;
     private int fileSaved = 0;
     private DefaultStreamedContent download;
-//    private String path = "/opt/wls/wls12210/user_projects/domains/base_domain/servers/AdminServer/tmp/_WL_user/Chonajos-1.0-SNAPSHOT/kkoz5u/war/resources/img"; DESCOMENTAR CUANDO SE SUBA AL SERVIDOR PARA QUE FUNCIONE
     private String path = "C:/Users/Juan/Documents/NetBeansProjects/Chonajos-V2/src/main/webapp/resources/img";//path de prueba comentar cuando se suba al servidor
-//    
     private File[] files = null;
-    private String carpeta = "PRODUCTOS";
+    private String carpeta = "RODUCTOS";
     private String destPath;
 
     @PostConstruct
@@ -242,6 +240,17 @@ public class BeanSubProducto implements Serializable, BeanSimple {
     public void handleFileUpload(FileUploadEvent event) {
         String fileName = event.getFile().getFileName().trim();
 
+        ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+
+        String temporal = "";
+        if (servletContext.getRealPath("") == null) {
+            temporal = Constantes.PATHSERVER;
+        } else {
+            temporal = servletContext.getRealPath("");
+            System.out.println("temporal: "+temporal);
+        }
+        path = temporal + File.separatorChar + "resources" + File.separatorChar + "img" + File.separatorChar + "RODUCTOS";
+
         if (existFileOnFolder(fileName)) {
             JsfUtil.addErrorMessage("Archivo existente, seleccione otro.");
         } else {
@@ -255,24 +264,14 @@ public class BeanSubProducto implements Serializable, BeanSimple {
                 manageException(e);
             }
             try {
-                if (carpeta.trim() == null) {
-                    carpeta = "PRODUCTOS";
-                    FileUtils.creaCarpeta(path + "/" + carpeta + "/");
-                    System.out.println("");
-                } else {
-                    FileUtils.creaCarpeta(path + "/" + carpeta.trim() + "/");
-                }
+
+                FileUtils.creaCarpeta(path);
 
             } catch (Exception e) {
 
             }
 
-            if (carpeta.trim() == null) {
-                carpeta = "PRODUCTOS";
-                destPath = path + "/" + carpeta + "/" + fileName;
-            } else {
-                destPath = path + "/" + carpeta.trim() + "/" + fileName;
-            }
+            destPath = path + File.separatorChar + fileName;
 
             try {
 //                if (state == ViewState.NEW) {
@@ -298,12 +297,11 @@ public class BeanSubProducto implements Serializable, BeanSimple {
                     }
 
                 }
-                
+
                 //Se cambia la ruta a guardar en la bd 
                 String strPath = "";
-                String splitPath[] = destPath.split("/resources/");
-                strPath ="../resources/"+splitPath[1];
-                System.out.println("str path "+strPath);
+                strPath = ".." + File.separatorChar + "resources" + File.separatorChar + "img" + File.separatorChar + "RODUCTOS" + File.separatorChar + fileName;
+                System.out.println("str path " + strPath);
 
                 data.setUrlImagenSubproducto(strPath);
             } catch (IOException e) {
