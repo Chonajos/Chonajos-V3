@@ -184,10 +184,8 @@
                 <div class="container-fluid">
                     <div class="form-group" align="right">
                         <p:commandButton value="Buscar" update=":formContent" ajax="true" action="#{beanBuscaVentaMayoreo.searchById()}"  onclick="PF('statusDialog').show()"/>
-                        <p:commandButton  value = "Cobrar" ajax="true"  oncomplete="PF('dlg').show();" update =":formContent:dialogw:" icon="ui-icon-triangle-1-e"  disabled="#{beanBuscaVentaMayoreo.statusButtonPagar}">
-
+                        <p:commandButton  value = "Cobrar" ajax="true"  oncomplete="PF('dlg').show();" update =":formContent:dialogw:" icon="ui-icon-triangle-1-e"  rendered="#{!beanBuscaVentaMayoreo.statusButtonPagar}">
                         </p:commandButton>
-                        <!-- <p:commandButton value="Pagar" update=":formContent" ajax="true" action="{beanBuscaVentaMayoreo.updateVenta()}" onclick="PF('statusDialog').show()" rendered="{beanBuscaVentaMayoreo.viewEstate=='init'}" disabled="{beanBuscaVentaMayoreo.statusButtonPagar}"/>-->
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 form-group">

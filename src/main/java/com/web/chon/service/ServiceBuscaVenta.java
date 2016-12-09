@@ -1,6 +1,8 @@
 package com.web.chon.service;
 
 import com.web.chon.dominio.BuscaVenta;
+import com.web.chon.dominio.VentaMayoreo;
+import com.web.chon.dominio.VentaProductoMayoreo;
 import com.web.chon.negocio.NegocioBuscaVenta;
 import com.web.chon.util.Utilidades;
 import java.math.BigDecimal;
@@ -209,7 +211,7 @@ public class ServiceBuscaVenta implements IfaceBuscaVenta {
                 busca_venta.setIdExistenciaFk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
                 busca_venta.setCantidadEmpaque(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
                 busca_venta.setKilosVendidos(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
-                
+
                 lstVentas.add(busca_venta);
             }
             return lstVentas;
@@ -222,36 +224,48 @@ public class ServiceBuscaVenta implements IfaceBuscaVenta {
     }
 
     @Override
-    public ArrayList<BuscaVenta> getVentaByfolioAndIdSuc(int folioVenta, int idSucursal) {
+    public VentaMayoreo getVentaByfolioAndIdSuc(BigDecimal folioVenta, int idSucursal) {
 
         try {
             ArrayList<BuscaVenta> lstVentas = new ArrayList<BuscaVenta>();
             ejb = (NegocioBuscaVenta) Utilidades.getEJBRemote("ejbBuscaVenta", NegocioBuscaVenta.class.getName());
-            List<Object[]> lstObject = ejb.getVentaMenudeoByfolioAndIdSuc(folioVenta,idSucursal);
+            List<Object[]> lstObject = ejb.getVentaMenudeoByfolioAndIdSuc(folioVenta, idSucursal);
+
+            VentaMayoreo venta = new VentaMayoreo();
+            ArrayList<VentaProductoMayoreo> lstVenta = new ArrayList<VentaProductoMayoreo>();
+            BigDecimal totalVenta = new BigDecimal(0);
             for (Object[] obj : lstObject) {
+                VentaProductoMayoreo producto = new VentaProductoMayoreo();
+//                BuscaVenta busca_venta = new BuscaVenta();
+                venta.setNombreCliente(obj[0] == null ? "" : obj[0].toString());
+                venta.setNombreVendedor(obj[1] == null ? "" : obj[1].toString());
+                venta.setIdVentaMayoreoPk(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
+                producto.setNombreProducto(obj[3] == null ? "" : obj[3].toString());
+                producto.setNombreEmpaque(obj[4] == null ? "" : obj[4].toString());
+                producto.setCantidadEmpaque(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
+                producto.setPrecioProducto(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
+                producto.setTotalVenta(producto.getCantidadEmpaque().multiply(producto.getPrecioProducto(), MathContext.UNLIMITED));
+                venta.setTotalVenta(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
+                venta.setFechaVenta((Date) obj[8]);
+                venta.setFechaPromesaPago((Date) obj[9]);
+                venta.setNombreEstatus(obj[10] == null ? "" : obj[10].toString());
+                venta.setIdStatusFk(obj[11] == null ? new BigDecimal(0) : new BigDecimal(obj[11].toString())); //id status
+                venta.setIdSucursalFk(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
+                totalVenta = totalVenta.add(producto.getTotalVenta());
+                venta.setTotalVenta(totalVenta);
+                venta.setIdtipoVentaFk(obj[16] == null ? null : new BigDecimal(obj[16].toString()));
+//                venta.setNombreSucursal(obj[13] == null ? "" : obj[13].toString());
+//                venta.setFolioSucursal(new BigDecimal(obj[14] == null ? "0" : obj[14].toString()));
+                venta.setIdClienteFk(obj[15] == null ? null : new BigDecimal(obj[15].toString()));
+                venta.setVentaSucursal(folioVenta);
 
-                BuscaVenta busca_venta = new BuscaVenta();
-                busca_venta.setNombreCliente(obj[0] == null ? "" : obj[0].toString());
-                busca_venta.setNombreVendedor(obj[1] == null ? "" : obj[1].toString());
-                busca_venta.setIdVenta(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
-                busca_venta.setNombreSubproducto(obj[3] == null ? "" : obj[3].toString());
-                busca_venta.setNombreEmpaque(obj[4] == null ? "" : obj[4].toString());
-                busca_venta.setCantidadEmpaque(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
-                busca_venta.setPrecioProducto(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
-                busca_venta.setTotal(busca_venta.getCantidadEmpaque().multiply(busca_venta.getPrecioProducto(), MathContext.UNLIMITED));
-                busca_venta.setTotalVenta(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
-                busca_venta.setFechaVenta((Date) obj[8]);
-                busca_venta.setFechaPromesaPago((Date) obj[9]);
-                busca_venta.setNombreStatus(obj[10] == null ? "" : obj[10].toString());
-                busca_venta.setStatusFK(obj[11] == null ? 0 : Integer.parseInt(obj[11].toString())); //id status
-                busca_venta.setIdSucursalFk(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
-                busca_venta.setNombreSucursal(obj[13] == null ? "" : obj[13].toString());
-                busca_venta.setFolioSucursal(new BigDecimal(obj[14] == null ? "0" : obj[14].toString()));
-                busca_venta.setIdClienteFk(obj[15] == null ? null : new BigDecimal(obj[15].toString()));
-                lstVentas.add(busca_venta);
+                lstVenta.add(producto);
             }
+            
+            venta.setListaProductos(lstVenta);
 
-            return lstVentas;
+
+            return venta;
         } catch (Exception ex) {
             Logger.getLogger(ServiceBuscaVenta.class.getName()).log(Level.SEVERE, null, ex);
             return null;

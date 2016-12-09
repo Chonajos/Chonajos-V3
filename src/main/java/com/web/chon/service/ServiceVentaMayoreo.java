@@ -132,7 +132,7 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
             venta.setFechaPago(obj[6] == null ? null : (Date) obj[6]);
             venta.setIdSucursalFk(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
             venta.setIdtipoVentaFk(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
-            venta.setVentaSucursal(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
+            venta.setVentaSucursal(obj[9] == null ? null : new BigDecimal(obj[9].toString()));//
             venta.setIdCajeroFk(obj[10] == null ? null : new BigDecimal(obj[10].toString()));
             venta.setIdCancelUser(obj[11] == null ? null : new BigDecimal(obj[11].toString()));
             venta.setFechaCancelacion(obj[12] == null ? null : (Date) obj[12]);
@@ -141,8 +141,7 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
             venta.setNombreVendedor(obj[15] == null ? "" : obj[15].toString());
             venta.setNombreTipoVenta(obj[16] == null ? "" : obj[16].toString());
             venta.setNombreEstatus(obj[17] == null ? "" : obj[17].toString());
-            //ganacias = obj[18] == null ? new BigDecimal(0) : new BigDecimal(obj[18].toString());
-            //venta.setGanciaVenta(venta.getTotalVenta().subtract(ganacias));
+   
             venta.setListaProductos(ifaceVentaMayoreoProducto.getProductosbyIdVmFk(venta.getIdVentaMayoreoPk()));
             for (VentaProductoMayoreo producto : venta.getListaProductos()) {
                 total = total.add(producto.getTotalVenta(), MathContext.UNLIMITED);

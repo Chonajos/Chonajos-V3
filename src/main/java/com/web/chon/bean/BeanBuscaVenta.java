@@ -104,16 +104,16 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
     private boolean statusButtonPagar;
 
     private int idVentaTemporal; //utilizado para comprobacion de venta 
-    private static final BigDecimal entradaSalida = new BigDecimal(1);
-    private static final BigDecimal statusOperacionRealizada = new BigDecimal(1);
-    private static final BigDecimal statusOperacionPendiente = new BigDecimal(2);
-    private static final BigDecimal statusOperacionRechazada = new BigDecimal(3);
+    private static final BigDecimal ENTRADASALIDA = new BigDecimal(1);
+    private static final BigDecimal STATUSOPERACIONREALIZADA = new BigDecimal(1);
+    private static final BigDecimal STATUSOPERACIONPENDIENTE = new BigDecimal(2);
+    private static final BigDecimal STATUSOPERACIONRECHAZADA = new BigDecimal(3);
     //private static final BigDecimal concepto = new BigDecimal(8);
 
-    private static final BigDecimal conceptoMenudeoEfectivo = new BigDecimal(8);
-    private static final BigDecimal conceptoMenudeoCheques = new BigDecimal(33);
-    private static final BigDecimal conceptoMenudeoDeposito = new BigDecimal(32);
-    private static final BigDecimal conceptoMenudeoTransferencia = new BigDecimal(34);
+    private static final BigDecimal CONCEPTOMENUDEOEFECTIVO = new BigDecimal(8);
+    private static final BigDecimal CONCEPTOMENUDEOCHEQUES = new BigDecimal(33);
+    private static final BigDecimal CONCEPTOMENUDEODEPOSITO = new BigDecimal(32);
+    private static final BigDecimal CONCEPTOMENUDEOTRANSFERENCIA = new BigDecimal(34);
 
     private static final BigDecimal DOCUMENTOACTIVO = new BigDecimal(1);
     private static final BigDecimal DOCUMENTOTIPOCHEQUE = new BigDecimal(1);
@@ -163,8 +163,8 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
         opcaja.setIdCajaFk(caja.getIdCajaPk());
         //opcaja.setIdConceptoFk(concepto);
         opcaja.setIdUserFk(usuario.getIdUsuarioPk());
-        opcaja.setEntradaSalida(entradaSalida);
-        opcaja.setIdStatusFk(statusOperacionRealizada);
+        opcaja.setEntradaSalida(ENTRADASALIDA);
+        opcaja.setIdStatusFk(STATUSOPERACIONREALIZADA);
         opcaja.setIdSucursalFk(new BigDecimal(usuario.getIdSucursal()));
         listaCuentas = ifaceCuentasBancarias.getCuentas();
         lstTipoAbonos = ifaceTipoAbono.getAll();
@@ -204,21 +204,21 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
         switch (idTipoPagoFk.intValue()) {
             case 1:
                 System.out.println("Se ejecuto cobro en efectivo");
-                opcaja.setIdConceptoFk(conceptoMenudeoEfectivo);
+                opcaja.setIdConceptoFk(CONCEPTOMENUDEOEFECTIVO);
                 break;
             case 2:
                 System.out.println("Se ejecuto cobro en transferencia");
-                opcaja.setIdConceptoFk(conceptoMenudeoTransferencia);
+                opcaja.setIdConceptoFk(CONCEPTOMENUDEOTRANSFERENCIA);
 
                 break;
             case 3:
                 System.out.println("Se ejecuto cobro en cheque");
-                opcaja.setIdConceptoFk(conceptoMenudeoCheques);
+                opcaja.setIdConceptoFk(CONCEPTOMENUDEOCHEQUES);
 
                 break;
             case 4:
                 System.out.println("Se ejecuto cobro en deposito bancario");
-                opcaja.setIdConceptoFk(conceptoMenudeoDeposito);
+                opcaja.setIdConceptoFk(CONCEPTOMENUDEODEPOSITO);
                 break;
             default:
                 System.out.println("Se ejecuto cobro en efectivo");
@@ -496,7 +496,7 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
         statusButtonPagar = false;
         System.out.println("id de folio" + data.getFolioSucursal());
         System.out.println("id de sucursal" + usuario.getIdSucursal());
-        model = ifaceBuscaVenta.getVentaByfolioAndIdSuc(data.getFolioSucursal().intValue(), usuario.getIdSucursal());
+//        model = ifaceBuscaVenta.getVentaByfolioAndIdSuc(data.getFolioSucursal().intValue(), usuario.getIdSucursal());//comentado hasta que se acabe pagar venta mayoreo y menudeo integracion
         if (model.isEmpty()) {
             data.setNombreCliente("");
             data.setNombreVendedor("");

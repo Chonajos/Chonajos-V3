@@ -1,6 +1,7 @@
 package com.web.chon.ejb;
 
 import com.web.chon.negocio.NegocioBuscaVenta;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -223,11 +224,11 @@ public class EjbBuscaVenta implements NegocioBuscaVenta {
     }
 
     @Override
-    public List<Object[]> getVentaMenudeoByfolioAndIdSuc(int folio, int idSucursal) {
+    public List<Object[]> getVentaMenudeoByfolioAndIdSuc(BigDecimal folio, int idSucursal) {
 
         try {
 
-            Query query = em.createNativeQuery("select c.nombre ||' '||c.APELLIDO_PATERNO||' '||c.APELLIDO_MATERNO   as nombre_cliente,u.NOMBRE_USUARIO||' '||u.APATERNO_USUARIO||' '||u.AMATERNO_USUARIO as nombre_vendedor,v.ID_VENTA_PK, sp.NOMBRE_SUBPRODUCTO,tem.NOMBRE_EMPAQUE,vp.CANTIDAD_EMPAQUE,vp.PRECIO_PRODUCTO,vp.TOTAL_VENTA,v.FECHA_VENTA,v.FECHA_PROMESA_PAGO,sv.NOMBRE_STATUS,v.status_fk,v.ID_SUCURSAL_FK,sucu.NOMBRE_SUCURSAL,v.FOLIO_SUCURSAL,v.ID_CLIENTE_FK \n"
+            Query query = em.createNativeQuery("select c.nombre ||' '||c.APELLIDO_PATERNO||' '||c.APELLIDO_MATERNO   as nombre_cliente,u.NOMBRE_USUARIO||' '||u.APATERNO_USUARIO||' '||u.AMATERNO_USUARIO as nombre_vendedor,v.ID_VENTA_PK, sp.NOMBRE_SUBPRODUCTO,tem.NOMBRE_EMPAQUE,vp.CANTIDAD_EMPAQUE,vp.PRECIO_PRODUCTO,vp.TOTAL_VENTA,v.FECHA_VENTA,v.FECHA_PROMESA_PAGO,sv.NOMBRE_STATUS,v.status_fk,v.ID_SUCURSAL_FK,sucu.NOMBRE_SUCURSAL,v.FOLIO_SUCURSAL,v.ID_CLIENTE_FK,v.TIPO_VENTA \n"
                     + "       from Venta v\n"
                     + "       INNER JOIN Venta_Producto vp\n"
                     + "       on v.id_venta_pk=vp.id_venta_fk\n"

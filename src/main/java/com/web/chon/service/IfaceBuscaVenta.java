@@ -1,6 +1,8 @@
 package com.web.chon.service;
 
 import com.web.chon.dominio.BuscaVenta;
+import com.web.chon.dominio.VentaMayoreo;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 /**
@@ -24,5 +26,5 @@ public interface IfaceBuscaVenta
      * @param idSucursal
      * @return 
      */
-    public ArrayList<BuscaVenta> getVentaByfolioAndIdSuc(int folioVenta, int idSucursal);
+    public VentaMayoreo getVentaByfolioAndIdSuc(BigDecimal folioVenta, int idSucursal);
 }
