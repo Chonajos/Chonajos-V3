@@ -59,10 +59,10 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
     }
 
     @Override
-    public ArrayList<VentaMayoreo> getVentasByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idStatusVenta, BigDecimal idTipoVenta, String idSubProductoFk,BigDecimal idCliente) {
+    public ArrayList<VentaMayoreo> getVentasByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idStatusVenta, BigDecimal idTipoVenta, String idSubProductoFk, BigDecimal idCliente) {
         getEjb();
         ArrayList<VentaMayoreo> lstVenta = new ArrayList<VentaMayoreo>();
-        List<Object[]> lstObject = ejb.getVentasByInterval(TiempoUtil.getFechaDDMMYYYY(fechaInicio), TiempoUtil.getFechaDDMMYYYY(fechaFin), idSucursal, idStatusVenta, idTipoVenta,idSubProductoFk,idCliente);
+        List<Object[]> lstObject = ejb.getVentasByInterval(TiempoUtil.getFechaDDMMYYYY(fechaInicio), TiempoUtil.getFechaDDMMYYYY(fechaFin), idSucursal, idStatusVenta, idTipoVenta, idSubProductoFk, idCliente);
         BigDecimal ganacias = new BigDecimal(0);
         for (Object[] obj : lstObject) {
 
@@ -141,7 +141,7 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
             venta.setNombreVendedor(obj[15] == null ? "" : obj[15].toString());
             venta.setNombreTipoVenta(obj[16] == null ? "" : obj[16].toString());
             venta.setNombreEstatus(obj[17] == null ? "" : obj[17].toString());
-   
+
             venta.setListaProductos(ifaceVentaMayoreoProducto.getProductosbyIdVmFk(venta.getIdVentaMayoreoPk()));
             for (VentaProductoMayoreo producto : venta.getListaProductos()) {
                 total = total.add(producto.getTotalVenta(), MathContext.UNLIMITED);
@@ -190,8 +190,10 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
 
             }
             BigDecimal ventaTotal = new BigDecimal(0);
+            //Se genera la lista principal por prductos
             for (Object[] obj : lstObjectPrincipal) {
                 OperacionesVentasMayoreo dominio = new OperacionesVentasMayoreo();
+                boolean existeTemp = false;
                 ArrayList<OperacionesVentasMayoreo> lstSecundario = new ArrayList<OperacionesVentasMayoreo>();
 
                 dominio.setCarroSucursal(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
@@ -204,29 +206,46 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
                 dominio.setEmpaqueVendidos(obj[7] == null ? new BigDecimal(0) : new BigDecimal(obj[7].toString()));
                 dominio.setKiloVendidos(obj[8] == null ? new BigDecimal(0) : new BigDecimal(obj[8].toString()));
                 ventaTotal = obj[9] == null ? new BigDecimal(0) : new BigDecimal(obj[9].toString());
+                dominio.setIdEmpFk(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
 
                 if (ventaTotal.intValue() > 0 && dominio.getKiloVendidos().intValue() > 0) {
                     dominio.setPrecioVenta(ventaTotal.divide(dominio.getKiloVendidos(), 10, RoundingMode.UP));
-                }else{
-                     dominio.setPrecioVenta(new BigDecimal(0));
+                } else {
+                    dominio.setPrecioVenta(new BigDecimal(0));
                 }
 
-//                dominio.setPrecioVenta(obj[9] == null ? new BigDecimal(0) : new BigDecimal(obj[9].toString()));
-                dominio.setConvenio(obj[10] == null ? null : new BigDecimal(obj[10].toString()));
-                dominio.setIdTipoConvenio(obj[11] == null ? null : new BigDecimal(obj[11].toString()));
-                dominio.setIdEmpFk(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
-                dominio.setPrecioMinimo(obj[13] == null ? new BigDecimal(0) : new BigDecimal(obj[13].toString()));
+                //Se recorre la lista principal para ver si no hay existencias repetidas con el id de entrada mercancia prodcuto si si, se suman las ventas y no se agrega el registro a la lista principal
+                for (OperacionesVentasMayoreo temp : lstPrincipal) {
+                    if (dominio.getIdEmpFk().equals(temp.getIdEmpFk())) {
+                        existeTemp = true;
+                        BigDecimal totalVentaTemp = temp.getPrecioVenta().multiply(temp.getKiloVendidos());
+                        BigDecimal totalVentaDominio = dominio.getPrecioVenta().multiply(dominio.getKiloVendidos());
+                        temp.setEmpaqueVendidos(temp.getEmpaqueVendidos().add(dominio.getEmpaqueVendidos()));
+                        temp.setKiloVendidos(temp.getKiloVendidos().add(dominio.getKiloVendidos()));
+                        temp.setPrecioVenta((totalVentaTemp.add(totalVentaDominio)).divide(temp.getKiloVendidos(), 10, RoundingMode.UP));
 
-                lstSecundario = new ArrayList<OperacionesVentasMayoreo>();
-                for (OperacionesVentasMayoreo detalle : lstDetalle) {
-
-                    if (detalle.getIdSubproducto().equals(dominio.getIdSubproducto()) && detalle.getIdTipoEmpaque().equals(dominio.getIdTipoEmpaque()) && detalle.getConvenio().equals(dominio.getConvenio()) && dominio.getIdEmpFk().equals(detalle.getIdEmpFk())) {
-                        lstSecundario.add(detalle);
+//                        precioVenta
                     }
                 }
 
-                dominio.setLstOperacionesVentasMayoreo(lstSecundario);
-                lstPrincipal.add(dominio);
+                dominio.setConvenio(obj[10] == null ? null : new BigDecimal(obj[10].toString()));
+                dominio.setIdTipoConvenio(obj[11] == null ? null : new BigDecimal(obj[11].toString()));
+                dominio.setPrecioMinimo(obj[13] == null ? new BigDecimal(0) : new BigDecimal(obj[13].toString()));
+
+                //Si no existe en la lista de productos se agregan el detalle de sus ventas
+                if (!existeTemp) {
+                    lstSecundario = new ArrayList<OperacionesVentasMayoreo>();
+                    //Se agrega el detalle de las ventas de los productos
+                    for (OperacionesVentasMayoreo detalle : lstDetalle) {
+
+                        if (detalle.getIdSubproducto().equals(dominio.getIdSubproducto()) && detalle.getIdTipoEmpaque().equals(dominio.getIdTipoEmpaque()) && detalle.getConvenio().equals(dominio.getConvenio()) && dominio.getIdEmpFk().equals(detalle.getIdEmpFk())) {
+                            lstSecundario.add(detalle);
+                        }
+                    }
+
+                    dominio.setLstOperacionesVentasMayoreo(lstSecundario);
+                    lstPrincipal.add(dominio);
+                }
 
             }
 
