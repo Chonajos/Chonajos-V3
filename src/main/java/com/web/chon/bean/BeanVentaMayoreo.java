@@ -538,8 +538,8 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
             JsfUtil.addErrorMessage("Cantidad de Empaque insuficiente");
         } else if (data.getKilosVendidos().intValue() > selectedExistencia.getKilosTotalesProducto().intValue()) {
             JsfUtil.addErrorMessage("Cantidad de Kilos insuficiente");
-        } else if (data.getKilosVendidos().intValue() > kilosPromedioMaximo.intValue() || data.getKilosVendidos().intValue() < kilosPromedioMinimo.intValue()) {
-            JsfUtil.addErrorMessage("Cantidad de Kilos a vender no validos ");
+//        } else if (data.getKilosVendidos().intValue() > kilosPromedioMaximo.intValue() || data.getKilosVendidos().intValue() < kilosPromedioMinimo.intValue()) {
+//            JsfUtil.addErrorMessage("Cantidad de Kilos a vender no validos ");
         } else if (lstVenta.isEmpty()) {
             add();
             limpia();
