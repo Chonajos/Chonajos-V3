@@ -62,7 +62,7 @@ public class BeanEntregaMercancia implements Serializable {
     private EntregaMercancia data;
     private EntregaMercancia entregaMercancia;
     private ArrayList<EntregaMercancia> model;
-//    private ArrayList<EntregaMercancia> lstEntregaMercancia;
+    private ArrayList<EntregaMercancia> lstEntregaMercanciaTemporal;
 
     private String title = "";
     private String viewEstate = "";
@@ -97,6 +97,11 @@ public class BeanEntregaMercancia implements Serializable {
 
     private String codigoBarras;
 
+    BigDecimal carro = null;
+    String producto = null;
+    BigDecimal idEmpaque = null;
+    BigDecimal idSucursal = null;
+
     @PostConstruct
     public void init() {
         usuarioDominio = context.getUsuarioAutenticado();
@@ -105,6 +110,7 @@ public class BeanEntregaMercancia implements Serializable {
         data = new EntregaMercancia();
         entregaMercancia = new EntregaMercancia();
         model = new ArrayList<EntregaMercancia>();
+        lstEntregaMercanciaTemporal = new ArrayList<EntregaMercancia>();
         lstSucursal = ifaceCatSucursales.getSucursales();
         date = context.getFechaSistema();
 
@@ -113,19 +119,61 @@ public class BeanEntregaMercancia implements Serializable {
 
     }
 
-    public void searchByBarCode() {
-        codigoBarras = codigoBarras.trim();
+    public void entregar() {
+        boolean bandera = false;
+        for (EntregaMercancia e : lstEntregaMercanciaTemporal) {
+            e.setIdUsuario(usuarioDominio.getIdUsuario());
+            System.out.println("Entrega: " + e.toString());
+            if (ifaceEntregaMercancia.insert(e) != 1) {
+                bandera = true;
+                break;
+            } else {
+                bandera = false;
+                JsfUtil.addSuccessMessageClean("Mercancia entregada correctamente");
+            }
+        }
+        if (bandera) {
+            JsfUtil.addErrorMessageClean("Ocurrió un problema al entregar la mercancia");
+        } else {
+            JsfUtil.addSuccessMessageClean("Mercancia entregada correctamente");
+            setParameterTicket(data.getIdFolioVenta().intValue());
+            generateReport(data.getIdFolioVenta().intValue());
+            RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
+            buscaFolioVenta();
+            verificarPedido();
+            lstEntregaMercanciaTemporal.clear();
+            lstEntregaMercanciaTemporal = new ArrayList<EntregaMercancia>();
+            cantidad = null;
+            codigoBarras = null;
 
+        }
+    }
+
+    public void verificarPedido() {
+        BigDecimal suma = new BigDecimal(0);
+        for (EntregaMercancia e : model) {
+            suma = suma.add(e.getEmpaquesRemanente().subtract(e.getEmpaquesEntregados(), MathContext.UNLIMITED), MathContext.UNLIMITED);
+        }
+        if (suma.intValue() == 0) {
+            ifaceVentaMayoreo.updateEstatusVentaByFolioSucursalAndIdSucursal(data.getIdFolioVenta(), new BigDecimal(usuarioDominio.getSucId()), ESTATUS_ENTREGADO);
+            //buscaFolioVenta();
+            lstEntregaMercanciaTemporal.clear();
+            lstEntregaMercanciaTemporal = new ArrayList<EntregaMercancia>();
+            cantidad = null;
+            codigoBarras = null;
+            JsfUtil.addSuccessMessageClean("El pedido se ha entregado");
+        }
+    }
+
+    public void editarEntrega() {
+
+    }
+
+    public void verificarBarCode() {
+        codigoBarras = codigoBarras.trim();
         if (codigoBarras != null && !codigoBarras.isEmpty()) {
             String diaArray[] = codigoBarras.split("'");
-            System.out.println("Codigo Barras: " + codigoBarras);
-            BigDecimal carro = null;
-            String producto = null;
-            BigDecimal idEmpaque = null;
-            BigDecimal idSucursal = null;
-
             switch (diaArray.length) {
-
                 case 1:
                     String segArray[] = codigoBarras.split("-");
                     idSucursal = new BigDecimal(segArray[0]);
@@ -133,6 +181,7 @@ public class BeanEntregaMercancia implements Serializable {
                     producto = segArray[2];
                     idEmpaque = new BigDecimal(segArray[3]);
                     //idTipoConvenioFk = new BigDecimal(segArray[4]);
+                    buscarBarcodeListaPedido();
                     break;
                 case 5:
                     idSucursal = new BigDecimal(diaArray[0]);
@@ -140,35 +189,109 @@ public class BeanEntregaMercancia implements Serializable {
                     producto = diaArray[2];
                     idEmpaque = new BigDecimal(diaArray[3]);
                     //idTipoConvenioFk = new BigDecimal(diaArray[4]);
+                    buscarBarcodeListaPedido();
                     break;
                 default:
                     JsfUtil.addErrorMessageClean("Código de Barras Inválido");
+
                     break;
             }
-
-            for (EntregaMercancia mercancia : model) {
-                if (mercancia.getIdCarroFk().intValue() == carro.intValue() && mercancia.getIdProducto().equals(producto) && mercancia.getIdTipoEmpaque().intValue() == idEmpaque.intValue()) {
-                    JsfUtil.addSuccessMessageClean("Esté código se encuentra en la lista de entrega de mercancia");
-                    //System.out.println("Mercancia: "+mercancia.toString());
-                    //89
-
-                    if (empaquesEntregar == null) {
-                        empaquesEntregar = new BigDecimal(0);
-                    }
-                    empaquesEntregar = empaquesEntregar.add(new BigDecimal(1), MathContext.UNLIMITED);
-                    System.out.println("Contando : " + empaquesEntregar);
-                    //setKilosPromedio
-                    //System.out.println("Paquete: "+paquete.toString());
-//                    paquete.getKilosEntregados();
-//                    paquete.getEmpaquesEntregados();
-
-                } else {
-                    JsfUtil.addErrorMessageClean("Este código de producto no se encuentra en la lista de entrega");
-                }
-            }
+        } else {
+            JsfUtil.addErrorMessageClean("Favor de ingresar un código de barras");
         }
     }
 
+    public void buscarBarcodeListaPedido() {
+        /*
+        Esta función busca el codigo de barras en la lista del pedido.
+         */
+        if (empaquesEntregar == null || cantidad == null) {
+            empaquesEntregar = new BigDecimal(0);
+            cantidad = new BigDecimal(1);
+        }
+        boolean bandera = false;
+        for (EntregaMercancia mercancia : model) //recorre
+        {
+            if (mercancia.getIdCarroFk().intValue() == carro.intValue() && mercancia.getIdProducto().equals(producto) && mercancia.getIdTipoEmpaque().intValue() == idEmpaque.intValue()) {
+                agregarAlista(mercancia);
+                bandera = true;
+                break;
+            } else {
+                bandera = false;
+                //JsfUtil.addErrorMessageClean("Este código de barras no existe en la lista del pedido");
+            }
+        }
+
+    }
+
+    public void agregarAlista(EntregaMercancia ent) {
+        if (!lstEntregaMercanciaTemporal.isEmpty()) 
+        {
+            boolean bandera = false;
+            //la lista cotiene datos verificar si hay alguno repetido
+            // si no hay repetidos
+            for (EntregaMercancia repetido : lstEntregaMercanciaTemporal) 
+            {
+                if (repetido.getIdCarroFk().intValue() == carro.intValue() && repetido.getIdProducto().equals(producto) && repetido.getIdTipoEmpaque().intValue() == idEmpaque.intValue()) 
+                {
+                   
+                   agregarRepetido(repetido,ent);
+                   bandera = false;
+                   break;
+                } else 
+                {
+                    bandera = true;
+                }
+            }//fin for
+            if(bandera)
+            {
+                agregarNuevo(ent);
+            }
+        } 
+        else 
+        {
+            //agregar nuevo.
+            agregarNuevo(ent);
+            
+        }
+    }
+    public void agregarRepetido(EntregaMercancia repetido,EntregaMercancia mercancia)
+    {
+        if ((repetido.getEmpaquesEntregar().add(cantidad, MathContext.UNLIMITED)).compareTo((mercancia.getEmpaquesRemanente().subtract(mercancia.getEmpaquesEntregados(), MathContext.UNLIMITED))) > 0) 
+        {
+            JsfUtil.addErrorMessageClean("No puedes entregar mas paquetes del pedido");
+        } 
+        else 
+        {
+            repetido.setEmpaquesEntregar(repetido.getEmpaquesEntregar().add(cantidad, MathContext.UNLIMITED));
+            System.out.println("Encontro Repetido");
+            JsfUtil.addSuccessMessageClean("Producto Actualizado");
+        }
+        
+    }
+    public void agregarNuevo(EntregaMercancia mercancia)
+    {
+         if (cantidad.compareTo((mercancia.getEmpaquesRemanente().subtract(mercancia.getEmpaquesEntregados(), MathContext.UNLIMITED))) > 0) 
+            {
+                JsfUtil.addErrorMessageClean("No puedes entregar mas paquetes del pedido");
+            } 
+            else 
+            {
+                EntregaMercancia e = new EntregaMercancia();
+                e.setIdCarroFk(mercancia.getIdCarroFk());
+                e.setIdProducto(mercancia.getIdProducto());
+                e.setIdTipoEmpaque(mercancia.getIdTipoEmpaque());
+                e.setNombreProducto(mercancia.getNombreProducto());
+                e.setNombreEmpaque(mercancia.getNombreEmpaque());
+                e.setEmpaquesEntregar(cantidad);
+                e.setIdVPMayoreo(mercancia.getIdVPMayoreo());
+                e.setIdVPMenudeo(mercancia.getIdVPMenudeo());
+                lstEntregaMercanciaTemporal.add(e);
+                JsfUtil.addSuccessMessageClean("Producto Agregado");
+                cantidad = null;
+                codigoBarras = null;
+            }
+    }
 
     public void print() {
 
@@ -352,24 +475,19 @@ public class BeanEntregaMercancia implements Serializable {
         totalRemanente = BIGDECIMAL_ZERO;
         totalEntregar = BIGDECIMAL_ZERO;
         totalEmpaques = BIGDECIMAL_ZERO;
-        for (EntregaMercancia dominio : model) {
-
+        for (EntregaMercancia dominio : lstEntregaMercanciaTemporal) 
+        {
             dominio.setEmpaquesEntregar(dominio.getEmpaquesEntregar() == null ? BIGDECIMAL_ZERO : dominio.getEmpaquesEntregar());
-
             totalEmpaques = totalEmpaques.add(dominio.getEmpaquesRemanente());
             totalRemanente = totalRemanente.add(dominio.getEmpaquesRemanente()).subtract(dominio.getEmpaquesEntregados());
             if (dominio.getEmpaquesEntregar() != null) {
                 totalEntregar = totalEntregar.add(dominio.getEmpaquesEntregar());
             }
-
             dominio.setEmpaquesEntregar(dominio.getEmpaquesEntregar() == null ? BIGDECIMAL_ZERO : dominio.getEmpaquesEntregar());
             productos.add(dominio.getNombreProducto().toUpperCase() + " " + dominio.getNombreEmpaque().toUpperCase());
-
             BigDecimal remanenteProducto = dominio.getEmpaquesRemanente().subtract(dominio.getEmpaquesEntregar());
             remanenteProducto = remanenteProducto.subtract(dominio.getEmpaquesEntregados());
-
             productos.add("                                         " + remanenteProducto + "                     " + dominio.getEmpaquesEntregar());
-
         }
 
         putValues(TiempoUtil.getFechaDDMMYYYYHHMM(date), productos, folioVenta);
@@ -548,5 +666,12 @@ public class BeanEntregaMercancia implements Serializable {
         this.cantidad = cantidad;
     }
 
-    
+    public ArrayList<EntregaMercancia> getLstEntregaMercanciaTemporal() {
+        return lstEntregaMercanciaTemporal;
+    }
+
+    public void setLstEntregaMercanciaTemporal(ArrayList<EntregaMercancia> lstEntregaMercanciaTemporal) {
+        this.lstEntregaMercanciaTemporal = lstEntregaMercanciaTemporal;
+    }
+
 }
