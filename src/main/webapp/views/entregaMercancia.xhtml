@@ -30,37 +30,42 @@
                         <div class="col-lg-8">
                             <p:commandButton  value="Buscar" class="primaryButton" update=":formContent" action="#{beanEntregaMercancia.buscaFolioVenta}" style="margin-left:30px; " onclick="PF('statusDialog').show()"/>
                         </div>
-                        <p:commandButton  value="Entregar" class="primaryButton" update=":formContent" action="#{beanEntregaMercancia.print}" style="margin-left:30px; " onclick="PF('statusDialog').show()"/>
+                        <p:commandButton  value="Entregar" class="primaryButton" update=":formContent" action="#{beanEntregaMercancia.entregar()}" style="margin-left:30px; " onclick="PF('statusDialog').show()"/>
 
                     </div>
                     <div class="col-lg-12 col-md-12 col-md-12 col-xs-12 form-group" style="padding: 0px;">
                         <p:outputLabel value="Cliente:" class="col-lg-1 col-md-3 col-sm-3 col-xs-12" for="txtCliente" style="padding-left: 0px;"/>
                         <p:inputText id="txtCliente" value="#{beanEntregaMercancia.data.nombreCliente}" class="col-lg-2 col-md-3 col-sm-3 col-xs-12" readonly="true"/>
+                        <!--
                         <p:outputLabel value="Total Venta:" class="col-lg-1 col-md-3 col-sm-3 col-xs-12" for="txtTotalVenta" style="padding-left: 0px;"/>
-                        <p:inputText id="txtTotalVenta"  value="#{beanEntregaMercancia.data.totalVenta}"  class="col-lg-1 col-md-3 col-sm-3 col-xs-12" >
-                            <!--<f:converter converterId="bigDecimalConverter" />-->
+                        <p:inputText id="txtTotalVenta"  value="{beanEntregaMercancia.data.totalVenta}"  class="col-lg-1 col-md-3 col-sm-3 col-xs-12" >
+                            <f:converter converterId="bigDecimalConverter" />
                         </p:inputText>
                         <p:outputLabel value="Tipo Venta:" class="col-lg-1 col-md-3 col-sm-3 col-xs-12" for="txtTipoVenta" style="padding-left: 0px;"/>
-                        <p:inputText id="txtTipoVenta" value="#{beanEntregaMercancia.data.nombreTipoVenta}" class="col-lg-1 col-md-3 col-sm-3 col-xs-12" readonly="true"/>
+                        <p:inputText id="txtTipoVenta" value="{beanEntregaMercancia.data.nombreTipoVenta}" class="col-lg-1 col-md-3 col-sm-3 col-xs-12" readonly="true"/>
+                        
+                        
                         <p:outputLabel value="Estatus Venta:" class="col-lg-1 col-md-3 col-sm-3 col-xs-12" for="txtEstatusVenta" style="padding-left: 5px; padding-right:8px; "/>
-                        <p:inputText id="txtEstatusVenta" value="#{beanEntregaMercancia.data.estatusVenta}" class="col-lg-1 col-md-3 col-sm-3 col-xs-12" readonly="true"/>
-
+                        <p:inputText id="txtEstatusVenta" value="{beanEntregaMercancia.data.estatusVenta}" class="col-lg-1 col-md-3 col-sm-3 col-xs-12" readonly="true"/>
+                        -->
 
                     </div>
-                    <!--<div class="col-lg-12 col-md-12 col-md-12 col-xs-12 form-group" style="padding: 0px;">
-                        <p:outputLabel class="col-lg-1 col-md-3 col-sm-3 col-xs-12" id="codigo" for="txtCodigoBarras" value ="Código de Barras:"  rendered="{beanEntregaMercancia.usuarioDominio.sucId ==1}"/> 
-                        <p:inputText id="txtCodigoBarras" maxlength="30" class="col-lg-1 col-md-3 col-sm-3 col-xs-12"  value="{beanEntregaMercancia.codigoBarras}" rendered="{beanEntregaMercancia.usuarioDominio.sucId==1}">
-                            <p:ajax event="blur" update=":formContent" listener ="{beanEntregaMercancia.searchByBarCode()}"/>
+                    <div class="col-lg-12 col-md-12 col-md-12 col-xs-12 form-group" style="padding: 0px;">
+                        <p:outputLabel class="col-lg-1 col-md-3 col-sm-3 col-xs-12" id="codigo" for="txtCodigoBarras" value ="Código de Barras:"  rendered="#{beanEntregaMercancia.usuarioDominio.sucId ==1}"/> 
+                        <p:inputText id="txtCodigoBarras" maxlength="30" class="col-lg-1 col-md-3 col-sm-3 col-xs-12"  value="#{beanEntregaMercancia.codigoBarras}" rendered="#{beanEntregaMercancia.usuarioDominio.sucId==1}">
+                            <!--<p:ajax event="blur" update=":formContent: dialogw" listener ="{beanEntregaMercancia.searchByBarCode()}"/>-->
                         </p:inputText>
                         <p:outputLabel value="Cantidad:" class="col-lg-1 col-md-3 col-sm-3 col-xs-12" for="txtCantidad" style="padding-left: 0px;"/>
-                        <p:inputText id="txtCantidad" value="{beanEntregaMercancia.cantidad}" class="col-lg-1 col-md-3 col-sm-3 col-xs-12"/>
-                    </div>-->
-                    <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12 col-lg-offset-1 col-md-offset-1" style="padding: 0px;">
+                        <p:inputText id="txtCantidad" value="#{beanEntregaMercancia.cantidad}" class="col-lg-1 col-md-3 col-sm-3 col-xs-12"/>
+                    <p:commandButton  value="Agregar" class="primaryButton" update=":formContent:table2 :formContent:txtCodigoBarras :formContent:txtCantidad" action="#{beanEntregaMercancia.verificarBarCode()}" style="margin-left:30px;" />
+                    </div>
+                    <div class="col-lg-5 col-md-10 col-sm-12 col-xs-12 col-lg-offset-1 col-md-offset-1" style="padding: 0px;">
                         <p:dataTable id="table" var="model" value="#{beanEntregaMercancia.model}" styleClass="ui-datatable-hor-scroll"
-                                     emptyMessage="No se encontraron Registros." scrollable="true" scrollHeight="280">
-                            <p:column width="15px;">
-                                <p:rowToggler/>
-                            </p:column>
+                                     emptyMessage="No se encontraron Registros." scrollable="true" scrollHeight="100">
+                            
+                                <f:facet name="header">
+            Lista de Pedido
+        </f:facet>
                             <p:column  headerText="Carro" width="50px;" class="alignCenter">
                                 <h:outputText value="#{model.idCarroFk}">
                                 </h:outputText>
@@ -73,79 +78,110 @@
                                 <h:outputText value="#{model.nombreEmpaque}">
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Empaques por Entregar" width="80px;" class="alignRight">
+                            <p:column headerText="Empaques por Entregar" width="80px;" class="alignCenter">
                                 <h:outputText value="#{model.empaquesRemanente-model.empaquesEntregados}" >
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Kilos por Entregar" width="80px;" class="alignRight">
-                                <h:outputText value="#{model.kilosRemanente-model.kilosEntregados}" />
-                            </p:column>
-                            <p:column headerText="Empaques Entregados" width="100px;" class="alignRight">
+                            <!--<p:column headerText="Kilos por Entregar" width="80px;" class="alignRight">
+                                <h:outputText value="{model.kilosRemanente-model.kilosEntregados}" />
+                            </p:column>-->
+                            <p:column headerText="Empaques Entregados" width="100px;" class="alignCenter">
                                 <h:outputText value="#{model.empaquesEntregados}" />
                             </p:column>
-                            <p:column headerText="Kilos Entregados" width="100px;" class="alignRight">
-                                <h:outputText value="#{model.kilosEntregados}">
+                            <!--<p:column headerText="Kilos Entregados" width="100px;" class="alignRight">
+                                <h:outputText value="{model.kilosEntregados}">
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Entregar"  width="60px;" class="alignCenter">
-                                <p:commandButton icon="ui-icon-transferthick-e-w" onclick ="PF('dlg').show();" action="#{beanEntregaMercancia.setValues}" update=":formContent:panelGrid" disabled="#{!beanEntregaMercancia.permisosEntrega || (model.empaquesRemanente -model.empaquesEntregados == 0) }" >
+                            -->
+                            
+                            <!--<p:rowExpansion>
+                                <p:dataTable id="table" var="modelEntregado" value="{model.lstEntregaMercancia}" styleClass="ui-datatable-hor-scroll seconTable" rowKey="{modelEntregado.idEntregaMercanciaPk}"
+                                             emptyMessage="No se Encontraron Registros." scrollable="true" >
+                                    <p:column headerText="Usuario que entrego">
+                                        <h:outputText value="{modelEntregado.nombreUsuarioEntrega}"/>
+                                    </p:column>
+                                    <p:column headerText="Fecha de Entrega">
+                                        <h:outputText value="{modelEntregado.fechaStr}"/>
+                                    </p:column>
+                                    <p:column headerText="Cajas/Bultos Entregados" class="alignRight">
+                                        <h:outputText value="{modelEntregado.empaquesEntregados}"/>
+                                    </p:column>
+                                    <p:column headerText="Kilos Entregados" class="alignRight">
+                                        <h:outputText value="{modelEntregado.kilosEntregados}"/>
+                                    </p:column>
+                                    <p:column headerText="Comentarios">
+                                        <h:outputText value="{modelEntregado.observaciones}"/>
+                                    </p:column>
+                                </p:dataTable>
+                           </p:rowExpansion>-->
+                        </p:dataTable>
+                    </div>
+                    <div class="col-lg-5 col-md-10 col-sm-12 col-xs-12 col-lg-offset-1 col-md-offset-1" style="padding: 0px;">
+                        <p:dataTable id="table2" var="model" value="#{beanEntregaMercancia.lstEntregaMercanciaTemporal}" styleClass="ui-datatable-hor-scroll"
+                                     emptyMessage="No se encontraron Registros." scrollable="true" scrollHeight="100">
+                            
+                            <f:facet name="header">
+            Lista de Entrega
+        </f:facet>
+                            <p:column  headerText="Carro" width="50px;" class="alignCenter">
+                                <h:outputText value="#{model.idCarroFk}">
+                                </h:outputText>
+                            </p:column>
+                            <p:column  headerText="Producto" width="100px;" class="alignLeft">
+                                <h:outputText value="#{model.nombreProducto}">
+                                </h:outputText>
+                            </p:column>
+                            <p:column  headerText="Empaque" width="100px;" class="alignLeft">
+                                <h:outputText value="#{model.nombreEmpaque}">
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Empaques a Entregar" width="80px;" class="alignRight">
+                                <h:outputText value="#{model.empaquesEntregar}" >
+                                </h:outputText>
+                            </p:column>
+                            <!--<p:column headerText="Kilos por Entregar" width="80px;" class="alignRight">
+                                <h:outputText value="{model.kilosRemanente-model.kilosEntregados}" />
+                            </p:column>-->
+                           
+                            <!--<p:column headerText="Kilos Entregados" width="100px;" class="alignRight">
+                                <h:outputText value="{model.kilosEntregados}">
+                                </h:outputText>
+                            </p:column>
+                            -->
+                            <p:column headerText="Editar"  width="60px;" class="alignCenter">
+                                <p:commandButton icon="ui-icon-pencil"  action="#{beanEntregaMercancia.editarEntrega()}" update=":formContent">
                                     <f:setPropertyActionListener target="#{beanEntregaMercancia.entregaMercancia}" value="${model}" />
                                 </p:commandButton>
                             </p:column>
-                            <p:rowExpansion>
-                                <p:dataTable id="table" var="modelEntregado" value="#{model.lstEntregaMercancia}" styleClass="ui-datatable-hor-scroll seconTable" rowKey="#{modelEntregado.idEntregaMercanciaPk}"
+                            
+                            <!--<p:rowExpansion>
+                                <p:dataTable id="table" var="modelEntregado" value="{model.lstEntregaMercancia}" styleClass="ui-datatable-hor-scroll seconTable" rowKey="{modelEntregado.idEntregaMercanciaPk}"
                                              emptyMessage="No se Encontraron Registros." scrollable="true" >
                                     <p:column headerText="Usuario que entrego">
-                                        <h:outputText value="#{modelEntregado.nombreUsuarioEntrega}"/>
+                                        <h:outputText value="{modelEntregado.nombreUsuarioEntrega}"/>
                                     </p:column>
                                     <p:column headerText="Fecha de Entrega">
-                                        <h:outputText value="#{modelEntregado.fechaStr}"/>
+                                        <h:outputText value="{modelEntregado.fechaStr}"/>
                                     </p:column>
                                     <p:column headerText="Cajas/Bultos Entregados" class="alignRight">
-                                        <h:outputText value="#{modelEntregado.empaquesEntregados}"/>
+                                        <h:outputText value="{modelEntregado.empaquesEntregados}"/>
                                     </p:column>
                                     <p:column headerText="Kilos Entregados" class="alignRight">
-                                        <h:outputText value="#{modelEntregado.kilosEntregados}"/>
+                                        <h:outputText value="{modelEntregado.kilosEntregados}"/>
                                     </p:column>
                                     <p:column headerText="Comentarios">
-                                        <h:outputText value="#{modelEntregado.observaciones}"/>
+                                        <h:outputText value="{modelEntregado.observaciones}"/>
                                     </p:column>
 
                                 </p:dataTable>
 
 
-                            </p:rowExpansion>
+                            </p:rowExpansion>-->
                         </p:dataTable>
                     </div>
                 </div>
             </p:panel>
-            <p:dialog  id="dialogw" header="Entregar" widgetVar="dlg" resizable="false">
-                <h:panelGrid id="panelGrid" columns="1" cellpadding="5">
-                    <f:facet name="header">
-                        <div class="form-group alignRight">
-                            <p:commandButton value="Aceptar" action="#{beanEntregaMercancia.agregarEntrega}" onclick="PF('statusDialog').show()"/>
-                        </div>
-                    </f:facet> 
-                    <p:outputLabel  for="txtProducto" value ="Producto:" /> 
-                    <p:inputText  id="txtProducto" value="#{beanEntregaMercancia.entregaMercancia.nombreProducto}" readonly="true"/>
-                    <h:outputLabel for="txtEmpaquesRestantes" value="Empaques Restantes:" />
-                    <p:inputText id="txtEmpaquesRestantes" maxlength="10" value="#{beanEntregaMercancia.entregaMercancia.empaquesRemanente-beanEntregaMercancia.entregaMercancia.empaquesEntregados}" readonly="true"/>
-                    <h:outputLabel for="txtEmpaques" value="Empaques a Entregar:" />
-                    <p:inputText id="txtEmpaques" maxlength="10" value="#{beanEntregaMercancia.empaquesEntregar}" >
-                        <p:ajax event="blur"
-                                listener="#{beanEntregaMercancia.setKilosPromedio}"
-                                immediate="true" update="txtKilos"/>
-                    </p:inputText>
-                    <h:outputLabel for="txtKilos" value="Kilos a Entregar:" />
-                    <p:inputText id="txtKilos" maxlength="10" value="#{beanEntregaMercancia.kilosEntrega}" >
-                        <pe:keyFilter regEx="/[0-9_ .]/i"/>
-                    </p:inputText>
-                    <h:outputLabel for="txtcomentario" value="Comentarios:" />
-                    <p:inputText id="txtcomentario" maxlength="255" value="#{beanEntregaMercancia.observaciones}" />
-
-                </h:panelGrid>
-            </p:dialog>
-            <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanEntregaMercancia.rutaPDF}"/>
+             <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanEntregaMercancia.rutaPDF}"/>
         </h:form>
     </ui:define>
 </ui:composition>
