@@ -61,7 +61,7 @@
                     </div>
                     <div class="col-lg-5 col-md-10 col-sm-12 col-xs-12 col-lg-offset-1 col-md-offset-1" style="padding: 0px;">
                         <p:dataTable id="table" var="model" value="#{beanEntregaMercancia.model}" styleClass="ui-datatable-hor-scroll"
-                                     emptyMessage="No se encontraron Registros." scrollable="true" scrollHeight="100">
+                                     emptyMessage="No se encontraron Registros." scrollable="true" scrollHeight="150">
                             
                                 <f:facet name="header">
             Lista de Pedido
@@ -76,6 +76,10 @@
                             </p:column>
                             <p:column  headerText="Empaque" width="100px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreEmpaque}">
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Pedido" width="60px;" class="alignCenter">
+                                <h:outputText value="#{model.empaquesRemanente}" >
                                 </h:outputText>
                             </p:column>
                             <p:column headerText="Empaques por Entregar" width="80px;" class="alignCenter">
@@ -118,7 +122,7 @@
                     </div>
                     <div class="col-lg-5 col-md-10 col-sm-12 col-xs-12 col-lg-offset-1 col-md-offset-1" style="padding: 0px;">
                         <p:dataTable id="table2" var="model" value="#{beanEntregaMercancia.lstEntregaMercanciaTemporal}" styleClass="ui-datatable-hor-scroll"
-                                     emptyMessage="No se encontraron Registros." scrollable="true" scrollHeight="100">
+                                     emptyMessage="No se encontraron Registros." scrollable="true" scrollHeight="150">
                             
                             <f:facet name="header">
             Lista de Entrega

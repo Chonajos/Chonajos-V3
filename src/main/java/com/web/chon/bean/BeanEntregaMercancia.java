@@ -264,6 +264,8 @@ public class BeanEntregaMercancia implements Serializable {
         else 
         {
             repetido.setEmpaquesEntregar(repetido.getEmpaquesEntregar().add(cantidad, MathContext.UNLIMITED));
+            repetido.setEmpaquesRemanente(mercancia.getEmpaquesRemanente().subtract(mercancia.getEmpaquesEntregados(), MathContext.UNLIMITED));
+            repetido.setEmpaquesEntregados(mercancia.getEmpaquesEntregados());
             System.out.println("Encontro Repetido");
             JsfUtil.addSuccessMessageClean("Producto Actualizado");
         }
@@ -284,6 +286,8 @@ public class BeanEntregaMercancia implements Serializable {
                 e.setNombreProducto(mercancia.getNombreProducto());
                 e.setNombreEmpaque(mercancia.getNombreEmpaque());
                 e.setEmpaquesEntregar(cantidad);
+                e.setEmpaquesRemanente(mercancia.getEmpaquesRemanente().subtract(mercancia.getEmpaquesEntregados(), MathContext.UNLIMITED));
+                e.setEmpaquesEntregados(mercancia.getEmpaquesEntregados());
                 e.setIdVPMayoreo(mercancia.getIdVPMayoreo());
                 e.setIdVPMenudeo(mercancia.getIdVPMenudeo());
                 lstEntregaMercanciaTemporal.add(e);
@@ -477,8 +481,10 @@ public class BeanEntregaMercancia implements Serializable {
         totalEmpaques = BIGDECIMAL_ZERO;
         for (EntregaMercancia dominio : lstEntregaMercanciaTemporal) 
         {
+            System.out.println("==========Domino=========");
+            System.out.println(dominio);
             dominio.setEmpaquesEntregar(dominio.getEmpaquesEntregar() == null ? BIGDECIMAL_ZERO : dominio.getEmpaquesEntregar());
-            totalEmpaques = totalEmpaques.add(dominio.getEmpaquesRemanente());
+            totalEmpaques = totalEmpaques.add(dominio.getEmpaquesEntregar());
             totalRemanente = totalRemanente.add(dominio.getEmpaquesRemanente()).subtract(dominio.getEmpaquesEntregados());
             if (dominio.getEmpaquesEntregar() != null) {
                 totalEntregar = totalEntregar.add(dominio.getEmpaquesEntregar());
