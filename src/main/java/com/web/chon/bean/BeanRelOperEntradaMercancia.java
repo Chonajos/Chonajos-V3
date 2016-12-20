@@ -68,7 +68,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Scope("view")
 public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
-    
+
     private static final long serialVersionUID = 1L;
     @Autowired
     private PlataformaSecurityContext context;
@@ -92,7 +92,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     private IfaceSubProducto ifaceSubProducto;
     @Autowired
     private IfaceEntMerProPaq ifaceEntMerProPaq;
-    
+
     private ArrayList<Provedor> lstProvedor;
     private ArrayList<Sucursal> listaSucursales;
     private ArrayList<EntradaMercancia> lstEntradaMercancia;
@@ -109,10 +109,10 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     private Subproducto subProducto;
     private EntradaMercanciaProductoPaquete dataPaquete;
     private EntradaMercanciaProductoPaquete dataPaqueteEliminar;
-    
+
     private String title;
     private String viewEstate;
-    
+
     private BigDecimal totalKilos;
 
     // ----- Variables para Filtros ----//
@@ -135,7 +135,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     private String number;
     private int idSucu;
     private String pathFileJasper = "";
-    
+
     @PostConstruct
     public void init() {
         usuario = context.getUsuarioAutenticado();
@@ -148,7 +148,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         filtro = 2;
         verificarCombo();
         enableCalendar = true;
-        
+
         dataPaquete = new EntradaMercanciaProductoPaquete();
         dataPaqueteEliminar = new EntradaMercanciaProductoPaquete();
         dataProductoAutoAjuste = new EntradaMercanciaProducto();
@@ -164,7 +164,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         dataProductoNuevo = new EntradaMercanciaProducto();
         lstProvedor = ifaceCatProvedores.getProvedores();
         buscar();
-        
+
     }
 
     public void imprimirCodigoBarras() {
@@ -195,14 +195,14 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         paramReport.put("carro", carro.toString());
         paramReport.put("producto", nombreProducto);
         paramReport.put("empaque", nombreEmpaque);
-        
+
         generateReportBarCode(idSucursal, folio);
         RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
     }
 
     public void generateReportBarCode(int idSucursal, int folio) {
         JRExporter exporter = null;
-        
+
         try {
             ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
             String temporal = "";
@@ -218,7 +218,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
                 javax.sql.DataSource datasource = null;
                 Context initialContext = new InitialContext();
                 datasource = (DataSource) initialContext.lookup("DataChon");
-                
+
                 try {
                     con = datasource.getConnection();
                     //System.out.println("datsource" + con.toString());
@@ -241,9 +241,9 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
             System.out.println("Error >" + exception.getMessage());
             exception.getStackTrace();
         }
-        
+
     }
-    
+
     public void cerrarEntrada() {
         data.setIdStatusFk(new BigDecimal(2));
         if (ifaceEntradaMercancia.update(data) == 1) {
@@ -251,16 +251,16 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         } else {
             JsfUtil.addErrorMessageClean("Ocurrió un problema el cerrar el caro");
         }
-        
+
     }
-    
+
     public void imprimirEntrada() {
         setParameterTicket(data);
         generateReport(data.getIdCarroSucursal().intValue());
         RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
-        
+
     }
-    
+
     private void setParameterTicket(EntradaMercancia em) {
         System.out.println("======================Entrada: " + em.toString());
         paramReport.put("nombreSucursal", usuario.getNombreSucursal());
@@ -276,27 +276,27 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         paramReport.put("cantidadProvedor", em.getCantidadEmpaquesProvedor());
         paramReport.put("cantidadBodega", em.getCantidadEmpaquesReales());
         paramReport.put("ID_EM_PK", em.getIdEmPK().toString());
-        
+
         System.out.println("==================" + em.getIdEmPK());
         paramReport.put("leyenda", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:" + usuario.getTelefonoSucursal());
-        
+
     }
-    
+
     public String getNombreProvedor(EntradaMercancia em) {
-        
+
         for (Provedor prove : lstProvedor) {
-            
+
             if (prove.getIdProvedorPK().intValue() == em.getIdProvedorFK().intValue()) {
                 return prove.getNombreProvedor();
             }
-            
+
         }
         return "";
     }
-    
+
     public void generateReport(int folio) {
         JRExporter exporter = null;
-        
+
         try {
             ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
             String temporal = "";
@@ -312,7 +312,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
                 javax.sql.DataSource datasource = null;
                 Context initialContext = new InitialContext();
                 datasource = (DataSource) initialContext.lookup("DataChon");
-                
+
                 try {
                     con = datasource.getConnection();
                     System.out.println("datsource" + con.toString());
@@ -335,9 +335,9 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
             System.out.println("Error >" + exception.getMessage());
             exception.getStackTrace();
         }
-        
+
     }
-    
+
     public void autoAjustar() {
         //1.- Ajustar Existencias con los Paquetes nuevos
         System.out.println("DataAjuste: " + dataProductoAutoAjuste);
@@ -357,11 +357,11 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
                 for (EntradaMercanciaProducto p : em.getListaProductos()) {
                     to = to.add(p.getKilosTotalesProducto(), MathContext.UNLIMITED);
                 }
-                
+
                 em.setKilosTotales(to);
                 ifaceEntradaMercancia.updateEntradaMercancia(em);
                 buscar();
-                
+
                 JsfUtil.addSuccessMessageClean("Se han actualizado los inventarios correctamente con auto-ajuste");
             } else {
                 JsfUtil.addErrorMessageClean("Ha ocurriod un error al actualizar entrada de mercancia con auto-ajuste");
@@ -369,9 +369,9 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         } else {
             JsfUtil.addErrorMessageClean("Ha ocurrido un error al actualizar inventarios con auto-ajuste");
         }
-        
+
     }
-    
+
     public void cancelarPaquete() {
         System.out.println("DataPaqueteEliminar: " + dataPaqueteEliminar.toString());
         if (ifaceEntMerProPaq.eliminarPaquete(dataPaqueteEliminar.getIdEmPP()) == 1) {
@@ -380,9 +380,9 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         } else {
             JsfUtil.addErrorMessageClean("Ocurrió un error");
         }
-        
+
     }
-    
+
     public void verificarCombo() {
         if (filtro == -1) {
             //se habilitan los calendarios.
@@ -411,7 +411,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
             enableCalendar = true;
         }
     }
-    
+
     public void buscar() {
         if (fechaFiltroInicio == null || fechaFiltroFin == null) {
             JsfUtil.addErrorMessageClean("Favor de ingresar un rango de fechas");
@@ -426,26 +426,33 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
                 fechaFiltroInicio = null;
             }
             lstEntradaMercancia = ifaceEntradaMercancia.getEntradaProductoByIntervalDate(fechaFiltroInicio, fechaFiltroFin, idSucursal, idProvedor, carro);
-            
+
         }
     }
-    
+
     public void registrarPaquete() {
-        dataPaquete.setIdEmPP(new BigDecimal(ifaceEntMerProPaq.getNextVal()));
-        dataPaquete.setIdEmpFK(dataProducto.getIdEmpPK());
-        dataPaquete.setIdStatusFk(new BigDecimal(1));
-        if (ifaceEntMerProPaq.insertPaquete(dataPaquete) == 1) {
-            JsfUtil.addSuccessMessageClean("Paquete agregado correctamente");
-            buscar();
-        } else {
-            JsfUtil.addErrorMessageClean("Ocurrió un problema al agregar el paquete");
+        System.out.println("Paquete: "+dataPaquete.toString());
+        if (dataPaquete.getPesoNeto() == null || dataPaquete.getPaquetes() == null || dataPaquete.getKilos() == null) {
+            JsfUtil.addErrorMessageClean("LLenar todos los datos del paquete");
+        } else 
+        {
+            dataPaquete.setIdEmPP(new BigDecimal(ifaceEntMerProPaq.getNextVal()));
+            dataPaquete.setIdEmpFK(dataProducto.getIdEmpPK());
+            dataPaquete.setIdStatusFk(new BigDecimal(1));
+            if (ifaceEntMerProPaq.insertPaquete(dataPaquete) == 1) 
+            {
+                JsfUtil.addSuccessMessageClean("Paquete agregado correctamente");
+                buscar();
+            } else {
+                JsfUtil.addErrorMessageClean("Ocurrió un problema al agregar el paquete");
+            }
         }
-        
+
     }
-    
+
     public void calculaPesoNetoPaquete() {
         if (dataPaquete.getKilos() != null && dataPaquete.getTara() != null) {
-            
+
             BigDecimal h = dataPaquete.getKilos().subtract(dataPaquete.getTara(), MathContext.UNLIMITED);
             //dataProducto.setPesoNeto(dataProducto.getKilosTotalesProducto().subtract(dataProducto.getPesoTara(), MathContext.UNLIMITED));
             int t = h.compareTo(new BigDecimal(0));
@@ -456,11 +463,11 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
             }
         }
     }
-    
+
     public void calculaPesoNeto() {
         System.out.println("Entro a metodo");
         if (dataProductoNuevo.getKilosTotalesProducto() != null && dataProductoNuevo.getPesoTara() != null) {
-            
+
             BigDecimal h = dataProductoNuevo.getKilosTotalesProducto().subtract(dataProductoNuevo.getPesoTara(), MathContext.UNLIMITED);
             //dataProducto.setPesoNeto(dataProducto.getKilosTotalesProducto().subtract(dataProducto.getPesoTara(), MathContext.UNLIMITED));
 
@@ -472,14 +479,14 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
             }
         }
     }
-    
+
     public void agregarProducto() {
         dataProductoNuevo.setIdEmpPK(new BigDecimal(ifaceEntradaMercanciaProducto.getNextVal()));
         dataProductoNuevo.setIdEmFK(data.getIdEmPK());
         dataProductoNuevo.setIdSubProductoFK(subProducto.getIdSubproductoPk());
         dataProductoNuevo.setKilosTotalesProducto(dataProductoNuevo.getPesoNeto());
         System.out.println("Nuevo Producto: " + dataProductoNuevo.toString());
-        
+
         if (ifaceEntradaMercanciaProducto.insertEntradaMercanciaProducto(dataProductoNuevo) != 0) {
             ExistenciaProducto ep = new ExistenciaProducto();
             ep.setIdExistenciaProductoPk(new BigDecimal(ifaceNegocioExistencia.getNextVal()));
@@ -502,35 +509,35 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
                 for (EntradaMercanciaProducto p : em.getListaProductos()) {
                     to = to.add(p.getKilosTotalesProducto(), MathContext.UNLIMITED);
                 }
-                
+
                 em.setKilosTotales(to);
                 ifaceEntradaMercancia.updateEntradaMercancia(em);
                 buscar();
-                
+
             } else {
                 JsfUtil.addErrorMessageClean("Ocurrio un problema al insertar existencias de producto nuevo");
             }
-            
+
         } else {
             JsfUtil.addErrorMessageClean("Ocurrio un problema al insertar el nuevo producto");
         }
     }
-    
+
     public void editarProducto() {
-        
+
     }
-    
+
     public ArrayList<Subproducto> autoComplete(String nombreProducto) {
         lstProducto = ifaceSubProducto.getSubProductoByNombre(nombreProducto.toUpperCase());
         return lstProducto;
-        
+
     }
-    
+
     public void cancelarProducto() {
         //Primero eliminamos la existencia:
         ExistenciaProducto ep = new ExistenciaProducto();
         ep.setIdEntradaMercanciaProductoFK(dataProducto.getIdEmpPK());
-        
+
         VentaProductoMayoreo venta = new VentaProductoMayoreo();
         venta = ifaceEntradaMercanciaProducto.getTotalVentasByIdEMP(dataProducto.getIdEmpPK());
         if (venta.getTotalVenta().intValue() == 0) {
@@ -549,7 +556,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
             JsfUtil.addErrorMessageClean("Ya se tienen ventas registradas, no se puede eliminar");
         }
     }
-    
+
     public void cancelarEntrada() {
         boolean bandera = false;
         if (!data.getListaProductos().isEmpty()) {
@@ -576,7 +583,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
                     JsfUtil.addErrorMessageClean("Ya se tienen ventas registradas de este producto, no se puede eliminar");
                 }
             }
-            
+
         }
         if (bandera) {
             System.out.println("Al menos un producto tiene ventas y no se puede eliminar.");
@@ -589,14 +596,14 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
             } else {
                 JsfUtil.addErrorMessageClean("Ocurrio un problema al cancelar la entrada de mercancia");
             }
-            
+
         }
         System.out.println("Despues de eliminar los items eliminar la entrada general");
-        
+
     }
-    
+
     public void onRowEdit(RowEditEvent event) {
-        
+
         dataProductEdit = (EntradaMercanciaProducto) event.getObject();
         boolean cambioProducto = false;
         BigDecimal cantidadAnterior = new BigDecimal(0);
@@ -604,7 +611,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         EntradaMercanciaProducto epAnterio = ifaceEntradaMercanciaProducto.getEntradaMercanciaProductoByIdEmpPk(dataProductEdit.getIdEmpPK());
         cantidadAnterior = epAnterio.getCantidadPaquetes();
         kilosAnterior = epAnterio.getKilosTotalesProducto();
-        
+
         if (dataProductEdit.getIdSubProductoFK().equals(dataProductEdit.getSubProducto().getIdSubproductoPk())) {
             System.out.println("son iguales");
         } else {
@@ -616,7 +623,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         if (cambioProducto == true) {
             VentaProductoMayoreo venta = new VentaProductoMayoreo();
             venta = ifaceEntradaMercanciaProducto.getTotalVentasByIdEMP(dataProductEdit.getIdEmpPK());
-            
+
             if (venta.getTotalVenta().intValue() == 0) {
                 totalVentas = false;
                 System.out.println("No existen ventas");
@@ -666,7 +673,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         } else {
             JsfUtil.addErrorMessageClean("Producto con ventas registradas, no se puede cambiar");
         }
-        
+
     }
 
     public void recalcularKilosEmpaques(EntradaMercanciaProducto dataProductEdit) {
@@ -680,23 +687,23 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
                     ki = ki.add(producto.getKilosTotalesProducto(), MathContext.UNLIMITED);
                     System.out.println("Cantidad: " + ca);
                     System.out.println("Kilos: " + ki);
-                    
+
                 }
                 entrada.setKilosTotales(ki);
                 entrada.setCantidadEmpaquesReales(ca);
                 ifaceEntradaMercancia.updateEntradaMercancia(entrada);
                 break;
             }
-            
+
         }
-        
+
     }
-    
+
     public void onRowCancel(RowEditEvent event) {
         System.out.println("cancel");
-        
+
     }
-    
+
     public void cancel() {
         setViewEstate("init");
         //lstEntradaMercanciaProdcuto = new ArrayList<EntradaMercanciaProducto>();
@@ -707,7 +714,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         fechaInicio = null;
         fechaFin = null;
         buscar();
-        
+
     }
 
 //    public void detallesEntradaProducto() 
@@ -728,317 +735,317 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     public ArrayList<Provedor> autoCompleteProvedor(String nombreProvedor) {
         lstProvedor = ifaceCatProvedores.getProvedorByNombreCompleto(nombreProvedor.toUpperCase());
         return lstProvedor;
-        
+
     }
-    
+
     @Override
     public String delete() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
+
     @Override
     public String insert() {
-        
+
         return "relacionOperaciones";
     }
-    
+
     @Override
     public String update() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
+
     @Override
     public void searchById() {
         setViewEstate("searchById");
-        
+
     }
-    
+
     public String getTitle() {
         return title;
     }
-    
+
     public void setTitle(String title) {
         this.title = title;
     }
-    
+
     public String getViewEstate() {
         return viewEstate;
     }
-    
+
     public void setViewEstate(String viewEstate) {
         this.viewEstate = viewEstate;
     }
-    
+
     public int getFiltro() {
         return filtro;
     }
-    
+
     public void setFiltro(int filtro) {
         this.filtro = filtro;
     }
-    
+
     public Date getFechaInicio() {
         return fechaInicio;
     }
-    
+
     public void setFechaInicio(Date fechaInicio) {
         this.fechaInicio = fechaInicio;
     }
-    
+
     public Date getFechaFin() {
         return fechaFin;
     }
-    
+
     public void setFechaFin(Date fechaFin) {
         this.fechaFin = fechaFin;
     }
-    
+
     public ArrayList<Sucursal> getListaSucursales() {
         return listaSucursales;
     }
-    
+
     public void setListaSucursales(ArrayList<Sucursal> listaSucursales) {
         this.listaSucursales = listaSucursales;
     }
-    
+
     public EntradaMercancia getData() {
         return data;
     }
-    
+
     public void setData(EntradaMercancia data) {
         this.data = data;
     }
-    
+
     public ArrayList<EntradaMercancia> getLstEntradaMercancia() {
         return lstEntradaMercancia;
     }
-    
+
     public void setLstEntradaMercancia(ArrayList<EntradaMercancia> lstEntradaMercancia) {
         this.lstEntradaMercancia = lstEntradaMercancia;
     }
-    
+
     public Provedor getProvedor() {
         return provedor;
     }
-    
+
     public void setProvedor(Provedor provedor) {
         this.provedor = provedor;
     }
-    
+
     public ArrayList<Provedor> getLstProvedor() {
         return lstProvedor;
     }
-    
+
     public void setLstProvedor(ArrayList<Provedor> lstProvedor) {
         this.lstProvedor = lstProvedor;
     }
-    
+
     public BigDecimal getTotalKilos() {
         return totalKilos;
     }
-    
+
     public void setTotalKilos(BigDecimal totalKilos) {
         this.totalKilos = totalKilos;
     }
-    
+
     public UsuarioDominio getUsuario() {
         return usuario;
     }
-    
+
     public void setUsuario(UsuarioDominio usuario) {
         this.usuario = usuario;
     }
-    
+
     public EntradaMercanciaProducto getDataProducto() {
         return dataProducto;
     }
-    
+
     public void setDataProducto(EntradaMercanciaProducto dataProducto) {
         this.dataProducto = dataProducto;
     }
-    
+
     public EntradaMercanciaProducto getDataProductEdit() {
         return dataProductEdit;
     }
-    
+
     public void setDataProductEdit(EntradaMercanciaProducto dataProductEdit) {
         this.dataProductEdit = dataProductEdit;
     }
-    
+
     public ArrayList<TipoEmpaque> getLstTipoEmpaque() {
         return lstTipoEmpaque;
     }
-    
+
     public void setLstTipoEmpaque(ArrayList<TipoEmpaque> lstTipoEmpaque) {
         this.lstTipoEmpaque = lstTipoEmpaque;
     }
-    
+
     public ArrayList<TipoConvenio> getListaTiposConvenio() {
         return listaTiposConvenio;
     }
-    
+
     public void setListaTiposConvenio(ArrayList<TipoConvenio> listaTiposConvenio) {
         this.listaTiposConvenio = listaTiposConvenio;
     }
-    
+
     public ArrayList<Bodega> getListaBodegas() {
         return listaBodegas;
     }
-    
+
     public void setListaBodegas(ArrayList<Bodega> listaBodegas) {
         this.listaBodegas = listaBodegas;
     }
-    
+
     public ArrayList<Subproducto> getLstProducto() {
         return lstProducto;
     }
-    
+
     public void setLstProducto(ArrayList<Subproducto> lstProducto) {
         this.lstProducto = lstProducto;
     }
-    
+
     public Subproducto getSubProducto() {
         return subProducto;
     }
-    
+
     public void setSubProducto(Subproducto subProducto) {
         this.subProducto = subProducto;
     }
-    
+
     public EntradaMercanciaProductoPaquete getDataPaquete() {
         return dataPaquete;
     }
-    
+
     public void setDataPaquete(EntradaMercanciaProductoPaquete dataPaquete) {
         this.dataPaquete = dataPaquete;
     }
-    
+
     public EntradaMercanciaProducto getDataProductoNuevo() {
         return dataProductoNuevo;
     }
-    
+
     public void setDataProductoNuevo(EntradaMercanciaProducto dataProductoNuevo) {
         this.dataProductoNuevo = dataProductoNuevo;
     }
-    
+
     public BigDecimal getIdSucursal() {
         return idSucursal;
     }
-    
+
     public void setIdSucursal(BigDecimal idSucursal) {
         this.idSucursal = idSucursal;
     }
-    
+
     public BigDecimal getIdProvedor() {
         return idProvedor;
     }
-    
+
     public void setIdProvedor(BigDecimal idProvedor) {
         this.idProvedor = idProvedor;
     }
-    
+
     public boolean isEnableCalendar() {
         return enableCalendar;
     }
-    
+
     public void setEnableCalendar(boolean enableCalendar) {
         this.enableCalendar = enableCalendar;
     }
-    
+
     public Date getFechaFiltroFin() {
         return fechaFiltroFin;
     }
-    
+
     public void setFechaFiltroFin(Date fechaFiltroFin) {
         this.fechaFiltroFin = fechaFiltroFin;
     }
-    
+
     public Date getFechaFiltroInicio() {
         return fechaFiltroInicio;
     }
-    
+
     public void setFechaFiltroInicio(Date fechaFiltroInicio) {
         this.fechaFiltroInicio = fechaFiltroInicio;
     }
-    
+
     public EntradaMercanciaProductoPaquete getDataPaqueteEliminar() {
         return dataPaqueteEliminar;
     }
-    
+
     public void setDataPaqueteEliminar(EntradaMercanciaProductoPaquete dataPaqueteEliminar) {
         this.dataPaqueteEliminar = dataPaqueteEliminar;
     }
-    
+
     public EntradaMercanciaProducto getDataProductoAutoAjuste() {
         return dataProductoAutoAjuste;
     }
-    
+
     public void setDataProductoAutoAjuste(EntradaMercanciaProducto dataProductoAutoAjuste) {
         this.dataProductoAutoAjuste = dataProductoAutoAjuste;
     }
-    
+
     public String getRutaPDF() {
         return rutaPDF;
     }
-    
+
     public void setRutaPDF(String rutaPDF) {
         this.rutaPDF = rutaPDF;
     }
-    
+
     public StreamedContent getMedia() {
         return media;
     }
-    
+
     public void setMedia(StreamedContent media) {
         this.media = media;
     }
-    
+
     public ByteArrayOutputStream getOutputStream() {
         return outputStream;
     }
-    
+
     public void setOutputStream(ByteArrayOutputStream outputStream) {
         this.outputStream = outputStream;
     }
-    
+
     public String getNumber() {
         return number;
     }
-    
+
     public void setNumber(String number) {
         this.number = number;
     }
-    
+
     public int getIdSucu() {
         return idSucu;
     }
-    
+
     public void setIdSucu(int idSucu) {
         this.idSucu = idSucu;
     }
-    
+
     public String getPathFileJasper() {
         return pathFileJasper;
     }
-    
+
     public void setPathFileJasper(String pathFileJasper) {
         this.pathFileJasper = pathFileJasper;
     }
-    
+
     public Map getParamReport() {
         return paramReport;
     }
-    
+
     public void setParamReport(Map paramReport) {
         this.paramReport = paramReport;
     }
-    
+
     public BigDecimal getCarro() {
         return carro;
     }
-    
+
     public void setCarro(BigDecimal carro) {
         this.carro = carro;
     }
-    
+
 }

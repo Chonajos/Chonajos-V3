@@ -34,6 +34,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import org.primefaces.component.inputtext.InputText;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.RowEditEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -61,6 +62,8 @@ public class BeanEntregaMercancia implements Serializable {
 
     private EntregaMercancia data;
     private EntregaMercancia entregaMercancia;
+    private EntregaMercancia entregaEliminar;
+    private EntregaMercancia entregaEditar;
     private ArrayList<EntregaMercancia> model;
     private ArrayList<EntregaMercancia> lstEntregaMercanciaTemporal;
 
@@ -102,10 +105,20 @@ public class BeanEntregaMercancia implements Serializable {
     BigDecimal idEmpaque = null;
     BigDecimal idSucursal = null;
 
+    private BigDecimal listaP_TotalP;
+    private BigDecimal listaP_TotalEPE;
+    private BigDecimal listaP_TotalEE;
+    
+    private BigDecimal listaE_TotalEE;
+
     @PostConstruct
     public void init() {
+        listaP_TotalP = BIGDECIMAL_ZERO;
+        listaP_TotalEPE = BIGDECIMAL_ZERO;
+        listaP_TotalEE = BIGDECIMAL_ZERO;
+        listaE_TotalEE = BIGDECIMAL_ZERO;
         usuarioDominio = context.getUsuarioAutenticado();
-        permisosEntrega = false;
+        permisosEntrega = true;
         validaEmpaques = false;
         data = new EntregaMercancia();
         entregaMercancia = new EntregaMercancia();
@@ -118,34 +131,46 @@ public class BeanEntregaMercancia implements Serializable {
         setViewEstate("init");
 
     }
+    
+    public void eliminarProducto()
+    {
+        lstEntregaMercanciaTemporal.remove(entregaEliminar);
+        sumaTotales();
+    }
 
     public void entregar() {
-        boolean bandera = false;
-        for (EntregaMercancia e : lstEntregaMercanciaTemporal) {
-            e.setIdUsuario(usuarioDominio.getIdUsuario());
-            System.out.println("Entrega: " + e.toString());
-            if (ifaceEntregaMercancia.insert(e) != 1) {
-                bandera = true;
-                break;
-            } else {
-                bandera = false;
-                JsfUtil.addSuccessMessageClean("Mercancia entregada correctamente");
+        if (!lstEntregaMercanciaTemporal.isEmpty()) {
+            
+            boolean bandera = false;
+            for (EntregaMercancia e : lstEntregaMercanciaTemporal) {
+                e.setIdUsuario(usuarioDominio.getIdUsuario());
+                
+                if (ifaceEntregaMercancia.insert(e) != 1) {
+                    bandera = true;
+                    break;
+                } else {
+                    bandera = false;
+                    JsfUtil.addSuccessMessageClean("Mercancia entregada correctamente");
+                }
             }
-        }
-        if (bandera) {
-            JsfUtil.addErrorMessageClean("Ocurrió un problema al entregar la mercancia");
+            if (bandera) {
+                JsfUtil.addErrorMessageClean("Ocurrió un problema al entregar la mercancia");
+            } else {
+                JsfUtil.addSuccessMessageClean("Mercancia entregada correctamente");
+                setParameterTicket(data.getIdFolioVenta().intValue());
+                generateReport(data.getIdFolioVenta().intValue());
+                RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
+                buscaFolioVenta();
+                verificarPedido();
+                lstEntregaMercanciaTemporal.clear();
+                lstEntregaMercanciaTemporal = new ArrayList<EntregaMercancia>();
+                cantidad = null;
+                codigoBarras = null;
+                buscaFolioVenta();
+                sumaTotales();
+            }
         } else {
-            JsfUtil.addSuccessMessageClean("Mercancia entregada correctamente");
-            setParameterTicket(data.getIdFolioVenta().intValue());
-            generateReport(data.getIdFolioVenta().intValue());
-            RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
-            buscaFolioVenta();
-            verificarPedido();
-            lstEntregaMercanciaTemporal.clear();
-            lstEntregaMercanciaTemporal = new ArrayList<EntregaMercancia>();
-            cantidad = null;
-            codigoBarras = null;
-
+            JsfUtil.addErrorMessageClean("Favor de agregar al menos un producto para la entrega");
         }
     }
 
@@ -165,9 +190,6 @@ public class BeanEntregaMercancia implements Serializable {
         }
     }
 
-    public void editarEntrega() {
-
-    }
 
     public void verificarBarCode() {
         codigoBarras = codigoBarras.trim();
@@ -205,9 +227,10 @@ public class BeanEntregaMercancia implements Serializable {
         /*
         Esta función busca el codigo de barras en la lista del pedido.
          */
-        if (empaquesEntregar == null || cantidad == null) {
-            empaquesEntregar = new BigDecimal(0);
+        if (cantidad == null ||cantidad.intValue()==0) 
+        {
             cantidad = new BigDecimal(1);
+           
         }
         boolean bandera = false;
         for (EntregaMercancia mercancia : model) //recorre
@@ -215,86 +238,104 @@ public class BeanEntregaMercancia implements Serializable {
             if (mercancia.getIdCarroFk().intValue() == carro.intValue() && mercancia.getIdProducto().equals(producto) && mercancia.getIdTipoEmpaque().intValue() == idEmpaque.intValue()) {
                 agregarAlista(mercancia);
                 bandera = true;
+                permisosEntrega = false;
                 break;
             } else {
                 bandera = false;
+                permisosEntrega = true;
                 //JsfUtil.addErrorMessageClean("Este código de barras no existe en la lista del pedido");
             }
         }
 
     }
+    public void onRowEdit(RowEditEvent event) {
+        entregaEditar = (EntregaMercancia) event.getObject();
+        
+        System.out.println(entregaEditar.toString());
+        for (EntregaMercancia repetido : lstEntregaMercanciaTemporal) {
+            
+                if (repetido.getIdCarroFk().intValue() == entregaEditar.getIdCarroFk().intValue() && repetido.getIdProducto().equals(entregaEditar.getIdProducto()) && repetido.getIdTipoEmpaque().intValue() == entregaEditar.getIdTipoEmpaque().intValue()) {
+                   
+                    System.out.println(repetido.getEmpaquesRemanente());
+                    System.out.println(repetido.getEmpaquesEntregados());
+                    
+                    if(entregaEditar.getEmpaquesEntregar().compareTo(repetido.getEmpaquesRemanente())>0)
+                    {
+                        repetido.setEmpaquesEntregar(repetido.getEmpaquesRemanente());
+                        JsfUtil.addErrorMessageClean("No puedes agregar mas empaques del pedido");
+                        break;
+                    }
+                }
+        }
+        
+        sumaTotales();
+    }
+
+    public void onRowCancel(RowEditEvent event) {
+        System.out.println("cancel");
+
+    }
 
     public void agregarAlista(EntregaMercancia ent) {
-        if (!lstEntregaMercanciaTemporal.isEmpty()) 
-        {
+        if (!lstEntregaMercanciaTemporal.isEmpty()) {
             boolean bandera = false;
             //la lista cotiene datos verificar si hay alguno repetido
             // si no hay repetidos
-            for (EntregaMercancia repetido : lstEntregaMercanciaTemporal) 
-            {
-                if (repetido.getIdCarroFk().intValue() == carro.intValue() && repetido.getIdProducto().equals(producto) && repetido.getIdTipoEmpaque().intValue() == idEmpaque.intValue()) 
-                {
-                   
-                   agregarRepetido(repetido,ent);
-                   bandera = false;
-                   break;
-                } else 
-                {
+            for (EntregaMercancia repetido : lstEntregaMercanciaTemporal) {
+                if (repetido.getIdCarroFk().intValue() == carro.intValue() && repetido.getIdProducto().equals(producto) && repetido.getIdTipoEmpaque().intValue() == idEmpaque.intValue()) {
+
+                    agregarRepetido(repetido, ent);
+                    bandera = false;
+                    break;
+                } else {
                     bandera = true;
                 }
             }//fin for
-            if(bandera)
-            {
+            if (bandera) {
                 agregarNuevo(ent);
             }
-        } 
-        else 
-        {
+        } else {
             //agregar nuevo.
             agregarNuevo(ent);
-            
+
         }
     }
-    public void agregarRepetido(EntregaMercancia repetido,EntregaMercancia mercancia)
-    {
-        if ((repetido.getEmpaquesEntregar().add(cantidad, MathContext.UNLIMITED)).compareTo((mercancia.getEmpaquesRemanente().subtract(mercancia.getEmpaquesEntregados(), MathContext.UNLIMITED))) > 0) 
-        {
+
+    public void agregarRepetido(EntregaMercancia repetido, EntregaMercancia mercancia) {
+        if ((repetido.getEmpaquesEntregar().add(cantidad, MathContext.UNLIMITED)).compareTo((mercancia.getEmpaquesRemanente().subtract(mercancia.getEmpaquesEntregados(), MathContext.UNLIMITED))) > 0) {
             JsfUtil.addErrorMessageClean("No puedes entregar mas paquetes del pedido");
-        } 
-        else 
-        {
+        } else {
             repetido.setEmpaquesEntregar(repetido.getEmpaquesEntregar().add(cantidad, MathContext.UNLIMITED));
             repetido.setEmpaquesRemanente(mercancia.getEmpaquesRemanente().subtract(mercancia.getEmpaquesEntregados(), MathContext.UNLIMITED));
             repetido.setEmpaquesEntregados(mercancia.getEmpaquesEntregados());
             System.out.println("Encontro Repetido");
             JsfUtil.addSuccessMessageClean("Producto Actualizado");
+            sumaTotales();
         }
-        
+
     }
-    public void agregarNuevo(EntregaMercancia mercancia)
-    {
-         if (cantidad.compareTo((mercancia.getEmpaquesRemanente().subtract(mercancia.getEmpaquesEntregados(), MathContext.UNLIMITED))) > 0) 
-            {
-                JsfUtil.addErrorMessageClean("No puedes entregar mas paquetes del pedido");
-            } 
-            else 
-            {
-                EntregaMercancia e = new EntregaMercancia();
-                e.setIdCarroFk(mercancia.getIdCarroFk());
-                e.setIdProducto(mercancia.getIdProducto());
-                e.setIdTipoEmpaque(mercancia.getIdTipoEmpaque());
-                e.setNombreProducto(mercancia.getNombreProducto());
-                e.setNombreEmpaque(mercancia.getNombreEmpaque());
-                e.setEmpaquesEntregar(cantidad);
-                e.setEmpaquesRemanente(mercancia.getEmpaquesRemanente().subtract(mercancia.getEmpaquesEntregados(), MathContext.UNLIMITED));
-                e.setEmpaquesEntregados(mercancia.getEmpaquesEntregados());
-                e.setIdVPMayoreo(mercancia.getIdVPMayoreo());
-                e.setIdVPMenudeo(mercancia.getIdVPMenudeo());
-                lstEntregaMercanciaTemporal.add(e);
-                JsfUtil.addSuccessMessageClean("Producto Agregado");
-                cantidad = null;
-                codigoBarras = null;
-            }
+
+    public void agregarNuevo(EntregaMercancia mercancia) {
+        if (cantidad.compareTo((mercancia.getEmpaquesRemanente().subtract(mercancia.getEmpaquesEntregados(), MathContext.UNLIMITED))) > 0) {
+            JsfUtil.addErrorMessageClean("No puedes entregar mas paquetes del pedido");
+        } else {
+            EntregaMercancia e = new EntregaMercancia();
+            e.setIdCarroFk(mercancia.getIdCarroFk());
+            e.setIdProducto(mercancia.getIdProducto());
+            e.setIdTipoEmpaque(mercancia.getIdTipoEmpaque());
+            e.setNombreProducto(mercancia.getNombreProducto());
+            e.setNombreEmpaque(mercancia.getNombreEmpaque());
+            e.setEmpaquesEntregar(cantidad);
+            e.setEmpaquesRemanente(mercancia.getEmpaquesRemanente().subtract(mercancia.getEmpaquesEntregados(), MathContext.UNLIMITED));
+            e.setEmpaquesEntregados(mercancia.getEmpaquesEntregados());
+            e.setIdVPMayoreo(mercancia.getIdVPMayoreo());
+            e.setIdVPMenudeo(mercancia.getIdVPMenudeo());
+            lstEntregaMercanciaTemporal.add(e);
+            JsfUtil.addSuccessMessageClean("Producto Agregado");
+            cantidad = null;
+            codigoBarras = null;
+            sumaTotales();
+        }
     }
 
     public void print() {
@@ -367,8 +408,8 @@ public class BeanEntregaMercancia implements Serializable {
         if (model == null || model.isEmpty()) {
             data.reset();
             data.setIdFolioVenta(folioVenta);
-            JsfUtil.addWarnMessage("No se han encontrado registros.");
-            permisosEntrega = false;
+            JsfUtil.addWarnMessageClean("No se han encontrado registros.");
+            permisosEntrega = true;
         } else {
 
             data.setNombreCliente(model.get(0).getNombreCliente());
@@ -378,11 +419,30 @@ public class BeanEntregaMercancia implements Serializable {
             data.setIdEstatus(model.get(0).getIdEstatus());
             data.setIdTipoVenta(model.get(0).getIdTipoVenta());
             data.setNombreTipoVenta(model.get(0).getNombreTipoVenta());
-
             validaEntregaMercancia();
+            sumaTotales();
 
         }
 
+    }
+    private void sumaTotales()
+    {
+        
+        listaP_TotalP = BIGDECIMAL_ZERO;
+        listaP_TotalEPE = BIGDECIMAL_ZERO;
+        listaP_TotalEE = BIGDECIMAL_ZERO;
+        listaE_TotalEE = BIGDECIMAL_ZERO;
+        
+        for(EntregaMercancia e:model)
+        {
+            listaP_TotalP = listaP_TotalP.add(e.getEmpaquesRemanente(), MathContext.UNLIMITED);
+            listaP_TotalEPE = listaP_TotalEPE.add(e.getEmpaquesRemanente().subtract(e.getEmpaquesEntregados(), MathContext.UNLIMITED), MathContext.UNLIMITED);
+            listaP_TotalEE = listaP_TotalEE.add(e.getEmpaquesEntregados(), MathContext.UNLIMITED);
+        }
+        for(EntregaMercancia e:lstEntregaMercanciaTemporal)
+        {
+            listaE_TotalEE = listaE_TotalEE.add(e.getEmpaquesEntregar(), MathContext.UNLIMITED);
+        }
     }
 
     private void validaEntregaMercancia() {
@@ -390,25 +450,25 @@ public class BeanEntregaMercancia implements Serializable {
         switch (data.getIdEstatus().intValue()) {
             case 1:
                 if (data.getIdTipoVenta().equals(TIPO_VENTA_CREDITO)) {
-                    permisosEntrega = true;
-                } else {
                     permisosEntrega = false;
-                    JsfUtil.addWarnMessage("No se puede entregar el pedido , necesita pasar a caja para pagarlo.");
+                } else {
+                    permisosEntrega = true;
+                    JsfUtil.addWarnMessageClean("No se puede entregar el pedido , necesita pasar a caja para pagarlo.");
                 }
                 break;
             case 2:
-                permisosEntrega = true;
+                permisosEntrega = false;
                 break;
             case 3:
-                JsfUtil.addWarnMessage("El pedido ya fue entregado.");
-                permisosEntrega = false;
+                JsfUtil.addWarnMessageClean("El pedido ya fue entregado.");
+                permisosEntrega = true;
                 break;
             case 4:
-                JsfUtil.addWarnMessage("La venta esta cancelada.");
-                permisosEntrega = false;
+                JsfUtil.addWarnMessageClean("La venta esta cancelada.");
+                permisosEntrega = true;
                 break;
             default:
-                permisosEntrega = false;
+                permisosEntrega = true;
                 break;
         }
 
@@ -423,7 +483,7 @@ public class BeanEntregaMercancia implements Serializable {
             BigDecimal kilosPromedio = entregaMercancia.getKilosRemanente().divide(entregaMercancia.getEmpaquesRemanente(), 2, RoundingMode.UP);
 
             if (valueTemp.compareTo(entregaMercancia.getEmpaquesRemanente()) == 1) {
-                JsfUtil.addWarnMessage("No se puden entregar mas paquetes que los de la venta.");
+                JsfUtil.addWarnMessageClean("No se puden entregar mas paquetes que los de la venta.");
                 validaEmpaques = false;
             } else if (entregaMercancia.getEmpaquesRemanente().compareTo(value) == 0) {
 
@@ -479,20 +539,21 @@ public class BeanEntregaMercancia implements Serializable {
         totalRemanente = BIGDECIMAL_ZERO;
         totalEntregar = BIGDECIMAL_ZERO;
         totalEmpaques = BIGDECIMAL_ZERO;
-        for (EntregaMercancia dominio : lstEntregaMercanciaTemporal) 
-        {
-            System.out.println("==========Domino=========");
-            System.out.println(dominio);
-            dominio.setEmpaquesEntregar(dominio.getEmpaquesEntregar() == null ? BIGDECIMAL_ZERO : dominio.getEmpaquesEntregar());
-            totalEmpaques = totalEmpaques.add(dominio.getEmpaquesEntregar());
-            totalRemanente = totalRemanente.add(dominio.getEmpaquesRemanente()).subtract(dominio.getEmpaquesEntregados());
-            if (dominio.getEmpaquesEntregar() != null) {
-                totalEntregar = totalEntregar.add(dominio.getEmpaquesEntregar());
-            }
-            dominio.setEmpaquesEntregar(dominio.getEmpaquesEntregar() == null ? BIGDECIMAL_ZERO : dominio.getEmpaquesEntregar());
+        for (EntregaMercancia dominio : lstEntregaMercanciaTemporal) {
+//            System.out.println("==========Domino=========");
+//            System.out.println(dominio);
+//            dominio.setEmpaquesEntregar(dominio.getEmpaquesEntregar() == null ? BIGDECIMAL_ZERO : dominio.getEmpaquesEntregar());
+//            totalEmpaques = totalEmpaques.add(dominio.getEmpaquesEntregar());
+//            totalRemanente = totalRemanente.add(dominio.getEmpaquesRemanente()).subtract(dominio.getEmpaquesEntregados());
+//            if (dominio.getEmpaquesEntregar() != null) {
+//                totalEntregar = totalEntregar.add(dominio.getEmpaquesEntregar());
+//            }
+//            dominio.setEmpaquesEntregar(dominio.getEmpaquesEntregar() == null ? BIGDECIMAL_ZERO : dominio.getEmpaquesEntregar());
+//          
+
             productos.add(dominio.getNombreProducto().toUpperCase() + " " + dominio.getNombreEmpaque().toUpperCase());
             BigDecimal remanenteProducto = dominio.getEmpaquesRemanente().subtract(dominio.getEmpaquesEntregar());
-            remanenteProducto = remanenteProducto.subtract(dominio.getEmpaquesEntregados());
+            //remanenteProducto = remanenteProducto.subtract(dominio.getEmpaquesEntregados());
             productos.add("                                         " + remanenteProducto + "                     " + dominio.getEmpaquesEntregar());
         }
 
@@ -515,9 +576,9 @@ public class BeanEntregaMercancia implements Serializable {
         paramReport.put("telefonos", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:" + usuarioDominio.getTelefonoSucursal());
         paramReport.put("labelSucursal", usuarioDominio.getNombreSucursal());
 
-        paramReport.put("totalRemanente", (totalRemanente.subtract(totalEntregar)).toString());
-        paramReport.put("totalSalida", totalEntregar.toString());
-        paramReport.put("totalEmpaques", totalEmpaques.toString());
+        paramReport.put("totalRemanente", (listaP_TotalEPE.subtract(listaE_TotalEE)).toString());
+        paramReport.put("totalSalida", listaE_TotalEE.toString());
+        paramReport.put("totalEmpaques", listaP_TotalP.toString());
         paramReport.put("comentarios", observaciones);
 
     }
@@ -533,7 +594,7 @@ public class BeanEntregaMercancia implements Serializable {
             kilosEntrega = null;
             observaciones = null;
         } else {
-            JsfUtil.addWarnMessage("No se puden entregar.");
+            JsfUtil.addWarnMessageClean("No se puden entregar.");
         }
 
     }
@@ -679,5 +740,55 @@ public class BeanEntregaMercancia implements Serializable {
     public void setLstEntregaMercanciaTemporal(ArrayList<EntregaMercancia> lstEntregaMercanciaTemporal) {
         this.lstEntregaMercanciaTemporal = lstEntregaMercanciaTemporal;
     }
+
+    public BigDecimal getListaP_TotalP() {
+        return listaP_TotalP;
+    }
+
+    public void setListaP_TotalP(BigDecimal listaP_TotalP) {
+        this.listaP_TotalP = listaP_TotalP;
+    }
+
+    public BigDecimal getListaP_TotalEPE() {
+        return listaP_TotalEPE;
+    }
+
+    public void setListaP_TotalEPE(BigDecimal listaP_TotalEPE) {
+        this.listaP_TotalEPE = listaP_TotalEPE;
+    }
+
+    public BigDecimal getListaP_TotalEE() {
+        return listaP_TotalEE;
+    }
+
+    public void setListaP_TotalEE(BigDecimal listaP_TotalEE) {
+        this.listaP_TotalEE = listaP_TotalEE;
+    }
+
+    public BigDecimal getListaE_TotalEE() {
+        return listaE_TotalEE;
+    }
+
+    public void setListaE_TotalEE(BigDecimal listaE_TotalEE) {
+        this.listaE_TotalEE = listaE_TotalEE;
+    }
+
+    public EntregaMercancia getEntregaEliminar() {
+        return entregaEliminar;
+    }
+
+    public void setEntregaEliminar(EntregaMercancia entregaEliminar) {
+        this.entregaEliminar = entregaEliminar;
+    }
+
+    public EntregaMercancia getEntregaEditar() {
+        return entregaEditar;
+    }
+
+    public void setEntregaEditar(EntregaMercancia entregaEditar) {
+        this.entregaEditar = entregaEditar;
+    }
+    
+    
 
 }
