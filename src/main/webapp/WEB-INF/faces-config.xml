@@ -16,5 +16,6 @@
     </application>
     <lifecycle>
         <phase-listener>com.web.chon.listener.LoginErrorPhaseListener</phase-listener>
+        <phase-listener>com.web.chon.listener.CacheControlPhaseListener</phase-listener>
     </lifecycle>
 </faces-config>
