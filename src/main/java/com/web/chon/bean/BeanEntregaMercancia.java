@@ -232,18 +232,18 @@ public class BeanEntregaMercancia implements Serializable {
             cantidad = new BigDecimal(1);
            
         }
-        boolean bandera = false;
+       
         for (EntregaMercancia mercancia : model) //recorre
         {
             if (mercancia.getIdCarroFk().intValue() == carro.intValue() && mercancia.getIdProducto().equals(producto) && mercancia.getIdTipoEmpaque().intValue() == idEmpaque.intValue()) {
                 agregarAlista(mercancia);
-                bandera = true;
+              
                 permisosEntrega = false;
                 break;
             } else {
-                bandera = false;
+                
                 permisosEntrega = true;
-                //JsfUtil.addErrorMessageClean("Este código de barras no existe en la lista del pedido");
+                JsfUtil.addErrorMessageClean("Este código de barras no existe en la lista del pedido");
             }
         }
 
@@ -524,7 +524,7 @@ public class BeanEntregaMercancia implements Serializable {
             exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, outputStream);
             byte[] bytes = outputStream.toByteArray();
 
-            rutaPDF = UtilUpload.saveFileTemp(bytes, "entregaMercancia" + totalRemanente, folioVenta, usuarioDominio.getSucId());
+            rutaPDF = UtilUpload.saveFileTemp(bytes, "entregaMercancia" + listaP_TotalEPE, folioVenta, usuarioDominio.getSucId());
 
         } catch (Exception exception) {
             System.out.println("Error >" + exception.getMessage());

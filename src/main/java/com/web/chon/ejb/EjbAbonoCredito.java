@@ -252,10 +252,14 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
     @Override
     public List<Object[]> getHistorialAbonos(BigDecimal idClienteFk, BigDecimal idCajeroFk, String fechaInicio, String fechaFin, BigDecimal idTipoPagoFk, BigDecimal idAbonoPk, BigDecimal idCreditoFk) {
         System.out.println("Variables: idCliente: "+idClienteFk +" idCajero: "+idCajeroFk+" idTipoPago: "+idTipoPagoFk +" idAbonoPk: "+idAbonoPk  +" idCredito: "+idCreditoFk);
-        StringBuffer cadena = new StringBuffer("select ab.ID_ABONO_CREDITO_PK as folio,(CLI.NOMBRE||' '||CLI.APELLIDO_PATERNO ||' '||CLI.APELLIDO_MATERNO ) AS CLIENTE ,\n" +
-"(usu.NOMBRE_USUARIO||' '||usu.APATERNO_USUARIO) AS CAJERO, \n" +
+        StringBuffer cadena = new StringBuffer("select ab.ID_ABONO_CREDITO_PK as folio,(CLI.NOMBRE||' '||CLI.APELLIDO_PATERNO ||' '||CLI.APELLIDO_MATERNO ) AS CLIENTE,\n" +
+"(usu.NOMBRE_USUARIO||' '||usu.APATERNO_USUARIO) AS CAJERO,\n" +
 "ab.ID_CREDITO_FK as folio_credito,\n" +
-"ab.FECHA_ABONO,tipo.NOMBRE_ABONO,ab.MONTO_ABONO\n" +
+"ab.FECHA_ABONO,tipo.NOMBRE_ABONO,ab.MONTO_ABONO,\n" +
+"ab.ID_USUARIO_FK,ab.TIPO_ABONO_FK,ab.ESTATUS,\n" +
+"ab.NUMERO_CHEQUE,ab.LIBRADOR,ab.FECHA_COBRO,\n" +
+"ab.BANCO_EMISOR,ab.NUMERO_FACTURA,ab.REFERENCIA,ab.CONCEPTO,ab.FECHA_TRANSFERENCIA,\n" +
+"cli.ID_CLIENTE\n" +
 "from ABONO_CREDITO ab inner join credito cre on cre.ID_CREDITO_PK = ab.ID_CREDITO_FK\n" +
 "inner join cliente cli on cli.ID_CLIENTE = cre.ID_CLIENTE_FK\n" +
 "inner join usuario usu  on usu.ID_USUARIO_PK = ab.ID_USUARIO_FK\n" +

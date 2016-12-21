@@ -123,11 +123,12 @@
                                 </h:outputText>
                             </p:column>
                             
-                           <!-- <p:column headerText="Imprimir" width="70px;" class="alignCenter">
-                                <p:commandButton id="print" ajax="true" process="@this" action="{beanHistorialAbonos.printVenta()}" icon="ui-icon-print" styleClass="ui-priority-primary" update=":formContent" onclick="PF('statusDialog').show()">
-                                    <f:setPropertyActionListener value="{model}" target="{beanHistorialAbonos.data}"/>
+                            <p:column headerText="Imprimir" width="70px;" class="alignCenter">
+                                <p:commandButton id="print" ajax="true" process="@this" action="#{beanHistorialAbonos.printVenta()}" icon="ui-icon-print" styleClass="ui-priority-primary" update=":formContent">
+                                    <f:setPropertyActionListener value="#{model}" target="#{beanHistorialAbonos.data}"/>
                                 </p:commandButton>
                             </p:column>
+                            <!--
                            <p:column headerText="Cancelar" width="60px;" class="alignCenter">
                                 <p:commandButton id="cancel"  ajax="true"
                                                  process="@this" action="{beanHistorialAbonos.cancelarAbono()}"
@@ -158,6 +159,7 @@
 
                     </div>
                 </div>
+                <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanHistorialAbonos.rutaPDF}"/>
             </p:panel>
         </h:form>
     </ui:define>

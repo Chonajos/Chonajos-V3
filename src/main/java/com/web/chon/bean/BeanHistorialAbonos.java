@@ -44,6 +44,7 @@ import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
+import org.primefaces.context.RequestContext;
 import org.primefaces.model.StreamedContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -140,7 +141,7 @@ public class BeanHistorialAbonos implements Serializable {
         sumaTotal();
     }
     
-    private void setParameterTicket(AbonoCredito ac, Cliente c) {
+    private void setParameterTicket(AbonoCredito ac) {
         NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
         DecimalFormat df = new DecimalFormat("###.##");
         Date date = new Date();
@@ -149,14 +150,14 @@ public class BeanHistorialAbonos implements Serializable {
         paramReport.put("labelSucursal", usuarioDominio.getNombreSucursal());
         paramReport.put("labelEstatus", "Abono Pagado");
         paramReport.put("fecha", TiempoUtil.getFechaDDMMYYYYHHMM(date));
-        paramReport.put("numeroCliente", c.getId_cliente().toString());
-        paramReport.put("nombreCliente", c.getNombreCompleto());
+        paramReport.put("numeroCliente", ac.getIdClienteFk().toString());
+        paramReport.put("nombreCliente", ac.getNombreCliente());
         paramReport.put("recibimos", nf.format(ac.getMontoAbono()));
         paramReport.put("totalLetra", totalVentaStr);
-        paramReport.put("fechaProximoPago", TiempoUtil.getFechaDDMMYYYYHHMM(date));
+        paramReport.put("fechaProximoPago", TiempoUtil.getFechaDDMMYYYYHHMM(ac.getFechaAbono()));
         //paramReport.put("montoliquidar", nf.format(saldoParaLiquidar.subtract(ac.getMontoAbono(), MathContext.UNLIMITED)));
         paramReport.put("montoMinimo", nf.format(ac.getMontoAbono()));
-        paramReport.put("nombreAtendedor", usuarioDominio.getNombreCompleto());
+        paramReport.put("nombreAtendedor", ac.getNombreCajero());
         /* Parametros para ticket de Cheque*/
         switch (ac.getIdtipoAbonoFk().intValue()) {
             case 1:
@@ -225,7 +226,7 @@ public class BeanHistorialAbonos implements Serializable {
 //            exporter.setParameter(JRPdfExporterParameter.PDF_JAVASCRIPT, "this.print();");
             byte[] bytes = outputStream.toByteArray();
 
-            rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf", folio, usuarioDominio.getSucId());
+            rutaPDF = UtilUpload.saveFileTemp(bytes, "abonoPDF", folio, usuarioDominio.getSucId());
             System.out.println("Ruutttaaa: " + rutaPDF);
         } catch (Exception exception) {
             System.out.println("Error >" + exception.getMessage());
@@ -249,6 +250,29 @@ public class BeanHistorialAbonos implements Serializable {
     public void printVenta()
     {
         System.out.println("DATA: "+data.toString());
+        setParameterTicket(data);
+        
+        String nombreReporte = "";
+        switch (data.getIdtipoAbonoFk().intValue()) {
+            case 1:
+                System.out.println("Efectivo");
+                nombreReporte = "abono.jasper";
+                break;
+            case 2:
+                nombreReporte = "abonoTransferencia.jasper";
+                break;
+            case 3:
+                nombreReporte = "abonoCheque.jasper";
+                break;
+            case 4:
+                nombreReporte = "abonoDeposito.jasper";
+                break;
+            default:
+                System.out.println("Ocurrio un error");
+                break;
+        }
+        generateReport(data.getIdAbonoCreditoPk().intValue(), nombreReporte);
+        RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
     }
 
     public void buscar() {

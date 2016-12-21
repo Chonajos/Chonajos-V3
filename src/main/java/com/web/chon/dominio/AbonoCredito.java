@@ -33,6 +33,7 @@ public class AbonoCredito extends ValueObject {
     private BigDecimal folioElectronico;
     private String nombreAbono;
     private String nombreCajero;
+    
 
     @Override
     public String toString() {
