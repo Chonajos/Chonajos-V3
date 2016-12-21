@@ -39,6 +39,7 @@ import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
+import org.apache.commons.io.IOUtils;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
@@ -89,6 +90,8 @@ public class BeanSubProducto implements Serializable, BeanSimple {
     private File[] files = null;
     private String carpeta = "RODUCTOS";
     private String destPath;
+    
+    private byte[] bytes;
 
     @PostConstruct
     public void init() {
@@ -247,7 +250,7 @@ public class BeanSubProducto implements Serializable, BeanSimple {
             temporal = Constantes.PATHSERVER;
         } else {
             temporal = servletContext.getRealPath("");
-            System.out.println("temporal: "+temporal);
+            System.out.println("temporal: " + temporal);
         }
         path = temporal + File.separatorChar + "resources" + File.separatorChar + "img" + File.separatorChar + "RODUCTOS";
 
@@ -275,13 +278,17 @@ public class BeanSubProducto implements Serializable, BeanSimple {
 
             try {
 //                if (state == ViewState.NEW) {
+                bytes = IOUtils.toByteArray(inputStr);
+                System.out.println("bytes = " + bytes);
+                data.setFichero(bytes);
                 FileUtils.guardaArchivo(destPath, inputStr);
+
                 System.out.println("archivo guardado en " + destPath);
+
 //                } else {
 //
 //                    inputStream = inputStr;
 //                }
-
                 FacesMessage message = new FacesMessage("exito", "El archivo "
                         + event.getFile().getFileName().trim()
                         + " fue cargado.");

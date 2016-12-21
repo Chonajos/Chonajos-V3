@@ -7,7 +7,7 @@ package com.web.chon.dominio;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.BigInteger;
+import org.primefaces.model.StreamedContent;
 
 /**
  *
@@ -23,6 +23,10 @@ public class Subproducto implements Serializable {
     private String idProductoFk;
     private String nombreCategoria;
     private BigDecimal precioProducto;
+    
+     private StreamedContent productImage;
+    
+    private byte[] fichero;
 
     public Subproducto() {
     }
@@ -91,13 +95,32 @@ public class Subproducto implements Serializable {
     public void setPrecioProducto(BigDecimal precioProducto) {
         this.precioProducto = precioProducto;
     }
+
+    public byte[] getFichero() {
+        return fichero;
+    }
+
+    public void setFichero(byte[] fichero) {
+        this.fichero = fichero;
+    }
+
+    public StreamedContent getProductImage() {
+        return productImage;
+    }
+
+    public void setProductImage(StreamedContent productImage) {
+        this.productImage = productImage;
+    }
     
     
- 
+
     @Override
     public String toString() {
-        return "Subproducto{" + "idSubproductoPk=" + idSubproductoPk + ", nombreSubproducto=" + nombreSubproducto + ", descripcionSubproducto=" + descripcionSubproducto + ", urlImagenSubproducto=" + urlImagenSubproducto + ", idProductoFk=" + idProductoFk + ", nombreCategoria=" + nombreCategoria + '}';
+        return "Subproducto{" + "idSubproductoPk=" + idSubproductoPk + ", nombreSubproducto=" + nombreSubproducto + ", descripcionSubproducto=" + descripcionSubproducto + ", urlImagenSubproducto=" + urlImagenSubproducto + ", idProductoFk=" + idProductoFk + ", nombreCategoria=" + nombreCategoria + ", precioProducto=" + precioProducto + ", fichero=" + fichero + '}';
     }
+    
+ 
+   
 
    
 
