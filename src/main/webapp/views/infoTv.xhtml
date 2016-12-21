@@ -6,6 +6,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
+                xmlns:o="http://omnifaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions">
     <ui:define name="content">
         <h:form id="formContent">
@@ -16,26 +17,17 @@
                 <div class="container">
                     <p:poll update="formContent" listener="#{beanInfoTv.generarListaMostrar}" interval="10"/>
                     <ui:repeat value="#{beanInfoTv.lstTempShow}" var="producto">
-                        <div class="col-xs-3 col-md-4 col-sm-6 col-xs-12 form-group">
+                        <div class="col-xs-3 col-md-3 col-sm-6 col-xs-12 form-group">
                             <div class="col-xs-12 col-md-12 col-sm-12 col-xs-12 noPadding form-group">
                                 <h3>#{producto.nombreSubproducto} <a style="font-weight: bold !important; color: green !important;">$:#{producto.precioProducto}</a> </h3><h3 > </h3>
                             </div>
                             <div class="col-xs-12 col-md-12 col-sm-12 col-xs-12 noPadding form-group">
-                                <img style="height:200px; width:auto;" src="#{producto.urlImagenSubproducto}" alt="logo"/>
+                                <p:graphicImage  value="#{beanInfoTv.productImage}" style="height:200px; width:250px;">
+                                    <f:param  name="idSubproducto" value="#{producto.idSubproductoPk}"/>
+                                </p:graphicImage>
                             </div>
                         </div>  
                     </ui:repeat>
-                    
-<!--                    <p:contentFlow value="#{beanInfoTv.lstTempShow}" var="producto">
-                        <p:graphicImage  name="#{producto.urlImagenSubproducto}" alt="logo" styleClass="content"/>
-                        <img style="height:200px; width:300px;" name="producto" src="#{producto.urlImagenSubproducto}" alt="logo"/>
-                        <div class="caption">#{producto}</div>
-                    </p:contentFlow>-->
-<!--                    <p:galle-ria value="#{beanInfoTv.lstProductos}" var="producto" panelWidth="500" panelHeight="313" showCaption="true">
-                        <p:graphicImage  alt="#{producto.nombreSubproducto}" title="#{producto.precioProducto}"/>
-                        <img style="height:200px; width:300px;" src="#{producto.urlImagenSubproducto}" name="#{producto.nombreSubproducto}" alt="#{producto.precioProducto}" />
-                    </p:galleria>-->
-                    <!--<img style="height:200px; width:300px;" src="../resources/img/PRODUCTOS/IMG_20161205_120458229.jpg" alt="logo"/>-->
                 </div>
             </p:panel>
         </h:form>

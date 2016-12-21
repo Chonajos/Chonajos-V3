@@ -3,12 +3,18 @@ package com.web.chon.service;
 import com.web.chon.dominio.Subproducto;
 import com.web.chon.negocio.NegocioSubProducto;
 import com.web.chon.util.Utilidades;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.stereotype.Service;
+import org.springframework.util.SerializationUtils;
 
 /**
  *
@@ -82,13 +88,34 @@ public class ServiceSubProducto implements IfaceSubProducto {
     @Override
     public int updateSubProducto(Subproducto subProducto) {
 
-        return ejb.updateSubProducto(subProducto);
+        int i = ejb.updateSubProducto(subProducto);
+        if (i == 1) {
+            try {
+                byte[] fichero = subProducto.getFichero();
+                ejb.insertarDocumento(subProducto.getIdSubproductoPk(), fichero);
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(ServiceSubProducto.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        return i;
     }
 
     @Override
     public int insertarSubProducto(Subproducto subProducto) {
 
-        return ejb.insertarSubProducto(subProducto);
+        int i = ejb.insertarSubProducto(subProducto);
+
+        if (i == 1) {
+            try {
+                byte[] fichero = subProducto.getFichero();
+                ejb.insertarDocumento(subProducto.getIdSubproductoPk(), fichero);
+            } catch (SQLException ex) {
+                Logger.getLogger(ServiceSubProducto.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return i;
 
     }
 
@@ -146,6 +173,7 @@ public class ServiceSubProducto implements IfaceSubProducto {
                 subProducto.setIdProductoFk(obj[4] == null ? null : obj[4].toString());
                 subProducto.setNombreCategoria(obj[5] == null ? "" : obj[5].toString());
                 subProducto.setPrecioProducto(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
+                subProducto.setFichero((obj[7] == null ? null : (byte[]) (obj[7])));
 
                 lstSubProducto.add(subProducto);
             }
@@ -155,6 +183,20 @@ public class ServiceSubProducto implements IfaceSubProducto {
             Logger.getLogger(ServiceSubProducto.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
+    }
+
+    private byte[] convertToBytes(Object obj) {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutput out;
+        try {
+            out = new ObjectOutputStream(bos);
+
+            out.writeObject(obj);
+
+        } catch (IOException ex) {
+            Logger.getLogger(ServiceSubProducto.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return bos.toByteArray();
     }
 
 }

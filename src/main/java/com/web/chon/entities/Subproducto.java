@@ -13,6 +13,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -37,6 +38,10 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Subproducto.findByPrecioMinimo", query = "SELECT s FROM Subproducto s WHERE s.precioMinimo = :precioMinimo"),
     @NamedQuery(name = "Subproducto.findByPrecioMaximo", query = "SELECT s FROM Subproducto s WHERE s.precioMaximo = :precioMaximo")})
 public class Subproducto implements Serializable {
+
+    @Lob
+    @Column(name = "FICHERO")
+    private Serializable fichero;
 
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
@@ -155,6 +160,14 @@ public class Subproducto implements Serializable {
     @Override
     public String toString() {
         return "com.web.chon.entities.Subproducto[ idSubproductoPk=" + idSubproductoPk + " ]";
+    }
+
+    public Serializable getFichero() {
+        return fichero;
+    }
+
+    public void setFichero(Serializable fichero) {
+        this.fichero = fichero;
     }
     
 }

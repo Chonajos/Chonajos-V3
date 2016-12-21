@@ -2,14 +2,28 @@ package com.web.chon.ejb;
 
 import com.web.chon.dominio.Subproducto;
 import com.web.chon.negocio.NegocioSubProducto;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.sql.Connection;
+//import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+//import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+//import javax.sql.DataSource;
+//import oracle.jdbc.OracleDriver;
+//import oracle.jdbc.OracleResultSet;
+//import oracle.sql.BLOB;
+//import org.hibernate.Session;
+//import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
+//import org.hibernate.engine.spi.SessionFactoryImplementor;
+
 
 /**
  *
@@ -121,8 +135,8 @@ public class EjbSubProducto implements NegocioSubProducto {
     public List<Object[]> getSubProductosIdSucursal(BigDecimal idSucursal) {
         try {
 
-            Query query = em.createNativeQuery("SELECT ID_SUBPRODUCTO_PK,NOMBRE_SUBPRODUCTO,DESCRIPCION_SUBPRODUCTO,URL_IMAGEN_SUBPRODUCTO ,ID_PRODUCTO_FK,PRO.NOMBRE_PRODUCTO,MTP.PRECIO_VENTA FROM SUBPRODUCTO SUB LEFT JOIN PRODUCTO PRO ON PRO.ID_PRODUCTO_PK = SUB.ID_PRODUCTO_FK LEFT JOIN MANTENIMIENTO_PRECIO MTP ON MTP.ID_SUBPRODUCTO_FK = SUB.ID_SUBPRODUCTO_PK AND MTP.ID_SUCURSAL_FK =? WHERE SUB.URL_IMAGEN_SUBPRODUCTO IS NOT NULL AND MTP.PRECIO_VENTA IS NOT NULL ORDER BY ID_PRODUCTO_FK,ID_SUBPRODUCTO_PK ASC");
-            query.setParameter(1,idSucursal);
+            Query query = em.createNativeQuery("SELECT ID_SUBPRODUCTO_PK,NOMBRE_SUBPRODUCTO,DESCRIPCION_SUBPRODUCTO,URL_IMAGEN_SUBPRODUCTO ,ID_PRODUCTO_FK,PRO.NOMBRE_PRODUCTO,MTP.PRECIO_VENTA,FICHERO FROM SUBPRODUCTO SUB LEFT JOIN PRODUCTO PRO ON PRO.ID_PRODUCTO_PK = SUB.ID_PRODUCTO_FK LEFT JOIN MANTENIMIENTO_PRECIO MTP ON MTP.ID_SUBPRODUCTO_FK = SUB.ID_SUBPRODUCTO_PK AND MTP.ID_SUCURSAL_FK =? WHERE SUB.FICHERO IS NOT NULL AND MTP.PRECIO_VENTA IS NOT NULL ORDER BY ID_PRODUCTO_FK,ID_SUBPRODUCTO_PK ASC");
+            query.setParameter(1, idSucursal);
             List<Object[]> resultList = null;
             resultList = query.getResultList();
 
@@ -133,5 +147,58 @@ public class EjbSubProducto implements NegocioSubProducto {
             return null;
         }
     }
+
+    public void insertarDocumento(String id, byte[] fichero) throws SQLException {
+
+        Query querys = em.createNativeQuery("update SUBPRODUCTO SET FICHERO = ? WHERE ID_SUBPRODUCTO_PK = ?");
+        querys.setParameter(1, fichero);
+        querys.setParameter(2, id);
+        querys.executeUpdate();
+
+    }
+
+//     
+//     public void insertarDocumentoo(String id, byte[] fichero) throws SQLException { //con blob por si se necesita solo se comento
+//
+//        Context ctx = null;
+//        Hashtable ht = new Hashtable();
+//        ht.put(Context.INITIAL_CONTEXT_FACTORY,"weblogic.jndi.WLInitialContextFactory");
+//        ht.put(Context.PROVIDER_URL,"t3://127.0.0.1:80");
+//        Connection conn = null;
+//        Statement stmt = null;
+//        ResultSet rs = null;
+//        try {
+//            ctx = new InitialContext(ht);
+//            javax.sql.DataSource ds = (javax.sql.DataSource) ctx.lookup("DataChon");
+//            conn = ds.getConnection();
+//            
+//
+//        } catch (Exception e) {
+//            // a failure occurred
+//        } finally {
+//
+//        }
+//
+// 
+//        String resultado = null;
+//        String query = "update SUBPRODUCTO SET FICHERO = ? WHERE ID_SUBPRODUCTO_PK = ?";
+//        PreparedStatement ps = conn.prepareStatement(query);
+//
+//        BLOB blob = BLOB.createTemporary(conn, true, BLOB.DURATION_SESSION);
+//
+//        OutputStream blob_os = blob.setBinaryStream(0);
+//
+//        try {
+//            blob_os.write(fichero);
+//            blob_os.flush();
+//            System.out.println("blob : " + blob);
+//            ps.setBytes(1, fichero);
+//            ps.setString(2, id);
+//            ps.executeUpdate();
+//            ps.close();
+//        } catch (IOException ex) {
+//            Logger.getLogger(EjbSubProducto.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//    }
 
 }

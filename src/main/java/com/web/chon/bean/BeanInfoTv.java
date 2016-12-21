@@ -11,10 +11,18 @@ import com.web.chon.service.IfaceEmpaque;
 import com.web.chon.service.IfaceMantenimientoPrecio;
 import com.web.chon.service.IfaceSubProducto;
 import com.web.chon.util.JsfUtil;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.ContextCallback;
@@ -22,7 +30,10 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlOutputText;
 import javax.faces.component.html.HtmlPanelGroup;
 import javax.faces.context.FacesContext;
+import javax.faces.event.PhaseId;
 import org.primefaces.event.RowEditEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -33,17 +44,14 @@ import org.springframework.stereotype.Component;
  * @author Juan de la Cruz
  */
 @Component
-@Scope("view")
+@Scope("session")
 public class BeanInfoTv implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Autowired
-    private PlataformaSecurityContext context;
-    @Autowired
-    private IfaceMantenimientoPrecio ifaceMantenimientoPrecio;
-    @Autowired
-    private IfaceSubProducto ifaceSubProducto;
+    @Autowired private PlataformaSecurityContext context;
+    @Autowired private IfaceMantenimientoPrecio ifaceMantenimientoPrecio;
+    @Autowired private IfaceSubProducto ifaceSubProducto;
 
     private ArrayList<MantenimientoPrecios> model;
 
@@ -54,6 +62,7 @@ public class BeanInfoTv implements Serializable {
     private UIComponent found;
     private ArrayList<Subproducto> lstProductos;
     private ArrayList<Subproducto> lstTempShow;
+    private Subproducto subproducto;
     private int cont;
     private int registroShow = 5;
 
@@ -64,7 +73,7 @@ public class BeanInfoTv implements Serializable {
         fechaSistema = context.getFechaSistema();
         lstProductos = new ArrayList<Subproducto>();
         lstTempShow = new ArrayList<Subproducto>();
-        
+
         cont = 0;
         generarListaMostrar();
 
@@ -73,16 +82,40 @@ public class BeanInfoTv implements Serializable {
     public void generarListaMostrar() {
         lstTempShow.clear();
         lstProductos = ifaceSubProducto.getSubProductosIdSucursal(new BigDecimal(usuarioDominio.getSucId()));
-        for (int i = cont; i <= cont+registroShow && i <= lstProductos.size()-1; i++) {
+        for (int i = cont; i <= cont + registroShow && i <= lstProductos.size() - 1; i++) {
+
             lstTempShow.add(lstProductos.get(i));
         }
 
         cont += registroShow;
-        
-        if(cont>=lstProductos.size()){
-            cont =0;
+
+        if (cont >= lstProductos.size()) {
+            cont = 0;
         }
 
+    }
+
+    private StreamedContent productImage;
+
+    public StreamedContent getProductImage() throws IOException, SQLException {
+
+
+            FacesContext context = FacesContext.getCurrentInstance();
+
+            if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
+                return new DefaultStreamedContent();
+            } else {
+                String idSubProducto = context.getExternalContext().getRequestParameterMap().get("idSubproducto");
+                for(Subproducto dominio:lstTempShow){
+                    if(dominio.getIdSubproductoPk().equals(idSubProducto)){
+                        subproducto = dominio;
+                    }
+                    
+                }
+                byte[] image = subproducto.getFichero();
+                return new DefaultStreamedContent(new ByteArrayInputStream(image));
+
+            }
     }
 
     public String getViewEstate() {
@@ -123,6 +156,14 @@ public class BeanInfoTv implements Serializable {
 
     public void setLstTempShow(ArrayList<Subproducto> lstTempShow) {
         this.lstTempShow = lstTempShow;
+    }
+
+    public Subproducto getSubproducto() {
+        return subproducto;
+    }
+
+    public void setSubproducto(Subproducto subproducto) {
+        this.subproducto = subproducto;
     }
 
 }
