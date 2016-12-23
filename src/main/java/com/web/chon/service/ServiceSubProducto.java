@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.stereotype.Service;
-import org.springframework.util.SerializationUtils;
 
 /**
  *
@@ -43,7 +42,9 @@ public class ServiceSubProducto implements IfaceSubProducto {
                 subProducto.setDescripcionSubproducto(obj[2] == null ? "" : obj[2].toString());
                 subProducto.setUrlImagenSubproducto(obj[3] == null ? "" : obj[3].toString());
                 subProducto.setIdProductoFk(obj[4] == null ? null : obj[4].toString());
-                subProducto.setNombreCategoria(obj[6] == null ? "" : obj[6].toString());
+                subProducto.setFichero((obj[5] == null ? null : (byte[]) (obj[5])));
+                subProducto.setNombreCategoria(obj[7] == null ? "" : obj[7].toString());
+                
 
                 lstSubProducto.add(subProducto);
             }
@@ -81,7 +82,6 @@ public class ServiceSubProducto implements IfaceSubProducto {
 
     @Override
     public int deleteSubProducto(String idSubProducto) {
-
         return ejb.deleteSubProducto(idSubProducto);
     }
 

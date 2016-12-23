@@ -25,7 +25,7 @@
                     <p:commandButton value="Eliminar" update=":formContent" ajax="true" action="#{beanBodega.delete}" icon="ui-icon-trash" class="primaryButton" onclick="PF('statusDialog').show()"/>
                 </div>
                 <div class="col-lg-6 col-md-8 col-sm-12 col-xs-12 col-lg-offset-3 col-md-offset-2">
-                    <p:dataTable id="tableData" var="model" value="#{beanBodega.model}" rowKey="#{model.idBodegaPK}" rows="12" scrollable="true" paginator="true"
+                    <p:dataTable id="tableData" var="model" value="#{beanBodega.model}" rowKey="#{model.idBodegaPK}" rows="20" scrollable="true" paginator="true"
                                  lazy="true" selection="#{beanBodega.selectedBodega}" 
                                  emptyMessage="No se encontraron Registros." editable="true">
 

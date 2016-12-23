@@ -21,7 +21,7 @@
         <h:form id="formContent">
             <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <div class="form-group" align="right">
-                <p:commandButton value="Buscar" onclick="PF('statusDialog').show()" update=":formContent" ajax="true" action="#{beanRelacionOperaciones.buscar()}"/>
+                <p:commandButton value="Buscar" onclick="PF('statusDialog').show()" update=":formContent" ajax="true" action="#{beanRelacionOperaciones.buscar}"/>
             </div>
             <p:confirmDialog   global="true" showEffect="fade" hideEffect="fade">
                 <div class="alignCenter">
@@ -141,7 +141,7 @@
                         <p:dataTable id="table" var="model" styleClass="ui-datatable-hor-scroll" rowStyleClass="#{model.idStatusVenta eq 1 ? 'alert-info': (model.idStatusVenta eq 2 ? 'alert-warning':(model.idStatusVenta eq 3 ? 'alert-success':'alert-danger'))}"
                                      value="#{beanRelacionOperaciones.listaVentas}" 
                                      scrollable="true"
-                                     scrollHeight="400" 
+                                     scrollHeight="500" 
                                      paginator="true" rows="50"
                                      emptyMessage="No se encontraron Registros" >
 

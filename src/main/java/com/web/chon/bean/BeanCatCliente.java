@@ -90,24 +90,13 @@ public class BeanCatCliente implements BeanSimple {
         Correos c2 = new Correos();
         c2.setTipo("Trabajo");
         lista_emails.add(c2);
-        //BORRA DESPUES DE QUE FUNCIONE LA SELECION DE CODIGOS POSTALES
-//        lista_codigos_postales = new ArrayList<CodigoPostal>();
-//        lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalById("1");
-//        lista_codigos_postales_2 = new ArrayList<CodigoPostal>();
-//        lista_codigos_postales_2 = ifaceCatCodigosPostales.getCodigoPostalById("1");
+   
         lista_entidades = new ArrayList<Entidad>();
-//        lista_municipios = new ArrayList<Municipios>();
         lista_entidades_2 = new ArrayList<Entidad>();
-//        lista_municipios_2 = new ArrayList<Municipios>();
         selectedCliente = new ArrayList<Cliente>();
         selectedEntidad = 1;
         model = ifaceCatCliente.getClientes();
-
-//        for (Cliente dominio : model) 
-//        {
-//            emails_del_cliente = ifaceCatCorreos.SearchCorreosbyidClientPk(dominio.getId_cliente());
-//            dominio.setEmails(emails_del_cliente);
-//        }
+        
         setTitle("Catalogo de Clientes");
         setViewEstate("init");
 

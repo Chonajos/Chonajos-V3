@@ -163,7 +163,6 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
         idTipoPagoFk = new BigDecimal(1);
         FacesContext contexts = FacesContext.getCurrentInstance();
         String folio = contexts.getExternalContext().getRequestParameterMap().get("folio");
-        System.out.println("FolioPasado: " + folio);
         ventaMayoreo = new VentaMayoreo();
         listaProductos = new ArrayList<VentaProductoMayoreo>();
 
@@ -191,35 +190,29 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
         lstTipoAbonos = ifaceTipoAbono.getAll();
         pagoBancario = new PagosBancarios();
     }
-    
-    public void habilitaApartado()
-    {
-        permisionApartado=false;
+
+    public void habilitaApartado() {
+        permisionApartado = false;
     }
 
     public void verificarTipo() {
         if (ventaMenudeo) {
             switch (idTipoPagoFk.intValue()) {
                 case 1:
-                    System.out.println("Se ejecuto cobro en efectivo");
                     opcaja.setIdConceptoFk(CONCEPTOMENUDEOEFECTIVO);
                     break;
                 case 2:
-                    System.out.println("Se ejecuto cobro en transferencia");
                     opcaja.setIdConceptoFk(CONCEPTOMENUDEOTRANSFERENCIA);
 
                     break;
                 case 3:
-                    System.out.println("Se ejecuto cobro en cheque");
                     opcaja.setIdConceptoFk(CONCEPTOMENUDEOCHEQUES);
 
                     break;
                 case 4:
-                    System.out.println("Se ejecuto cobro en deposito bancario");
                     opcaja.setIdConceptoFk(CONCEPTOMENUDEODEPOSITO);
                     break;
                 default:
-                    System.out.println("Se ejecuto cobro en efectivo");
                     break;
 
             }
@@ -228,25 +221,18 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
             switch (idTipoPagoFk.intValue()) {
 
                 case 1:
-                    System.out.println("Se ejecuto cobro en efectivo");
                     opcaja.setIdConceptoFk(CONCEPTOMAYOREOEFECTIVO);
                     break;
                 case 2:
-                    System.out.println("Se ejecuto cobro en transferencia");
                     opcaja.setIdConceptoFk(CONCEPTOMAYOREOTRANSFERENCIA);
-
                     break;
                 case 3:
-                    System.out.println("Se ejecuto cobro en cheque");
                     opcaja.setIdConceptoFk(CONCEPTOMAYOREOCHEQUES);
-
                     break;
                 case 4:
-                    System.out.println("Se ejecuto cobro en deposito bancario");
                     opcaja.setIdConceptoFk(CONCEPTOMAYOREODEPOSITO);
                     break;
                 default:
-                    System.out.println("Se ejecuto cobro en efectivo");
                     break;
 
             }
@@ -271,11 +257,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
 
     public void calculaCambio() {
         cambio = new BigDecimal(0);
-        System.out.println("Cambio: " + cambio);
-        System.out.println("Recibido: " + recibido);
-        System.out.println("Total Venta: " + ventaMayoreo.getTotalVenta());
         cambio = recibido.subtract(ventaMayoreo.getTotalVenta(), MathContext.UNLIMITED);
-        System.out.println("Cambio: " + cambio);
     }
 
     public void generateReport(BigDecimal idVentaMayoreoPK) {
@@ -317,9 +299,15 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
         ArrayList<String> productos = new ArrayList<String>();
         NumeroALetra numeroLetra = new NumeroALetra();
         for (VentaProductoMayoreo producto : ventaMayoreo.getListaProductos()) {
-            String cantidad = producto.getCantidadEmpaque() + " " + producto.getNombreEmpaque();
-            productos.add(producto.getNombreProducto().toUpperCase());
-            productos.add("       " + cantidad + "               " + nf.format(producto.getPrecioProducto()) + "    " + nf.format(producto.getTotalVenta()));
+            if (!ventaMenudeo) {
+                String cantidad = producto.getCantidadEmpaque() + " - " + producto.getKilosVendidos() + "Kg.";
+                productos.add(producto.getNombreProducto() + " " + producto.getNombreEmpaque() + " ->" + producto.getClave() + "(" + producto.getFolioCarro() + ")");
+                productos.add("  " + cantidad + "                     " + nf.format(producto.getPrecioProducto()) + "    " + nf.format(producto.getTotalVenta()));
+            } else {
+                String cantidad = producto.getCantidadEmpaque() + " " + producto.getNombreEmpaque();
+                productos.add(producto.getNombreProducto().toUpperCase());
+                productos.add("       " + cantidad + "               " + nf.format(producto.getPrecioProducto()) + "    " + nf.format(producto.getTotalVenta()));
+            }
         }
 
         String totalVentaStr = numeroLetra.Convertir(df.format(ventaMayoreo.getTotalVenta()), true);
@@ -431,10 +419,9 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
 
     //PAGAR VENTA MAYOREO
     public void updateVenta() {
-        
+
         int update = 0;
-        if(value1)
-        {
+        if (value1) {
             System.out.println("Cliqueado Perro");
         }
         if (opcaja.getIdCajaFk() != null) {
@@ -527,7 +514,6 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
         //return "buscaVentas";
     }
 
-  
     @Override
     public void searchById() {
         statusButtonPagar = false;
@@ -907,8 +893,5 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     public void setPermisionApartado(boolean permisionApartado) {
         this.permisionApartado = permisionApartado;
     }
-    
-    
 
-    
 }

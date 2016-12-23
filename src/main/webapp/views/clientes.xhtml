@@ -25,7 +25,7 @@
                     <p:commandButton value="Nuevo" update=":formCliente" resetValues="true" ajax="false" action="#{beanCatCliente.viewNew}" icon="ui-icon-person" onclick="PF('statusDialog').show()"/>
                 </div>
                 <div class="col-lg-10 col-md-12 col-sm-12 col-xs-12 col-lg-offset-1">
-                    <p:dataTable var="model" value="#{beanCatCliente.model}" rows="10" scrollable="true"
+                    <p:dataTable var="model" value="#{beanCatCliente.model}" rows="20" scrollable="true"
                                  paginator="true" selection="#{beanCatCliente.selectedCliente}" rowKey="#{model.id_cliente}"
                                  paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} "
                                  rowsPerPageTemplate="5,10,15" emptyMessage="No se encontraron Registros.">

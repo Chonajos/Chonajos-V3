@@ -146,11 +146,11 @@ public class BeanConsultaCredito implements Serializable {
                 boolean exist = false;
                 SaldosDeudas saldosDeudasTemp = new SaldosDeudas();
                 for (SaldosDeudas dominio : modelTempPrincipal) {
-                    if (dominio.getNombreCompleto().trim().equals(saldos.getNombreCompleto().trim())) {
+                    if (dominio.getIdCliente().equals(saldos.getIdCliente())) {
                         exist = true;
                         dominio.getSaldoLiquidar().add(saldos.getSaldoLiquidar());
+                        break;
                     } else {
-
                         exist = false;
                     }
                 }
@@ -159,10 +159,10 @@ public class BeanConsultaCredito implements Serializable {
                     saldosDeudasTemp.setSaldoLiquidar(saldos.getSaldoLiquidar());
                     saldosDeudasTemp.setNumeroTelefono(saldos.getNumeroTelefono());
                     saldosDeudasTemp.setNombreCompleto(saldos.getNombreCompleto());
+                    saldosDeudasTemp.setIdCliente(saldos.getIdCliente());
                     modelTempPrincipal.add(saldosDeudasTemp);
                 }
 
-//                }
                 modelTemp.add(saldos);
 
             } else {

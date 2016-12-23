@@ -53,12 +53,12 @@
                             </p:commandButton>
                         </p:column>
 
-                        <p:column headerText="Eliminar" class="alignCenter" style="width:100px;">
+<!--                        <p:column headerText="Eliminar" class="alignCenter" style="width:100px;" >
 
-                            <p:commandButton  update=":formProvedor" action="#{beanCatProvedor.viewDelete()}" icon="ui-icon-trash" styleClass="ui-priority-primary" onclick="PF('statusDialog').show()">
-                                <f:setPropertyActionListener value="#{model}" target="#{beanCatProvedor.data}"/>
+                            <p:commandButton  update=":formProvedor" action="{beanCatProvedor.viewDelete()}" icon="ui-icon-trash" styleClass="ui-priority-primary" onclick="PF('statusDialog').show()">
+                                <f:setPropertyActionListener value="{model}" target="{beanCatProvedor.data}"/>
                             </p:commandButton>
-                        </p:column>
+                        </p:column>-->
                     </p:dataTable>
                 </div>
             </p:panel>

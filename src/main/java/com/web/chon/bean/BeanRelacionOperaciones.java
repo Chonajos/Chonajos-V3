@@ -154,6 +154,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
         comentarioCancelacion = "";
         totalVenta = new BigDecimal(0);
         verificarCombo();
+        buscar();
 
         setTitle("Relación de Operaciónes Venta Menudeo");
         setViewEstate("init");

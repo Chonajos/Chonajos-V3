@@ -2,10 +2,10 @@ package com.web.chon.ejb;
 
 import com.web.chon.dominio.Subproducto;
 import com.web.chon.negocio.NegocioSubProducto;
-import java.io.IOException;
-import java.io.OutputStream;
+//import java.io.IOException;
+//import java.io.OutputStream;
 import java.math.BigDecimal;
-import java.sql.Connection;
+//import java.sql.Connection;
 //import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;

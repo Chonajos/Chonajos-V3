@@ -60,11 +60,12 @@ public class BeanInfoTv implements Serializable {
 
     private Date fechaSistema;
     private UIComponent found;
+    private StreamedContent productImage;
     private ArrayList<Subproducto> lstProductos;
     private ArrayList<Subproducto> lstTempShow;
     private Subproducto subproducto;
     private int cont;
-    private int registroShow = 5;
+    private int registroShow = 7;
 
     @PostConstruct
     public void init() {
@@ -87,7 +88,7 @@ public class BeanInfoTv implements Serializable {
             lstTempShow.add(lstProductos.get(i));
         }
 
-        cont += registroShow;
+        cont += registroShow+1;
 
         if (cont >= lstProductos.size()) {
             cont = 0;
@@ -95,7 +96,6 @@ public class BeanInfoTv implements Serializable {
 
     }
 
-    private StreamedContent productImage;
 
     public StreamedContent getProductImage() throws IOException, SQLException {
 

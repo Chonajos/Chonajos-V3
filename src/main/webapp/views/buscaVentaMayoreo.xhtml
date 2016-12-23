@@ -26,9 +26,10 @@
                     <h:panelGrid columns="1" cellpadding="5">
                         <div class="form-group">
                             <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
-                            <h:outputText value="Apartar: " />
-                            <p:selectBooleanCheckbox value="#{beanBuscaVentaMayoreo.value1}" />
-                            <p:ajax event="change" listener="#{beanBuscaVentaMayoreo.habilitaApartado()}" update=":formContent:cheques"/>
+                                <h:outputText value="Apartar: " />
+                                <p:selectBooleanCheckbox value="#{beanBuscaVentaMayoreo.value1}" >
+                                    <p:ajax event="change" listener="#{beanBuscaVentaMayoreo.habilitaApartado()}" update=":formContent:cheques"/>
+                                </p:selectBooleanCheckbox>
                             </h:panelGrid>
                         </div>
                         <div class="form-group">
@@ -41,16 +42,16 @@
                         </div>
                         <p:fragment id="cheques">
 
-                        <div>
-                            <h:outputLabel for="txtCantidad" value="Importe:" />
-                        </div>
-                        
-                        <div>
-                            <p:inputText id="txtCantidad" readonly="#{beanBuscaVentaMayoreo.permisionApartado}" maxlength="10" value="#{beanBuscaVentaMayoreo.ventaMayoreo.totalVenta}" >
-                                <pe:keyFilter regEx="/[0-9_ .]/i"/>
-                            </p:inputText>
-                        </div>    
-                        
+                            <div>
+                                <h:outputLabel for="txtCantidad" value="Importe:" />
+                            </div>
+
+                            <div>
+                                <p:inputText id="txtCantidad" readonly="#{beanBuscaVentaMayoreo.permisionApartado}" maxlength="10" value="#{beanBuscaVentaMayoreo.ventaMayoreo.totalVenta}" >
+                                    <pe:keyFilter regEx="/[0-9_ .]/i"/>
+                                </p:inputText>
+                            </div>    
+
                             <div>
                                 <h:outputLabel for="txtRecibido" value="Recibí:" rendered="#{beanBuscaVentaMayoreo.viewCheque =='init'}" />
                             </div>

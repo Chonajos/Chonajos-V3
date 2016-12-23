@@ -51,6 +51,7 @@ public class SaldosDeudas implements Serializable {
     private Date fechaPromesaFinPago;
     private String nombreSucursal;
     private BigDecimal idSucursal;
+    private BigDecimal idCliente;
     private BigDecimal abonarTemporal;
     private ArrayList<SaldosDeudas> lstSaldosDeudas;
 
@@ -367,6 +368,16 @@ public class SaldosDeudas implements Serializable {
     public void setLstSaldosDeudas(ArrayList<SaldosDeudas> lstSaldosDeudas) {
         this.lstSaldosDeudas = lstSaldosDeudas;
     }
+
+    public BigDecimal getIdCliente() {
+        return idCliente;
+    }
+
+    public void setIdCliente(BigDecimal idCliente) {
+        this.idCliente = idCliente;
+    }
+    
+    
     
     
 

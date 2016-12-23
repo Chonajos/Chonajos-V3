@@ -111,34 +111,6 @@ public class ServiceCatCliente implements IfaceCatCliente {
                 cliente.setNombre(obj[1] == null ? "" : obj[1].toString().trim());
                 cliente.setPaterno(obj[2] == null ? "" : obj[2].toString().trim());
                 cliente.setMaterno(obj[3] == null ? "" : obj[3].toString().trim());
-                /*cliente.setEmpresa(obj[4] == null ? "":obj[4].toString());
-                cliente.setCalle(obj[5] == null ? "":obj[5].toString());           
-                String auxiliar_sexo=obj[6] == null ? "M":obj[6].toString();
-              
-                //cliente.setEstado(obj[7] == null ? "":obj[7].toString());
-                cliente.setSexo(auxiliar_sexo.charAt(0));
-                cliente.setFecha_nacimiento((Date) obj[7]);
-                cliente.setTel_movil(obj[8] == null ? 0:Integer.parseInt(obj[8].toString()));
-                cliente.setTel_fijo(obj[9] == null ? 0: Integer.parseInt(obj[9].toString()));
-                cliente.setExt(obj[10] == null ? 0:Integer.parseInt(obj[10].toString()));
-                cliente.setEmail(obj[11] == null ? "":obj[11].toString());
-                cliente.setNum_int(obj[12] == null ? 0:Integer.parseInt(obj[12].toString()));
-                cliente.setNum_ext(obj[13] == null ? 0:Integer.parseInt(obj[13].toString()));
-                cliente.setColonia(obj[14] == null ? "":obj[14].toString());
-                cliente.setClavecelular(obj[15] == null ? 0:Integer.parseInt(obj[15].toString()));
-                cliente.setLadaoficina(obj[16] == null ? 0:Integer.parseInt(obj[16].toString()));
-                cliente.setID_CP(obj[17] == null ? 0:Integer.parseInt(obj[17].toString()));
-                cliente.setCalleFiscal(obj[18] == null ? "":obj[18].toString());
-                cliente.setNum_int_fiscal(obj[19] == null ? 0:Integer.parseInt(obj[19].toString()));
-                cliente.setNum_ext_fiscal(obj[20] == null ? 0:Integer.parseInt(obj[20].toString()));
-                cliente.setColoniaFiscal(obj[21] == null ? null:obj[21].toString());
-                //cliente.setEstadoFiscal(obj[24] == null ? "1":obj[24].toString());
-                cliente.setID_CP_FISCAL(obj[22] == null ? 0:Integer.parseInt(obj[22].toString()));
-                cliente.setNextel(obj[23] == null ? 0:Integer.parseInt(obj[23].toString()));
-                cliente.setRazon_social(obj[24] == null ? "":obj[24].toString());
-                cliente.setRfcFiscal(obj[25] == null ? "":obj[25].toString());
-                //cliente.setcpFiscal(Integer.parseInt(obj[27] == null ? "":obj[27].toString()));
-                 */
                 cliente.setDiasCredito(obj[28] == null ? null : new BigDecimal(obj[28].toString()));
                 cliente.setLimiteCredito(obj[29] == null ? null : new BigDecimal(obj[29].toString()));
 
@@ -153,14 +125,12 @@ public class ServiceCatCliente implements IfaceCatCliente {
 
     @Override
     public int deleteCliente(int idCliente) {
-        System.out.println("service delete clientes");
         return ejb.deleteCliente(idCliente);
     }
 
     @Override
     public int updateCliente(Cliente cliente) {
 
-        System.out.println("service update cliente: " + cliente.toString());
         return ejb.updateCliente(cliente);
     }
 
@@ -226,7 +196,7 @@ public class ServiceCatCliente implements IfaceCatCliente {
                 cliente.setUtilizadoTotal(cliente.getUtilizadoMenudeo().add(cliente.getUtilizadoMayoreo(), MathContext.UNLIMITED));
                 cliente.setCreditoDisponible(cliente.getLimiteCredito().subtract(cliente.getUtilizadoTotal(), MathContext.UNLIMITED));
             }
-            System.out.println("Cliente: " + cliente.toString());
+            
             return cliente;
         } catch (Exception ex) {
             Logger.getLogger(ServiceCatCliente.class.getName()).log(Level.SEVERE, null, ex);

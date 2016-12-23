@@ -31,10 +31,9 @@ public class EjbCatCliente implements NegocioCatCliente {
     public List<Object[]> getClientes() {
         try {
 
-            //System.out.println("EJB_GET_CLIENTE");
-            Query query = em.createNativeQuery("select c.* ,en.ID_ENTIDAD_PK, en.NOMBRE_ENTIDAD ,en1.ID_ENTIDAD_PK, \n"
-                    + "en1.NOMBRE_ENTIDAD,m.NOMBRE_MUNICIPIO,m1.NOMBRE_MUNICIPIO,cp.NOMBRE_COLONIA,\n"
-                    + "cp.CODIGO_POSTAL,cp1.NOMBRE_COLONIA,cp1.CODIGO_POSTAL,m.ID_MUNICIPIO_PK,m.ID_MUNICIPIO_PK,cp.ID_PK,cp1.ID_PK \n"
+            Query query = em.createNativeQuery("select c.* ,en.ID_ENTIDAD_PK, en.NOMBRE_ENTIDAD ,en1.ID_ENTIDAD_PK, "
+                    + "en1.NOMBRE_ENTIDAD,m.NOMBRE_MUNICIPIO,m1.NOMBRE_MUNICIPIO,cp.NOMBRE_COLONIA, "
+                    + "cp.CODIGO_POSTAL,cp1.NOMBRE_COLONIA,cp1.CODIGO_POSTAL,m.ID_MUNICIPIO_PK,m.ID_MUNICIPIO_PK,cp.ID_PK,cp1.ID_PK "
                     + "from Cliente c "
                     + "LEFT JOIN CODIGOS_POSTALES cp "
                     + "on c.ID_CP=cp.ID_PK "
@@ -49,6 +48,7 @@ public class EjbCatCliente implements NegocioCatCliente {
                     + "LEFT JOIN ENTIDAD en1 "
                     + "on en1.ID_ENTIDAD_PK=m1.ID_ENTIDAD_FK "
                     + "order by c.NOMBRE");
+            
             List<Object[]> resultList = null;
             resultList = query.getResultList();
             return resultList;

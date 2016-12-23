@@ -61,6 +61,8 @@ import net.sf.jasperreports.engine.export.JRPdfExporter;
 import org.primefaces.component.inputtext.InputText;
 import org.primefaces.context.RequestContext;
 import org.primefaces.model.StreamedContent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -100,6 +102,8 @@ public class BeanVenta implements Serializable, BeanSimple {
     private IfaceMantenimientoPrecio ifaceMantenimientoPrecio;
     @Autowired
     private IfaceVentaMayoreo ifaceVentaMayoreo;
+
+    private static final Logger logger = LoggerFactory.getLogger(BeanVenta.class);
 
     private ArrayList<Usuario> lstUsuario;
     private ArrayList<Cliente> lstCliente;
@@ -155,23 +159,21 @@ public class BeanVenta implements Serializable, BeanSimple {
     @PostConstruct
     public void init() {
 
+        logger.info("Se inicializa el bean : " + BeanVenta.class);
         venta = new Venta();
+        usuario = new Usuario();
 
         max = new BigDecimal(0);
         min = new BigDecimal(0);
         descuento = new BigDecimal(0);
         dejaACuenta = new BigDecimal(0);
         totalVentaDescuento = new BigDecimal(0);
-        //JavaScript que actualiza el combo de tipo de venta a contado ya que la actualizacion de la vista no lo hace pero en el back si tiene el valor
-//        RequestContext.getCurrentInstance().execute("document.getElementsByClassName('tipoVenta')[0][0].setAttribute('selected', 'selected'); document.getElementById('formContent:autocompleteProducto_input').focus();");
 
         folioCredito = 0;
 
         date = context.getFechaSistema();
-        usuario = new Usuario();
 
         usuarioDominio = context.getUsuarioAutenticado();
-
         idSucu = usuarioDominio.getSucId();
 
         usuario.setIdUsuarioPk(usuarioDominio.getIdUsuario());
@@ -213,8 +215,8 @@ public class BeanVenta implements Serializable, BeanSimple {
     }
 
     public void searchByBarCode() {
+        logger.info("Se hace la Busqueda por codigo de Barras");
         subProducto = new Subproducto();
-        System.out.println("Codigo Barras: " + codigoBarras);
 
         if (codigoBarras.length() == 8) {
             searchByBarCode(codigoBarras);
@@ -222,6 +224,7 @@ public class BeanVenta implements Serializable, BeanSimple {
 
         } else {
             JsfUtil.addWarnMessage("Código de Barras Incorrecto");
+            logger.info("Codigo de Barras Incorrecto");
         }
     }
 
@@ -352,12 +355,15 @@ public class BeanVenta implements Serializable, BeanSimple {
                 int ventaInsertada = ifaceVenta.insertarVenta(venta, folioVenta);
                 int productoInsertado = 0;
                 if (ventaInsertada != 0) {
+                    logger.error("Se inserto la venta");
                     for (VentaProducto producto : lstVenta) {
                         if (restarExistencias(producto)) {
                             productoInsertado = ifaceVentaProducto.insertarVentaProducto(producto, idVenta);
+                            logger.error("Se inserto los productos de las ventas");
 
                         } else {
                             JsfUtil.addErrorMessage("Error al Realizar la Venta, favor de cancelar la venta y volver a realizarla. Si los problemas persisten contactar al administrado.");
+                            logger.error("No se pudo completar la venta");
                             break;
                         }
                     }
@@ -365,8 +371,10 @@ public class BeanVenta implements Serializable, BeanSimple {
                     if (productoInsertado == 1) {
                         if (!data.getIdTipoVentaFk().equals(new BigDecimal("1"))) {
                             if (insertaCredito(venta)) {
+                                logger.info("Se inserto el credito");
                                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info!", "La venta se realizo correctamente."));
                             } else {
+                                logger.info("No se pudo insertar el credito");
                                 JsfUtil.addErrorMessage("Error al Realizar la Venta, favor de cancelar la venta y volver a realizarla. Si los problemas persisten contactar al administrado.");
                             }
                         }
@@ -396,10 +404,12 @@ public class BeanVenta implements Serializable, BeanSimple {
 
         } catch (StackOverflowError ex) {
             ex.printStackTrace();
+            logger.error("Error >" + ex.getMessage());
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", ex.toString()));
             return null;
 
         } catch (Exception e) {
+            logger.error("Error >" + e.getMessage());
             e.printStackTrace();
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", e.toString()));
             return null;
@@ -458,8 +468,8 @@ public class BeanVenta implements Serializable, BeanSimple {
         if (data.getPrecioProducto() != null) {
             if (data.getPrecioProducto().intValue() < min.intValue() || data.getPrecioProducto().intValue() > max.intValue()) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "El precio de venta esta fuera de valores permitidos: Mínimo:" + min + " Máximo: " + max));
-
-            } else if (verificaExistencia()) {
+                //Verifica si hay existencias disponibles y si hay repetidos
+            } else if (verificaExistencia(1) && !addRepetidos()) {
 
                 VentaProducto venta = new VentaProducto();
                 TipoEmpaque empaque = new TipoEmpaque();
@@ -479,32 +489,77 @@ public class BeanVenta implements Serializable, BeanSimple {
                 venta.setTotal(venta.getPrecioProducto().multiply(venta.getCantidadEmpaque()));
 
                 lstVenta.add(venta);
-                calcularTotalVenta();
-                data.reset();
 
-                subProducto = new Subproducto();
-                selectedTipoEmpaque();
-                variableInicial = false;
-                codigoBarras = null;
+                clear();
             }
-
+            calcularTotalVenta();
         } else {
             JsfUtil.addErrorMessage("No se tiene el precio de este prodcuto, favor de contactar al gerente.");
+            logger.info("No se tine el precio del producto");
         }
     }
 
-    private boolean verificaExistencia() {
+    private void clear() {
+        data.reset();
+
+        subProducto = new Subproducto();
+        selectedTipoEmpaque();
+        variableInicial = false;
+        codigoBarras = null;
+    }
+
+    //Recibe un 2 si es una modificacion
+    private boolean verificaExistencia(int tipo) {
         ExistenciaMenudeo ex = new ExistenciaMenudeo();
+        BigDecimal kilosExistentes = BigDecimal.ZERO;
+        if (tipo == 2) {
+            kilosExistentes = getKilosVenta(dataEdit.getIdProductoFk()).subtract(dataEdit.getCantidadEmpaque()).add(data.getCantidadEmpaque());
+        } else {
+            kilosExistentes = getKilosVenta(data.getIdProductoFk());
+            kilosExistentes = kilosExistentes.add(data.getCantidadEmpaque());
+        }
+
         ex = ifaceExistenciaMenudeo.getExistenciasRepetidasById(subProducto.getIdSubproductoPk(), new BigDecimal(venta.getIdSucursal()));
+
         if (ex.getIdExMenPk() == null) {
             JsfUtil.addErrorMessage("No se encontraron existencias de este producto");
             return false;
-        } else if ((data.getCantidadEmpaque().compareTo(ex.getKilos())) == 1) {
+        } else if (kilosExistentes.compareTo(ex.getKilos()) == 1) {
             JsfUtil.addErrorMessageClean("No alcanzan las existencias, solo hay " + ex.getKilos() + " Kilos Disponibles");
             return false;
         } else {
             return true;
         }
+
+    }
+
+    //En caso de que ya ecxista un producto con el mismo id en el carrito de compra y los precios de venta sean iguales se crea un solo registro
+    private boolean addRepetidos() {
+
+        for (VentaProducto dominio : lstVenta) {
+            if (data.getIdProductoFk().equals(dominio.getIdProductoFk()) && data.getPrecioProducto().equals(dominio.getPrecioProducto())) {
+                dominio.setCantidadEmpaque(data.getCantidadEmpaque().add(dominio.getCantidadEmpaque()));
+                dominio.setTotal(dominio.getPrecioProducto().multiply(dominio.getCantidadEmpaque()));
+                clear();
+                return true;
+
+            }
+        }
+        return false;
+
+    }
+
+    //Obtiene los kilos de venta de un producto que ya estan agregados al carrito 
+    private BigDecimal getKilosVenta(String idSubproducto) {
+        BigDecimal kiloProducto = BigDecimal.ZERO;
+
+        for (VentaProducto dominio : lstVenta) {
+            if (idSubproducto.equals(dominio.getIdProductoFk())) {
+                kiloProducto = kiloProducto.add(dominio.getCantidadEmpaque());
+
+            }
+        }
+        return kiloProducto;
 
     }
 
@@ -643,7 +698,8 @@ public class BeanVenta implements Serializable, BeanSimple {
         TipoEmpaque empaque = new TipoEmpaque();
 
         if (data.getPrecioProducto() != null) {
-            if (verificaExistencia()) {
+
+            if (verificaExistencia(2)) {
 
                 empaque = getEmpaque(data.getIdTipoEmpaqueFk());
 
@@ -707,9 +763,10 @@ public class BeanVenta implements Serializable, BeanSimple {
             byte[] bytes = outputStream.toByteArray();
 
             rutaPDF = UtilUpload.saveFileTemp(bytes, "ventaMenudeo", idVenta, idSucu);
+            logger.info("Ticket generado correctamente " + rutaPDF);
 
         } catch (Exception exception) {
-            System.out.println("Error >" + exception.getMessage());
+            logger.error("Error al genarar el reporte: " + exception.getMessage());
             JsfUtil.addErrorMessage("Error al Generar el Ticket de Venta.");
         }
 
@@ -745,7 +802,7 @@ public class BeanVenta implements Serializable, BeanSimple {
             BigDecimal interesDiasPagar = (INTERES_VENTA.divide(diasAnio, 8, RoundingMode.HALF_UP).multiply(totalDiasPagar)).add(new BigDecimal(1));
 //            data.setNumeroPagos(totalDiasPagar.divide(DIAS_PLAZO)); descomentar cuando se aplique el pago por semana
             data.setNumeroPagos(new BigDecimal(1));
-            
+
             for (VentaProducto dominio : lstVenta) {
 
                 dominio.setPrecioProducto(dominio.getPrecioSinInteres().multiply(interesDiasPagar));

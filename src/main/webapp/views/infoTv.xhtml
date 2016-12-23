@@ -13,23 +13,21 @@
             <!--            <div><h3>Precios de los Productos</h3>
                         </div>-->
             <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
-            <p:panel>
-                <div class="container">
-                    <p:poll update="formContent" listener="#{beanInfoTv.generarListaMostrar}" interval="10"/>
-                    <ui:repeat value="#{beanInfoTv.lstTempShow}" var="producto">
-                        <div class="col-xs-3 col-md-3 col-sm-6 col-xs-12 form-group">
-                            <div class="col-xs-12 col-md-12 col-sm-12 col-xs-12 noPadding form-group">
-                                <h3>#{producto.nombreSubproducto} <a style="font-weight: bold !important; color: green !important;">$:#{producto.precioProducto}</a> </h3><h3 > </h3>
-                            </div>
-                            <div class="col-xs-12 col-md-12 col-sm-12 col-xs-12 noPadding form-group">
-                                <p:graphicImage  value="#{beanInfoTv.productImage}" style="height:200px; width:250px;">
-                                    <f:param  name="idSubproducto" value="#{producto.idSubproductoPk}"/>
-                                </p:graphicImage>
-                            </div>
-                        </div>  
-                    </ui:repeat>
-                </div>
-            </p:panel>
+            <div class="form-group">
+                <p:poll update="formContent" listener="#{beanInfoTv.generarListaMostrar}" interval="10"/>
+                <ui:repeat value="#{beanInfoTv.lstTempShow}" var="producto">
+                    <div class="col-xs-3 col-md-3 col-sm-6 col-xs-12 form-group">
+                        <div class="col-xs-12 col-md-12 col-sm-12 col-xs-12 noPadding form-group">
+                            <h5><strong>#{producto.nombreSubproducto} <a style="font-weight: bold !important; color: green !important;">$:#{producto.precioProducto}</a> </strong></h5>
+                        </div>
+                        <div class="col-xs-12 col-md-12 col-sm-12 col-xs-12 noPadding form-group">
+                            <p:graphicImage  value="#{beanInfoTv.productImage}" style="height:200px; width:250px;">
+                                <f:param  name="idSubproducto" value="#{producto.idSubproductoPk}"/>
+                            </p:graphicImage>
+                        </div>
+                    </div>  
+                </ui:repeat>
+            </div>
         </h:form>
     </ui:define>
 </ui:composition>

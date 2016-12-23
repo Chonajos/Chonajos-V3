@@ -211,7 +211,7 @@ public class BeanEntradaMenudeo implements Serializable {
                         }
                     } else {
                         System.out.println("Se encontraron repetidos");
-                        ex.setCantidadEmpaque(ex.getCantidadEmpaque().add(mp.getCantidadEmpaque(), MathContext.UNLIMITED));
+//                        ex.setCantidadEmpaque(ex.getCantidadEmpaque().add(mp.getCantidadEmpaque(), MathContext.UNLIMITED));
                         ex.setKilos(ex.getKilos().add(mp.getKilosTotales(), MathContext.UNLIMITED));
 
                         updatateMantenimiento(mp, entrada_mercancia);

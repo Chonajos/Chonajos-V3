@@ -20,7 +20,7 @@ public class CacheControlPhaseListener implements PhaseListener{
 
     @Override
     public void beforePhase(PhaseEvent event) {
-        System.out.println("caches phaseListener com.web.chon.listener");
+//        System.out.println("caches phaseListener com.web.chon.listener");
         FacesContext facesContext = event.getFacesContext();
         HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
         response.addHeader("Pragma", "no-cache");
