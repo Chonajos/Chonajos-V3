@@ -149,13 +149,17 @@ public class EjbCredito implements NegocioCredito {
     }
 
     @Override
-    public List<Object[]> getCreditosActivos(BigDecimal idCliente) {
-        try {
-
-            Query query = em.createNativeQuery("select cre.ID_CREDITO_PK as folio,stc.NOMBRE_STATUS,cre.FECHA_INICIO_CREDITO,cre.PLAZOS,cre.MONTO_CREDITO, "
+    public List<Object[]> getCreditosActivos(BigDecimal idCliente,BigDecimal idAbonoPk) {
+        System.out.println("idCliente: "+idCliente);
+        System.out.println("Abono: "+idAbonoPk);
+        StringBuffer txtQuery = new StringBuffer("select cre.ID_CREDITO_PK as folio,stc.NOMBRE_STATUS,cre.FECHA_INICIO_CREDITO,cre.PLAZOS,cre.MONTO_CREDITO, "
                     + "(select NVL(sum(ac.MONTO_ABONO),0)from ABONO_CREDITO ac "
-                    + "where ac.ID_CREDITO_FK= cre.ID_CREDITO_PK and ac.ESTATUS=1) "
-                    + "as Total_Abonado, "
+                    + "where ac.ID_CREDITO_FK= cre.ID_CREDITO_PK and ac.ESTATUS=1 ");
+
+        if (idAbonoPk != null) {
+            txtQuery.append(" and ac.ID_ABONO_CREDITO_PK <= " + idAbonoPk);
+        }
+         txtQuery.append(") as Total_Abonado, "
                     + "cre.ESTATUS_CREDITO,cre.ACUENTA,cre.STATUSACUENTA, cre.NUMERO_PAGOS, "
                     + "(select NVL(sum(ac.MONTO_ABONO),0)from ABONO_CREDITO ac "
                     + "where ac.ID_CREDITO_FK= cre.ID_CREDITO_PK and ac.ESTATUS=2) "
@@ -168,16 +172,49 @@ public class EjbCredito implements NegocioCredito {
                     + " inner join SUCURSAL suc "
                     + " on suc.ID_SUCURSAL_PK = usu.ID_SUCURSAL_FK "
                     + "where cre.ESTATUS_CREDITO=1 and cre.ID_CLIENTE_FK ='" + idCliente + "' order by cre.FECHA_INICIO_CREDITO");
-            List<Object[]> resultList = null;
-            resultList = query.getResultList();
 
-            return resultList;
+        try {
+            Query query = em.createNativeQuery(txtQuery.toString());
+
+            return query.getResultList();
 
         } catch (Exception ex) {
-            Logger.getLogger(EjbCredito.class
-                    .getName()).log(Level.SEVERE, null, ex);
+           // System.out.println("error ------------>" + ex.getMessage());
+            Logger.getLogger(EjbCredito.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
+//        
+//        
+//        
+//        
+//        try {
+//
+//            Query query = em.createNativeQuery("select cre.ID_CREDITO_PK as folio,stc.NOMBRE_STATUS,cre.FECHA_INICIO_CREDITO,cre.PLAZOS,cre.MONTO_CREDITO, "
+//                    + "(select NVL(sum(ac.MONTO_ABONO),0)from ABONO_CREDITO ac "
+//                    + "where ac.ID_CREDITO_FK= cre.ID_CREDITO_PK and ac.ESTATUS=1) "
+//                    + "as Total_Abonado, "
+//                    + "cre.ESTATUS_CREDITO,cre.ACUENTA,cre.STATUSACUENTA, cre.NUMERO_PAGOS, "
+//                    + "(select NVL(sum(ac.MONTO_ABONO),0)from ABONO_CREDITO ac "
+//                    + "where ac.ID_CREDITO_FK= cre.ID_CREDITO_PK and ac.ESTATUS=2) "
+//                    + "as CHEQUES_PENDIENTES, suc.NOMBRE_SUCURSAL "
+//                    + "from credito cre "
+//                    + "inner join STATUS_CREDITO stc "
+//                    + "on stc.ID_STATUS_CREDITO_PK = cre.ESTATUS_CREDITO "
+//                    + " inner join USUARIO usu "
+//                    + " on usu.ID_USUARIO_PK = cre.ID_USUARIO_CREDITO "
+//                    + " inner join SUCURSAL suc "
+//                    + " on suc.ID_SUCURSAL_PK = usu.ID_SUCURSAL_FK "
+//                    + "where cre.ESTATUS_CREDITO=1 and cre.ID_CLIENTE_FK ='" + idCliente + "' order by cre.FECHA_INICIO_CREDITO");
+//            List<Object[]> resultList = null;
+//            resultList = query.getResultList();
+//
+//            return resultList;
+//
+//        } catch (Exception ex) {
+//            Logger.getLogger(EjbCredito.class
+//                    .getName()).log(Level.SEVERE, null, ex);
+//            return null;
+//        }
     }
 
     @Override

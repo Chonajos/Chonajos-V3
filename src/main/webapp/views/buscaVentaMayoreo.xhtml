@@ -25,6 +25,13 @@
                 <p:dialog  id="dialogw" header="Registrar Pago" widgetVar="dlg" resizable="false">
                     <h:panelGrid columns="1" cellpadding="5">
                         <div class="form-group">
+                            <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+                            <h:outputText value="Apartar: " />
+                            <p:selectBooleanCheckbox value="#{beanBuscaVentaMayoreo.value1}" />
+                            <p:ajax event="change" listener="#{beanBuscaVentaMayoreo.habilitaApartado()}" update=":formContent:cheques"/>
+                            </h:panelGrid>
+                        </div>
+                        <div class="form-group">
                             <p:outputLabel   for="comboTipoAbono" value ="Tipo de Pago:" /> 
                             <h:selectOneMenu  id="comboTipoAbono"  value="#{beanBuscaVentaMayoreo.idTipoPagoFk}" >
                                 <f:selectItem itemLabel="Selecciona" itemValue="" />
@@ -32,16 +39,18 @@
                                 <p:ajax event="change" listener="#{beanBuscaVentaMayoreo.addView}" update=":formContent:cheques"/>
                             </h:selectOneMenu>
                         </div>
+                        <p:fragment id="cheques">
 
                         <div>
                             <h:outputLabel for="txtCantidad" value="Importe:" />
                         </div>
+                        
                         <div>
-                            <p:inputText id="txtCantidad" readonly="true" maxlength="10" value="#{beanBuscaVentaMayoreo.ventaMayoreo.totalVenta}" >
+                            <p:inputText id="txtCantidad" readonly="#{beanBuscaVentaMayoreo.permisionApartado}" maxlength="10" value="#{beanBuscaVentaMayoreo.ventaMayoreo.totalVenta}" >
                                 <pe:keyFilter regEx="/[0-9_ .]/i"/>
                             </p:inputText>
                         </div>    
-                        <p:fragment id="cheques">
+                        
                             <div>
                                 <h:outputLabel for="txtRecibido" value="Recibí:" rendered="#{beanBuscaVentaMayoreo.viewCheque =='init'}" />
                             </div>
@@ -165,18 +174,12 @@
                                             showOn="button"  id="popup3" value="#{beanBuscaVentaMayoreo.fechaTransferencia}" rendered="#{beanBuscaVentaMayoreo.viewCheque =='deposito'}" />
                             </div>
                             <!--Datos para A CUENTA-->
-
-
                             <!--FIN Datos A CUENTA -->
-
                         </p:fragment>
                         <f:facet name="footer">
                             <p:commandButton value="Registrar" update="formContent" action="#{beanBuscaVentaMayoreo.updateVenta()}" oncomplete="PF('dlg').hide();"/>
                         </f:facet> 
                         <!--Fin Datos para Cheque-->
-
-
-
 
                     </h:panelGrid>
                 </p:dialog>
@@ -184,8 +187,8 @@
                 <div class="container-fluid">
                     <div class="form-group" align="right">
                         <p:commandButton value="Buscar" update=":formContent" ajax="true" action="#{beanBuscaVentaMayoreo.searchById()}"  onclick="PF('statusDialog').show()"/>
-                        <p:commandButton  value = "Cobrar" ajax="true"  oncomplete="PF('dlg').show();" update =":formContent:dialogw:" icon="ui-icon-triangle-1-e"  rendered="#{!beanBuscaVentaMayoreo.statusButtonPagar}">
-                        </p:commandButton>
+                        <p:commandButton  value = "Cobrar" ajax="true"  oncomplete="PF('dlg').show();" update =":formContent:dialogw:" icon="ui-icon-triangle-1-e"  rendered="#{!beanBuscaVentaMayoreo.statusButtonPagar}"/>
+                        <!--<p:commandButton  value = "Apartar" ajax="true"  oncomplete="PF('dlg').show();" update =":formContent:dialogw:" icon="ui-icon-triangle-1-e"  rendered="{!beanBuscaVentaMayoreo.statusButtonPagar}"/>-->
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 form-group">

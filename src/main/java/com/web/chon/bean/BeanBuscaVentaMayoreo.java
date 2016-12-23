@@ -150,10 +150,14 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     private boolean ventaMenudeo;
     private PagosBancarios pagoBancario;
     private BigDecimal idCuentaDestinoBean;
+    private boolean value1;
+    private boolean permisionApartado;
 
     //-------------- Variables para Registrar Pago ----------//
     @PostConstruct
     public void init() {
+        permisionApartado = true;
+        value1 = false;
         //cambio = new BigDecimal(0);
         //recibido = new BigDecimal(0);
         idTipoPagoFk = new BigDecimal(1);
@@ -186,6 +190,11 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
         opcaja.setIdSucursalFk(new BigDecimal(usuario.getIdSucursal()));
         lstTipoAbonos = ifaceTipoAbono.getAll();
         pagoBancario = new PagosBancarios();
+    }
+    
+    public void habilitaApartado()
+    {
+        permisionApartado=false;
     }
 
     public void verificarTipo() {
@@ -422,7 +431,12 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
 
     //PAGAR VENTA MAYOREO
     public void updateVenta() {
+        
         int update = 0;
+        if(value1)
+        {
+            System.out.println("Cliqueado Perro");
+        }
         if (opcaja.getIdCajaFk() != null) {
             String cadena = validarCampos();
             if (cadena.equals("")) {
@@ -878,4 +892,23 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    public boolean isValue1() {
+        return value1;
+    }
+
+    public void setValue1(boolean value1) {
+        this.value1 = value1;
+    }
+
+    public boolean isPermisionApartado() {
+        return permisionApartado;
+    }
+
+    public void setPermisionApartado(boolean permisionApartado) {
+        this.permisionApartado = permisionApartado;
+    }
+    
+    
+
+    
 }

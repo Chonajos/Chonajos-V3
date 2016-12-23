@@ -8,6 +8,7 @@ package com.web.chon.bean;
 import com.web.chon.dominio.AbonoCredito;
 import com.web.chon.dominio.Caja;
 import com.web.chon.dominio.Cliente;
+import com.web.chon.dominio.SaldosDeudas;
 import com.web.chon.dominio.TipoAbono;
 import com.web.chon.dominio.Usuario;
 import com.web.chon.dominio.UsuarioDominio;
@@ -68,9 +69,12 @@ public class BeanHistorialAbonos implements Serializable {
     private IfaceAbonoCredito ifaceAbonoCredito;
     @Autowired
     private PlataformaSecurityContext context;
+    @Autowired
     private IfaceCredito ifaceCredito;
     @Autowired
     private IfaceOperacionesCaja IfaceOperacionesCaja;
+    
+    
 
     private ArrayList<Cliente> lstCliente;
     private ArrayList<Usuario> lstUsuariosCaja;
@@ -105,6 +109,7 @@ public class BeanHistorialAbonos implements Serializable {
     private static final BigDecimal salida = new BigDecimal(2);
     
     //------------variables para generar el ticket----------//
+    private ArrayList<SaldosDeudas> modelo;
     private StreamedContent media;
     private ByteArrayOutputStream outputStream;
     private Map paramReport = new HashMap();
@@ -135,13 +140,14 @@ public class BeanHistorialAbonos implements Serializable {
         //idTipoAbonoFk = null;
         if (cliente == null) {
             cliente = new Cliente();
-
         }
         lstAbonosCreditos = ifaceAbonoCredito.getHistorialAbonos(cliente.getId_cliente(), idCobradorFk, fechaFiltroInicio, fechaFiltroFin, idTipoAbonoFk, idAbonoPk, idCreditoFk);
         sumaTotal();
+        modelo = new ArrayList<SaldosDeudas>();
+        
     }
     
-    private void setParameterTicket(AbonoCredito ac) {
+    private void setParameterTicket(AbonoCredito ac,BigDecimal saldoActual) {
         NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
         DecimalFormat df = new DecimalFormat("###.##");
         Date date = new Date();
@@ -155,8 +161,8 @@ public class BeanHistorialAbonos implements Serializable {
         paramReport.put("recibimos", nf.format(ac.getMontoAbono()));
         paramReport.put("totalLetra", totalVentaStr);
         paramReport.put("fechaProximoPago", TiempoUtil.getFechaDDMMYYYYHHMM(ac.getFechaAbono()));
-        //paramReport.put("montoliquidar", nf.format(saldoParaLiquidar.subtract(ac.getMontoAbono(), MathContext.UNLIMITED)));
-        paramReport.put("montoMinimo", nf.format(ac.getMontoAbono()));
+        paramReport.put("montoliquidar", nf.format(saldoActual));
+        //paramReport.put("montoMinimo", nf.format(saldoActual));
         paramReport.put("nombreAtendedor", ac.getNombreCajero());
         /* Parametros para ticket de Cheque*/
         switch (ac.getIdtipoAbonoFk().intValue()) {
@@ -188,7 +194,7 @@ public class BeanHistorialAbonos implements Serializable {
 //            case 5:
 //                paramReport.put("labelEstatus", "PAGO A CUENTA");
 //                paramReport.put("folio", ac.getIdCreditoFk().toString());
-//                paramReport.put("montoliquidar", nf.format(saldoParaLiquidar));
+                //paramReport.put("montoliquidar", nf.format(saldoParaLiquidar));
 
             default:
                 JsfUtil.addErrorMessageClean("Ocurrio un error contactar al administrador");
@@ -250,8 +256,20 @@ public class BeanHistorialAbonos implements Serializable {
     public void printVenta()
     {
         System.out.println("DATA: "+data.toString());
-        setParameterTicket(data);
         
+        BigDecimal totalAbono = new BigDecimal(0);
+        BigDecimal totalDeuda = new BigDecimal(0);
+        BigDecimal saldoActual;
+        System.out.println("------"+data.getIdClienteFk());
+        System.out.println("------"+data.getIdAbonoCreditoPk());
+        modelo = ifaceCredito.getCreditosActivos(data.getIdClienteFk(),data.getIdAbonoCreditoPk());
+        for(SaldosDeudas saldo:modelo)
+        {
+            totalAbono = totalAbono.add(saldo.getTotalAbonado(), MathContext.UNLIMITED);
+            totalDeuda = totalDeuda.add(saldo.getSaldoTotal(), MathContext.UNLIMITED);
+        }
+        saldoActual = totalDeuda.subtract(totalAbono, MathContext.UNLIMITED);
+        setParameterTicket(data,saldoActual);
         String nombreReporte = "";
         switch (data.getIdtipoAbonoFk().intValue()) {
             case 1:

@@ -867,6 +867,19 @@ public class BeanBuscaCredito implements Serializable {
                             ac.setIdAbonoCreditoPk(new BigDecimal(ifaceAbonoCredito.getNextVal()));
                             ac.setIdCreditoFk(sd.getFolioCredito());
                             ac.setMontoAbono(sd.getAbonarTemporal());
+                            ac.setFolioElectronico(abono.getFolioElectronico());
+                            ac.setReferencia(abono.getFolioElectronico().toString());
+                            
+                            for(CuentaBancaria cu:listaCuentas)
+                            {
+                                if(idCuentaDestinoBean.intValue()==cu.getIdCuentaBancariaPk().intValue())
+                                {
+                                    ac.setBanco(cu.getNombreBanco());
+                                }
+                            }
+                                    
+                            ac.setBanco(abono.getBanco());
+                            ac.setFechaTransferencia(abono.getFechaTransferencia());
                             ac.setEstatusAbono(ABONOREALIZADO);
                             System.out.println("Abono: " + ac.toString());
                             if ((sd.getTotalAbonado().setScale(2, RoundingMode.CEILING)).add(ac.getMontoAbono().setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED).compareTo(sd.getSaldoTotal()) == 0) {
@@ -1211,7 +1224,7 @@ public class BeanBuscaCredito implements Serializable {
                 BigDecimal totalVenta = new BigDecimal(0);
                 if (ifaceAbonoCredito.update(abonoCheque) == 1) {
                     //enseguida buscar si ya se libero el credito de ese abono.
-                    modelo = ifaceCredito.getCreditosActivos(cliente.getId_cliente());
+                    modelo = ifaceCredito.getCreditosActivos(cliente.getId_cliente(),null);
                     for (SaldosDeudas sd : modelo) {
                         if (sd.getFolioCredito().intValue() == abonoCheque.getIdCreditoFk().intValue()) {
                             totalVenta = sd.getSaldoTotal();
@@ -1255,7 +1268,7 @@ public class BeanBuscaCredito implements Serializable {
 
         cliente = ifaceCatCliente.getCreditoClienteByIdCliente(cliente.getId_cliente());
         if (cliente != null && cliente.getId_cliente() != null) {
-            modelo = ifaceCredito.getCreditosActivos(cliente.getId_cliente());
+            modelo = ifaceCredito.getCreditosActivos(cliente.getId_cliente(),null);
             for (SaldosDeudas sd : modelo) {
                 saldoParaLiquidar = saldoParaLiquidar.add(sd.getSaldoLiquidar(), MathContext.UNLIMITED);
             }

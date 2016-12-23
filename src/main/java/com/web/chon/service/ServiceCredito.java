@@ -126,11 +126,12 @@ public class ServiceCredito implements IfaceCredito {
     }
 
     @Override
-    public ArrayList<SaldosDeudas> getCreditosActivos(BigDecimal idCliente) {
+    public ArrayList<SaldosDeudas> getCreditosActivos(BigDecimal idCliente,BigDecimal idAbonoPk) {
+        System.out.println("**************Service*************");
         getEjb();
         ArrayList<SaldosDeudas> lstCreditos = new ArrayList<SaldosDeudas>();
         List<Object[]> lstObject = new ArrayList<Object[]>();
-        lstObject = ejb.getCreditosActivos(idCliente);
+        lstObject = ejb.getCreditosActivos(idCliente,idAbonoPk);
         for (Object[] object : lstObject) {
             SaldosDeudas credito = new SaldosDeudas();
             credito.setFolioCredito(object[0] == null ? null : new BigDecimal(object[0].toString()));

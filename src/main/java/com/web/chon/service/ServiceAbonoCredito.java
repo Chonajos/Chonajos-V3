@@ -266,6 +266,9 @@ public class ServiceAbonoCredito implements IfaceAbonoCredito {
             abonoCredito.setConcepto(object[16] == null ? "" : object[16].toString());
             abonoCredito.setFechaTransferencia(object[17] == null ? null : (Date) object[17]);
             abonoCredito.setIdClienteFk(object[18] == null ? null : new BigDecimal(object[18].toString()));
+            abonoCredito.setFolioElectronico(idCreditoFk);
+            
+            
             lstAbonoCredito.add(abonoCredito);
         }
         return lstAbonoCredito;
