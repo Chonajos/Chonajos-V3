@@ -145,7 +145,14 @@ public class ServiceCredito implements IfaceCredito {
             credito.setStatusAcuenta(object[8] == null ? null : new BigDecimal(object[8].toString()));
             credito.setNumeroPagos(object[9] == null ? null : new BigDecimal(object[9].toString()));
             credito.setChequesPorCobrar(object[10] == null ? null : new BigDecimal(object[10].toString()));
-            credito.setNombreSucursal(object[11] == null ? null : object[11].toString());
+            String nombreSucursal = null;
+            if(object[12] == null){
+                 nombreSucursal =object[11] == null ? "Registro Ingresado Manualmente":object[11].toString()+" Menudeo";
+            }else{
+                nombreSucursal =object[12].toString()+" Mayoreo";
+            }
+            
+            credito.setNombreSucursal(nombreSucursal);
             Date hoy = context.getFechaSistema();
             hoy.setHours(0);
             hoy.setMinutes(0);

@@ -5,6 +5,11 @@
  */
 package com.web.chon.bean;
 
+import com.lowagie.text.BadElementException;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Image;
+
 import com.web.chon.dominio.AbonoCredito;
 import com.web.chon.dominio.Caja;
 import com.web.chon.dominio.Cliente;
@@ -36,6 +41,7 @@ import com.web.chon.util.TiempoUtil;
 import com.web.chon.util.UtilUpload;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -1259,6 +1265,14 @@ public class BeanBuscaCredito implements Serializable {
         }
 
     }
+    
+    public void preProcessPDF(Object document)throws IOException, BadElementException, DocumentException{
+        Document pdf = (Document) document;
+        ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+        String logo = servletContext.getRealPath("")+File.separator+"resources"+File.separator+"img"+File.separator+"pdf.png";
+        pdf.addTitle("Estado de Cuenta "+cliente.getNombreCompleto());
+    }
+    
 
     public void backView() {
         setTitle("Historial de Compras");
