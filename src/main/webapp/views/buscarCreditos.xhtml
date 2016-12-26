@@ -233,54 +233,86 @@
 
                         <p:column headerText="Folio" width="7px;" class="alignCenter">
                             <h:outputText value="#{model.folioCredito}" />
+                              <f:facet name="footer">
+                                <h:outputText value="" style="text-align:right"/>
+                            </f:facet>
                         </p:column>
                         <p:column headerText="Fecha de Venta" width="37px;" class="alignCenter">
                             <h:outputText value="#{model.fechaVenta}" >                             
                                 <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
                             </h:outputText>
+                             <f:facet name="footer">
+                                <h:outputText value="" style="text-align:right"/>
+                            </f:facet>
                         </p:column>
                         <p:column headerText="Venta" width="27px;" class="alignRight">
                             <h:outputText value="#{model.saldoTotal}">
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
+                             <f:facet name="footer">
+                                <h:outputText value="" style="text-align:right"/>
+                            </f:facet>
                         </p:column>
                         <p:column headerText="Enganche a Cuenta" exportable="false" width="25px;" class="#{model.statusAcuenta eq 1 ?'statusActivo':'statusInactivo'} alignRight">
                             <h:outputText value="#{model.saldoACuenta}"> 
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
+                             <f:facet name="footer">
+                                <h:outputText value="" style="text-align:right"/>
+                            </f:facet>
                         </p:column>
 
                         <p:column headerText="N° Pagos" exportable="false" width="18px;" class="alignCenter">
                             <h:outputText value="#{model.numeroPagos}" />
+                             <f:facet name="footer">
+                                <h:outputText value="" style="text-align:right"/>
+                            </f:facet>
                         </p:column>
                         <p:column headerText="Dias" exportable="false" width="18px;" class="alignCenter">
                             <h:outputText value="#{model.plazo}" />
+                             <f:facet name="footer">
+                                <h:outputText value="" style="text-align:right"/>
+                            </f:facet>
                         </p:column>
                         <p:column headerText="Importe de Abono" exportable="false" width="38px;" class="alignRight">
                             <h:outputText value="#{model.montoAbonar}"> 
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
+                             <f:facet name="footer">
+                                <h:outputText value="" style="text-align:right"/>
+                            </f:facet>
                         </p:column>
 
                         <p:column headerText="Total Abonado" width="40px;" class="alignRight">
                             <h:outputText value="#{model.totalAbonado}"> 
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
+                             <f:facet name="footer">
+                                <h:outputText value="" style="text-align:right"/>
+                            </f:facet>
                         </p:column>
 
                         <p:column headerText="Pagos Atrasados" exportable="false" width="30px;" class="alignRight">
-                            <h:outputText value="#{model.periodosAtraso}"> 
-                            </h:outputText>
+                            <h:outputText value="#{model.periodosAtraso}"/> 
+                             <f:facet name="footer">
+                                <h:outputText value="" style="text-align:right"/>
+                            </f:facet>
                         </p:column>
                         <p:column headerText="Saldo Atrasado" width="40px;" class="alignRight">
                             <h:outputText value="#{model.saldoAtrasado}"> 
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
+                             <f:facet name="footer">
+                                <h:outputText value="" style="text-align:right"/>
+                            </f:facet>
                         </p:column>
                         <p:column headerText="Fecha de Próximo Pago" width="40px;" class="#{model.statusFechaProxima eq 1 ? 'sinAdeudos': (model.statusFechaProxima eq 2 ? 'conAdeudos':(model.statusFechaProxima eq 3 ? 'statusEntregado':'pagoAtrasado'))}  alignCenter">
                             <h:outputText value="#{model.fechaProximaAbonar}"> 
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputText>
+                             <f:facet name="footer">
+                                <h:outputText value="" style="text-align:right"/>
+                            </f:facet>
                         </p:column>
                         <p:column headerText="Pago Requerido" exportable="false" width="45px;" class="alignRight">
                             <h:outputText value="#{model.minimoPago}"> 
@@ -305,6 +337,9 @@
                             <h:outputText value="#{model.nombreSucursal}"> 
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
+                             <f:facet name="footer">
+                                <h:outputText value="" style="text-align:right"/>
+                            </f:facet>
                         </p:column>
                         <p:column headerText="Abonar" exportable="false" width="30px;" class="alignRight">
                             <p:cellEditor>
@@ -317,9 +352,15 @@
                                     <p:inputText id="minimoInput" value="#{model.abonarTemporal}" maxlength="10" style="width:100%"/>
                                 </f:facet>
                             </p:cellEditor>
+                             <f:facet name="footer">
+                                <h:outputText value="" style="text-align:right"/>
+                            </f:facet>
                         </p:column>
                         <p:column width="5px;" exportable="false">
                             <p:rowEditor/>
+                             <f:facet name="footer">
+                                <h:outputText value="" style="text-align:right"/>
+                            </f:facet>
                         </p:column>
                     </p:dataTable>
                 </div>
