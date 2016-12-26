@@ -118,15 +118,19 @@
                                     <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Caja" width="150px;" class="alignLeft">
+                            <p:column headerText="Caja" width="100px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreCaja}" />
                             </p:column>
-                            <p:column headerText="Tipo Operacion" width="200px;" class="alignLeft">
+                            <p:column headerText="Tipo Operacion" width="150px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreOperacion}">
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Concepto" width="200px;" class="alignLeft">
+                            <p:column headerText="Concepto" width="150px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreConcepto}">
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Comentarios" width="200px;" class="alignLeft">
+                                <h:outputText value="#{model.comentarios}">
                                 </h:outputText>
                             </p:column>
                             <p:column headerText="E/S" width="30px;" class="alignCenter">
@@ -145,6 +149,7 @@
                                 </h:outputText>
                             </p:column>
                             <p:columnGroup type="footer">
+                                <p:column colspan="1" />
                                 <p:column colspan="1" />
                                 <p:column colspan="1" />
                                 <p:column colspan="1" />

@@ -314,6 +314,8 @@ public class BeanDocumentosCobrar implements Serializable {
             verificarAbono();
             opcaja.setMonto(dataAbonar.getMontoAbono());
             opcaja.setEntradaSalida(entradaSalida);
+            opcaja.setComentarios("C: "+documentoData.getNombreCliente() +" | NC: "+documentoData.getNumeroCheque());
+            
             if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
                 if (dataAbonar.getIdTipoAbonoFk().intValue() == 2 || dataAbonar.getIdTipoAbonoFk().intValue() == 4) {
                     pagoBancario.setIdCajaFk(opcaja.getIdCajaFk());
@@ -349,6 +351,8 @@ public class BeanDocumentosCobrar implements Serializable {
                 opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
                 opcaja.setMonto(dataAbonar.getMontoAbono());
                 opcaja.setEntradaSalida(salida);
+                opcaja.setComentarios("C: "+documentoData.getNombreCliente() +" | NC: "+documentoData.getNumeroCheque());
+            
                 if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
                     System.out.println("Se registro segundo movimiento");
                 }
@@ -475,6 +479,8 @@ public class BeanDocumentosCobrar implements Serializable {
                 } else {
                     opcaja.setIdConceptoFk(conceptoAbonoDocumentoEfectivo);
                 }
+                opcaja.setComentarios("C: "+documentoData.getNombreCliente() +" | NC: "+documentoData.getNumeroCheque());
+            
 
                 if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
                     //Generar una salida de dinero por la cantidad de ese cheque.
@@ -486,6 +492,8 @@ public class BeanDocumentosCobrar implements Serializable {
                     opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
                     opcaja.setMonto(documentoData.getMonto());
                     opcaja.setEntradaSalida(salida);
+                    opcaja.setComentarios("C: "+documentoData.getNombreCliente() +" | NC: "+documentoData.getNumeroCheque());
+            
                     if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
                         System.out.println("Se registro segundo movimiento");
                     }

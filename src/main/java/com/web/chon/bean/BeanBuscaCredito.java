@@ -708,6 +708,7 @@ public class BeanBuscaCredito implements Serializable {
                     opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
                     opcaja.setMonto(ac.getMontoAbono());
                     opcaja.setIdStatusFk(statusOperacionRealizada);
+                    opcaja.setComentarios("FA: "+ac.getIdAbonoCreditoPk() + " | FC: "+ac.getIdCreditoFk() +" | C:" +cliente.getNombreCompleto());
 
                     if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
                         JsfUtil.addSuccessMessageClean("Se ha registrado el abono correctamente");
@@ -756,6 +757,7 @@ public class BeanBuscaCredito implements Serializable {
                     opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
                     opcaja.setMonto(ac.getMontoAbono());
                     opcaja.setIdStatusFk(statusOperacionRealizada);
+                    opcaja.setComentarios("FA: "+ac.getIdAbonoCreditoPk() + " | FC: "+ac.getIdCreditoFk() +" | C:" +cliente.getNombreCompleto());
 
                     if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
                         JsfUtil.addSuccessMessageClean("Se ha registrado el abono correctamente");
@@ -828,6 +830,8 @@ public class BeanBuscaCredito implements Serializable {
                     opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
                     opcaja.setMonto(ac.getMontoAbono());
                     opcaja.setIdStatusFk(statusOperacionRealizada);
+                    opcaja.setComentarios("FA: "+ac.getIdAbonoCreditoPk() + " | FC: "+ac.getIdCreditoFk() +" | C:" +cliente.getNombreCompleto());
+                   
                     if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
                         JsfUtil.addSuccessMessageClean("Se ha registrado el abono correctamente");
                     } else {
@@ -909,6 +913,7 @@ public class BeanBuscaCredito implements Serializable {
                     opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
                     opcaja.setMonto(ac.getMontoAbono());
                     opcaja.setIdStatusFk(statusOperacionRealizada);
+                    opcaja.setComentarios("FA: "+ac.getIdAbonoCreditoPk() + " | FC: "+ac.getIdCreditoFk() +" | C:" +cliente.getNombreCompleto());
                     if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
                         JsfUtil.addSuccessMessageClean("Se ha registrado el abono correctamente");
                     } else {
@@ -1032,6 +1037,7 @@ public class BeanBuscaCredito implements Serializable {
                         opcaja.setIdConceptoFk(concepto);
                         opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
                         opcaja.setMonto(ac.getMontoAbono());
+                        opcaja.setComentarios("FA: "+ac.getIdAbonoCreditoPk() + " | FC: "+ac.getIdCreditoFk() +" | C:" +cliente.getNombreCompleto());
 
                         if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
                             setParameterTicket(ac, cliente);
@@ -1086,6 +1092,7 @@ public class BeanBuscaCredito implements Serializable {
                         opcuenta.setIdStatusFk(idStatusCuenta);
                         opcuenta.setMonto(ac.getMontoAbono());
                         opcuenta.setIdCuentaFk(idCuentaDestinoBean);
+                        opcaja.setComentarios("FA: "+ac.getIdAbonoCreditoPk() + "| FC: "+ac.getIdCreditoFk() +" | C:" +cliente.getNombreCompleto());
                         if (ifaceOperacionesCuentas.insertaOperacion(opcuenta) == 1) {
                             JsfUtil.addSuccessMessageClean("Se ha recibido el la Transferencia Correctamente");
                             setParameterTicket(ac, cliente);
@@ -1154,6 +1161,7 @@ public class BeanBuscaCredito implements Serializable {
                             opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
                             opcaja.setIdConceptoFk(conceptoMontoCheques);
                             opcaja.setMonto(ac.getMontoAbono());
+                            opcaja.setComentarios("FA: "+ac.getIdAbonoCreditoPk() + " | FC: "+ac.getIdCreditoFk() +" | C:" +cliente.getNombreCompleto());
 
                             if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
                                 setParameterTicket(ac, cliente);
@@ -1190,6 +1198,7 @@ public class BeanBuscaCredito implements Serializable {
                         opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
                         opcaja.setMonto(dataAbonar.getSaldoACuenta());
                         opcaja.setIdConceptoFk(concepto);
+                        opcaja.setComentarios("FA: "+ac.getIdAbonoCreditoPk() + " | FC: "+ac.getIdCreditoFk() +" | C:" +cliente.getNombreCompleto());
                         if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
                             ac.setIdCreditoFk(c.getIdCreditoPk());
                             ac.setMontoAbono(dataAbonar.getSaldoACuenta());

@@ -28,7 +28,7 @@
                             <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
                                 <h:outputText value="Apartar: " />
                                 <p:selectBooleanCheckbox value="#{beanBuscaVentaMayoreo.value1}" >
-                                    <p:ajax event="change" listener="#{beanBuscaVentaMayoreo.habilitaApartado()}" update=":formContent:cheques"/>
+                                    <p:ajax  listener="#{beanBuscaVentaMayoreo.habilitaApartado()}" update=":formContent:cheques"/>
                                 </p:selectBooleanCheckbox>
                             </h:panelGrid>
                         </div>

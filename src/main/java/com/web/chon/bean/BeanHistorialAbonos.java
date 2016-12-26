@@ -8,12 +8,14 @@ package com.web.chon.bean;
 import com.web.chon.dominio.AbonoCredito;
 import com.web.chon.dominio.Caja;
 import com.web.chon.dominio.Cliente;
+import com.web.chon.dominio.OperacionesCaja;
 import com.web.chon.dominio.SaldosDeudas;
 import com.web.chon.dominio.TipoAbono;
 import com.web.chon.dominio.Usuario;
 import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceAbonoCredito;
+import com.web.chon.service.IfaceCaja;
 import com.web.chon.service.IfaceCatCliente;
 import com.web.chon.service.IfaceCredito;
 import com.web.chon.service.IfaceOperacionesCaja;
@@ -73,8 +75,10 @@ public class BeanHistorialAbonos implements Serializable {
     private IfaceCredito ifaceCredito;
     @Autowired
     private IfaceOperacionesCaja IfaceOperacionesCaja;
-    
-    
+    @Autowired
+    private IfaceCaja ifaceCaja;
+    @Autowired
+    private IfaceOperacionesCaja ifaceOperacionesCaja;
 
     private ArrayList<Cliente> lstCliente;
     private ArrayList<Usuario> lstUsuariosCaja;
@@ -100,14 +104,14 @@ public class BeanHistorialAbonos implements Serializable {
     private boolean enableCalendar;
     private BigDecimal total;
     AbonoCredito abono;
-    
+
     private static final BigDecimal conceptoAbonoEfectivo = new BigDecimal(7);
     private static final BigDecimal conceptoAbonoTransferencia = new BigDecimal(12);
     private static final BigDecimal conceptoAbonoCheque = new BigDecimal(30);
     private static final BigDecimal conceptoAbonoDeposito = new BigDecimal(31);
-    
+
     private static final BigDecimal salida = new BigDecimal(2);
-    
+
     //------------variables para generar el ticket----------//
     private ArrayList<SaldosDeudas> modelo;
     private StreamedContent media;
@@ -118,10 +122,14 @@ public class BeanHistorialAbonos implements Serializable {
     private String pathFileJasper = "C:/Users/Juan/Documents/NetBeansProjects/Chonajos-V2/ticket.jasper";
 
     //------------variables para generar el ticket----------//
+    //--Datos para Operaciones Caja---//
+    private OperacionesCaja opcaja;
+    private Caja caja;
+
+    //--Datos para Operaciones Caja---//
     @PostConstruct
-    public void init() 
-    {
-         abono= new AbonoCredito();
+    public void init() {
+        abono = new AbonoCredito();
         total = new BigDecimal(0);
         setTitle("Historial de Abonos");
         setViewEstate("init");
@@ -144,10 +152,11 @@ public class BeanHistorialAbonos implements Serializable {
         lstAbonosCreditos = ifaceAbonoCredito.getHistorialAbonos(cliente.getId_cliente(), idCobradorFk, fechaFiltroInicio, fechaFiltroFin, idTipoAbonoFk, idAbonoPk, idCreditoFk);
         sumaTotal();
         modelo = new ArrayList<SaldosDeudas>();
-        
+        opcaja = new OperacionesCaja();
+
     }
-    
-    private void setParameterTicket(AbonoCredito ac,BigDecimal saldoActual) {
+
+    private void setParameterTicket(AbonoCredito ac, BigDecimal saldoActual) {
         NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
         DecimalFormat df = new DecimalFormat("###.##");
         Date date = new Date();
@@ -194,7 +203,7 @@ public class BeanHistorialAbonos implements Serializable {
 //            case 5:
 //                paramReport.put("labelEstatus", "PAGO A CUENTA");
 //                paramReport.put("folio", ac.getIdCreditoFk().toString());
-                //paramReport.put("montoliquidar", nf.format(saldoParaLiquidar));
+            //paramReport.put("montoliquidar", nf.format(saldoParaLiquidar));
 
             default:
                 JsfUtil.addErrorMessageClean("Ocurrio un error contactar al administrador");
@@ -240,36 +249,67 @@ public class BeanHistorialAbonos implements Serializable {
         }
 
     }
-    public void cancelarAbono()
-    {
+
+    public void cancelarAbono() {
         //cambiar estatus de abono a cancelado = 2
         //cambiar el estatus de credito a o finalizado
         //insertar una operacion de caja de salida ( abono credito) 
         //en caso de haber documento por cobrar cambiar el estatus del documento por cobrar a cancelado
-        
-        System.out.println("Abono a Eliminar: "+abono.toString());
+
+        System.out.println("Abono a Eliminar: " + abono.toString());
         //ifaceAbonoCredito.delete(abono.getIdAbonoCreditoPk());
-        
+
         //ifaceCredito.activarCredito(abono.getIdCreditoFk());
-        
+        switch (abono.getIdtipoAbonoFk().intValue()) {
+            case 1:
+                System.out.println("Cancelar Abono en Efectivo");
+                //insertar operacion en caja de salida 
+
+                //verificar si el credito se libero. si se libero volver a activarlo
+                //cancelar el abono de credito
+                opcaja = new OperacionesCaja();
+                caja = ifaceCaja.getCajaByIdUsuarioPk(usuarioDominio.getIdUsuario());
+                opcaja.setIdCajaFk(caja.getIdCajaPk());
+                opcaja.setIdUserFk(usuarioDominio.getIdUsuario());
+                opcaja.setEntradaSalida(salida);
+                opcaja.setIdSucursalFk(new BigDecimal(usuarioDominio.getSucId()));
+                opcaja.setMonto(abono.getMontoAbono());
+
+                opcaja.setIdConceptoFk(conceptoAbonoEfectivo);
+                opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
+                
+                opcaja.setIdStatusFk(new BigDecimal(1));
+                break;
+            case 2:
+                System.out.println("Cancelar Abono en Transferencia");
+                break;
+            case 3:
+                System.out.println("Cancelar Abono en Cheque");
+                break;
+            case 4:
+                System.out.println("Cancelar Abono en Depósito");
+                break;
+            default:
+                break;
+        }
+
     }
-    public void printVenta()
-    {
-        System.out.println("DATA: "+data.toString());
-        
+
+    public void printVenta() {
+        System.out.println("DATA: " + data.toString());
+
         BigDecimal totalAbono = new BigDecimal(0);
         BigDecimal totalDeuda = new BigDecimal(0);
         BigDecimal saldoActual;
-        System.out.println("------"+data.getIdClienteFk());
-        System.out.println("------"+data.getIdAbonoCreditoPk());
-        modelo = ifaceCredito.getCreditosActivos(data.getIdClienteFk(),data.getIdAbonoCreditoPk());
-        for(SaldosDeudas saldo:modelo)
-        {
+        System.out.println("------" + data.getIdClienteFk());
+        System.out.println("------" + data.getIdAbonoCreditoPk());
+        modelo = ifaceCredito.getCreditosActivos(data.getIdClienteFk(), data.getIdAbonoCreditoPk());
+        for (SaldosDeudas saldo : modelo) {
             totalAbono = totalAbono.add(saldo.getTotalAbonado(), MathContext.UNLIMITED);
             totalDeuda = totalDeuda.add(saldo.getSaldoTotal(), MathContext.UNLIMITED);
         }
         saldoActual = totalDeuda.subtract(totalAbono, MathContext.UNLIMITED);
-        setParameterTicket(data,saldoActual);
+        setParameterTicket(data, saldoActual);
         String nombreReporte = "";
         switch (data.getIdtipoAbonoFk().intValue()) {
             case 1:
@@ -514,8 +554,5 @@ public class BeanHistorialAbonos implements Serializable {
     public void setPathFileJasper(String pathFileJasper) {
         this.pathFileJasper = pathFileJasper;
     }
-    
-    
-    
 
 }

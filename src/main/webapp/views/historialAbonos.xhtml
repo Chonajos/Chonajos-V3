@@ -128,16 +128,16 @@
                                     <f:setPropertyActionListener value="#{model}" target="#{beanHistorialAbonos.data}"/>
                                 </p:commandButton>
                             </p:column>
-                            <!--
+                           
                            <p:column headerText="Cancelar" width="60px;" class="alignCenter">
                                 <p:commandButton id="cancel"  ajax="true"
-                                                 process="@this" action="{beanHistorialAbonos.cancelarAbono()}"
+                                                 process="@this" action="#{beanHistorialAbonos.cancelarAbono()}"
                                                  icon="ui-icon-trash" styleClass="ui-priority-primary" update=":formContent"
-                                                 disabled="{model.estatusAbono.intValue() == 1}">
-                                    <f:setPropertyActionListener value="{model}" target="{beanHistorialAbonos.abono}"/>
+                                                 >
+                                    <f:setPropertyActionListener value="#{model}" target="#{beanHistorialAbonos.abono}"/>
                                     <p:confirm header="Confirmación" message="¿Estás seguro de cancelar el abono?" icon="ui-icon-alert"/>
                                 </p:commandButton>
-                            </p:column>-->
+                            </p:column>
                            
                             <p:columnGroup type="footer">
                                 <p:column colspan="1" />
@@ -153,7 +153,8 @@
                                         </h:outputText>
                                     </f:facet>
                                 </p:column>
-                                <!--<p:column colspan="1" />-->
+                                <p:column colspan="1"/>
+                                <p:column colspan="1"/>
                                 </p:columnGroup>
                         </p:dataTable>
 
