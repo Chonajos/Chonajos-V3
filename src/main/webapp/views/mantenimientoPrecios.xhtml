@@ -54,7 +54,7 @@
 
 
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <p:dataTable id="table" var="model" value="#{beanMantenimientoPrecio.model}" editable="true" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros."  scrollHeight="500" scrollable="true">
+                        <p:dataTable id="table" var="model" value="#{beanMantenimientoPrecio.model}" editable="true" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros."  rows="20" paginator="true" scrollable="true">
                             <p:ajax event="rowEdit" listener="#{beanMantenimientoPrecio.onRowEdit}" update="table" />
                             <p:ajax event="rowEditCancel" listener="#{beanMantenimientoPrecio.onRowCancel}" update="table" />
                             <p:column headerText="Clave de Producto"   width="80px;" style="text-align:center">

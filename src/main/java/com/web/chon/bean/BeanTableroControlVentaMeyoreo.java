@@ -18,6 +18,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -56,7 +57,6 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
 
     private BigDecimal idSucursal;
     private BigDecimal idProvedor;
-    private BigDecimal carroSucursal;
     private BigDecimal totalVentaGeneral;
     private BigDecimal totalComisionGeneral;
     private BigDecimal totalVentaDetalle;
@@ -75,8 +75,9 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
     private String title;
     private String viewEstate;
     private String tipoReporte;
-    private String strFechaInicio;
     private String strFechaFin;
+    private String strFechaInicio;
+    private String carroSucursal;
 
     private Date fechaUltimaVenta;
     private Date fechaFin;
@@ -141,7 +142,7 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
         if (TiempoUtil.diferenciasDeFechas(fechaInicio, fechaFin) > 90) {
             JsfUtil.addErrorMessage("No se puede realizar una busqueda con un intervalo de fechas mayor a 90 dias.");
         } else {
-            lstCarroDetalleGeneral = ifaceEntradaMercancia.getReporteGeneralCarro(idSucursal, idProvedor, carroSucursal, strFechaInicio, strFechaFin);
+            lstCarroDetalleGeneral = ifaceEntradaMercancia.getReporteGeneralCarro(idSucursal, idProvedor, new BigDecimal(carroSucursal), strFechaInicio, strFechaFin);
             calcularTotalesGeneral();
         }
 
@@ -209,6 +210,23 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
         viewEstate = "init";
         setTitle("Reportes de Ventas.");
     }
+    
+    public List<String> autocompleteCarro(String carro){
+        List<String> lstReturn = new ArrayList<String>();
+        for(EntradaMercancia dominio:lstCarros){
+            
+            if(carro.trim().equals("")){
+                lstReturn.add(dominio.getIdCarroSucursal().toString());
+            }else  if(dominio.getIdCarroSucursal().toString().contains(carro)){
+                lstReturn.add(dominio.getIdCarroSucursal().toString());
+            }
+            
+        }
+        
+        return lstReturn;
+    }
+    
+  
 
     @Override
     public String delete() {
@@ -306,13 +324,15 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
         this.idProvedor = idProvedor;
     }
 
-    public BigDecimal getCarroSucursal() {
+    public String getCarroSucursal() {
         return carroSucursal;
     }
 
-    public void setCarroSucursal(BigDecimal carroSucursal) {
+    public void setCarroSucursal(String carroSucursal) {
         this.carroSucursal = carroSucursal;
     }
+
+   
 
     public UsuarioDominio getUsuario() {
         return usuario;

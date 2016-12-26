@@ -106,7 +106,7 @@ public class BeanAjustesExistenciasMayoreo implements Serializable {
         listaSucursales = ifaceCatSucursales.getSucursales();
         listaProvedores = ifaceCatProvedores.getProvedores();
 
-        model = ifaceNegocioExistencia.getExistencias(new BigDecimal(usuario.getSucId()), null, null, null, null, null, null);
+        model = ifaceNegocioExistencia.getExistencias(new BigDecimal(usuario.getSucId()), null, null, null, null, null, null,null);
         getTotalCajasKilos();
 
         data.setIdSucursal(new BigDecimal(usuario.getSucId()));
@@ -133,7 +133,7 @@ public class BeanAjustesExistenciasMayoreo implements Serializable {
         }
 
         String idproductito = subProducto == null ? null : subProducto.getIdSubproductoPk();
-        model = ifaceNegocioExistencia.getExistencias(data.getIdSucursal(), data.getIdBodegaFK(), data.getIdProvedor(), idproductito, data.getIdTipoEmpaqueFK(), data.getIdTipoConvenio(), idEntrada);
+        model = ifaceNegocioExistencia.getExistencias(data.getIdSucursal(), data.getIdBodegaFK(), data.getIdProvedor(), idproductito, data.getIdTipoEmpaqueFK(), data.getIdTipoConvenio(), idEntrada,data.getCarroSucursal());
         getTotalCajasKilos();
 
     }

@@ -7,49 +7,6 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions">
-<!--    <script src='https://www.google.com/recaptcha/api.js'/>
-    <script src='http://www.google.com/recaptcha/api.js'/>-->
-    <script type="text/javascript">
-
-        (function () {
-            if (!window['___grecaptcha_cfg']) {
-                window['___grecaptcha_cfg'] = {};
-            }
-            ;
-            if (!window['___grecaptcha_cfg']['render']) {
-                window['___grecaptcha_cfg']['render'] = 'onload';
-            }
-            ;
-            window['__google_recaptcha_client'] = true;
-            var po = document.createElement('script');
-            po.type = 'text/javascript';
-            po.async = true;
-            po.src = 'js/re_capcha.js';
-            var elem = document.querySelector('script[nonce]');
-            var nonce = elem elem.getAttribute('nonce');
-            if (nonce) {
-                po.setAttribute('nonce', nonce);
-            }
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(po, s);
-        })();
-
-
-        /* Validating Captcha Function */
-        function ValidCaptcha() {
-            var str1 = removeSpaces(document.getElementById('txtCaptcha').value);
-            var str2 = removeSpaces(document.getElementById('txtCompare').value);
-
-            if (str1 == str2)
-                return true;
-            return false;
-        }
-
-        /* Remove spaces from Captcha Code */
-        function removeSpaces(string) {
-            return string.split(' ').join('');
-        }
-    </script>
 
     <ui:define name="content">
 
@@ -95,7 +52,7 @@
                     </div>
 
                     <div class="col-lg-11 col-md-12 col-sm-12 col-xs-12">
-                        <p:dataTable id="table" var="model" value="#{beanAjustesExistenciasMenudeo.model}" editable="true" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." paginator="true" rows="25">
+                        <p:dataTable id="table" var="model" value="#{beanAjustesExistenciasMenudeo.model}" editable="true" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." paginator="true" rows="20">
                             <p:ajax event="rowEdit" listener="#{beanAjustesExistenciasMenudeo.onRowEdit}" update="table" />
                             <p:ajax event="rowEditCancel" listener="#{beanAjustesExistenciasMenudeo.onRowCancel}" update="table" />
                             <p:column headerText="Clave del Producto"   width="75px;" class="alignCenter">

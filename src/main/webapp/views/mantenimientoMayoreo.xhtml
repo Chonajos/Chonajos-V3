@@ -10,6 +10,11 @@
 
     <ui:define name="content">
 
+        <p:ajaxStatus onsuccess="PF('statusDialog').hide()" />
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                  closable="false" resizable="false" showHeader="false">
+            <p:graphicImage value="../resources/img/carga.gif" />
+        </p:dialog>
         <h:form id="formContent">
             <div>
                 <h3>Mantenimiento de Precios Mayoreo</h3>
@@ -17,11 +22,11 @@
             <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:panel rendered="#{beanMantenimientoPrecioMayoreo.viewEstate =='init'}">
                 <div class="container-fluid">
-                    <div class="form-group">
-
+                    <div class="form-group" align="right">
+                        <p:commandButton value="Buscar" update=":formContent" ajax="true" action="#{beanMantenimientoPrecioMayoreo.buscaExistencias()}" class="primaryButton" onclick="PF('statusDialog').show()"/>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="autocompletePoducto" value ="Producto:" /> 
                             <p:autoComplete  placeholder="Seleccione un Producto" id="autocompletePoducto"   styleClass="autocomplete-input-text-media"
                                              value="#{beanMantenimientoPrecioMayoreo.subProducto}" completeMethod="#{beanMantenimientoPrecioMayoreo.autoComplete}" forceSelection="true" var="producto"  inputStyle="width: 180px"
@@ -32,57 +37,84 @@
                             </p:autoComplete>
                             <pe:keyFilter for="autocompletePoducto" regEx="/[a-z0-9-_Ã±\s]/i" />
                         </div>
-                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="filtro" value ="Filtro:"/> 
-                            <h:selectOneMenu  id="filtro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanMantenimientoPrecioMayoreo.filtro}" disabled="#{beanMantenimientoPrecioMayoreo.usuario.getPerId() != 1}">
-                                <f:selectItem itemLabel="Sucursal" itemValue="1" />
-                                <f:selectItem itemLabel="Bodega" itemValue="2" />
-                                <f:selectItem itemLabel="Provedor" itemValue="3" />
-                                <f:selectItem itemLabel="Empaque" itemValue="4" />
-                                <f:selectItem itemLabel="Tipo de Convenido" itemValue="5" />
-                                <f:selectItem itemLabel="Clave" itemValue="6" />
-                                <p:ajax event="change" update=":formContent" listener="#{beanMantenimientoPrecioMayoreo.resetValuesFilter}" />
-                            </h:selectOneMenu>
+                        <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12" value="Carro:"/>
+                            <p:inputText class="col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanMantenimientoPrecioMayoreo.data.carroSucursal}"/>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 alignRight" >
+                                <p:outputLabel  for="filtro" value ="Filtro:"/> 
+                            </div>
+                            <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12 " >
+                                <p:selectOneMenu  id="filtro" value="#{beanMantenimientoPrecioMayoreo.filtro}" disabled="#{beanMantenimientoPrecioMayoreo.usuario.getPerId() != 1}" style="width:97% !important;" panelStyleClass="selects">
+                                    <f:selectItem itemLabel="Sucursal" itemValue="1" />
+                                    <f:selectItem itemLabel="Bodega" itemValue="2" />
+                                    <f:selectItem itemLabel="Provedor" itemValue="3" />
+                                    <f:selectItem itemLabel="Empaque" itemValue="4" />
+                                    <f:selectItem itemLabel="Tipo de Convenido" itemValue="5" />
+                                    <p:ajax event="change" update=":formContent" listener="#{beanMantenimientoPrecioMayoreo.resetValuesFilter}" />
+                                </p:selectOneMenu>
+                            </div>
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="sucursalFiltro" value ="Sucursal:" rendered="#{beanMantenimientoPrecioMayoreo.filtro =='1'}"/> 
-                            <h:selectOneMenu  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanMantenimientoPrecioMayoreo.data.idSucursal}" rendered="#{beanMantenimientoPrecioMayoreo.filtro =='1'}" disabled="#{beanMantenimientoPrecioMayoreo.usuario.getPerId() != 1}">
-                                <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="" />
-                                <f:selectItems value="#{beanMantenimientoPrecioMayoreo.listaSucursales}" var="sucursalita" itemLabel="#{sucursalita.nombreSucursal}" itemValue="#{sucursalita.idSucursalPk}"/>
-                                <p:ajax event="change" update=":formContent:table" listener="#{beanMantenimientoPrecioMayoreo.buscaExistencias()}" />
-                            </h:selectOneMenu>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 alignRight" >
+                                <p:outputLabel for="sucursalFiltro" value ="Sucursal:" rendered="#{beanMantenimientoPrecioMayoreo.filtro =='1'}"/> 
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 " >
+                                <p:selectOneMenu  id="sucursalFiltro" value="#{beanMantenimientoPrecioMayoreo.data.idSucursal}" rendered="#{beanMantenimientoPrecioMayoreo.filtro =='1'}" disabled="#{beanMantenimientoPrecioMayoreo.usuario.getPerId() != 1}" style="width:97% !important;" panelStyleClass="selects">
+                                    <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="" />
+                                    <f:selectItems value="#{beanMantenimientoPrecioMayoreo.listaSucursales}" var="sucursalita" itemLabel="#{sucursalita.nombreSucursal}" itemValue="#{sucursalita.idSucursalPk}"/>
+                                    <p:ajax event="change" update=":formContent:table" listener="#{beanMantenimientoPrecioMayoreo.buscaExistencias()}" />
+                                </p:selectOneMenu>
+                            </div>
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="comboBodega" value ="Bodega:"  rendered="#{beanMantenimientoPrecioMayoreo.filtro =='2'}"/> 
-                            <h:selectOneMenu  id="comboBodega" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanMantenimientoPrecioMayoreo.data.idBodegaFK}"    requiredMessage="Selecciona una opción" rendered="#{beanMantenimientoPrecioMayoreo.filtro =='2'}">
-                                <f:selectItem itemLabel="Seleccione una bodega" itemValue="" />
-                                <f:selectItems value="#{beanMantenimientoPrecioMayoreo.listaBodegas}" var="bode" itemLabel="#{bode.nombreBodega}" itemValue="#{bode.idBodegaPK}"/>
-                                <p:ajax event="change" update=":formContent:table" listener="#{beanMantenimientoPrecioMayoreo.buscaExistencias()}"/>
-                            </h:selectOneMenu>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 alignRight" >
+                                <p:outputLabel  for="comboBodega" value ="Bodega:"  rendered="#{beanMantenimientoPrecioMayoreo.filtro =='2'}"/> 
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 " >
+                                <p:selectOneMenu  id="comboBodega"  value="#{beanMantenimientoPrecioMayoreo.data.idBodegaFK}"    requiredMessage="Selecciona una opción" rendered="#{beanMantenimientoPrecioMayoreo.filtro =='2'}" style="width:97% !important;" panelStyleClass="selects">
+                                    <f:selectItem itemLabel="Seleccione una bodega" itemValue="" />
+                                    <f:selectItems value="#{beanMantenimientoPrecioMayoreo.listaBodegas}" var="bode" itemLabel="#{bode.nombreBodega}" itemValue="#{bode.idBodegaPK}"/>
+                                    <p:ajax event="change" update=":formContent:table" listener="#{beanMantenimientoPrecioMayoreo.buscaExistencias()}"/>
+                                </p:selectOneMenu>
+                            </div>
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="comboProvedor" value ="Provedor:" rendered="#{beanMantenimientoPrecioMayoreo.filtro =='3'}"/> 
-                            <h:selectOneMenu  id="comboProvedor" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanMantenimientoPrecioMayoreo.data.idProvedor}" rendered="#{beanMantenimientoPrecioMayoreo.filtro =='3'}">
-                                <f:selectItem itemLabel="Selecciona un Provedor" itemValue="" />
-                                <f:selectItems value="#{beanMantenimientoPrecioMayoreo.listaProvedores}" var="provedorsito" itemLabel=" (#{provedorsito.nickName}) #{provedorsito.nombreProvedor} #{provedorsito.apaternoProve} #{provedorsito.amaternoProve}" itemValue="#{provedorsito.idProvedorPK}"/>
-                                <p:ajax event="change" update=":formContent:table" listener="#{beanMantenimientoPrecioMayoreo.buscaExistencias()}"/>
-                            </h:selectOneMenu>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 alignRight" >
+                                <p:outputLabel  for="comboProvedor" value ="Provedor:" rendered="#{beanMantenimientoPrecioMayoreo.filtro =='3'}" /> 
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 " >
+                                <p:selectOneMenu  id="comboProvedor" value="#{beanMantenimientoPrecioMayoreo.data.idProvedor}" rendered="#{beanMantenimientoPrecioMayoreo.filtro =='3'}" style="width:97% !important;" panelStyleClass="selects">
+                                    <f:selectItem itemLabel="Selecciona un Provedor" itemValue="" />
+                                    <f:selectItems value="#{beanMantenimientoPrecioMayoreo.listaProvedores}" var="provedorsito" itemLabel="#{provedorsito.nombreProvedor} #{provedorsito.apaternoProve} #{provedorsito.amaternoProve} (#{provedorsito.nickName})" itemValue="#{provedorsito.idProvedorPK}"/>
+                                    <p:ajax event="change" update=":formContent:table" listener="#{beanMantenimientoPrecioMayoreo.buscaExistencias()}"/>
+                                </p:selectOneMenu>
+                            </div>
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="txtTipoEmpaque" value ="Empaque:" rendered="#{beanMantenimientoPrecioMayoreo.filtro =='4'}"/> 
-                            <h:selectOneMenu  id="txtTipoEmpaque" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanMantenimientoPrecioMayoreo.data.idTipoEmpaqueFK}"  rendered="#{beanMantenimientoPrecioMayoreo.filtro =='4'}">
-                                <f:selectItem itemLabel="Seleccione un empaque" itemValue="" />
-                                <f:selectItems value="#{beanMantenimientoPrecioMayoreo.lstTipoEmpaque}" var="empaque" itemLabel="#{empaque.nombreEmpaque}" itemValue="#{empaque.idTipoEmpaquePk}"/>
-                                <p:ajax event="change" update=":formContent:table" listener="#{beanMantenimientoPrecioMayoreo.buscaExistencias()}"/>
-                            </h:selectOneMenu>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 alignRight" >
+                                <p:outputLabel  for="txtTipoEmpaque" value ="Empaque:" rendered="#{beanMantenimientoPrecioMayoreo.filtro =='4'}"/> 
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" >
+                                <p:selectOneMenu  id="txtTipoEmpaque" value="#{beanMantenimientoPrecioMayoreo.data.idTipoEmpaqueFK}"  rendered="#{beanMantenimientoPrecioMayoreo.filtro =='4'}" style="width:97% !important;" panelStyleClass="selects">
+                                    <f:selectItem itemLabel="Seleccione un empaque" itemValue="" />
+                                    <f:selectItems value="#{beanMantenimientoPrecioMayoreo.lstTipoEmpaque}" var="empaque" itemLabel="#{empaque.nombreEmpaque}" itemValue="#{empaque.idTipoEmpaquePk}"/>
+                                    <p:ajax event="change" update=":formContent:table" listener="#{beanMantenimientoPrecioMayoreo.buscaExistencias()}"/>
+                                </p:selectOneMenu>
+                            </div>
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-5 col-md-5 col-sm-4 col-xs-12"  for="comboTipoOrden" value ="Tipo de Convenido:" rendered="#{beanMantenimientoPrecioMayoreo.filtro =='5'}"/> 
-                            <h:selectOneMenu  id="comboTipoOrden" class=" col-lg-7 col-md-8 col-sm-8 col-xs-12" value="#{beanMantenimientoPrecioMayoreo.data.idTipoConvenio}" rendered="#{beanMantenimientoPrecioMayoreo.filtro =='5'}">
-                                <f:selectItem itemLabel="Tipo de Convenio" itemValue="" />
-                                <f:selectItems value="#{beanMantenimientoPrecioMayoreo.listaTiposConvenio}" var="listitaconvenio" itemLabel="#{listitaconvenio.nombreTipoConvenio}" itemValue="#{listitaconvenio.idTcPK}"/>
-                                <p:ajax event="change" update=":formContent:table"  listener="#{beanMantenimientoPrecioMayoreo.buscaExistencias()}" />
-                            </h:selectOneMenu>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 alignRight" >
+                                <p:outputLabel  for="comboTipoOrden" value ="Tipo de Convenido:" rendered="#{beanMantenimientoPrecioMayoreo.filtro =='5'}"/> 
+                            </div>
+                            <div class=" col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <p:selectOneMenu  id="comboTipoOrden"  value="#{beanMantenimientoPrecioMayoreo.data.idTipoConvenio}" rendered="#{beanMantenimientoPrecioMayoreo.filtro =='5'}" style="width:97% !important;" panelStyleClass="selects">
+                                    <f:selectItem itemLabel="Tipo de Convenio" itemValue="" />
+                                    <f:selectItems value="#{beanMantenimientoPrecioMayoreo.listaTiposConvenio}" var="listitaconvenio" itemLabel="#{listitaconvenio.nombreTipoConvenio}" itemValue="#{listitaconvenio.idTcPK}"/>
+                                    <p:ajax event="change" update=":formContent:table"  listener="#{beanMantenimientoPrecioMayoreo.buscaExistencias()}" />
+                                </p:selectOneMenu>
+                            </div>
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="autocompleteClave" value ="Clave:" rendered="#{beanMantenimientoPrecioMayoreo.filtro =='6'}"/> 
@@ -95,9 +127,12 @@
                             </p:autoComplete>
                             <pe:keyFilter for="autocompleteClave" regEx="/[a-z0-9-_Ã±\s]/i" />
                         </div>
+
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                        <p:dataTable id="table" var="model" value="#{beanMantenimientoPrecioMayoreo.model}" resizableColumns="false" style=" width: 100%;" editable="true" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." scrollHeight="500" scrollable="true">
+                        <p:dataTable id="table" var="model" value="#{beanMantenimientoPrecioMayoreo.model}" resizableColumns="false" style=" width: 100%;" 
+                                     editable="true" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." 
+                                     scrollable="true" paginator="true" rows="20">
                             <p:ajax event="rowEdit" listener="#{beanMantenimientoPrecioMayoreo.onRowEdit}" update="table" />
                             <p:ajax event="rowEditCancel" listener="#{beanMantenimientoPrecioMayoreo.onRowCancel}" update="table" />
                             <p:column headerText="Carro"   width="45px;" style="text-align:center">

@@ -1,13 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.web.chon.negocio;
 
 import com.web.chon.dominio.ExistenciaProducto;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Remote;
 
@@ -22,7 +17,7 @@ public interface NegocioExistenciaProducto {
 
     public int updateCantidadKilo(ExistenciaProducto e);
 
-    public List<Object[]> getExistencias(BigDecimal idSucursal, BigDecimal idBodega, BigDecimal idProvedor, String idProducto, BigDecimal idEmpaque, BigDecimal idConvenio, BigDecimal idEmpPK);
+    public List<Object[]> getExistencias(BigDecimal idSucursal, BigDecimal idBodega, BigDecimal idProvedor, String idProducto, BigDecimal idEmpaque, BigDecimal idConvenio, BigDecimal idEmpPK,BigDecimal carro);
 
     public List<Object[]> getExistenciasCancelar(BigDecimal idExistencia);
 

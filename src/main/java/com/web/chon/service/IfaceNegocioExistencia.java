@@ -18,7 +18,7 @@ public interface IfaceNegocioExistencia {
 
     public int insertExistenciaProducto(ExistenciaProducto ep);
 
-    public ArrayList<ExistenciaProducto> getExistencias(BigDecimal idSucursal, BigDecimal idBodega, BigDecimal idProvedor, String idProducto, BigDecimal idEmpaque, BigDecimal idConvenio, BigDecimal idEmpPK);
+    public ArrayList<ExistenciaProducto> getExistencias(BigDecimal idSucursal, BigDecimal idBodega, BigDecimal idProvedor, String idProducto, BigDecimal idEmpaque, BigDecimal idConvenio, BigDecimal idEmpPK,BigDecimal carro);
 
     public ArrayList<ExistenciaProducto> getExistenciasCancelar(BigDecimal idExistencia);
 

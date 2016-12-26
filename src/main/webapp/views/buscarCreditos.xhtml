@@ -218,12 +218,12 @@
                             <div style="float: right">
                                 <h:commandLink>
                                     <p:graphicImage value="../resources/img/pdf.png" width="24"/>
-                                    <p:dataExporter type="pdf" target="table" fileName="EstadoCuenta#{beanBuscaCredito.cliente.nombreCompleto}" pageOnly="false" postProcessor="#{beanBuscaCredito.preProcessPDF}" encoding="iso-8859-1"/>
+                                    <p:dataExporter type="pdf" target="table" fileName="EstadoCuenta#{beanBuscaCredito.cliente.nombreCompleto}" pageOnly="false" encoding="iso-8859-1"/>
                                 </h:commandLink>
 
                                 <h:commandLink>
                                     <p:graphicImage value="../resources/img/excel.png" width="24"/>
-                                    <p:dataExporter type="csv" target="table" fileName="EstadoCuenta#{beanBuscaCredito.cliente.nombreCompleto}" pageOnly="true" postProcessor ="#{beanBuscaCredito.preProcessPDF}" encoding="iso-8859-1"/>
+                                    <p:dataExporter type="csv" target="table" fileName="EstadoCuenta#{beanBuscaCredito.cliente.nombreCompleto}" pageOnly="true" encoding="iso-8859-1"/>
                                 </h:commandLink>
                             </div>
 

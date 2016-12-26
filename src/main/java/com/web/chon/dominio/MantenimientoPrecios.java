@@ -138,8 +138,6 @@ public class MantenimientoPrecios extends ValueObject {
         this.precioSugerido = precioSugerido;
     }
     
-    
-
     @Override
     public void reset() {
         idSubproducto =null;
