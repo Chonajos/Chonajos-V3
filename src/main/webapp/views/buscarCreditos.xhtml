@@ -218,12 +218,12 @@
                             <div style="float: right">
                                 <h:commandLink>
                                     <p:graphicImage value="../resources/img/pdf.png" width="24"/>
-                                    <p:dataExporter type="pdf" target="table" fileName="Creditos#{beanBuscaCredito.cliente.nombreCompleto}" pageOnly="false" postProcessor="#{beanBuscaCredito.preProcessPDF}"/>
+                                    <p:dataExporter type="pdf" target="table" fileName="EstadoCuenta#{beanBuscaCredito.cliente.nombreCompleto}" pageOnly="false" postProcessor="#{beanBuscaCredito.preProcessPDF}" encoding="iso-8859-1"/>
                                 </h:commandLink>
 
                                 <h:commandLink>
                                     <p:graphicImage value="../resources/img/excel.png" width="24"/>
-                                    <p:dataExporter type="csv" target="table" fileName="Creditos#{beanBuscaCredito.cliente.nombreCompleto}" pageOnly="true" postProcessor ="#{beanBuscaCredito.preProcessPDF}"/>
+                                    <p:dataExporter type="csv" target="table" fileName="EstadoCuenta#{beanBuscaCredito.cliente.nombreCompleto}" pageOnly="true" postProcessor ="#{beanBuscaCredito.preProcessPDF}" encoding="iso-8859-1"/>
                                 </h:commandLink>
                             </div>
 
@@ -286,12 +286,20 @@
                             <h:outputText value="#{model.minimoPago}"> 
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
+                            <f:facet name="footer">
+                                <h:outputText value="Saldo Total: " style="text-align:right"/>
+                            </f:facet>
                         </p:column>
 
                         <p:column headerText="Saldo a Liquidar" width="45px;" class="alignRight">
                             <h:outputText value="#{model.saldoLiquidar}"> 
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
+                            <f:facet name="footer">
+                                <h:outputText value="#{beanBuscaCredito.saldoParaLiquidar}" class="alignRight">
+                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                </h:outputText>
+                            </f:facet>
                         </p:column>
                         <p:column headerText="Origen de Crédito" exportable="false" width="70px;" class="alignRight">
                             <h:outputText value="#{model.nombreSucursal}"> 
@@ -313,34 +321,6 @@
                         <p:column width="5px;" exportable="false">
                             <p:rowEditor/>
                         </p:column>
-
-                        <p:columnGroup type="footer">
-
-                            <p:column colspan="1" />
-                            <p:column colspan="1" />
-                            <p:column colspan="1" />
-                            <p:column colspan="1" />
-                            <p:column colspan="1" />
-                            <p:column colspan="1" />
-                            <p:column colspan="1" />
-                            <p:column colspan="1" />
-                            <p:column colspan="1" />
-                            <p:column colspan="1" />
-                            <p:column colspan="1" />
-                            <p:column colspan="1" footerText="Saldo Total: " style="text-align:right"/>
-                            <p:column colspan="1" >
-                                <f:facet name="footer">
-                                    <h:outputText value="#{beanBuscaCredito.saldoParaLiquidar}" class="alignRight">
-                                        <f:convertNumber type="currency" currencySymbol="$" />
-                                    </h:outputText>
-                                </f:facet>
-                            </p:column>
-                            <p:column colspan="1" />
-                            <p:column colspan="1" />
-                            <p:column colspan="1" />
-                        </p:columnGroup>
-
-
                     </p:dataTable>
                 </div>
 
