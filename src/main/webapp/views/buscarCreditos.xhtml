@@ -203,12 +203,31 @@
                 </div>
 
             </p:panel>
+            <!--            <h:commandLink>
+                            <p:graphicImage value="../resources/img/excel.png" />
+                            <p:dataExporter type="xls" target="table" fileName="Creditos" pageOnly="false"/>
+                        </h:commandLink>-->
+
             <p:panel  rendered="#{beanBuscaCredito.viewEstate=='init'}" >
                 <div class="container-fluid">
                     <p:dataTable id="table" var="model" value="#{beanBuscaCredito.modelo}" rows="20"
                                  paginator="true" styleClass="ui-datatable-hor-scroll"
-                                 resizableColumns="false" scrollable="true"
+                                 resizableColumns="false" scrollable="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
                                  editable="true" emptyMessage="No se encontraron registros.">
+                        <f:facet name="{Exporters}">
+                            <div style="float: right">
+                                <h:commandLink>
+                                    <p:graphicImage value="../resources/img/pdf.png" width="24"/>
+                                    <p:dataExporter type="pdf" target="table" fileName="Creditos#{beanBuscaCredito.cliente.nombreCompleto}" pageOnly="false" postProcessor="#{beanBuscaCredito.preProcessPDF}"/>
+                                </h:commandLink>
+
+                                <h:commandLink>
+                                    <p:graphicImage value="../resources/img/excel.png" width="24"/>
+                                    <p:dataExporter type="csv" target="table" fileName="Creditos#{beanBuscaCredito.cliente.nombreCompleto}" pageOnly="true" postProcessor ="#{beanBuscaCredito.preProcessPDF}"/>
+                                </h:commandLink>
+                            </div>
+
+                        </f:facet>
                         <p:ajax event="rowEdit" listener="#{beanBuscaCredito.onRowEdit}" update="table" />
                         <p:ajax event="rowEditCancel" listener="#{beanBuscaCredito.onRowCancel}" update="table" />
 
@@ -225,19 +244,19 @@
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
                         </p:column>
-                        <p:column headerText="Enganche a Cuenta" width="25px;" class="#{model.statusAcuenta eq 1 ?'statusActivo':'statusInactivo'} alignRight">
+                        <p:column headerText="Enganche a Cuenta" exportable="false" width="25px;" class="#{model.statusAcuenta eq 1 ?'statusActivo':'statusInactivo'} alignRight">
                             <h:outputText value="#{model.saldoACuenta}"> 
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
                         </p:column>
 
-                        <p:column headerText="N° Pagos" width="18px;" class="alignCenter">
+                        <p:column headerText="N° Pagos" exportable="false" width="18px;" class="alignCenter">
                             <h:outputText value="#{model.numeroPagos}" />
                         </p:column>
-                        <p:column headerText="Dias" width="18px;" class="alignCenter">
+                        <p:column headerText="Dias" exportable="false" width="18px;" class="alignCenter">
                             <h:outputText value="#{model.plazo}" />
                         </p:column>
-                        <p:column headerText="Importe de Abono" width="38px;" class="alignRight">
+                        <p:column headerText="Importe de Abono" exportable="false" width="38px;" class="alignRight">
                             <h:outputText value="#{model.montoAbonar}"> 
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
@@ -249,7 +268,7 @@
                             </h:outputText>
                         </p:column>
 
-                        <p:column headerText="Pagos Atrasados" width="30px;" class="alignRight">
+                        <p:column headerText="Pagos Atrasados" exportable="false" width="30px;" class="alignRight">
                             <h:outputText value="#{model.periodosAtraso}"> 
                             </h:outputText>
                         </p:column>
@@ -263,7 +282,7 @@
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputText>
                         </p:column>
-                        <p:column headerText="Pago Requerido" width="45px;" class="alignRight">
+                        <p:column headerText="Pago Requerido" exportable="false" width="45px;" class="alignRight">
                             <h:outputText value="#{model.minimoPago}"> 
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
@@ -274,12 +293,12 @@
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
                         </p:column>
-                        <p:column headerText="Origen de Crédito" width="70px;" class="alignRight">
+                        <p:column headerText="Origen de Crédito" exportable="false" width="70px;" class="alignRight">
                             <h:outputText value="#{model.nombreSucursal}"> 
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
                         </p:column>
-                        <p:column headerText="Abonar" width="30px;" class="alignRight">
+                        <p:column headerText="Abonar" exportable="false" width="30px;" class="alignRight">
                             <p:cellEditor>
                                 <f:facet name="output">
                                     <h:outputText value="#{model.abonarTemporal}" >
@@ -291,7 +310,7 @@
                                 </f:facet>
                             </p:cellEditor>
                         </p:column>
-                        <p:column width="5px;">
+                        <p:column width="5px;" exportable="false">
                             <p:rowEditor/>
                         </p:column>
 
