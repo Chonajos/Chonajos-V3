@@ -95,8 +95,7 @@ public class EjbCredito implements NegocioCredito {
             return 0;
         }
     }
-       
-    
+
     @Override
     public int delete(BigDecimal idCredito) {
         try {
@@ -149,29 +148,28 @@ public class EjbCredito implements NegocioCredito {
     }
 
     @Override
-    public List<Object[]> getCreditosActivos(BigDecimal idCliente,BigDecimal idAbonoPk) {
-        System.out.println("idCliente: "+idCliente);
-        System.out.println("Abono: "+idAbonoPk);
+    public List<Object[]> getCreditosActivos(BigDecimal idCliente, BigDecimal idAbonoPk) {
+        System.out.println("idCliente: " + idCliente);
+        System.out.println("Abono: " + idAbonoPk);
         StringBuffer txtQuery = new StringBuffer("select cre.ID_CREDITO_PK as folio,stc.NOMBRE_STATUS,cre.FECHA_INICIO_CREDITO,cre.PLAZOS,cre.MONTO_CREDITO, "
-                    + "(select NVL(sum(ac.MONTO_ABONO),0)from ABONO_CREDITO ac "
-                    + "where ac.ID_CREDITO_FK= cre.ID_CREDITO_PK and ac.ESTATUS=1 ");
+                + "(select NVL(sum(ac.MONTO_ABONO),0)from ABONO_CREDITO ac "
+                + "where ac.ID_CREDITO_FK= cre.ID_CREDITO_PK and ac.ESTATUS=1 ");
 
         if (idAbonoPk != null) {
             txtQuery.append(" and ac.ID_ABONO_CREDITO_PK <= " + idAbonoPk);
         }
-         txtQuery.append(") as Total_Abonado, "
-                    + "cre.ESTATUS_CREDITO,cre.ACUENTA,cre.STATUSACUENTA, cre.NUMERO_PAGOS, "
-                    + "(select NVL(sum(ac.MONTO_ABONO),0)from ABONO_CREDITO ac "
-                    + "where ac.ID_CREDITO_FK= cre.ID_CREDITO_PK and ac.ESTATUS=2) "
-                    + "as CHEQUES_PENDIENTES, suc.NOMBRE_SUCURSAL "
-                    + "from credito cre "
-                    + "inner join STATUS_CREDITO stc "
-                    + "on stc.ID_STATUS_CREDITO_PK = cre.ESTATUS_CREDITO "
-                    + " inner join USUARIO usu "
-                    + " on usu.ID_USUARIO_PK = cre.ID_USUARIO_CREDITO "
-                    + " inner join SUCURSAL suc "
-                    + " on suc.ID_SUCURSAL_PK = usu.ID_SUCURSAL_FK "
-                    + "where cre.ESTATUS_CREDITO=1 and cre.ID_CLIENTE_FK ='" + idCliente + "' order by cre.FECHA_INICIO_CREDITO");
+        txtQuery.append(") as Total_Abonado, "
+                + "cre.ESTATUS_CREDITO,cre.ACUENTA,cre.STATUSACUENTA, cre.NUMERO_PAGOS, "
+                + "(select NVL(sum(ac.MONTO_ABONO),0)from ABONO_CREDITO ac "
+                + "where ac.ID_CREDITO_FK= cre.ID_CREDITO_PK and ac.ESTATUS=2) "
+                + "as CHEQUES_PENDIENTES, SVM.NOMBRE_SUCURSAL,SV.NOMBRE_SUCURSAL "
+                + "from credito cre "
+                + "INNER JOIN STATUS_CREDITO stc ON stc.ID_STATUS_CREDITO_PK = CRE.ESTATUS_CREDITO "
+                + " LEFT JOIN VENTA_MAYOREO VM ON VM.ID_VENTA_MAYOREO_PK =cre.ID_VENTA_MAYOREO "
+                + " LEFT JOIN VENTA V ON V.ID_VENTA_PK = cre.ID_VENTA_MENUDEO "
+                + " LEFT JOIN SUCURSAL SVM ON SVM.ID_SUCURSAL_PK = V.ID_SUCURSAL_FK "
+                + " LEFT JOIN SUCURSAL SV ON SV.ID_SUCURSAL_PK = VM.ID_SUCURSAL_FK "
+                + "where cre.ESTATUS_CREDITO=1 and cre.ID_CLIENTE_FK ='" + idCliente + "' order by cre.FECHA_INICIO_CREDITO");
 
         try {
             Query query = em.createNativeQuery(txtQuery.toString());
@@ -179,7 +177,7 @@ public class EjbCredito implements NegocioCredito {
             return query.getResultList();
 
         } catch (Exception ex) {
-           // System.out.println("error ------------>" + ex.getMessage());
+            // System.out.println("error ------------>" + ex.getMessage());
             Logger.getLogger(EjbCredito.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
