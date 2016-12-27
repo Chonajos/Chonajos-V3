@@ -103,6 +103,7 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
             dominio.setCantidadEmpaquesProvedor(obj[17] == null ? null : new BigDecimal(obj[17].toString()));
             
             dominio.setFechaPago(obj[18] == null ? null : (Date) obj[18]);
+            dominio.setNombreRecibidor(obj[19] == null ? " " : obj[19].toString());
             dominio.setListaProductos(ifaceEntradaMercanciaProducto.getEntradaProductoByIdEM(dominio.getIdEmPK()));
             lstEntradaMercancia2.add(dominio);
         }

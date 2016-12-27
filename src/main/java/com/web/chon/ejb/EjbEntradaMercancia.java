@@ -32,14 +32,19 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
     public int insertEntradaMercancia(EntradaMercancia entrada) {
         //System.out.println("EJB_INSERTA_ENTRADAMERCANCIA");
         try {
-            //System.out.println("Entrada: " + entrada);
-            Query query = em.createNativeQuery("INSERT INTO ENTRADAMERCANCIA (ID_EM_PK,ID_PROVEDOR_FK,MOVIMIENTO,FECHA,REMISION,ID_SUCURSAL_FK,IDENTIFICADOR,ID_STATUS_FK,KILOSTOTALES,KILOSTOTALESPROVEDOR,COMENTARIOS,FECHAREMISION,CARROSUCURSAL,ID_USUARIO_FK,CANTIDADTOTAL,CANTIDADTOTALPROVEDOR,FECHA_PAGO)VALUES (?,?,?,sysdate,?,?,?,1,?,?,?,?,?,?,?,?,?)");
+            System.out.println("Entrada: " + entrada.toString());
+            Query query = em.createNativeQuery("INSERT INTO ENTRADAMERCANCIA (ID_EM_PK,ID_PROVEDOR_FK,MOVIMIENTO,"
+                    + "FECHA,REMISION,ID_SUCURSAL_FK,IDENTIFICADOR,ID_STATUS_FK,KILOSTOTALES,KILOSTOTALESPROVEDOR,"
+                    + "COMENTARIOS,FECHAREMISION,CARROSUCURSAL,ID_USUARIO_FK,CANTIDADTOTAL,CANTIDADTOTALPROVEDOR,"
+                    + "FECHA_PAGO)VALUES (?,?,?,sysdate,?,?,?,1,?,?,?,?,?,?,?,?,?)");
             query.setParameter(1, entrada.getIdEmPK());
             query.setParameter(2, entrada.getIdProvedorFK());
             query.setParameter(3, entrada.getMovimiento());
+            //fecha
             query.setParameter(4, entrada.getRemision());
             query.setParameter(5, entrada.getIdSucursalFK());
             query.setParameter(6, entrada.getFolio());
+            //status entrada
             query.setParameter(7, entrada.getKilosTotales());
             query.setParameter(8, entrada.getKilosTotalesProvedor());
             query.setParameter(9, entrada.getComentariosGenerales());
@@ -86,13 +91,16 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
     @Override
     public List<Object[]> getEntradaProductoByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idProvedor,BigDecimal carro) {
         int cont = 0;
-        StringBuffer query = new StringBuffer("SELECT EMA.ID_EM_PK,EMA.ID_PROVEDOR_FK,EMA.MOVIMIENTO,EMA.FECHA,EMA.REMISION,EMA.ID_SUCURSAL_FK,EMA.IDENTIFICADOR,\n"
-                + "EMA.ID_STATUS_FK,EMA.KILOSTOTALES,EMA.KILOSTOTALESPROVEDOR,EMA.COMENTARIOS,EMA.FECHAREMISION,PRO.NOMBRE_PROVEDOR ||' '|| PRO.A_PATERNO_PROVE ||' '|| \n"
-                + "PRO.A_MATERNO_PROVE AS NOMBRE_PROVEDOR, SUC.NOMBRE_SUCURSAL,EMA.CARROSUCURSAL,EMA.COMENTARIOS,EMA.CANTIDADTOTAL,EMA.CANTIDADTOTALPROVEDOR,EMA.FECHA_PAGO FROM ENTRADAMERCANCIA EMA \n"
-                + "LEFT JOIN PROVEDORES PRO \n"
-                + "ON EMA.ID_PROVEDOR_FK = PRO.ID_PROVEDOR_PK\n"
-                + "LEFT JOIN SUCURSAL SUC \n"
-                + "ON EMA.ID_SUCURSAL_FK = SUC.ID_SUCURSAL_PK");
+        StringBuffer query = new StringBuffer("SELECT EMA.ID_EM_PK,EMA.ID_PROVEDOR_FK,EMA.MOVIMIENTO,EMA.FECHA,EMA.REMISION,EMA.ID_SUCURSAL_FK,EMA.IDENTIFICADOR,\n" +
+"EMA.ID_STATUS_FK,EMA.KILOSTOTALES,EMA.KILOSTOTALESPROVEDOR,EMA.COMENTARIOS,EMA.FECHAREMISION,PRO.\n" +
+"NOMBRE_PROVEDOR ||' '|| PRO.A_PATERNO_PROVE ||' '|| \n" +
+"PRO.A_MATERNO_PROVE AS NOMBRE_PROVEDOR, SUC.NOMBRE_SUCURSAL,EMA.CARROSUCURSAL,EMA.COMENTARIOS,EMA.CANTIDADTOTAL,\n" +
+"EMA.CANTIDADTOTALPROVEDOR,EMA.FECHA_PAGO,usu.NOMBRE_USUARIO ||' '|| usu.APATERNO_USUARIO ||' '|| usu.AMATERNO_USUARIO as recibidor FROM ENTRADAMERCANCIA EMA\n" +
+"LEFT JOIN PROVEDORES PRO\n" +
+"ON EMA.ID_PROVEDOR_FK = PRO.ID_PROVEDOR_PK\n" +
+"LEFT JOIN SUCURSAL SUC \n" +
+"ON EMA.ID_SUCURSAL_FK = SUC.ID_SUCURSAL_PK\n" +
+"inner join USUARIO usu on usu.ID_USUARIO_PK = EMA.ID_USUARIO_FK");
         if (fechaInicio != null) {
             cont++;
             query.append(" WHERE TO_DATE(TO_CHAR(EMA.FECHA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + TiempoUtil.getFechaDDMMYY(fechaInicio) + "' AND '" + TiempoUtil.getFechaDDMMYY(fechaFin) + "' ");

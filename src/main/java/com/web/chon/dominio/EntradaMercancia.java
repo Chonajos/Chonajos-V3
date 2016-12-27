@@ -40,6 +40,7 @@ public class EntradaMercancia extends ValueObject implements Serializable {
     private BigDecimal cantidadEmpaquesProvedor;
     private BigDecimal cantidadEmpaquesReales;
     private BigDecimal diasPago;
+    private String nombreRecibidor;
 
     @Override
     public String toString() {
@@ -262,6 +263,14 @@ public class EntradaMercancia extends ValueObject implements Serializable {
 
     public void setDiasPago(BigDecimal diasPago) {
         this.diasPago = diasPago;
+    }
+
+    public String getNombreRecibidor() {
+        return nombreRecibidor;
+    }
+
+    public void setNombreRecibidor(String nombreRecibidor) {
+        this.nombreRecibidor = nombreRecibidor;
     }
 
     

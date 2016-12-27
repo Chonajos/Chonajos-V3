@@ -272,7 +272,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         paramReport.put("kilosProvedor", em.getKilosTotalesProvedor().toString());
         paramReport.put("kilosBodega", em.getKilosTotales().toString());
         paramReport.put("comentariosGenerales", em.getComentariosGenerales());
-        paramReport.put("nombreRecibidor", usuario.getNombreCompleto());
+        paramReport.put("nombreRecibidor", em.getNombreRecibidor());
         paramReport.put("cantidadProvedor", em.getCantidadEmpaquesProvedor());
         paramReport.put("cantidadBodega", em.getCantidadEmpaquesReales());
         paramReport.put("ID_EM_PK", em.getIdEmPK().toString());
@@ -354,17 +354,21 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
                 ifaceEntMerProPaq.updatePaquete(dataProductoAutoAjuste.getIdEmpPK());
                 EntradaMercancia em = ifaceEntradaMercancia.getEntradaByIdEmPFk(dataProductoAutoAjuste.getIdEmpPK());
                 BigDecimal to = new BigDecimal(0);
-                for (EntradaMercanciaProducto p : em.getListaProductos()) {
+                BigDecimal ca = new BigDecimal(0);
+                for (EntradaMercanciaProducto p : em.getListaProductos()) 
+                {
                     to = to.add(p.getKilosTotalesProducto(), MathContext.UNLIMITED);
+                    ca = ca.add(p.getCantidadPaquetes(), MathContext.UNLIMITED);
                 }
 
                 em.setKilosTotales(to);
+                em.setCantidadEmpaquesReales(ca);
                 ifaceEntradaMercancia.updateEntradaMercancia(em);
                 buscar();
 
                 JsfUtil.addSuccessMessageClean("Se han actualizado los inventarios correctamente con auto-ajuste");
             } else {
-                JsfUtil.addErrorMessageClean("Ha ocurriod un error al actualizar entrada de mercancia con auto-ajuste");
+                JsfUtil.addErrorMessageClean("Ha ocurrido un error al actualizar entrada de mercancia con auto-ajuste");
             }
         } else {
             JsfUtil.addErrorMessageClean("Ha ocurrido un error al actualizar inventarios con auto-ajuste");
@@ -421,12 +425,15 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
                 provedor.setIdProvedorPK(null);
             }
             BigDecimal idProvedor = provedor == null ? null : provedor.getIdProvedorPK();
-            if (carro != null) {
+            if (carro != null) 
+            {
+                fechaInicio=fechaFiltroInicio;
+                fechaFin=fechaFiltroFin;
                 fechaFiltroFin = null;
                 fechaFiltroInicio = null;
             }
             lstEntradaMercancia = ifaceEntradaMercancia.getEntradaProductoByIntervalDate(fechaFiltroInicio, fechaFiltroFin, idSucursal, idProvedor, carro);
-
+            verificarCombo();
         }
     }
 
