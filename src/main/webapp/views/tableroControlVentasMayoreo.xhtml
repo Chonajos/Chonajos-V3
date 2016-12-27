@@ -44,7 +44,7 @@
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
                             <p:outputLabel value="Carro:" class="col-lg-4 col-md-4 col-sm-6 col-xs-12"/>
-                            <p:autoComplete id="carro" class="col-lg-1 col-md-1 col-sm-2 col-xs-12" value="#{beanTableroControlVentaMeyoreo.carroSucursal}" completeMethod="#{beanTableroControlVentaMeyoreo.autocompleteCarro}" inputStyle="width: 50px"/>
+                            <p:autoComplete id="carro" class="col-lg-1 col-md-1 col-sm-2 col-xs-12" value="#{beanTableroControlVentaMeyoreo.carroSucursal}" completeMethod="#{beanTableroControlVentaMeyoreo.autocompleteCarro}" inputStyle="width: 50px" placeholder="Todos"/>
                           
                         </div>
                     </div>
@@ -67,7 +67,7 @@
                         <p:dataTable id="table" var="model" styleClass="ui-datatable-hor-scroll"
                                      value="#{beanTableroControlVentaMeyoreo.lstCarroDetalleGeneral}"
                                      emptyMessage="No se encontraron Registros" scrollable="true"
-                                     scrollHeight="320" paginator="true" rows="50">
+                                     paginator="true" rows="20">
                             <p:column headerText="Carro" class="alignLeft"  width="60px;" >
                                 <h:outputText value="#{model.carro}" />
                             </p:column>

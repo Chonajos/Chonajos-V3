@@ -129,6 +129,9 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
 
     public void buscar() {
 
+        BigDecimal bCarroSucursal = carroSucursal == null ? null : new BigDecimal(carroSucursal);
+        int diasDiferencia = 0;
+
         //Si el no se a selecionado un carro ni un rango de fecha se ponen el rango de fechas con el dia de hoy
         if (carroSucursal == null && (fechaInicio == null || fechaFin == null)) {
             fechaFin = context.getFechaSistema();
@@ -137,12 +140,15 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
 
         strFechaInicio = TiempoUtil.getFechaDDMMYYYY(fechaInicio);
         strFechaFin = TiempoUtil.getFechaDDMMYYYY(fechaFin);
+        if (!strFechaFin.equals("") && !strFechaInicio.equals("")) {
+            diasDiferencia = TiempoUtil.diferenciasDeFechas(fechaInicio, fechaFin);
+        }
 
-        //validamos que el ramgo de fecha no sobrepase 90 dias
-        if (TiempoUtil.diferenciasDeFechas(fechaInicio, fechaFin) > 90) {
+        //validamos que el ramgo de fecha no sobrepase 90 dias esto solo aplica es un filtro por todos los carros
+        if (diasDiferencia > 90 && carroSucursal == null) {
             JsfUtil.addErrorMessage("No se puede realizar una busqueda con un intervalo de fechas mayor a 90 dias.");
         } else {
-            lstCarroDetalleGeneral = ifaceEntradaMercancia.getReporteGeneralCarro(idSucursal, idProvedor, new BigDecimal(carroSucursal), strFechaInicio, strFechaFin);
+            lstCarroDetalleGeneral = ifaceEntradaMercancia.getReporteGeneralCarro(idSucursal, idProvedor, bCarroSucursal, strFechaInicio, strFechaFin);
             calcularTotalesGeneral();
         }
 
@@ -201,7 +207,7 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
             inventarioCosto = totalVentaDetalle.subtract(costoCarro);
             inventarioVenta = totalVentaDetalle.subtract(valorCarro);
             totalEntradaEmpaquesDetalle = totalEntradaEmpaquesDetalle.add(dominio.getEmpaquesEntrada());
-                totalEntradaKilosDetalle = totalEntradaKilosDetalle.add(dominio.getKiloEntrada());
+            totalEntradaKilosDetalle = totalEntradaKilosDetalle.add(dominio.getKiloEntrada());
         }
 
     }
@@ -210,23 +216,21 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
         viewEstate = "init";
         setTitle("Reportes de Ventas.");
     }
-    
-    public List<String> autocompleteCarro(String carro){
+
+    public List<String> autocompleteCarro(String carro) {
         List<String> lstReturn = new ArrayList<String>();
-        for(EntradaMercancia dominio:lstCarros){
-            
-            if(carro.trim().equals("")){
+        for (EntradaMercancia dominio : lstCarros) {
+
+            if (carro.trim().equals("")) {
                 lstReturn.add(dominio.getIdCarroSucursal().toString());
-            }else  if(dominio.getIdCarroSucursal().toString().contains(carro)){
+            } else if (dominio.getIdCarroSucursal().toString().contains(carro)) {
                 lstReturn.add(dominio.getIdCarroSucursal().toString());
             }
-            
+
         }
-        
+
         return lstReturn;
     }
-    
-  
 
     @Override
     public String delete() {
@@ -331,8 +335,6 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
     public void setCarroSucursal(String carroSucursal) {
         this.carroSucursal = carroSucursal;
     }
-
-   
 
     public UsuarioDominio getUsuario() {
         return usuario;

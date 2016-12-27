@@ -67,24 +67,34 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
     private static final long serialVersionUID = 1L;
 
-    @Autowired private IfaceVenta ifaceVenta;
-    @Autowired private IfaceCredito ifaceCredito;
-    @Autowired private IfaceTipoVenta ifaceTipoVenta;
-    @Autowired private IfaceCatCliente ifaceCatCliente;
-    @Autowired private IfaceCatUsuario ifaceCatUsuario;
-    @Autowired private IfaceSubProducto ifaceSubProducto;
-    @Autowired private PlataformaSecurityContext context;
-    @Autowired private IfaceVentaMayoreo ifaceVentaMayoreo;
-    @Autowired private IfaceNegocioExistencia ifaceNegocioExistencia;
-    @Autowired private IfaceVentaMayoreoProducto ifaceVentaMayoreoProducto;
-    
+    @Autowired
+    private IfaceVenta ifaceVenta;
+    @Autowired
+    private IfaceCredito ifaceCredito;
+    @Autowired
+    private IfaceTipoVenta ifaceTipoVenta;
+    @Autowired
+    private IfaceCatCliente ifaceCatCliente;
+    @Autowired
+    private IfaceCatUsuario ifaceCatUsuario;
+    @Autowired
+    private IfaceSubProducto ifaceSubProducto;
+    @Autowired
+    private PlataformaSecurityContext context;
+    @Autowired
+    private IfaceVentaMayoreo ifaceVentaMayoreo;
+    @Autowired
+    private IfaceNegocioExistencia ifaceNegocioExistencia;
+    @Autowired
+    private IfaceVentaMayoreoProducto ifaceVentaMayoreoProducto;
+
     private ArrayList<Cliente> lstCliente;
     private ArrayList<Usuario> lstUsuario;
     private ArrayList<TipoVenta> lstTipoVenta;
     private ArrayList<Subproducto> lstProducto;
     private ArrayList<VentaProductoMayoreo> lstVenta;
     private ArrayList<ExistenciaProducto> lstExistencias;
-    
+
     private Credito c;
     private Cliente cliente;
     private Usuario usuario;
@@ -104,7 +114,6 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     private BigDecimal idExistencia;
     private BigDecimal totalVentaGeneral;
     private BigDecimal totalProductoTemporal;
-    
 
     private String title = "";
     private String viewEstate = "";
@@ -113,9 +122,9 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     private String rutaPDF;
     private String number;
     private String pathFileJasper = "C:/Users/Juan/Documents/NetBeansProjects/Chonajos-V2/ticket.jasper";
-    
+
     private Map paramReport = new HashMap();
-    
+
     private ByteArrayOutputStream outputStream;
 
     private boolean charLine = true;
@@ -125,22 +134,23 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     private BigDecimal descuento;
     private BigDecimal dejaACuenta;
     private BigDecimal totalVentaDescuento;
-    
+
     private final BigDecimal DIAS_PLAZO = new BigDecimal("7");
     private final BigDecimal ZERO = new BigDecimal(0);
     private final BigDecimal INTERES_VENTA = new BigDecimal("0.60");
     private final BigDecimal PORCENTAJE_RANGO_VENTA = new BigDecimal("0.20");
-    
+
     private int folioCredito = 0;
 
     private boolean permisionToWrite;
     private boolean permisionToEdit;
     private boolean credito;
-    
+    private boolean shoMessageKiloPromedio;
+
     //---Variables Codigo de Barras --//
     private String codigoBarras;
     private String idSubpProducto;
-    
+
     private BigDecimal idTipoempaqueFk;
     private BigDecimal idTipoConvenioFk;
     private BigDecimal idCarro;
@@ -150,7 +160,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
     @PostConstruct
     public void init() {
-        
+
         credito = false;
         date = context.getFechaSistema();
         cliente = new Cliente();
@@ -209,26 +219,21 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                     idTipoempaqueFk = new BigDecimal(segArray[3]);
                     idTipoConvenioFk = new BigDecimal(segArray[4]);
                     lstExistencias = ifaceNegocioExistencia.getExistenciaByBarCode(idSubpProducto, idTipoempaqueFk, idTipoConvenioFk, idCarro, idSucursalfk);
-                    if (lstExistencias.size() == 1)
-                    {
+                    if (lstExistencias.size() == 1) {
                         selectedExistencia = new ExistenciaProducto();
                         selectedExistencia = lstExistencias.get(0);
                         habilitarBotones();
                         RequestContext.getCurrentInstance().update("formContent:modelo2");
                         RequestContext.getCurrentInstance().update("formContent:autocompleteProducto");
-                    } else  if (lstExistencias.size() > 1)
-                    {
+                    } else if (lstExistencias.size() > 1) {
                         selectedExistencia = new ExistenciaProducto();
                         habilitarBotones();
                         RequestContext.getCurrentInstance().update("formContent:modelo2");
                         RequestContext.getCurrentInstance().update("formContent:autocompleteProducto");
-                    }
-                    else 
-                    {
+                    } else {
                         System.out.println("Lista: ");
-                        for(ExistenciaProducto e:lstExistencias)
-                        {
-                            System.out.println("Existencia: "+e.toString());
+                        for (ExistenciaProducto e : lstExistencias) {
+                            System.out.println("Existencia: " + e.toString());
                         }
                         JsfUtil.addWarnMessage("No se encontraron existencias de este producto");
                     }
@@ -242,26 +247,21 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                     idTipoempaqueFk = new BigDecimal(diaArray[3]);
                     idTipoConvenioFk = new BigDecimal(diaArray[4]);
                     lstExistencias = ifaceNegocioExistencia.getExistenciaByBarCode(idSubpProducto, idTipoempaqueFk, idTipoConvenioFk, idCarro, idSucursalfk);
-                    if (lstExistencias.size() == 1)
-                    {
+                    if (lstExistencias.size() == 1) {
                         selectedExistencia = new ExistenciaProducto();
                         selectedExistencia = lstExistencias.get(0);
                         habilitarBotones();
                         RequestContext.getCurrentInstance().update("formContent:modelo2");
                         RequestContext.getCurrentInstance().update("formContent:autocompleteProducto");
-                    } else  if (lstExistencias.size() > 1)
-                    {
+                    } else if (lstExistencias.size() > 1) {
                         selectedExistencia = new ExistenciaProducto();
                         habilitarBotones();
                         RequestContext.getCurrentInstance().update("formContent:modelo2");
                         RequestContext.getCurrentInstance().update("formContent:autocompleteProducto");
-                    }
-                    else 
-                    {
+                    } else {
                         System.out.println("Lista: ");
-                        for(ExistenciaProducto e:lstExistencias)
-                        {
-                            System.out.println("Existencia: "+e.toString());
+                        for (ExistenciaProducto e : lstExistencias) {
+                            System.out.println("Existencia: " + e.toString());
                         }
                         JsfUtil.addWarnMessage("No se encontraron existencias de este producto");
                     }
@@ -435,9 +435,9 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         lstExistencias = new ArrayList<ExistenciaProducto>();
 
         String idproductito = subProducto == null ? null : subProducto.getIdSubproductoPk();
-        
+
         if (idproductito != null) {
-            lstExistencias = ifaceNegocioExistencia.getExistencias(idSucu, null, null, idproductito, null, null, null,null);
+            lstExistencias = ifaceNegocioExistencia.getExistencias(idSucu, null, null, idproductito, null, null, null, null);
             if (lstExistencias.size() == 1) {
 
                 selectedExistencia = new ExistenciaProducto();
@@ -476,6 +476,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         BigDecimal kilosPromedioMinimo = ZERO;
         BigDecimal kilosPromedioMaximo = ZERO;
         BigDecimal kilosPromedio = ZERO;
+        shoMessageKiloPromedio = false;
 
         kilosPromedio = selectedExistencia.getKilospromprod();
 
@@ -505,8 +506,9 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                 JsfUtil.addErrorMessage("Seleccione un producto");
                 return 0;
             } else if (data.getKilosVendidos().intValue() > kilosPromedioMaximo.intValue() || data.getKilosVendidos().intValue() < kilosPromedioMinimo.intValue()) {
-                JsfUtil.addErrorMessage("Cantidad de Kilos a vender no validos ");
-                return 0;
+                JsfUtil.addWarnMessage("Cantidad de Kilos a vender no conciden con los kilos promedio de entrada " + kilosPromedio);
+                shoMessageKiloPromedio = true;
+                return 1;
             }
             return 1;
 
@@ -514,19 +516,24 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
     }
 
-    public void addProducto() {
 
+    public void addProducto() {
+        shoMessageKiloPromedio = false;
         BigDecimal kilosPromedioMinimo = ZERO;
         BigDecimal kilosPromedioMaximo = ZERO;
         BigDecimal kilosPromedio = ZERO;
 
-        kilosPromedio = selectedExistencia.getKilospromprod();
+        kilosPromedio = selectedExistencia == null ? ZERO : selectedExistencia.getKilospromprod();
 
         kilosPromedioMinimo = kilosPromedio.subtract(kilosPromedio.multiply(PORCENTAJE_RANGO_VENTA));
         kilosPromedioMaximo = kilosPromedio.add(kilosPromedio.multiply(PORCENTAJE_RANGO_VENTA));
         kilosPromedioMinimo = kilosPromedioMinimo.multiply(data.getCantidadEmpaque());
         kilosPromedioMaximo = kilosPromedioMaximo.multiply(data.getCantidadEmpaque());
 
+        if (data.getKilosVendidos().intValue() > kilosPromedioMaximo.intValue() || data.getKilosVendidos().intValue() < kilosPromedioMinimo.intValue()) {
+            JsfUtil.addWarnMessage("Cantidad de Kilos a vender no conciden con los kilos promedio de entrada " + kilosPromedio);
+            shoMessageKiloPromedio = true;
+        }
         if (selectedExistencia == null || data.getKilosVendidos().compareTo(BigDecimal.ZERO) == 0) {
             JsfUtil.addErrorMessage("Seleccione un Producto de la tabla o peso en 0 Kg.");
 
@@ -538,8 +545,6 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
             JsfUtil.addErrorMessage("Cantidad de Empaque insuficiente");
         } else if (data.getKilosVendidos().intValue() > selectedExistencia.getKilosTotalesProducto().intValue()) {
             JsfUtil.addErrorMessage("Cantidad de Kilos insuficiente");
-//        } else if (data.getKilosVendidos().intValue() > kilosPromedioMaximo.intValue() || data.getKilosVendidos().intValue() < kilosPromedioMinimo.intValue()) {
-//            JsfUtil.addErrorMessage("Cantidad de Kilos a vender no validos ");
         } else if (lstVenta.isEmpty()) {
             add();
             limpia();
@@ -548,8 +553,8 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
             boolean banderaRepetido = false;
             for (int i = 0; i < lstVenta.size(); i++) {
                 VentaProductoMayoreo productoRepetido = lstVenta.get(i);
-                
-                if (productoRepetido.getIdExistenciaFk().intValue() == selectedExistencia.getIdExistenciaProductoPk().intValue() && productoRepetido.getPrecioProducto().compareTo(data.getPrecioProducto())==0 ) {
+
+                if (productoRepetido.getIdExistenciaFk().intValue() == selectedExistencia.getIdExistenciaProductoPk().intValue() && productoRepetido.getPrecioProducto().compareTo(data.getPrecioProducto()) == 0) {
                     banderaRepetido = true;
                     addRepetido(productoRepetido, i);
 
@@ -566,6 +571,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
             }
 
         }
+
         calculaAhorro(null);
 
     }
@@ -635,7 +641,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         lstExistencias = new ArrayList<ExistenciaProducto>();
         data.reset();
 
-        JsfUtil.addSuccessMessageClean("Producto Agregado al Pedido Correctamente");
+        JsfUtil.addSuccessMessage("Producto Agregado al Pedido Correctamente");
         subProducto = new Subproducto();
         setViewEstate("viewAddProducto");
         totalProductoTemporal = null;
@@ -689,7 +695,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
         for (VentaProductoMayoreo venta : lstVenta) {
             String cantidad = venta.getCantidadEmpaque() + " - " + venta.getKilosVendidos() + "Kg.";
-            productos.add(venta.getNombreProducto() + " " + venta.getNombreEmpaque()+" ->"+venta.getClave()+"("+venta.getFolioCarro()+")");
+            productos.add(venta.getNombreProducto() + " " + venta.getNombreEmpaque() + " ->" + venta.getClave() + "(" + venta.getFolioCarro() + ")");
             productos.add("  " + cantidad + "                     " + nf.format(venta.getPrecioProducto()) + "    " + nf.format(venta.getTotalVenta()));
         }
 
@@ -707,7 +713,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         DecimalFormat df = new DecimalFormat("#,###.00");
         paramReport.clear();
         paramReport.put("fechaVenta", dateTime);
-        System.out.println("idventa "+idVenta);
+        System.out.println("idventa " + idVenta);
         paramReport.put("noVenta", Integer.toString(idVenta));
         paramReport.put("cliente", cliente.getNombreCompleto());
         paramReport.put("vendedor", usuario.getNombreCompletoUsuario());
@@ -1414,6 +1420,14 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
     public void setCodigoBarras(String codigoBarras) {
         this.codigoBarras = codigoBarras;
+    }
+
+    public boolean isShoMessageKiloPromedio() {
+        return shoMessageKiloPromedio;
+    }
+
+    public void setShoMessageKiloPromedio(boolean shoMessageKiloPromedio) {
+        this.shoMessageKiloPromedio = shoMessageKiloPromedio;
     }
 
 }
