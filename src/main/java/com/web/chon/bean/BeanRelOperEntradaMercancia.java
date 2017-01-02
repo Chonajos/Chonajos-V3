@@ -387,29 +387,34 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
     }
 
-    public void verificarCombo() {
+    public void verificarCombo() 
+    {
         if (filtro == -1) {
             //se habilitan los calendarios.
-            fechaFiltroInicio = null;
-            fechaFiltroFin = null;
+            //fechaFiltroInicio = null;
+            //fechaFiltroFin = null;
             enableCalendar = false;
         } else {
             switch (filtro) {
                 case 1:
                     fechaFiltroInicio = new Date();
                     fechaFiltroFin = new Date();
+                    carro = null;
                     break;
                 case 2:
                     fechaFiltroInicio = TiempoUtil.getDayOneOfMonth(new Date());
                     fechaFiltroFin = TiempoUtil.getDayEndOfMonth(new Date());
+                    carro = null;
                     break;
                 case 3:
                     fechaFiltroInicio = TiempoUtil.getDayOneYear(new Date());
                     fechaFiltroFin = TiempoUtil.getDayEndYear(new Date());
+                    carro = null;
                     break;
                 default:
                     fechaFiltroFin = null;
                     fechaFiltroFin = null;
+                    carro = null;
                     break;
             }
             enableCalendar = true;
@@ -417,7 +422,8 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     }
 
     public void buscar() {
-        if (fechaFiltroInicio == null || fechaFiltroFin == null) {
+        if ((fechaFiltroInicio == null || fechaFiltroFin == null) && carro ==null)
+        {
             JsfUtil.addErrorMessageClean("Favor de ingresar un rango de fechas");
         } else {
             if (provedor == null) {
@@ -493,7 +499,6 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         dataProductoNuevo.setIdSubProductoFK(subProducto.getIdSubproductoPk());
         dataProductoNuevo.setKilosTotalesProducto(dataProductoNuevo.getPesoNeto());
         System.out.println("Nuevo Producto: " + dataProductoNuevo.toString());
-
         if (ifaceEntradaMercanciaProducto.insertEntradaMercanciaProducto(dataProductoNuevo) != 0) {
             ExistenciaProducto ep = new ExistenciaProducto();
             ep.setIdExistenciaProductoPk(new BigDecimal(ifaceNegocioExistencia.getNextVal()));
@@ -513,11 +518,14 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
                 JsfUtil.addSuccessMessageClean("El producto se ha agregado correctamente");
                 EntradaMercancia em = ifaceEntradaMercancia.getEntradaByIdEmPFk(dataProductoNuevo.getIdEmpPK());
                 BigDecimal to = new BigDecimal(0);
+                BigDecimal ca = new BigDecimal(0);
                 for (EntradaMercanciaProducto p : em.getListaProductos()) {
                     to = to.add(p.getKilosTotalesProducto(), MathContext.UNLIMITED);
+                    ca = ca.add(p.getCantidadPaquetes(), MathContext.UNLIMITED);
                 }
-
+                
                 em.setKilosTotales(to);
+                em.setCantidadEmpaquesReales(ca);
                 ifaceEntradaMercancia.updateEntradaMercancia(em);
                 buscar();
 

@@ -95,6 +95,7 @@
                         <p:dataTable id="tabla" var="model"
                                      value="#{beanHistorialAbonos.lstAbonosCreditos}" 
                                      rows="20"
+                                     rowStyleClass="#{model.estatusAbono eq 1 ? 'alert-info':'alert-danger'}"
                                      paginator="true" styleClass="ui-datatable-hor-scroll" 
                                      emptyMessage="No se encontraron Registros" 
                                      rendered="#{beanHistorialAbonos.viewEstate =='init'}">
@@ -135,7 +136,7 @@
                             </p:column>
                            
                            <p:column headerText="Cancelar" width="60px;" class="alignCenter">
-                                <p:commandButton id="cancel"  ajax="true"
+                               <p:commandButton id="cancel"  ajax="true" disabled="#{model.estatusAbono.intValue() != 1}"
                                                  process="@this" action="#{beanHistorialAbonos.cancelarAbono()}"
                                                  icon="ui-icon-trash" styleClass="ui-priority-primary" update=":formContent"
                                                  >

@@ -31,7 +31,7 @@ public class EjbPagoBancario implements NegocioPagosBancarios{
         System.out.println("Objeto: "+pb.toString());
           try {
               
-            Query query = em.createNativeQuery("INSERT INTO  PAGOS_BANCARIOS (ID_TRANS_BANCARIAS_PK,ID_CAJA_FK,ID_CONCEPTO_FK,ID_TIPO_FK,COMENTARIOS,ID_USER_FK,MONTO,FECHA,ID_STATUS_FK,FECHA_TRANSFERENCIA,FOLIO_ELECTRONICO,FECHA_DEPOSITO,ID_CUENTA_FK,CONCEPTO,REFERENCIA,ID_OPERACION_FK) values(?,?,?,?,?,?,?,sysdate,?,?,?,?,?,?,?,?)");
+            Query query = em.createNativeQuery("INSERT INTO  PAGOS_BANCARIOS (ID_TRANS_BANCARIAS_PK,ID_CAJA_FK,ID_CONCEPTO_FK,ID_TIPO_FK,COMENTARIOS,ID_USER_FK,MONTO,FECHA,ID_STATUS_FK,FECHA_TRANSFERENCIA,FOLIO_ELECTRONICO,FECHA_DEPOSITO,ID_CUENTA_FK,CONCEPTO,REFERENCIA,ID_OPERACION_FK,ID_TIPO_TD,ID_LLAVE_FK) values(?,?,?,?,?,?,?,sysdate,?,?,?,?,?,?,?,?,?,?)");
             query.setParameter(1, pb.getIdTransBancariasPk());
             query.setParameter(2, pb.getIdCajaFk());
             query.setParameter(3, pb.getIdConceptoFk());
@@ -47,6 +47,9 @@ public class EjbPagoBancario implements NegocioPagosBancarios{
             query.setParameter(13, pb.getConcepto());
             query.setParameter(14, pb.getReferencia());
             query.setParameter(15, pb.getIdOperacionCajaFk());
+            query.setParameter(16, pb.getIdTipoTD());
+            query.setParameter(17, pb.getIdLlaveFk());
+            
             return query.executeUpdate();
 
         } catch (Exception ex) {

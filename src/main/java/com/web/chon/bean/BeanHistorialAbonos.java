@@ -267,6 +267,9 @@ public class BeanHistorialAbonos implements Serializable {
 
                 //verificar si el credito se libero. si se libero volver a activarlo
                 //cancelar el abono de credito
+                abono.setEstatusAbono(new BigDecimal(2));
+                ifaceAbonoCredito.update(abono);
+                ifaceCredito.updateStatus(abono.getIdCreditoFk(), new BigDecimal(1));
                 opcaja = new OperacionesCaja();
                 caja = ifaceCaja.getCajaByIdUsuarioPk(usuarioDominio.getIdUsuario());
                 opcaja.setIdCajaFk(caja.getIdCajaPk());
@@ -274,14 +277,22 @@ public class BeanHistorialAbonos implements Serializable {
                 opcaja.setEntradaSalida(salida);
                 opcaja.setIdSucursalFk(new BigDecimal(usuarioDominio.getSucId()));
                 opcaja.setMonto(abono.getMontoAbono());
-
                 opcaja.setIdConceptoFk(conceptoAbonoEfectivo);
                 opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
-                
                 opcaja.setIdStatusFk(new BigDecimal(1));
+                opcaja.setComentarios("Cancelación de Abono");
+                ifaceOperacionesCaja.insertaOperacion(opcaja);
+                
                 break;
             case 2:
                 System.out.println("Cancelar Abono en Transferencia");
+                /*Verificar si ya fue aceptado o no el la transferencia
+                case 1: aceptada:
+                No insertar operaciones en caja
+                case 2: no aceptada:
+                Insertar operación de salida comentario de Cancelación de Abono
+                
+                */
                 break;
             case 3:
                 System.out.println("Cancelar Abono en Cheque");
@@ -336,8 +347,7 @@ public class BeanHistorialAbonos implements Serializable {
     public void buscar() {
         if (cliente == null) {
             cliente = new Cliente();
-
-        }
+                 }
         lstAbonosCreditos = ifaceAbonoCredito.getHistorialAbonos(cliente.getId_cliente(), idCobradorFk, fechaFiltroInicio, fechaFiltroFin, idTipoAbonoFk, idAbonoPk, idCreditoFk);
         sumaTotal();
     }

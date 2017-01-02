@@ -437,6 +437,8 @@ public class BeanBuscaVenta implements Serializable, BeanSimple {
                         pagoBancario.setMonto(totalVenta);
                         pagoBancario.setReferencia(referencia);
                         pagoBancario.setIdOperacionCajaFk(opcaja.getIdOperacionesCajaPk());
+                        pagoBancario.setIdTipoTD(new BigDecimal(3));
+                        pagoBancario.setIdLlaveFk(model.get(0).getIdVenta());
                         if (idTipoPagoFk.intValue() == 2 || idTipoPagoFk.intValue() == 4) {
                             if (ifacePagosBancarios.insertaPagoBancario(pagoBancario) == 1) {
                                 System.out.println("Se ingreso correctamente un deposito bancario");

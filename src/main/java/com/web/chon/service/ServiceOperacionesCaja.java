@@ -88,6 +88,7 @@ public class ServiceOperacionesCaja implements IfaceOperacionesCaja {
             op.setNombreConcepto(obj[14] == null ? "" : obj[14].toString());
             op.setNombreOperacion(obj[15] == null ? null : obj[15].toString());
             op.setNombreUsuario(obj[16] == null ? null : obj[16].toString());
+            op.setNombreSucursal(obj[17] == null ? null : obj[17].toString());
             op.setNumero(i);
             i+=1;
             if(op.getIdStatusFk().intValue()==1)

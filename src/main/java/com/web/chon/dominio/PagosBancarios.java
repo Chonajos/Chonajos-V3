@@ -39,13 +39,18 @@ public class PagosBancarios implements Serializable {
     private BigDecimal numero;
     private String nombreStatus;
     private BigDecimal idOperacionCajaFk;
+    private BigDecimal idTipoTD; //para poder rastrear llaves
+    private BigDecimal idLlaveFk;
 
     @Override
     public String toString() {
-        return "PagosBancarios{" + "idTransBancariasPk=" + idTransBancariasPk + ", idCajaFk=" + idCajaFk + ", idConceptoFk=" + idConceptoFk + ", idTipoFk=" + idTipoFk + ", comentarios=" + comentarios + ", idUserFk=" + idUserFk + ", monto=" + monto + ", fecha=" + fecha + ", idStatusFk=" + idStatusFk + ", fechaTranferencia=" + fechaTranferencia + ", folioElectronico=" + folioElectronico + ", fechaDeposito=" + fechaDeposito + ", idCuentaFk=" + idCuentaFk + ", concepto=" + concepto + ", referencia=" + referencia + ", nombreCaja=" + nombreCaja + ", nombreConcepto=" + nombreConcepto + ", nombreTipoAbono=" + nombreTipoAbono + ", nombreUsuario=" + nombreUsuario + ", nombreBanco=" + nombreBanco + ", numero=" + numero + ", nombreStatus=" + nombreStatus + ", idOperacionCajaFk=" + idOperacionCajaFk + '}';
+        return "PagosBancarios{" + "idTransBancariasPk=" + idTransBancariasPk + ", idCajaFk=" + idCajaFk + ", idConceptoFk=" + idConceptoFk + ", idTipoFk=" + idTipoFk + ", comentarios=" + comentarios + ", idUserFk=" + idUserFk + ", monto=" + monto + ", fecha=" + fecha + ", idStatusFk=" + idStatusFk + ", fechaTranferencia=" + fechaTranferencia + ", folioElectronico=" + folioElectronico + ", fechaDeposito=" + fechaDeposito + ", idCuentaFk=" + idCuentaFk + ", concepto=" + concepto + ", referencia=" + referencia + ", nombreCaja=" + nombreCaja + ", nombreConcepto=" + nombreConcepto + ", nombreTipoAbono=" + nombreTipoAbono + ", nombreUsuario=" + nombreUsuario + ", nombreBanco=" + nombreBanco + ", numero=" + numero + ", nombreStatus=" + nombreStatus + ", idOperacionCajaFk=" + idOperacionCajaFk + ", idTipoTD=" + idTipoTD + ", idLlaveFk=" + idLlaveFk + '}';
     }
 
+    
+    
     public void reset() {
+        idTipoTD=null;
         idTransBancariasPk = null;
         idCajaFk = null;
         idConceptoFk = null;
@@ -62,6 +67,7 @@ public class PagosBancarios implements Serializable {
         concepto = null;
         referencia = null;
         idOperacionCajaFk=null;
+        idLlaveFk=null;
     }
     public BigDecimal getNumero() {
         return numero;
@@ -249,4 +255,21 @@ public class PagosBancarios implements Serializable {
         this.nombreStatus = nombreStatus;
     }
 
+    public BigDecimal getIdTipoTD() {
+        return idTipoTD;
+    }
+
+    public void setIdTipoTD(BigDecimal idTipoTD) {
+        this.idTipoTD = idTipoTD;
+    }
+
+    public BigDecimal getIdLlaveFk() {
+        return idLlaveFk;
+    }
+
+    public void setIdLlaveFk(BigDecimal idLlaveFk) {
+        this.idLlaveFk = idLlaveFk;
+    }
+
+    
 }

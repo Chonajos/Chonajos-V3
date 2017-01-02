@@ -101,12 +101,13 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
     @Override
     public List<Object[]> getOperacionesBy(BigDecimal idCajaFk, BigDecimal idOperacionFk, BigDecimal idConceptoFk, String fechaInicio, String fechaFin, BigDecimal idStatusFk, BigDecimal idUserFk, BigDecimal idCorte, BigDecimal inout) {
         StringBuffer cadena = new StringBuffer("select opc.*,cj.NOMBRE,con.NOMBRE "
-                + "as concepto,tio.NOMBRE as Operacion,u.NOMBRE_USUARIO from OPERACIONES_CAJA opc\n"
+                + "as concepto,tio.NOMBRE as Operacion,u.NOMBRE_USUARIO,sucu.NOMBRE_SUCURSAL from OPERACIONES_CAJA opc\n"
                 + "inner join caja cj on cj.ID_CAJA_PK = opc.ID_CAJA_FK\n"
                 + "inner join CONCEPTOS con on con.ID_CONCEPTOS_PK = opc.ID_CONCEPTO_FK\n"
                 + "inner join TIPOS_OPERACION tio on tio.ID_TIPO_OPERACION_PK = con.ID_TIPO_OPERACION_FK\n"
                 + "inner join USUARIO u on u.ID_USUARIO_PK = opc.ID_USER_FK\n"
-                + "WHERE opc.ID_CAJA_FK = " + idCajaFk + "\n"
+                + "inner join sucursal sucu on sucu.ID_SUCURSAL_PK = opc.ID_SUCURSAL_FK\n "
+                + " WHERE opc.ID_CAJA_FK = " + idCajaFk + "\n"
                 + "and opc.ID_USER_FK= " + idUserFk + " and TO_DATE(TO_CHAR(opc.FECHA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "'");
 
         if (idOperacionFk != null && idOperacionFk.intValue() != 0) {

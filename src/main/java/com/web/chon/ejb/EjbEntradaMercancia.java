@@ -180,7 +180,7 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
     @Override
     public int updateEntradaMercancia(EntradaMercancia entrada) {
 
-        //System.out.println("EJB_UPDATE_ENTRADAMERCANCIA");
+        System.out.println("------------------EJB_UPDATE_ENTRADAMERCANCIA---------------------");
         try {
             System.out.println("Entrada: " + entrada);
             Query query = em.createNativeQuery("UPDATE ENTRADAMERCANCIA SET ID_PROVEDOR_FK=?,MOVIMIENTO=?,"
