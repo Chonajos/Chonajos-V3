@@ -166,7 +166,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     @PostConstruct
     public void init() {
         permisionApartado = true;
-        mensajeApartado= false;
+        mensajeApartado = false;
         value1 = false;
         apartado = new Apartado();
         //cambio = new BigDecimal(0);
@@ -205,10 +205,10 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     public void habilitaApartado() {
         if (value1) {
             permisionApartado = false;
-            
+
         } else {
             permisionApartado = true;
-            
+
         }
 
     }
@@ -345,15 +345,12 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
         paramReport.put("totalLetra", totalVentaStr);
         paramReport.put("labelFecha", "Fecha de Pago:");
         paramReport.put("labelFolio", "Folio de Venta:");
-        if(mensajeApartado)
-        {
+        if (mensajeApartado) {
             paramReport.put("estado", "PEDIDO APARTADO");
-        }
-        else
-        {
+        } else {
             paramReport.put("estado", "PEDIDO PAGADO");
         }
-        
+
         paramReport.put("telefonos", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:" + usuarioDominio.getTelefonoSucursal());
         paramReport.put("labelSucursal", usuarioDominio.getNombreSucursal());
 
@@ -444,12 +441,11 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
 
     public void insertarPago() {
         verificarTipo();
-        System.out.println("Se cambió el estatus");
+        //System.out.println("Se cambió el estatus");
         opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
         opcaja.setMonto(ventaMayoreo.getTotalVenta());
-        opcaja.setComentarios("Folio: "+ventaMayoreo.getVentaSucursal());
-        if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1)
-        {
+        opcaja.setComentarios("Folio: " + ventaMayoreo.getVentaSucursal());
+        if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
             if (idTipoPagoFk.intValue() == 3) {
                 Documento d = new Documento();
                 d.setIdDocumentoPk(new BigDecimal(ifaceDocumentos.getNextVal()));
@@ -488,6 +484,9 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
             pagoBancario.setMonto(ventaMayoreo.getTotalVenta());
             pagoBancario.setReferencia(referencia);
             pagoBancario.setIdOperacionCajaFk(opcaja.getIdOperacionesCajaPk());
+            pagoBancario.setIdTipoTD(new BigDecimal(3));
+            pagoBancario.setIdLlaveFk(ventaMayoreo.getIdVentaMayoreoPk());
+
             System.out.println("Pago Bancario Bean Busca Venta Mayoreo: " + pagoBancario.toString());
             if (idTipoPagoFk.intValue() == 2 || idTipoPagoFk.intValue() == 4) {
                 if (ifacePagosBancarios.insertaPagoBancario(pagoBancario) == 1) {
@@ -518,8 +517,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
         int update = 0;
         if (opcaja.getIdCajaFk() != null) {
             String cadena = validarCampos();
-            if (cadena.equals("")) 
-            {
+            if (cadena.equals("")) {
                 // Verificar maximo de abonos
                 switch (montoTotal.compareTo(montoApartado.add(ventaMayoreo.getTotalVenta(), MathContext.UNLIMITED))) {
                     case 0:
@@ -544,7 +542,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
                         apartado.setMonto(ventaMayoreo.getTotalVenta());
                         apartado.setIdCajeroFk(usuario.getIdUsuarioPk());
                         ifaceApartado.insert(apartado);
-                        mensajeApartado= true;
+                        mensajeApartado = true;
                         insertarPago();
                         break;
                     case -1:
@@ -568,8 +566,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
         statusButtonPagar = false;
 
         ventaMayoreo = ifaceVentaMayoreo.getVentaMayoreoByFolioidSucursalFk(folioVenta, new BigDecimal(usuario.getIdSucursal()));
-        montoApartado = ifaceApartado.montoApartado(ventaMayoreo.getIdVentaMayoreoPk(), new BigDecimal(1));
-        montoTotal = ventaMayoreo.getTotalVenta();
+
         ventaMenudeo = false;
         //SE HACE LA BUSQUEDA A MENUDEO
         if (ventaMayoreo == null || ventaMayoreo.getIdVentaMayoreoPk() == null) {
@@ -582,6 +579,8 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
         if (ventaMayoreo == null || ventaMayoreo.getIdVentaMayoreoPk() == null) {
             JsfUtil.addErrorMessageClean("No se encontró ese folio, podría ser de otra sucursal.");
         } else if (ventaMayoreo.getIdtipoVentaFk().intValue() == 1) {
+            montoApartado = ifaceApartado.montoApartado(ventaMayoreo.getIdVentaMayoreoPk(), new BigDecimal(1));
+            montoTotal = ventaMayoreo.getTotalVenta();
             switch (ventaMayoreo.getIdStatusFk().intValue()) {
                 case 1:
                     statusButtonPagar = false;
@@ -962,6 +961,5 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     public void setMontoTotal(BigDecimal montoTotal) {
         this.montoTotal = montoTotal;
     }
-    
 
 }

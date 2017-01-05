@@ -8,7 +8,9 @@ package com.web.chon.bean;
 import com.web.chon.dominio.AbonoCredito;
 import com.web.chon.dominio.Caja;
 import com.web.chon.dominio.Cliente;
+import com.web.chon.dominio.Documento;
 import com.web.chon.dominio.OperacionesCaja;
+import com.web.chon.dominio.PagosBancarios;
 import com.web.chon.dominio.SaldosDeudas;
 import com.web.chon.dominio.TipoAbono;
 import com.web.chon.dominio.Usuario;
@@ -18,7 +20,9 @@ import com.web.chon.service.IfaceAbonoCredito;
 import com.web.chon.service.IfaceCaja;
 import com.web.chon.service.IfaceCatCliente;
 import com.web.chon.service.IfaceCredito;
+import com.web.chon.service.IfaceDocumentos;
 import com.web.chon.service.IfaceOperacionesCaja;
+import com.web.chon.service.IfacePagosBancarios;
 import com.web.chon.service.IfaceTipoAbono;
 import com.web.chon.util.Constantes;
 import com.web.chon.util.JasperReportUtil;
@@ -79,6 +83,10 @@ public class BeanHistorialAbonos implements Serializable {
     private IfaceCaja ifaceCaja;
     @Autowired
     private IfaceOperacionesCaja ifaceOperacionesCaja;
+    @Autowired
+    private IfacePagosBancarios ifacePagosBancarios;
+    @Autowired
+    private IfaceDocumentos ifaceDocumentos;
 
     private ArrayList<Cliente> lstCliente;
     private ArrayList<Usuario> lstUsuariosCaja;
@@ -177,17 +185,17 @@ public class BeanHistorialAbonos implements Serializable {
         switch (ac.getIdtipoAbonoFk().intValue()) {
             case 1:
                 paramReport.put("folio", ac.getIdAbonoCreditoPk().toString());
-                System.out.println("Efectivo sin Datos extra");
+                //System.out.println("Efectivo sin Datos extra");
                 break;
             case 2:
-                System.out.println("Entro a Ticket Transferencia");
+                //System.out.println("Entro a Ticket Transferencia");
                 paramReport.put("folio", ac.getIdAbonoCreditoPk().toString());
                 paramReport.put("nreferencia", ac.getReferencia());
                 paramReport.put("concepto", ac.getConcepto());
                 paramReport.put("fechaTrans", TiempoUtil.getFechaDDMMYYYYHHMM(ac.getFechaTransferencia()));
                 break;
             case 3:
-                System.out.println("Entro a Cheque");
+                //System.out.println("Entro a Cheque");
                 paramReport.put("folio", ac.getIdAbonoCreditoPk().toString());
                 paramReport.put("numeroCheque", ac.getNumeroCheque().toString());
                 paramReport.put("banco", ac.getBanco());
@@ -195,7 +203,7 @@ public class BeanHistorialAbonos implements Serializable {
                 break;
             case 4:
                 //paramReport.put("folio", ac.getIdAbonoCreditoPk().toString());
-                System.out.println("Entro a Ticket Deposito Bancario");
+                //System.out.println("Entro a Ticket Deposito Bancario");
                 paramReport.put("folioElectronico", ac.getFolioElectronico() == null ? "-----" : ac.getFolioElectronico().toString());
                 //paramReport.put("cuenta", idCuentaDestinoBean.toString());
                 paramReport.put("fecha", TiempoUtil.getFechaDDMMYYYYHHMM(ac.getFechaCobro()));
@@ -260,50 +268,110 @@ public class BeanHistorialAbonos implements Serializable {
         //ifaceAbonoCredito.delete(abono.getIdAbonoCreditoPk());
 
         //ifaceCredito.activarCredito(abono.getIdCreditoFk());
+        opcaja = new OperacionesCaja();
+        caja = ifaceCaja.getCajaByIdUsuarioPk(usuarioDominio.getIdUsuario());
+        opcaja.setIdCajaFk(caja.getIdCajaPk());
+        opcaja.setIdUserFk(usuarioDominio.getIdUsuario());
+        opcaja.setEntradaSalida(salida);
+        opcaja.setIdSucursalFk(new BigDecimal(usuarioDominio.getSucId()));
+        opcaja.setMonto(abono.getMontoAbono());
+
+        opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
+        opcaja.setIdStatusFk(new BigDecimal(1));
+        abono.setEstatusAbono(new BigDecimal(2));
+
+        PagosBancarios pb = new PagosBancarios();
         switch (abono.getIdtipoAbonoFk().intValue()) {
             case 1:
-                System.out.println("Cancelar Abono en Efectivo");
+                //System.out.println("Cancelar Abono en Efectivo");
                 //insertar operacion en caja de salida 
-
                 //verificar si el credito se libero. si se libero volver a activarlo
                 //cancelar el abono de credito
-                abono.setEstatusAbono(new BigDecimal(2));
+                opcaja.setComentarios("Cancelación de Abono");
+                opcaja.setIdConceptoFk(conceptoAbonoEfectivo);
+                ifaceOperacionesCaja.insertaOperacion(opcaja);
                 ifaceAbonoCredito.update(abono);
                 ifaceCredito.updateStatus(abono.getIdCreditoFk(), new BigDecimal(1));
-                opcaja = new OperacionesCaja();
-                caja = ifaceCaja.getCajaByIdUsuarioPk(usuarioDominio.getIdUsuario());
-                opcaja.setIdCajaFk(caja.getIdCajaPk());
-                opcaja.setIdUserFk(usuarioDominio.getIdUsuario());
-                opcaja.setEntradaSalida(salida);
-                opcaja.setIdSucursalFk(new BigDecimal(usuarioDominio.getSucId()));
-                opcaja.setMonto(abono.getMontoAbono());
-                opcaja.setIdConceptoFk(conceptoAbonoEfectivo);
-                opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
-                opcaja.setIdStatusFk(new BigDecimal(1));
-                opcaja.setComentarios("Cancelación de Abono");
-                ifaceOperacionesCaja.insertaOperacion(opcaja);
-                
                 break;
             case 2:
                 System.out.println("Cancelar Abono en Transferencia");
+
+                pb = ifacePagosBancarios.getByIdTipoLlave(new BigDecimal(1), abono.getIdAbonoCreditoPk());
+                if (pb != null && pb.getIdTransBancariasPk() != null) {
+                    if (pb.getIdStatusFk().intValue() == 2) {
+                        System.out.println("No ha sido aceptado");
+                        opcaja.setComentarios("Cancelación de Abono");
+                        opcaja.setIdConceptoFk(conceptoAbonoTransferencia);
+                        ifaceOperacionesCaja.insertaOperacion(opcaja);
+                    }
+                    pb.setIdStatusFk(new BigDecimal(1));
+                    ifacePagosBancarios.updatePagoBancario(pb);
+                    ifaceAbonoCredito.update(abono);
+                    ifaceCredito.updateStatus(abono.getIdCreditoFk(), new BigDecimal(1));
+                    JsfUtil.addSuccessMessageClean("Se ha cancelado el abono con éxito");
+                } else {
+                    JsfUtil.addErrorMessageClean("Error, no se puede cancelar el abono");
+                }
                 /*Verificar si ya fue aceptado o no el la transferencia
                 case 1: aceptada:
                 No insertar operaciones en caja
                 case 2: no aceptada:
                 Insertar operación de salida comentario de Cancelación de Abono
                 
-                */
+                 */
+
                 break;
             case 3:
-                System.out.println("Cancelar Abono en Cheque");
+                Documento d = new Documento();
+                d = ifaceDocumentos.getDocumentoByTipoLlave(new BigDecimal(4), abono.getIdAbonoCreditoPk());
+                System.out.println("===============d================");
+                System.out.println(d);
+                if (d != null && d.getIdDocumentoPk() != null) {
+                    if (d.getIdStatusFk().intValue() == 1) 
+                    {
+                        opcaja.setComentarios("Cancelación de Abono");
+                        opcaja.setIdConceptoFk(conceptoAbonoCheque);
+                        ifaceOperacionesCaja.insertaOperacion(opcaja);
+                        d.setIdStatusFk(new BigDecimal(3));
+                        ifaceDocumentos.updateDocumentoById(d);
+                        ifaceAbonoCredito.update(abono);
+                        ifaceCredito.updateStatus(abono.getIdCreditoFk(), new BigDecimal(1));
+                        JsfUtil.addSuccessMessageClean("Se ha cancelado el abono con éxito");
+                    } else {
+                        JsfUtil.addErrorMessageClean("Error 2, no se puede cancelar el abono");
+                    }
+
+                } else {
+                    JsfUtil.addErrorMessageClean("Error 1, no se puede cancelar el abono");
+
+                }
+
                 break;
             case 4:
                 System.out.println("Cancelar Abono en Depósito");
+
+                if (pb != null && pb.getIdTransBancariasPk() != null) {
+                    if (pb.getIdStatusFk().intValue() == 2) {
+                        System.out.println("No ha sido aceptado");
+                        opcaja.setComentarios("Cancelación de Abono");
+                        opcaja.setIdConceptoFk(conceptoAbonoDeposito);
+                        ifaceOperacionesCaja.insertaOperacion(opcaja);
+                    }
+                    pb.setIdStatusFk(new BigDecimal(1));
+                    ifacePagosBancarios.updatePagoBancario(pb);
+                    ifaceAbonoCredito.update(abono);
+                    ifaceCredito.updateStatus(abono.getIdCreditoFk(), new BigDecimal(1));
+                    JsfUtil.addSuccessMessageClean("Se ha cancelado el abono con éxito");
+                } else {
+                    JsfUtil.addErrorMessageClean("Error, no se puede cancelar el abono");
+                }
+
                 break;
             default:
                 break;
         }
 
+        buscar();
     }
 
     public void printVenta() {
@@ -312,8 +380,8 @@ public class BeanHistorialAbonos implements Serializable {
         BigDecimal totalAbono = new BigDecimal(0);
         BigDecimal totalDeuda = new BigDecimal(0);
         BigDecimal saldoActual;
-        System.out.println("------" + data.getIdClienteFk());
-        System.out.println("------" + data.getIdAbonoCreditoPk());
+        //System.out.println("------" + data.getIdClienteFk());
+        // System.out.println("------" + data.getIdAbonoCreditoPk());
         modelo = ifaceCredito.getCreditosActivos(data.getIdClienteFk(), data.getIdAbonoCreditoPk());
         for (SaldosDeudas saldo : modelo) {
             totalAbono = totalAbono.add(saldo.getTotalAbonado(), MathContext.UNLIMITED);
@@ -347,7 +415,7 @@ public class BeanHistorialAbonos implements Serializable {
     public void buscar() {
         if (cliente == null) {
             cliente = new Cliente();
-                 }
+        }
         lstAbonosCreditos = ifaceAbonoCredito.getHistorialAbonos(cliente.getId_cliente(), idCobradorFk, fechaFiltroInicio, fechaFiltroFin, idTipoAbonoFk, idAbonoPk, idCreditoFk);
         sumaTotal();
     }

@@ -19,5 +19,6 @@ public interface NegocioPagosBancarios {
     public int insertaPagoBancario(PagosBancarios pb);
     public int updatePagoBancario(PagosBancarios pb);
     public List<Object[]> getPagosPendientes();
+    public List<Object[]>  getByIdTipoLlave(BigDecimal idTipo, BigDecimal idLLave);
     public int getNextVal();
 }

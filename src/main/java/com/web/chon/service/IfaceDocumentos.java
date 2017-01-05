@@ -35,6 +35,8 @@ public interface IfaceDocumentos {
      */
     public Documento getDocumentoByIdAbonoFk(BigDecimal idAbonoFk);
     
+    public Documento getDocumentoByTipoLlave(BigDecimal idTipo,BigDecimal idLlave);
+    
     /**
      *
      * @param idClienteFk

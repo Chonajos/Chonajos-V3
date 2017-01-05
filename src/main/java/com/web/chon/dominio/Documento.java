@@ -35,13 +35,17 @@ public class Documento implements Serializable {
     private String nombreCliente;
     private String nombreFormaCobro;
     private BigDecimal totalAbonado;
+    private BigDecimal idTipoD;
+    private BigDecimal idLlave;
 
     @Override
     public String toString() {
-        return "Documento{" + "idDocumentoPk=" + idDocumentoPk + ", idTipoDocumento=" + idTipoDocumento + ", idAbonoFk=" + idAbonoFk + ", idClienteFk=" + idClienteFk + ", idStatusFk=" + idStatusFk + ", monto=" + monto + ", fechaCobro=" + fechaCobro + ", comentario=" + comentario + ", idAbonoDocumentoFk=" + idAbonoDocumentoFk + ", numeroCheque=" + numeroCheque + ", factura=" + factura + ", banco=" + banco + ", librador=" + librador + ", idFormaCobroFk=" + idFormaCobroFk + ", idDocumentoPadreFk=" + idDocumentoPadreFk + '}';
+        return "Documento{" + "idDocumentoPk=" + idDocumentoPk + ", idTipoDocumento=" + idTipoDocumento + ", idAbonoFk=" + idAbonoFk + ", idClienteFk=" + idClienteFk + ", idStatusFk=" + idStatusFk + ", monto=" + monto + ", fechaCobro=" + fechaCobro + ", comentario=" + comentario + ", idAbonoDocumentoFk=" + idAbonoDocumentoFk + ", numeroCheque=" + numeroCheque + ", factura=" + factura + ", banco=" + banco + ", librador=" + librador + ", idFormaCobroFk=" + idFormaCobroFk + ", idDocumentoPadreFk=" + idDocumentoPadreFk + ", nombreStatus=" + nombreStatus + ", nombreCliente=" + nombreCliente + ", nombreFormaCobro=" + nombreFormaCobro + ", totalAbonado=" + totalAbonado + ", idTipoD=" + idTipoD + ", idLlave=" + idLlave + '}';
     }
 
     public void reset() {
+        idTipoD=null;
+        idLlave=null;
         idDocumentoPk = null;
         idTipoDocumento = null;
         idAbonoFk = null;
@@ -213,5 +217,22 @@ public class Documento implements Serializable {
     public void setMonto(BigDecimal monto) {
         this.monto = monto;
     }
+
+    public BigDecimal getIdTipoD() {
+        return idTipoD;
+    }
+
+    public void setIdTipoD(BigDecimal idTipoD) {
+        this.idTipoD = idTipoD;
+    }
+
+    public BigDecimal getIdLlave() {
+        return idLlave;
+    }
+
+    public void setIdLlave(BigDecimal idLlave) {
+        this.idLlave = idLlave;
+    }
+    
 
 }

@@ -6,7 +6,6 @@
 package com.web.chon.ejb;
 
 import com.web.chon.dominio.PagosBancarios;
-import com.web.chon.negocio.NegocioOperacionesCuentas;
 import com.web.chon.negocio.NegocioPagosBancarios;
 import java.math.BigDecimal;
 import java.util.List;
@@ -95,6 +94,16 @@ public class EjbPagoBancario implements NegocioPagosBancarios{
             System.out.println("error >" + ex.getMessage());
             return 0;
         }
+    
+    }
+
+    @Override
+    public List<Object[]> getByIdTipoLlave(BigDecimal idTipo, BigDecimal idLLave) {
+       
+        Query query = em.createNativeQuery("select * from PAGOS_BANCARIOS pb where pb.ID_TIPO_TD = ? and pb.ID_LLAVE_FK = ?");
+       query.setParameter(1, idTipo);
+       query.setParameter(2, idLLave);
+       return query.getResultList();
     
     }
 

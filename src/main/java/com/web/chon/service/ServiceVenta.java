@@ -1,7 +1,4 @@
 package com.web.chon.service;
-
-import com.web.chon.dominio.RelacionOperaciones;
-import com.web.chon.dominio.Subproducto;
 import com.web.chon.dominio.Venta;
 import com.web.chon.dominio.VentaProducto;
 import com.web.chon.negocio.NegocioVenta;

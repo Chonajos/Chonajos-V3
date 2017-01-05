@@ -17,6 +17,7 @@ public interface IfacePagosBancarios {
     public int insertaPagoBancario(PagosBancarios pb);
     public int updatePagoBancario(PagosBancarios pb);
     public ArrayList<PagosBancarios> getPagosPendientes();
+    public PagosBancarios getByIdTipoLlave(BigDecimal idTipo, BigDecimal idLLave);
     public int getNextVal();
     
 }

@@ -111,7 +111,7 @@ public class ServiceCredito implements IfaceCredito {
     public int insert(Credito credito) {
         try {
             getEjb();
-            System.out.println("credito " + credito.toString());
+            //System.out.println("credito " + credito.toString());
             int idCredito = ejb.nextVal();
 
             if (ejb.insert(credito, idCredito) == 0) {
@@ -120,14 +120,14 @@ public class ServiceCredito implements IfaceCredito {
                 return idCredito;
             }
         } catch (Exception ex) {
-            System.out.println("error >" + ex.getMessage().toString());
+            //System.out.println("error >" + ex.getMessage().toString());
             return 0;
         }
     }
 
     @Override
     public ArrayList<SaldosDeudas> getCreditosActivos(BigDecimal idCliente,BigDecimal idAbonoPk) {
-        System.out.println("**************Service*************");
+        //System.out.println("**************Service*************");
         getEjb();
         ArrayList<SaldosDeudas> lstCreditos = new ArrayList<SaldosDeudas>();
         List<Object[]> lstObject = new ArrayList<Object[]>();
@@ -198,7 +198,7 @@ public class ServiceCredito implements IfaceCredito {
 
                     case -1:
 
-                        System.out.println("Case -1: " + " Hoy: " + hoy + " Fecha: " + fechas_pagos.get(x));
+                        //System.out.println("Case -1: " + " Hoy: " + hoy + " Fecha: " + fechas_pagos.get(x));
                         if (fechaPagoMayoraHoy == false) {
                             credito.setFechaProximaAbonar(fechas_pagos.get(x));
                             credito.setStatusFechaProxima(CREDITONOATRASADO);

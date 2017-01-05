@@ -29,6 +29,8 @@ public interface NegocioDocumentos {
      * @return 
      */
     public List<Object[]> getDocumentoByIdDocumentoPk(BigDecimal idDocumento);
+    
+    public List<Object[]> getDocumentoByTipoLlave(BigDecimal idTipo,BigDecimal idLlave);
 
     /**
      *

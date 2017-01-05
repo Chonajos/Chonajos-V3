@@ -102,9 +102,11 @@ public class ServiceDocumentos implements IfaceDocumentos {
             documento.setFechaCobro(object[10] == null ? null : (Date) object[10]);
             documento.setIdFormaCobroFk(object[11] == null ? null : new BigDecimal(object[11].toString()));
             documento.setIdDocumentoPadreFk(object[12] == null ? null : new BigDecimal(object[12].toString()));
-            documento.setNombreCliente(object[13] == null ? "" : object[13].toString());
-            documento.setNombreFormaCobro(object[14] == null ? "" : object[14].toString());
-            documento.setNombreStatus(object[15] == null ? "" : object[15].toString());
+            documento.setIdTipoD(object[13] == null ? null : new BigDecimal(object[13].toString()));
+            documento.setIdLlave(object[14] == null ? null : new BigDecimal(object[14].toString()));
+            documento.setNombreCliente(object[15] == null ? "" : object[15].toString());
+            documento.setNombreFormaCobro(object[16] == null ? "" : object[16].toString());
+            documento.setNombreStatus(object[17] == null ? "" : object[17].toString());
             documento.setTotalAbonado(ifaceAbonoDocumentos.getTotalAbonadoByIdDocumento(documento.getIdDocumentoPk()));
             lstDocumentos.add(documento);
         }
@@ -118,6 +120,31 @@ public class ServiceDocumentos implements IfaceDocumentos {
         getEjb();
        return ejb.cambiarFormaPago(d);
     
+    }
+
+    @Override
+    public Documento getDocumentoByTipoLlave(BigDecimal idTipo, BigDecimal idLlave) {
+        getEjb();
+        List<Object[]> Object =ejb.getDocumentoByTipoLlave(idTipo, idLlave);
+        Documento d = new Documento();
+        for (Object[] object : Object) {
+            d.setIdDocumentoPk(object[0] == null ? null : new BigDecimal(object[0].toString()));
+            d.setIdTipoDocumento(object[1] == null ? null : new BigDecimal(object[1].toString()));
+            d.setIdClienteFk(object[2] == null ? null : new BigDecimal(object[2].toString()));
+            d.setIdStatusFk(object[3] == null ? null : new BigDecimal(object[3].toString()));
+            d.setComentario(object[4] == null ? "" : object[4].toString());
+            d.setMonto(object[5] == null ? null : new BigDecimal(object[5].toString()));
+            d.setNumeroCheque(object[6] == null ? null : new BigDecimal(object[6].toString()));
+            d.setFactura(object[7] == null ? "" : object[7].toString());
+            d.setBanco(object[8] == null ? "" : object[8].toString());
+            d.setLibrador(object[9] == null ? "" : object[9].toString());
+            d.setFechaCobro(object[10] == null ? null : (Date) object[10]);
+            d.setIdFormaCobroFk(object[11] == null ? null : new BigDecimal(object[11].toString()));
+            d.setIdDocumentoPadreFk(object[12] == null ? null : new BigDecimal(object[12].toString()));
+            d.setIdTipoD(object[13] == null ? null : new BigDecimal(object[13].toString()));
+            d.setIdLlave(object[14] == null ? null : new BigDecimal(object[14].toString()));
+        }
+        return d;
     }
 
 }
