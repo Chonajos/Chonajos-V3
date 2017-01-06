@@ -48,10 +48,12 @@ public class EjbExistenciaMenudeo implements NegocioExistenciaMenudeo {
     @Override
     public int updateExistenciaMenudeo(ExistenciaMenudeo existenciaMenudeo) {
         try {
+            System.out.println("existenciaMenudeo "+existenciaMenudeo.toString());
             Query query = em.createNativeQuery("UPDATE EXISTENCIAMENUDEO SET KILOS = ?, CANTIDADEMPAQUE = ? WHERE ID_EXMEN_PK = ?");
             query.setParameter(1, existenciaMenudeo.getKilos());
             query.setParameter(2, existenciaMenudeo.getCantidadEmpaque());
             query.setParameter(3, existenciaMenudeo.getIdExMenPk());
+            
 
             return query.executeUpdate();
         } catch (Exception ex) {

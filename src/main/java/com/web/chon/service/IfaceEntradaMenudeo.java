@@ -22,5 +22,7 @@ public interface IfaceEntradaMenudeo
     public int getNextVal();
     public int getFolio(BigDecimal idSucursal);
     public ArrayList<EntradaMenudeo> getEntradaProductoByIntervalDate(Date fechaFiltroInicio, Date fechaFiltroFin, BigDecimal idSucursal,String idSubproductoFK);
+    
+    public int cancelarEntrada(BigDecimal folioCancelar);
 
 }

@@ -38,6 +38,9 @@ public class EntradaMenudeo implements Serializable {
     private String idSubproductoFK;
     private BigDecimal sumaKilos;
     private BigDecimal sumaCostos;
+    private String nombreUsuarioRecibe;
+    private String nombreSucursal;
+
     private ArrayList<EntradaMenudeoProducto> listaDetalleProducto;
 
     public void reset() {
@@ -54,6 +57,8 @@ public class EntradaMenudeo implements Serializable {
         folio = null;
         idSubproductoFK=null;
         listaDetalleProducto=null;
+        nombreUsuarioRecibe = null;
+        nombreSucursal = null;
         //idUsuario = null;
 
     }
@@ -231,8 +236,22 @@ public class EntradaMenudeo implements Serializable {
     public void setSumaCostos(BigDecimal sumaCostos) {
         this.sumaCostos = sumaCostos;
     }
-    
-    
-    
 
+    public String getNombreUsuarioRecibe() {
+        return nombreUsuarioRecibe;
+    }
+
+    public void setNombreUsuarioRecibe(String nombreUsuarioRecibe) {
+        this.nombreUsuarioRecibe = nombreUsuarioRecibe;
+    }
+
+    public String getNombreSucursal() {
+        return nombreSucursal;
+    }
+
+    public void setNombreSucursal(String nombreSucursal) {
+        this.nombreSucursal = nombreSucursal;
+    }
+    
+    
 }

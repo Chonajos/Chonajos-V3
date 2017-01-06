@@ -31,5 +31,7 @@ public interface NegocioEntradaMenudeo {
     
     public List<Object[]>  getEntradaById(BigDecimal id);
     
-        public List<Object[]> getEntradaProductoByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal,String idSubproductoPk);
+    public List<Object[]> getEntradaProductoByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal,String idSubproductoPk);
+    
+    public int cancelarEntrada(BigDecimal folioCancelar);
 }

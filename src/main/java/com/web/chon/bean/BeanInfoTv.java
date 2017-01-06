@@ -101,6 +101,7 @@ public class BeanInfoTv implements Serializable {
 
 
             FacesContext context = FacesContext.getCurrentInstance();
+            String imageType= "image/jpg";
 
             if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
                 return new DefaultStreamedContent();
@@ -113,7 +114,7 @@ public class BeanInfoTv implements Serializable {
                     
                 }
                 byte[] image = subproducto.getFichero();
-                return new DefaultStreamedContent(new ByteArrayInputStream(image));
+                return new DefaultStreamedContent(new ByteArrayInputStream(image),imageType,subproducto.getIdSubproductoPk());
 
             }
     }

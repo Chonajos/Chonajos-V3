@@ -526,7 +526,7 @@ public class BeanEntradaMenudeo implements Serializable {
         paramReport.put("nombreRecibidor", usuario.getNombreCompleto());
         paramReport.put("folio", em.getFolio().toString());
         paramReport.put("ID_EMM_FK", em.getIdEmmPk().toString());
-        System.out.println("telefonos =======" +usuario.getTelefonoSucursal());
+
         paramReport.put("leyenda", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:" + usuario.getTelefonoSucursal());
         
 
@@ -558,18 +558,6 @@ public class BeanEntradaMenudeo implements Serializable {
 
             pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "entradaMercancia" + File.separatorChar + "ReporteEntradaMenudeo.jasper";
 
-//            Connection conn=null;
-//            try 
-//            {
-//                Class.forName("oracle.jdbc.OracleDriver");
-//                conn = DriverManager.getConnection("jdbc:oracle:thin:@//192.168.1.77:1521/xe", "choniTest", "choniTest");
-//                System.out.println("Se conecto PERRO !");
-//            } catch (SQLException ex) 
-//            {
-//                ex.getStackTrace();
-//            } catch (ClassNotFoundException ex) {
-//                ex.getStackTrace();
-//            }
             Context initContext;
             Connection con = null;
             try {
