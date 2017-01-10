@@ -69,7 +69,7 @@
                                 <p:column headerText="Correo" width="35%;" class="alignLeft">
                                     <h:outputText value="#{model.correo}" />
                                 </p:column>
-                                <p:column headerText="Saldo Utilizado" width="10%;" class="alignRight">
+                                <p:column headerText="Saldo Utilizado" sortBy="#{model.saldoLiquidar}" width="10%;" class="alignRight">
                                     <h:outputText value="#{model.saldoLiquidar}" >
                                         <f:convertNumber type="currency" currencySymbol="$" />
                                     </h:outputText>
