@@ -9,6 +9,16 @@
                 xmlns:pe="http://primefaces.org/ui/extensions">
 
     <ui:define name="content" id="content">
+        <p:ajaxStatus onsuccess="PF('statusDialog').hide()" oncomplete="PF('statusDialog').hide()" onerror="PF('statusDialog').hide()" />
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                  closable="false" resizable="false" showHeader="false">
+            <p:graphicImage value="../resources/img/carga.gif" />
+        </p:dialog>
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+            <p:commandButton value="Si" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+            <p:commandButton value="No" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+        </p:confirmDialog>
+
         <h:form id="formContent" >
             <div class="container-fluid">
 
@@ -17,7 +27,9 @@
                         <h3>#{beanEntradaMenudeo.title}</h3>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 alignRight ">
-                        <p:commandButton value="Finalizar" id="vender" ajax="true" immediate="true" resetValues="true" action="#{beanEntradaMenudeo.inserts}" update=":formContent" disabled="#{beanEntradaMenudeo.permisionToGenerate}"/>
+                        <p:commandButton value="Finalizar" id="vender" onclick="PF('statusDialog').show()" ajax="true" immediate="true" resetValues="true" action="#{beanEntradaMenudeo.inserts}" update=":formContent" disabled="#{beanEntradaMenudeo.permisionToGenerate}">
+                            <p:confirm header="Confirmación" message="Estas seguro de Finalizar Entrada?" icon="ui-icon-alert" />
+                        </p:commandButton>
                     </div>
                 </div>
             </div>
@@ -41,7 +53,7 @@
                                 <f:selectItems value="#{beanEntradaMenudeo.listaProvedores}" var="provedorsito" itemLabel=" (#{provedorsito.nickName}) #{provedorsito.nombreProvedor} #{provedorsito.apaternoProve} #{provedorsito.amaternoProve}" itemValue="#{provedorsito.idProvedorPK}"/>
                             </p:selectOneMenu>
                         </div>
-                        
+
                         <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
                             <p:outputLabel class="col-lg-12 col-md-3 col-sm-4 col-xs-6 alignLeft"  for="txtkilosTotales" value ="Total de Kilos:"  /> 
                             <p:inputText id="txtkilosTotales" maxlength="10" class=" col-lg-8 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMenudeo.data.kilosProvedor}" required="true">
@@ -50,7 +62,7 @@
                         </div>
                         <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 alignLeft">
                             <p:outputLabel  class="col-lg-12 col-md-3 col-sm-4 col-xs-6 alignLeft"  for="txtComentariosGenerales" value ="Comentarios:" /> 
-                            <p:inputTextarea  style=" width:90%; height:25px;" rows="1" cols="15" id="txtComentariosGenerales" maxlength="100" class=" col-lg-8 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMenudeo.data.comentarios}"/>
+                            <p:inputTextarea  rows="1" cols="15" id="txtComentariosGenerales" maxlength="100" autoResize="false" class="col-lg-8 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMenudeo.data.comentarios}"/>
                         </div>
                     </div>
                     <!-- <p:fileUpload value="{fileUploadView.file}" mode="simple" skinSimple="true"/>
@@ -65,9 +77,9 @@
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 alignRight ">
                             <div class="form-group" align="right">
-                                <p:commandButton id="agregar" value="Agregar" update=":formContent" ajax="true" action="#{beanEntradaMenudeo.addProducto}" rendered="#{beanEntradaMenudeo.viewEstate =='init'}" disabled="#{beanEntradaMenudeo.permisionToPush}"/>
-                                <p:commandButton value="Aceptar" update=":formContent" ajax="true" action="#{beanEntradaMenudeo.updateProducto}" rendered="#{beanEntradaMenudeo.viewEstate =='update'}"/>
-                                <p:commandButton value="Cancelar" update=":formContent" ajax="true" action="#{beanEntradaMenudeo.cancel}" immediate="true" resetValues="true" rendered="#{beanEntradaMenudeo.viewEstate =='update'}"/>
+                                <p:commandButton id="agregar" value="Agregar" update=":formContent" ajax="true" onclick="PF('statusDialog').show()" action="#{beanEntradaMenudeo.addProducto}" rendered="#{beanEntradaMenudeo.viewEstate =='init'}" disabled="#{beanEntradaMenudeo.permisionToPush}"/>
+                                <p:commandButton value="Aceptar" update=":formContent" ajax="true" onclick="PF('statusDialog').show()" action="#{beanEntradaMenudeo.updateProducto}" rendered="#{beanEntradaMenudeo.viewEstate =='update'}"/>
+                                <p:commandButton value="Cancelar" update=":formContent" ajax="true" onclick="PF('statusDialog').show()" action="#{beanEntradaMenudeo.cancel}" immediate="true" resetValues="true" rendered="#{beanEntradaMenudeo.viewEstate =='update'}"/>
                             </div>
                         </div>
                     </div>
@@ -91,33 +103,33 @@
                             </h:selectOneMenu>
                         </div>
                         <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
-                            <p:outputLabel  class="col-lg-8 col-md-3 col-sm-4 col-xs-6"  for="txtCantidad" value ="Cantidad:" /> 
+                            <p:outputLabel  class="col-lg-8 col-md-3 col-sm-4 col-xs-6 alignLeft"  for="txtCantidad" value ="Cantidad:" /> 
                             <p:inputText id="txtCantidad" maxlength="6" class=" col-lg-6 col-md-4 col-sm-8 col-xs-6 " value="#{beanEntradaMenudeo.dataProducto.cantidadEmpaque}" required="true"
                                          requiredMessage="Ingresa la Cantidad de Paquetes">
                                 <pe:keyFilter regEx="/[0-9_ .]/i"/>
                             </p:inputText>
                         </div>
                         <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
-                            <p:outputLabel  class="col-lg-8 col-md-3 col-sm-4 col-xs-6"  for="txtkilosProducto"  value ="Kilos:" /> 
+                            <p:outputLabel  class="col-lg-8 col-md-3 col-sm-4 col-xs-6 alignLeft"  for="txtkilosProducto"  value ="Kilos:" /> 
                             <p:inputText id="txtkilosProducto" maxlength="6" class=" col-lg-6 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMenudeo.dataProducto.kilosTotales}" required ="true">
                                 <pe:keyFilter regEx="/[0-9 .]/i"/>
                             </p:inputText>
                         </div>
                         <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
-                            <p:outputLabel  class="col-lg-8 col-md-3 col-sm-4 col-xs-6"  for="txtPrecio" id="labelprecio" value ="Precio:" /> 
+                            <p:outputLabel  class="col-lg-8 col-md-3 col-sm-4 col-xs-6 alignLeft"  for="txtPrecio" id="labelprecio" value ="Precio:" /> 
                             <p:inputText id="txtPrecio" maxlength="8" class=" col-lg-6 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMenudeo.dataProducto.precio}" required="true">
                                 <pe:keyFilter regEx="/[0-9 .]/i"/>
                             </p:inputText>
                         </div>
                         <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
-                            <p:outputLabel  class="col-lg-8 col-md-3 col-sm-4 col-xs-6"  for="txtPorcentaje" id="labelporcentaje" value ="% Merma:" /> 
+                            <p:outputLabel  class="col-lg-8 col-md-3 col-sm-4 col-xs-6 alignLeft"  for="txtPorcentaje" id="labelporcentaje" value ="% Merma:" /> 
                             <p:inputText id="txtPorcentaje" maxlength="8" class=" col-lg-6 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMenudeo.dataProducto.porcentarjeMerma}" required="true">
                                 <pe:keyFilter regEx="/[0-9 .]/i"/>
                             </p:inputText>
                         </div>
                         <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 ">
                             <p:outputLabel  class="col-lg-10 col-md-3 col-sm-4 col-xs-6 alignLeft"  for="txtComentarios" value ="Comentarios:" /> 
-                            <p:inputTextarea  style=" width:100%; height:25px;" rows="1" cols="20" id="txtComentarios" maxlength="95" class=" col-lg-12 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMenudeo.dataProducto.comentarios}"/>
+                            <p:inputTextarea  rows="1" cols="20" id="txtComentarios" maxlength="95" autoResize="false" class="col-lg-12 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMenudeo.dataProducto.comentarios}"/>
                         </div>
                     </div>
                 </div>
@@ -126,27 +138,27 @@
                 <div class="container-fluid">
                     <p:dataTable var="model" value="#{beanEntradaMenudeo.listaMenudeoProducto}" styleClass="ui-datatable-hor-scroll"  emptyMessage="Productos.">
 
-                        <p:column headerText="Producto" width="150px;" style="text-align:center">
+                        <p:column headerText="Producto" width="150px;" class="alignLeft">
                             <h:outputText value="#{model.nombreProducto}" />
                         </p:column>
 
-                        <p:column headerText="Empaque" width="150px;" style="text-align:center">
+                        <p:column headerText="Empaque" width="150px;" class="alignLeft">
                             <h:outputText value="#{model.nombreEmpaque}" />
                         </p:column>
-                        <p:column headerText="Cantidad" width="75px;" style="text-align:right">
+                        <p:column headerText="Cantidad" width="75px;" class="alignRight">
                             <h:outputText value="#{model.cantidadEmpaque}" />
                         </p:column>
-                        <p:column headerText="Kg" width="60px;" style="text-align:right">
+                        <p:column headerText="Kg" width="60px;" class="alignRight">
                             <h:outputText value="#{model.kilosTotales}">
-
+                                <f:convertNumber pattern="#,###.00"/>
                             </h:outputText>
                         </p:column>
-                        <p:column headerText="Precio" width="60px;" style="text-align:right">
+                        <p:column headerText="Precio" width="60px;" class="alignRight">
                             <h:outputText value="#{model.precio}">
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
                         </p:column>
-                        <p:column headerText="%Merma" width="60px;" style="text-align:center">
+                        <p:column headerText="%Merma" width="60px;" class="alignRight">
                             <h:outputText value="#{model.porcentarjeMerma*0.01}">
                                 <f:convertNumber type="percent" currencySymbol="%"/>
                             </h:outputText>
@@ -164,11 +176,10 @@
                         </p:column>
                         <p:columnGroup type="footer">
                             <p:row>
-                                <p:column colspan="3" style="text-align:right" footerText="Total de Kilos:" />
-                                <p:column colspan="1">
+                                <p:column colspan="3" class="alignRight" footerText="Total de Kilos:" />
+                                <p:column colspan="1" class="alignRight">
                                     <f:facet name="footer">
-                                        <h:outputText value="#{beanEntradaMenudeo.kilosEntradaReales} Kg">
-                                        </h:outputText>
+                                        <h:outputText value="#{beanEntradaMenudeo.kilosEntradaReales} Kg"/>
                                     </f:facet>
                                 </p:column>
                                 <p:column colspan="4">
@@ -177,7 +188,7 @@
                         </p:columnGroup>
                     </p:dataTable>
                 </div>
-                 <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanEntradaMenudeo.rutaPDF}"/>
+                <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanEntradaMenudeo.rutaPDF}"/>
             </p:panel>
         </h:form>
     </ui:define>
