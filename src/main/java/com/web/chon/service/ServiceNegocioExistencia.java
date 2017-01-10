@@ -145,27 +145,37 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
     }
 
     @Override
-    public ArrayList<ExistenciaProducto> getExistenciaById(BigDecimal idExistencia) {
+    public ExistenciaProducto getExistenciaById(BigDecimal idExistencia) {
         getEjb();
-
         try {
-            ArrayList<ExistenciaProducto> lista = new ArrayList<ExistenciaProducto>();
-            List<Object[]> lstObject = ejb.getExistenciaById(idExistencia);
-            for (Object[] obj : lstObject) {
-                ExistenciaProducto expro = new ExistenciaProducto();
-                expro.setIdExistenciaProductoPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
-                expro.setKilosTotalesProducto(obj[3] == null ? null : new BigDecimal(obj[3].toString()));
-                expro.setCantidadPaquetes(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
-                expro.setIdBodegaFK(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
-                lista.add(expro);
+            getEjb();
+            List<Object[]> lstObject = new ArrayList<Object[]>();
+            lstObject = ejb.getExistenciaById(idExistencia);
+            ExistenciaProducto existencia = new ExistenciaProducto();
+            for (Object[] object : lstObject) 
+            {
+                existencia.setIdExistenciaProductoPk(object[0] == null ? null : new BigDecimal(object[0].toString()));
+                existencia.setIdSubProductoFK(object[1] == null ? null : object[1].toString());
+                existencia.setIdTipoEmpaqueFK(object[2] == null ? null : new BigDecimal(object[2].toString()));
+                existencia.setKilosTotalesProducto(object[3] == null ? null : new BigDecimal(object[3].toString()));
+                existencia.setCantidadPaquetes(object[4] == null ? null : new BigDecimal(object[4].toString()));
+                existencia.setComentarios(object[5] == null ? "" : object[5].toString());
+                existencia.setIdBodegaFK(object[6] == null ? null : new BigDecimal(object[6].toString()));
+                existencia.setIdTipoConvenio(object[7] == null ? null : new BigDecimal(object[7].toString()));
+                existencia.setConvenio(object[8] == null ? null : new BigDecimal(object[8].toString()));
+                existencia.setKilospromprod(object[9] == null ? null : new BigDecimal(object[9].toString()));
+                existencia.setPrecioMinimo(object[10] == null ? null : new BigDecimal(object[10].toString()));
+                existencia.setPrecioVenta(object[11] == null ? null : new BigDecimal(object[11].toString()));
+                existencia.setPrecioMaximo(object[12] == null ? null : new BigDecimal(object[12].toString()));
+                //existencia.setEstatusBloqueo(object[13] == null ? null : object[12].toString());
+                existencia.setIdSucursal(object[14] == null ? null : new BigDecimal(object[14].toString()));
+                existencia.setIdEntradaMercanciaProductoFK(object[15] == null ? null : new BigDecimal(object[15].toString()));
             }
-            return lista;
+            return existencia;
         } catch (Exception ex) {
             Logger.getLogger(ServiceNegocioExistencia.class.getName()).log(Level.SEVERE, null, ex);
             return null;
-
         }
-
     }
 
     @Override

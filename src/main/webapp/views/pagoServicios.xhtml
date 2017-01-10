@@ -15,9 +15,14 @@
 
         <h:form id="formContent">
             <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
+             <p:ajaxStatus onsuccess="PF('statusDialog').hide()" oncomplete="PF('statusDialog').hide()" onerror="PF('statusDialog').hide()" />
+            <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                      closable="false" resizable="false" showHeader="false">
+                <p:graphicImage value="../resources/img/carga.gif" />
+            </p:dialog>
             <div class="form-group" align="right">
                 <div>
-                    <p:commandButton value="Registrar Pago" update=":formContent" ajax="true" action="#{beanPagoServicios.pagar()}"/>
+                    <p:commandButton value="Registrar Pago" update=":formContent" ajax="true" action="#{beanPagoServicios.pagar()}" onclick="PF('statusDialog').show()"/>
                 </div>
             </div>
             <p:panel> 

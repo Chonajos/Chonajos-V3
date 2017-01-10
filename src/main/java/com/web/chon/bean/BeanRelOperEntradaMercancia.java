@@ -675,7 +675,8 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
                 ep.setIdExistenciaProductoPk(e.getIdExistenciaProductoPk());
                 System.out.println("--------------Existencia Actualizar------------");
                 System.out.println(ep.toString());
-                if (ifaceNegocioExistencia.update(ep) == 1) {
+                if (ifaceNegocioExistencia.update(ep) == 1)
+                {
                     JsfUtil.addSuccessMessageClean("Actualización de datos correcta");
                     recalcularKilosEmpaques(dataProductEdit);
                 } else {
@@ -696,12 +697,11 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         BigDecimal ki = new BigDecimal(0);
         for (EntradaMercancia entrada : lstEntradaMercancia) {
             if (entrada.getIdEmPK().intValue() == dataProductEdit.getIdEmFK().intValue()) {
-                System.out.println("entro a if");
+                
                 for (EntradaMercanciaProducto producto : entrada.getListaProductos()) {
                     ca = ca.add(producto.getCantidadPaquetes(), MathContext.UNLIMITED);
                     ki = ki.add(producto.getKilosTotalesProducto(), MathContext.UNLIMITED);
-                    System.out.println("Cantidad: " + ca);
-                    System.out.println("Kilos: " + ki);
+                   
 
                 }
                 entrada.setKilosTotales(ki);

@@ -324,8 +324,7 @@ public class BeanHistorialAbonos implements Serializable {
             case 3:
                 Documento d = new Documento();
                 d = ifaceDocumentos.getDocumentoByTipoLlave(new BigDecimal(4), abono.getIdAbonoCreditoPk());
-                System.out.println("===============d================");
-                System.out.println(d);
+                
                 if (d != null && d.getIdDocumentoPk() != null) {
                     if (d.getIdStatusFk().intValue() == 1) 
                     {

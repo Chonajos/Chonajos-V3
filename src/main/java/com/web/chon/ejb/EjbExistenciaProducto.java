@@ -62,7 +62,8 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
     public List<Object[]> getExistenciaById(BigDecimal idExistencia) {
         try {
 
-            Query query = em.createNativeQuery("select * from existencia_producto where ID_EXP_PK = '" + idExistencia + "'");
+            Query query = em.createNativeQuery("select * from existencia_producto where ID_EXP_PK = ? ");
+            query.setParameter(1, idExistencia);
             return query.getResultList();
         } catch (Exception ex) {
             Logger.getLogger(EjbExistenciaProducto.class.getName()).log(Level.SEVERE, null, ex);

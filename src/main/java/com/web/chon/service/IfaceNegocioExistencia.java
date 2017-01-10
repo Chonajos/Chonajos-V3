@@ -44,7 +44,7 @@ public interface IfaceNegocioExistencia {
 
     public int updatePrecio(ExistenciaProducto ep);
 
-    public ArrayList<ExistenciaProducto> getExistenciaById(BigDecimal idExistencia);
+    public ExistenciaProducto getExistenciaById(BigDecimal idExistencia);
     
     public ArrayList<ExistenciaProducto> getExistenciaByBarCode(String idSubProducto,BigDecimal idTipoEmpaqueFk,BigDecimal idTipoConvenioFk, BigDecimal idCarro,BigDecimal idSucursalFk);
 

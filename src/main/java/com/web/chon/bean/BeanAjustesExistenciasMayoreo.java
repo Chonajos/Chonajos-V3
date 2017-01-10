@@ -3,7 +3,6 @@ package com.web.chon.bean;
 import com.web.chon.dominio.AjusteExistenciaMayoreo;
 import com.web.chon.dominio.Bodega;
 import com.web.chon.dominio.EntradaMercancia;
-import com.web.chon.dominio.ExistenciaMenudeo;
 import com.web.chon.dominio.ExistenciaProducto;
 import com.web.chon.dominio.Provedor;
 import com.web.chon.dominio.Subproducto;
@@ -26,7 +25,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import javax.annotation.PostConstruct;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.RowEditEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -78,8 +76,6 @@ public class BeanAjustesExistenciasMayoreo implements Serializable {
     private ExistenciaProducto dataEdit;
     private EntradaMercancia entradaMercancia;
     private AjusteExistenciaMayoreo ajusteExistenciaMayoreo;
-    private ExistenciaProducto existenciaProductoNew;
-    private ExistenciaProducto existenciaProductoOld;
 
     private String title = "";
     private String viewEstate = "";
@@ -189,7 +185,7 @@ public class BeanAjustesExistenciasMayoreo implements Serializable {
 
         ExistenciaProducto existenciaMayoreoOld = new ExistenciaProducto();
         ExistenciaProducto existenciaProductoNew = new ExistenciaProducto();
-        ArrayList<ExistenciaProducto> lstExistenciaProducto = new ArrayList<ExistenciaProducto>();
+        ExistenciaProducto ExistenciaProducto = new ExistenciaProducto();
         
 //        if (existenciaProductoNew.getSalidaEntrada() == null) {
 //            JsfUtil.addErrorMessage("Selecione si es una salida o es una entrada.");
@@ -198,10 +194,10 @@ public class BeanAjustesExistenciasMayoreo implements Serializable {
         ajusteExistenciaMayoreo = new AjusteExistenciaMayoreo();
 
         existenciaProductoNew = (ExistenciaProducto) event.getObject();
-        lstExistenciaProducto = ifaceNegocioExistencia.getExistenciaById(existenciaProductoNew.getIdExistenciaProductoPk());
+        ExistenciaProducto = ifaceNegocioExistencia.getExistenciaById(existenciaProductoNew.getIdExistenciaProductoPk());
 
-        if (lstExistenciaProducto != null && !lstExistenciaProducto.isEmpty()) {
-            existenciaMayoreoOld = lstExistenciaProducto.get(0);
+        if (ExistenciaProducto != null && ExistenciaProducto.getIdExistenciaProductoPk()!=null) {
+            existenciaMayoreoOld = ExistenciaProducto;
         }
 
         if (existenciaProductoNew.getSalidaEntrada().trim().equalsIgnoreCase("Entrada")) {
@@ -230,13 +226,10 @@ public class BeanAjustesExistenciasMayoreo implements Serializable {
                 JsfUtil.addErrorMessage("Error al Modificar el Registro.");
             }
         }
-
-
         model.clear();
         existenciaMayoreoOld = new ExistenciaProducto();
         existenciaProductoNew = new ExistenciaProducto();
-        lstExistenciaProducto.clear();
-
+        ExistenciaProducto = new ExistenciaProducto();
         buscaExistencias();
         JsfUtil.addSuccessMessage("Se Modifico el Registro Exitosamente.");
 
