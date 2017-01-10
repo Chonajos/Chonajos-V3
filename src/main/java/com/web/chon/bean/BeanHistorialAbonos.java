@@ -381,7 +381,7 @@ public class BeanHistorialAbonos implements Serializable {
         BigDecimal saldoActual;
         //System.out.println("------" + data.getIdClienteFk());
         // System.out.println("------" + data.getIdAbonoCreditoPk());
-        modelo = ifaceCredito.getCreditosActivos(data.getIdClienteFk(), data.getIdAbonoCreditoPk());
+        modelo = ifaceCredito.getCreditosActivos(data.getIdClienteFk(), data.getIdAbonoCreditoPk(),null);
         for (SaldosDeudas saldo : modelo) {
             totalAbono = totalAbono.add(saldo.getTotalAbonado(), MathContext.UNLIMITED);
             totalDeuda = totalDeuda.add(saldo.getSaldoTotal(), MathContext.UNLIMITED);
@@ -417,6 +417,14 @@ public class BeanHistorialAbonos implements Serializable {
         }
         lstAbonosCreditos = ifaceAbonoCredito.getHistorialAbonos(cliente.getId_cliente(), idCobradorFk, fechaFiltroInicio, fechaFiltroFin, idTipoAbonoFk, idAbonoPk, idCreditoFk);
         sumaTotal();
+        
+    }
+    public void sumaAbonitos()
+    {
+        for(AbonoCredito ab:lstAbonosCreditos)
+        {
+            
+        }
     }
 
     public void sumaTotal() {

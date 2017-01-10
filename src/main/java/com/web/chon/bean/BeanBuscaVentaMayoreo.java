@@ -441,6 +441,8 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
 
     public void insertarPago() {
         verificarTipo();
+
+//        if (ventaMayoreo.getIdStatusFk().intValue() == 1) {
         //System.out.println("Se cambió el estatus");
         opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
         opcaja.setMonto(ventaMayoreo.getTotalVenta());
@@ -497,66 +499,89 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
             }
             setParameterTicket(ventaMayoreo.getVentaSucursal().intValue());
             generateReport(ventaMayoreo.getIdVentaMayoreoPk());
-            ventaMayoreo.reset();
-//                    data.setNombreCliente("");
-//                    data.setNombreVendedor("");
-//                    data.setIdVenta(new BigDecimal(0));
-            statusButtonPagar = true;
-//                    data.reset();
-//                    model = null;
-//                    totalVenta = null;
+            resetValues();
+            JsfUtil.addSuccessMessageClean("Venta Pagada con éxito");
             RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
         } else {
             JsfUtil.addErrorMessageClean("Ocurrió un error al registrar el pago de la venta");
         }
 
+
+    }
+
+    public void resetValues() {
+        idTipoPagoFk = new BigDecimal(1);
+        fechaTransferencia = null;
+        fechaTransferencia = null;
+        conceptoTransferencia = null;
+        referencia = null;
+        factura = null;
+        idCuentaDestinoFk = null;
+        folioElectronico = null;
+        idCuentaDestinoBean = null;
+        banco = null;
+        fechaCobro = null;
+        librador = null;
+        numeroCheque = null;
+        cambio = null;
+        recibido = null;
+        ventaMayoreo = null;
+        statusButtonPagar = true;
+        folioVenta = null;
+        addView();
     }
 
     //PAGAR VENTA MAYOREO
     public void updateVenta() {
-        int update = 0;
-        if (opcaja.getIdCajaFk() != null) {
-            String cadena = validarCampos();
-            if (cadena.equals("")) {
-                // Verificar maximo de abonos
-                switch (montoTotal.compareTo(montoApartado.add(ventaMayoreo.getTotalVenta(), MathContext.UNLIMITED))) {
-                    case 0:
-                        System.out.println("Son iguales");
-                         {
-                            System.out.println("No se ejecuta el metodo de actualizacion de ventas");
-                            if (ventaMenudeo) {
-                                System.out.println("venta menudeo");
-                                update = ifaceBuscaVenta.updateVenta(ventaMayoreo.getIdVentaMayoreoPk().intValue(), usuario.getIdUsuarioPk().intValue());
-                            } else {
-                                update = ifaceBuscaVenta.updateStatusVentaMayoreo(ventaMayoreo.getIdVentaMayoreoPk().intValue(), usuario.getIdUsuarioPk().intValue());
-                                System.out.println("venta mayoreo");
-                            }
-                        }
-                        insertarPago();
-                        break;
-                    case 1:
-                        System.out.println("Monto Total es Mayor...osea que le faltan abonos");
-                        apartado.setIdApartadoPk(new BigDecimal(ifaceApartado.getNextVal()));
-                        apartado.setIdVentaMayoreoFk(ventaMayoreo.getIdVentaMayoreoPk());
-                        apartado.setIdStatus(new BigDecimal(1));
-                        apartado.setMonto(ventaMayoreo.getTotalVenta());
-                        apartado.setIdCajeroFk(usuario.getIdUsuarioPk());
-                        ifaceApartado.insert(apartado);
-                        mensajeApartado = true;
-                        insertarPago();
-                        break;
-                    case -1:
-                        System.out.println("Abonos superan la suma de la venta total");
-                        cadena = "";
-                        JsfUtil.addErrorMessageClean("Abonos superan la suma de la venta total");
-                        break;
-                }
 
+        searchById();
+        if (ventaMayoreo.getIdStatusFk().intValue() == 1) {
+            int update = 0;
+            if (opcaja.getIdCajaFk() != null) {
+                String cadena = validarCampos();
+                if (cadena.equals("")) {
+                    // Verificar maximo de abonos
+                    switch (montoTotal.compareTo(montoApartado.add(ventaMayoreo.getTotalVenta(), MathContext.UNLIMITED))) {
+                        case 0:
+                            System.out.println("Son iguales");
+                             {
+                                System.out.println("No se ejecuta el metodo de actualizacion de ventas");
+                                if (ventaMenudeo) {
+                                    System.out.println("venta menudeo");
+                                    update = ifaceBuscaVenta.updateVenta(ventaMayoreo.getIdVentaMayoreoPk().intValue(), usuario.getIdUsuarioPk().intValue());
+                                } else {
+                                    update = ifaceBuscaVenta.updateStatusVentaMayoreo(ventaMayoreo.getIdVentaMayoreoPk().intValue(), usuario.getIdUsuarioPk().intValue());
+                                    System.out.println("venta mayoreo");
+                                }
+                            }
+                            insertarPago();
+                            break;
+                        case 1:
+                            System.out.println("Monto Total es Mayor...osea que le faltan abonos");
+                            apartado.setIdApartadoPk(new BigDecimal(ifaceApartado.getNextVal()));
+                            apartado.setIdVentaMayoreoFk(ventaMayoreo.getIdVentaMayoreoPk());
+                            apartado.setIdStatus(new BigDecimal(1));
+                            apartado.setMonto(ventaMayoreo.getTotalVenta());
+                            apartado.setIdCajeroFk(usuario.getIdUsuarioPk());
+                            ifaceApartado.insert(apartado);
+                            mensajeApartado = true;
+                            insertarPago();
+                            break;
+                        case -1:
+                            System.out.println("Abonos superan la suma de la venta total");
+                            cadena = "";
+                            JsfUtil.addErrorMessageClean("Abonos superan la suma de la venta total");
+                            break;
+                    }
+
+                } else {
+                    JsfUtil.addErrorMessageClean(cadena);
+                }
             } else {
-                JsfUtil.addErrorMessageClean(cadena);
+                JsfUtil.addErrorMessageClean("Su usuario no cuenta con caja asignada, no se puede realizar el cobro");
             }
         } else {
-            JsfUtil.addErrorMessageClean("Su usuario no cuenta con caja asignada, no se puede realizar el cobro");
+            JsfUtil.addErrorMessageClean("Error, la venta ya fue pagada.");
         }
 
     }
@@ -606,35 +631,6 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
             JsfUtil.addErrorMessageClean("No puedes cobrar una venta de crédito, ir a la sección abonar crédito.");
             statusButtonPagar = true;
         }
-
-//        if (model.isEmpty()) {
-//            data.setNombreCliente("");
-//            data.setNombreVendedor("");
-//            data.setIdVenta(new BigDecimal(0));
-//            data.setFolioSucursal(null);
-//            statusButtonPagar = true;
-//
-//            JsfUtil.addWarnMessageClean("No se encontraron Registros.");
-//
-//        } else {
-//
-//            data.setNombreCliente(model.get(0).getNombreCliente());
-//            data.setNombreVendedor(model.get(0).getNombreVendedor());
-//            data.setStatusFK(model.get(0).getIdStatus().intValue());
-//            data.setFolioSucursal(model.get(0).getFolioSucursal());
-//            data.setIdVenta(model.get(0).getIdVenta());
-//            data.setIdSucursalFk(model.get(0).getIdSucursalFk());
-//            data.setNombreStatus(model.get(0).getNombreStatus());
-//            idVentaTemporal = data.getIdVenta().intValue();
-//            calculatotalVenta();
-//            if (data.getIdSucursalFk().equals(new BigDecimal(usuario.getIdSucursal()))) {
-//
-//                statusButtonPagar = false;
-//            } else 
-//            {
-//                JsfUtil.addWarnMessageClean("No puedes cobrar el folio de otra sucursal.");
-//                statusButtonPagar = true;
-//            }
     }
 
     public String getTitle() {

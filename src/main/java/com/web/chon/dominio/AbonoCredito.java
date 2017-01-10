@@ -1,6 +1,7 @@
 package com.web.chon.dominio;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -33,6 +34,7 @@ public class AbonoCredito extends ValueObject {
     private BigDecimal folioElectronico;
     private String nombreAbono;
     private String nombreCajero;
+    private ArrayList<AbonoCredito> listaAbonitos;
     
 
     @Override
@@ -66,8 +68,18 @@ public class AbonoCredito extends ValueObject {
         idClienteFk=null;
         folioElectronico=null; 
         nombreAbono = null;
+        listaAbonitos=null;
         nombreCajero=null;
     }
+
+    public ArrayList<AbonoCredito> getListaAbonitos() {
+        return listaAbonitos;
+    }
+
+    public void setListaAbonitos(ArrayList<AbonoCredito> listaAbonitos) {
+        this.listaAbonitos = listaAbonitos;
+    }
+    
 
     public BigDecimal getFolioElectronico() {
         return folioElectronico;

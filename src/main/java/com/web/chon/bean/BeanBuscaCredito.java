@@ -18,12 +18,14 @@ import com.web.chon.dominio.OperacionesCaja;
 import com.web.chon.dominio.OperacionesCuentas;
 import com.web.chon.dominio.PagosBancarios;
 import com.web.chon.dominio.SaldosDeudas;
+import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.TipoAbono;
 import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceAbonoCredito;
 import com.web.chon.service.IfaceCaja;
 import com.web.chon.service.IfaceCatCliente;
+import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceCredito;
 import com.web.chon.service.IfaceCuentasBancarias;
 import com.web.chon.service.IfaceDocumentos;
@@ -96,7 +98,8 @@ public class BeanBuscaCredito implements Serializable {
     private IfaceOperacionesCuentas ifaceOperacionesCuentas;
     @Autowired
     private IfaceCuentasBancarias ifaceCuentasBancarias;
-
+    @Autowired
+    private IfaceCatSucursales ifaceCatSucursales;
     @Autowired
     private IfacePagosBancarios ifacePagosBancarios;
 
@@ -178,6 +181,8 @@ public class BeanBuscaCredito implements Serializable {
     private boolean habilitaBotones;
     private boolean botonCancelar;
     private boolean botonActualizar;
+    private BigDecimal filtroIdSucursalFk;
+    private ArrayList<Sucursal> listaSucursales;
 
     private PagosBancarios pagoBancario;
 
@@ -193,6 +198,8 @@ public class BeanBuscaCredito implements Serializable {
         fechaMasProximaPago = new Date();
         abono = new AbonoCredito();
         abono.setIdtipoAbonoFk(new BigDecimal(1));
+        listaSucursales = new ArrayList<Sucursal>();
+        listaSucursales = ifaceCatSucursales.getSucursales();
 
         usuarioDominio = context.getUsuarioAutenticado();
         dataAbonar = new SaldosDeudas();
@@ -221,6 +228,7 @@ public class BeanBuscaCredito implements Serializable {
         comboFiltro = new BigDecimal(1);
         habilitaBotones = true;
         idCuentaDestinoBean = new BigDecimal(1);
+        filtroIdSucursalFk = new BigDecimal(usuarioDominio.getSucId());
     }
 
     public void cancelarAbonar() {
@@ -1234,7 +1242,7 @@ public class BeanBuscaCredito implements Serializable {
                 BigDecimal totalVenta = new BigDecimal(0);
                 if (ifaceAbonoCredito.update(abonoCheque) == 1) {
                     //enseguida buscar si ya se libero el credito de ese abono.
-                    modelo = ifaceCredito.getCreditosActivos(cliente.getId_cliente(), null);
+                    modelo = ifaceCredito.getCreditosActivos(cliente.getId_cliente(), null,filtroIdSucursalFk);
                     for (SaldosDeudas sd : modelo) {
                         if (sd.getFolioCredito().intValue() == abonoCheque.getIdCreditoFk().intValue()) {
                             totalVenta = sd.getSaldoTotal();
@@ -1285,7 +1293,7 @@ public class BeanBuscaCredito implements Serializable {
 
         cliente = ifaceCatCliente.getCreditoClienteByIdCliente(cliente.getId_cliente());
         if (cliente != null && cliente.getId_cliente() != null) {
-            modelo = ifaceCredito.getCreditosActivos(cliente.getId_cliente(), null);
+            modelo = ifaceCredito.getCreditosActivos(cliente.getId_cliente(), null,filtroIdSucursalFk);
             for (SaldosDeudas sd : modelo) {
                 saldoParaLiquidar = saldoParaLiquidar.add(sd.getSaldoLiquidar(), MathContext.UNLIMITED);
             }
@@ -1635,5 +1643,25 @@ public class BeanBuscaCredito implements Serializable {
     public void setBotonActualizar(boolean botonActualizar) {
         this.botonActualizar = botonActualizar;
     }
+
+    public BigDecimal getFiltroIdSucursalFk() {
+        return filtroIdSucursalFk;
+    }
+
+    public void setFiltroIdSucursalFk(BigDecimal filtroIdSucursalFk) {
+        this.filtroIdSucursalFk = filtroIdSucursalFk;
+    }
+
+    public ArrayList<Sucursal> getListaSucursales() {
+        return listaSucursales;
+    }
+
+    public void setListaSucursales(ArrayList<Sucursal> listaSucursales) {
+        this.listaSucursales = listaSucursales;
+    }
+    
+    
+
+    
 
 }

@@ -14,15 +14,21 @@
         </div>
 
         <h:form id="formContent">
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Si" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
             <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
-             <p:ajaxStatus onsuccess="PF('statusDialog').hide()" oncomplete="PF('statusDialog').hide()" onerror="PF('statusDialog').hide()" />
+            <p:ajaxStatus onsuccess="PF('statusDialog').hide()" oncomplete="PF('statusDialog').hide()" onerror="PF('statusDialog').hide()" />
             <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
                       closable="false" resizable="false" showHeader="false">
                 <p:graphicImage value="../resources/img/carga.gif" />
             </p:dialog>
             <div class="form-group" align="right">
                 <div>
-                    <p:commandButton value="Registrar Pago" update=":formContent" ajax="true" action="#{beanPagoServicios.pagar()}" onclick="PF('statusDialog').show()"/>
+                    <p:commandButton value="Registrar Pago" update=":formContent" ajax="true" action="#{beanPagoServicios.pagar()}" onclick="PF('statusDialog').show()">
+                        <p:confirm header="Confirmación" message="¿Estas seguro de realizar el pago de Servicio?" icon="ui-icon-alert" />
+                    </p:commandButton>
                 </div>
             </div>
             <p:panel> 
@@ -38,7 +44,7 @@
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="comboSucursal" value ="Sucursal:" rendered="#{beanPagoServicios.viewEstate =='init'}" /> 
                             <h:selectOneMenu  id="comboSucursal" class="col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanPagoServicios.idSucursalFk}" rendered="#{beanPagoServicios.viewEstate =='init'}" required="true">
-                                
+
                                 <f:selectItems value="#{beanPagoServicios.listaSucursales}" var="sucu" itemLabel="#{sucu.nombre}" itemValue="#{sucu.idSucursalFk}"/>
                             </h:selectOneMenu>
                         </div>
@@ -48,11 +54,11 @@
                                 <pe:keyFilter regEx="/[0-9 .]/i"/>
                             </p:inputText>
                         </div>
-<!--                        <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
-                            <p:outputLabel  class="col-lg-6 col-md-3 col-sm-4 col-xs-6"  for="txtReferencia" id="labelReferencia" value ="Referencia:" /> 
-                            <p:inputText id="txtReferencia" maxlength="16" class=" col-lg-6 col-md-4 col-sm-8 col-xs-6" value="{beanPagoServicios.referencia}" >
-                            </p:inputText>
-                        </div>-->
+                        <!--                        <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
+                                                    <p:outputLabel  class="col-lg-6 col-md-3 col-sm-4 col-xs-6"  for="txtReferencia" id="labelReferencia" value ="Referencia:" /> 
+                                                    <p:inputText id="txtReferencia" maxlength="16" class=" col-lg-6 col-md-4 col-sm-8 col-xs-6" value="{beanPagoServicios.referencia}" >
+                                                    </p:inputText>
+                                                </div>-->
                         <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
                             <p:outputLabel  class="col-lg-6 col-md-3 col-sm-4 col-xs-6 alignLeft"  for="txtComentarios" value ="Comentarios:" /> 
                             <p:inputTextarea  style=" width:50%; height:25px;" rows="1" cols="20" id="txtComentarios" maxlength="95" class=" col-lg-6 col-md-4 col-sm-8 col-xs-6" value="#{beanPagoServicios.comentarios}"/>

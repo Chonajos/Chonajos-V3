@@ -99,6 +99,9 @@
                                      paginator="true" styleClass="ui-datatable-hor-scroll" 
                                      emptyMessage="No se encontraron Registros" 
                                      rendered="#{beanHistorialAbonos.viewEstate =='init'}">
+                             <p:column style="width:16px">
+                                <p:rowToggler />
+                            </p:column>
                             <p:column headerText="Folio Abono" width="60px;" class="alignCenter">
                                 <h:outputText value="#{model.idAbonoCreditoPk}" />
                             </p:column>

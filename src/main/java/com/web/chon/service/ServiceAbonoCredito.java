@@ -245,6 +245,7 @@ public class ServiceAbonoCredito implements IfaceAbonoCredito {
         lstObject = ejb.getHistorialAbonos(idClienteFk, idCajeroFk, TiempoUtil.getFechaDDMMYYYY(fechaInicio),  TiempoUtil.getFechaDDMMYYYY(fechaFin),  idTipoPagoFk,  idAbonoPk,  idCreditoFk);
         for (Object[] object : lstObject) 
         {
+            
             AbonoCredito abonoCredito = new AbonoCredito();
             abonoCredito.setIdAbonoCreditoPk(object[0] == null ? null : new BigDecimal(object[0].toString()));
             abonoCredito.setNombreCliente(object[1] == null ? "" : object[1].toString());
@@ -267,6 +268,8 @@ public class ServiceAbonoCredito implements IfaceAbonoCredito {
             abonoCredito.setFechaTransferencia(object[17] == null ? null : (Date) object[17]);
             abonoCredito.setIdClienteFk(object[18] == null ? null : new BigDecimal(object[18].toString()));
             abonoCredito.setFolioElectronico(idCreditoFk);
+            
+            
             
             
             lstAbonoCredito.add(abonoCredito);

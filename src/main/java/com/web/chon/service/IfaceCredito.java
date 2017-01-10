@@ -14,7 +14,7 @@ public interface IfaceCredito {
     
     public ArrayList<Credito> getAll();
     
-    public ArrayList<SaldosDeudas> getCreditosActivos(BigDecimal idCliente,BigDecimal idAbonoPk);
+    public ArrayList<SaldosDeudas> getCreditosActivos(BigDecimal idCliente,BigDecimal idAbonoPk,BigDecimal idSucursalFk);
     
     public Credito getById(BigDecimal idCredito);
     

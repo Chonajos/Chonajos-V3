@@ -28,7 +28,7 @@ public interface NegocioCredito {
      * @param idCliente
      * @return 
      */
-    public List<Object[]> getCreditosActivos(BigDecimal idCliente,BigDecimal idAbonoPk);
+    public List<Object[]> getCreditosActivos(BigDecimal idCliente,BigDecimal idAbonoPk,BigDecimal idSucursalFk);
 
     public List<Object[]> getById(BigDecimal idCredito);
 

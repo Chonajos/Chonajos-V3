@@ -148,7 +148,7 @@ public class EjbCredito implements NegocioCredito {
     }
 
     @Override
-    public List<Object[]> getCreditosActivos(BigDecimal idCliente, BigDecimal idAbonoPk) {
+    public List<Object[]> getCreditosActivos(BigDecimal idCliente, BigDecimal idAbonoPk,BigDecimal idSucursal) {
         System.out.println("idCliente: " + idCliente);
         System.out.println("Abono: " + idAbonoPk);
         StringBuffer txtQuery = new StringBuffer("select cre.ID_CREDITO_PK as folio,stc.NOMBRE_STATUS,cre.FECHA_INICIO_CREDITO,cre.PLAZOS,cre.MONTO_CREDITO, "
@@ -169,8 +169,12 @@ public class EjbCredito implements NegocioCredito {
                 + " LEFT JOIN VENTA V ON V.ID_VENTA_PK = cre.ID_VENTA_MENUDEO "
                 + " LEFT JOIN SUCURSAL SVM ON SVM.ID_SUCURSAL_PK = V.ID_SUCURSAL_FK "
                 + " LEFT JOIN SUCURSAL SV ON SV.ID_SUCURSAL_PK = VM.ID_SUCURSAL_FK "
-                + "where cre.ESTATUS_CREDITO=1 and cre.ID_CLIENTE_FK ='" + idCliente + "' order by cre.FECHA_INICIO_CREDITO");
+                + "where cre.ESTATUS_CREDITO=1 and cre.ID_CLIENTE_FK ='" + idCliente + "'");
 
+        if (idSucursal != null) {
+            txtQuery.append(" and (SVM.ID_SUCURSAL_PK ='" + idSucursal + "' or SV.ID_SUCURSAL_PK ='" + idSucursal + "')");
+        }
+         txtQuery.append("order by cre.FECHA_INICIO_CREDITO");
         try {
             Query query = em.createNativeQuery(txtQuery.toString());
 

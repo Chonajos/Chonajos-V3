@@ -13,139 +13,7 @@
 
             <p:messages id="messages"   showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:panel  rendered="#{beanBuscaCredito.viewEstate=='init'}" >
-                <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanBuscaCredito.rutaPDF}"/>
-
                 <div class="container-fluid">
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                            <div class="form-group" align="right">
-                                <p:dialog  id="dialogw" header="Registrar Abono" widgetVar="dlg" resizable="false">
-                                    <h:panelGrid columns="1" cellpadding="5">
-                                        <p:outputLabel class="col-lg-12 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="comboTipoAbono" value ="Forma de Pago:" /> 
-                                        <h:selectOneMenu  id="comboTipoAbono" class="col-lg-12 col-md-8 col-sm-8 col-xs-12 " value="#{beanBuscaCredito.abono.idtipoAbonoFk}" >
-                                            <f:selectItem itemLabel="Selecciona" itemValue="" />
-                                            <f:selectItems value="#{beanBuscaCredito.lstTipoAbonos}" var="tipoAbono" itemLabel="#{tipoAbono.nombreTipoAbono}" itemValue="#{tipoAbono.idTipoAbono}"/>
-                                            <p:ajax event="change" listener="#{beanBuscaCredito.addView}" update=":formContent:cheques"/>
-                                        </h:selectOneMenu>
-
-                                        <h:outputLabel for="txtCantidad" value="Importe:" />
-                                        <p:inputText id="txtCantidad" maxlength="10" value="#{beanBuscaCredito.abono.montoAbono}" >
-                                            <pe:keyFilter regEx="/[0-9_ .]/i"/>
-                                        </p:inputText>
-
-                                        <!--Datos para Cheque-->
-                                        <p:fragment id="cheques" >
-                                            <div >
-                                                <h:outputLabel for="txtnCheque" value="N. Cheque:" rendered="#{beanBuscaCredito.viewCheque =='true'}" />
-                                            </div>
-                                            <div >
-                                                <p:inputText id="txtnCheque" maxlength="15" value="#{beanBuscaCredito.abono.numeroCheque}" rendered="#{beanBuscaCredito.viewCheque =='true'}" >
-                                                    <pe:keyFilter regEx="/[0-9_ .]/i"/>
-                                                </p:inputText>
-                                            </div>
-                                            <div >
-                                                <h:outputLabel for="txtLibrador" value="Librador:" rendered="#{beanBuscaCredito.viewCheque =='true'}" />
-                                            </div>
-                                            <div >
-                                                <p:inputText id="txtLibrador"  maxlength="50" value="#{beanBuscaCredito.abono.librador}" rendered="#{beanBuscaCredito.viewCheque =='true'}" />
-                                            </div>
-                                            <div >
-                                                <h:outputLabel  value="Fecha de Cobro:" rendered="#{beanBuscaCredito.viewCheque =='true'}" />
-                                            </div>    
-                                            <div >   
-                                                <p:calendar class="calendario" navigator="true" 
-                                                            placeholder="dd/mm/yyyy" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" 
-                                                            showOn="button"  id="popup" value="#{beanBuscaCredito.abono.fechaCobro}" rendered="#{beanBuscaCredito.viewCheque =='true'}" />
-                                            </div>
-
-                                            <div>
-                                                <p:outputLabel for="txtBancoEmisor" value="Banco Emisor:" rendered="#{beanBuscaCredito.viewCheque =='true'}"/> 
-                                            </div>
-                                            <div>
-                                                <h:selectOneMenu  id="txtBancoEmisor"  value="#{beanBuscaCredito.abono.banco}" rendered="#{beanBuscaCredito.viewCheque =='true'}">
-                                                    <f:selectItem  itemLabel="BANAMEX" itemValue="BANAMEX"/>
-                                                    <f:selectItem  itemLabel="BANCOMER" itemValue="BANCOMER"/>
-                                                    <f:selectItem  itemLabel="SANTANDER" itemValue="SANTANDER"/>
-                                                    <f:selectItem  itemLabel="HSBC" itemValue="HSBC"/>
-                                                    <f:selectItem  itemLabel="BANORTE" itemValue="BANORTE"/>
-                                                    <f:selectItem  itemLabel="SCOTIABANK" itemValue="SCOTIABANK"/>
-                                                    <f:selectItem  itemLabel="INBURSA" itemValue="INBURSA"/>
-                                                </h:selectOneMenu>
-                                            </div>
-
-                                            <div>
-                                                <p:outputLabel   for="cajaFiltro" value ="Cuenta Destino:" rendered="#{beanBuscaCredito.viewCheque =='trans'}" /> 
-                                            </div>
-                                            <div> 
-                                                <h:selectOneMenu  id="cajaFiltro" value="#{beanBuscaCredito.idCuentaDestinoBean}" rendered="#{beanBuscaCredito.viewCheque =='trans'}">
-                                                    <f:selectItem itemLabel="Selecciona" itemValue="" />
-                                                    <f:selectItems value="#{beanBuscaCredito.listaCuentas}" var="cuentita" itemLabel="#{cuentita.nombreBanco}" itemValue="#{cuentita.idCuentaBancariaPk}"/>
-                                                    <!--<p:ajax event="change" listener="{beanOperacionesCaja.printStatus()}" update=":formContent:table" />-->
-                                                </h:selectOneMenu>
-                                            </div>
-
-                                            <div>
-                                                <p:outputLabel   for="cajaFiltro2" value ="Cuenta Deposito:" rendered="#{beanBuscaCredito.viewCheque =='deposito'}" /> 
-                                            </div>
-                                            <div> 
-                                                <h:selectOneMenu  id="cajaFiltro2" value="#{beanBuscaCredito.idCuentaDestinoBean}" rendered="#{beanBuscaCredito.viewCheque =='deposito'}">
-                                                    <f:selectItem itemLabel="Selecciona" itemValue="" />
-                                                    <f:selectItems value="#{beanBuscaCredito.listaCuentas}" var="cuentita" itemLabel="#{cuentita.nombreBanco}" itemValue="#{cuentita.idCuentaBancariaPk}"/>
-                                                </h:selectOneMenu>
-                                            </div>
-
-                                            <div>
-                                                <h:outputLabel for="txtFolioElectronico" value="Folio Electronico:" rendered="#{beanBuscaCredito.viewCheque =='deposito'}" />
-                                            </div>
-                                            <div>
-                                                <p:inputText id="txtFolioElectronico"  value="#{beanBuscaCredito.abono.folioElectronico}" rendered="#{beanBuscaCredito.viewCheque =='deposito'}" />
-                                            </div>
-
-                                            <div>
-                                                <h:outputLabel for="txtFactura" value="N. Factura:" rendered="#{beanBuscaCredito.viewCheque =='true'}" />
-                                            </div>
-                                            <div>
-                                                <p:inputText id="txtFactura"  value="#{beanBuscaCredito.abono.factura}" rendered="#{beanBuscaCredito.viewCheque =='true'}" />
-                                            </div>
-                                            <!--Datos para Transferencia-->
-                                            <div>
-                                                <h:outputLabel for="txtReferencia" value="N. Referencia:" rendered="#{beanBuscaCredito.viewCheque =='trans'}"/>
-                                            </div> <div> 
-                                                <p:inputText id="txtReferencia"  value="#{beanBuscaCredito.abono.referencia}" rendered="#{beanBuscaCredito.viewCheque =='trans'}"/>
-                                            </div>
-
-                                            <div>
-                                                <h:outputLabel for="txtConcepto" value="Concepto:" rendered="#{beanBuscaCredito.viewCheque =='trans'}"/>
-                                            </div> <div> 
-                                                <p:inputText id="txtConcepto"  value="#{beanBuscaCredito.abono.concepto}" rendered="#{beanBuscaCredito.viewCheque =='trans'}"/>
-                                            </div>
-                                            <div>
-                                                <h:outputLabel  value="Fecha de Transferencia:" rendered="#{beanBuscaCredito.viewCheque =='trans'}" />
-                                            </div> <div class="form-group">      
-                                                <p:calendar class="calendario" navigator="true" 
-                                                            placeholder="dd/mm/yyyy" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" 
-                                                            showOn="button"  id="popup2" value="#{beanBuscaCredito.abono.fechaTransferencia}" rendered="#{beanBuscaCredito.viewCheque =='trans'}" />
-                                            </div>
-                                            <div>
-                                                <h:outputLabel  value="Fecha de Depósito:" rendered="#{beanBuscaCredito.viewCheque =='deposito'}" />
-                                            </div> <div class="form-group">     
-                                                <p:calendar class="calendario" navigator="true" 
-                                                            placeholder="dd/mm/yyyy" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" 
-                                                            showOn="button"  id="popup3" value="#{beanBuscaCredito.abono.fechaTransferencia}" rendered="#{beanBuscaCredito.viewCheque =='deposito'}" />
-                                            </div>
-                                        </p:fragment>
-                                        <f:facet name="footer">
-                                            <p:commandButton value="Registrar" update=":formContent:table :formContent:btncancelar :formContent:btnabonar :formContent:btnactualizar" action="#{beanBuscaCredito.prepararAbono()}" oncomplete="PF('dlg').hide();"/>
-                                        </f:facet> 
-                                    </h:panelGrid>
-                                </p:dialog>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="container-fluid">
-
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 ">
                             <h3>#{beanBuscaCredito.title}</h3>
@@ -199,6 +67,13 @@
                                 <p:ajax event="change" listener="#{beanBuscaCredito.prepararAbono()}" update=":formContent:table"/>
                             </h:selectOneMenu>
                         </div>
+                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="sucursalFiltro" value ="Sucursal:" /> 
+                            <h:selectOneMenu  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanRelacionOperaciones.idSucursal}"  disabled="#{beanRelacionOperaciones.usuario.perId != 1}">
+                                <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="" />
+                                <f:selectItems value="#{beanBuscaCredito.listaSucursales}" var="sucursal" itemLabel="#{sucursal.nombreSucursal}" itemValue="#{sucursal.idSucursalPk}"/>
+                            </h:selectOneMenu>
+                        </div>
                     </div>
                 </div>
 
@@ -233,7 +108,7 @@
 
                         <p:column headerText="Folio" width="7px;" class="alignCenter">
                             <h:outputText value="#{model.folioCredito}" />
-                              <f:facet name="footer">
+                            <f:facet name="footer">
                                 <h:outputText value="" style="text-align:right"/>
                             </f:facet>
                         </p:column>
@@ -241,7 +116,7 @@
                             <h:outputText value="#{model.fechaVenta}" >                             
                                 <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
                             </h:outputText>
-                             <f:facet name="footer">
+                            <f:facet name="footer">
                                 <h:outputText value="" style="text-align:right"/>
                             </f:facet>
                         </p:column>
@@ -249,7 +124,7 @@
                             <h:outputText value="#{model.saldoTotal}">
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
-                             <f:facet name="footer">
+                            <f:facet name="footer">
                                 <h:outputText value="" style="text-align:right"/>
                             </f:facet>
                         </p:column>
@@ -257,20 +132,20 @@
                             <h:outputText value="#{model.saldoACuenta}"> 
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
-                             <f:facet name="footer">
+                            <f:facet name="footer">
                                 <h:outputText value="" style="text-align:right"/>
                             </f:facet>
                         </p:column>
 
                         <p:column headerText="N° Pagos" exportable="false" width="18px;" class="alignCenter">
                             <h:outputText value="#{model.numeroPagos}" />
-                             <f:facet name="footer">
+                            <f:facet name="footer">
                                 <h:outputText value="" style="text-align:right"/>
                             </f:facet>
                         </p:column>
                         <p:column headerText="Dias" exportable="false" width="18px;" class="alignCenter">
                             <h:outputText value="#{model.plazo}" />
-                             <f:facet name="footer">
+                            <f:facet name="footer">
                                 <h:outputText value="" style="text-align:right"/>
                             </f:facet>
                         </p:column>
@@ -278,7 +153,7 @@
                             <h:outputText value="#{model.montoAbonar}"> 
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
-                             <f:facet name="footer">
+                            <f:facet name="footer">
                                 <h:outputText value="" style="text-align:right"/>
                             </f:facet>
                         </p:column>
@@ -287,14 +162,14 @@
                             <h:outputText value="#{model.totalAbonado}"> 
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
-                             <f:facet name="footer">
+                            <f:facet name="footer">
                                 <h:outputText value="" style="text-align:right"/>
                             </f:facet>
                         </p:column>
 
                         <p:column headerText="Pagos Atrasados" exportable="false" width="30px;" class="alignRight">
                             <h:outputText value="#{model.periodosAtraso}"/> 
-                             <f:facet name="footer">
+                            <f:facet name="footer">
                                 <h:outputText value="" style="text-align:right"/>
                             </f:facet>
                         </p:column>
@@ -302,7 +177,7 @@
                             <h:outputText value="#{model.saldoAtrasado}"> 
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
-                             <f:facet name="footer">
+                            <f:facet name="footer">
                                 <h:outputText value="" style="text-align:right"/>
                             </f:facet>
                         </p:column>
@@ -310,7 +185,7 @@
                             <h:outputText value="#{model.fechaProximaAbonar}"> 
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputText>
-                             <f:facet name="footer">
+                            <f:facet name="footer">
                                 <h:outputText value="" style="text-align:right"/>
                             </f:facet>
                         </p:column>
@@ -337,7 +212,7 @@
                             <h:outputText value="#{model.nombreSucursal}"> 
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
-                             <f:facet name="footer">
+                            <f:facet name="footer">
                                 <h:outputText value="" style="text-align:right"/>
                             </f:facet>
                         </p:column>
@@ -352,13 +227,13 @@
                                     <p:inputText id="minimoInput" value="#{model.abonarTemporal}" maxlength="10" style="width:100%"/>
                                 </f:facet>
                             </p:cellEditor>
-                             <f:facet name="footer">
+                            <f:facet name="footer">
                                 <h:outputText value="" style="text-align:right"/>
                             </f:facet>
                         </p:column>
                         <p:column width="5px;" exportable="false">
                             <p:rowEditor/>
-                             <f:facet name="footer">
+                            <f:facet name="footer">
                                 <h:outputText value="" style="text-align:right"/>
                             </f:facet>
                         </p:column>
@@ -412,8 +287,137 @@
                 </div>
             </p:panel>
 
+            <div class="container-fluid">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                        <div class="form-group" align="right">
+                            <p:dialog  id="dialogw" header="Registrar Abono" widgetVar="dlg" resizable="false">
+                                <h:panelGrid columns="1" cellpadding="5">
+                                    <p:outputLabel class="col-lg-12 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="comboTipoAbono" value ="Forma de Pago:" /> 
+                                    <h:selectOneMenu  id="comboTipoAbono" class="col-lg-12 col-md-8 col-sm-8 col-xs-12 " value="#{beanBuscaCredito.abono.idtipoAbonoFk}" >
+                                        <f:selectItem itemLabel="Selecciona" itemValue="" />
+                                        <f:selectItems value="#{beanBuscaCredito.lstTipoAbonos}" var="tipoAbono" itemLabel="#{tipoAbono.nombreTipoAbono}" itemValue="#{tipoAbono.idTipoAbono}"/>
+                                        <p:ajax event="change" listener="#{beanBuscaCredito.addView}" update=":formContent:cheques"/>
+                                    </h:selectOneMenu>
 
+                                    <h:outputLabel for="txtCantidad" value="Importe:" />
+                                    <p:inputText id="txtCantidad" maxlength="10" value="#{beanBuscaCredito.abono.montoAbono}" >
+                                        <pe:keyFilter regEx="/[0-9_ .]/i"/>
+                                    </p:inputText>
 
-        </h:form>
+                                    <!--Datos para Cheque-->
+                                    <p:fragment id="cheques" >
+                                        <div >
+                                            <h:outputLabel for="txtnCheque" value="N. Cheque:" rendered="#{beanBuscaCredito.viewCheque =='true'}" />
+                                        </div>
+                                        <div >
+                                            <p:inputText id="txtnCheque" maxlength="15" value="#{beanBuscaCredito.abono.numeroCheque}" rendered="#{beanBuscaCredito.viewCheque =='true'}" >
+                                                <pe:keyFilter regEx="/[0-9_ .]/i"/>
+                                            </p:inputText>
+                                        </div>
+                                        <div >
+                                            <h:outputLabel for="txtLibrador" value="Librador:" rendered="#{beanBuscaCredito.viewCheque =='true'}" />
+                                        </div>
+                                        <div >
+                                            <p:inputText id="txtLibrador"  maxlength="50" value="#{beanBuscaCredito.abono.librador}" rendered="#{beanBuscaCredito.viewCheque =='true'}" />
+                                        </div>
+                                        <div >
+                                            <h:outputLabel  value="Fecha de Cobro:" rendered="#{beanBuscaCredito.viewCheque =='true'}" />
+                                        </div>    
+                                        <div >   
+                                            <p:calendar class="calendario" navigator="true" 
+                                                        placeholder="dd/mm/yyyy" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" 
+                                                        showOn="button"  id="popup" value="#{beanBuscaCredito.abono.fechaCobro}" rendered="#{beanBuscaCredito.viewCheque =='true'}" />
+                                        </div>
+
+                                        <div>
+                                            <p:outputLabel for="txtBancoEmisor" value="Banco Emisor:" rendered="#{beanBuscaCredito.viewCheque =='true'}"/> 
+                                        </div>
+                                        <div>
+                                            <h:selectOneMenu  id="txtBancoEmisor"  value="#{beanBuscaCredito.abono.banco}" rendered="#{beanBuscaCredito.viewCheque =='true'}">
+                                                <f:selectItem  itemLabel="BANAMEX" itemValue="BANAMEX"/>
+                                                <f:selectItem  itemLabel="BANCOMER" itemValue="BANCOMER"/>
+                                                <f:selectItem  itemLabel="SANTANDER" itemValue="SANTANDER"/>
+                                                <f:selectItem  itemLabel="HSBC" itemValue="HSBC"/>
+                                                <f:selectItem  itemLabel="BANORTE" itemValue="BANORTE"/>
+                                                <f:selectItem  itemLabel="SCOTIABANK" itemValue="SCOTIABANK"/>
+                                                <f:selectItem  itemLabel="INBURSA" itemValue="INBURSA"/>
+                                            </h:selectOneMenu>
+                                        </div>
+
+                                        <div>
+                                            <p:outputLabel   for="cajaFiltro" value ="Cuenta Destino:" rendered="#{beanBuscaCredito.viewCheque =='trans'}" /> 
+                                        </div>
+                                        <div> 
+                                            <h:selectOneMenu  id="cajaFiltro" value="#{beanBuscaCredito.idCuentaDestinoBean}" rendered="#{beanBuscaCredito.viewCheque =='trans'}">
+                                                <f:selectItem itemLabel="Selecciona" itemValue="" />
+                                                <f:selectItems value="#{beanBuscaCredito.listaCuentas}" var="cuentita" itemLabel="#{cuentita.nombreBanco}" itemValue="#{cuentita.idCuentaBancariaPk}"/>
+                                                <!--<p:ajax event="change" listener="{beanOperacionesCaja.printStatus()}" update=":formContent:table" />-->
+                                            </h:selectOneMenu>
+                                        </div>
+
+                                        <div>
+                                            <p:outputLabel   for="cajaFiltro2" value ="Cuenta Deposito:" rendered="#{beanBuscaCredito.viewCheque =='deposito'}" /> 
+                                        </div>
+                                        <div> 
+                                            <h:selectOneMenu  id="cajaFiltro2" value="#{beanBuscaCredito.idCuentaDestinoBean}" rendered="#{beanBuscaCredito.viewCheque =='deposito'}">
+                                                <f:selectItem itemLabel="Selecciona" itemValue="" />
+                                                <f:selectItems value="#{beanBuscaCredito.listaCuentas}" var="cuentita" itemLabel="#{cuentita.nombreBanco}" itemValue="#{cuentita.idCuentaBancariaPk}"/>
+                                            </h:selectOneMenu>
+                                        </div>
+
+                                        <div>
+                                            <h:outputLabel for="txtFolioElectronico" value="Folio Electronico:" rendered="#{beanBuscaCredito.viewCheque =='deposito'}" />
+                                        </div>
+                                        <div>
+                                            <p:inputText id="txtFolioElectronico"  value="#{beanBuscaCredito.abono.folioElectronico}" rendered="#{beanBuscaCredito.viewCheque =='deposito'}" />
+                                        </div>
+
+                                        <div>
+                                            <h:outputLabel for="txtFactura" value="N. Factura:" rendered="#{beanBuscaCredito.viewCheque =='true'}" />
+                                        </div>
+                                        <div>
+                                            <p:inputText id="txtFactura"  value="#{beanBuscaCredito.abono.factura}" rendered="#{beanBuscaCredito.viewCheque =='true'}" />
+                                        </div>
+                                        <!--Datos para Transferencia-->
+                                        <div>
+                                            <h:outputLabel for="txtReferencia" value="N. Referencia:" rendered="#{beanBuscaCredito.viewCheque =='trans'}"/>
+                                        </div> <div> 
+                                            <p:inputText id="txtReferencia"  value="#{beanBuscaCredito.abono.referencia}" rendered="#{beanBuscaCredito.viewCheque =='trans'}"/>
+                                        </div>
+
+                                        <div>
+                                            <h:outputLabel for="txtConcepto" value="Concepto:" rendered="#{beanBuscaCredito.viewCheque =='trans'}"/>
+                                        </div> <div> 
+                                            <p:inputText id="txtConcepto"  value="#{beanBuscaCredito.abono.concepto}" rendered="#{beanBuscaCredito.viewCheque =='trans'}"/>
+                                        </div>
+                                        <div>
+                                            <h:outputLabel  value="Fecha de Transferencia:" rendered="#{beanBuscaCredito.viewCheque =='trans'}" />
+                                        </div> <div class="form-group">      
+                                            <p:calendar class="calendario" navigator="true" 
+                                                        placeholder="dd/mm/yyyy" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" 
+                                                        showOn="button"  id="popup2" value="#{beanBuscaCredito.abono.fechaTransferencia}" rendered="#{beanBuscaCredito.viewCheque =='trans'}" />
+                                        </div>
+                                        <div>
+                                            <h:outputLabel  value="Fecha de Depósito:" rendered="#{beanBuscaCredito.viewCheque =='deposito'}" />
+                                        </div> <div class="form-group">     
+                                            <p:calendar class="calendario" navigator="true" 
+                                                        placeholder="dd/mm/yyyy" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" 
+                                                        showOn="button"  id="popup3" value="#{beanBuscaCredito.abono.fechaTransferencia}" rendered="#{beanBuscaCredito.viewCheque =='deposito'}" />
+                                        </div>
+                                    </p:fragment>
+                                    <f:facet name="footer">
+                                        <p:commandButton value="Registrar" update=":formContent:table :formContent:btncancelar :formContent:btnabonar :formContent:btnactualizar" action="#{beanBuscaCredito.prepararAbono()}" oncomplete="PF('dlg').hide();"/>
+                                    </f:facet> 
+                                </h:panelGrid>
+                            </p:dialog>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanBuscaCredito.rutaPDF}"/>
+        
+            </h:form>
+        
     </ui:define>
 </ui:composition>
