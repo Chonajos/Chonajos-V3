@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-08-09T09:11:12 -->
+<!-- 2017-01-06T10:06:05 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteEntradaMenudeo" pageWidth="228" pageHeight="841" whenNoDataType="BlankPage" columnWidth="188" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Key" uuid="c529158e-78bf-4d20-87a9-f989c5c04179">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="AdaptadorChoni.xml"/>
@@ -395,7 +395,15 @@ where emp.ID_EMM_FK=$P{Parametro}]]>
 					</jr:column>
 					<jr:column width="30" uuid="a182be33-0f1e-49fc-ac56-15951ac25003">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
-						<jr:tableFooter style="Table 3_TH" height="30" rowSpan="1"/>
+						<jr:tableFooter style="Table 3_TH" height="30" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="30" height="30" uuid="fe10bdeb-85e4-4ac9-9fe0-f90786a49146"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="7" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{sumkilos}+"kg"]]></textFieldExpression>
+							</textField>
+						</jr:tableFooter>
 						<jr:columnHeader style="Table 3_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement x="0" y="0" width="30" height="30" uuid="4612f6eb-1aad-402f-b278-87329062e802"/>
@@ -426,15 +434,7 @@ where emp.ID_EMM_FK=$P{Parametro}]]>
 					</jr:column>
 					<jr:column width="40" uuid="5ede1a81-beea-435a-884e-60048195887f">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
-						<jr:tableFooter style="Table 3_TH" height="30" rowSpan="1">
-							<textField>
-								<reportElement x="0" y="0" width="40" height="30" uuid="fe10bdeb-85e4-4ac9-9fe0-f90786a49146"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="7" isBold="true"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$V{sumkilos}+"kg"]]></textFieldExpression>
-							</textField>
-						</jr:tableFooter>
+						<jr:tableFooter style="Table 3_TH" height="30" rowSpan="1"/>
 						<jr:columnHeader style="Table 3_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement x="0" y="0" width="40" height="30" uuid="2fb13e3d-b3d5-4e8b-836a-c346dba13a19">

@@ -333,6 +333,7 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
             for (MayoreoProductoEntradaProducto mayoreoProducto : lstMayoreoProductoEntradaProducto) {
 
                 venta = venta.add(mayoreoProducto.getTotalVenta());
+
                 comision = comision.add(mayoreoProducto.getComision());
                 if (mayoreoProducto.getEmpaqueEntrada().intValue() > mayoreoProducto.getEmpaquesVendidos().intValue()) {
                     status = "En Proceso";
@@ -340,7 +341,8 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
             }
 
             //Si no hay ventas se pone un status en proceso
-            if (venta.equals(new BigDecimal(0))) {
+            if (lstMayoreoProductoEntradaProducto == null || lstMayoreoProductoEntradaProducto.isEmpty()) {
+
                 status = "En Proceso";
             }
             

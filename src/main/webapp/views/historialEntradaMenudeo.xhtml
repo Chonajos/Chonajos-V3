@@ -12,55 +12,66 @@
         <div>
             <h4>#{beanHistEntMenudeo.title}</h4>
         </div>
+        <p:ajaxStatus onsuccess="PF('statusDialog').hide()" />
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                  closable="false" resizable="false" showHeader="false">
+            <p:graphicImage value="../resources/img/carga.gif" />
+        </p:dialog>
+        <p:confirmDialog  global="true" showEffect="fade" hideEffect="fade">
+            <div class="alignCenter">
+                <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton  value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </div>
+        </p:confirmDialog>
         <h:form id="formContent">
             <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:growl id="messagess" showDetail="false" life="2000" />
             <p:panel>
                 <div class="container-fluid">
                     <div class="form-group" align="right">
-                        <p:commandButton value="Buscar" update=":formContent" ajax="true" action="#{beanHistEntMenudeo.buscar()}"/>
+                        <p:commandButton value="Buscar" update=":formContent" onclick="PF('statusDialog').show()" ajax="true" action="#{beanHistEntMenudeo.buscar()}"/>
                     </div>
-                    <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 ">
+                    <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 form-group">
                         <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="sucursalFiltro" value ="Sucursal:" rendered="#{beanHistEntMenudeo.viewEstate =='init'}"/> 
-                            <h:selectOneMenu  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanHistEntMenudeo.data.idSucursalFk}" rendered="#{beanHistEntMenudeo.viewEstate =='init'}" disabled="#{beanHistEntMenudeo.usuario.perId != 1}">
+                            <p:outputLabel class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignLeft"  for="sucursalFiltro" value ="Sucursal:" rendered="#{beanHistEntMenudeo.viewEstate =='init'}"/> 
+                            <p:selectOneMenu  id="sucursalFiltro" class=" col-lg-12 col-md-12 col-sm-12 col-xs-12" value="#{beanHistEntMenudeo.data.idSucursalFk}" rendered="#{beanHistEntMenudeo.viewEstate =='init'}" disabled="#{beanHistEntMenudeo.usuario.perId != 1}" style="width:97% !important;" panelStyleClass="selects">
                                 <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="" />
                                 <f:selectItems value="#{beanHistEntMenudeo.listaSucursales}" var="sucursal" itemLabel="#{sucursal.nombreSucursal}" itemValue="#{sucursal.idSucursalPk}"/>
                                 <p:ajax event="change" listener="#{beanHistEntMenudeo.getEntradaProductoByIntervalDate}" process="@this" update=":formContent:table"/>
-                            </h:selectOneMenu>
+                            </p:selectOneMenu>
                         </div>
                         <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-6 col-md-5 col-sm-4 col-xs-12 "  for="selectFiltro" value ="Fecha:" rendered="#{beanHistEntMenudeo.viewEstate =='init'}"/> 
-                            <h:selectOneMenu  id="selectFiltro" class="col-lg-6 col-md-7 col-sm-8 col-xs-12" value="#{beanHistEntMenudeo.filtro}" rendered="#{beanHistEntMenudeo.viewEstate =='init'}">
+                            <p:outputLabel class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignLeft"  for="selectFiltro" value ="Fecha:" rendered="#{beanHistEntMenudeo.viewEstate =='init'}"/> 
+                            <p:selectOneMenu  id="selectFiltro" class="col-lg-12 col-md-12 col-sm-12 col-xs-12" value="#{beanHistEntMenudeo.filtro}" rendered="#{beanHistEntMenudeo.viewEstate =='init'}" style="width:97% !important;" panelStyleClass="selects">
                                 <f:selectItem itemLabel="Selecciona" itemValue="-1" />
                                 <f:selectItem itemLabel="Día" itemValue="1"/>
                                 <f:selectItem itemLabel="Mes" itemValue="2"/>
                                 <f:selectItem itemLabel="Año" itemValue="3"/>
                                 <p:ajax event="change" update=":formContent:calendarInicio formContent:calendarFin" listener="#{beanHistEntMenudeo.verificarCombo()}"/>
-                            </h:selectOneMenu>
+                            </p:selectOneMenu>
                         </div>
                         <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
-                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12 alignLeft "  for="calendarInicio" value ="Fecha de Inicio:" rendered="#{beanHistEntMenudeo.viewEstate =='init'}"/> 
+                            <p:outputLabel class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignLeft "  for="calendarInicio" value ="Fecha de Inicio:" rendered="#{beanHistEntMenudeo.viewEstate =='init'}"/> 
                             <p:calendar disabled="#{beanHistEntMenudeo.enableCalendar}" id="calendarInicio" 
-                                        class="col-lg-4 col-md-8 col-sm-8 col-xs-12 
-                                        calendario alignRight" navigator="true" placeholder="dd/mm/yyyy"
-                                        value="#{beanHistEntMenudeo.data.fechaFiltroInicio}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button" rendered="#{beanHistEntMenudeo.viewEstate =='init'}">
-                              
+                                        class="col-lg-12 col-md-12 col-sm-12 col-xs-12 
+                                        calendario" navigator="true" placeholder="dd/mm/yyyy"
+                                        value="#{beanHistEntMenudeo.data.fechaFiltroInicio}" locale="es" pattern="dd/MM/yyyy" showOn="button" rendered="#{beanHistEntMenudeo.viewEstate =='init'}">
+
                             </p:calendar>
                         </div>
                         <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12 ">
-                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12 " 
+                            <p:outputLabel class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignLeft " 
                                            for="calendarFin" value ="Fecha de Fin:" 
                                            rendered="#{beanHistEntMenudeo.viewEstate =='init'}"/> 
                             <p:calendar disabled="#{beanHistEntMenudeo.enableCalendar}" 
-                                        id="calendarFin" class="col-lg-6 col-md-8 col-sm-8 
-                                        col-xs-12 calendario alignRight" navigator="true" placeholder="dd/mm/yyyy"
-                                        value="#{beanHistEntMenudeo.data.fechaFiltroFin}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button" rendered="#{beanHistEntMenudeo.viewEstate =='init'}">
-                               
+                                        id="calendarFin" class="col-lg-12 col-md-12 col-sm-12 
+                                        col-xs-12 calendario" navigator="true" placeholder="dd/mm/yyyy"
+                                        value="#{beanHistEntMenudeo.data.fechaFiltroFin}" locale="es" pattern="dd/MM/yyyy" showOn="button" rendered="#{beanHistEntMenudeo.viewEstate =='init'}">
+
                             </p:calendar>
                         </div>
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignRight"  for="autocompletePoducto" 
+                            <p:outputLabel class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignLeft"  for="autocompletePoducto" 
                                            value ="Productos:" /> 
                             <p:autoComplete  placeholder="Seleccione un Producto" id="autocompletePoducto"  
                                              required="false" requiredMessage="Ingresa un valor para el campo Producto."
@@ -70,18 +81,14 @@
                                              forceSelection="true" var="producto"  inputStyle="width: 180px"
                                              itemLabel="#{producto.nombreSubproducto}"
                                              itemValue="#{producto.idSubproductoPk}" converter="#{productoConverter}">
-                               
+
                             </p:autoComplete>
                             <pe:keyFilter for="autocompletePoducto" regEx="/[a-z0-9-_Ã±\s]/i" />
                         </div>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <p:dataTable id="table" var="model"
-                                     rowIndexVar="rowIndex" 
-                                     value="#{beanHistEntMenudeo.lstEntradaMercancia}" 
-                                     scrollable="true"
-                                     scrollHeight="490" styleClass="ui-datatable-hor-scroll" 
-                                     emptyMessage="No se encontraron Registros." 
+                        <p:dataTable id="table" var="model" rowIndexVar="rowIndex" value="#{beanHistEntMenudeo.lstEntradaMercancia}" 
+                                     scrollable="true" paginator="true" rows="20" styleClass="ui-datatable-hor-scroll" emptyMessage="No se encontraron Registros." 
                                      rendered="#{beanHistEntMenudeo.viewEstate =='init'}">
                             <p:column style="width:16px">
                                 <p:rowToggler />
@@ -105,72 +112,84 @@
                             </p:column>
                             <p:column headerText="Costo Total" width="120px;" class="alignRight">
                                 <h:outputText value="#{model.sumaCostos}">
-                                <f:convertNumber type="currency" currencySymbol="$" />
+                                    <f:convertNumber type="currency" currencySymbol="$" />
                                 </h:outputText>
                             </p:column>
-                            
+                            <p:column headerText="Imprimir"  width="70px;" class="alignCenter">
+                                <p:commandButton id="print" ajax="true" process="@this" icon="ui-icon-print" styleClass="ui-priority-primary" update=":formContent" onclick="PF('statusDialog').show()" action="#{beanHistEntMenudeo.imprimir()}">
+                                    <f:setPropertyActionListener value="#{model}" target="#{beanHistEntMenudeo.dataSelected}"/>
+                                </p:commandButton>
+                            </p:column>
+                            <p:column headerText="Cancelar" width="70px;" class="alignCenter">
+                                <p:commandButton disabled="#{model.idStatusFk == 4}"  icon="ui-icon-trash" ajax="true" onclick="PF('statusDialog').show()" update="table" action="#{beanHistEntMenudeo.cancelar}">
+                                    <f:setPropertyActionListener value="#{model}" target="#{beanHistEntMenudeo.dataSelected}"/>
+                                    <p:confirm header="Confirmación" message="¿Estás seguro de cancelar la Entrada?" icon="ui-icon-alert"/>
+                                </p:commandButton>
+                            </p:column>
+
                             <p:rowExpansion >
                                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                <p:dataTable var="item" value="#{model.listaDetalleProducto}" styleClass="seconTable"  emptyMessage="No se encontraron Registros.">
-                                    <p:column headerText="N°" width="10px;" class="alignCenter">
-                                        <h:outputText value="#{item.count}" />
-                                    </p:column>
-                                    <p:column headerText="Productos" width="150px;" class="alignLeft">
-                                        <h:outputText value="#{item.nombreProducto}" />
-                                    </p:column>
-                                    <p:column headerText="Empaque" width="150px;" class="alignLeft">
-                                        <h:outputText value="#{item.nombreEmpaque}" />
-                                    </p:column>
-                                    <p:column headerText="Cantidad" width="45px;" class="alignRight">
-                                        <h:outputText value="#{item.cantidadEmpaque}" />
-                                    </p:column>
-                                    <p:column headerText="Kilos" width="60px;" class="alignRight">
-                                        <h:outputText value="#{item.kilosTotales}">
-                                            <f:convertNumber pattern="#,##0.00"/>
-                                        </h:outputText>
-                                    </p:column>
-                                    
-                                    <p:column headerText="%Merma" width="60px;" style="text-align:center">
-                                        <h:outputText value="#{item.porcentarjeMerma*0.01}">
-                                            <f:convertNumber type="percent" currencySymbol="%"/>
-                                        </h:outputText>
-                                    </p:column>
-                                    <p:column headerText="Costo" width="60px;" class="alignRight">
-                                        <h:outputText value="#{item.precio}">
-                                            <f:convertNumber type="currency" currencySymbol="$" />
-                                        </h:outputText>
-                                    </p:column>
-                                    <p:column headerText="Comentarios" width="120px;" class="alignLeft">
-                                        <h:outputText value="#{item.comentarios}" />
-                                    </p:column>
-                                    <p:columnGroup type="footer">
-                                        <p:row>
-                                            <p:column colspan="4" class="alignRight" footerText="Total de Kilos:" />
-                                            <p:column colspan="1">
-                                                <f:facet name="footer">
-                                                    <h:outputText value="#{model.sumaKilos}" class="alignRight">
-                                                        <f:convertNumber for="totalVent"  pattern="#,##0.00"/>
-                                                    </h:outputText>
-                                                </f:facet>
-                                            </p:column>
-                                             <p:column colspan="1" style="text-align:right" footerText="Total de Costo:" />
-                                            <p:column colspan="1" class="alignRight">
-                                                <f:facet name="footer">
-                                                    <h:outputText value="#{model.sumaCostos}" >
-                                                        <f:convertNumber type="currency" currencySymbol="$" />
-                                                    </h:outputText>
-                                                </f:facet>
-                                            </p:column>
-                                             <p:column colspan="1"></p:column>
-                                        </p:row>
-                                    </p:columnGroup>
-                                </p:dataTable>
-                                    </div>
+                                    <p:dataTable var="item" value="#{model.listaDetalleProducto}" styleClass="seconTable"  emptyMessage="No se encontraron Registros.">
+                                        <p:column headerText="N°" width="10px;" class="alignCenter">
+                                            <h:outputText value="#{item.count}" />
+                                        </p:column>
+                                        <p:column headerText="Productos" width="150px;" class="alignLeft">
+                                            <h:outputText value="#{item.nombreProducto}" />
+                                        </p:column>
+                                        <p:column headerText="Empaque" width="150px;" class="alignLeft">
+                                            <h:outputText value="#{item.nombreEmpaque}" />
+                                        </p:column>
+                                        <p:column headerText="Cantidad" width="45px;" class="alignRight">
+                                            <h:outputText value="#{item.cantidadEmpaque}" />
+                                        </p:column>
+                                        <p:column headerText="Kilos" width="60px;" class="alignRight">
+                                            <h:outputText value="#{item.kilosTotales}">
+                                                <f:convertNumber pattern="#,##0.00"/>
+                                            </h:outputText>
+                                        </p:column>
+
+                                        <p:column headerText="%Merma" width="60px;" style="text-align:center">
+                                            <h:outputText value="#{item.porcentarjeMerma*0.01}">
+                                                <f:convertNumber type="percent" currencySymbol="%"/>
+                                            </h:outputText>
+                                        </p:column>
+                                        <p:column headerText="Costo" width="60px;" class="alignRight">
+                                            <h:outputText value="#{item.precio}">
+                                                <f:convertNumber type="currency" currencySymbol="$" />
+                                            </h:outputText>
+                                        </p:column>
+                                        <p:column headerText="Comentarios" width="120px;" class="alignLeft">
+                                            <h:outputText value="#{item.comentarios}" />
+                                        </p:column>
+                                        <p:columnGroup type="footer">
+                                            <p:row>
+                                                <p:column colspan="4" class="alignRight" footerText="Total de Kilos:" />
+                                                <p:column colspan="1">
+                                                    <f:facet name="footer">
+                                                        <h:outputText value="#{model.sumaKilos}" class="alignRight">
+                                                            <f:convertNumber for="totalVent"  pattern="#,##0.00"/>
+                                                        </h:outputText>
+                                                    </f:facet>
+                                                </p:column>
+                                                <p:column colspan="1" style="text-align:right" footerText="Total de Costo:" />
+                                                <p:column colspan="1" class="alignRight">
+                                                    <f:facet name="footer">
+                                                        <h:outputText value="#{model.sumaCostos}" >
+                                                            <f:convertNumber type="currency" currencySymbol="$" />
+                                                        </h:outputText>
+                                                    </f:facet>
+                                                </p:column>
+                                                <p:column colspan="1"></p:column>
+                                            </p:row>
+                                        </p:columnGroup>
+                                    </p:dataTable>
+                                </div>
                             </p:rowExpansion>
                         </p:dataTable>
 
                     </div>
                 </div>
+                <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanHistEntMenudeo.rutaPDF}"/>
             </p:panel>
         </h:form>
     </ui:define>

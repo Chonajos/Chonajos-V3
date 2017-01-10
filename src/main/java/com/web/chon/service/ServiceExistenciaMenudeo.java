@@ -179,7 +179,7 @@ public class ServiceExistenciaMenudeo implements IfaceExistenciaMenudeo {
             data.setKilosExistencia(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
            
         }
-        System.out.println("Data: "+data.toString());
+        
         return data;
     
     }
