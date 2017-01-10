@@ -37,7 +37,6 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -311,6 +310,34 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
     }
 
+    public boolean verificarExistencia(ArrayList<VentaProductoMayoreo> productos) {
+        System.out.println("*********************************");
+        boolean bandera = false;
+        ArrayList<VentaProductoMayoreo> listaEliminar = new ArrayList<VentaProductoMayoreo>();
+        for (VentaProductoMayoreo p : productos) 
+        {
+            ExistenciaProducto ep = new ExistenciaProducto();
+            ep = ifaceNegocioExistencia.getExistenciaById(p.getIdExistenciaFk());
+            System.out.println("-----EP: " + ep.toString());
+            System.out.println("P: " + p.getCantidadEmpaque());
+            System.out.println("EP: " + ep.getCantidadPaquetes());
+            if (p.getCantidadEmpaque().compareTo(ep.getCantidadPaquetes()) > 0) {
+                listaEliminar.add(p);
+            }
+        }
+        if(!listaEliminar.isEmpty())
+        {
+            for(VentaProductoMayoreo pEliminar : listaEliminar)
+            {
+                productos.remove(pEliminar);
+            }
+            bandera =  true;
+        }
+        return bandera;
+
+    }
+        
+
     public String inserts() {
         int idVenta = 0;
 
@@ -321,7 +348,6 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                 return null;
             }
             if (lstVenta.isEmpty()) {
-
                 JsfUtil.addErrorMessageClean("Tu pedido se encuentra vacío favor de agregar productos");
             } else if (usuario.getIdUsuarioPk() == null) {
                 changeView();
@@ -334,77 +360,83 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                 changeView();
                 JsfUtil.addErrorMessageClean("Favor de Seleccionar un tipo de venta");
             } else {
-                BigDecimal idVentaInsert = new BigDecimal(ifaceVentaMayoreo.getNextVal());
-                ventaGeneral.setIdVentaMayoreoPk(idVentaInsert);
-                ventaGeneral.setIdtipoVentaFk(data.getIdTipoVenta());
-                ventaGeneral.setIdClienteFk(cliente.getId_cliente());
-                ventaGeneral.setIdSucursalFk(idSucu);
-                ventaGeneral.setIdVendedorFK(usuario.getIdUsuarioPk());
-                int folioMayoreo = 0;
-                int folioMenudeo = 0;
-                folioMayoreo = ifaceVentaMayoreo.getVentaSucursal(idSucu);
-                folioMenudeo = ifaceVenta.getFolioByIdSucursal(idSucu.intValue());
+                boolean bandera = false;
+                bandera = verificarExistencia(lstVenta);
 
-                if (folioMenudeo > folioMayoreo) {
-                    folioMayoreo = folioMenudeo;
-                }
+                if (bandera == false) {
+                    BigDecimal idVentaInsert = new BigDecimal(ifaceVentaMayoreo.getNextVal());
+                    ventaGeneral.setIdVentaMayoreoPk(idVentaInsert);
+                    ventaGeneral.setIdtipoVentaFk(data.getIdTipoVenta());
+                    ventaGeneral.setIdClienteFk(cliente.getId_cliente());
+                    ventaGeneral.setIdSucursalFk(idSucu);
+                    ventaGeneral.setIdVendedorFK(usuario.getIdUsuarioPk());
+                    int folioMayoreo = 0;
+                    int folioMenudeo = 0;
+                    folioMayoreo = ifaceVentaMayoreo.getVentaSucursal(idSucu);
+                    folioMenudeo = ifaceVenta.getFolioByIdSucursal(idSucu.intValue());
 
-                ventaGeneral.setVentaSucursal(new BigDecimal(folioMayoreo + 1));
-                ventaGeneral.setIdStatusFk(new BigDecimal(1));
-
-                //System.out.println("Venta General: " + ventaGeneral.toString());
-                if (ifaceVentaMayoreo.insertarVenta(ventaGeneral) != 0) {
-                    if (!data.getIdTipoVenta().equals(new BigDecimal("1"))) {
-                        if (insertaCredito(ventaGeneral)) {
-                            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info!", "La venta se realizo correctamente."));
-                        } else {
-                            JsfUtil.addErrorMessage("Error al Realizar la Venta, favor de cancelar la venta y volver a realizarla. Si los problemas persisten contactar al administrado.");
-                        }
+                    if (folioMenudeo > folioMayoreo) {
+                        folioMayoreo = folioMenudeo;
                     }
-                    //si la venta se ingreso el siguiente paso es ingresar los productos.
-                    for (VentaProductoMayoreo producto : lstVenta) {
-                        producto.setIdVentaMayoreoFk(idVentaInsert);
-                        BigDecimal idVentaProducto = new BigDecimal(ifaceVentaMayoreoProducto.getNextVal());
-                        //System.out.println("IdVentaProducto: " + idVentaProducto);
-                        producto.setIdVentaMayProdPk(idVentaProducto);
-                        //System.out.println("Producto: " + producto.toString());
-                        if (ifaceVentaMayoreoProducto.insertarVentaMayoreoProducto(producto) != 0) {
 
-                            List<ExistenciaProducto> lista = ifaceNegocioExistencia.getExistenciaById(producto.getIdExistenciaFk());
-                            ExistenciaProducto existencia = new ExistenciaProducto();
-                            existencia = lista.get(0);
-                            ExistenciaProducto existencia_actualizada = new ExistenciaProducto();
-                            existencia_actualizada.setIdExistenciaProductoPk(existencia.getIdExistenciaProductoPk());
-                            existencia_actualizada.setCantidadPaquetes(existencia.getCantidadPaquetes().subtract(producto.getCantidadEmpaque(), MathContext.UNLIMITED));
-                            existencia_actualizada.setKilosTotalesProducto(existencia.getKilosTotalesProducto().subtract(producto.getKilosVendidos(), MathContext.UNLIMITED));
-                            existencia_actualizada.setIdBodegaFK(existencia.getIdBodegaFK());
-                            if (ifaceNegocioExistencia.updateCantidadKilo(existencia_actualizada) != 0) {
-//                                JsfUtil.addSuccessMessageClean("Venta de Productos finalizada");
+                    ventaGeneral.setVentaSucursal(new BigDecimal(folioMayoreo + 1));
+                    ventaGeneral.setIdStatusFk(new BigDecimal(1));
+
+                    //System.out.println("Venta General: " + ventaGeneral.toString());
+                    if (ifaceVentaMayoreo.insertarVenta(ventaGeneral) != 0) {
+                        if (!data.getIdTipoVenta().equals(new BigDecimal("1"))) {
+                            if (insertaCredito(ventaGeneral)) {
+                                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info!", "La venta se realizo correctamente."));
                             } else {
-                                JsfUtil.addErrorMessageClean("Error actualizando existencia de producto: " + producto.getNombreProducto());
+                                JsfUtil.addErrorMessage("Error al Realizar la Venta, favor de cancelar la venta y volver a realizarla. Si los problemas persisten contactar al administrado.");
                             }
-                        } else {
-                            JsfUtil.addErrorMessage("Ocurrio un error");
+                        }
+                        //si la venta se ingreso el siguiente paso es ingresar los productos.
+                        for (VentaProductoMayoreo producto : lstVenta) {
+                            producto.setIdVentaMayoreoFk(idVentaInsert);
+                            BigDecimal idVentaProducto = new BigDecimal(ifaceVentaMayoreoProducto.getNextVal());
+                            //System.out.println("IdVentaProducto: " + idVentaProducto);
+                            producto.setIdVentaMayProdPk(idVentaProducto);
+                            //System.out.println("Producto: " + producto.toString());
+                            if (ifaceVentaMayoreoProducto.insertarVentaMayoreoProducto(producto) != 0) {
+
+                                ExistenciaProducto existencia = ifaceNegocioExistencia.getExistenciaById(producto.getIdExistenciaFk());
+
+                                ExistenciaProducto existencia_actualizada = new ExistenciaProducto();
+                                existencia_actualizada.setIdExistenciaProductoPk(existencia.getIdExistenciaProductoPk());
+                                existencia_actualizada.setCantidadPaquetes(existencia.getCantidadPaquetes().subtract(producto.getCantidadEmpaque(), MathContext.UNLIMITED));
+                                existencia_actualizada.setKilosTotalesProducto(existencia.getKilosTotalesProducto().subtract(producto.getKilosVendidos(), MathContext.UNLIMITED));
+                                existencia_actualizada.setIdBodegaFK(existencia.getIdBodegaFK());
+                                if (ifaceNegocioExistencia.updateCantidadKilo(existencia_actualizada) != 0) {
+//                                JsfUtil.addSuccessMessageClean("Venta de Productos finalizada");
+                                } else {
+                                    JsfUtil.addErrorMessageClean("Error actualizando existencia de producto: " + producto.getNombreProducto());
+                                }
+                            } else {
+                                JsfUtil.addErrorMessage("Ocurrio un error");
+                            }
+
                         }
 
+                        setParameterTicket(ventaGeneral.getVentaSucursal().intValue(), ventaGeneral.getVentaSucursal().intValue());
+                        generateReport(ventaGeneral.getVentaSucursal().intValue());
+                        selectedExistencia = new ExistenciaProducto();
+                        lstExistencias = new ArrayList<ExistenciaProducto>();
+                        lstVenta = new ArrayList<VentaProductoMayoreo>();
+                        data.reset();
+                        subProducto = new Subproducto();
+                        setViewEstate("viewAddProducto");
+                        idTipoVenta = null;
+                        totalProductoTemporal = null;
+                        totalVentaGeneral = new BigDecimal(0);
+                        init();
+
                     }
+                    RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
 
-                    setParameterTicket(ventaGeneral.getVentaSucursal().intValue(), ventaGeneral.getVentaSucursal().intValue());
-                    generateReport(ventaGeneral.getVentaSucursal().intValue());
-                    selectedExistencia = new ExistenciaProducto();
-                    lstExistencias = new ArrayList<ExistenciaProducto>();
-                    lstVenta = new ArrayList<VentaProductoMayoreo>();
-                    data.reset();
-                    subProducto = new Subproducto();
-                    setViewEstate("viewAddProducto");
-                    idTipoVenta = null;
-                    totalProductoTemporal = null;
-                    totalVentaGeneral = new BigDecimal(0);
-                    init();
-
+                } else {
+                    JsfUtil.addErrorMessageClean("Error, cantidad en existencia insuficiente, se han eliminado los productos");
                 }
-                RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
-
             }
             return null;
         } catch (Exception ex) {
@@ -516,7 +548,6 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
     }
 
-
     public void addProducto() {
         shoMessageKiloPromedio = false;
         BigDecimal kilosPromedioMinimo = ZERO;
@@ -553,8 +584,8 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
             boolean banderaRepetido = false;
             for (int i = 0; i < lstVenta.size(); i++) {
                 VentaProductoMayoreo productoRepetido = lstVenta.get(i);
-
-                if (productoRepetido.getIdExistenciaFk().intValue() == selectedExistencia.getIdExistenciaProductoPk().intValue() && productoRepetido.getPrecioProducto().compareTo(data.getPrecioProducto()) == 0) {
+                // if (productoRepetido.getIdExistenciaFk().intValue() == selectedExistencia.getIdExistenciaProductoPk().intValue() && productoRepetido.getPrecioProducto().compareTo(data.getPrecioProducto()) == 0) {
+                if (productoRepetido.getIdExistenciaFk().intValue() == selectedExistencia.getIdExistenciaProductoPk().intValue()) {
                     banderaRepetido = true;
                     addRepetido(productoRepetido, i);
 

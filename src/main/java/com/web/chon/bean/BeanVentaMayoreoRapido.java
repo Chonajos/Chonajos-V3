@@ -294,9 +294,7 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
                         //System.out.println("Producto: " + producto.toString());
                         if (ifaceVentaMayoreoProducto.insertarVentaMayoreoProducto(producto) != 0) {
 
-                            List<ExistenciaProducto> lista = ifaceNegocioExistencia.getExistenciaById(producto.getIdExistenciaFk());
-                            ExistenciaProducto existencia = new ExistenciaProducto();
-                            existencia = lista.get(0);
+                            ExistenciaProducto existencia = ifaceNegocioExistencia.getExistenciaById(producto.getIdExistenciaFk());
                             ExistenciaProducto existencia_actualizada = new ExistenciaProducto();
                             existencia_actualizada.setIdBodegaFK(existencia.getIdBodegaFK());
                             existencia_actualizada.setIdExistenciaProductoPk(existencia.getIdExistenciaProductoPk());

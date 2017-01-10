@@ -186,7 +186,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
         usuario.setAmaternoUsuario(usuarioDominio.getUsuMaterno());
         listaCuentas = ifaceCuentasBancarias.getCuentas();
 
-        setTitle("Pagar Venta de Mayoreo");
+        setTitle("Pagar Venta");
         setViewEstate("init");
         statusButtonPagar = true;
         caja = new Caja();
@@ -469,7 +469,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
                     JsfUtil.addErrorMessageClean("Ocurrió un error al registrar el documento por cobrar");
                 }
             }
-            System.out.println("----------------: " + opcaja.toString());
+            //System.out.println("----------------: " + opcaja.toString());
             pagoBancario.setIdCajaFk(opcaja.getIdCajaFk());
             pagoBancario.setComentarios("");
             pagoBancario.setFechaDeposito(fechaTransferencia);
