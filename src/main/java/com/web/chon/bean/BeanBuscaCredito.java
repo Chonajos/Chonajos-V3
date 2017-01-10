@@ -184,6 +184,9 @@ public class BeanBuscaCredito implements Serializable {
     private BigDecimal filtroIdSucursalFk;
     private ArrayList<Sucursal> listaSucursales;
 
+    private BigDecimal idSucursal;  
+
+
     private PagosBancarios pagoBancario;
 
     @PostConstruct
@@ -216,6 +219,7 @@ public class BeanBuscaCredito implements Serializable {
         opcaja.setIdCajaFk(caja.getIdCajaPk());
         opcaja.setIdUserFk(usuarioDominio.getIdUsuario());
         opcaja.setEntradaSalida(entradaSalida);
+        idSucursal=new BigDecimal(usuarioDominio.getSucId());
 
         opcaja.setIdSucursalFk(new BigDecimal(usuarioDominio.getSucId()));
         //-- Datos para Transferencias Bancarias o Dépositos Bancarios--//
@@ -1658,6 +1662,14 @@ public class BeanBuscaCredito implements Serializable {
 
     public void setListaSucursales(ArrayList<Sucursal> listaSucursales) {
         this.listaSucursales = listaSucursales;
+    }
+
+    public BigDecimal getIdSucursal() {
+        return idSucursal;
+    }
+
+    public void setIdSucursal(BigDecimal idSucursal) {
+        this.idSucursal = idSucursal;
     }
     
     
