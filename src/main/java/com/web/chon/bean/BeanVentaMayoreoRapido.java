@@ -45,14 +45,11 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
-import javax.xml.transform.Source;
 //import static jdk.management.resource.internal.SimpleResourceContext.contexts;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRExporter;
@@ -185,7 +182,7 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
         ventaRapida = (usuario.getIdRolFk()).toString();
 //        if (ventaRapida.equals("4")) {
 
-        lstExistencias = ifaceNegocioExistencia.getExistencias(idSucu, null, null, null, null, null, null,null);
+        lstExistencias = ifaceNegocioExistencia.getExistencias(idSucu, null, null, null, null, null, null,null,new BigDecimal(1));
 //            ventaRapidaButton = "Rapida";
         permisionVentaRapida = false;
 //            ventaRapidaCheck = true;
@@ -382,7 +379,7 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
 
         String idproductito = subProducto == null ? null : subProducto.getIdSubproductoPk();
         if (idproductito != null) {
-            lstExistencias = ifaceNegocioExistencia.getExistencias(idSucu, null, null, idproductito, null, null, null,null);
+            lstExistencias = ifaceNegocioExistencia.getExistencias(idSucu, null, null, idproductito, null, null, null,null,new BigDecimal(1));
             if (lstExistencias.size() == 1) {
 
                 selectedExistencia = new ExistenciaProducto();
@@ -402,7 +399,7 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
             data.setKilosVendidos(null);
             selectedExistencia = new ExistenciaProducto();
             permisionToWrite = true;
-            lstExistencias = ifaceNegocioExistencia.getExistencias(idSucu, null, null, null, null, null, null,null);
+            lstExistencias = ifaceNegocioExistencia.getExistencias(idSucu, null, null, null, null, null, null,null,new BigDecimal(1));
 
         }
 
@@ -608,7 +605,7 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
         data.setTotalVenta(data.getKilosVendidos().multiply(data.getPrecioProducto(), MathContext.UNLIMITED));
         selectedExistencia.setIdExistenciaProductoPk(dataEdit.getIdExistenciaFk());
         String idproductitoedit = subProducto == null ? null : subProducto.getIdSubproductoPk();
-        lstExistencias = ifaceNegocioExistencia.getExistencias(idSucu, null, null, idproductitoedit, null, null, null,null);
+        lstExistencias = ifaceNegocioExistencia.getExistencias(idSucu, null, null, idproductitoedit, null, null, null,null,new BigDecimal(1));
 
         setViewEstate("update");
     }

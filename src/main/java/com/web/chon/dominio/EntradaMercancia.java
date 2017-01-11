@@ -41,15 +41,13 @@ public class EntradaMercancia extends ValueObject implements Serializable {
     private BigDecimal cantidadEmpaquesReales;
     private BigDecimal diasPago;
     private String nombreRecibidor;
+    private BigDecimal statusCarro;
 
     @Override
     public String toString() {
         return "EntradaMercancia{" + "idEmPK=" + idEmPK + ", idProvedorFK=" + idProvedorFK + ", movimiento=" + movimiento + ", fecha=" + fecha + ", remision=" + remision + ", idSucursalFK=" + idSucursalFK + ", fechaRemision=" + fechaRemision + ", fechaPago=" + fechaPago + ", comentariosGenerales=" + comentariosGenerales + ", abreviacion=" + abreviacion + ", folio=" + folio + ", idStatusFk=" + idStatusFk + ", kilosTotales=" + kilosTotales + ", kilosTotalesProvedor=" + kilosTotalesProvedor + ", idCarroSucursal=" + idCarroSucursal + ", nombreSucursal=" + nombreSucursal + ", nombreProvedor=" + nombreProvedor + ", idUsuario=" + idUsuario + ", fechaFiltroInicio=" + fechaFiltroInicio + ", fechaFiltroFin=" + fechaFiltroFin + ", listaProductos=" + listaProductos + ", cantidadEmpaquesProvedor=" + cantidadEmpaquesProvedor + ", cantidadEmpaquesReales=" + cantidadEmpaquesReales + '}';
     }
-    
-   
-    
-    
+
     @Override
     public void reset() {
         idEmPK = null;
@@ -61,6 +59,7 @@ public class EntradaMercancia extends ValueObject implements Serializable {
         abreviacion = null;
         folio = null;
         idStatusFk = null;
+        statusCarro = null;
         kilosTotales = null;
         kilosTotalesProvedor = null;
         nombreSucursal = null;
@@ -273,8 +272,14 @@ public class EntradaMercancia extends ValueObject implements Serializable {
         this.nombreRecibidor = nombreRecibidor;
     }
 
+    public BigDecimal getStatusCarro() {
+        return statusCarro;
+    }
+
+    public void setStatusCarro(BigDecimal statusCarro) {
+        this.statusCarro = statusCarro;
+    }
     
     
 
-    
 }

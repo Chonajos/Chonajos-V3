@@ -22,14 +22,14 @@
             <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:panel rendered="#{beanExistencias.viewEstate =='init'}">
                 <div class="container-fluid">
-                    <div class="form-group">
-
+                    <div class="form-group" align="right">
+                        <p:commandButton value="Buscar" update=":formContent" ajax="true" action="#{beanExistencias.buscaExistencias()}" class="primaryButton" onclick="PF('statusDialog').show()"/>
                     </div>
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="autocompletePoducto" value ="Producto:" /> 
                             <p:autoComplete  placeholder="Seleccione un Producto" id="autocompletePoducto"   styleClass="autocomplete-input-text-media"
-                                             value="#{beanExistencias.subProducto}" completeMethod="#{beanExistencias.autoComplete}" forceSelection="true" var="producto"  inputStyle="width: 200px"
+                                             value="#{beanExistencias.subProducto}" completeMethod="#{beanExistencias.autoComplete}" forceSelection="true" var="producto"  inputStyle="width: 180px"
                                              itemLabel="#{producto.nombreSubproducto}"
                                              itemValue="#{producto.idSubproductoPk}" converter="#{productoConverter}">
                                 <p:ajax event="itemSelect" update=":formContent:table" listener="#{beanExistencias.buscaExistencias()}"/>
@@ -37,75 +37,91 @@
                             </p:autoComplete>
                             <pe:keyFilter for="autocompletePoducto" regEx="/[a-z0-9-_Ã±\s]/i" />
                         </div>
-                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="filtro" value ="Filtro:"/> 
-                            <h:selectOneMenu  id="filtro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanExistencias.filtro}">
-                                <f:selectItem itemLabel="Sucursal" itemValue="1" />
-                                <f:selectItem itemLabel="Bodega" itemValue="2" />
-                                <f:selectItem itemLabel="Provedor" itemValue="3" />
-                                <f:selectItem itemLabel="Empaque" itemValue="4" />
-                                <f:selectItem itemLabel="Tipo de Convenido" itemValue="5" />
-                                <f:selectItem itemLabel="Clave" itemValue="6" />
-                                <p:ajax event="change" update=":formContent" listener="#{beanExistencias.resetValuesFilter}" />
-                            </h:selectOneMenu>
+                        <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12" value="Carro:"/>
+                            <p:inputText class="col-lg-5 col-md-6 col-sm-8 col-xs-12" value="#{beanExistencias.data.carroSucursal}"/>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 alignRight" >
+                                <p:outputLabel for="filtro" value ="Filtro:"/> 
+                            </div>
+                            <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12 " >
+                                <p:selectOneMenu  id="filtro" value="#{beanExistencias.filtro}" style="width:97% !important;" panelStyleClass="selects">
+                                    <f:selectItem itemLabel="Sucursal" itemValue="1" />
+                                    <f:selectItem itemLabel="Bodega" itemValue="2" />
+                                    <f:selectItem itemLabel="Provedor" itemValue="3" />
+                                    <f:selectItem itemLabel="Empaque" itemValue="4" />
+                                    <f:selectItem itemLabel="Tipo de Convenido" itemValue="5" />
+                                    <p:ajax event="change" update=":formContent" listener="#{beanExistencias.resetValuesFilter}" />
+                                </p:selectOneMenu>
+                            </div>
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="sucursalFiltro" value ="Sucursal:" rendered="#{beanExistencias.filtro =='1'}"/> 
-                            <h:selectOneMenu  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanExistencias.data.idSucursal}" rendered="#{beanExistencias.filtro =='1'}">
-                                <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="" />
-                                <f:selectItems value="#{beanExistencias.listaSucursales}" var="sucursalita" itemLabel="#{sucursalita.nombreSucursal}" itemValue="#{sucursalita.idSucursalPk}"/>
-                                <p:ajax event="change" update=":formContent:table" listener="#{beanExistencias.buscaExistencias()}" />
-                            </h:selectOneMenu>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 alignRight" >
+                                <p:outputLabel for="sucursalFiltro" value ="Sucursal:" rendered="#{beanExistencias.filtro =='1'}"/> 
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" >
+                                <p:selectOneMenu  id="sucursalFiltro" value="#{beanExistencias.data.idSucursal}" rendered="#{beanExistencias.filtro =='1'}" style="width:97% !important;" panelStyleClass="selects">
+                                    <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="" />
+                                    <f:selectItems value="#{beanExistencias.listaSucursales}" var="sucursalita" itemLabel="#{sucursalita.nombreSucursal}" itemValue="#{sucursalita.idSucursalPk}"/>
+                                    <p:ajax event="change" update=":formContent:table" listener="#{beanExistencias.buscaExistencias()}" />
+                                </p:selectOneMenu>
+                            </div>
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="comboBodega" value ="Bodega:"  rendered="#{beanExistencias.filtro =='2'}"/> 
-                            <h:selectOneMenu  id="comboBodega" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanExistencias.data.idBodegaFK}"    requiredMessage="Selecciona una opción" rendered="#{beanExistencias.filtro =='2'}">
-                                <f:selectItem itemLabel="Seleccione una bodega" itemValue="" />
-                                <f:selectItems value="#{beanExistencias.listaBodegas}" var="bode" itemLabel="#{bode.nombreBodega}" itemValue="#{bode.idBodegaPK}"/>
-                                <p:ajax event="change" update=":formContent:table" listener="#{beanExistencias.buscaExistencias()}"/>
-                            </h:selectOneMenu>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 alignRight" >
+                                <p:outputLabel for="comboBodega" value ="Bodega:"  rendered="#{beanExistencias.filtro =='2'}"/> 
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 " >
+                                <p:selectOneMenu  id="comboBodega" value="#{beanExistencias.data.idBodegaFK}"    requiredMessage="Selecciona una opción" rendered="#{beanExistencias.filtro =='2'}" style="width:97% !important;" panelStyleClass="selects">
+                                    <f:selectItem itemLabel="Seleccione una bodega" itemValue="" />
+                                    <f:selectItems value="#{beanExistencias.listaBodegas}" var="bode" itemLabel="#{bode.nombreBodega}" itemValue="#{bode.idBodegaPK}"/>
+                                    <p:ajax event="change" update=":formContent:table" listener="#{beanExistencias.buscaExistencias()}"/>
+                                </p:selectOneMenu>
+                            </div>
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="comboProvedor" value ="Provedor:" rendered="#{beanExistencias.filtro =='3'}"/> 
-                            <h:selectOneMenu  id="comboProvedor" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanExistencias.data.idProvedor}" rendered="#{beanExistencias.filtro =='3'}">
-                                <f:selectItem itemLabel="Selecciona un Provedor" itemValue="" />
-                                <f:selectItems value="#{beanExistencias.listaProvedores}" var="provedorsito" itemLabel=" (#{provedorsito.nickName}) #{provedorsito.nombreProvedor} #{provedorsito.apaternoProve} #{provedorsito.amaternoProve}" itemValue="#{provedorsito.idProvedorPK}"/>
-                                <p:ajax event="change" update=":formContent:table" listener="#{beanExistencias.buscaExistencias()}"/>
-                            </h:selectOneMenu>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 alignRight" >
+                                <p:outputLabel for="comboProvedor" value ="Provedor:" rendered="#{beanExistencias.filtro =='3'}"/> 
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 alignRight" >
+                                <p:selectOneMenu  id="comboProvedor"  value="#{beanExistencias.data.idProvedor}" rendered="#{beanExistencias.filtro =='3'}" style="width:97% !important;" panelStyleClass="selects">
+                                    <f:selectItem itemLabel="Selecciona un Provedor" itemValue="" />
+                                    <f:selectItems value="#{beanExistencias.listaProvedores}" var="provedorsito" itemLabel=" (#{provedorsito.nickName}) #{provedorsito.nombreProvedor} #{provedorsito.apaternoProve} #{provedorsito.amaternoProve}" itemValue="#{provedorsito.idProvedorPK}"/>
+                                    <p:ajax event="change" update=":formContent:table" listener="#{beanExistencias.buscaExistencias()}"/>
+                                </p:selectOneMenu>
+                            </div>
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="txtTipoEmpaque" value ="Empaque:" rendered="#{beanExistencias.filtro =='4'}"/> 
-                            <h:selectOneMenu  id="txtTipoEmpaque" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanExistencias.data.idTipoEmpaqueFK}"  rendered="#{beanExistencias.filtro =='4'}">
-                                <f:selectItem itemLabel="Seleccione un empaque" itemValue="" />
-                                <f:selectItems value="#{beanExistencias.lstTipoEmpaque}" var="empaque" itemLabel="#{empaque.nombreEmpaque}" itemValue="#{empaque.idTipoEmpaquePk}"/>
-                                <p:ajax event="change" update=":formContent:table" listener="#{beanExistencias.buscaExistencias()}"/>
-                            </h:selectOneMenu>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 alignRight" >
+                                <p:outputLabel for="txtTipoEmpaque" value ="Empaque:" rendered="#{beanExistencias.filtro =='4'}"/> 
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 alignRight" >
+                                <p:selectOneMenu  id="txtTipoEmpaque" value="#{beanExistencias.data.idTipoEmpaqueFK}"  rendered="#{beanExistencias.filtro =='4'}" style="width:97% !important;" panelStyleClass="selects">
+                                    <f:selectItem itemLabel="Seleccione un empaque" itemValue="" />
+                                    <f:selectItems value="#{beanExistencias.lstTipoEmpaque}" var="empaque" itemLabel="#{empaque.nombreEmpaque}" itemValue="#{empaque.idTipoEmpaquePk}"/>
+                                    <p:ajax event="change" update=":formContent:table" listener="#{beanExistencias.buscaExistencias()}"/>
+                                </p:selectOneMenu>
+                            </div>
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-5 col-md-5 col-sm-4 col-xs-12"  for="comboTipoOrden" value ="Tipo de Convenido:" rendered="#{beanExistencias.filtro =='5'}"/> 
-                            <h:selectOneMenu  id="comboTipoOrden" class=" col-lg-7 col-md-8 col-sm-8 col-xs-12" value="#{beanExistencias.data.idTipoConvenio}" rendered="#{beanExistencias.filtro =='5'}">
-                                <f:selectItem itemLabel="Tipo de Convenio" itemValue="" />
-                                <f:selectItems value="#{beanExistencias.listaTiposConvenio}" var="listitaconvenio" itemLabel="#{listitaconvenio.nombreTipoConvenio}" itemValue="#{listitaconvenio.idTcPK}"/>
-                                <p:ajax event="change" update=":formContent:table"  listener="#{beanExistencias.buscaExistencias()}" />
-                            </h:selectOneMenu>
-                        </div>
-                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="autocompleteClave" value ="Clave:" rendered="#{beanExistencias.filtro =='6'}"/> 
-                            <p:autoComplete  placeholder="Busca una clave" id="autocompleteClave"   styleClass="autocomplete-input-text-media" rendered="#{beanExistencias.filtro =='6'}"
-                                             value="#{beanExistencias.entradaMercancia}" completeMethod="#{beanExistencias.autoCompleteMercancia}" forceSelection="true" var="entradita"  inputStyle="width: 200px"
-                                             itemLabel="#{entradita.folio}"
-                                             itemValue="#{entradita.idEmPK}" converter="#{entradaMercanciaCoverter}">
-                                <p:ajax event="itemSelect" update="formContent" listener="#{beanExistencias.buscaExistencias()}"/>
-                                <p:ajax event="change" update="formContent" listener="#{beanExistencias.buscaExistencias()}"/>
-                            </p:autoComplete>
-                            <pe:keyFilter for="autocompleteClave" regEx="/[a-z0-9-_Ã±\s]/i" />
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 alignRight" >
+                                <p:outputLabel for="comboTipoOrden" value ="Tipo de Convenido:" rendered="#{beanExistencias.filtro =='5'}" /> 
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 alignRight" >
+                                <p:selectOneMenu  id="comboTipoOrden" value="#{beanExistencias.data.idTipoConvenio}" rendered="#{beanExistencias.filtro =='5'}" style="width:97% !important;" panelStyleClass="selects">
+                                    <f:selectItem itemLabel="Tipo de Convenio" itemValue="" />
+                                    <f:selectItems value="#{beanExistencias.listaTiposConvenio}" var="listitaconvenio" itemLabel="#{listitaconvenio.nombreTipoConvenio}" itemValue="#{listitaconvenio.idTcPK}"/>
+                                    <p:ajax event="change" update=":formContent:table"  listener="#{beanExistencias.buscaExistencias()}" />
+                                </p:selectOneMenu>
+                            </div>
                         </div>
                     </div>
 
 
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <p:dataTable id="table" var="model" value="#{beanExistencias.model}" editable="true" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." scrollable="true" scrollHeight="500">
-                            <p:ajax event="rowEdit" listener="#{beanExistencias.onRowEdit}" update="table" />
+                        <p:dataTable id="table" var="model" value="#{beanExistencias.model}" editable="true" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." scrollable="true" scrollHeight="500" paginator="true" rows="20">
+                            <p:ajax event="rowEdit"  listener="#{beanExistencias.onRowEdit}" update="table" />
                             <p:ajax event="rowEditCancel" listener="#{beanExistencias.onRowCancel}" update="table" />
                             <p:column headerText="Carro"   width="45px;" style="text-align:center">
                                 <h:outputText value="#{model.carroSucursal}">

@@ -114,7 +114,8 @@ public class BeanExistencias implements Serializable {
         }
 
         String idproductito = subProducto == null ? null : subProducto.getIdSubproductoPk();
-        model = ifaceNegocioExistencia.getExistencias(data.getIdSucursal(), data.getIdBodegaFK(), data.getIdProvedor(), idproductito, data.getIdTipoEmpaqueFK(), data.getIdTipoConvenio(), idEntrada,null);
+        //1 carros activos
+        model = ifaceNegocioExistencia.getExistencias(data.getIdSucursal(), data.getIdBodegaFK(), data.getIdProvedor(), idproductito, data.getIdTipoEmpaqueFK(), data.getIdTipoConvenio(), idEntrada,data.getCarroSucursal(),new BigDecimal(1));
         getTotalCajasKilosAndCostoExistencia();
 
     }

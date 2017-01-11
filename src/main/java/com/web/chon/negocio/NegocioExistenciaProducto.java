@@ -17,7 +17,7 @@ public interface NegocioExistenciaProducto {
 
     public int updateCantidadKilo(ExistenciaProducto e);
 
-    public List<Object[]> getExistencias(BigDecimal idSucursal, BigDecimal idBodega, BigDecimal idProvedor, String idProducto, BigDecimal idEmpaque, BigDecimal idConvenio, BigDecimal idEmpPK,BigDecimal carro);
+    public List<Object[]> getExistencias(BigDecimal idSucursal, BigDecimal idBodega, BigDecimal idProvedor, String idProducto, BigDecimal idEmpaque, BigDecimal idConvenio, BigDecimal idEmpPK,BigDecimal carro,BigDecimal estatusCarro);
 
     public List<Object[]> getExistenciasCancelar(BigDecimal idExistencia);
 

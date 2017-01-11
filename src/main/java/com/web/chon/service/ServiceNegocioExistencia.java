@@ -49,12 +49,12 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
     }
 
     @Override
-    public ArrayList<ExistenciaProducto> getExistencias(BigDecimal idSucursal, BigDecimal idBodega, BigDecimal idProvedor, String idProducto, BigDecimal idEmpaque, BigDecimal idConvenio, BigDecimal idEmpPK,BigDecimal carro) {
+    public ArrayList<ExistenciaProducto> getExistencias(BigDecimal idSucursal, BigDecimal idBodega, BigDecimal idProvedor, String idProducto, BigDecimal idEmpaque, BigDecimal idConvenio, BigDecimal idEmpPK,BigDecimal carro,BigDecimal estatusCarro) {
         getEjb();
 
         try {
             ArrayList<ExistenciaProducto> lista = new ArrayList<ExistenciaProducto>();
-            List<Object[]> lstObject = ejb.getExistencias(idSucursal, idBodega, idProvedor, idProducto, idEmpaque, idConvenio, idEmpPK,carro);
+            List<Object[]> lstObject = ejb.getExistencias(idSucursal, idBodega, idProvedor, idProducto, idEmpaque, idConvenio, idEmpPK,carro,estatusCarro);
             
             for (Object[] obj : lstObject) {
                 ExistenciaProducto expro = new ExistenciaProducto();

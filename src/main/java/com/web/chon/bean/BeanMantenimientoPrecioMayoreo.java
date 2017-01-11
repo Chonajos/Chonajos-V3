@@ -89,7 +89,8 @@ public class BeanMantenimientoPrecioMayoreo implements Serializable {
         listaSucursales = ifaceCatSucursales.getSucursales();
         listaProvedores = ifaceCatProvedores.getProvedores();
 
-        model = ifaceNegocioExistencia.getExistencias(new BigDecimal(usuario.getSucId()), null, null, null, null, null, null,null);
+        //1 carros activos
+        model = ifaceNegocioExistencia.getExistencias(new BigDecimal(usuario.getSucId()), null, null, null, null, null, null,null,new BigDecimal(1));
         getTotalCajasKilos();
         
         data.setIdSucursal( new BigDecimal(usuario.getSucId()));
@@ -114,7 +115,7 @@ public class BeanMantenimientoPrecioMayoreo implements Serializable {
         }
 
         String idproductito = subProducto == null ? null : subProducto.getIdSubproductoPk();
-        model = ifaceNegocioExistencia.getExistencias(data.getIdSucursal(), data.getIdBodegaFK(), data.getIdProvedor(), idproductito, data.getIdTipoEmpaqueFK(), data.getIdTipoConvenio(), idEntrada,data.getCarroSucursal());
+        model = ifaceNegocioExistencia.getExistencias(data.getIdSucursal(), data.getIdBodegaFK(), data.getIdProvedor(), idproductito, data.getIdTipoEmpaqueFK(), data.getIdTipoConvenio(), idEntrada,data.getCarroSucursal(),new BigDecimal(1));
         getTotalCajasKilos();
 
     }
