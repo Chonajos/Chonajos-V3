@@ -74,13 +74,13 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
     }
 
     @Override
-    public ArrayList<EntradaMercancia> getEntradaProductoByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idProvedor,BigDecimal carro) {
+    public ArrayList<EntradaMercancia> getEntradaProductoByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idProvedor, BigDecimal carro) {
         getEjb();
 
         List<Object[]> lstObject = new ArrayList<Object[]>();
         ArrayList<EntradaMercancia> lstEntradaMercancia2 = new ArrayList<EntradaMercancia>();
 
-        lstObject = ejb.getEntradaProductoByIntervalDate(fechaInicio, fechaFin, idSucursal, idProvedor,carro);
+        lstObject = ejb.getEntradaProductoByIntervalDate(fechaInicio, fechaFin, idSucursal, idProvedor, carro);
 
         for (Object[] obj : lstObject) {
             EntradaMercancia dominio = new EntradaMercancia();
@@ -98,10 +98,10 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
             dominio.setNombreSucursal(obj[13] == null ? " " : obj[13].toString());
             dominio.setIdCarroSucursal(obj[14] == null ? null : new BigDecimal(obj[14].toString()));
             dominio.setComentariosGenerales(obj[15] == null ? " " : obj[15].toString());
-            
+
             dominio.setCantidadEmpaquesReales(obj[16] == null ? null : new BigDecimal(obj[16].toString()));
             dominio.setCantidadEmpaquesProvedor(obj[17] == null ? null : new BigDecimal(obj[17].toString()));
-            
+
             dominio.setFechaPago(obj[18] == null ? null : (Date) obj[18]);
             dominio.setNombreRecibidor(obj[19] == null ? " " : obj[19].toString());
             dominio.setIdUsuario(obj[20] == null ? null : new BigDecimal(obj[20].toString()));
@@ -307,9 +307,11 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
     }
 
     @Override
-    public ArrayList<CarroDetalleGeneral> getReporteGeneralCarro(BigDecimal idSucursal, BigDecimal idProvedor, BigDecimal carro,String fechaInicio,String fechaFin) {
+    public ArrayList<CarroDetalleGeneral> getReporteGeneralCarro(BigDecimal idSucursal, BigDecimal idProvedor, BigDecimal carro, String fechaInicio, String fechaFin) {
 
         getEjb();
+        
+        //ESTATUS DE LOS CARROS 1 EN PROCESO 2 CERRADO Y LOS QUE VALLANA EXISTIR
 
         List<Object[]> lstObject = new ArrayList<Object[]>();
         ArrayList<CarroDetalleGeneral> lstCarroDetalleGeneral = new ArrayList<CarroDetalleGeneral>();
@@ -324,28 +326,28 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
             dominio.setIdentificador(obj[1] == null ? null : obj[1].toString());
             dominio.setFecha(obj[2] == null ? null : (Date) obj[2]);
             dominio.setNombreProvedor(obj[3] == null ? "" : obj[3].toString());
+            dominio.setIdStatus(obj[4] == null ? new BigDecimal(1) : new BigDecimal(obj[4].toString()));
+            dominio.setIdEntradaMercancia(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
 
-            ArrayList<MayoreoProductoEntradaProducto> lstMayoreoProductoEntradaProducto = ifaceVentaMayoreoProducto.getVentaByIdSucursalAndCarro(idSucursal, dominio.getCarro(),fechaInicio,fechaFin);
+            ArrayList<MayoreoProductoEntradaProducto> lstMayoreoProductoEntradaProducto = ifaceVentaMayoreoProducto.getVentaByIdSucursalAndCarro(idSucursal, dominio.getCarro(), fechaInicio, fechaFin);
             //Se calculan las ventas, comisiones y el status del  carro
-            String status = "Vendido";
+            String status = "En proceso";
             BigDecimal venta = new BigDecimal(0);
             BigDecimal comision = new BigDecimal(0);
             for (MayoreoProductoEntradaProducto mayoreoProducto : lstMayoreoProductoEntradaProducto) {
 
                 venta = venta.add(mayoreoProducto.getTotalVenta());
-
                 comision = comision.add(mayoreoProducto.getComision());
-                if (mayoreoProducto.getEmpaqueEntrada().intValue() > mayoreoProducto.getEmpaquesVendidos().intValue()) {
-                    status = "En Proceso";
-                }
+  
             }
 
             //Si no hay ventas se pone un status en proceso
-            if (lstMayoreoProductoEntradaProducto == null || lstMayoreoProductoEntradaProducto.isEmpty()) {
-
+            if (dominio.getIdStatus().equals(new BigDecimal(1))) {
                 status = "En Proceso";
+            }else if(dominio.getIdStatus().equals(new BigDecimal(2))){
+                status = "Cerrado";
             }
-            
+
             dominio.setVenta(venta);
             dominio.setStatus(status);
             dominio.setComision(comision);
@@ -354,5 +356,16 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
         }
 
         return lstCarroDetalleGeneral;
+    }
+
+    @Override
+    public int cerrarCarro(BigDecimal idEntradaMercancia) {
+        try {
+            getEjb();
+            return ejb.cerrarCarro(idEntradaMercancia);
+        } catch (Exception ex) {
+            return 0;
+        }
+
     }
 }

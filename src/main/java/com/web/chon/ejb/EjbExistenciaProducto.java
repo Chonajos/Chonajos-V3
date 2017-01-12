@@ -142,7 +142,7 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
     }
 
     @Override
-    public List<Object[]> getExistencias(BigDecimal idSucursal, BigDecimal idBodega, BigDecimal idProvedor, String idProducto, BigDecimal idEmpaque, BigDecimal idConvenio, BigDecimal idEmpPK, BigDecimal carro) {
+    public List<Object[]> getExistencias(BigDecimal idSucursal, BigDecimal idBodega, BigDecimal idProvedor, String idProducto, BigDecimal idEmpaque, BigDecimal idConvenio, BigDecimal idEmpPK, BigDecimal carro,BigDecimal estatusCarro) {
 
         try {
 
@@ -154,22 +154,14 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
                     + "  sucu.NOMBRE_SUCURSAL,bod.NOMBRE, ex.PRECIO_MINIMO, ex.PRECIO_VENTA, ex.PRECIO_MAXIMO, "
                     + "  ex.ESTATUS_BLOQUEO,ex.ID_SUBPRODUCTO_FK,ex.ID_TIPO_EMPAQUE_FK,bod.ID_BD_PK,ex.CONVENIO,em.CARROSUCURSAL, ex.ID_EMP_FK,ex.COMENTARIOS,ex.ID_TIPO_CONVENIO_FK,ex.KILOSPROMPROD,ex.ID_SUCURSAL_FK "
                     + " from EXISTENCIA_PRODUCTO ex "
-                    + " join ENTRADAMERCANCIAPRODUCTO emp "
-                    + " on emp.ID_EMP_PK = ex.ID_EMP_FK "
-                    + " join ENTRADAMERCANCIA em "
-                    + " on em.ID_EM_PK = emp.ID_EM_FK "
-                    + " join SUBPRODUCTO subp "
-                    + " on subp.ID_SUBPRODUCTO_PK = ex.ID_SUBPRODUCTO_FK "
-                    + " join TIPO_EMPAQUE te "
-                    + " on te.ID_TIPO_EMPAQUE_PK = ex.ID_TIPO_EMPAQUE_FK "
-                    + " join BODEGA bod "
-                    + " on bod.ID_BD_PK = ex.ID_BODEGA_FK "
-                    + " join TIPO_CONVENIO tc "
-                    + " on tc.ID_TC_PK = ex.ID_TIPO_CONVENIO_FK "
-                    + " join SUCURSAL sucu "
-                    + " on sucu.ID_SUCURSAL_PK = ex.ID_SUCURSAL_FK "
-                    + " join provedores prove "
-                    + " on prove.id_provedor_pk = em.id_provedor_fk");
+                    + " JOIN ENTRADAMERCANCIAPRODUCTO emp ON emp.ID_EMP_PK = ex.ID_EMP_FK "
+                    + " JOIN ENTRADAMERCANCIA em ON em.ID_EM_PK = emp.ID_EM_FK "
+                    + " JOIN SUBPRODUCTO subp ON subp.ID_SUBPRODUCTO_PK = ex.ID_SUBPRODUCTO_FK "
+                    + " JOIN TIPO_EMPAQUE te ON te.ID_TIPO_EMPAQUE_PK = ex.ID_TIPO_EMPAQUE_FK "
+                    + " JOIN BODEGA bod ON bod.ID_BD_PK = ex.ID_BODEGA_FK "
+                    + " JOIN TIPO_CONVENIO tc ON tc.ID_TC_PK = ex.ID_TIPO_CONVENIO_FK "
+                    + " JOIN SUCURSAL sucu ON sucu.ID_SUCURSAL_PK = ex.ID_SUCURSAL_FK "
+                    + " JOIN provedores prove ON prove.id_provedor_pk = em.id_provedor_fk");
             if (idEmpPK == null) {
                 BigDecimal cero = new BigDecimal(0);
 
@@ -240,6 +232,16 @@ public class EjbExistenciaProducto implements NegocioExistenciaProducto {
                     cadena.append(" AND ");
                 }
                 cadena.append("em.CARROSUCURSAL  = '" + carro + "' ");
+                cont++;
+            }
+            
+            if (estatusCarro != null) {
+                if (cont == 0) {
+                    cadena.append(" WHERE ");
+                } else {
+                    cadena.append(" AND ");
+                }
+                cadena.append("em.STATUS_CARRO  = '" + estatusCarro + "' ");
                 cont++;
             }
 

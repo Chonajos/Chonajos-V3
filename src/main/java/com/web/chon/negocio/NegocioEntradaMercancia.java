@@ -47,5 +47,5 @@ public interface NegocioEntradaMercancia {
      */
     public List<Object[]> getCarrosByIdSucursalAndIdProvedor(BigDecimal idSucursal,BigDecimal idProvedor,BigDecimal carro);
     
-    
+    public int cerrarCarro(BigDecimal idEntradaMercancia);
 }

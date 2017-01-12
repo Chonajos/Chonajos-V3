@@ -102,7 +102,8 @@ public class BeanAjustesExistenciasMayoreo implements Serializable {
         listaSucursales = ifaceCatSucursales.getSucursales();
         listaProvedores = ifaceCatProvedores.getProvedores();
 
-        model = ifaceNegocioExistencia.getExistencias(new BigDecimal(usuario.getSucId()), null, null, null, null, null, null,null);
+        //1 ESTATUS DE CARRO ES ACTIVO
+        model = ifaceNegocioExistencia.getExistencias(new BigDecimal(usuario.getSucId()), null, null, null, null, null, null, null, new BigDecimal(1));
         getTotalCajasKilos();
 
         data.setIdSucursal(new BigDecimal(usuario.getSucId()));
@@ -129,7 +130,7 @@ public class BeanAjustesExistenciasMayoreo implements Serializable {
         }
 
         String idproductito = subProducto == null ? null : subProducto.getIdSubproductoPk();
-        model = ifaceNegocioExistencia.getExistencias(data.getIdSucursal(), data.getIdBodegaFK(), data.getIdProvedor(), idproductito, data.getIdTipoEmpaqueFK(), data.getIdTipoConvenio(), idEntrada,data.getCarroSucursal());
+        model = ifaceNegocioExistencia.getExistencias(data.getIdSucursal(), data.getIdBodegaFK(), data.getIdProvedor(), idproductito, data.getIdTipoEmpaqueFK(), data.getIdTipoConvenio(), idEntrada, data.getCarroSucursal(),new BigDecimal(1));
         getTotalCajasKilos();
 
     }
@@ -186,7 +187,7 @@ public class BeanAjustesExistenciasMayoreo implements Serializable {
         ExistenciaProducto existenciaMayoreoOld = new ExistenciaProducto();
         ExistenciaProducto existenciaProductoNew = new ExistenciaProducto();
         ExistenciaProducto ExistenciaProducto = new ExistenciaProducto();
-        
+
 //        if (existenciaProductoNew.getSalidaEntrada() == null) {
 //            JsfUtil.addErrorMessage("Selecione si es una salida o es una entrada.");
 //            return;
@@ -196,7 +197,7 @@ public class BeanAjustesExistenciasMayoreo implements Serializable {
         existenciaProductoNew = (ExistenciaProducto) event.getObject();
         ExistenciaProducto = ifaceNegocioExistencia.getExistenciaById(existenciaProductoNew.getIdExistenciaProductoPk());
 
-        if (ExistenciaProducto != null && ExistenciaProducto.getIdExistenciaProductoPk()!=null) {
+        if (ExistenciaProducto != null && ExistenciaProducto.getIdExistenciaProductoPk() != null) {
             existenciaMayoreoOld = ExistenciaProducto;
         }
 

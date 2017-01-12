@@ -217,7 +217,7 @@ public class BeanTransferenciaMerca implements Serializable {
     }
 
     public void searchExistencia() {
-        lstExistenciaProducto = ifaceNegocioExistencia.getExistencias(data.getIdSucursalOrigen(), data.getIdBodegaOrigen(), null, null, null, null, null,null);
+        lstExistenciaProducto = ifaceNegocioExistencia.getExistencias(data.getIdSucursalOrigen(), data.getIdBodegaOrigen(), null, null, null, null, null,null,new BigDecimal(1));
     }
 
     public ArrayList<Subproducto> autoComplete(String nombreProducto) {

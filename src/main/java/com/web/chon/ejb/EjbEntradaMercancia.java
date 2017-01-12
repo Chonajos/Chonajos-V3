@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.web.chon.ejb;
 
 import com.web.chon.dominio.EntradaMercancia;
@@ -36,7 +31,7 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
             Query query = em.createNativeQuery("INSERT INTO ENTRADAMERCANCIA (ID_EM_PK,ID_PROVEDOR_FK,MOVIMIENTO,"
                     + "FECHA,REMISION,ID_SUCURSAL_FK,IDENTIFICADOR,ID_STATUS_FK,KILOSTOTALES,KILOSTOTALESPROVEDOR,"
                     + "COMENTARIOS,FECHAREMISION,CARROSUCURSAL,ID_USUARIO_FK,CANTIDADTOTAL,CANTIDADTOTALPROVEDOR,"
-                    + "FECHA_PAGO)VALUES (?,?,?,sysdate,?,?,?,1,?,?,?,?,?,?,?,?,?)");
+                    + "FECHA_PAGO,STATUS_CARRO)VALUES (?,?,?,sysdate,?,?,?,1,?,?,?,?,?,?,?,?,?,1)");
             query.setParameter(1, entrada.getIdEmPK());
             query.setParameter(2, entrada.getIdProvedorFK());
             query.setParameter(3, entrada.getMovimiento());
@@ -54,7 +49,6 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
             query.setParameter(13, entrada.getCantidadEmpaquesReales());
             query.setParameter(14, entrada.getCantidadEmpaquesProvedor());
             query.setParameter(15, entrada.getFechaPago());
-            
 
             return query.executeUpdate();
 
@@ -89,18 +83,18 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
     }
 
     @Override
-    public List<Object[]> getEntradaProductoByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idProvedor,BigDecimal carro) {
+    public List<Object[]> getEntradaProductoByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idProvedor, BigDecimal carro) {
         int cont = 0;
-        StringBuffer query = new StringBuffer("SELECT EMA.ID_EM_PK,EMA.ID_PROVEDOR_FK,EMA.MOVIMIENTO,EMA.FECHA,EMA.REMISION,EMA.ID_SUCURSAL_FK,EMA.IDENTIFICADOR,\n" +
-"EMA.ID_STATUS_FK,EMA.KILOSTOTALES,EMA.KILOSTOTALESPROVEDOR,EMA.COMENTARIOS,EMA.FECHAREMISION,PRO.\n" +
-"NOMBRE_PROVEDOR ||' '|| PRO.A_PATERNO_PROVE ||' '|| \n" +
-"PRO.A_MATERNO_PROVE AS NOMBRE_PROVEDOR, SUC.NOMBRE_SUCURSAL,EMA.CARROSUCURSAL,EMA.COMENTARIOS,EMA.CANTIDADTOTAL,\n" +
-"EMA.CANTIDADTOTALPROVEDOR,EMA.FECHA_PAGO,usu.NOMBRE_USUARIO ||' '|| usu.APATERNO_USUARIO ||' '|| usu.AMATERNO_USUARIO as recibidor,EMA.id_usuario_fk FROM ENTRADAMERCANCIA EMA\n" +
-"LEFT JOIN PROVEDORES PRO\n" +
-"ON EMA.ID_PROVEDOR_FK = PRO.ID_PROVEDOR_PK\n" +
-"LEFT JOIN SUCURSAL SUC \n" +
-"ON EMA.ID_SUCURSAL_FK = SUC.ID_SUCURSAL_PK\n" +
-"inner join USUARIO usu on usu.ID_USUARIO_PK = EMA.ID_USUARIO_FK");
+        StringBuffer query = new StringBuffer("SELECT EMA.ID_EM_PK,EMA.ID_PROVEDOR_FK,EMA.MOVIMIENTO,EMA.FECHA,EMA.REMISION,EMA.ID_SUCURSAL_FK,EMA.IDENTIFICADOR, "
+                + "EMA.ID_STATUS_FK,EMA.KILOSTOTALES,EMA.KILOSTOTALESPROVEDOR,EMA.COMENTARIOS,EMA.FECHAREMISION,PRO. "
+                + "NOMBRE_PROVEDOR ||' '|| PRO.A_PATERNO_PROVE ||' '|| PRO.A_MATERNO_PROVE AS NOMBRE_PROVEDOR, "
+                + "SUC.NOMBRE_SUCURSAL,EMA.CARROSUCURSAL,EMA.COMENTARIOS,EMA.CANTIDADTOTAL,EMA.CANTIDADTOTALPROVEDOR, "
+                + "EMA.FECHA_PAGO,usu.NOMBRE_USUARIO ||' '|| usu.APATERNO_USUARIO ||' '|| usu.AMATERNO_USUARIO as recibidor, "
+                + "EMA.id_usuario_fk,EMA.STATUS_CARRO "
+                + "FROM ENTRADAMERCANCIA EMA "
+                + "LEFT JOIN PROVEDORES PRO ON EMA.ID_PROVEDOR_FK = PRO.ID_PROVEDOR_PK "
+                + "LEFT JOIN SUCURSAL SUC ON EMA.ID_SUCURSAL_FK = SUC.ID_SUCURSAL_PK "
+                + "inner join USUARIO usu on usu.ID_USUARIO_PK = EMA.ID_USUARIO_FK");
         if (fechaInicio != null) {
             cont++;
             query.append(" WHERE TO_DATE(TO_CHAR(EMA.FECHA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + TiempoUtil.getFechaDDMMYY(fechaInicio) + "' AND '" + TiempoUtil.getFechaDDMMYY(fechaFin) + "' ");
@@ -213,9 +207,8 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
     @Override
     public List<Object[]> getEntradaByIdEmPFk(BigDecimal idEmPFk) {
         //System.out.println("EJB_getEntradaByIdEmPFk: "+idEmPFk);
-        Query query = em.createNativeQuery("select em.* from ENTRADAMERCANCIA em\n"
-                + "inner join ENTRADAMERCANCIAPRODUCTO emp\n"
-                + "on emp.ID_EM_FK = em.ID_EM_PK\n"
+        Query query = em.createNativeQuery("select em.* from ENTRADAMERCANCIA em "
+                + "inner join ENTRADAMERCANCIAPRODUCTO emp on emp.ID_EM_FK = em.ID_EM_PK\n"
                 + "where emp.ID_EMP_PK= ? ");
         query.setParameter(1, idEmPFk);
         return query.getResultList();
@@ -225,7 +218,7 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
     @Override
     public List<Object[]> getEntradaByIdPk(BigDecimal idPk) {
         //System.out.println("EJB_getEntradaByIdPkk: "+idPk);
-        Query query = em.createNativeQuery("select em.* from ENTRADAMERCANCIA em\n"
+        Query query = em.createNativeQuery("select em.* from ENTRADAMERCANCIA em "
                 + "where em.ID_EM_PK = ?");
         query.setParameter(1, idPk);
         return query.getResultList();
@@ -236,7 +229,7 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
     public List<Object[]> getCarrosByIdSucursalAndIdProvedor(BigDecimal idSucursal, BigDecimal idProvedor, BigDecimal carro) {
 
         try {
-            StringBuffer txtQuery = new StringBuffer("SELECT ENM.CARROSUCURSAL,ENM.IDENTIFICADOR,ENM.FECHA, PRO.NOMBRE_PROVEDOR||' '||PRO.A_PATERNO_PROVE||' '||PRO.A_MATERNO_PROVE AS NOMBRE_PROVEDOR FROM ENTRADAMERCANCIA ENM "
+            StringBuffer txtQuery = new StringBuffer("SELECT ENM.CARROSUCURSAL,ENM.IDENTIFICADOR,ENM.FECHA, PRO.NOMBRE_PROVEDOR||' '||PRO.A_PATERNO_PROVE||' '||PRO.A_MATERNO_PROVE AS NOMBRE_PROVEDOR,ENM.STATUS_CARRO,ENM.ID_EM_PK FROM ENTRADAMERCANCIA ENM "
                     + "INNER JOIN PROVEDORES PRO ON PRO.ID_PROVEDOR_PK = ENM.ID_PROVEDOR_FK");
 
             int cont = 0;
@@ -254,7 +247,7 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
                     txtQuery.append(" WHERE ENM.ID_SUCURSAL_FK =" + idSucursal);
                 }
             }
-            
+
             if (carro != null) {
 
                 if (cont != 0) {
@@ -275,5 +268,19 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
             return null;
         }
 
+    }
+
+    @Override
+    public int cerrarCarro(BigDecimal idEntradaMercancia) {
+        try {
+            Query query = em.createNativeQuery("UPDATE ENTRADAMERCANCIA SET STATUS_CARRO = 2 WHERE ID_EM_PK = ? ");
+            query.setParameter(1, idEntradaMercancia);
+
+            return query.executeUpdate();
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbEntradaMenudeo.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        }
     }
 }

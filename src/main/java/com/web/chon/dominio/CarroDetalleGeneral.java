@@ -2,7 +2,6 @@ package com.web.chon.dominio;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -19,7 +18,7 @@ public class CarroDetalleGeneral extends ValueObject implements Serializable {
     private String status;
     private BigDecimal venta;
     private BigDecimal comision;
-
+    private BigDecimal idStatus;
 
     @Override
     public String toString() {
@@ -90,7 +89,14 @@ public class CarroDetalleGeneral extends ValueObject implements Serializable {
         this.comision = comision;
     }
 
-    
+    public BigDecimal getIdStatus() {
+        return idStatus;
+    }
+
+    public void setIdStatus(BigDecimal idStatus) {
+        this.idStatus = idStatus;
+    }
+
     @Override
     public void reset() {
 
@@ -102,6 +108,7 @@ public class CarroDetalleGeneral extends ValueObject implements Serializable {
         status = null;
         venta = null;
         comision = null;
+        idStatus = null;
     }
 
 }

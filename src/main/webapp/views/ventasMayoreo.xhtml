@@ -74,6 +74,8 @@
                                              value="#{beanVentaMayoreo.usuario}" completeMethod="#{beanVentaMayoreo.autoCompleteVendedor}" forceSelection="true" var="usuario"  inputStyle="width: 180px"
                                              itemLabel="#{usuario.nombreCompletoUsuario}"
                                              itemValue="#{usuario.idUsuarioPk}" converter="#{usuarioConverter}">
+                                <p:ajax event="itemSelect" update="@this"  />
+                                <p:ajax event="change" update="@this" />
                             </p:autoComplete>
                             <pe:keyFilter for="autocompleteVendedor" regEx="/[a-z0-9-_Ã±\s]/i" />
                         </div>
