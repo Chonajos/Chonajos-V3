@@ -150,7 +150,7 @@ public class EjbCredito implements NegocioCredito {
     @Override
     public List<Object[]> getCreditosActivos(BigDecimal idCliente, BigDecimal idAbonoPk,BigDecimal idSucursal) {
         System.out.println("idCliente: " + idCliente);
-        System.out.println("Abono: " + idAbonoPk);
+        System.out.println("IdSucursalFK: "+idSucursal);
         StringBuffer txtQuery = new StringBuffer("select cre.ID_CREDITO_PK as folio,stc.NOMBRE_STATUS,cre.FECHA_INICIO_CREDITO,cre.PLAZOS,cre.MONTO_CREDITO, "
                 + "(select NVL(sum(ac.MONTO_ABONO),0)from ABONO_CREDITO ac "
                 + "where ac.ID_CREDITO_FK= cre.ID_CREDITO_PK and ac.ESTATUS=1 ");
