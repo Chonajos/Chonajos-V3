@@ -69,9 +69,10 @@
                         </div>
                         <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="sucursalFiltro" value ="Sucursal:" /> 
-                            <h:selectOneMenu  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanBuscaCredito.idSucursal}">
-                                <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="" />
+                            <h:selectOneMenu  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanBuscaCredito.filtroIdSucursalFk}">
+                                <f:selectItem itemLabel="Todas" itemValue="" />
                                 <f:selectItems value="#{beanBuscaCredito.listaSucursales}" var="sucursal" itemLabel="#{sucursal.nombreSucursal}" itemValue="#{sucursal.idSucursalPk}"/>
+                            <p:ajax event="change" update=":formContent" listener="#{beanBuscaCredito.searchByIdCliente()}"/>
                             </h:selectOneMenu>
                         </div>
                     </div>
