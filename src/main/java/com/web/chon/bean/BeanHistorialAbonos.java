@@ -133,10 +133,12 @@ public class BeanHistorialAbonos implements Serializable {
     //--Datos para Operaciones Caja---//
     private OperacionesCaja opcaja;
     private Caja caja;
+    ArrayList<AbonoCredito> padres;
 
     //--Datos para Operaciones Caja---//
     @PostConstruct
     public void init() {
+        padres= new ArrayList<AbonoCredito>();
         abono = new AbonoCredito();
         total = new BigDecimal(0);
         setTitle("Historial de Abonos");
@@ -153,12 +155,14 @@ public class BeanHistorialAbonos implements Serializable {
         fechaFiltroInicio = context.getFechaSistema();
         fechaFiltroFin = context.getFechaSistema();
         cliente = new Cliente();
+        buscar();
         //idTipoAbonoFk = null;
-        if (cliente == null) {
-            cliente = new Cliente();
-        }
-        lstAbonosCreditos = ifaceAbonoCredito.getHistorialAbonos(cliente.getId_cliente(), idCobradorFk, fechaFiltroInicio, fechaFiltroFin, idTipoAbonoFk, idAbonoPk, idCreditoFk);
-        sumaTotal();
+//        if (cliente == null) {
+//            cliente = new Cliente();
+//        }
+//        lstAbonosCreditos = ifaceAbonoCredito.getHistorialAbonos(cliente.getId_cliente(), idCobradorFk, fechaFiltroInicio, fechaFiltroFin, idTipoAbonoFk, idAbonoPk, idCreditoFk);
+//        sumaTotal();
+//        sumaAbonitos();
         modelo = new ArrayList<SaldosDeudas>();
         opcaja = new OperacionesCaja();
 
@@ -275,7 +279,6 @@ public class BeanHistorialAbonos implements Serializable {
         opcaja.setEntradaSalida(salida);
         opcaja.setIdSucursalFk(new BigDecimal(usuarioDominio.getSucId()));
         opcaja.setMonto(abono.getMontoAbono());
-
         opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
         opcaja.setIdStatusFk(new BigDecimal(1));
         abono.setEstatusAbono(new BigDecimal(2));
@@ -290,8 +293,12 @@ public class BeanHistorialAbonos implements Serializable {
                 opcaja.setComentarios("Cancelación de Abono");
                 opcaja.setIdConceptoFk(conceptoAbonoEfectivo);
                 ifaceOperacionesCaja.insertaOperacion(opcaja);
-                ifaceAbonoCredito.update(abono);
-                ifaceCredito.updateStatus(abono.getIdCreditoFk(), new BigDecimal(1));
+                for (AbonoCredito abonito : abono.getListaAbonitos()) {
+                    abonito.setEstatusAbono(new BigDecimal(2));
+                    ifaceAbonoCredito.update(abonito);
+                    ifaceCredito.updateStatus(abonito.getIdCreditoFk(), new BigDecimal(1));
+                }
+                JsfUtil.addSuccessMessageClean("Se ha cancelado el abono con éxito");
                 break;
             case 2:
                 System.out.println("Cancelar Abono en Transferencia");
@@ -306,8 +313,13 @@ public class BeanHistorialAbonos implements Serializable {
                     }
                     pb.setIdStatusFk(new BigDecimal(1));
                     ifacePagosBancarios.updatePagoBancario(pb);
-                    ifaceAbonoCredito.update(abono);
-                    ifaceCredito.updateStatus(abono.getIdCreditoFk(), new BigDecimal(1));
+                    for (AbonoCredito abonito : abono.getListaAbonitos()) {
+                        abonito.setEstatusAbono(new BigDecimal(2));
+                        ifaceAbonoCredito.update(abonito);
+                        ifaceCredito.updateStatus(abonito.getIdCreditoFk(), new BigDecimal(1));
+                    }
+                    //ifaceAbonoCredito.update(abono);
+                    //ifaceCredito.updateStatus(abono.getIdCreditoFk(), new BigDecimal(1));
                     JsfUtil.addSuccessMessageClean("Se ha cancelado el abono con éxito");
                 } else {
                     JsfUtil.addErrorMessageClean("Error, no se puede cancelar el abono");
@@ -317,24 +329,26 @@ public class BeanHistorialAbonos implements Serializable {
                 No insertar operaciones en caja
                 case 2: no aceptada:
                 Insertar operación de salida comentario de Cancelación de Abono
-                
                  */
-
                 break;
             case 3:
                 Documento d = new Documento();
                 d = ifaceDocumentos.getDocumentoByTipoLlave(new BigDecimal(4), abono.getIdAbonoCreditoPk());
-                
+
                 if (d != null && d.getIdDocumentoPk() != null) {
-                    if (d.getIdStatusFk().intValue() == 1) 
-                    {
+                    if (d.getIdStatusFk().intValue() == 1) {
                         opcaja.setComentarios("Cancelación de Abono");
                         opcaja.setIdConceptoFk(conceptoAbonoCheque);
                         ifaceOperacionesCaja.insertaOperacion(opcaja);
                         d.setIdStatusFk(new BigDecimal(3));
                         ifaceDocumentos.updateDocumentoById(d);
-                        ifaceAbonoCredito.update(abono);
-                        ifaceCredito.updateStatus(abono.getIdCreditoFk(), new BigDecimal(1));
+                        for (AbonoCredito abonito : abono.getListaAbonitos()) {
+                            abonito.setEstatusAbono(new BigDecimal(2));
+                            ifaceAbonoCredito.update(abonito);
+                            ifaceCredito.updateStatus(abonito.getIdCreditoFk(), new BigDecimal(1));
+                        }
+                        //ifaceAbonoCredito.update(abono);
+                        //ifaceCredito.updateStatus(abono.getIdCreditoFk(), new BigDecimal(1));
                         JsfUtil.addSuccessMessageClean("Se ha cancelado el abono con éxito");
                     } else {
                         JsfUtil.addErrorMessageClean("Error 2, no se puede cancelar el abono");
@@ -358,8 +372,13 @@ public class BeanHistorialAbonos implements Serializable {
                     }
                     pb.setIdStatusFk(new BigDecimal(1));
                     ifacePagosBancarios.updatePagoBancario(pb);
-                    ifaceAbonoCredito.update(abono);
-                    ifaceCredito.updateStatus(abono.getIdCreditoFk(), new BigDecimal(1));
+                    for (AbonoCredito abonito : abono.getListaAbonitos()) {
+                        abonito.setEstatusAbono(new BigDecimal(2));
+                        ifaceAbonoCredito.update(abonito);
+                        ifaceCredito.updateStatus(abonito.getIdCreditoFk(), new BigDecimal(1));
+                    }
+                    //ifaceAbonoCredito.update(abono);
+                    //ifaceCredito.updateStatus(abono.getIdCreditoFk(), new BigDecimal(1));
                     JsfUtil.addSuccessMessageClean("Se ha cancelado el abono con éxito");
                 } else {
                     JsfUtil.addErrorMessageClean("Error, no se puede cancelar el abono");
@@ -381,7 +400,7 @@ public class BeanHistorialAbonos implements Serializable {
         BigDecimal saldoActual;
         //System.out.println("------" + data.getIdClienteFk());
         // System.out.println("------" + data.getIdAbonoCreditoPk());
-        modelo = ifaceCredito.getCreditosActivos(data.getIdClienteFk(), data.getIdAbonoCreditoPk(),null);
+        modelo = ifaceCredito.getCreditosActivos(data.getIdClienteFk(), data.getIdAbonoCreditoPk(), null);
         for (SaldosDeudas saldo : modelo) {
             totalAbono = totalAbono.add(saldo.getTotalAbonado(), MathContext.UNLIMITED);
             totalDeuda = totalDeuda.add(saldo.getSaldoTotal(), MathContext.UNLIMITED);
@@ -412,19 +431,122 @@ public class BeanHistorialAbonos implements Serializable {
     }
 
     public void buscar() {
+        lstAbonosCreditos = new ArrayList<AbonoCredito>();
+        padres = new ArrayList<AbonoCredito>();
         if (cliente == null) {
             cliente = new Cliente();
         }
         lstAbonosCreditos = ifaceAbonoCredito.getHistorialAbonos(cliente.getId_cliente(), idCobradorFk, fechaFiltroInicio, fechaFiltroFin, idTipoAbonoFk, idAbonoPk, idCreditoFk);
+        generaPadres();
+        generaHijos();
         sumaTotal();
+
+    }
+
+    public void generaPadres() {
+        //Generar Padres
+        
+        
+        
+        for (AbonoCredito ab : lstAbonosCreditos) 
+        {
+            boolean bandera = true;
+            
+            AbonoCredito abonoPadre = new AbonoCredito();
+            
+            if (padres.isEmpty()) 
+            {
+                System.out.println("getNumeroAbono inicializa"+ab.getNumeroAbono());
+                abonoPadre.setIdAbonoCreditoPk(ab.getIdAbonoCreditoPk());
+                abonoPadre.setNombreCliente(ab.getNombreCliente());
+                abonoPadre.setNombreCajero(ab.getNombreCajero());
+                abonoPadre.setIdCreditoFk(ab.getIdCreditoFk());
+                abonoPadre.setFechaAbono(ab.getFechaAbono());
+                abonoPadre.setNombreAbono(ab.getNombreAbono());
+                abonoPadre.setMontoAbono(ab.getMontoAbono());
+                abonoPadre.setIdUsuarioFk(ab.getIdUsuarioFk());
+                abonoPadre.setIdtipoAbonoFk(ab.getIdtipoAbonoFk());
+                abonoPadre.setEstatusAbono(ab.getEstatusAbono());
+                abonoPadre.setNumeroCheque(ab.getNumeroCheque());
+                abonoPadre.setLibrador(ab.getLibrador());
+                abonoPadre.setFechaCobro(ab.getFechaCobro());
+                abonoPadre.setBanco(ab.getBanco());
+                abonoPadre.setFactura(ab.getFactura());
+                abonoPadre.setReferencia(ab.getReferencia());
+                abonoPadre.setConcepto(ab.getConcepto());
+                abonoPadre.setFechaTransferencia(ab.getFechaTransferencia());
+                abonoPadre.setIdClienteFk(ab.getIdClienteFk());
+                abonoPadre.setFolioElectronico(ab.getFolioElectronico());
+                abonoPadre.setNumeroAbono(ab.getNumeroAbono());
+                padres.add(abonoPadre);
+            } else 
+            {
+                
+               
+                for (AbonoCredito a : padres) 
+                {
+//                    abonoPadre = new AbonoCredito();
+                 
+                    if (a.getNumeroAbono().intValue() != ab.getNumeroAbono().intValue()) 
+                    {
+                        System.out.println("agrega nuevo  son diferentes"+ab.getNumeroAbono());
+                        abonoPadre.setIdAbonoCreditoPk(ab.getIdAbonoCreditoPk());
+                        abonoPadre.setNombreCliente(ab.getNombreCliente());
+                        abonoPadre.setNombreCajero(ab.getNombreCajero());
+                        abonoPadre.setIdCreditoFk(ab.getIdCreditoFk());
+                        abonoPadre.setFechaAbono(ab.getFechaAbono());
+                        abonoPadre.setNombreAbono(ab.getNombreAbono());
+                        abonoPadre.setMontoAbono(ab.getMontoAbono());
+                        abonoPadre.setIdUsuarioFk(ab.getIdUsuarioFk());
+                        abonoPadre.setIdtipoAbonoFk(ab.getIdtipoAbonoFk());
+                        abonoPadre.setEstatusAbono(ab.getEstatusAbono());
+                        abonoPadre.setNumeroCheque(ab.getNumeroCheque());
+                        abonoPadre.setLibrador(ab.getLibrador());
+                        abonoPadre.setFechaCobro(ab.getFechaCobro());
+                        abonoPadre.setBanco(ab.getBanco());
+                        abonoPadre.setFactura(ab.getFactura());
+                        abonoPadre.setReferencia(ab.getReferencia());
+                        abonoPadre.setConcepto(ab.getConcepto());
+                        abonoPadre.setFechaTransferencia(ab.getFechaTransferencia());
+                        abonoPadre.setIdClienteFk(ab.getIdClienteFk());
+                        abonoPadre.setFolioElectronico(ab.getFolioElectronico());
+                        abonoPadre.setNumeroAbono(ab.getNumeroAbono());
+                        bandera = true;
+                        
+                    }else{
+                        bandera = false;
+                    }
+                    
+                }//fin for
+                if(bandera)
+                {
+                    padres.add(abonoPadre);
+                }
+               
+            }//fin else
+        }//fin for
         
     }
-    public void sumaAbonitos()
+    public void generaHijos()
     {
-        for(AbonoCredito ab:lstAbonosCreditos)
-        {
-            
+        //Generar Hijos
+        for (AbonoCredito pa : padres) {
+            ArrayList<AbonoCredito> hijos = new ArrayList<AbonoCredito>();
+
+            BigDecimal monto = new BigDecimal(0);
+            for (int i = 0; i < lstAbonosCreditos.size(); i++) {
+                AbonoCredito abono = new AbonoCredito();
+                abono = lstAbonosCreditos.get(i);
+                if (pa.getNumeroAbono().intValue() == abono.getNumeroAbono().intValue()) {
+                    hijos.add(abono);
+                    monto = monto.add(abono.getMontoAbono(), MathContext.UNLIMITED);
+                }
+
+            }
+            pa.setMontoAbono(monto);
+            pa.setListaAbonitos(hijos);
         }
+        lstAbonosCreditos = padres;
     }
 
     public void sumaTotal() {

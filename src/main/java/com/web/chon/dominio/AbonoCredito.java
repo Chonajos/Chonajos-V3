@@ -35,6 +35,7 @@ public class AbonoCredito extends ValueObject {
     private String nombreAbono;
     private String nombreCajero;
     private ArrayList<AbonoCredito> listaAbonitos;
+    private BigDecimal numeroAbono;
     
 
     @Override
@@ -70,6 +71,7 @@ public class AbonoCredito extends ValueObject {
         nombreAbono = null;
         listaAbonitos=null;
         nombreCajero=null;
+        numeroAbono=null;
     }
 
     public ArrayList<AbonoCredito> getListaAbonitos() {
@@ -279,6 +281,15 @@ public class AbonoCredito extends ValueObject {
     public void setNombreCajero(String nombreCajero) {
         this.nombreCajero = nombreCajero;
     }
+
+    public BigDecimal getNumeroAbono() {
+        return numeroAbono;
+    }
+
+    public void setNumeroAbono(BigDecimal numeroAbono) {
+        this.numeroAbono = numeroAbono;
+    }
+    
     
     
 

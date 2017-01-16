@@ -31,8 +31,8 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
             Query query = em.createNativeQuery("INSERT INTO  ABONO_CREDITO (ID_ABONO_CREDITO_PK ,"
                     + "ID_CREDITO_FK "
                     + ",MONTO_ABONO ,FECHA_ABONO ,ID_USUARIO_FK,TIPO_ABONO_FK,ESTATUS,NUMERO_CHEQUE,"
-                    + "LIBRADOR,FECHA_COBRO,BANCO_EMISOR,NUMERO_FACTURA,REFERENCIA,CONCEPTO,FECHA_TRANSFERENCIA ) "
-                    + " VALUES(?,?,?,sysdate,?,?,?,?,?,?,?,?,?,?,?)");
+                    + "LIBRADOR,FECHA_COBRO,BANCO_EMISOR,NUMERO_FACTURA,REFERENCIA,CONCEPTO,FECHA_TRANSFERENCIA,NUMERO_ABONO) "
+                    + " VALUES(?,?,?,sysdate,?,?,?,?,?,?,?,?,?,?,?,?)");
             query.setParameter(1, abonoCredito.getIdAbonoCreditoPk());
             query.setParameter(2, abonoCredito.getIdCreditoFk());
             query.setParameter(3, abonoCredito.getMontoAbono());
@@ -48,6 +48,7 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
             query.setParameter(12, abonoCredito.getReferencia());
             query.setParameter(13, abonoCredito.getConcepto());
             query.setParameter(14, abonoCredito.getFechaTransferencia());
+            query.setParameter(15, abonoCredito.getNumeroAbono());
 
             return query.executeUpdate();
 
@@ -251,7 +252,7 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
 
     @Override
     public List<Object[]> getHistorialAbonos(BigDecimal idClienteFk, BigDecimal idCajeroFk, String fechaInicio, String fechaFin, BigDecimal idTipoPagoFk, BigDecimal idAbonoPk, BigDecimal idCreditoFk) {
-        System.out.println("Variables: idCliente: "+idClienteFk +" idCajero: "+idCajeroFk+" idTipoPago: "+idTipoPagoFk +" idAbonoPk: "+idAbonoPk  +" idCredito: "+idCreditoFk);
+        //System.out.println("Variables: idCliente: "+idClienteFk +" idCajero: "+idCajeroFk+" idTipoPago: "+idTipoPagoFk +" idAbonoPk: "+idAbonoPk  +" idCredito: "+idCreditoFk);
         StringBuffer cadena = new StringBuffer("select ab.ID_ABONO_CREDITO_PK as folio,(CLI.NOMBRE||' '||CLI.APELLIDO_PATERNO ||' '||CLI.APELLIDO_MATERNO ) AS CLIENTE,\n" +
 "(usu.NOMBRE_USUARIO||' '||usu.APATERNO_USUARIO) AS CAJERO,\n" +
 "ab.ID_CREDITO_FK as folio_credito,\n" +
@@ -259,7 +260,7 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
 "ab.ID_USUARIO_FK,ab.TIPO_ABONO_FK,ab.ESTATUS,\n" +
 "ab.NUMERO_CHEQUE,ab.LIBRADOR,ab.FECHA_COBRO,\n" +
 "ab.BANCO_EMISOR,ab.NUMERO_FACTURA,ab.REFERENCIA,ab.CONCEPTO,ab.FECHA_TRANSFERENCIA,\n" +
-"cli.ID_CLIENTE\n" +
+"cli.ID_CLIENTE,ab.NUMERO_ABONO \n" +
 "from ABONO_CREDITO ab inner join credito cre on cre.ID_CREDITO_PK = ab.ID_CREDITO_FK\n" +
 "inner join cliente cli on cli.ID_CLIENTE = cre.ID_CLIENTE_FK\n" +
 "inner join usuario usu  on usu.ID_USUARIO_PK = ab.ID_USUARIO_FK\n" +
@@ -288,6 +289,7 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
         }
         
         //cadena.append(" order by ab.FECHA_COBRO asc");
+        //System.out.println("Query: "+cadena);
         Query query;
         query = em.createNativeQuery(cadena.toString());
         try {

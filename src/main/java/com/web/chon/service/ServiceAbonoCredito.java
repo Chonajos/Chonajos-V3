@@ -254,7 +254,6 @@ public class ServiceAbonoCredito implements IfaceAbonoCredito {
             abonoCredito.setFechaAbono(object[4] == null ? null : (Date) object[4]);
             abonoCredito.setNombreAbono(object[5] == null ? "" : object[5].toString());
             abonoCredito.setMontoAbono(object[6] == null ? null : new BigDecimal(object[6].toString()));
-            
             abonoCredito.setIdUsuarioFk(object[7] == null ? null : new BigDecimal(object[7].toString()));
             abonoCredito.setIdtipoAbonoFk(object[8] == null ? null : new BigDecimal(object[8].toString()));
             abonoCredito.setEstatusAbono(object[9] == null ? null : new BigDecimal(object[9].toString()));
@@ -267,7 +266,8 @@ public class ServiceAbonoCredito implements IfaceAbonoCredito {
             abonoCredito.setConcepto(object[16] == null ? "" : object[16].toString());
             abonoCredito.setFechaTransferencia(object[17] == null ? null : (Date) object[17]);
             abonoCredito.setIdClienteFk(object[18] == null ? null : new BigDecimal(object[18].toString()));
-            abonoCredito.setFolioElectronico(idCreditoFk);
+            abonoCredito.setFolioElectronico(object[15] == null ? null : new BigDecimal(object[15].toString()));
+            abonoCredito.setNumeroAbono(object[19] == null ? null : new BigDecimal(object[19].toString()));
             
             
             
