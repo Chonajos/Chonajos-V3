@@ -35,7 +35,7 @@ public interface IfaceCredito {
      * @param estatus
      * @return ArrayList<SaldosDeudas>
      */
-    public ArrayList<SaldosDeudas> getCreditosByEstatus(int estatus,int dias,BigDecimal idSucursal);
+    public ArrayList<SaldosDeudas> getCreditosByEstatus(int estatus,int dias,BigDecimal idSucursal,BigDecimal tipoVenta);
     
     /**
      * Obtiene el credito por medio del id de venta de menudeo

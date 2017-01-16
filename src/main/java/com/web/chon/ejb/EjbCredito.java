@@ -148,9 +148,9 @@ public class EjbCredito implements NegocioCredito {
     }
 
     @Override
-    public List<Object[]> getCreditosActivos(BigDecimal idCliente, BigDecimal idAbonoPk,BigDecimal idSucursal) {
+    public List<Object[]> getCreditosActivos(BigDecimal idCliente, BigDecimal idAbonoPk, BigDecimal idSucursal) {
         System.out.println("idCliente: " + idCliente);
-        System.out.println("IdSucursalFK: "+idSucursal);
+        System.out.println("IdSucursalFK: " + idSucursal);
         StringBuffer txtQuery = new StringBuffer("select cre.ID_CREDITO_PK as folio,stc.NOMBRE_STATUS,cre.FECHA_INICIO_CREDITO,cre.PLAZOS,cre.MONTO_CREDITO, "
                 + "(select NVL(sum(ac.MONTO_ABONO),0)from ABONO_CREDITO ac "
                 + "where ac.ID_CREDITO_FK= cre.ID_CREDITO_PK and ac.ESTATUS=1 ");
@@ -174,7 +174,7 @@ public class EjbCredito implements NegocioCredito {
         if (idSucursal != null) {
             txtQuery.append(" and (SVM.ID_SUCURSAL_PK ='" + idSucursal + "' or SV.ID_SUCURSAL_PK ='" + idSucursal + "')");
         }
-         txtQuery.append("order by cre.FECHA_INICIO_CREDITO");
+        txtQuery.append("order by cre.FECHA_INICIO_CREDITO");
         try {
             Query query = em.createNativeQuery(txtQuery.toString());
 
@@ -286,7 +286,8 @@ public class EjbCredito implements NegocioCredito {
         }
     }
 
-    public List<Object[]> getAllCreditosActivos(BigDecimal idSucursal) {
+    public List<Object[]> getAllCreditosActivos(BigDecimal idSucursal, BigDecimal tipoVenta) {
+
         StringBuffer txtQuery = new StringBuffer("SELECT CRE.ID_CREDITO_PK AS FOLIO,STC.NOMBRE_STATUS,CRE.FECHA_INICIO_CREDITO,CRE.PLAZOS,CRE.MONTO_CREDITO, "
                 + " (SELECT NVL(SUM(ac.MONTO_ABONO),0)FROM ABONO_CREDITO AC "
                 + " WHERE AC.ID_CREDITO_FK= CRE.ID_CREDITO_PK AND AC.ESTATUS=1) "
@@ -306,6 +307,18 @@ public class EjbCredito implements NegocioCredito {
 
         if (idSucursal != null) {
             txtQuery.append(" AND SUC.ID_SUCURSAL_PK = " + idSucursal);
+        }
+        //Si es null trae todos los tipos menudeo y mayoreo
+        if (tipoVenta != null) {
+            //1.- Menudeo 
+            if (tipoVenta.equals(new BigDecimal(1))) {
+
+                txtQuery.append(" AND CRE.ID_VENTA_MENUDEO IS NOT NULL ");
+
+                //2.-Mayoreo
+            } else if (tipoVenta.equals(new BigDecimal(2))) {
+                txtQuery.append(" AND CRE.ID_VENTA_MAYOREO IS NOT NULL ");
+            }
         }
         txtQuery.append(" ORDER BY C.NOMBRE");
 

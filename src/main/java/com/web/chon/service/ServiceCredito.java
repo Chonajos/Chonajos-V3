@@ -285,13 +285,13 @@ public class ServiceCredito implements IfaceCredito {
     }
 
     @Override
-    public ArrayList<SaldosDeudas> getCreditosByEstatus(int estatus, int dias, BigDecimal idSucursal) {
+    public ArrayList<SaldosDeudas> getCreditosByEstatus(int estatus, int dias, BigDecimal idSucursal,BigDecimal tipoVenta) {
 
         List<Object[]> lstObject = new ArrayList<Object[]>();
         ArrayList<SaldosDeudas> lstSaldoDeuda = new ArrayList<SaldosDeudas>();
         getEjb();
 
-        lstObject = ejb.getAllCreditosActivos(idSucursal);
+        lstObject = ejb.getAllCreditosActivos(idSucursal,tipoVenta);
 
         try {
             for (Object[] obj : lstObject) {

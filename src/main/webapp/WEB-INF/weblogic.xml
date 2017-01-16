@@ -4,5 +4,5 @@
     <keepgenerated>true</keepgenerated>
     <debug>true</debug>
   </jsp-descriptor>
-  <context-root>/Chonajos_V3</context-root>
+  <context-root>/</context-root>
 </weblogic-web-app>
