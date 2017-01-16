@@ -47,6 +47,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
+import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRExporter;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -322,7 +323,7 @@ public class BeanBuscaCredito implements Serializable {
 
     }
 
-    public void generateReport(int folio, String nombreTipoTicket) {
+    public void generateReport(int folio, String nombreTipoTicket,boolean emptyDataSource) {
         JRExporter exporter = null;
 
         try {
@@ -335,7 +336,15 @@ public class BeanBuscaCredito implements Serializable {
             }
 
             pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketAbonos" + File.separatorChar + nombreTipoTicket;
-            JasperPrint jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport);
+            JasperPrint jp = null;
+            
+            //Verifica si llevara JREemptyDataSource
+            if (emptyDataSource) {
+                jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport, new JREmptyDataSource());
+            } else {
+                jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport);
+            }
+            
             outputStream = JasperReportUtil.getOutputStreamFromReport(paramReport, getPathFileJasper());
             exporter = new JRPdfExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
@@ -345,7 +354,7 @@ public class BeanBuscaCredito implements Serializable {
             rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf", folio, usuarioDominio.getSucId());
 
         } catch (Exception exception) {
-            logger.error("Error al generar el reporte ","Error ",exception.getMessage());
+            logger.error("Error al generar el reporte "+exception.getMessage(),"Error ",exception.getMessage());
             JsfUtil.addErrorMessage("Error al Generar el Reporte.");
         }
 
@@ -833,7 +842,7 @@ public class BeanBuscaCredito implements Serializable {
             default:
                 break;
         }
-        generateReport(ac.getIdAbonoCreditoPk().intValue(), nombreReporte);
+        generateReport(ac.getIdAbonoCreditoPk().intValue(), nombreReporte,true);
         RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
         abono.reset();
         dataAbonar.reset();
@@ -896,7 +905,7 @@ public class BeanBuscaCredito implements Serializable {
 
                         if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
                             setParameterTicket(ac, cliente);
-                            generateReport(ac.getIdAbonoCreditoPk().intValue(), "abono.jasper");
+                            generateReport(ac.getIdAbonoCreditoPk().intValue(), "abono.jasper",true);
                             abono.reset();
                             dataAbonar.reset();
                             saldoParaLiquidar = new BigDecimal(0);
@@ -949,7 +958,7 @@ public class BeanBuscaCredito implements Serializable {
                         if (ifaceOperacionesCuentas.insertaOperacion(opcuenta) == 1) {
                             JsfUtil.addSuccessMessageClean("Se ha recibido el la Transferencia Correctamente");
                             setParameterTicket(ac, cliente);
-                            generateReport(ac.getIdAbonoCreditoPk().intValue(), "abonoTransferencia.jasper");
+                            generateReport(ac.getIdAbonoCreditoPk().intValue(), "abonoTransferencia.jasper",true);
                             abono.reset();
                             dataAbonar.reset();
                             saldoParaLiquidar = new BigDecimal(0);
@@ -1017,7 +1026,7 @@ public class BeanBuscaCredito implements Serializable {
 
                             if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
                                 setParameterTicket(ac, cliente);
-                                generateReport(ac.getIdAbonoCreditoPk().intValue(), "abonoCheque.jasper");
+                                generateReport(ac.getIdAbonoCreditoPk().intValue(), "abonoCheque.jasper",true);
                                 abono.reset();
                                 dataAbonar.reset();
                                 saldoParaLiquidar = new BigDecimal(0);
@@ -1055,7 +1064,7 @@ public class BeanBuscaCredito implements Serializable {
                             ac.setMontoAbono(dataAbonar.getSaldoACuenta());
                             ac.setIdtipoAbonoFk(abono.getIdtipoAbonoFk());
                             setParameterTicket(ac, cliente);
-                            generateReport(ac.getIdCreditoFk().intValue(), "abonoCuenta.jasper");
+                            generateReport(ac.getIdCreditoFk().intValue(), "abonoCuenta.jasper",true);
                             RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
                         } else {
                             JsfUtil.addErrorMessageClean("Ocurrió un error al registrar el pago de la venta");
@@ -1146,7 +1155,7 @@ public class BeanBuscaCredito implements Serializable {
     public void reporteCredito() {
         if (cliente != null) {
             setParameterTicketCredito();
-            generateReport(cliente.getId_cliente().intValue(), "creditos.jasper");
+            generateReport(cliente.getId_cliente().intValue(), "creditos.jasper",false);
             RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
         }else{
             JsfUtil.addErrorMessage("No se puede generar el estado de cuenta.");
