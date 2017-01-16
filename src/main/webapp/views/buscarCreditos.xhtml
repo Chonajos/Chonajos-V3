@@ -84,22 +84,18 @@
                             <p:dataExporter type="xls" target="table" fileName="Creditos" pageOnly="false"/>
                         </h:commandLink>-->
 
+
+
             <p:panel  rendered="#{beanBuscaCredito.viewEstate=='init'}" >
                 <div class="container-fluid">
                     <p:dataTable id="table" var="model" value="#{beanBuscaCredito.modelo}" rows="20"
                                  paginator="true" styleClass="ui-datatable-hor-scroll"
-                                 resizableColumns="false" scrollable="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+                                 resizableColumns="false" scrollable="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
                                  editable="true" emptyMessage="No se encontraron registros.">
-                        <f:facet name="{Exporters}">
+                        <f:facet name="header">
                             <div style="float: right">
-                                <h:commandLink>
+                                <h:commandLink action="#{beanBuscaCredito.reporteCredito()}">
                                     <p:graphicImage value="../resources/img/pdf.png" width="24"/>
-                                    <p:dataExporter type="pdf" target="table" fileName="EstadoCuenta#{beanBuscaCredito.cliente.nombreCompleto}" pageOnly="false" encoding="iso-8859-1"/>
-                                </h:commandLink>
-
-                                <h:commandLink>
-                                    <p:graphicImage value="../resources/img/excel.png" width="24"/>
-                                    <p:dataExporter type="csv" target="table" fileName="EstadoCuenta#{beanBuscaCredito.cliente.nombreCompleto}" pageOnly="true" encoding="iso-8859-1"/>
                                 </h:commandLink>
                             </div>
 
@@ -417,8 +413,8 @@
                 </div>
             </div>
             <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanBuscaCredito.rutaPDF}"/>
-        
-            </h:form>
-        
+
+        </h:form>
+
     </ui:define>
 </ui:composition>

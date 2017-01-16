@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-12-12T13:18:05 -->
+<!-- 2017-01-13T13:30:20 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EntradaMayoreoV1" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="df013db5-f76e-44d3-b0df-bcbc46d93160">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="AdaptadorChoni.xml"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<style name="Title" fontName="Times New Roman" fontSize="50" isBold="true"/>
 	<style name="SubTitle" forecolor="#736343" fontName="Arial" fontSize="18"/>
@@ -265,7 +265,7 @@ WHERE EMP.ID_EM_FK= $P{parametro}]]>
 					<text><![CDATA[Folio de Remisión:]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="534" y="31" width="129" height="20" uuid="86216d54-e1df-4c11-8420-a15d6c37ce10"/>
+					<reportElement x="509" y="31" width="129" height="20" uuid="86216d54-e1df-4c11-8420-a15d6c37ce10"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="14"/>
 					</textElement>
@@ -307,14 +307,14 @@ WHERE EMP.ID_EM_FK= $P{parametro}]]>
 					<textFieldExpression><![CDATA[$P{carro}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="663" y="31" width="80" height="20" uuid="f0287479-b9c2-48e0-9a67-832530e435d8"/>
+					<reportElement x="637" y="31" width="119" height="20" uuid="f0287479-b9c2-48e0-9a67-832530e435d8"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="14"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{fecha}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="78" y="101" width="272" height="20" uuid="be9d6c9d-26d8-4cf3-8285-ebf4f044fd12"/>
+					<reportElement x="78" y="101" width="502" height="20" uuid="be9d6c9d-26d8-4cf3-8285-ebf4f044fd12"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="14"/>
 					</textElement>
@@ -391,14 +391,14 @@ WHERE EMP.ID_EM_FK= $P{parametro}]]>
 					<textFieldExpression><![CDATA[$P{cantidadBodega}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="521" y="56" width="104" height="19" uuid="65474610-f6b1-45e5-9122-7aea5801e716"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
+					<reportElement x="509" y="56" width="129" height="19" uuid="65474610-f6b1-45e5-9122-7aea5801e716"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="14"/>
 					</textElement>
 					<text><![CDATA[Fecha de Pago:]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="625" y="56" width="120" height="19" uuid="6b9298e8-270e-40aa-a8c6-102153b2a26f"/>
+					<reportElement x="637" y="56" width="120" height="19" uuid="6b9298e8-270e-40aa-a8c6-102153b2a26f"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="14"/>
 					</textElement>

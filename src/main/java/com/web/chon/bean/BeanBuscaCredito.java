@@ -56,12 +56,14 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
-import net.sf.jasperreports.engine.JREmptyDataSource;
+//import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRExporter;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
+import net.sf.jasperreports.engine.export.JRXlsExporter;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.model.StreamedContent;
@@ -184,8 +186,7 @@ public class BeanBuscaCredito implements Serializable {
     private BigDecimal filtroIdSucursalFk;
     private ArrayList<Sucursal> listaSucursales;
 
-    private BigDecimal idSucursal;  
-
+    private BigDecimal idSucursal;
 
     private PagosBancarios pagoBancario;
 
@@ -219,7 +220,7 @@ public class BeanBuscaCredito implements Serializable {
         opcaja.setIdCajaFk(caja.getIdCajaPk());
         opcaja.setIdUserFk(usuarioDominio.getIdUsuario());
         opcaja.setEntradaSalida(entradaSalida);
-        idSucursal=new BigDecimal(usuarioDominio.getSucId());
+        idSucursal = new BigDecimal(usuarioDominio.getSucId());
 
         opcaja.setIdSucursalFk(new BigDecimal(usuarioDominio.getSucId()));
         //-- Datos para Transferencias Bancarias o Dépositos Bancarios--//
@@ -372,13 +373,11 @@ public class BeanBuscaCredito implements Serializable {
             } else {
                 temporal = servletContext.getRealPath("");
             }
-            System.out.println("reporte de credito contado");
-            pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketAbonos" + File.separatorChar + nombreTipoTicket;
 
-            JasperPrint jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport, new JREmptyDataSource());
+            pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketAbonos" + File.separatorChar + nombreTipoTicket;
+            JasperPrint jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport);
             outputStream = JasperReportUtil.getOutputStreamFromReport(paramReport, getPathFileJasper());
             exporter = new JRPdfExporter();
-
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
             exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, outputStream);
 //            exporter.setParameter(JRPdfExporterParameter.PDF_JAVASCRIPT, "this.print();");
@@ -388,7 +387,7 @@ public class BeanBuscaCredito implements Serializable {
             System.out.println("Ruutttaaa: " + rutaPDF);
         } catch (Exception exception) {
             System.out.println("Error >" + exception.getMessage());
-            JsfUtil.addErrorMessage("Error al Generar el Ticket de Venta.");
+            JsfUtil.addErrorMessage("Error al Generar el Reporte.");
         }
 
     }
@@ -636,11 +635,9 @@ public class BeanBuscaCredito implements Serializable {
                     saldoSobrante = saldoSobrante.subtract(minimoPago, MathContext.UNLIMITED);
                     System.out.println("sobrante: " + saldoSobrante);
                 }
-            } else {
-                if (saldoSobrante.compareTo(CERO) == 1) {
-                    item.setAbonarTemporal(item.getAbonarTemporal().add(saldoSobrante, MathContext.UNLIMITED));
-                    saldoSobrante = saldoSobrante.subtract(minimoPago, MathContext.UNLIMITED);
-                }
+            } else if (saldoSobrante.compareTo(CERO) == 1) {
+                item.setAbonarTemporal(item.getAbonarTemporal().add(saldoSobrante, MathContext.UNLIMITED));
+                saldoSobrante = saldoSobrante.subtract(minimoPago, MathContext.UNLIMITED);
             }
         }
 
@@ -863,7 +860,7 @@ public class BeanBuscaCredito implements Serializable {
                     d.setIdFormaCobroFk(new BigDecimal(1));
                     d.setIdTipoD(new BigDecimal(4));
                     d.setIdLlave(ac.getIdAbonoCreditoPk());
-                    
+
                     //System.out.println("Documento: " + d.toString());
                     //--- Insertar Documento -- //
                     if (ifaceDocumentos.insertarDocumento(d) == 1) {
@@ -1246,7 +1243,7 @@ public class BeanBuscaCredito implements Serializable {
                 BigDecimal totalVenta = new BigDecimal(0);
                 if (ifaceAbonoCredito.update(abonoCheque) == 1) {
                     //enseguida buscar si ya se libero el credito de ese abono.
-                    modelo = ifaceCredito.getCreditosActivos(cliente.getId_cliente(), null,filtroIdSucursalFk);
+                    modelo = ifaceCredito.getCreditosActivos(cliente.getId_cliente(), null, filtroIdSucursalFk);
                     for (SaldosDeudas sd : modelo) {
                         if (sd.getFolioCredito().intValue() == abonoCheque.getIdCreditoFk().intValue()) {
                             totalVenta = sd.getSaldoTotal();
@@ -1273,12 +1270,6 @@ public class BeanBuscaCredito implements Serializable {
 
     }
 
-    public void preProcessPDF(Object document) throws IOException, BadElementException, DocumentException {
-        Document pdf = (Document) document;
-        ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-        String logo = servletContext.getRealPath("") + File.separator + "resources" + File.separator + "img" + File.separator + "pdf.png";
-        pdf.addTitle("Estado de Cuenta " + cliente.getNombreCompleto());
-    }
 
     public void backView() {
         setTitle("Historial de Compras");
@@ -1297,7 +1288,7 @@ public class BeanBuscaCredito implements Serializable {
 
         cliente = ifaceCatCliente.getCreditoClienteByIdCliente(cliente.getId_cliente());
         if (cliente != null && cliente.getId_cliente() != null) {
-            modelo = ifaceCredito.getCreditosActivos(cliente.getId_cliente(), null,filtroIdSucursalFk);
+            modelo = ifaceCredito.getCreditosActivos(cliente.getId_cliente(), null, filtroIdSucursalFk);
             for (SaldosDeudas sd : modelo) {
                 saldoParaLiquidar = saldoParaLiquidar.add(sd.getSaldoLiquidar(), MathContext.UNLIMITED);
             }
@@ -1311,6 +1302,35 @@ public class BeanBuscaCredito implements Serializable {
             //cliente = new Cliente();
         }
         addView();
+
+    }
+
+    public void reporteCredito() {
+        if (cliente != null) {
+            setParameterTicketCredito();
+            generateReport(cliente.getId_cliente().intValue(), "creditos.jasper");
+            RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
+        }else{
+            JsfUtil.addErrorMessage("No se puede generar el estado de cuenta.");
+        }
+
+    }
+
+    private void setParameterTicketCredito() {
+        NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
+        DecimalFormat df = new DecimalFormat("$#,###.##");
+        Date date = new Date();
+//        NumeroALetra numeroLetra = new NumeroALetra();
+
+        JRBeanCollectionDataSource collectionCredito = new JRBeanCollectionDataSource(modelo);
+
+        paramReport.put("creditoDisponible", df.format(cliente.getCreditoDisponible()));
+        paramReport.put("creditoUtilizado", df.format(cliente.getUtilizadoTotal()));
+        paramReport.put("cliente", cliente.getNombreCompleto());
+        paramReport.put("fecha", TiempoUtil.getFechaDDMMYYYYHHMM(date));
+        paramReport.put("nombreSucursal", usuarioDominio.getNombreSucursal());
+        paramReport.put("lstCredito", collectionCredito);
+        paramReport.put("leyenda", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:" + usuarioDominio.getTelefonoSucursal());
 
     }
 
@@ -1671,9 +1691,5 @@ public class BeanBuscaCredito implements Serializable {
     public void setIdSucursal(BigDecimal idSucursal) {
         this.idSucursal = idSucursal;
     }
-    
-    
-
-    
 
 }
