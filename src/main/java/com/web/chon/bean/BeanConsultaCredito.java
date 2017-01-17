@@ -67,6 +67,7 @@ public class BeanConsultaCredito implements Serializable {
     private BigDecimal idResultadoGestio;
     private BigDecimal totalLiquidar;
     private BigDecimal idSucursal;
+    private BigDecimal tipoVenta;
 
     private int numDias;
     private int numFiltro;
@@ -98,7 +99,7 @@ public class BeanConsultaCredito implements Serializable {
     }
 
     public void consultaCredito() {
-        modelo = ifaceCredito.getCreditosByEstatus(numFiltro, numDias, idSucursal);
+        modelo = ifaceCredito.getCreditosByEstatus(numFiltro, numDias, idSucursal,tipoVenta);
         ArrayList<SaldosDeudas> modelTemp = new ArrayList<SaldosDeudas>();
         ArrayList<SaldosDeudas> modelTempPrincipal = new ArrayList<SaldosDeudas>();
 
@@ -459,5 +460,14 @@ public class BeanConsultaCredito implements Serializable {
         this.usuario = usuario;
     }
 
+    public BigDecimal getTipoVenta() {
+        return tipoVenta;
+    }
+
+    public void setTipoVenta(BigDecimal tipoVenta) {
+        this.tipoVenta = tipoVenta;
+    }
+
+    
     
 }

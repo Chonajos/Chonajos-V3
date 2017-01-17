@@ -1,7 +1,6 @@
 package com.web.chon.bean;
 
 import com.web.chon.dominio.AbonoCredito;
-import com.web.chon.dominio.Caja;
 import com.web.chon.dominio.Cliente;
 import com.web.chon.dominio.Credito;
 import com.web.chon.dominio.ExistenciaMenudeo;
@@ -13,7 +12,6 @@ import com.web.chon.dominio.Venta;
 import com.web.chon.dominio.VentaProducto;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceAbonoCredito;
-import com.web.chon.service.IfaceCaja;
 import com.web.chon.service.IfaceCatCliente;
 import com.web.chon.service.IfaceCatStatusVenta;
 import com.web.chon.service.IfaceCatSucursales;
@@ -65,28 +63,16 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
 
     private static final long serialVersionUID = 1L;
 
-    @Autowired
-    private IfaceVenta ifaceVenta;
-    @Autowired
-    private PlataformaSecurityContext context;
-    @Autowired
-    private IfaceCatSucursales ifaceCatSucursales;
-    @Autowired
-    private IfaceCatStatusVenta ifaceCatStatusVenta;
-    @Autowired
-    private IfaceVentaProducto ifaceVentaProducto;
-    @Autowired
-    private IfaceExistenciaMenudeo ifaceExistenciaMenudeo;
-    @Autowired
-    private IfaceSubProducto ifaceSubProducto;
-    @Autowired
-    private IfaceCaja ifaceCaja;
-    @Autowired
-    private IfaceCredito ifaceCredito;
-    @Autowired
-    private IfaceAbonoCredito ifaceAbonoCredito;
-    @Autowired
-    private IfaceCatCliente ifaceCatCliente;
+    @Autowired private IfaceVenta ifaceVenta;
+    @Autowired private PlataformaSecurityContext context;
+    @Autowired private IfaceCatSucursales ifaceCatSucursales;
+    @Autowired private IfaceCatStatusVenta ifaceCatStatusVenta;
+    @Autowired private IfaceVentaProducto ifaceVentaProducto;
+    @Autowired private IfaceExistenciaMenudeo ifaceExistenciaMenudeo;
+    @Autowired private IfaceSubProducto ifaceSubProducto;
+    @Autowired private IfaceCredito ifaceCredito;
+    @Autowired private IfaceAbonoCredito ifaceAbonoCredito;
+    @Autowired private IfaceCatCliente ifaceCatCliente;
 
     private ArrayList<Sucursal> listaSucursales;
     private ArrayList<Venta> listaVentas;
@@ -100,7 +86,6 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     private Venta ventaCancelar;
     private Subproducto subProducto;
     private Cliente cliente;
-    private Caja caja;
 
     private String title;
     private String viewEstate;
@@ -134,7 +119,6 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     private boolean enableCalendar;
     private String comentarioCancelacion;
 
-    
     private static final BigDecimal TIPO = new BigDecimal(1);
 
     @PostConstruct
@@ -365,7 +349,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
                         ExistenciaMenudeo em = new ExistenciaMenudeo();
                         em = ifaceExistenciaMenudeo.getExistenciasRepetidasById(vp.getIdProductoFk(), new BigDecimal(ventaCancelar.getIdSucursal()));
                         BigDecimal kilosExistencia = new BigDecimal(0);
-                        kilosExistencia = em.getKilos();
+                        kilosExistencia = em.getKilos() == null ? new BigDecimal(0):em.getKilos();
                         kilosExistencia = kilosExistencia.add(vp.getCantidadEmpaque(), MathContext.UNLIMITED);
                         em.setKilos(kilosExistencia);
                         if (ifaceExistenciaMenudeo.updateExistenciaMenudeo(em) != 0) {
@@ -385,7 +369,11 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
                             } else {
                                 JsfUtil.addErrorMessageClean("Ocurrió un error al Borrar el Credito, Contactar al Administrador.");
                             }
+                        } else {
+                            JsfUtil.addSuccessMessageClean("Venta Cancelada, se han regresado existencias y dinero en caja correctamente");
                         }
+                        
+                        buscar();
 
                     } else {
                         JsfUtil.addErrorMessageClean("Ocurrió un error al intentar cancelar la venta.");
