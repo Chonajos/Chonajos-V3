@@ -9,23 +9,36 @@
                 xmlns:pe="http://primefaces.org/ui/extensions">
 
     <ui:define name="content">
+        <h:panelGroup id="script">
+            <h:outputScript>
+                $(function () {
+                    $(document).keyup(function (e) {
+                        if(e.keyCode == 13) {
+                            document.getElementById("#{p:component('buscar')}").focus();
+                        } 
+                    });
+                });
+            </h:outputScript>
+        </h:panelGroup>
         <div>
             <h3>#{beanBuscaVentaMayoreo.title}</h3>
         </div>
         <h:form id="formContent">
+            <p:focus context="formContent"/>
             <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:panel>
 
                 <div class="container-fluid">
+
                     <div class="form-group" align="right">
-                        <p:commandButton value="Buscar" update=":formContent" ajax="true" action="#{beanBuscaVentaMayoreo.searchById()}"  onclick="PF('statusDialog').show()"/>
+                        <p:commandButton id="buscar" value="Buscar" update=":formContent" ajax="true" action="#{beanBuscaVentaMayoreo.searchById()}"  onclick="PF('statusDialog').show()"/>
                         <p:commandButton  value = "Cobrar" ajax="true"  oncomplete="PF('dlg').show();" update =":formContent:dialogw:" icon="ui-icon-triangle-1-e"  rendered="#{!beanBuscaVentaMayoreo.statusButtonPagar}"/>
                         <!--<p:commandButton  value = "Apartar" ajax="true"  oncomplete="PF('dlg').show();" update =":formContent:dialogw:" icon="ui-icon-triangle-1-e"  rendered="{!beanBuscaVentaMayoreo.statusButtonPagar}"/>-->
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 form-group">
-                            <p:outputLabel class="col-lg-6 col-md-3 col-sm-4 col-xs-6"  for="txtid_venta" value ="Folio:" /> 
-                            <p:inputText id="txtid_venta" maxlength="10" class=" col-lg-6 col-md-4 col-sm-8 col-xs-6" value="#{beanBuscaVentaMayoreo.folioVenta}"  required="true"
+                            <p:outputLabel class="col-lg-6 col-md-3 col-sm-4 col-xs-6"  for="txtIdVenta" value ="Folio:" /> 
+                            <p:inputText id="txtIdVenta" maxlength="10" class=" col-lg-6 col-md-4 col-sm-8 col-xs-6" value="#{beanBuscaVentaMayoreo.folioVenta}"  required="true"
                                          requiredMessage="Ingresa un número de folio.">
                                 <pe:keyFilter regEx="/[0-9_]/i"/>
                             </p:inputText>

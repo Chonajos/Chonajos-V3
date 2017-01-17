@@ -134,6 +134,8 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     private ByteArrayOutputStream outputStream;
     private String number;
     private int idSucu;
+    private int expande;
+    
     private String pathFileJasper = "";
 
     @PostConstruct
@@ -752,6 +754,10 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         return lstProvedor;
 
     }
+    
+    public void expandedRow(int expanded){
+        setExpande(expanded);
+    }
 
     @Override
     public String delete() {
@@ -1063,4 +1069,13 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         this.carro = carro;
     }
 
+    public int getExpande() {
+        return expande;
+    }
+
+    public void setExpande(int expande) {
+        this.expande = expande;
+    }
+
+    
 }
