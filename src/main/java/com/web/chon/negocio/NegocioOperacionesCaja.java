@@ -34,5 +34,5 @@ public interface NegocioOperacionesCaja {
     public List<Object[]> getOperacionesByIdCorteCajaFk(BigDecimal idCorteCajaFk,BigDecimal entrada_salida);
     public int getNextVal();
     public List<Object[]> getDetallesCorte(BigDecimal idCajaFk, BigDecimal idUserFk, BigDecimal entrada_salida, BigDecimal idStatusFk,BigDecimal idCorteFk);
-    
+    public List<Object[]> getOperaciones(BigDecimal idCajaFk, BigDecimal idEntradaSalida, BigDecimal idUsuarioFk);
 }

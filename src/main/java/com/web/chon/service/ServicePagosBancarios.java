@@ -73,11 +73,14 @@ public class ServicePagosBancarios implements IfacePagosBancarios {
             op.setConcepto(obj[13] == null ? null : obj[13].toString());
             op.setReferencia(obj[14] == null ? null : obj[14].toString());
             op.setIdOperacionCajaFk(obj[15] == null ? null : new BigDecimal(obj[15].toString()));
-            op.setNombreCaja(obj[16] == null ? null : obj[16].toString());
-            op.setNombreConcepto(obj[17] == null ? "" : obj[17].toString());
-            op.setNombreTipoAbono(obj[18] == null ? "" : obj[18].toString());
-            op.setNombreUsuario(obj[19] == null ? null : obj[19].toString());
-            op.setNombreBanco(obj[20] == null ? null : obj[20].toString());
+            op.setIdTipoTD(obj[16] == null ? null : new BigDecimal(obj[16].toString()));
+            op.setIdLlaveFk(obj[17] == null ? null : new BigDecimal(obj[17].toString()));
+            
+            op.setNombreCaja(obj[18] == null ? null : obj[18].toString());
+            op.setNombreConcepto(obj[19] == null ? "" : obj[19].toString());
+            op.setNombreTipoAbono(obj[20] == null ? "" : obj[20].toString());
+            op.setNombreUsuario(obj[21] == null ? null : obj[21].toString());
+            op.setNombreBanco(obj[22] == null ? null : obj[22].toString());
             op.setNumero(i);
             i = i.add(new BigDecimal(1), MathContext.UNLIMITED);
 

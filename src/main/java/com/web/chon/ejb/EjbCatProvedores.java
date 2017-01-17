@@ -160,7 +160,7 @@ public class EjbCatProvedores implements NegocioCatProvedores {
 
     @Override
     public int insertProvedor(Provedor prove) {
-        System.out.println("EJB_INSERTA_PROVEDOR");
+        
         try {
 
             Query querySel = em.createNativeQuery("SELECT * FROM PROVEDORES WHERE NICKNAME = '" + prove.getNickName() + "' ");
@@ -179,7 +179,7 @@ public class EjbCatProvedores implements NegocioCatProvedores {
                         + "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,sysdate,?,?)");
                 query.setParameter(1, prove.getIdProvedorPK());
                 query.setParameter(2, prove.getNombreProvedor());
-                query.setParameter(3, prove.getAmaternoProve());
+                query.setParameter(3, prove.getApaternoProve());
                 query.setParameter(4, prove.getAmaternoProve());
                 query.setParameter(5, prove.getEmpresa());
                 query.setParameter(6, prove.getCalleProve());

@@ -15,6 +15,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import com.web.chon.negocio.NegocioOperacionesCaja;
+import java.util.ArrayList;
 
 /**
  *
@@ -314,6 +315,29 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
         query.setParameter(2, entrada_salida);
         return query.getResultList();
 
+    }
+
+    @Override
+    public List<Object[]> getOperaciones(BigDecimal idCajaFk, BigDecimal idEntradaSalida, BigDecimal idUsuarioFk) {
+        StringBuffer cadena = new StringBuffer("select opcaja.ID_CONCEPTO_FK,opcaja.FECHA,cj.NOMBRE as nombre_caja,cn.NOMBRE as concepto,opcaja.COMENTARIOS, opcaja.MONTO,opcaja.ID_STATUS_FK from OPERACIONES_CAJA opcaja \n" +
+"inner join CONCEPTOS cn on cn.ID_CONCEPTOS_PK = opcaja.ID_CONCEPTO_FK\n" +
+"inner join caja cj on cj.ID_CAJA_PK = opcaja.ID_CAJA_FK\n" +
+"where opcaja.ID_CORTE_CAJA_FK is null");
+
+        if (idCajaFk != null && idCajaFk.intValue() != 0) {
+            cadena.append(" and opcaja.ID_CAJA_FK= '" + idCajaFk + "' ");
+        }
+        if (idEntradaSalida != null && idEntradaSalida.intValue() != 0) {
+            cadena.append(" and opcaja.E_S = '" + idEntradaSalida + "' ");
+        }
+        if (idUsuarioFk != null && idUsuarioFk.intValue() != 0) {
+            cadena.append(" and opcaja.ID_USER_FK = '" + idUsuarioFk + "' ");
+        }
+        
+        Query query;
+        query = em.createNativeQuery(cadena.toString());
+        return query.getResultList();
+    
     }
 
 }

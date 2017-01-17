@@ -127,7 +127,7 @@ public class ServiceCorteCaja implements IfaceCorteCaja {
             corte.setCantChequesNuevos(object[6] == null ? cero : new BigDecimal(object[6].toString()));
             corte.setMontoChequesNuevos(object[7] == null ? cero : new BigDecimal(object[7].toString()));
             corte.setSaldoNuevo(object[8] == null ? cero : new BigDecimal(object[8].toString()));
-            corte.setComentarios(object[9] == null ? null : object[9].toString());
+            corte.setComentarios(object[9] == null ? "" : object[9].toString());
             corte.setIdUserFk(object[10] == null ? null : new BigDecimal(object[10].toString()));
             corte.setIdStatusFk(object[11] == null ? null : new BigDecimal(object[11].toString()));
             corte.setMontoCuentaAnterior(object[12] == null ? cero : new BigDecimal(object[12].toString()));

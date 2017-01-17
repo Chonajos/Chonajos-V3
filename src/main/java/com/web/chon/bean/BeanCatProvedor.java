@@ -234,8 +234,6 @@ public class BeanCatProvedor extends SimpleViewBean<Provedor> implements Seriali
 
             int id_cliente_next_val = ifaceCatProvedores.getNextVal();
             data.setIdProvedorPK(new BigDecimal(id_cliente_next_val));
-            System.out.println("Paso el getnext");
-            System.out.println("Provedor Bean: " + data.toString());
             if (ifaceCatProvedores.insertProvedor(data) == 0) {
                 JsfUtil.addErrorMessage("No se pudo registrar el provedor");
             } else {

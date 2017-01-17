@@ -4,10 +4,6 @@
  * and open the template in the editor.
  */
 package com.web.chon.bean;
-
-import com.lowagie.text.BadElementException;
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
 import com.web.chon.dominio.AbonoCredito;
 import com.web.chon.dominio.Caja;
 import com.web.chon.dominio.Cliente;
@@ -41,7 +37,6 @@ import com.web.chon.util.TiempoUtil;
 import com.web.chon.util.UtilUpload;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -63,7 +58,6 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
-import net.sf.jasperreports.engine.export.JRXlsExporter;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.model.StreamedContent;
@@ -189,9 +183,14 @@ public class BeanBuscaCredito implements Serializable {
     private BigDecimal idSucursal;
 
     private PagosBancarios pagoBancario;
+    
+    private boolean banderaAbono;
+    private BigDecimal numeroAbono;
 
     @PostConstruct
     public void init() {
+        banderaAbono=true;
+        numeroAbono = new BigDecimal(0);
         pagoBancario = new PagosBancarios();
         botonCancelar = true;
         botonActualizar = true;
@@ -679,12 +678,20 @@ public class BeanBuscaCredito implements Serializable {
             switch (abono.getIdtipoAbonoFk().intValue()) {
                 case 1:
                     //System.out.println("Contado");
-                    for (SaldosDeudas sd : modelo) {
+                    for (SaldosDeudas sd : modelo) 
+                    {
                         if (sd.getAbonarTemporal() != null && sd.getAbonarTemporal().setScale(2, RoundingMode.CEILING) != CERO) {
                             ac.setIdAbonoCreditoPk(new BigDecimal(ifaceAbonoCredito.getNextVal()));
                             ac.setIdCreditoFk(sd.getFolioCredito());
                             ac.setMontoAbono(sd.getAbonarTemporal());
                             ac.setEstatusAbono(ABONOREALIZADO);
+                            if(banderaAbono)
+                            {
+                                numeroAbono = ac.getIdAbonoCreditoPk();
+                                banderaAbono = false;
+                            }
+                            ac.setNumeroAbono(numeroAbono);
+                            
                             //System.out.println("Abono: " + ac.toString());
                             if ((sd.getTotalAbonado().setScale(2, RoundingMode.CEILING)).add(ac.getMontoAbono().setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED).compareTo(sd.getSaldoTotal()) == 0) {
                                 // System.out.println("Se libera el credito");
@@ -707,6 +714,7 @@ public class BeanBuscaCredito implements Serializable {
                         }
 
                     } //fin for
+                    banderaAbono = true;
 
                     ac.setMontoAbono(abono.getMontoAbono());
                     opcaja.setIdConceptoFk(conceptoAbonoEfectivo);
@@ -734,6 +742,12 @@ public class BeanBuscaCredito implements Serializable {
                             ac.setConcepto(abono.getConcepto());
                             ac.setReferencia(abono.getReferencia());
                             ac.setFechaTransferencia(abono.getFechaTransferencia());
+                            if(banderaAbono)
+                            {
+                                numeroAbono = ac.getIdAbonoCreditoPk();
+                                banderaAbono = false;
+                            }
+                            ac.setNumeroAbono(numeroAbono);
                             //System.out.println("Abono: " + ac.toString());
                             if ((sd.getTotalAbonado().setScale(2, RoundingMode.CEILING)).add(ac.getMontoAbono().setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED).compareTo(sd.getSaldoTotal()) == 0) {
                                 //System.out.println("Se libera el credito");
@@ -756,6 +770,7 @@ public class BeanBuscaCredito implements Serializable {
                         }
 
                     } //fin for
+                    banderaAbono = true;
                     ac.setMontoAbono(abono.getMontoAbono());
                     ac.setIdtipoAbonoFk(abono.getIdtipoAbonoFk());
                     opcaja.setIdConceptoFk(conceptoAbonoTransferencia);
@@ -807,6 +822,12 @@ public class BeanBuscaCredito implements Serializable {
                             ac.setFechaCobro(abono.getFechaCobro());
                             ac.setBanco(abono.getBanco());
                             ac.setFactura(abono.getFactura());
+                            if(banderaAbono)
+                            {
+                                numeroAbono = ac.getIdAbonoCreditoPk();
+                                banderaAbono = false;
+                            }
+                            ac.setNumeroAbono(numeroAbono);
                             //System.out.println("Abono: " + ac.toString());
                             if ((sd.getTotalAbonado().setScale(2, RoundingMode.CEILING)).add(ac.getMontoAbono().setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED).compareTo(sd.getSaldoTotal()) == 0) {
                                 //System.out.println("Se libera el credito");
@@ -830,11 +851,13 @@ public class BeanBuscaCredito implements Serializable {
                         }
 
                     } //fin for
+                    banderaAbono = true;
                     ac.setMontoAbono(abono.getMontoAbono());
                     ac.setIdtipoAbonoFk(abono.getIdtipoAbonoFk());
                     opcaja.setIdConceptoFk(conceptoAbonoCheque);
                     opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
                     opcaja.setMonto(ac.getMontoAbono());
+                    ac.setNumeroAbono(totalAbonado);
                     opcaja.setIdStatusFk(statusOperacionRealizada);
                     opcaja.setComentarios("FA: " + ac.getIdAbonoCreditoPk() + " | FC: " + ac.getIdCreditoFk() + " | C:" + cliente.getNombreCompleto());
 
@@ -892,6 +915,12 @@ public class BeanBuscaCredito implements Serializable {
                             ac.setBanco(abono.getBanco());
                             ac.setFechaTransferencia(abono.getFechaTransferencia());
                             ac.setEstatusAbono(ABONOREALIZADO);
+                            if(banderaAbono)
+                            {
+                                numeroAbono = ac.getIdAbonoCreditoPk();
+                                banderaAbono = false;
+                            }
+                            ac.setNumeroAbono(numeroAbono);
                             //System.out.println("Abono: " + ac.toString());
                             if ((sd.getTotalAbonado().setScale(2, RoundingMode.CEILING)).add(ac.getMontoAbono().setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED).compareTo(sd.getSaldoTotal()) == 0) {
                                 //System.out.println("Se libera el credito");
@@ -915,6 +944,7 @@ public class BeanBuscaCredito implements Serializable {
                         }
 
                     } //fin for
+                    banderaAbono = true;
                     ac.setMontoAbono(abono.getMontoAbono());
                     ac.setIdtipoAbonoFk(abono.getIdtipoAbonoFk());
                     opcaja.setIdConceptoFk(conceptoAbonoDeposito);
@@ -1027,6 +1057,12 @@ public class BeanBuscaCredito implements Serializable {
                     ac.setIdUsuarioFk(usuarioDominio.getIdUsuario()); //aqui poner el usuario looggeado
                     ac.setIdtipoAbonoFk(abono.getIdtipoAbonoFk());
                     ac.setEstatusAbono(ABONOREALIZADO);
+                    if(banderaAbono)
+                    {
+                        numeroAbono = ac.getIdAbonoCreditoPk();
+                        banderaAbono = false;
+                    }
+                    ac.setNumeroAbono(numeroAbono);
 
                     /*variable temporal creada para sumar el total Abonado y el nuevo abono
                   en caso de que sea igual o mayor el temporal al saldo de la cuenta, liberar el credito.
@@ -1059,6 +1095,7 @@ public class BeanBuscaCredito implements Serializable {
                         } else {
                             JsfUtil.addErrorMessageClean("Ocurrió un error al registrar el pago de la venta");
                         }
+                        banderaAbono = true;
 
                     } else {
                         JsfUtil.addErrorMessageClean("Ocurrio un error al intentar registrar el abono con el folio: " + ac.getIdAbonoCreditoPk());
@@ -1081,6 +1118,12 @@ public class BeanBuscaCredito implements Serializable {
                     ac.setConcepto(abono.getConcepto());
                     ac.setReferencia(abono.getReferencia());
                     ac.setFechaTransferencia(abono.getFechaTransferencia());
+                     if(banderaAbono)
+                    {
+                        numeroAbono = ac.getIdAbonoCreditoPk();
+                        banderaAbono = false;
+                    }
+                    ac.setNumeroAbono(numeroAbono);
 
                     /*variable temporal creada para sumar el total Abonado y el nuevo abono
                   en caso de que sea igual o mayor el temporal al saldo de la cuenta, liberar el credito.
@@ -1114,6 +1157,7 @@ public class BeanBuscaCredito implements Serializable {
                         } else {
                             JsfUtil.addErrorMessageClean("Ocurrió un error al recibir el Depósito");
                         }
+                        banderaAbono = true;
                     } else {
                         JsfUtil.addErrorMessageClean("Ocurrio un error al intentar registrar el abono con el folio: " + ac.getIdAbonoCreditoPk());
                     }
@@ -1137,6 +1181,12 @@ public class BeanBuscaCredito implements Serializable {
                     ac.setFechaCobro(abono.getFechaCobro());
                     ac.setBanco(abono.getBanco());
                     ac.setFactura(abono.getFactura());
+                     if(banderaAbono)
+                    {
+                        numeroAbono = ac.getIdAbonoCreditoPk();
+                        banderaAbono = false;
+                    }
+                    ac.setNumeroAbono(numeroAbono);
                     /*variable temporal creada para sumar el total Abonado y el nuevo abono
                   en caso de que sea igual o mayor el temporal al saldo de la cuenta, liberar el credito.
                      */
@@ -1190,7 +1240,7 @@ public class BeanBuscaCredito implements Serializable {
                             JsfUtil.addErrorMessageClean("Ocurrio un error al ingresar documento por cobrar");
                             //System.out.println("Ocurrio un error al ingresar documento por cobrar");
                         }
-
+bandera = true;
                     } else {
                         JsfUtil.addErrorMessageClean("Ocurrio un error al intentar registrar el abono con el folio: " + ac.getIdAbonoCreditoPk());
                     }

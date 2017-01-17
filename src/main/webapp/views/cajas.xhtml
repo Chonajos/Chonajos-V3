@@ -1,0 +1,214 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="./../templates/main.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="content">
+        <div>
+            <h3>#{beanCajas.title}</h3>
+        </div>
+        <h:form id="formContent">
+            <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
+            <p:panel> 
+                <div class="container-fluid">
+                    <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 form-group">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight form-group">
+                            <p:commandButton value="Buscar" update=":formContent" ajax="true" action="#{beanCajas.buscar()}"/>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="cajaFiltro" value ="Caja " rendered="#{beanCajas.viewEstate =='init'}" /> 
+                            <h:selectOneMenu  id="cajaFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanCajas.idCajaBean}" rendered="#{beanCajas.viewEstate =='init'}" disabled="#{beanCajas.usuario.perId != 1}" >
+                                <f:selectItem itemLabel="Todas" itemValue="" />
+                                <f:selectItems value="#{beanCajas.listaCajas}" var="cajita" itemLabel="#{cajita.nombre}" itemValue="#{cajita.idCajaPk}"/>
+                                <!--<p:ajax event="change" listener="{beanCajas.printStatus()}" update=":formContent:table" />-->
+                                <!--<p:ajax event="change" update="formContent:usuarioFiltro" listener="{beanCajas.buscarReponsables()}" />-->
+                            </h:selectOneMenu>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+
+                        <p:dataTable id="tabla1" var="model" 
+                                     value="#{beanCajas.listaGeneral}" 
+                                     scrollable="true"
+                                     styleClass="ui-datatable-hor-scroll" 
+                                     emptyMessage="No se encontraron Registros" 
+                                     rendered="#{beanCajas.viewEstate =='init'}">
+                            <f:facet name="header">
+                                Relación de Operaciones
+                            </f:facet>
+                            <p:column headerText="Sucursal" width="150px;" class="alignLeft">
+                                <h:outputText value="#{model.nombreSucursal}" />
+                            </p:column>
+                            <p:column headerText="Caja" width="150px;" class="alignLeft">
+                                <h:outputText value="#{model.nombreCaja}" />
+                            </p:column>
+                            <p:column headerText="Apertura Efectivo" width="150px;" class="alignLeft">
+                                <h:outputText value="#{model.aperturaEfectivo}" />
+                            </p:column>
+                            <p:column headerText="Apertura Cheques" width="150px;" class="alignLeft">
+                                <h:outputText value="#{model.aperturaCheques}" />
+                            </p:column>
+                            <p:column headerText="Apertura Cuentas" width="150px;" class="alignLeft">
+                                <h:outputText value="#{model.aperturaCuentas}" />
+                            </p:column>
+                            <p:column headerText="Efectivo" width="50px;" class="alignRight">
+                                <h:outputText value="#{model.efectivo}">
+                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Cheques" width="50px;" class="alignRight">
+                                <h:outputText value="#{model.cheques}">
+                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Cuentas Bancarias" width="50px;" class="alignRight">
+                                <h:outputText value="#{model.cuentas}">
+                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                </h:outputText>
+                            </p:column>
+                            <p:columnGroup type="footer">
+                                <p:row>
+                                    <p:column colspan="1" />
+                                    <p:column colspan="4" style="text-align:right" footerText="Total:" />
+                                    <p:column colspan="1" class="alignRight">
+                                        <f:facet name="footer">
+                                            <h:outputText value="#{beanCajas.totalEntradasEfectivo}" >
+                                                <f:convertNumber currencySymbol="$" type="currency" />
+                                            </h:outputText>
+                                        </f:facet>
+                                    </p:column>
+                                </p:row>
+                            </p:columnGroup>
+                            <p:columnGroup type="footer">
+                                <p:row>
+                                    <p:column colspan="1" />
+                                    <p:column colspan="4" style="text-align:right" footerText="Total:" />
+                                    <p:column colspan="1" class="alignRight">
+                                        <f:facet name="footer">
+                                            <h:outputText value="#{beanCajas.totalEntradasEfectivo}" >
+                                                <f:convertNumber currencySymbol="$" type="currency" />
+                                            </h:outputText>
+                                        </f:facet>
+                                    </p:column>
+                                </p:row>
+                            </p:columnGroup>
+                            <p:columnGroup type="footer">
+                                <p:row>
+                                    <p:column colspan="1" />
+                                    <p:column colspan="4" style="text-align:right" footerText="Total:" />
+                                    <p:column colspan="1" class="alignRight">
+                                        <f:facet name="footer">
+                                            <h:outputText value="#{beanCajas.totalEntradasEfectivo}" >
+                                                <f:convertNumber currencySymbol="$" type="currency" />
+                                            </h:outputText>
+                                        </f:facet>
+                                    </p:column>
+                                </p:row>
+                            </p:columnGroup>
+                        </p:dataTable>
+
+                    </div>
+<!--                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                            <p:dataTable id="tabla2"  var="model1" 
+                                         value="{beanCajas.lstOperacionesEntrada}" 
+                                         scrollable="true"
+                                         scrollHeight="300" styleClass="ui-datatable-hor-scroll" 
+                                         emptyMessage="No se encontraron Registros" 
+                                         rendered="{beanCajas.viewEstate =='init'}">
+                                <f:facet name="header">
+                                    Entradas
+                                </f:facet>
+                                <p:column headerText="Fecha" width="100px;" class="alignCenter">
+                                    <h:outputText value="{model1.fecha}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="Caja" width="70px;" class="alignLeft">
+                                    <h:outputText value="{model1.nombreCaja}" />
+                                </p:column>
+                                <p:column headerText="Operación" width="150px;" class="alignLeft">
+                                    <h:outputText value="{model1.nombreConcepto}" />
+                                </p:column>
+                                <p:column headerText="Comentarios" width="150px;" class="alignLeft">
+                                    <h:outputText value="{model1.comentarios}" />
+                                </p:column>
+
+                                <p:column headerText="Monto" width="50px;" class="alignRight">
+                                    <h:outputText value="{model1.monto}">
+                                        <f:convertNumber type="currency" currencySymbol="$" />
+                                    </h:outputText>
+                                </p:column>
+                                <p:columnGroup type="footer">
+                                    <p:row>
+                                        <p:column colspan="1" />
+                                        <p:column colspan="4" style="text-align:right" footerText="Total:" />
+                                        <p:column colspan="1" class="alignRight">
+                                            <f:facet name="footer">
+                                                <h:outputText value="{beanCajas.totalEntradasEfectivo}" >
+                                                    <f:convertNumber currencySymbol="$" type="currency" />
+                                                </h:outputText>
+                                            </f:facet>
+                                        </p:column>
+                                    </p:row>
+                                </p:columnGroup>
+                            </p:dataTable>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                            <p:dataTable id="tabla3"  var="model2" 
+                                         value="{beanCajas.lstOperacionesSalida}" 
+                                         scrollable="true"
+                                         scrollHeight="300" styleClass="ui-datatable-hor-scroll" 
+                                         emptyMessage="No se encontraron Registros" 
+                                         rendered="{beanCajas.viewEstate =='init'}">
+                                <f:facet name="header">
+                                    Salidas
+                                </f:facet>
+                                <p:column headerText="Fecha" width="100px;" class="alignCenter">
+                                    <h:outputText value="{model2.fecha}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="Caja" width="70px;" class="alignLeft">
+                                    <h:outputText value="{model2.nombreCaja}" />
+                                </p:column>
+                                <p:column headerText="Operación" width="150px;" class="alignLeft">
+                                    <h:outputText value="{model2.nombreConcepto}" />
+                                </p:column>
+                                <p:column headerText="Comentarios" width="150px;" class="alignLeft">
+                                    <h:outputText value="{model.comentarios}" />
+                                </p:column>
+
+                                <p:column headerText="Monto" width="50px;" class="alignRight">
+                                    <h:outputText value="{model2.monto}">
+                                        <f:convertNumber type="currency" currencySymbol="$" />
+                                    </h:outputText>
+                                </p:column>
+                                <p:columnGroup type="footer">
+                                    <p:row>
+                                        <p:column colspan="1" />
+                                        <p:column colspan="4" style="text-align:right" footerText="Total:" />
+                                        <p:column colspan="1" class="alignRight">
+                                            <f:facet name="footer">
+                                                <h:outputText value="{beanCajas.totalEntradasEfectivo}" >
+                                                    <f:convertNumber currencySymbol="$" type="currency" />
+                                                </h:outputText>
+                                            </f:facet>
+                                        </p:column>
+                                    </p:row>
+                                </p:columnGroup>
+                            </p:dataTable>
+                        </div>
+                    </div>-->
+                </div>
+            </p:panel>
+        </h:form>
+
+    </ui:define>
+</ui:composition>
+

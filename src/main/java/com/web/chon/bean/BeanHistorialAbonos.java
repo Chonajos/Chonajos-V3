@@ -138,7 +138,7 @@ public class BeanHistorialAbonos implements Serializable {
     //--Datos para Operaciones Caja---//
     @PostConstruct
     public void init() {
-        padres= new ArrayList<AbonoCredito>();
+        padres = new ArrayList<AbonoCredito>();
         abono = new AbonoCredito();
         total = new BigDecimal(0);
         setTitle("Historial de Abonos");
@@ -302,9 +302,18 @@ public class BeanHistorialAbonos implements Serializable {
                 break;
             case 2:
                 System.out.println("Cancelar Abono en Transferencia");
+                System.out.println("id-"+abono.getIdAbonoCreditoPk());
 
-                pb = ifacePagosBancarios.getByIdTipoLlave(new BigDecimal(1), abono.getIdAbonoCreditoPk());
-                if (pb != null && pb.getIdTransBancariasPk() != null) {
+                for(AbonoCredito aa:abono.getListaAbonitos())
+                {
+                    pb = ifacePagosBancarios.getByIdTipoLlave(new BigDecimal(1), aa.getIdAbonoCreditoPk());
+                    if (pb != null && pb.getIdTransBancariasPk() != null) 
+                    {
+                        break;
+                    }
+                }
+                if (pb != null && pb.getIdTransBancariasPk() != null) 
+                {
                     if (pb.getIdStatusFk().intValue() == 2) {
                         System.out.println("No ha sido aceptado");
                         opcaja.setComentarios("Cancelación de Abono");
@@ -445,18 +454,9 @@ public class BeanHistorialAbonos implements Serializable {
 
     public void generaPadres() {
         //Generar Padres
-        
-        
-        
-        for (AbonoCredito ab : lstAbonosCreditos) 
-        {
-            boolean bandera = true;
-            
+        for (AbonoCredito ab : lstAbonosCreditos) {
             AbonoCredito abonoPadre = new AbonoCredito();
-            
-            if (padres.isEmpty()) 
-            {
-                System.out.println("getNumeroAbono inicializa"+ab.getNumeroAbono());
+            if (padres.isEmpty()) {
                 abonoPadre.setIdAbonoCreditoPk(ab.getIdAbonoCreditoPk());
                 abonoPadre.setNombreCliente(ab.getNombreCliente());
                 abonoPadre.setNombreCajero(ab.getNombreCajero());
@@ -479,56 +479,45 @@ public class BeanHistorialAbonos implements Serializable {
                 abonoPadre.setFolioElectronico(ab.getFolioElectronico());
                 abonoPadre.setNumeroAbono(ab.getNumeroAbono());
                 padres.add(abonoPadre);
-            } else 
-            {
-                
-               
-                for (AbonoCredito a : padres) 
-                {
-//                    abonoPadre = new AbonoCredito();
-                 
-                    if (a.getNumeroAbono().intValue() != ab.getNumeroAbono().intValue()) 
-                    {
-                        System.out.println("agrega nuevo  son diferentes"+ab.getNumeroAbono());
-                        abonoPadre.setIdAbonoCreditoPk(ab.getIdAbonoCreditoPk());
-                        abonoPadre.setNombreCliente(ab.getNombreCliente());
-                        abonoPadre.setNombreCajero(ab.getNombreCajero());
-                        abonoPadre.setIdCreditoFk(ab.getIdCreditoFk());
-                        abonoPadre.setFechaAbono(ab.getFechaAbono());
-                        abonoPadre.setNombreAbono(ab.getNombreAbono());
-                        abonoPadre.setMontoAbono(ab.getMontoAbono());
-                        abonoPadre.setIdUsuarioFk(ab.getIdUsuarioFk());
-                        abonoPadre.setIdtipoAbonoFk(ab.getIdtipoAbonoFk());
-                        abonoPadre.setEstatusAbono(ab.getEstatusAbono());
-                        abonoPadre.setNumeroCheque(ab.getNumeroCheque());
-                        abonoPadre.setLibrador(ab.getLibrador());
-                        abonoPadre.setFechaCobro(ab.getFechaCobro());
-                        abonoPadre.setBanco(ab.getBanco());
-                        abonoPadre.setFactura(ab.getFactura());
-                        abonoPadre.setReferencia(ab.getReferencia());
-                        abonoPadre.setConcepto(ab.getConcepto());
-                        abonoPadre.setFechaTransferencia(ab.getFechaTransferencia());
-                        abonoPadre.setIdClienteFk(ab.getIdClienteFk());
-                        abonoPadre.setFolioElectronico(ab.getFolioElectronico());
-                        abonoPadre.setNumeroAbono(ab.getNumeroAbono());
-                        bandera = true;
-                        
-                    }else{
-                        bandera = false;
+            } else {
+                int count = 0;
+                for (AbonoCredito a : padres) {
+                    abonoPadre.setIdAbonoCreditoPk(ab.getIdAbonoCreditoPk());
+                    abonoPadre.setNombreCliente(ab.getNombreCliente());
+                    abonoPadre.setNombreCajero(ab.getNombreCajero());
+                    abonoPadre.setIdCreditoFk(ab.getIdCreditoFk());
+                    abonoPadre.setFechaAbono(ab.getFechaAbono());
+                    abonoPadre.setNombreAbono(ab.getNombreAbono());
+                    abonoPadre.setMontoAbono(ab.getMontoAbono());
+                    abonoPadre.setIdUsuarioFk(ab.getIdUsuarioFk());
+                    abonoPadre.setIdtipoAbonoFk(ab.getIdtipoAbonoFk());
+                    abonoPadre.setEstatusAbono(ab.getEstatusAbono());
+                    abonoPadre.setNumeroCheque(ab.getNumeroCheque());
+                    abonoPadre.setLibrador(ab.getLibrador());
+                    abonoPadre.setFechaCobro(ab.getFechaCobro());
+                    abonoPadre.setBanco(ab.getBanco());
+                    abonoPadre.setFactura(ab.getFactura());
+                    abonoPadre.setReferencia(ab.getReferencia());
+                    abonoPadre.setConcepto(ab.getConcepto());
+                    abonoPadre.setFechaTransferencia(ab.getFechaTransferencia());
+                    abonoPadre.setIdClienteFk(ab.getIdClienteFk());
+                    abonoPadre.setFolioElectronico(ab.getFolioElectronico());
+                    abonoPadre.setNumeroAbono(ab.getNumeroAbono());
+                    if (a.getNumeroAbono().intValue() == ab.getNumeroAbono().intValue()) {
+                        count++;
                     }
-                    
                 }//fin for
-                if(bandera)
+                if(count==0)
                 {
                     padres.add(abonoPadre);
                 }
-               
+
             }//fin else
         }//fin for
-        
+
     }
-    public void generaHijos()
-    {
+
+    public void generaHijos() {
         //Generar Hijos
         for (AbonoCredito pa : padres) {
             ArrayList<AbonoCredito> hijos = new ArrayList<AbonoCredito>();
