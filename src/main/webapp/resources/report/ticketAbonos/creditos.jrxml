@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2017-01-13T12:33:52 -->
+<!-- 2017-01-16T17:03:53 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="credito" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="df013db5-f76e-44d3-b0df-bcbc46d93160">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -212,9 +212,9 @@
 				<text><![CDATA[COMERCIALIZADORA Y EXPORTADORA CHONAJOS S DE RL DE CV]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="220" y="62" width="330" height="30" uuid="8736fb2d-e900-491c-970b-b69b5663be05"/>
+				<reportElement x="170" y="62" width="450" height="30" uuid="8736fb2d-e900-491c-970b-b69b5663be05"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="14"/>
+					<font size="16"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{nombreSucursal}]]></textFieldExpression>
 			</textField>
@@ -244,45 +244,57 @@
 				<staticText>
 					<reportElement x="5" y="1" width="63" height="20" uuid="aa663885-8d86-4414-a608-b29428deee62"/>
 					<textElement>
-						<font size="14"/>
+						<font size="13"/>
 					</textElement>
 					<text><![CDATA[Cliente:]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="6" y="33" width="169" height="20" uuid="8027a3f7-bd3c-42d7-b1a9-28366c8d6195"/>
+					<reportElement x="6" y="33" width="194" height="20" uuid="8027a3f7-bd3c-42d7-b1a9-28366c8d6195"/>
 					<textElement>
-						<font size="14"/>
+						<font size="13"/>
 					</textElement>
 					<text><![CDATA[Línea de Crédito Utilizado:]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="5" y="63" width="189" height="20" uuid="336c72ff-70e1-4463-9230-38b7d967ad5e"/>
+					<reportElement x="5" y="63" width="195" height="20" uuid="336c72ff-70e1-4463-9230-38b7d967ad5e"/>
 					<textElement>
-						<font size="14"/>
+						<font size="13"/>
 					</textElement>
 					<text><![CDATA[Línea de Crédito Disponible:]]></text>
 				</staticText>
 				<staticText>
 					<reportElement x="513" y="3" width="160" height="20" uuid="f445064a-6e2c-4c5b-880d-e7d315c138de"/>
 					<textElement>
-						<font size="14"/>
+						<font size="13"/>
 					</textElement>
 					<text><![CDATA[Fecha de Impresión:]]></text>
 				</staticText>
 				<textField>
 					<reportElement x="676" y="3" width="88" height="20" uuid="8889c97c-40ab-4236-87a2-9d46b70a7bb7"/>
+					<textElement>
+						<font size="13"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{fecha}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="191" y="33" width="100" height="20" uuid="d02e4252-43cd-4187-a027-043c381a87c5"/>
+					<reportElement x="197" y="33" width="100" height="20" uuid="d02e4252-43cd-4187-a027-043c381a87c5"/>
+					<textElement>
+						<font size="13"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{creditoUtilizado}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="192" y="63" width="100" height="20" uuid="cc24d237-108a-4483-afa7-d6fe264096b2"/>
+					<reportElement x="198" y="63" width="100" height="20" uuid="cc24d237-108a-4483-afa7-d6fe264096b2"/>
+					<textElement>
+						<font size="13"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{creditoDisponible}]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="71" y="1" width="279" height="22" uuid="b6b2dc90-db7c-4cc9-a06f-383dc2d9b578"/>
+					<textElement>
+						<font size="13"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{cliente}]]></textFieldExpression>
 				</textField>
 			</frame>

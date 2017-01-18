@@ -49,6 +49,17 @@
                         </div>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        
+                        <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 ">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="selectEstaus" value ="Estatus Carro:" /> 
+                            <p:selectOneMenu value="#{beanTableroControlVentaMeyoreo.estausCarro}" id="selectEstaus" style="width:50% !important;" class="col-lg-8 col-md-8 col-sm-6 col-xs-12">
+                                <f:selectItem itemLabel="Todos" itemValue=""/>
+                                <f:selectItem itemLabel="En Proceso" itemValue="1"/>
+                                <f:selectItem itemLabel="Cerrados" itemValue="2"/>
+                                <p:ajax event="change" update=":formContent:carro :formContent:table" listener="#{beanTableroControlVentaMeyoreo.getCarros()}"/>
+                            </p:selectOneMenu>
+                        </div>
+                        
                         <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 ">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="calendarInicio" value ="Fecha de Inicio:" /> 
                             <p:calendar id="calendarInicio" class="col-lg-6 col-md-8 col-sm-8 col-xs-12 calendario paddingZero" navigator="true" placeholder="dd/mm/yyyy"

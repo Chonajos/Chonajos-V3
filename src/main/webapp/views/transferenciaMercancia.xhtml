@@ -36,7 +36,7 @@
                         </div>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <p:dataTable id="table" var="model" value="#{beanTransferenciaMerca.lstExistenciaProducto}" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." rendered="#{beanTransferenciaMerca.viewEstate =='init'}" scrollable="true" scrollHeight="280">
+                        <p:dataTable id="table" var="model" value="#{beanTransferenciaMerca.lstExistenciaProducto}" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." rendered="#{beanTransferenciaMerca.viewEstate =='init'}" paginator="true" rows="20">
 
                             <p:column  headerText="Carro" width="40px;" class="alignCenter">
                                 <h:outputText value="#{model.carroSucursal}">

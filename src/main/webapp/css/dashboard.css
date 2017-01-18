@@ -214,7 +214,6 @@ select{
 .selects .ui-selectonemenu-list-item {
     width: 99px !important;
     font-size: 11px !important;
-    /*font-family: Verdana, sans-serif;*/
 }
 
 .selects .ui-state-highlight, .ui-widget-content .ui-state-highlight,

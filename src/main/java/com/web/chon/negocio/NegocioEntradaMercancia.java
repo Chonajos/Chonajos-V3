@@ -45,7 +45,7 @@ public interface NegocioEntradaMercancia {
      * @param idPk
      * @return 
      */
-    public List<Object[]> getCarrosByIdSucursalAndIdProvedor(BigDecimal idSucursal,BigDecimal idProvedor,BigDecimal carro);
+    public List<Object[]> getCarrosByIdSucursalAndIdProvedor(BigDecimal idSucursal,BigDecimal idProvedor,BigDecimal carro,BigDecimal estatusCarro);
     
     public int cerrarCarro(BigDecimal idEntradaMercancia);
 }

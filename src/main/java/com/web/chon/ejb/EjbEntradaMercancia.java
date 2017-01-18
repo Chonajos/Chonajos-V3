@@ -226,7 +226,7 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
     }
 
     @Override
-    public List<Object[]> getCarrosByIdSucursalAndIdProvedor(BigDecimal idSucursal, BigDecimal idProvedor, BigDecimal carro) {
+    public List<Object[]> getCarrosByIdSucursalAndIdProvedor(BigDecimal idSucursal, BigDecimal idProvedor, BigDecimal carro, BigDecimal estatusCarro) {
 
         try {
             StringBuffer txtQuery = new StringBuffer("SELECT ENM.CARROSUCURSAL,ENM.IDENTIFICADOR,ENM.FECHA, PRO.NOMBRE_PROVEDOR||' '||PRO.A_PATERNO_PROVE||' '||PRO.A_MATERNO_PROVE AS NOMBRE_PROVEDOR,ENM.STATUS_CARRO,ENM.ID_EM_PK FROM ENTRADAMERCANCIA ENM "
@@ -255,6 +255,15 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
                 } else {
                     txtQuery.append(" WHERE ENM.CARROSUCURSAL =" + carro);
                 }
+            }
+
+            if (estatusCarro != null) {
+                if (cont != 0) {
+                    txtQuery.append(" AND ENM.STATUS_CARRO =" + estatusCarro);
+                } else {
+                    txtQuery.append(" WHERE ENM.STATUS_CARRO =" + estatusCarro);
+                }
+
             }
 
             txtQuery.append(" ORDER BY ENM.CARROSUCURSAL ASC");
