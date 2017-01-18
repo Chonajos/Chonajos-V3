@@ -101,7 +101,7 @@ public class BeanDocumentosCobrar implements Serializable {
     @Autowired
     private IfaceCuentasBancarias ifaceCuentasBancarias;
 
-    private ArrayList<Sucursal> listaSucursales;
+   
     private ArrayList<Documento> listaDocumentos;
     private ArrayList<AbonoDocumentos> listaAbonosCheques;
     private ArrayList<CuentaBancaria> listaCuentas;
@@ -176,6 +176,8 @@ public class BeanDocumentosCobrar implements Serializable {
     private PagosBancarios pagoBancario;
     private BigDecimal idCuentaDestinoBean;
     private BigDecimal total;
+    private ArrayList<Sucursal> listaSucursales;
+    private BigDecimal idSucursalFK;
 
     @PostConstruct
     public void init() {
@@ -223,6 +225,7 @@ public class BeanDocumentosCobrar implements Serializable {
         pagoBancario = new PagosBancarios();
         dataAbonar.setIdTipoAbonoFk(new BigDecimal(1));
         total = new BigDecimal(0);
+        
 
     }
 
@@ -992,5 +995,17 @@ public class BeanDocumentosCobrar implements Serializable {
     public void setTotal(BigDecimal total) {
         this.total = total;
     }
+
+    public BigDecimal getIdSucursalFK() {
+        return idSucursalFK;
+    }
+
+    public void setIdSucursalFK(BigDecimal idSucursalFK) {
+        this.idSucursalFK = idSucursalFK;
+    }
+    
+    
+
+  
 
 }

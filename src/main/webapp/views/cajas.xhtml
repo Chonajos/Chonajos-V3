@@ -39,7 +39,7 @@
                                      emptyMessage="No se encontraron Registros" 
                                      rendered="#{beanCajas.viewEstate =='init'}">
                             <f:facet name="header">
-                                Relación de Operaciones
+                                Saldo Actual en Cajas
                             </f:facet>
                             <p:column headerText="Sucursal" width="150px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreSucursal}" />
@@ -47,34 +47,45 @@
                             <p:column headerText="Caja" width="150px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreCaja}" />
                             </p:column>
-                            <p:column headerText="Apertura Efectivo" width="150px;" class="alignLeft">
-                                <h:outputText value="#{model.aperturaEfectivo}" />
+                            <p:column headerText="Apertura Efectivo" width="150px;" class="alignRight">
+                                <h:outputText value="#{model.aperturaEfectivo}" >
+                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                </h:outputText>
                             </p:column>
-                            <p:column headerText="Apertura Cheques" width="150px;" class="alignLeft">
-                                <h:outputText value="#{model.aperturaCheques}" />
+                            <p:column headerText="Apertura Cheques" width="150px;" class="alignRight">
+                                <h:outputText value="#{model.aperturaCheques}" >
+                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                </h:outputText>
                             </p:column>
-                            <p:column headerText="Apertura Cuentas" width="150px;" class="alignLeft">
-                                <h:outputText value="#{model.aperturaCuentas}" />
+                            <p:column headerText="Apertura Cuentas" width="150px;" class="alignRight">
+                                <h:outputText value="#{model.aperturaCuentas}">
+                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                </h:outputText>
                             </p:column>
-                            <p:column headerText="Efectivo" width="50px;" class="alignRight">
+                            <p:column headerText="Efectivo" width="100px;" class="alignRight">
                                 <h:outputText value="#{model.efectivo}">
                                     <f:convertNumber type="currency" currencySymbol="$" />
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Cheques" width="50px;" class="alignRight">
+                            <p:column headerText="Cheques" width="100px;" class="alignRight">
                                 <h:outputText value="#{model.cheques}">
                                     <f:convertNumber type="currency" currencySymbol="$" />
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Cuentas Bancarias" width="50px;" class="alignRight">
+                            <p:column headerText="Cuentas Bancarias" width="100px;" class="alignRight">
                                 <h:outputText value="#{model.cuentas}">
+                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Saldo Actual" width="100px;" class="alignRight">
+                                <h:outputText value="#{model.saldoActual}">
                                     <f:convertNumber type="currency" currencySymbol="$" />
                                 </h:outputText>
                             </p:column>
                             <p:columnGroup type="footer">
                                 <p:row>
                                     <p:column colspan="1" />
-                                    <p:column colspan="4" style="text-align:right" footerText="Total:" />
+                                    <p:column colspan="1" style="text-align:right" footerText="Totales:" />
                                     <p:column colspan="1" class="alignRight">
                                         <f:facet name="footer">
                                             <h:outputText value="#{beanCajas.totalEntradasEfectivo}" >
@@ -82,12 +93,6 @@
                                             </h:outputText>
                                         </f:facet>
                                     </p:column>
-                                </p:row>
-                            </p:columnGroup>
-                            <p:columnGroup type="footer">
-                                <p:row>
-                                    <p:column colspan="1" />
-                                    <p:column colspan="4" style="text-align:right" footerText="Total:" />
                                     <p:column colspan="1" class="alignRight">
                                         <f:facet name="footer">
                                             <h:outputText value="#{beanCajas.totalEntradasEfectivo}" >
@@ -95,12 +100,6 @@
                                             </h:outputText>
                                         </f:facet>
                                     </p:column>
-                                </p:row>
-                            </p:columnGroup>
-                            <p:columnGroup type="footer">
-                                <p:row>
-                                    <p:column colspan="1" />
-                                    <p:column colspan="4" style="text-align:right" footerText="Total:" />
                                     <p:column colspan="1" class="alignRight">
                                         <f:facet name="footer">
                                             <h:outputText value="#{beanCajas.totalEntradasEfectivo}" >
@@ -108,8 +107,38 @@
                                             </h:outputText>
                                         </f:facet>
                                     </p:column>
+                                    <p:column colspan="1" class="alignRight">
+                                        <f:facet name="footer">
+                                            <h:outputText value="#{beanCajas.totalEntradasEfectivo}" >
+                                                <f:convertNumber currencySymbol="$" type="currency" />
+                                            </h:outputText>
+                                        </f:facet>
+                                    </p:column>
+                                    <p:column colspan="1" class="alignRight">
+                                        <f:facet name="footer">
+                                            <h:outputText value="#{beanCajas.totalEntradasEfectivo}" >
+                                                <f:convertNumber currencySymbol="$" type="currency" />
+                                            </h:outputText>
+                                        </f:facet>
+                                    </p:column>
+                                    <p:column colspan="1" class="alignRight">
+                                        <f:facet name="footer">
+                                            <h:outputText value="#{beanCajas.totalEntradasEfectivo}" >
+                                                <f:convertNumber currencySymbol="$" type="currency" />
+                                            </h:outputText>
+                                        </f:facet>
+                                    </p:column>
+                                    <p:column colspan="1" class="alignRight">
+                                        <f:facet name="footer">
+                                            <h:outputText value="#{beanCajas.totalEntradasEfectivo}" >
+                                                <f:convertNumber currencySymbol="$" type="currency" />
+                                            </h:outputText>
+                                        </f:facet>
+                                    </p:column>
+                                    
                                 </p:row>
                             </p:columnGroup>
+                           
                         </p:dataTable>
 
                     </div>

@@ -40,7 +40,7 @@ public class EjbCaja implements NegocioCaja {
     @Override
     public List<Object[]> getCajas() {
         try {
-            Query query = em.createNativeQuery("select * from caja");
+            Query query = em.createNativeQuery("select cj.ID_CAJA_PK,cj.ID_SUCURSAL_FK,cj.NOMBRE,cj.MONTO_INICIAL,cj.ID_USER_FK, suc.NOMBRE_SUCURSAL from caja cj inner join SUCURSAL suc on suc.ID_SUCURSAL_PK = cj.ID_SUCURSAL_FK");
             return query.getResultList();
         } catch (Exception ex) {
             Logger.getLogger(EjbCaja.class.getName()).log(Level.SEVERE, null, ex);

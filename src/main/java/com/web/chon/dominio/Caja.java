@@ -20,12 +20,22 @@ public class Caja implements Serializable {
     private BigDecimal idUsuarioFK;
     private String nombre;
     private BigDecimal montoInicial;
+    private String nombreSucursal;
 
     @Override
     public String toString() {
         return "Caja{" + "idCajaPk=" + idCajaPk + ", idSucursalFk=" + idSucursalFk + ", idUsuarioFK=" + idUsuarioFK + ", nombre=" + nombre + ", montoInicial=" + montoInicial + '}';
     }
 
+    public String getNombreSucursal() {
+        return nombreSucursal;
+    }
+
+    public void setNombreSucursal(String nombreSucursal) {
+        this.nombreSucursal = nombreSucursal;
+    }
+
+    
     
     public BigDecimal getIdCajaPk() {
         return idCajaPk;

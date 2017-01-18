@@ -143,11 +143,11 @@ public class BeanEntradaMercancia implements Serializable {
         listaBodegas = ifaceCatBodegas.getBodegaByIdSucursal(data.getIdSucursalFK());
         cantidadReal = new BigDecimal(0);
     }
-    public void sumaDias()
-    {
+
+    public void sumaDias() {
         Date hoy = context.getFechaSistema();
         data.setFechaPago(TiempoUtil.sumarRestarDias(hoy, data.getDiasPago().intValue()));
-        System.out.println("Fecha de Pago: "+data.getFechaPago());
+        System.out.println("Fecha de Pago: " + data.getFechaPago());
     }
 
     public void permisions() {
@@ -171,12 +171,18 @@ public class BeanEntradaMercancia implements Serializable {
         }
     }
 
-    public void calculaCantidadReal() 
-    {
+    public void calculaCantidadReal() {
         cantidadReal = new BigDecimal(0);
-        for (EntradaMercanciaProducto p : listaMercanciaProducto) 
-        {
+        for (EntradaMercanciaProducto p : listaMercanciaProducto) {
             cantidadReal = cantidadReal.add(p.getCantidadPaquetes(), MathContext.UNLIMITED);
+        }
+    }
+
+    public boolean validaDatos() {
+        if (data.getIdUsuario() == null || data.getIdProvedorFK() == null || data.getIdSucursalFK() == null || data.getAbreviacion() == null || data.getMovimiento() == null || data.getRemision() == null || data.getFechaRemision() == null) {
+            return false;
+        } else {
+            return true;
         }
     }
 
@@ -187,87 +193,91 @@ public class BeanEntradaMercancia implements Serializable {
         EntradaMercancia entrada_mercancia = new EntradaMercancia();
 
         try {
-            if (!listaMercanciaProducto.isEmpty() && listaMercanciaProducto.size() > 0) {
-                calculaCantidadReal();
-                idEntradaMercancia = ifaceEntradaMercancia.getNextVal();
-                idCarroSucursal = ifaceEntradaMercancia.getCarroSucursal(data.getIdSucursalFK());
-                entrada_mercancia.setIdEmPK(new BigDecimal(idEntradaMercancia));
-                entrada_mercancia.setIdUsuario(data.getIdUsuario());
-                entrada_mercancia.setIdProvedorFK(data.getIdProvedorFK());
-                entrada_mercancia.setIdSucursalFK(data.getIdSucursalFK());
-                entrada_mercancia.setAbreviacion(data.getAbreviacion());
-                entrada_mercancia.setMovimiento(data.getMovimiento());
-                entrada_mercancia.setRemision(data.getRemision());
-                entrada_mercancia.setFecha(data.getFecha());
-                entrada_mercancia.setFolio(data.getFolio());
-                entrada_mercancia.setCantidadEmpaquesProvedor(data.getCantidadEmpaquesProvedor());
-                System.out.println("CantidadReal ===" +cantidadReal);
-                entrada_mercancia.setCantidadEmpaquesReales(cantidadReal);
-                entrada_mercancia.setKilosTotales(kilos);
-                System.out.println("kilos ===" +kilos);
-                entrada_mercancia.setKilosTotalesProvedor(data.getKilosTotalesProvedor());
-                entrada_mercancia.setComentariosGenerales(data.getComentariosGenerales());
-                entrada_mercancia.setFechaRemision(data.getFechaRemision());
-                entrada_mercancia.setIdCarroSucursal(new BigDecimal(idCarroSucursal + 1));
-                entrada_mercancia.setFechaPago(data.getFechaPago());
-                System.out.println("=============Entrada=================");
-                System.out.println(data.toString());
-                System.out.println("Entrada: "+entrada_mercancia.toString());
+            if (validaDatos()) {
+                if (!listaMercanciaProducto.isEmpty() && listaMercanciaProducto.size() > 0) {
+                    calculaCantidadReal();
+                    idEntradaMercancia = ifaceEntradaMercancia.getNextVal();
+                    idCarroSucursal = ifaceEntradaMercancia.getCarroSucursal(data.getIdSucursalFK());
+                    entrada_mercancia.setIdEmPK(new BigDecimal(idEntradaMercancia));
+                    entrada_mercancia.setIdUsuario(data.getIdUsuario());
+                    entrada_mercancia.setIdProvedorFK(data.getIdProvedorFK());
+                    entrada_mercancia.setIdSucursalFK(data.getIdSucursalFK());
+                    entrada_mercancia.setAbreviacion(data.getAbreviacion());
+                    entrada_mercancia.setMovimiento(data.getMovimiento());
+                    entrada_mercancia.setRemision(data.getRemision());
+                    entrada_mercancia.setFecha(data.getFecha());
+                    entrada_mercancia.setFolio(data.getFolio());
+                    entrada_mercancia.setCantidadEmpaquesProvedor(data.getCantidadEmpaquesProvedor());
+                    //System.out.println("CantidadReal ===" +cantidadReal);
+                    entrada_mercancia.setCantidadEmpaquesReales(cantidadReal);
+                    entrada_mercancia.setKilosTotales(kilos);
+                    //System.out.println("kilos ===" +kilos);
+                    entrada_mercancia.setKilosTotalesProvedor(data.getKilosTotalesProvedor());
+                    entrada_mercancia.setComentariosGenerales(data.getComentariosGenerales());
+                    entrada_mercancia.setFechaRemision(data.getFechaRemision());
+                    entrada_mercancia.setIdCarroSucursal(new BigDecimal(idCarroSucursal + 1));
+                    entrada_mercancia.setFechaPago(data.getFechaPago());
+                    //System.out.println("=============Entrada=================");
+                    //System.out.println(data.toString());
+                    //System.out.println("Entrada: "+entrada_mercancia.toString());
 
-                int mercanciaOrdenada = ifaceEntradaMercancia.insertEntradaMercancia(entrada_mercancia);
-                if (mercanciaOrdenada != 0) {
-                    for (int i = 0; i < listaMercanciaProducto.size(); i++) {
-                        EntradaMercanciaProducto producto = new EntradaMercanciaProducto();
-                        producto = listaMercanciaProducto.get(i);
-                        int idEnTMerPro = ifaceEntradaMercanciaProducto.getNextVal();
-                        producto.setIdEmpPK(new BigDecimal(idEnTMerPro));
-                        producto.setIdEmFK(new BigDecimal(idEntradaMercancia));
-                        producto.setKilospromprod(producto.getKilosTotalesProducto().divide(producto.getCantidadPaquetes(), 2, RoundingMode.HALF_EVEN));
-                        producto.setKilosProProvedor(producto.getKilosTotalesProducto());
-                        producto.setEmpaquesProProvedor(producto.getCantidadPaquetes());
-                        //int idEntradaMercanciaProducto = ifaceEntradaMercanciaProducto.getNextVal();
-                        if (ifaceEntradaMercanciaProducto.insertEntradaMercanciaProducto(producto) != 0) {
-                            //BUSCAR SI YA EXISTE EN LA TABLA EXISTENCIA PRODUCTO.
-                            ExistenciaProducto ep = new ExistenciaProducto();
-                            ep.setIdSubProductoFK(producto.getIdSubProductoFK());
-                            ep.setIdTipoEmpaqueFK(producto.getIdTipoEmpaqueFK());
-                            ep.setKilosTotalesProducto(producto.getKilosTotalesProducto());
-                            ep.setCantidadPaquetes(producto.getCantidadPaquetes());
-                            ep.setComentarios(producto.getComentarios());
-                            ep.setIdBodegaFK(producto.getIdBodegaFK());
-                            ep.setIdTipoConvenio(producto.getIdTipoConvenio());
-                            ep.setPrecio(producto.getPrecio());
-                            ep.setKilospromprod(producto.getKilospromprod());
-                            ep.setIdSucursal(entrada_mercancia.getIdSucursalFK());
-                            ep.setIdProvedor(entrada_mercancia.getIdProvedorFK());
-                            ep.setIdEntradaMercanciaProductoFK(new BigDecimal(idEnTMerPro));
-                            if (ifaceNegocioExistencia.insertExistenciaProducto(ep) == 1) {
-                                JsfUtil.addSuccessMessageClean("¡Registro de Mercancias correcto !");
+                    int mercanciaOrdenada = ifaceEntradaMercancia.insertEntradaMercancia(entrada_mercancia);
+                    if (mercanciaOrdenada != 0) {
+                        for (int i = 0; i < listaMercanciaProducto.size(); i++) {
+                            EntradaMercanciaProducto producto = new EntradaMercanciaProducto();
+                            producto = listaMercanciaProducto.get(i);
+                            int idEnTMerPro = ifaceEntradaMercanciaProducto.getNextVal();
+                            producto.setIdEmpPK(new BigDecimal(idEnTMerPro));
+                            producto.setIdEmFK(new BigDecimal(idEntradaMercancia));
+                            producto.setKilospromprod(producto.getKilosTotalesProducto().divide(producto.getCantidadPaquetes(), 2, RoundingMode.HALF_EVEN));
+                            producto.setKilosProProvedor(producto.getKilosTotalesProducto());
+                            producto.setEmpaquesProProvedor(producto.getCantidadPaquetes());
+                            //int idEntradaMercanciaProducto = ifaceEntradaMercanciaProducto.getNextVal();
+                            if (ifaceEntradaMercanciaProducto.insertEntradaMercanciaProducto(producto) != 0) {
+                                //BUSCAR SI YA EXISTE EN LA TABLA EXISTENCIA PRODUCTO.
+                                ExistenciaProducto ep = new ExistenciaProducto();
+                                ep.setIdSubProductoFK(producto.getIdSubProductoFK());
+                                ep.setIdTipoEmpaqueFK(producto.getIdTipoEmpaqueFK());
+                                ep.setKilosTotalesProducto(producto.getKilosTotalesProducto());
+                                ep.setCantidadPaquetes(producto.getCantidadPaquetes());
+                                ep.setComentarios(producto.getComentarios());
+                                ep.setIdBodegaFK(producto.getIdBodegaFK());
+                                ep.setIdTipoConvenio(producto.getIdTipoConvenio());
+                                ep.setPrecio(producto.getPrecio());
+                                ep.setKilospromprod(producto.getKilospromprod());
+                                ep.setIdSucursal(entrada_mercancia.getIdSucursalFK());
+                                ep.setIdProvedor(entrada_mercancia.getIdProvedorFK());
+                                ep.setIdEntradaMercanciaProductoFK(new BigDecimal(idEnTMerPro));
+                                if (ifaceNegocioExistencia.insertExistenciaProducto(ep) == 1) {
+                                    JsfUtil.addSuccessMessageClean("¡Registro de Mercancias correcto !");
+                                } else {
+                                    JsfUtil.addErrorMessage("Error!", "Ocurrio un error al registrar la mercancia en existencias");
+                                }
+
                             } else {
-                                JsfUtil.addErrorMessage("Error!", "Ocurrio un error al registrar la mercancia en existencias");
+                                JsfUtil.addErrorMessage("Error!", "Ocurrio un error al registrar un producto de la entrada de Mercancia");
                             }
 
-                        } else {
-                            JsfUtil.addErrorMessage("Error!", "Ocurrio un error al registrar un producto de la entrada de Mercancia");
-                        }
+                        } //fin for
 
-                    } //fin for
+                        data.reset();
+                        listaMercanciaProducto.clear();
+                        dataProducto.reset();
+                        kilos = new BigDecimal(0);
+                        setViewEstate("init");
+                        permisionToPush = true;
+                        permisionToGenerate = true;
+                        reset();
 
-                    data.reset();
-                    listaMercanciaProducto.clear();
-                    dataProducto.reset();
-                    kilos = new BigDecimal(0);
-                    setViewEstate("init");
-                    permisionToPush = true;
-                    permisionToGenerate = true;
-                    reset();
-
+                    } else {
+                        JsfUtil.addErrorMessage("Error!", "Ocurrio un error al registrar la mercancia");
+                    }
                 } else {
-                    JsfUtil.addErrorMessage("Error!", "Ocurrio un error al registrar la mercancia");
+                    JsfUtil.addErrorMessage("Error!", "Necesitas agregar al menos un producto para realizar la orden de venta.");
+
                 }
             } else {
-                JsfUtil.addErrorMessage("Error!", "Necesitas agregar al menos un producto para realizar la orden de venta.");
-
+                JsfUtil.addErrorMessage("Error!", "Necesitas completar todos los campos");
             }
 
         } catch (StackOverflowError ex) {
@@ -395,12 +405,10 @@ public class BeanEntradaMercancia implements Serializable {
         p.setPrecio(dataProducto.getPrecio());
         p.setPesoNeto(dataProducto.getKilosTotalesProducto().subtract((dataProducto.getPesoTara() == null ? new BigDecimal(0) : dataProducto.getPesoTara()), MathContext.UNLIMITED));
         p.setKilosTotalesProducto(dataProducto.getKilosTotalesProducto());
-        
-        if (p.getPesoNeto().compareTo(new BigDecimal(0)) <= 0) 
-        {
+
+        if (p.getPesoNeto().compareTo(new BigDecimal(0)) <= 0) {
             JsfUtil.addErrorMessageClean("El peso de la tara es mayor que el producto");
-        } else 
-        {
+        } else {
 //kilos = kilos.add(p.getKilosTotalesProducto(), MathContext.UNLIMITED);
             //data.setKilosTotales(kilos);
             p.setComentarios(dataProducto.getComentarios());
@@ -434,7 +442,6 @@ public class BeanEntradaMercancia implements Serializable {
             }
             sumaTotales();
         }
-        
 
     }
 

@@ -255,12 +255,12 @@ public class ServiceOperacionesCaja implements IfaceOperacionesCaja {
     }
 
     @Override
-    public ArrayList<OperacionesCaja> getDepositosEntrantes() 
+    public ArrayList<OperacionesCaja> getDepositosEntrantes(BigDecimal idSucursalfk) 
     {
         getEjb();
         int i = 1;
         ArrayList<OperacionesCaja> listaOperaciones = new ArrayList<OperacionesCaja>();
-        List<Object[]> lstObject = ejb.getDepositosEntrantes();
+        List<Object[]> lstObject = ejb.getDepositosEntrantes(idSucursalfk);
         for (Object[] obj : lstObject) 
         {
             OperacionesCaja op = new OperacionesCaja();

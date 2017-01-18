@@ -65,8 +65,9 @@ public class BeanCajas implements Serializable {
     private CorteCaja corteAnterior;
     
 
-    private static final BigDecimal entrada = new BigDecimal(1);
-    private static final BigDecimal salida = new BigDecimal(2);
+    private static final BigDecimal ENTRADA = new BigDecimal(1);
+    private static final BigDecimal SALIDA = new BigDecimal(2);
+    private static final BigDecimal CERO = new BigDecimal(2);
 
     @PostConstruct
     public void init() {
@@ -89,13 +90,14 @@ public class BeanCajas implements Serializable {
         for (Caja c : listaCajas) {
             DominioCajas dc = new DominioCajas();
             dc.setNombreCaja(c.getNombre());
+            dc.setNombreSucursal(c.getNombreSucursal());
             BigDecimal cheques = new BigDecimal(0);
             BigDecimal efectivo = new BigDecimal(0);
             BigDecimal cuentas = new BigDecimal(0);
             //dc.setNombreSucursal(idSucursal);
 
-            lstOperacionesEntrada = ifaceOperacionesCaja.getOperaciones(c.getIdCajaPk(), entrada, null);
-            lstOperacionesSalida = ifaceOperacionesCaja.getOperaciones(c.getIdCajaPk(), salida, null);
+            lstOperacionesEntrada = ifaceOperacionesCaja.getOperaciones(c.getIdCajaPk(), ENTRADA, null);
+            lstOperacionesSalida = ifaceOperacionesCaja.getOperaciones(c.getIdCajaPk(), SALIDA, null);
             for (OperacionesCaja ope : lstOperacionesEntrada) {
 
                 if (ope.getIdConceptoFk().intValue() == 10 || ope.getIdConceptoFk().intValue() == 6 || ope.getIdConceptoFk().intValue() == 11 || ope.getIdConceptoFk().intValue() == 7 || ope.getIdConceptoFk().intValue() == 8 || ope.getIdConceptoFk().intValue() == 9 || ope.getIdConceptoFk().intValue() == 16 || ope.getIdConceptoFk().intValue() == 13) {
@@ -122,14 +124,15 @@ public class BeanCajas implements Serializable {
             
             System.out.println("Corte Anterior: ");
             System.out.println(corteAnterior.toString());
-            dc.setAperturaEfectivo(corteAnterior.getSaldoNuevo());
-            dc.setAperturaCuentas(corteAnterior.getMontoChequesNuevos());
-            dc.setAperturaCheques(corteAnterior.getMontoCuentaNuevo());
+            dc.setAperturaEfectivo(corteAnterior.getSaldoNuevo()==null? CERO:corteAnterior.getSaldoNuevo() );
+            dc.setAperturaCuentas(corteAnterior.getMontoCuentaNuevo()==null? CERO:corteAnterior.getMontoCuentaNuevo());
+            dc.setAperturaCheques(corteAnterior.getMontoChequesNuevos()==null? CERO:corteAnterior.getMontoChequesNuevos());
             
-            dc.setCheques(cheques.add(dc.getAperturaCheques(), MathContext.UNLIMITED));
-            dc.setCuentas(cuentas.add(dc.getCuentas(), MathContext.UNLIMITED));
-            dc.setEfectivo(efectivo.add(dc.getEfectivo(), MathContext.UNLIMITED));
+            dc.setCheques(cheques.add(dc.getAperturaCheques()==null? CERO:dc.getAperturaCheques(), MathContext.UNLIMITED));
+            dc.setCuentas(cuentas.add(dc.getCuentas()==null? CERO:dc.getCuentas(), MathContext.UNLIMITED));
+            dc.setEfectivo(efectivo.add(dc.getEfectivo()==null? CERO:dc.getEfectivo(), MathContext.UNLIMITED));
 
+            dc.setSaldoActual(dc.getCheques().add(dc.getCuentas().add(dc.getEfectivo(), MathContext.UNLIMITED), MathContext.UNLIMITED));
             listaGeneral.add(dc);
         }
         // lstOperacionesEntrada = ifaceOperacionesCaja.getOperaciones(idCajaBean, entrada, null);

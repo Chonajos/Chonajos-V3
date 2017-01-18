@@ -74,14 +74,22 @@ public class EjbPagoBancario implements NegocioPagosBancarios{
     }
 
     @Override
-    public List<Object[]> getPagosPendientes() {
-        Query query = em.createNativeQuery("select pb.*,cj.NOMBRE,con.NOMBRE,ta.NOMBRE_ABONO,usu.NOMBRE_USUARIO,cue.NOMBRE_BANCO from PAGOS_BANCARIOS pb\n" +
+    public List<Object[]> getPagosPendientes(BigDecimal idSucursalFk) {
+        
+        StringBuffer cadena = new StringBuffer("select pb.*,cj.NOMBRE,con.NOMBRE,ta.NOMBRE_ABONO,usu.NOMBRE_USUARIO,cue.NOMBRE_BANCO from PAGOS_BANCARIOS pb\n" +
 "inner join caja cj on cj.ID_CAJA_PK = pb.ID_CAJA_FK\n" +
 "inner join conceptos con on con.ID_CONCEPTOS_PK = pb.ID_CONCEPTO_FK\n" +
 "inner join TIPO_ABONO ta on ta.ID_TIPO_ABONO_PK = pb.ID_TIPO_FK\n" +
 "inner join USUARIO usu on usu.ID_USUARIO_PK = pb.ID_USER_FK\n" +
 "inner join CUENTA_BANCARIA cue on cue.ID_CUENTA_BANCARIA_PK = pb.ID_CUENTA_FK\n" +
 "where pb.ID_STATUS_FK = 2");
+        if (idSucursalFk !=null && idSucursalFk.intValue() != -1 ) 
+        {
+            cadena.append(" and cj.ID_SUCURSAL_FK= "+idSucursalFk+"");
+        }
+        Query query;
+        query = em.createNativeQuery(cadena.toString());
+        //query.setParameter(1, idCajaFk);
         return query.getResultList();
     }
 

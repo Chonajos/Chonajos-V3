@@ -16,18 +16,28 @@ public class DominioCajas implements Serializable{
     private static final long serialVersionUID = 1L;
     private BigDecimal idCaja;
     private String nombreCaja;
-    private BigDecimal nombreSucursal;
+    private String nombreSucursal;
     private BigDecimal aperturaEfectivo;
     private BigDecimal aperturaCheques;
     private BigDecimal aperturaCuentas;
     private BigDecimal cheques;
     private BigDecimal efectivo;
     private BigDecimal cuentas;
+    private BigDecimal saldoActual;
 
     @Override
     public String toString() {
         return "DominioCajas{" + "idCaja=" + idCaja + ", nombreCaja=" + nombreCaja + ", nombreSucursal=" + nombreSucursal + ", aperturaEfectivo=" + aperturaEfectivo + ", aperturaCheques=" + aperturaCheques + ", aperturaCuentas=" + aperturaCuentas + ", cheques=" + cheques + ", efectivo=" + efectivo + ", cuentas=" + cuentas + '}';
     }
+
+    public BigDecimal getSaldoActual() {
+        return saldoActual;
+    }
+
+    public void setSaldoActual(BigDecimal saldoActual) {
+        this.saldoActual = saldoActual;
+    }
+    
     
 
     public BigDecimal getAperturaEfectivo() {
@@ -97,13 +107,15 @@ public class DominioCajas implements Serializable{
         this.cuentas = cuentas;
     }
 
-    public BigDecimal getNombreSucursal() {
+    public String getNombreSucursal() {
         return nombreSucursal;
     }
 
-    public void setNombreSucursal(BigDecimal nombreSucursal) {
+    public void setNombreSucursal(String nombreSucursal) {
         this.nombreSucursal = nombreSucursal;
     }
+    
+
     
     
     

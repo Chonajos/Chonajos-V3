@@ -302,18 +302,15 @@ public class BeanHistorialAbonos implements Serializable {
                 break;
             case 2:
                 System.out.println("Cancelar Abono en Transferencia");
-                System.out.println("id-"+abono.getIdAbonoCreditoPk());
+                System.out.println("id-" + abono.getIdAbonoCreditoPk());
 
-                for(AbonoCredito aa:abono.getListaAbonitos())
-                {
+                for (AbonoCredito aa : abono.getListaAbonitos()) {
                     pb = ifacePagosBancarios.getByIdTipoLlave(new BigDecimal(1), aa.getIdAbonoCreditoPk());
-                    if (pb != null && pb.getIdTransBancariasPk() != null) 
-                    {
+                    if (pb != null && pb.getIdTransBancariasPk() != null) {
                         break;
                     }
                 }
-                if (pb != null && pb.getIdTransBancariasPk() != null) 
-                {
+                if (pb != null && pb.getIdTransBancariasPk() != null) {
                     if (pb.getIdStatusFk().intValue() == 2) {
                         System.out.println("No ha sido aceptado");
                         opcaja.setComentarios("Cancelación de Abono");
@@ -371,7 +368,12 @@ public class BeanHistorialAbonos implements Serializable {
                 break;
             case 4:
                 System.out.println("Cancelar Abono en Depósito");
-
+                for (AbonoCredito aa : abono.getListaAbonitos()) {
+                    pb = ifacePagosBancarios.getByIdTipoLlave(new BigDecimal(1), aa.getIdAbonoCreditoPk());
+                    if (pb != null && pb.getIdTransBancariasPk() != null) {
+                        break;
+                    }
+                }
                 if (pb != null && pb.getIdTransBancariasPk() != null) {
                     if (pb.getIdStatusFk().intValue() == 2) {
                         System.out.println("No ha sido aceptado");
@@ -507,8 +509,7 @@ public class BeanHistorialAbonos implements Serializable {
                         count++;
                     }
                 }//fin for
-                if(count==0)
-                {
+                if (count == 0) {
                     padres.add(abonoPadre);
                 }
 

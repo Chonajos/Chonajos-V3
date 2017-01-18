@@ -88,6 +88,7 @@ public class ServiceCaja implements IfaceCaja {
             caja.setNombre(obj[2] == null ? "" : obj[2].toString());
             caja.setMontoInicial(obj[3] == null ? null : new BigDecimal(obj[3].toString()));
             caja.setIdUsuarioFK(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
+            caja.setNombreSucursal(obj[5] == null ? "" : obj[5].toString());
             listaCajas.add(caja);
         }
         return listaCajas;

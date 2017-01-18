@@ -104,9 +104,10 @@ public class ServiceDocumentos implements IfaceDocumentos {
             documento.setIdDocumentoPadreFk(object[12] == null ? null : new BigDecimal(object[12].toString()));
             documento.setIdTipoD(object[13] == null ? null : new BigDecimal(object[13].toString()));
             documento.setIdLlave(object[14] == null ? null : new BigDecimal(object[14].toString()));
-            documento.setNombreCliente(object[15] == null ? "" : object[15].toString());
-            documento.setNombreFormaCobro(object[16] == null ? "" : object[16].toString());
-            documento.setNombreStatus(object[17] == null ? "" : object[17].toString());
+            documento.setIdSucursalFk(object[15] == null ? null : new BigDecimal(object[15].toString()));
+            documento.setNombreCliente(object[16] == null ? "" : object[16].toString());
+            documento.setNombreFormaCobro(object[17] == null ? "" : object[17].toString());
+            documento.setNombreStatus(object[18] == null ? "" : object[18].toString());
             documento.setTotalAbonado(ifaceAbonoDocumentos.getTotalAbonadoByIdDocumento(documento.getIdDocumentoPk()));
             lstDocumentos.add(documento);
         }

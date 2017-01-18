@@ -28,8 +28,8 @@ public class EjbDocumentos implements NegocioDocumentos {
             Query query = em.createNativeQuery("INSERT INTO  "
                     + "DOCUMENTOS_COBRAR (ID_DOCUMENTO_PK,ID_TIPO_DOCUMENTO,"
                     + "ID_CLIENTE_FK, ID_STATUS_FK, COMENTARIO,MONTO,NUMERO_CHEQUE"
-                    + ",NUMERO_FACTURA,BANCO,LIBRADOR,FECHA_COBRO,ID_FORMA_COBRO_FK,ID_DOCUMENTO_PADRE_FK,ID_TIPO_D,ID_LLAVE) "
-                    + " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                    + ",NUMERO_FACTURA,BANCO,LIBRADOR,FECHA_COBRO,ID_FORMA_COBRO_FK,ID_DOCUMENTO_PADRE_FK,ID_TIPO_D,ID_LLAVE,ID_SUCURSAL_FK) "
+                    + " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
             query.setParameter(1, documento.getIdDocumentoPk());
             query.setParameter(2, documento.getIdTipoDocumento());
             query.setParameter(3, documento.getIdClienteFk());
@@ -45,6 +45,7 @@ public class EjbDocumentos implements NegocioDocumentos {
             query.setParameter(13, documento.getIdDocumentoPadreFk());
             query.setParameter(14, documento.getIdTipoD());
             query.setParameter(15, documento.getIdLlave());
+            query.setParameter(16, documento.getIdSucursalFk());
             return query.executeUpdate();
 
         } catch (Exception ex) {
@@ -107,7 +108,7 @@ public class EjbDocumentos implements NegocioDocumentos {
 
         //System.out.println("Fecha fin: " + fechaFin);
         //System.out.println("IdSucursalEJB: " + idSucursal);
-        StringBuffer cadena = new StringBuffer("select dc.ID_DOCUMENTO_PK,dc.ID_TIPO_DOCUMENTO,dc.ID_CLIENTE_FK,dc.ID_STATUS_FK,dc.COMENTARIO,dc.MONTO,dc.NUMERO_CHEQUE,dc.NUMERO_FACTURA,dc.BANCO,dc.LIBRADOR,dc.FECHA_COBRO,dc.ID_FORMA_COBRO_FK,dc.ID_DOCUMENTO_PADRE_FK,dc.ID_TIPO_D,dc.ID_LLAVE,(CLI.NOMBRE||' '||CLI.APELLIDO_PATERNO ||' '||CLI.APELLIDO_MATERNO ) AS CLIENTE,fp.DESCRIPCION,\n"
+        StringBuffer cadena = new StringBuffer("select dc.ID_DOCUMENTO_PK,dc.ID_TIPO_DOCUMENTO,dc.ID_CLIENTE_FK,dc.ID_STATUS_FK,dc.COMENTARIO,dc.MONTO,dc.NUMERO_CHEQUE,dc.NUMERO_FACTURA,dc.BANCO,dc.LIBRADOR,dc.FECHA_COBRO,dc.ID_FORMA_COBRO_FK,dc.ID_DOCUMENTO_PADRE_FK,dc.ID_TIPO_D,dc.ID_LLAVE,dc.ID_SUCURSAL_FK,(CLI.NOMBRE||' '||CLI.APELLIDO_PATERNO ||' '||CLI.APELLIDO_MATERNO ) AS CLIENTE,fp.DESCRIPCION,\n"
                 + "sd.DESCRIPCION\n"
                 + "from DOCUMENTOS_COBRAR dc\n"
                 + "inner join cliente cli on cli.ID_CLIENTE = dc.ID_CLIENTE_FK\n"
@@ -142,6 +143,14 @@ public class EjbDocumentos implements NegocioDocumentos {
                 cadena.append(" AND dc.ID_CLIENTE_FK = '" + idClienteFk + "'");
             } else {
                 cadena.append(" WHERE dc.ID_CLIENTE_FK = '" + idClienteFk + "'");
+                bandera = true;
+            }
+        }
+        if (idSucursal != null && !idSucursal.equals("")) {
+            if (bandera == true) {
+                cadena.append(" AND dc.ID_SUCURSAL_FK = '" + idSucursal + "'");
+            } else {
+                cadena.append(" WHERE dc.ID_SUCURSAL_FK = '" + idSucursal + "'");
                 bandera = true;
             }
         }

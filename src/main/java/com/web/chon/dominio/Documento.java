@@ -37,12 +37,14 @@ public class Documento implements Serializable {
     private BigDecimal totalAbonado;
     private BigDecimal idTipoD;
     private BigDecimal idLlave;
+    private BigDecimal idSucursalFk;
 
     @Override
     public String toString() {
-        return "Documento{" + "idDocumentoPk=" + idDocumentoPk + ", idTipoDocumento=" + idTipoDocumento + ", idAbonoFk=" + idAbonoFk + ", idClienteFk=" + idClienteFk + ", idStatusFk=" + idStatusFk + ", monto=" + monto + ", fechaCobro=" + fechaCobro + ", comentario=" + comentario + ", idAbonoDocumentoFk=" + idAbonoDocumentoFk + ", numeroCheque=" + numeroCheque + ", factura=" + factura + ", banco=" + banco + ", librador=" + librador + ", idFormaCobroFk=" + idFormaCobroFk + ", idDocumentoPadreFk=" + idDocumentoPadreFk + ", nombreStatus=" + nombreStatus + ", nombreCliente=" + nombreCliente + ", nombreFormaCobro=" + nombreFormaCobro + ", totalAbonado=" + totalAbonado + ", idTipoD=" + idTipoD + ", idLlave=" + idLlave + '}';
+        return "Documento{" + "idDocumentoPk=" + idDocumentoPk + ", idTipoDocumento=" + idTipoDocumento + ", idAbonoFk=" + idAbonoFk + ", idClienteFk=" + idClienteFk + ", idStatusFk=" + idStatusFk + ", monto=" + monto + ", fechaCobro=" + fechaCobro + ", comentario=" + comentario + ", idAbonoDocumentoFk=" + idAbonoDocumentoFk + ", numeroCheque=" + numeroCheque + ", factura=" + factura + ", banco=" + banco + ", librador=" + librador + ", idFormaCobroFk=" + idFormaCobroFk + ", idDocumentoPadreFk=" + idDocumentoPadreFk + ", nombreStatus=" + nombreStatus + ", nombreCliente=" + nombreCliente + ", nombreFormaCobro=" + nombreFormaCobro + ", totalAbonado=" + totalAbonado + ", idTipoD=" + idTipoD + ", idLlave=" + idLlave + ", idSucursalFk=" + idSucursalFk + '}';
     }
 
+    
     public void reset() {
         idTipoD=null;
         idLlave=null;
@@ -62,7 +64,17 @@ public class Documento implements Serializable {
         idFormaCobroFk = null;
         idDocumentoPadreFk = null;
         totalAbonado=null;
+        idSucursalFk=null;
     }
+
+    public BigDecimal getIdSucursalFk() {
+        return idSucursalFk;
+    }
+
+    public void setIdSucursalFk(BigDecimal idSucursalFk) {
+        this.idSucursalFk = idSucursalFk;
+    }
+    
 
     public BigDecimal getTotalAbonado() {
         return totalAbonado;

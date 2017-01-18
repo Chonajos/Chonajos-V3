@@ -25,7 +25,7 @@ public interface NegocioOperacionesCaja {
     public List<Object[]> getOperacionByIdOperacionPK(BigDecimal idOperacionPk);
     public List<Object[]> getOperacionesBy(BigDecimal idCajaFk, BigDecimal idOperacionFk, BigDecimal idConceptoFk, String fechaInicio, String fechaFin, BigDecimal idStatusFk, BigDecimal idUserFk,BigDecimal idCorte,BigDecimal inout);    
     public List<Object[]> getTransferenciasEntrantes(BigDecimal idCorteCajaFk);
-    public List<Object[]> getDepositosEntrantes();
+    public List<Object[]> getDepositosEntrantes(BigDecimal idSucursalFk);
     public List<Object[]> getOperacionesCorteBy(BigDecimal idCajaFk, BigDecimal idUserFk, BigDecimal idES);
     public List<Object[]> getOperaciones(BigDecimal idCajaFk,BigDecimal idUserFk);
     public List<Object[]> getCheques(BigDecimal idCajaFk, BigDecimal idUserFk,BigDecimal idINOUT);

@@ -757,6 +757,7 @@ public class BeanBuscaCredito implements Serializable {
                     d.setIdFormaCobroFk(new BigDecimal(1));
                     d.setIdTipoD(new BigDecimal(4));
                     d.setIdLlave(ac.getIdAbonoCreditoPk());
+                    d.setIdSucursalFk(opcaja.getIdSucursalFk());
 
                     //--- Insertar Documento -- //
                     if (ifaceDocumentos.insertarDocumento(d) == 1) {
@@ -1065,6 +1066,7 @@ public class BeanBuscaCredito implements Serializable {
                         d.setBanco(ac.getBanco());
                         d.setLibrador(ac.getLibrador());
                         d.setIdFormaCobroFk(new BigDecimal(1));
+                        d.setIdSucursalFk(opcaja.getIdSucursalFk());
                         
                         BigDecimal temporal2 = dataAbonar.getTotalAbonado().add(abono.getMontoAbono(), MathContext.UNLIMITED);
                         if ((temporal2).compareTo(dataAbonar.getSaldoTotal()) >= 0) {

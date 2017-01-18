@@ -50,11 +50,11 @@ public class ServicePagosBancarios implements IfacePagosBancarios {
     }
 
     @Override
-    public ArrayList<PagosBancarios> getPagosPendientes() {
+    public ArrayList<PagosBancarios> getPagosPendientes(BigDecimal idSucursalFk) {
         getEjb();
         BigDecimal i = new BigDecimal(1);
         ArrayList<PagosBancarios> listaOperaciones = new ArrayList<PagosBancarios>();
-        List<Object[]> lstObject = ejb.getPagosPendientes();
+        List<Object[]> lstObject = ejb.getPagosPendientes(idSucursalFk);
         for (Object[] obj : lstObject) {
             PagosBancarios op = new PagosBancarios();
             op.setIdTransBancariasPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));

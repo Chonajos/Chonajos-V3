@@ -5,7 +5,6 @@
  */
 package com.web.chon.bean;
 
-import com.web.chon.dominio.Caja;
 import com.web.chon.dominio.OperacionesCaja;
 import com.web.chon.dominio.OperacionesCuentas;
 import com.web.chon.dominio.PagosBancarios;
@@ -14,11 +13,9 @@ import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceCaja;
 import com.web.chon.service.IfaceCatSucursales;
-import com.web.chon.service.IfaceConceptos;
 import com.web.chon.service.IfaceOperacionesCaja;
 import com.web.chon.service.IfaceOperacionesCuentas;
 import com.web.chon.service.IfacePagosBancarios;
-import com.web.chon.service.IfaceTiposOperacion;
 import com.web.chon.util.JsfUtil;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -43,12 +40,13 @@ public class BeanRecibirDeposito implements Serializable {
     private IfaceOperacionesCaja ifaceOperacionesCaja;
     @Autowired
     private IfacePagosBancarios ifacePagosBancarios;
-
+    @Autowired
+    private IfaceCatSucursales ifaceCatSucursales;
     @Autowired
     private PlataformaSecurityContext context;
-
     @Autowired
     private IfaceOperacionesCuentas ifaceOperacionesCuentas;
+    
     private UsuarioDominio usuario;
     private OperacionesCuentas opcuenta;
     private OperacionesCaja opcajaOrigen;
@@ -75,6 +73,8 @@ public class BeanRecibirDeposito implements Serializable {
     private static final BigDecimal statusRechazada = new BigDecimal(2);
 
     private OperacionesCaja opcaja;
+    private ArrayList<Sucursal> listaSucursales;
+    private BigDecimal idSucursalFK;
 
     @PostConstruct
     public void init() {
@@ -87,15 +87,23 @@ public class BeanRecibirDeposito implements Serializable {
         opcuenta.setIdUserFk(usuario.getIdUsuario());
         listaDepositosTransferencias = new ArrayList<PagosBancarios>();
         opcuenta.setEntradaSalida(entrada);
+        listaSucursales = new ArrayList<Sucursal>();
+        listaSucursales = ifaceCatSucursales.getSucursales();
 
         lstDespositosEntrantes = new ArrayList<OperacionesCaja>();
-        lstDespositosEntrantes = ifaceOperacionesCaja.getDepositosEntrantes();
-        listaDepositosTransferencias = ifacePagosBancarios.getPagosPendientes();
+       
         //caja = ifaceCaja.getCajaByIdUsuarioPk(usuarioDominio.getIdUsuario());
         opcaja = new OperacionesCaja();
 
         opcaja.setEntradaSalida(new BigDecimal(2));
         opcaja.setIdSucursalFk(new BigDecimal(usuario.getSucId()));
+        idSucursalFK = opcaja.getIdSucursalFk();
+        buscar();
+    }
+    public void buscar()
+    {
+        lstDespositosEntrantes = ifaceOperacionesCaja.getDepositosEntrantes(idSucursalFK);
+        listaDepositosTransferencias = ifacePagosBancarios.getPagosPendientes(idSucursalFK);
     }
 
     public void aceptarDeposito() {
@@ -124,7 +132,7 @@ public class BeanRecibirDeposito implements Serializable {
         } else {
             JsfUtil.addErrorMessageClean("1-Ocurrió un error al recibir la transferencia o depósito bancario");
         }
-        listaDepositosTransferencias = ifacePagosBancarios.getPagosPendientes();
+        buscar();
     }
 
     public void aceptar() {
@@ -136,7 +144,7 @@ public class BeanRecibirDeposito implements Serializable {
         if (ifaceOperacionesCuentas.insertaOperacion(opcuenta) == 1) {
             if (ifaceOperacionesCaja.updateStatusConcepto(data.getIdOperacionesCajaPk(), statusAprobada, data.getIdConceptoFk()) == 1) {
                 JsfUtil.addSuccessMessageClean("Se ha recibido el Depósito Correctamente");
-                lstDespositosEntrantes = ifaceOperacionesCaja.getDepositosEntrantes();
+                buscar();
             } else {
                 JsfUtil.addErrorMessageClean("Ocurrio un error al cambiar de estatus la operacion");
             }
@@ -153,7 +161,7 @@ public class BeanRecibirDeposito implements Serializable {
         opcuenta.setIdConceptoFk(data.getIdConceptoFk());
         if (ifaceOperacionesCuentas.insertaOperacion(opcuenta) == 1) {
             ifaceOperacionesCaja.updateStatusConcepto(data.getIdOperacionesCajaPk(), statusRechazada, data.getIdConceptoFk());
-            lstDespositosEntrantes = ifaceOperacionesCaja.getDepositosEntrantes();
+            buscar();
             JsfUtil.addSuccessMessageClean("Se ha rechazado el Depósito Correctamente");
         } else {
             JsfUtil.addErrorMessageClean("Ocurrió un error al rechazar el Depósito");
@@ -287,5 +295,22 @@ public class BeanRecibirDeposito implements Serializable {
     public void setData1(PagosBancarios data1) {
         this.data1 = data1;
     }
+
+    public ArrayList<Sucursal> getListaSucursales() {
+        return listaSucursales;
+    }
+
+    public void setListaSucursales(ArrayList<Sucursal> listaSucursales) {
+        this.listaSucursales = listaSucursales;
+    }
+
+    public BigDecimal getIdSucursalFK() {
+        return idSucursalFK;
+    }
+
+    public void setIdSucursalFK(BigDecimal idSucursalFK) {
+        this.idSucursalFK = idSucursalFK;
+    }
+    
 
 }

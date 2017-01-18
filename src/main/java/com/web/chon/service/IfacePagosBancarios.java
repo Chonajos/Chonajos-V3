@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public interface IfacePagosBancarios {
     public int insertaPagoBancario(PagosBancarios pb);
     public int updatePagoBancario(PagosBancarios pb);
-    public ArrayList<PagosBancarios> getPagosPendientes();
+    public ArrayList<PagosBancarios> getPagosPendientes(BigDecimal idSucursalFk);
     public PagosBancarios getByIdTipoLlave(BigDecimal idTipo, BigDecimal idLLave);
     public int getNextVal();
     
