@@ -292,7 +292,7 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
         List<Object[]> lstObject = new ArrayList<Object[]>();
         ArrayList<EntradaMercancia> lstEntradaMercancia = new ArrayList<EntradaMercancia>();
 
-        lstObject = ejb.getCarrosByIdSucursalAndIdProvedor(idSucursal, idProvedor, null);
+        lstObject = ejb.getCarrosByIdSucursalAndIdProvedor(idSucursal, idProvedor,null,null);
         for (Object[] obj : lstObject) {
 
             EntradaMercancia dominio = new EntradaMercancia();
@@ -307,7 +307,7 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
     }
 
     @Override
-    public ArrayList<CarroDetalleGeneral> getReporteGeneralCarro(BigDecimal idSucursal, BigDecimal idProvedor, BigDecimal carro, String fechaInicio, String fechaFin) {
+    public ArrayList<CarroDetalleGeneral> getReporteGeneralCarro(BigDecimal idSucursal, BigDecimal idProvedor, BigDecimal carro, String fechaInicio, String fechaFin,BigDecimal estatusCarro) {
 
         getEjb();
         
@@ -316,7 +316,7 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
         List<Object[]> lstObject = new ArrayList<Object[]>();
         ArrayList<CarroDetalleGeneral> lstCarroDetalleGeneral = new ArrayList<CarroDetalleGeneral>();
 
-        lstObject = ejb.getCarrosByIdSucursalAndIdProvedor(idSucursal, idProvedor, carro);
+        lstObject = ejb.getCarrosByIdSucursalAndIdProvedor(idSucursal, idProvedor, carro,estatusCarro);
 
         for (Object[] obj : lstObject) {
 

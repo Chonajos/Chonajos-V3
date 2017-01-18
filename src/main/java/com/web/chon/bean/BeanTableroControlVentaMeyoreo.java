@@ -83,6 +83,8 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
     private Date fechaFin;
     private Date fechaInicio;
     
+    private BigDecimal estausCarro;
+    
     @PostConstruct
     public void init() {
         
@@ -148,7 +150,7 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
         if (diasDiferencia > 90 && carroSucursal == null) {
             JsfUtil.addErrorMessage("No se puede realizar una busqueda con un intervalo de fechas mayor a 90 dias.");
         } else {
-            lstCarroDetalleGeneral = ifaceEntradaMercancia.getReporteGeneralCarro(idSucursal, idProvedor, bCarroSucursal, strFechaInicio, strFechaFin);
+            lstCarroDetalleGeneral = ifaceEntradaMercancia.getReporteGeneralCarro(idSucursal, idProvedor, bCarroSucursal, strFechaInicio, strFechaFin,estausCarro);
             calcularTotalesGeneral();
         }
         
@@ -522,5 +524,15 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
     public void setInventarioVenta(BigDecimal inventarioVenta) {
         this.inventarioVenta = inventarioVenta;
     }
+
+    public BigDecimal getEstausCarro() {
+        return estausCarro;
+    }
+
+    public void setEstausCarro(BigDecimal estausCarro) {
+        this.estausCarro = estausCarro;
+    }
+    
+    
     
 }
