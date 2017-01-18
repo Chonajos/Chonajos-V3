@@ -97,6 +97,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     private Credito c;
     private Cliente cliente;
     private Usuario usuario;
+    private Usuario vendedor;
     private ExistenciaProducto ep;
     private Subproducto subProducto;
     private VentaProductoMayoreo data;
@@ -154,6 +155,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     private BigDecimal idTipoConvenioFk;
     private BigDecimal idCarro;
     private BigDecimal idSucursalfk;
+    
 
     private Date date;
 
@@ -166,6 +168,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         cliente = ifaceCatCliente.getClienteById(1);
         ventaGeneral = new VentaMayoreo();
         usuario = new Usuario();
+        vendedor= new Usuario();
         usuarioDominio = context.getUsuarioAutenticado();
         idSucu = new BigDecimal(usuarioDominio.getSucId());
 
@@ -175,6 +178,12 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         usuario.setNombreUsuario(usuarioDominio.getUsuNombre());
         usuario.setApaternoUsuario(usuarioDominio.getUsuPaterno());
         usuario.setAmaternoUsuario(usuarioDominio.getUsuMaterno());
+        
+        vendedor.setIdUsuarioPk(usuario.getIdUsuarioPk());
+        vendedor.setNombreUsuario(usuario.getNombreUsuario());
+        vendedor.setApaternoUsuario(usuario.getApaternoUsuario());
+        vendedor.setAmaternoUsuario(usuario.getAmaternoUsuario());
+        
 
         totalVentaGeneral = new BigDecimal(0);
         data = new VentaProductoMayoreo();
@@ -369,7 +378,8 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                     ventaGeneral.setIdtipoVentaFk(data.getIdTipoVenta());
                     ventaGeneral.setIdClienteFk(cliente.getId_cliente());
                     ventaGeneral.setIdSucursalFk(idSucu);
-                    ventaGeneral.setIdVendedorFK(usuario.getIdUsuarioPk());
+                    ventaGeneral.setIdVendedorFK(vendedor.getIdUsuarioPk());
+                    ventaGeneral.setIdUsuarioLogueadoFk(usuario.getIdUsuarioPk());
                     int folioMayoreo = 0;
                     int folioMenudeo = 0;
                     folioMayoreo = ifaceVentaMayoreo.getVentaSucursal(idSucu);
@@ -1460,5 +1470,14 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     public void setShoMessageKiloPromedio(boolean shoMessageKiloPromedio) {
         this.shoMessageKiloPromedio = shoMessageKiloPromedio;
     }
+
+    public Usuario getVendedor() {
+        return vendedor;
+    }
+
+    public void setVendedor(Usuario vendedor) {
+        this.vendedor = vendedor;
+    }
+    
 
 }

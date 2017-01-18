@@ -161,12 +161,16 @@
                             <p:column headerText="Tipo de Venta" width="120px;" class="alignCenter">
                                 <h:outputText value="#{model.descripcionTipoVenta}"/>
                             </p:column>
-                            <p:column headerText="Cliente" width="250px;" class="alignLeft">
+                            <p:column headerText="Cliente" width="200px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreCliente}" />
                             </p:column>
-                            <p:column headerText="Vendedor" width="250px;" class="alignLeft">
+                            <p:column headerText="Usuario Logueado" width="200px;" class="alignLeft">
+                                <h:outputText value="#{model.nombreUsuarioLogueado}" />
+                            </p:column>
+                            <p:column headerText="Vendedor" width="200px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreVendedor}" />
                             </p:column>
+                            
                             <p:column headerText="Total de Venta" width="120px;" class="alignRight">
                                 <h:outputText value="#{model.totalVenta}">
                                     <f:convertNumber type="currency" currencySymbol="$" />
@@ -190,6 +194,7 @@
 
                             <p:columnGroup type="footer">
 
+                                <p:column colspan="1" />
                                 <p:column colspan="1" />
                                 <p:column colspan="1" />
                                 <p:column colspan="1" />

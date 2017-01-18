@@ -24,7 +24,7 @@ public class EjbVentaMayoreo implements NegocioVentaMayoreo {
 
     @Override
     public int insertarVenta(VentaMayoreo venta) {
-        Query query = em.createNativeQuery("INSERT INTO VENTA_MAYOREO(ID_VENTA_MAYOREO_PK,ID_CLIENTE_FK,ID_VENDEDOR_FK,FECHA_VENTA,ID_SUCURSAL_FK,ID_TIPO_VENTA_FK,ID_STATUS_FK,VENTASUCURSAL) VALUES(?,?,?,sysdate,?,?,?,?)");
+        Query query = em.createNativeQuery("INSERT INTO VENTA_MAYOREO(ID_VENTA_MAYOREO_PK,ID_CLIENTE_FK,ID_VENDEDOR_FK,FECHA_VENTA,ID_SUCURSAL_FK,ID_TIPO_VENTA_FK,ID_STATUS_FK,VENTASUCURSAL,ID_USUARIOLOG_FK) VALUES(?,?,?,sysdate,?,?,?,?,?)");
         query.setParameter(1, venta.getIdVentaMayoreoPk());
         query.setParameter(2, venta.getIdClienteFk());
         query.setParameter(3, venta.getIdVendedorFK());
@@ -32,6 +32,7 @@ public class EjbVentaMayoreo implements NegocioVentaMayoreo {
         query.setParameter(5, venta.getIdtipoVentaFk());
         query.setParameter(6, venta.getIdStatusFk());
         query.setParameter(7, venta.getVentaSucursal());
+        query.setParameter(8, venta.getIdUsuarioLogueadoFk());
         return query.executeUpdate();
     }
 
@@ -54,9 +55,10 @@ public class EjbVentaMayoreo implements NegocioVentaMayoreo {
                 + " (select SUM((emp.KILOSPROMPROD*emp.CONVENIO*vmp.CANTIDAD_EMPAQUE)) AS COSTO_VENTA from VENTA_MAYOREO VENC "
                 + " inner join VENTAMAYOREOPRODUCTO vmp on vmp.ID_VENTA_MAYOREO_FK = VENC.ID_VENTA_MAYOREO_PK "
                 + " inner join EXISTENCIA_PRODUCTO exp on exp.ID_EXP_PK = vmp.ID_EXISTENCIA_FK "
-                + " inner join ENTRADAMERCANCIAPRODUCTO emp on emp.ID_EMP_PK = exp.ID_EMP_FK where VENC.ID_VENTA_MAYOREO_PK =ven.ID_VENTA_MAYOREO_PK)AS COSTO_TOTAL FROM VENTA_MAYOREO ven "
+                + " inner join ENTRADAMERCANCIAPRODUCTO emp on emp.ID_EMP_PK = exp.ID_EMP_FK where VENC.ID_VENTA_MAYOREO_PK =ven.ID_VENTA_MAYOREO_PK)AS COSTO_TOTAL,(U.NOMBRE_USUARIO||' '||U.APATERNO_USUARIO ||' '||U.AMATERNO_USUARIO ) AS usuario FROM VENTA_MAYOREO ven "
                 + " INNER JOIN CLIENTE CLI ON CLI.ID_CLIENTE = ven.ID_CLIENTE_FK "
                 + " INNER JOIN USUARIO USU ON USU.ID_USUARIO_PK = ven.ID_VENDEDOR_FK "
+                + " INNER JOIN USUARIO U ON U.ID_USUARIO_PK = ven.ID_USUARIOLOG_FK "
                 + " INNER JOIN TIPO_VENTA TV ON TV.ID_TIPO_VENTA_PK = ven.ID_TIPO_VENTA_FK ");
 
         if (idSubProducto != null && !idSubProducto.equals("")) {

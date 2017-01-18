@@ -115,6 +115,7 @@ public class BeanVenta implements Serializable, BeanSimple {
     private Credito c;
     private Venta venta;
     private Usuario usuario;
+    private Usuario vendedor;
     private Cliente cliente;
     private VentaProducto data;
     private VentaProducto dataEdit;
@@ -162,6 +163,7 @@ public class BeanVenta implements Serializable, BeanSimple {
         logger.info("Se inicializa el bean : " + BeanVenta.class);
         venta = new Venta();
         usuario = new Usuario();
+        vendedor = new Usuario();
 
         max = new BigDecimal(0);
         min = new BigDecimal(0);
@@ -180,6 +182,10 @@ public class BeanVenta implements Serializable, BeanSimple {
         usuario.setNombreUsuario(usuarioDominio.getUsuNombre());
         usuario.setApaternoUsuario(usuarioDominio.getUsuPaterno());
         usuario.setAmaternoUsuario(usuarioDominio.getUsuMaterno());
+        vendedor.setIdUsuarioPk(usuario.getIdUsuarioPk());
+        vendedor.setNombreUsuario(usuario.getNombreUsuario());
+        vendedor.setApaternoUsuario(usuario.getApaternoUsuario());
+        vendedor.setAmaternoUsuario(usuario.getAmaternoUsuario());
 
         lstTipoVenta = ifaceTipoVenta.getAll();
         cliente = new Cliente();
@@ -348,7 +354,9 @@ public class BeanVenta implements Serializable, BeanSimple {
 
                 venta.setIdVentaPk(new BigDecimal(idVenta));
                 venta.setIdClienteFk(cliente.getId_cliente());
-                venta.setIdVendedorFk(usuario.getIdUsuarioPk());
+                
+                venta.setIdVendedorFk(vendedor.getIdUsuarioPk());
+                venta.setIdUsuarioLogueadoFk(usuario.getIdUsuarioPk());
                 venta.setIdSucursal(idSucu);
                 venta.setTipoVenta(data.getIdTipoVentaFk());
 
@@ -1285,5 +1293,14 @@ public class BeanVenta implements Serializable, BeanSimple {
     public void setCodigoBarras(String codigoBarras) {
         this.codigoBarras = codigoBarras;
     }
+
+    public Usuario getVendedor() {
+        return vendedor;
+    }
+
+    public void setVendedor(Usuario vendedor) {
+        this.vendedor = vendedor;
+    }
+    
 
 }

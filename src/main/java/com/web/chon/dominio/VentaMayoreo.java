@@ -31,8 +31,6 @@ public class VentaMayoreo implements Serializable {
     private Date fechaCancelacion;
     private BigDecimal idCancelUser;
     private BigDecimal totalVenta;
-    ;
-    
     private String nombreCliente;
     private String nombreVendedor;
     private String nombreTipoVenta;
@@ -40,6 +38,8 @@ public class VentaMayoreo implements Serializable {
     private String comentariosCancel;
     private ArrayList<VentaProductoMayoreo> listaProductos;
     private BigDecimal ganciaVenta;
+    private BigDecimal idUsuarioLogueadoFk;
+    private String nombreUsuarioLogueado;
 
     @Override
     public String toString() {
@@ -47,6 +47,8 @@ public class VentaMayoreo implements Serializable {
     }
 
     public void reset() {
+        idUsuarioLogueadoFk=null;
+        nombreUsuarioLogueado=null;
         idVentaMayoreoPk = null;
         idClienteFk = null;
         idVendedorFK = null;
@@ -69,6 +71,23 @@ public class VentaMayoreo implements Serializable {
         listaProductos = null;
         ganciaVenta = null;
     }
+
+    public BigDecimal getIdUsuarioLogueadoFk() {
+        return idUsuarioLogueadoFk;
+    }
+
+    public void setIdUsuarioLogueadoFk(BigDecimal idUsuarioLogueadoFk) {
+        this.idUsuarioLogueadoFk = idUsuarioLogueadoFk;
+    }
+
+    public String getNombreUsuarioLogueado() {
+        return nombreUsuarioLogueado;
+    }
+
+    public void setNombreUsuarioLogueado(String nombreUsuarioLogueado) {
+        this.nombreUsuarioLogueado = nombreUsuarioLogueado;
+    }
+    
 
     public BigDecimal getVentaSucursal() {
         return ventaSucursal;

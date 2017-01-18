@@ -71,7 +71,7 @@
                         <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="autocompleteVendedor" value ="Vendedor:" /> 
                             <p:autoComplete  placeholder="Seleccione un Vendedor" id="autocompleteVendedor"  required="true" requiredMessage="Ingresa un valor para el campo Vendedor." styleClass="autocomplete-input-text-media"
-                                             value="#{beanVentaMayoreo.usuario}" completeMethod="#{beanVentaMayoreo.autoCompleteVendedor}" forceSelection="true" var="usuario"  inputStyle="width: 180px"
+                                             value="#{beanVentaMayoreo.vendedor}" completeMethod="#{beanVentaMayoreo.autoCompleteVendedor}" forceSelection="true" var="usuario"  inputStyle="width: 180px"
                                              itemLabel="#{usuario.nombreCompletoUsuario}"
                                              itemValue="#{usuario.idUsuarioPk}" converter="#{usuarioConverter}">
                                 <p:ajax event="itemSelect" update="@this"  />

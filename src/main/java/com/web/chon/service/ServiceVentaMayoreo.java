@@ -80,12 +80,15 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
             venta.setIdCajeroFk(obj[10] == null ? null : new BigDecimal(obj[10].toString()));
             venta.setIdCancelUser(obj[11] == null ? null : new BigDecimal(obj[11].toString()));
             venta.setFechaCancelacion((Date) obj[12]);
-            venta.setNombreCliente(obj[13] == null ? "" : obj[13].toString());
-            venta.setNombreCliente(obj[14].toString());
-            venta.setNombreVendedor(obj[15].toString());
-            venta.setTotalVenta(obj[16] == null ? new BigDecimal(0) : new BigDecimal(obj[16].toString()));
-            venta.setNombreTipoVenta(obj[17].toString());
-            ganacias = obj[18] == null ? new BigDecimal(0) : new BigDecimal(obj[18].toString());
+            venta.setComentariosCancel(obj[13] == null ? "" : obj[13].toString());
+            
+            venta.setIdUsuarioLogueadoFk(obj[14] == null ? new BigDecimal(0) : new BigDecimal(obj[14].toString()));
+            venta.setNombreCliente(obj[15] == null ? "" : obj[15].toString());
+            venta.setNombreVendedor(obj[16].toString());
+            venta.setTotalVenta(obj[17] == null ? new BigDecimal(0) : new BigDecimal(obj[17].toString()));
+            venta.setNombreTipoVenta(obj[18].toString());
+            ganacias = obj[19] == null ? new BigDecimal(0) : new BigDecimal(obj[19].toString());
+            venta.setNombreUsuarioLogueado(obj[20] == null ? "" : obj[20].toString());
             venta.setGanciaVenta(venta.getTotalVenta().subtract(ganacias));
             venta.setListaProductos(ifaceVentaMayoreoProducto.getProductosbyIdVmFk(venta.getIdVentaMayoreoPk()));
             lstVenta.add(venta);

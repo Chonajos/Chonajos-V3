@@ -36,6 +36,8 @@ public class Venta implements Serializable {
     private ArrayList<VentaProducto> lstVentaProducto;
     private BigDecimal tipoVenta;
     private String descripcionTipoVenta;
+    private BigDecimal idUsuarioLogueadoFk;
+    private String nombreUsuarioLogueado;
     
     //Variables para creditos
     private BigDecimal idTipoVenta;
@@ -51,6 +53,24 @@ public class Venta implements Serializable {
         return "Venta{" + "idVentaPk=" + idVentaPk + ", fechaVenta=" + fechaVenta + ", fechaPromesaPago=" + fechaPromesaPago + ", idClienteFk=" + idClienteFk + ", idSucursal=" + idSucursal + ", idVendedorFk=" + idVendedorFk + ", nombrestatus=" + nombrestatus + ", fechaPago=" + fechaPago + ", nombreCliente=" + nombreCliente + ", nombreVendedor=" + nombreVendedor + ", totalVenta=" + totalVenta + ", folio=" + folio + ", idStatusVenta=" + idStatusVenta + ", count=" + count + ", nombreSucursal=" + nombreSucursal + ", nombreEstatus=" + nombreEstatus + ", lstVentaProducto=" + lstVentaProducto + ", tipoVenta=" + tipoVenta + ", descripcionTipoVenta=" + descripcionTipoVenta + ", idTipoVenta=" + idTipoVenta + ", idCredito=" + idCredito + ", fechaPromesaPagoCredito=" + fechaPromesaPagoCredito + ", montoCredito=" + montoCredito + ", numeroPagos=" + numeroPagos + ", plazos=" + plazos + ", aCuenta=" + aCuenta + '}';
     }
 
+    public String getNombreUsuarioLogueado() {
+        return nombreUsuarioLogueado;
+    }
+
+    public void setNombreUsuarioLogueado(String nombreUsuarioLogueado) {
+        this.nombreUsuarioLogueado = nombreUsuarioLogueado;
+    }
+    
+
+    public BigDecimal getIdUsuarioLogueadoFk() {
+        return idUsuarioLogueadoFk;
+    }
+
+    public void setIdUsuarioLogueadoFk(BigDecimal idUsuarioLogueadoFk) {
+        this.idUsuarioLogueadoFk = idUsuarioLogueadoFk;
+    }
+
+    
     public BigDecimal getIdVentaPk() {
         return idVentaPk;
     }

@@ -25,14 +25,16 @@ public class EjbVenta implements NegocioVenta {
 
     @Override
     public int insertarVenta(Venta venta, int folioVenta) {
-        Query query = em.createNativeQuery("INSERT INTO VENTA(ID_VENTA_PK,FECHA_VENTA,ID_CLIENTE_FK,ID_VENDEDOR_FK,STATUS_FK,ID_SUCURSAL_FK,FOLIO_SUCURSAL,TIPO_VENTA) VALUES(?,sysdate,?,?,1,?,?,?)");
-        System.out.println("venta ejb :" + venta.toString());
+        Query query = em.createNativeQuery("INSERT INTO VENTA(ID_VENTA_PK,FECHA_VENTA,ID_CLIENTE_FK,ID_VENDEDOR_FK,STATUS_FK,ID_SUCURSAL_FK,FOLIO_SUCURSAL,TIPO_VENTA,ID_USUARIOLOG_FK) VALUES(?,sysdate,?,?,1,?,?,?,?)");
+        
         query.setParameter(1, venta.getIdVentaPk());
         query.setParameter(2, venta.getIdClienteFk());
         query.setParameter(3, venta.getIdVendedorFk());
         query.setParameter(4, venta.getIdSucursal());
         query.setParameter(5, folioVenta);
         query.setParameter(6, venta.getTipoVenta());
+        query.setParameter(7, venta.getIdUsuarioLogueadoFk());
+        
         return query.executeUpdate();
     }
 
@@ -54,13 +56,14 @@ public class EjbVenta implements NegocioVenta {
                 + "  USU.ID_SUCURSAL_FK, "
                 + "  (CLI.NOMBRE||' '||CLI.APELLIDO_PATERNO ||' '||CLI.APELLIDO_MATERNO ) AS CLIENTE, "
                 + "  (USU.NOMBRE_USUARIO||' '||USU.APATERNO_USUARIO ||' '||USU.AMATERNO_USUARIO ) AS VENDEDOR, "
-                + "  (select NVL(sum(VTP.TOTAL_VENTA),0) "
+                + "  (select NVL(sum(VTP.TOTAL_VENTA),0)"
                 + "  FROM VENTA_PRODUCTO VTP WHERE VTP.ID_VENTA_FK =ven.ID_VENTA_PK) "
                 + "  AS TOTAL_VENTA,FOLIO_SUCURSAL,sucu.NOMBRE_SUCURSAL, sv.NOMBRE_STATUS,ven.TIPO_VENTA, "
                 + "  C.ID_CREDITO_PK,C.FECHA_PROMESA_FIN_PAGO,C.MONTO_CREDITO,C.NUMERO_PAGOS,C.PLAZOS,C.ACUENTA "
-                + "  FROM VENTA ven "
+                + "  , (U.NOMBRE_USUARIO||' '||U.APATERNO_USUARIO ||' '||U.AMATERNO_USUARIO ) AS LOGUEADO  FROM VENTA ven "
                 + "  INNER JOIN CLIENTE CLI ON CLI.ID_CLIENTE = ven.ID_CLIENTE_FK "
                 + "  INNER JOIN USUARIO USU ON USU.ID_USUARIO_PK = ven.ID_VENDEDOR_FK "
+                + "  INNER join usuario u on u.ID_USUARIO_PK= ven.ID_USUARIOLOG_FK"
                 + "  INNER JOIN SUCURSAL sucu on sucu.ID_SUCURSAL_PK = ven.ID_SUCURSAL_FK "
                 + "  INNER JOIN STATUS_VENTA sv on sv.ID_STATUS_PK = ven.STATUS_FK "
                 + "  LEFT JOIN CREDITO C ON C.ID_VENTA_MENUDEO = ven.ID_VENTA_PK");

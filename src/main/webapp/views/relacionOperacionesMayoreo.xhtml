@@ -150,10 +150,13 @@
                                 <h:outputText value="#{model.nombreTipoVenta}">
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Cliente" width="190px;" class="alignLeft">
+                            <p:column headerText="Cliente" width="150px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreCliente}" />
                             </p:column>
-                            <p:column headerText="Vendedor" width="190px;" class="alignLeft">
+                            <p:column headerText="Usuario Logueado" width="150px;" class="alignLeft">
+                                <h:outputText value="#{model.nombreUsuarioLogueado}" />
+                            </p:column>
+                            <p:column headerText="Vendedor" width="150px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreVendedor}" />
                             </p:column>
                             <p:column headerText="Total de Venta" width="115px;" class="alignRight">
