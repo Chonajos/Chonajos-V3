@@ -461,6 +461,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
                 d.setBanco(banco);
                 d.setLibrador(librador);
                 d.setIdFormaCobroFk(new BigDecimal(1));
+                d.setIdSucursalFk(opcaja.getIdSucursalFk());
                 System.out.println("Documento: " + d.toString());
                 //--- Insertar Documento -- //
                 if (ifaceDocumentos.insertarDocumento(d) == 1) {
@@ -488,6 +489,8 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
             pagoBancario.setIdOperacionCajaFk(opcaja.getIdOperacionesCajaPk());
             pagoBancario.setIdTipoTD(new BigDecimal(3));
             pagoBancario.setIdLlaveFk(ventaMayoreo.getIdVentaMayoreoPk());
+            
+           
 
             System.out.println("Pago Bancario Bean Busca Venta Mayoreo: " + pagoBancario.toString());
             if (idTipoPagoFk.intValue() == 2 || idTipoPagoFk.intValue() == 4) {
