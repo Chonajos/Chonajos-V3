@@ -25,9 +25,8 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
 
     @Override
     public int insertEntradaMercancia(EntradaMercancia entrada) {
-        //System.out.println("EJB_INSERTA_ENTRADAMERCANCIA");
+
         try {
-            System.out.println("Entrada: " + entrada.toString());
             Query query = em.createNativeQuery("INSERT INTO ENTRADAMERCANCIA (ID_EM_PK,ID_PROVEDOR_FK,MOVIMIENTO,"
                     + "FECHA,REMISION,ID_SUCURSAL_FK,IDENTIFICADOR,ID_STATUS_FK,KILOSTOTALES,KILOSTOTALESPROVEDOR,"
                     + "COMENTARIOS,FECHAREMISION,CARROSUCURSAL,ID_USUARIO_FK,CANTIDADTOTAL,CANTIDADTOTALPROVEDOR,"
@@ -174,9 +173,7 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
     @Override
     public int updateEntradaMercancia(EntradaMercancia entrada) {
 
-        System.out.println("------------------EJB_UPDATE_ENTRADAMERCANCIA---------------------");
         try {
-            System.out.println("Entrada: " + entrada);
             Query query = em.createNativeQuery("UPDATE ENTRADAMERCANCIA SET ID_PROVEDOR_FK=?,MOVIMIENTO=?,"
                     + "FECHA=?,REMISION=?,ID_SUCURSAL_FK=?,IDENTIFICADOR=?,ID_STATUS_FK=?,KILOSTOTALES=?,KILOSTOTALESPROVEDOR=?,"
                     + "COMENTARIOS=?,FECHAREMISION=?,ID_USUARIO_FK=?,CARROSUCURSAL=?,CANTIDADTOTAL=? WHERE ID_EM_PK = ?");
@@ -206,7 +203,6 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
 
     @Override
     public List<Object[]> getEntradaByIdEmPFk(BigDecimal idEmPFk) {
-        //System.out.println("EJB_getEntradaByIdEmPFk: "+idEmPFk);
         Query query = em.createNativeQuery("select em.* from ENTRADAMERCANCIA em "
                 + "inner join ENTRADAMERCANCIAPRODUCTO emp on emp.ID_EM_FK = em.ID_EM_PK\n"
                 + "where emp.ID_EMP_PK= ? ");
@@ -217,7 +213,6 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
 
     @Override
     public List<Object[]> getEntradaByIdPk(BigDecimal idPk) {
-        //System.out.println("EJB_getEntradaByIdPkk: "+idPk);
         Query query = em.createNativeQuery("select em.* from ENTRADAMERCANCIA em "
                 + "where em.ID_EM_PK = ?");
         query.setParameter(1, idPk);

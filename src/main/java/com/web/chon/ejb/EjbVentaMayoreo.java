@@ -58,7 +58,7 @@ public class EjbVentaMayoreo implements NegocioVentaMayoreo {
                 + " inner join ENTRADAMERCANCIAPRODUCTO emp on emp.ID_EMP_PK = exp.ID_EMP_FK where VENC.ID_VENTA_MAYOREO_PK =ven.ID_VENTA_MAYOREO_PK)AS COSTO_TOTAL,(U.NOMBRE_USUARIO||' '||U.APATERNO_USUARIO ||' '||U.AMATERNO_USUARIO ) AS usuario FROM VENTA_MAYOREO ven "
                 + " INNER JOIN CLIENTE CLI ON CLI.ID_CLIENTE = ven.ID_CLIENTE_FK "
                 + " INNER JOIN USUARIO USU ON USU.ID_USUARIO_PK = ven.ID_VENDEDOR_FK "
-                + " INNER JOIN USUARIO U ON U.ID_USUARIO_PK = ven.ID_USUARIOLOG_FK "
+                + " LEFT JOIN USUARIO U ON U.ID_USUARIO_PK = ven.ID_USUARIOLOG_FK "
                 + " INNER JOIN TIPO_VENTA TV ON TV.ID_TIPO_VENTA_PK = ven.ID_TIPO_VENTA_FK ");
 
         if (idSubProducto != null && !idSubProducto.equals("")) {

@@ -63,7 +63,7 @@ public class EjbVenta implements NegocioVenta {
                 + "  , (U.NOMBRE_USUARIO||' '||U.APATERNO_USUARIO ||' '||U.AMATERNO_USUARIO ) AS LOGUEADO  FROM VENTA ven "
                 + "  INNER JOIN CLIENTE CLI ON CLI.ID_CLIENTE = ven.ID_CLIENTE_FK "
                 + "  INNER JOIN USUARIO USU ON USU.ID_USUARIO_PK = ven.ID_VENDEDOR_FK "
-                + "  INNER join usuario u on u.ID_USUARIO_PK= ven.ID_USUARIOLOG_FK"
+                + "  LEFT join usuario u on u.ID_USUARIO_PK= ven.ID_USUARIOLOG_FK"
                 + "  INNER JOIN SUCURSAL sucu on sucu.ID_SUCURSAL_PK = ven.ID_SUCURSAL_FK "
                 + "  INNER JOIN STATUS_VENTA sv on sv.ID_STATUS_PK = ven.STATUS_FK "
                 + "  LEFT JOIN CREDITO C ON C.ID_VENTA_MENUDEO = ven.ID_VENTA_PK");

@@ -1,7 +1,4 @@
-
 package com.web.chon.ejb;
-
-
 
 import com.web.chon.dominio.TipoEmpaque;
 import com.web.chon.negocio.NegocioEmpaque;
@@ -15,14 +12,13 @@ import javax.persistence.Query;
 
 /**
  *
- * @author juan
+ * @author Juan de la Cruz
  */
 @Stateless(mappedName = "ejbEmpaque")
 public class EjbEmpaque implements NegocioEmpaque {
 
     @PersistenceContext(unitName = "persistenceJR")
     EntityManager em;
- 
 
     @Override
     public List<Object[]> getEmpaques() {
@@ -53,7 +49,7 @@ public class EjbEmpaque implements NegocioEmpaque {
             Logger.getLogger(EjbEmpaque.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
-    
+
     }
 
     @Override
@@ -63,24 +59,21 @@ public class EjbEmpaque implements NegocioEmpaque {
             Query query = em.createNativeQuery("INSERT INTO TIPO_EMPAQUE (ID_TIPO_EMPAQUE_PK,NOMBRE_EMPAQUE,ESTATUS_EMPAQUE) values(S_TIPO_EMPAQUE.NextVal,?,1)");
             query.setParameter(1, tipoEmpaque.getNombreEmpaque());
 
-
             return query.executeUpdate();
 
         } catch (Exception ex) {
             Logger.getLogger(EjbEmpaque.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
-        
+
     }
 
     @Override
     public int updateEmpaque(TipoEmpaque tipoEmpaque) {
         try {
-
-            System.out.println("ejb update :"+tipoEmpaque.getNombreEmpaque());
             Query query = em.createNativeQuery("UPDATE TIPO_EMPAQUE SET NOMBRE_EMPAQUE = ?,ESTATUS_EMPAQUE = ?  WHERE ID_TIPO_EMPAQUE_PK = ?");
             query.setParameter(1, tipoEmpaque.getNombreEmpaque());
-            query.setParameter(2, tipoEmpaque.isEstatus() == true ? "1":"0");
+            query.setParameter(2, tipoEmpaque.isEstatus() == true ? "1" : "0");
             query.setParameter(3, tipoEmpaque.getIdTipoEmpaquePk());
 
             return query.executeUpdate();
@@ -93,24 +86,16 @@ public class EjbEmpaque implements NegocioEmpaque {
 
     @Override
     public Object getEmpaqueByIdEmpaque(int idEmpaque) {
-        System.out.println("ejb get empaque by id"+ idEmpaque);
         try {
-           
+
             Query query = em.createNativeQuery("SELECT * FROM TIPO_EMPAQUE WHERE ID_TIPO_EMPAQUE_PK = ?");
             query.setParameter(1, idEmpaque);
             return query.getSingleResult();
-            
 
-        } catch (Exception ex) 
-        {
-            
+        } catch (Exception ex) {
             Logger.getLogger(EjbEmpaque.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
     }
 
-  
-    
-    
-    
 }

@@ -12,7 +12,7 @@ import javax.persistence.Query;
 
 /**
  *
- * @author juan
+ * @author Juan de la Cruz
  */
 @Stateless(mappedName = "ejbCatUsuario")
 public class EjbCatUsuario implements NegocioCatUsuario {
@@ -26,7 +26,7 @@ public class EjbCatUsuario implements NegocioCatUsuario {
 
             System.out.println("EJB_GET");
 
-            Query query = em.createNativeQuery("SELECT * FROM USUARIO");
+            Query query = em.createNativeQuery("SELECT ID_USUARIO_PK,NOMBRE_USUARIO,APATERNO_USUARIO,AMATERNO_USUARIO,CONTRASENA_USUARIO,RFC_USUARIO,CLAVE_USUARIO,ID_ROL_FK,ID_SUCURSAL_FK,STATUS FROM USUARIO");
             List<Object[]> resultList = null;
             resultList = query.getResultList();
 
@@ -56,8 +56,7 @@ public class EjbCatUsuario implements NegocioCatUsuario {
     public int deleteUsuario(int idUsuario) {
         try {
 
-            System.out.println("Id Usuario a eliminar: " + idUsuario);
-            Query query = em.createNativeQuery("DELETE Usuario WHERE ID_USUARIO_PK = ?");
+            Query query = em.createNativeQuery("UPDATE Usuario SET STATUS = 2 WHERE ID_USUARIO_PK = ?");
             query.setParameter(1, idUsuario);
 
             return query.executeUpdate();
@@ -72,8 +71,6 @@ public class EjbCatUsuario implements NegocioCatUsuario {
     public int updateUsuario(Usuario usuario) {
 
         try {
-
-            System.out.println("Usuario a modificar :" + usuario.getNombreUsuario() + " desc " + usuario.getRfcUsuario() + " " + usuario.getIdUsuarioPk().intValue());
             Query query = em.createNativeQuery("UPDATE Usuario SET NOMBRE_USUARIO = ?, APATERNO_USUARIO = ?, AMATERNO_USUARIO = ?, "
                     + "CLAVE_USUARIO = ?, CONTRASENA_USUARIO = ?, RFC_USUARIO = ?, ID_ROL_FK = ?,ID_SUCURSAL_FK = ? WHERE ID_USUARIO_PK = ? ");
             query.setParameter(1, usuario.getNombreUsuario());
@@ -97,7 +94,6 @@ public class EjbCatUsuario implements NegocioCatUsuario {
 
     @Override
     public int insertUsuario(Usuario usuario) {
-        System.out.println("ejb");
         try {
 
             Query querySel = em.createNativeQuery("SELECT CLAVE_USUARIO FROM USUARIO WHERE CLAVE_USUARIO = '" + usuario.getClaveUsuario() + "' ");
@@ -108,7 +104,7 @@ public class EjbCatUsuario implements NegocioCatUsuario {
             if (resultList.isEmpty()) {
 
                 Query query = em.createNativeQuery("INSERT INTO USUARIO (ID_USUARIO_PK,NOMBRE_USUARIO, APATERNO_USUARIO, AMATERNO_USUARIO, "
-                        + "CLAVE_USUARIO, CONTRASENA_USUARIO, RFC_USUARIO,ID_ROL_FK,ID_SUCURSAL_FK) VALUES (S_USUARIO.NextVal,?,?,?,?,?,?,?,?)");
+                        + "CLAVE_USUARIO, CONTRASENA_USUARIO, RFC_USUARIO,ID_ROL_FK,ID_SUCURSAL_FK,STATUS,FECHA_ALTA_USUARIO) VALUES (S_USUARIO.NextVal,?,?,?,?,?,?,?,?,1,?)");
                 query.setParameter(1, usuario.getNombreUsuario());
                 query.setParameter(2, usuario.getApaternoUsuario());
                 query.setParameter(3, usuario.getAmaternoUsuario());
@@ -117,6 +113,7 @@ public class EjbCatUsuario implements NegocioCatUsuario {
                 query.setParameter(6, usuario.getRfcUsuario());
                 query.setParameter(7, usuario.getIdRolFk());
                 query.setParameter(8, usuario.getIdSucursal() == -1 ? null : usuario.getIdSucursal());
+                query.setParameter(9, usuario.getFechaAltaUsuario());
 
                 return query.executeUpdate();
 
@@ -142,10 +139,11 @@ public class EjbCatUsuario implements NegocioCatUsuario {
         Query query;
 
         //se comento  and ID_ROL_FK = 2 para filtro por rol vendedor TODO FIXME
+        //ESTATUS 1 SOLO ACTIVOS
         if (idSucursal == 0) {
-            query = em.createNativeQuery("SELECT * FROM USUARIO WHERE UPPER(NOMBRE_USUARIO ||' '|| APATERNO_USUARIO ||' '|| AMATERNO_USUARIO )  LIKE UPPER('%" + nombreUsuario + "%') ");
+            query = em.createNativeQuery("SELECT * FROM USUARIO WHERE UPPER(NOMBRE_USUARIO ||' '|| APATERNO_USUARIO ||' '|| AMATERNO_USUARIO )  LIKE UPPER('%" + nombreUsuario + "%') AND STATUS = 1");
         } else {
-            query = em.createNativeQuery("SELECT * FROM USUARIO WHERE UPPER(NOMBRE_USUARIO ||' '|| APATERNO_USUARIO ||' '|| AMATERNO_USUARIO )  LIKE UPPER('%" + nombreUsuario + "%') and id_sucursal_fk = ?");
+            query = em.createNativeQuery("SELECT * FROM USUARIO WHERE UPPER(NOMBRE_USUARIO ||' '|| APATERNO_USUARIO ||' '|| AMATERNO_USUARIO )  LIKE UPPER('%" + nombreUsuario + "%') and id_sucursal_fk = ? AND STATUS = 1");
             query.setParameter(1, idSucursal);
         }
 
@@ -158,10 +156,10 @@ public class EjbCatUsuario implements NegocioCatUsuario {
             Query query;
 
             if (idSucursal == 0) {
-                query = em.createNativeQuery("SELECT * FROM Usuario WHERE TRIM(CLAVE_USUARIO) = ?");
+                query = em.createNativeQuery("SELECT * FROM Usuario WHERE TRIM(CLAVE_USUARIO) = ? AND STATUS = 1");
                 query.setParameter(1, clave.trim());
             } else {
-                query = em.createNativeQuery("SELECT * FROM Usuario WHERE TRIM(CLAVE_USUARIO) = ? AND id_sucursal_fk = ?");
+                query = em.createNativeQuery("SELECT * FROM Usuario WHERE TRIM(CLAVE_USUARIO) = ? AND id_sucursal_fk = ? AND STATUS = 1");
                 query.setParameter(1, clave.trim());
                 query.setParameter(2, idSucursal);
             }
@@ -176,12 +174,10 @@ public class EjbCatUsuario implements NegocioCatUsuario {
 
     @Override
     public List<Object[]> getUsuariosbyIdSucursal(int idSucursal) {
-        
+
         try {
 
-            System.out.println("EJB_GET");
-
-            Query query = em.createNativeQuery("SELECT * FROM USUARIO where ID_SUCURSAL_FK = ?");
+            Query query = em.createNativeQuery("SELECT * FROM USUARIO where ID_SUCURSAL_FK = ? AND STATUS = 1");
             query.setParameter(1, idSucursal);
             List<Object[]> resultList = null;
             resultList = query.getResultList();
@@ -192,7 +188,7 @@ public class EjbCatUsuario implements NegocioCatUsuario {
             Logger.getLogger(EjbCatUsuario.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
-    
+
     }
 
 }

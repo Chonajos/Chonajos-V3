@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.web.chon.ejb;
 
 import com.web.chon.dominio.Competidor;
@@ -18,36 +13,36 @@ import javax.persistence.Query;
 
 /**
  *
- * @author marcogante
+ * @author
  */
 @Stateless(mappedName = "ejbCompetidores")
-public class EjbCompetidores implements NegocioCompetidor{
+public class EjbCompetidores implements NegocioCompetidor {
+
     @PersistenceContext(unitName = "persistenceJR")
     EntityManager em;
 
     @Override
     public List<Object[]> getCometidores() {
-       try {
+        try {
             Query query = em.createNativeQuery("select * from COMPETIDOR ");
             return query.getResultList();
         } catch (Exception ex) {
             Logger.getLogger(EjbCompetidores.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
-        
+
     }
 
     @Override
     public int getNextVal() {
-       Query query = em.createNativeQuery("SELECT s_COMPETIDOR.nextVal FROM DUAL");
+        Query query = em.createNativeQuery("SELECT s_COMPETIDOR.nextVal FROM DUAL");
         return Integer.parseInt(query.getSingleResult().toString());
     }
 
     @Override
     public int insertCompetidor(Competidor c) {
-       System.out.println("EJB_INSERTA_Competidor======"+c.toString());
         try {
-            
+
             Query query = em.createNativeQuery("INSERT INTO COMPETIDOR (ID_COMPETIDOR_PK,NOMBRE_COMPETIDOR,UBICACION)VALUES (?,?,?)");
             query.setParameter(1, c.getIdCompetidorPk());
             query.setParameter(2, c.getNombreCompetidor());
@@ -82,5 +77,4 @@ public class EjbCompetidores implements NegocioCompetidor{
         return query.getResultList();
     }
 
-    
 }

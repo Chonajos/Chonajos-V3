@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.web.chon.ejb;
 
 import com.web.chon.dominio.TransferenciaMercancia;
@@ -16,7 +12,7 @@ import javax.persistence.Query;
 
 /**
  *
- * @author marcogante
+ * @author Juan de la Cruz
  */
 @Stateless(mappedName = "ejbTransferenciaMercancia")
 public class EjbTransferenciaMercancia implements NegocioTransferenciaMercancia {

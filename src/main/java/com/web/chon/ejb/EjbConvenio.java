@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.web.chon.ejb;
 
 import java.util.List;
@@ -16,18 +11,17 @@ import com.web.chon.negocio.NegocioConvenio;
 
 /**
  *
- * @author marcogante
+ * @author
  */
 @Stateless(mappedName = "ejbConvenio")
-public class EjbConvenio implements NegocioConvenio{
+public class EjbConvenio implements NegocioConvenio {
+
     @PersistenceContext(unitName = "persistenceJR")
     EntityManager em;
 
     @Override
-    public List<Object[]> getTipos() 
-    {
+    public List<Object[]> getTipos() {
         try {
-            System.out.println("ejb selec all orden de compra");
             Query query = em.createNativeQuery("SELECT * FROM TIPO_CONVENIO");
             List<Object[]> resultList = null;
             resultList = query.getResultList();

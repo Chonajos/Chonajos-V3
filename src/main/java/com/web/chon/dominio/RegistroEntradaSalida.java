@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.web.chon.dominio;
 
 import java.io.Serializable;
@@ -11,13 +7,16 @@ import java.util.Date;
 
 /**
  *
- * @author marcogante
+ * @author Juan de la Cruz
  */
 public class RegistroEntradaSalida implements Serializable{
     private static final long serialVersionUID = 1L;
     private BigDecimal idRegEntSalPk;
+    private Date fecha;
     private Date fechaEntrada;
     private Date fechaSalida;
+    private String horaEntrada;
+    private String horaSalida;
     private double latitudEntrada;
     private double latitudSalida;
     private double longitudEntrada;
@@ -146,6 +145,30 @@ public class RegistroEntradaSalida implements Serializable{
 
     public void setApMaterno(String apMaterno) {
         this.apMaterno = apMaterno;
+    }
+
+    public Date getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+
+    public String getHoraEntrada() {
+        return horaEntrada;
+    }
+
+    public void setHoraEntrada(String horaEntrada) {
+        this.horaEntrada = horaEntrada;
+    }
+
+    public String getHoraSalida() {
+        return horaSalida;
+    }
+
+    public void setHoraSalida(String horaSalida) {
+        this.horaSalida = horaSalida;
     }
 
     

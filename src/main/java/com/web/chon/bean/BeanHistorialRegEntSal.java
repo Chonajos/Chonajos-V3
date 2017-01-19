@@ -8,6 +8,7 @@ package com.web.chon.bean;
 import com.web.chon.dominio.RegistroEntradaSalida;
 import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.Usuario;
+import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceCatUsuario;
 import com.web.chon.service.IfaceRegistroEntradaSalida;
@@ -39,6 +40,8 @@ public class BeanHistorialRegEntSal implements Serializable{
     private IfaceCatSucursales ifaceCatSucursales;
     @Autowired
     private IfaceCatUsuario ifaceCatUsuario;
+    @Autowired
+    private PlataformaSecurityContext context;
     
     private RegistroEntradaSalida data;
     private ArrayList<RegistroEntradaSalida> model;
@@ -65,6 +68,7 @@ public class BeanHistorialRegEntSal implements Serializable{
         listaSucursales = ifaceCatSucursales.getSucursales();
         listaUsuarios = new ArrayList<Usuario>();
         filtro = 2;
+        setFechaFin(context.getFechaSistema());
         data.setFechaFiltroInicio(TiempoUtil.getDayOneOfMonth(new Date()));
         data.setFechaFiltroFin(TiempoUtil.getDayEndOfMonth(new Date()));
         model = ifaceRegEntSal.getALL(data.getFechaFiltroInicio(), data.getFechaFiltroFin());
@@ -106,50 +110,12 @@ public class BeanHistorialRegEntSal implements Serializable{
         
         listaUsuarios = ifaceCatUsuario.getUsuariosbyIdSucursal(data.getIdSucursalFk().intValue());
     }
-    public void setFechaInicioFin(int filter) {
-
-        switch (filter) {
-            case 4:
-                if (data.getFechaFiltroInicio() != null && data.getFechaFiltroFin() != null) {
-                    model = ifaceRegEntSal.getRegistros(data.getIdUsuarioFk(),data.getFechaFiltroInicio(), data.getFechaFiltroFin());
-                } else {
-                    model = new ArrayList<RegistroEntradaSalida>();
-                }
-                break;
-            case 1:
-                data.setFechaFiltroInicio(new Date());
-                data.setFechaFiltroFin(new Date());
-                break;
-
-            case 2:
-                data.setFechaFiltroInicio(TiempoUtil.getDayOneOfMonth(new Date()));
-                data.setFechaFiltroFin(TiempoUtil.getDayEndOfMonth(new Date()));
-
-                break;
-            case 3:
-                data.setFechaFiltroInicio(TiempoUtil.getDayOneYear(new Date()));
-                data.setFechaFiltroFin(TiempoUtil.getDayEndYear(new Date()));
-                break;
-            default:
-                data.setFechaFiltroInicio(null);
-                data.setFechaFiltroFin(null);
-                break;
-        }
-
-    }
-
     
     public void getRegistrosByIntervalDate() {
-
-        setFechaInicioFin(filtro);
         model = ifaceRegEntSal.getRegistros(data.getIdUsuarioFk(),data.getFechaFiltroInicio(), data.getFechaFiltroFin());
         
     }
 
-    public void printStatus() {
-        getRegistrosByIntervalDate();
-
-    }
     public ArrayList<Sucursal> getListaSucursales() {
         return listaSucursales;
     }

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.web.chon.ejb;
 
 import com.web.chon.dominio.Provedor;
@@ -29,8 +24,6 @@ public class EjbCatProvedores implements NegocioCatProvedores {
     @Override
     public List<Object[]> getProvedores() {
         try {
-
-            System.out.println("EJB_GET_Provedores");
             Query query = em.createNativeQuery("select ID_PROVEDOR_PK,NOMBRE_PROVEDOR,A_PATERNO_PROVE,A_MATERNO_PROVE,NICKNAME from provedores");
             List<Object[]> resultList = null;
             resultList = query.getResultList();
@@ -45,15 +38,13 @@ public class EjbCatProvedores implements NegocioCatProvedores {
 
     @Override
     public List<Object[]> getProvedoresDetalle(int first, int pageSize) {
-
         try {
-            System.out.println("EJB_getProvedoresDetalle");
 
             Query query = em.createNativeQuery("select * from (select p.* ,en.ID_ENTIDAD_PK, en.NOMBRE_ENTIDAD,m.ID_MUNICIPIO_PK,m.NOMBRE_MUNICIPIO,\n"
-                    + "			en1.ID_ENTIDAD_PK as idEntidadFiscal, en1.NOMBRE_ENTIDAD as nombreEntidadFiscal,\n"
-                    + "      m.ID_MUNICIPIO_PK as idMunicipioFiscal,m1.NOMBRE_MUNICIPIO as nombreMunicipioFiscal,\n"
-                    + "			cp.NOMBRE_COLONIA,cp.CODIGO_POSTAL,cp1.NOMBRE_COLONIA as nombreColoniaFiscal,\n"
-                    + "      cp1.CODIGO_POSTAL as codigoPostalFiscal,st.DESCRIPCION_STATUS,\n"
+                    + "	en1.ID_ENTIDAD_PK as idEntidadFiscal, en1.NOMBRE_ENTIDAD as nombreEntidadFiscal,\n"
+                    + " m.ID_MUNICIPIO_PK as idMunicipioFiscal,m1.NOMBRE_MUNICIPIO as nombreMunicipioFiscal,\n"
+                    + "	cp.NOMBRE_COLONIA,cp.CODIGO_POSTAL,cp1.NOMBRE_COLONIA as nombreColoniaFiscal,\n"
+                    + " cp1.CODIGO_POSTAL as codigoPostalFiscal,st.DESCRIPCION_STATUS,\n"
                     + "row_number() over (order by p.id_provedor_pk ASC) rn\n"
                     + "from Provedores p\n"
                     + "INNER JOIN CODIGOS_POSTALES cp\n"
@@ -94,7 +85,7 @@ public class EjbCatProvedores implements NegocioCatProvedores {
         try {
             Query query = em.createNativeQuery("select count(id_provedor_pk) from provedores");
             BigDecimal value = (BigDecimal) query.getSingleResult();
-            System.out.printf(value.toString());
+
             return value.longValue();
 
         } catch (Exception ex) {
@@ -112,9 +103,8 @@ public class EjbCatProvedores implements NegocioCatProvedores {
     @Override
     public int updateProvedor(Provedor prove) {
 
-        System.out.println("EJB_UPDATE_PROVEDOR");
         try {
-            System.out.println("freddy : " + prove);
+
             Query query = em.createNativeQuery("UPDATE  PROVEDORES SET NOMBRE_PROVEDOR = ? ,A_PATERNO_PROVE = ? ,A_MATERNO_PROVE = ? ,EMPRESA = ?,CALLE_PROVE = ?,SEXO_PROVE = ?,FECHA_NACIMIENTO_PROVE = ?"
                     + ",TELEFONO_MOVIL_PROVE = ?,TELEFONO_FIJO_PROVE = ? ,EXTENSION_PROVE = ? ,NUM_INT_PROVE = ?,NUM_EXT_PROVE = ?,CLAVECELULAR_PROVE = ?,"
                     + "LADACELULAR_PROVE = ?,ID_CP_PROVE_FK = ?,CALLEFISCAL_PROVE = ?,NUMINTFIS_PROVE = ? ,NUMEXTFIS_PROVE = ?,ID_CP_FISCAL_PROVE_FK = ?,"
@@ -160,17 +150,14 @@ public class EjbCatProvedores implements NegocioCatProvedores {
 
     @Override
     public int insertProvedor(Provedor prove) {
-        
-        try {
 
+        try {
             Query querySel = em.createNativeQuery("SELECT * FROM PROVEDORES WHERE NICKNAME = '" + prove.getNickName() + "' ");
 
             List<Object[]> resultList = null;
             resultList = querySel.getResultList();
 
             if (resultList.isEmpty()) {
-
-                System.out.println("freddy : " + prove);
                 Query query = em.createNativeQuery("INSERT INTO PROVEDORES (ID_PROVEDOR_PK,NOMBRE_PROVEDOR,A_PATERNO_PROVE,A_MATERNO_PROVE,EMPRESA,CALLE_PROVE,SEXO_PROVE,FECHA_NACIMIENTO_PROVE\n"
                         + ",TELEFONO_MOVIL_PROVE,TELEFONO_FIJO_PROVE,EXTENSION_PROVE,NUM_INT_PROVE,NUM_EXT_PROVE,CLAVECELULAR_PROVE,\n"
                         + "LADACELULAR_PROVE,ID_CP_PROVE_FK,CALLEFISCAL_PROVE,NUMINTFIS_PROVE,NUMEXTFIS_PROVE,ID_CP_FISCAL_PROVE_FK,\n"
@@ -224,7 +211,6 @@ public class EjbCatProvedores implements NegocioCatProvedores {
 
     @Override
     public List<Object[]> getProvedorByNombreCompleto(String nombreCompleto) {
-
         Query query = em.createNativeQuery("SELECT * FROM PROVEDORES WHERE UPPER(NOMBRE_PROVEDOR ||' '|| A_PATERNO_PROVE ||' '|| A_MATERNO_PROVE )  LIKE UPPER('%" + nombreCompleto + "%')");
 
         return query.getResultList();

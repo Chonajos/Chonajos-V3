@@ -1,14 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.web.chon.ejb;
-
-/**
- *
- * @author JesusAlfredo
- */
 
 import com.web.chon.dominio.CobroCheques;
 import com.web.chon.negocio.NegocioCobroCheques;
@@ -19,6 +9,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+/**
+ *
+ * @author JesusAlfredo
+ */
 @Stateless(mappedName = "ejbCobroCheques")
 public class EjbCobroCheques implements NegocioCobroCheques {
     @PersistenceContext(unitName = "persistenceJR")

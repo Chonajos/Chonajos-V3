@@ -3,7 +3,6 @@ package com.web.chon.ejb;
 import com.web.chon.dominio.AbonoCredito;
 import com.web.chon.negocio.NegocioAbonoCredito;
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,7 +25,6 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
     public int insert(AbonoCredito abonoCredito) {
 
         try {
-            
 
             Query query = em.createNativeQuery("INSERT INTO  ABONO_CREDITO (ID_ABONO_CREDITO_PK ,"
                     + "ID_CREDITO_FK "
@@ -82,7 +80,7 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
         try {
 
             Query query = em.createNativeQuery("UPDATE ABONO_CREDITO SET ESTATUS=2 WHERE ID_ABONO_CREDITO_PK = ?");
-           
+
             query.setParameter(1, idAbonoCredito);
 
             return query.executeUpdate();
@@ -149,7 +147,6 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
 
     @Override
     public List<Object[]> getChequesPendientes(String fechaInicio, String fechaFin, BigDecimal idSucursal, BigDecimal idClienteFk, BigDecimal filtro, BigDecimal filtroStatus) {
-        
 
         StringBuffer cadena = new StringBuffer("select ab.*,dc.ID_DOCUMENTO_PK,(CLI.NOMBRE||' '||CLI.APELLIDO_PATERNO "
                 + "||' '||CLI.APELLIDO_MATERNO ) AS CLIENTE, SD.DESCRIPCION, dc.ID_STATUS_FK,cre.ID_CLIENTE_FK from ABONO_CREDITO ab inner join USUARIO "
@@ -175,7 +172,7 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
         }
 
         cadena.append(" order by ab.FECHA_COBRO asc");
-        
+
         Query query;
 
         query = em.createNativeQuery(cadena.toString());
@@ -252,44 +249,36 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
 
     @Override
     public List<Object[]> getHistorialAbonos(BigDecimal idClienteFk, BigDecimal idCajeroFk, String fechaInicio, String fechaFin, BigDecimal idTipoPagoFk, BigDecimal idAbonoPk, BigDecimal idCreditoFk) {
-        //System.out.println("Variables: idCliente: "+idClienteFk +" idCajero: "+idCajeroFk+" idTipoPago: "+idTipoPagoFk +" idAbonoPk: "+idAbonoPk  +" idCredito: "+idCreditoFk);
-        StringBuffer cadena = new StringBuffer("select ab.ID_ABONO_CREDITO_PK as folio,(CLI.NOMBRE||' '||CLI.APELLIDO_PATERNO ||' '||CLI.APELLIDO_MATERNO ) AS CLIENTE,\n" +
-"(usu.NOMBRE_USUARIO||' '||usu.APATERNO_USUARIO) AS CAJERO,\n" +
-"ab.ID_CREDITO_FK as folio_credito,\n" +
-"ab.FECHA_ABONO,tipo.NOMBRE_ABONO,ab.MONTO_ABONO,\n" +
-"ab.ID_USUARIO_FK,ab.TIPO_ABONO_FK,ab.ESTATUS,\n" +
-"ab.NUMERO_CHEQUE,ab.LIBRADOR,ab.FECHA_COBRO,\n" +
-"ab.BANCO_EMISOR,ab.NUMERO_FACTURA,ab.REFERENCIA,ab.CONCEPTO,ab.FECHA_TRANSFERENCIA,\n" +
-"cli.ID_CLIENTE,ab.NUMERO_ABONO \n" +
-"from ABONO_CREDITO ab inner join credito cre on cre.ID_CREDITO_PK = ab.ID_CREDITO_FK\n" +
-"inner join cliente cli on cli.ID_CLIENTE = cre.ID_CLIENTE_FK\n" +
-"inner join usuario usu  on usu.ID_USUARIO_PK = ab.ID_USUARIO_FK\n" +
-"inner join TIPO_ABONO tipo on tipo.ID_TIPO_ABONO_PK = ab.TIPO_ABONO_FK\n" +
-"WHERE  TO_DATE(TO_CHAR(ab.FECHA_ABONO,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" +fechaInicio+" ' AND '"+fechaFin+"'");
-       
-        if (idClienteFk != null && !idClienteFk.equals("")) 
-        {
+        StringBuffer cadena = new StringBuffer("select ab.ID_ABONO_CREDITO_PK as folio,(CLI.NOMBRE||' '||CLI.APELLIDO_PATERNO ||' '||CLI.APELLIDO_MATERNO ) AS CLIENTE,\n"
+                + "(usu.NOMBRE_USUARIO||' '||usu.APATERNO_USUARIO) AS CAJERO,\n"
+                + "ab.ID_CREDITO_FK as folio_credito,\n"
+                + "ab.FECHA_ABONO,tipo.NOMBRE_ABONO,ab.MONTO_ABONO,\n"
+                + "ab.ID_USUARIO_FK,ab.TIPO_ABONO_FK,ab.ESTATUS,\n"
+                + "ab.NUMERO_CHEQUE,ab.LIBRADOR,ab.FECHA_COBRO,\n"
+                + "ab.BANCO_EMISOR,ab.NUMERO_FACTURA,ab.REFERENCIA,ab.CONCEPTO,ab.FECHA_TRANSFERENCIA,\n"
+                + "cli.ID_CLIENTE,ab.NUMERO_ABONO \n"
+                + "from ABONO_CREDITO ab inner join credito cre on cre.ID_CREDITO_PK = ab.ID_CREDITO_FK\n"
+                + "inner join cliente cli on cli.ID_CLIENTE = cre.ID_CLIENTE_FK\n"
+                + "inner join usuario usu  on usu.ID_USUARIO_PK = ab.ID_USUARIO_FK\n"
+                + "inner join TIPO_ABONO tipo on tipo.ID_TIPO_ABONO_PK = ab.TIPO_ABONO_FK\n"
+                + "WHERE  TO_DATE(TO_CHAR(ab.FECHA_ABONO,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + fechaInicio + " ' AND '" + fechaFin + "'");
+
+        if (idClienteFk != null && !idClienteFk.equals("")) {
             cadena.append(" and cli.ID_CLIENTE =" + idClienteFk + "");
         }
-        if (idCajeroFk != null && !idCajeroFk.equals("")) 
-        {
+        if (idCajeroFk != null && !idCajeroFk.equals("")) {
             cadena.append(" and ab.ID_USUARIO_FK =" + idCajeroFk + "");
         }
-        if (idCreditoFk != null && !idCreditoFk.equals("")) 
-        {
+        if (idCreditoFk != null && !idCreditoFk.equals("")) {
             cadena.append(" and ab.ID_CREDITO_FK =" + idCreditoFk + "");
         }
-        if (idTipoPagoFk != null && !idTipoPagoFk.equals("")) 
-        {
+        if (idTipoPagoFk != null && !idTipoPagoFk.equals("")) {
             cadena.append(" and ab.TIPO_ABONO_FK =" + idTipoPagoFk + "");
         }
-        if (idAbonoPk != null && !idAbonoPk.equals("")) 
-        {
+        if (idAbonoPk != null && !idAbonoPk.equals("")) {
             cadena.append(" and ab.ID_ABONO_CREDITO_PK =" + idAbonoPk + "");
         }
-        
-        //cadena.append(" order by ab.FECHA_COBRO asc");
-        //System.out.println("Query: "+cadena);
+
         Query query;
         query = em.createNativeQuery(cadena.toString());
         try {
@@ -299,9 +288,7 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
             System.out.println("Error >" + e.getMessage());
             return null;
         }
-        
-    
-    
+
     }
 
 }

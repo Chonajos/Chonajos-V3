@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.web.chon.ejb;
 
 import com.web.chon.dominio.OperacionesCaja;
@@ -15,7 +10,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import com.web.chon.negocio.NegocioOperacionesCaja;
-import java.util.ArrayList;
 
 /**
  *

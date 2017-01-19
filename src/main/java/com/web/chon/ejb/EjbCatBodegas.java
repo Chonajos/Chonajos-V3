@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.web.chon.ejb;
 
 import com.web.chon.dominio.Bodega;
@@ -18,7 +13,7 @@ import javax.persistence.Query;
 
 /**
  *
- * @author marcogante
+ * @author Juan de la Cruz
  */
 @Stateless(mappedName = "ejbCatBodegas")
 public class EjbCatBodegas implements NegocioCatBodega {
@@ -116,10 +111,9 @@ public class EjbCatBodegas implements NegocioCatBodega {
         if (idSucursal != null) {
             strQuery.append(" WHERE ID_SUCURSAL_FK =" + idSucursal);
         }
-        
-        strQuery.append(" ) where rn between "+first+" and "+first+" + "+pageSize+"");
 
-        System.out.println("query "+strQuery);        
+        strQuery.append(" ) where rn between " + first + " and " + first + " + " + pageSize + "");
+
         Query query = em.createNativeQuery(strQuery.toString());
 
         return query.getResultList();

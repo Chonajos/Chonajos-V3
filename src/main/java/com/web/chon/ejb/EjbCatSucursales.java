@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.web.chon.ejb;
 
 import com.web.chon.dominio.Sucursal;
@@ -30,7 +25,6 @@ public class EjbCatSucursales implements NegocioCatSucursales {
     public List<Object[]> getSucursales() {
         try {
 
-            System.out.println("EJB_GET_CLIENTE");
             Query query = em.createNativeQuery("select * from sucursal");
             List<Object[]> resultList = null;
             resultList = query.getResultList();
@@ -61,8 +55,6 @@ public class EjbCatSucursales implements NegocioCatSucursales {
     public int deleteSucursal(BigDecimal idSucursal) {
 
         try {
-
-            System.out.println("Id SUCURSAL a eliminar: " + idSucursal);
             Query query = em.createNativeQuery("UPDATE SUCURSAL  SET STATUS_SUCURSAL = ? WHERE ID_SUCURSAL_PK = ?");
             query.setParameter(1, 2);
             query.setParameter(2, idSucursal);
@@ -77,9 +69,7 @@ public class EjbCatSucursales implements NegocioCatSucursales {
 
     @Override
     public int updateSucursal(Sucursal sucu) {
-        System.out.println("EJB_UPDATE_SUCURSAL");
         try {
-            System.out.println("insert : " + sucu);
             Query query = em.createNativeQuery("UPDATE SUCURSAL SET NOMBRE_SUCURSAL = ?,CALLE_SUCURSAL = ?, CP_SUCURSAL = ?, TELEFONO_SUCURSAL = ?, NUM_INT = ?, NUM_EXT = ?, STATUS_SUCURSAL=? WHERE ID_SUCURSAL_PK=?");
             query.setParameter(1, sucu.getNombreSucursal());
             query.setParameter(2, sucu.getCalleSucursal());
@@ -99,9 +89,7 @@ public class EjbCatSucursales implements NegocioCatSucursales {
 
     @Override
     public int insertSucursal(Sucursal sucu) {
-        System.out.println("EJB_INSERTA_SUCURSAL");
         try {
-            System.out.println("insert : " + sucu);
             Query query = em.createNativeQuery("INSERT INTO SUCURSAL (ID_SUCURSAL_PK,NOMBRE_SUCURSAL,CALLE_SUCURSAL,CP_SUCURSAL,TELEFONO_SUCURSAL,NUM_INT,NUM_EXT,STATUS_SUCURSAL)"
                     + "VALUES(S_SUCURSAL.NextVal,?,?,?,?,?,?,?)");
             query.setParameter(1, sucu.getNombreSucursal());
@@ -132,8 +120,7 @@ public class EjbCatSucursales implements NegocioCatSucursales {
         try {
             Query query = em.createNativeQuery("select count(id_sucursal_pk) from sucursal");
             BigDecimal value = (BigDecimal) query.getSingleResult();
-            System.out.printf(value.toString());
-//            Object[] o= (Object[]) query.getSingleResult();
+
             return value.longValue();
 
         } catch (Exception ex) {
@@ -145,7 +132,6 @@ public class EjbCatSucursales implements NegocioCatSucursales {
     @Override
     public List<Object[]> getSucursalesDetalle(int first, int pageSize) {
         try {
-            System.out.println("EJB_getSucursalesDetalle");
 
             Query query = em.createNativeQuery("select * from (select s.*,sta.DESCRIPCION_STATUS,en.ID_ENTIDAD_PK,en.NOMBRE_ENTIDAD,m.ID_MUNICIPIO_PK,m.NOMBRE_MUNICIPIO,cp.NOMBRE_COLONIA,cp.CODIGO_POSTAL, "
                     + "row_number() over (order by s.ID_SUCURSAL_PK ASC) rn "

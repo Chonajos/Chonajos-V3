@@ -82,7 +82,7 @@ public class ServiceVenta implements IfaceVenta {
             venta.setNumeroPagos(obj[16] == null ? new BigDecimal(1) : new BigDecimal(obj[16].toString()));
             venta.setPlazos(obj[17] == null ? new BigDecimal(1) : new BigDecimal(obj[17].toString()));
             venta.setaCuenta(obj[18] == null ? new BigDecimal(0) : new BigDecimal(obj[18].toString()));
-            venta.setNombreUsuarioLogueado(obj[19] == null ? null : obj[19].toString());
+            venta.setNombreUsuarioLogueado(obj[19].toString().trim().equals("") ? venta.getNombreVendedor() : obj[19].toString());
             ArrayList<VentaProducto> listaProductos = new ArrayList<VentaProducto>();
             listaProductos = ifaceVentaProducto.getVentasProductoByIdVenta(venta.getIdVentaPk());
             venta.setLstVentaProducto(listaProductos);
