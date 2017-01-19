@@ -183,7 +183,6 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         vendedor.setNombreUsuario(usuario.getNombreUsuario());
         vendedor.setApaternoUsuario(usuario.getApaternoUsuario());
         vendedor.setAmaternoUsuario(usuario.getAmaternoUsuario());
-        
 
         totalVentaGeneral = new BigDecimal(0);
         data = new VentaProductoMayoreo();
@@ -757,7 +756,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         System.out.println("idventa " + idVenta);
         paramReport.put("noVenta", Integer.toString(idVenta));
         paramReport.put("cliente", cliente.getNombreCompleto());
-        paramReport.put("vendedor", usuario.getNombreCompletoUsuario());
+        paramReport.put("vendedor", vendedor.getNombreCompletoUsuario());
         paramReport.put("productos", items);
         paramReport.put("ventaTotal", total);
         paramReport.put("totalLetra", totalVentaStr);

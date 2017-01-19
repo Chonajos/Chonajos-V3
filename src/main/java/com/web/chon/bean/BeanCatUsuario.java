@@ -4,6 +4,7 @@ import com.web.chon.dominio.Rol;
 import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.Usuario;
 import com.web.chon.security.service.PasswordEncoderChonajos;
+import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceCatRol;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceCatUsuario;
@@ -35,6 +36,8 @@ public class BeanCatUsuario implements BeanSimple {
     private IfaceCatSucursales ifaceCatSucursales;
     @Autowired
     private PasswordEncoderChonajos passwordEncoder;
+    @Autowired
+    private PlataformaSecurityContext context;
 
     private List<Rol> lstRol;
     private ArrayList<Usuario> model;
@@ -62,6 +65,7 @@ public class BeanCatUsuario implements BeanSimple {
 
     }
 
+    //Es una eliminacion logica solo cambia el estatus del usuario a inactivo
     @Override
     public String delete() {
         if (!selectedUsuario.isEmpty()) {
@@ -87,6 +91,7 @@ public class BeanCatUsuario implements BeanSimple {
             //Se codifica la contraseña del usuario
             CharSequence encoder = passwordEncoder.encode(data.getClaveUsuario()).toString().toUpperCase();
             data.setContrasenaUsuario(encoder.toString());
+            data.setFechaAltaUsuario(context.getFechaSistema());
             if (ifaceCatUsuario.insertarUsuarios(data) == 0) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "La clave del usuario " + data.getClaveUsuario() + " ya existe. Intenta con otra clave diferente"));
                 return null;

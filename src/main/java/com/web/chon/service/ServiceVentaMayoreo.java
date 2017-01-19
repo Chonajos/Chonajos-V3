@@ -84,11 +84,11 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
             
             venta.setIdUsuarioLogueadoFk(obj[14] == null ? new BigDecimal(0) : new BigDecimal(obj[14].toString()));
             venta.setNombreCliente(obj[15] == null ? "" : obj[15].toString());
-            venta.setNombreVendedor(obj[16].toString());
+            venta.setNombreVendedor(obj[16] == null ? "":obj[16].toString());
             venta.setTotalVenta(obj[17] == null ? new BigDecimal(0) : new BigDecimal(obj[17].toString()));
             venta.setNombreTipoVenta(obj[18].toString());
             ganacias = obj[19] == null ? new BigDecimal(0) : new BigDecimal(obj[19].toString());
-            venta.setNombreUsuarioLogueado(obj[20] == null ? "" : obj[20].toString());
+            venta.setNombreUsuarioLogueado(obj[20].toString().trim().equals("") ? venta.getNombreVendedor() : obj[20].toString());
             venta.setGanciaVenta(venta.getTotalVenta().subtract(ganacias));
             venta.setListaProductos(ifaceVentaMayoreoProducto.getProductosbyIdVmFk(venta.getIdVentaMayoreoPk()));
             lstVenta.add(venta);

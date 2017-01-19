@@ -94,24 +94,20 @@ public class ServiceRegEntSal implements  IfaceRegistroEntradaSalida{
         
         try {
             ArrayList<RegistroEntradaSalida> lstTop = new ArrayList<RegistroEntradaSalida>();
-            List<Object[]> lstObject = ejb.getRegistros(idUsuarioFK, TiempoUtil.getFechaDDMMYYYY(fechaInicio),TiempoUtil.getFechaDDMMYYYY(fechaFin));
+            List<Object[]> lstObject = ejb.getRegistros(idUsuarioFK, TiempoUtil.getFechaDDMMYY(TiempoUtil.getDayOneOfMonth(fechaInicio)),TiempoUtil.getFechaDDMMYYYY(fechaFin));
             for (Object[] obj : lstObject) 
             {
                 RegistroEntradaSalida reg = new RegistroEntradaSalida();
-                reg.setIdRegEntSalPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
-                reg.setFechaEntrada((Date) obj[1]);
-                reg.setFechaSalida((Date) obj[2]);
-                reg.setLatitudEntrada(obj[3] == null ? null : Double.valueOf(obj[3].toString()));
-                reg.setLongitudEntrada(obj[4] == null ? null : Double.valueOf(obj[4].toString()));
-                reg.setLongitudSalida(obj[6] == null ? null : Double.valueOf(obj[6].toString()));
-                reg.setLatitudSalida(obj[5] == null ? null : Double.valueOf(obj[5].toString()));
-                reg.setIdUsuarioFk(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
-                reg.setIdSucursalFk(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
-                reg.setNombre(obj[9] == null ? null:obj[9].toString());
-                reg.setApMaterno(obj[10] == null ? null:obj[10].toString());
-                reg.setApMaterno(obj[11] == null ? null:obj[11].toString());
+                reg.setFecha(obj[0] == null ? null : (Date) obj[0]);
+                
+                reg.setHoraEntrada(obj[2] == null ? "---": obj[2].toString());
+                reg.setHoraSalida(obj[4] == null ? "---": obj[4].toString());
+                reg.setLatitudEntrada(obj[5] == null ? Double.valueOf(0) : Double.valueOf(obj[5].toString()));
+                reg.setLatitudSalida(obj[6] == null ? Double.valueOf(0) : Double.valueOf(obj[6].toString()));
+                reg.setLongitudEntrada(obj[7] == null ? Double.valueOf(0) : Double.valueOf(obj[7].toString()));
+                reg.setLatitudSalida(obj[8] == null ? Double.valueOf(0) : Double.valueOf(obj[8].toString()));
+
                 lstTop.add(reg);
-                System.out.println("REG: "+reg);
             }
             return lstTop;
         } catch (Exception ex) {

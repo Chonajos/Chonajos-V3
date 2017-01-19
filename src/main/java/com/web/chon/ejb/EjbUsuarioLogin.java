@@ -42,21 +42,21 @@ public class EjbUsuarioLogin implements NegocioUsuarioLogin {
     public List<Object[]> getUser(String idUser) {
         try {
             Query query = em.createNativeQuery(" SELECT USU.CLAVE_USUARIO, "
-                    + "                     USU.NOMBRE_USUARIO, "
-                    + "                     USU.APATERNO_USUARIO, "
-                    + "                     USU.AMATERNO_USUARIO, "
-                    + "                     USU.CONTRASENA_USUARIO, "
-                    + "                     USU.FECHA_ALTA_USUARIO, "
-                    + "                     USU.ID_ROL_FK, "
-                    + "                     USU.ID_SUCURSAL_FK, "
-                    + "                     ROL.NOMBRE_ROL, "
-                    + "                     USU.ID_USUARIO_PK, "
-                    + "                     SUC.NOMBRE_SUCURSAL, "
-                    + "                     SUC.TELEFONO_SUCURSAL "  
-                    + "                     FROM USUARIO USU "
-                    + "                     INNER JOIN ROL ROL ON USU.ID_ROL_FK =ROL.ID_ROL_PK "
-                    + "                     INNER JOIN SUCURSAL SUC ON USU.ID_SUCURSAL_FK = SUC.ID_SUCURSAL_PK"
-                    + "                     WHERE CLAVE_USUARIO = ?");
+                    + " USU.NOMBRE_USUARIO, "
+                    + " USU.APATERNO_USUARIO, "
+                    + " USU.AMATERNO_USUARIO, "
+                    + " USU.CONTRASENA_USUARIO, "
+                    + " USU.FECHA_ALTA_USUARIO, "
+                    + " USU.ID_ROL_FK, "
+                    + " USU.ID_SUCURSAL_FK, "
+                    + " ROL.NOMBRE_ROL, "
+                    + " USU.ID_USUARIO_PK, "
+                    + " SUC.NOMBRE_SUCURSAL, "
+                    + " SUC.TELEFONO_SUCURSAL "  
+                    + " FROM USUARIO USU "
+                    + " INNER JOIN ROL ROL ON USU.ID_ROL_FK =ROL.ID_ROL_PK "
+                    + " INNER JOIN SUCURSAL SUC ON USU.ID_SUCURSAL_FK = SUC.ID_SUCURSAL_PK"
+                    + " WHERE CLAVE_USUARIO = ? AND STATUS = 1");
 
             query.setParameter(1, idUser);
             return query.getResultList();

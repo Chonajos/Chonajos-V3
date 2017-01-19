@@ -29,7 +29,7 @@ public class SessionUsuario implements NegocioLogin {
         Usuario usuario = new Usuario();
         try {
 
-            Query query = em.createNativeQuery("SELECT * FROM USUARIO WHERE CLAVE_USUARIO = ? AND CONTRASENA_USUARIO =?");
+            Query query = em.createNativeQuery("SELECT * FROM USUARIO WHERE CLAVE_USUARIO = ? AND CONTRASENA_USUARIO =? AND STATUS = 1");
 
             query.setParameter(1, obj.getClaveUsuario().trim());
             query.setParameter(2, obj.getContrasenaUsuario().trim());
@@ -45,14 +45,15 @@ public class SessionUsuario implements NegocioLogin {
                     usuario.setApaternoUsuario(object[2] == null ? "" : object[2].toString());
                     usuario.setAmaternoUsuario(object[3] == null ? "" : object[3].toString());
                     usuario.setIdSucursal(object[26] == null ? null: Integer.parseInt(object[26].toString()));
+                    usuario.setNombreCompletoUsuario(usuario.getNombreUsuario().trim()+" "+usuario.getApaternoUsuario().trim()+" "+usuario.getAmaternoUsuario().trim());
                     usuario.setMensaje("Usuario encontrado");
-                    usuario.setStatus(true);
+//                    usuario.setStatus(true);
 
                 }
             } else {
 
-                usuario.setMensaje("Usuario no encontrado");
-                usuario.setStatus(false);
+                usuario.setMensaje("Usuario no encontrado o Usuario Desactivado");
+//                usuario.setStatus(false);
             }
 
             return usuario;
