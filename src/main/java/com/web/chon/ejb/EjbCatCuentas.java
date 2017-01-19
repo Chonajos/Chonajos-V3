@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.web.chon.ejb;
 
 import com.web.chon.negocio.NegocioCatCuentas;
@@ -19,22 +14,20 @@ import javax.persistence.Query;
  * @author JesusAlfredo
  */
 @Stateless(mappedName = "ejbCatCuentas")
-public class EjbCatCuentas  implements NegocioCatCuentas{
-     @PersistenceContext(unitName = "persistenceJR")
+public class EjbCatCuentas implements NegocioCatCuentas {
+
+    @PersistenceContext(unitName = "persistenceJR")
     EntityManager em;
 
     @Override
     public List<Object[]> getCuentas() {
-        try 
-        {
+        try {
             Query query = em.createNativeQuery("SELECT * FROM CUENTA_BANCARIA");
-            return  query.getResultList();
-        } catch (Exception ex) 
-        {
+            return query.getResultList();
+        } catch (Exception ex) {
             Logger.getLogger(EjbCatCuentas.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
-    
-    
+
     }
 }

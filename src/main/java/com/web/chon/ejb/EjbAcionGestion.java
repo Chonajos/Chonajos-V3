@@ -1,6 +1,5 @@
 package com.web.chon.ejb;
 
-import com.web.chon.dominio.AbonoCredito;
 import com.web.chon.dominio.AcionGestion;
 import com.web.chon.negocio.NegocioAcionGestion;
 import java.math.BigDecimal;

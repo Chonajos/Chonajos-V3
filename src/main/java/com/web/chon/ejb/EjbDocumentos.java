@@ -1,4 +1,5 @@
 package com.web.chon.ejb;
+
 import com.web.chon.dominio.Documento;
 import com.web.chon.negocio.NegocioDocumentos;
 import java.math.BigDecimal;
@@ -87,7 +88,6 @@ public class EjbDocumentos implements NegocioDocumentos {
 
     @Override
     public int updateDocumento(Documento documento) {
-        System.out.println("EJBDOCUMENTOS: " + documento.toString());
         try {
             Query query = em.createNativeQuery("UPDATE  "
                     + "DOCUMENTOS_COBRAR SET ID_STATUS_FK = ? "
@@ -105,9 +105,6 @@ public class EjbDocumentos implements NegocioDocumentos {
 
     @Override
     public List<Object[]> getDocumentos(String fechaInicio, String fechaFin, BigDecimal idSucursal, BigDecimal idClienteFk, BigDecimal filtroFormaPago, BigDecimal filtroStatus, BigDecimal filtroFecha) {
-
-        //System.out.println("Fecha fin: " + fechaFin);
-        //System.out.println("IdSucursalEJB: " + idSucursal);
         StringBuffer cadena = new StringBuffer("select dc.ID_DOCUMENTO_PK,dc.ID_TIPO_DOCUMENTO,dc.ID_CLIENTE_FK,dc.ID_STATUS_FK,dc.COMENTARIO,dc.MONTO,dc.NUMERO_CHEQUE,dc.NUMERO_FACTURA,dc.BANCO,dc.LIBRADOR,dc.FECHA_COBRO,dc.ID_FORMA_COBRO_FK,dc.ID_DOCUMENTO_PADRE_FK,dc.ID_TIPO_D,dc.ID_LLAVE,dc.ID_SUCURSAL_FK,(CLI.NOMBRE||' '||CLI.APELLIDO_PATERNO ||' '||CLI.APELLIDO_MATERNO ) AS CLIENTE,fp.DESCRIPCION,\n"
                 + "sd.DESCRIPCION\n"
                 + "from DOCUMENTOS_COBRAR dc\n"
@@ -155,7 +152,7 @@ public class EjbDocumentos implements NegocioDocumentos {
             }
         }
         cadena.append(" order by DC.FECHA_COBRO asc");
-        System.out.println("Query: " + cadena);
+
         Query query;
         query = em.createNativeQuery(cadena.toString());
 
@@ -171,7 +168,6 @@ public class EjbDocumentos implements NegocioDocumentos {
 
     @Override
     public int cambiarFormaPago(Documento d) {
-        System.out.println("EJBDOCUMENTOS: " + d.toString());
         try {
             Query query = em.createNativeQuery("UPDATE  "
                     + "DOCUMENTOS_COBRAR SET ID_FORMA_COBRO_FK = ? "

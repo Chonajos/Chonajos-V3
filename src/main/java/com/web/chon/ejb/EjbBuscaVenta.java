@@ -245,7 +245,7 @@ public class EjbBuscaVenta implements NegocioBuscaVenta {
                     + "       INNER JOIN SUCURSAL sucu\n"
                     + "       on sucu.ID_SUCURSAL_PK = v.ID_SUCURSAL_FK\n"
                     + "      where v.FOLIO_SUCURSAL = ? AND v.ID_SUCURSAL_FK = ? ");
-            //System.out.println("EJbBuscaVenta:getVentabyId: idVenta: "+idVenta);
+
             query.setParameter(1, folio);
             query.setParameter(2,idSucursal);
 

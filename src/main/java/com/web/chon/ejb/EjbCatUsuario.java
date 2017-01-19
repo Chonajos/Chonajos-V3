@@ -12,7 +12,7 @@ import javax.persistence.Query;
 
 /**
  *
- * @author juan
+ * @author Juan de la Cruz
  */
 @Stateless(mappedName = "ejbCatUsuario")
 public class EjbCatUsuario implements NegocioCatUsuario {
@@ -56,7 +56,6 @@ public class EjbCatUsuario implements NegocioCatUsuario {
     public int deleteUsuario(int idUsuario) {
         try {
 
-            
             Query query = em.createNativeQuery("UPDATE Usuario SET STATUS = 2 WHERE ID_USUARIO_PK = ?");
             query.setParameter(1, idUsuario);
 
@@ -72,8 +71,6 @@ public class EjbCatUsuario implements NegocioCatUsuario {
     public int updateUsuario(Usuario usuario) {
 
         try {
-
-            System.out.println("Usuario a modificar :" + usuario.getNombreUsuario() + " desc " + usuario.getRfcUsuario() + " " + usuario.getIdUsuarioPk().intValue());
             Query query = em.createNativeQuery("UPDATE Usuario SET NOMBRE_USUARIO = ?, APATERNO_USUARIO = ?, AMATERNO_USUARIO = ?, "
                     + "CLAVE_USUARIO = ?, CONTRASENA_USUARIO = ?, RFC_USUARIO = ?, ID_ROL_FK = ?,ID_SUCURSAL_FK = ? WHERE ID_USUARIO_PK = ? ");
             query.setParameter(1, usuario.getNombreUsuario());
@@ -97,7 +94,6 @@ public class EjbCatUsuario implements NegocioCatUsuario {
 
     @Override
     public int insertUsuario(Usuario usuario) {
-        System.out.println("ejb");
         try {
 
             Query querySel = em.createNativeQuery("SELECT CLAVE_USUARIO FROM USUARIO WHERE CLAVE_USUARIO = '" + usuario.getClaveUsuario() + "' ");
@@ -178,10 +174,8 @@ public class EjbCatUsuario implements NegocioCatUsuario {
 
     @Override
     public List<Object[]> getUsuariosbyIdSucursal(int idSucursal) {
-        
-        try {
 
-            System.out.println("EJB_GET");
+        try {
 
             Query query = em.createNativeQuery("SELECT * FROM USUARIO where ID_SUCURSAL_FK = ? AND STATUS = 1");
             query.setParameter(1, idSucursal);
@@ -194,7 +188,7 @@ public class EjbCatUsuario implements NegocioCatUsuario {
             Logger.getLogger(EjbCatUsuario.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
-    
+
     }
 
 }

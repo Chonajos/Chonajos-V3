@@ -1,14 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.web.chon.ejb;
 
 import com.web.chon.dominio.RegistroEntradaSalida;
 import com.web.chon.negocio.NegocioRegEntSal;
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,7 +13,7 @@ import javax.persistence.Query;
 
 /**
  *
- * @author marcogante
+ * @author Juan de la Cruz
  */
 @Stateless(mappedName = "ejbRegEntSal")
 public class EjbRegEntSal implements NegocioRegEntSal {
@@ -76,7 +70,6 @@ public class EjbRegEntSal implements NegocioRegEntSal {
 
     @Override
     public List<Object[]> getRegistros(BigDecimal idUsuarioFK, String fechaInicio, String fechaFin) {
-        System.out.println("EJB: idUser_ " + idUsuarioFK + " Fecha Inicio: " + fechaInicio + " Fecha Fin: " + fechaFin);
         try {
 
             Query query = em.createNativeQuery("select days.fecha,RE.FECHAENTRADA,to_char(nvl(RE.FECHAENTRADA, to_date(null)),'hh24:mi') HORA_ENTRADA,RE.FECHASALIDA,to_char(nvl(RE.FECHASALIDA, to_date(null)),'hh24:mi') AS HORA_SALIDA,RE.LATITUDENTRADA,RE.LATITUDSALIDA,RE.LONGITUDENTRADA,RE.LONGITUDSALIDA from(SELECT TRUNC (to_date(?, 'DD/MM/YYYY'), 'DD') + r fecha FROM (SELECT ROWNUM - 1 r "
@@ -84,7 +77,7 @@ public class EjbRegEntSal implements NegocioRegEntSal {
                     + "	TRUNC (TRUNC (to_date(?,'DD/MM/YYYY'), 'yyyy') + r, 'yyyy') = TRUNC (to_date(?,'DD/MM/YYYY'), 'yyyy')) days "
                     + " LEFT JOIN REGISTROENTRADA RE ON  to_date(RE.FECHAENTRADA,'DD/MM/YYYY')    =to_date(DAYS.fecha,'DD/MM/YYYY')  AND RE.ID_USUARIO_FK =? "
                     + " ORDER BY DAYS.fecha");
-            
+
             query.setParameter(1, fechaInicio);
             query.setParameter(2, fechaInicio);
             query.setParameter(3, fechaInicio);
@@ -105,7 +98,6 @@ public class EjbRegEntSal implements NegocioRegEntSal {
 
             Query query = em.createNativeQuery("select reg.*,usu.NOMBRE_USUARIO,usu.APATERNO_USUARIO,usu.AMATERNO_USUARIO from REGISTROENTRADA reg inner join USUARIO usu\n"
                     + "on usu.ID_USUARIO_PK = reg.ID_USUARIO_FK where TO_DATE(TO_CHAR(reg.FECHAENTRADA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "'");
-            System.out.println("query: " + query);
             return query.getResultList();
 
         } catch (Exception ex) {

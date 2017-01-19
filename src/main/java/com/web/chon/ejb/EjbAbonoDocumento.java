@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.web.chon.ejb;
 
 import com.web.chon.dominio.AbonoDocumentos;
@@ -28,8 +23,6 @@ public class EjbAbonoDocumento implements NegocioAbonoDocumento{
     @Override
     public int insert(AbonoDocumentos abonoDocumento) {
                try {
-            System.out.println("EJB: ==========" + abonoDocumento.toString());
-
             Query query = em.createNativeQuery("INSERT INTO  ABONO_DOCUMENTOS (ID_ABONO_DOCUMENTO_PK ,"
                     + "ID_DOCUMENTO_FK "
                     + ",MONTO_ABONO ,FECHA_ABONO ,ID_TIPO_ABONO_FK,ESTATUS,NUMERO_CHEQUE,"
@@ -89,8 +82,6 @@ public class EjbAbonoDocumento implements NegocioAbonoDocumento{
 
     @Override
     public List<Object[]> getChequesPendientes(String fechaInicio, String fechaFin, BigDecimal idSucursal, BigDecimal idClienteFk, BigDecimal filtro, BigDecimal filtroStatus) {
-        System.out.println("Fecha fin: " + fechaFin);
-        System.out.println("IdSucursalEJB: " + idSucursal);
         StringBuffer cadena = new StringBuffer("select ab.*,dc.ID_DOCUMENTO_PK,(CLI.NOMBRE||' '||CLI.APELLIDO_PATERNO "
                 + "||' '||CLI.APELLIDO_MATERNO ) AS CLIENTE, SD.DESCRIPCION, dc.ID_STATUS_FK from ABONO_CREDITO ab inner join USUARIO "
                 + "u on u.ID_USUARIO_PK = ab.ID_USUARIO_FK inner join DOCUMENTOS_COBRAR dc on dc.ID_ABONO_FK "
@@ -116,7 +107,6 @@ public class EjbAbonoDocumento implements NegocioAbonoDocumento{
         }
 
         cadena.append(" order by ab.FECHA_COBRO asc");
-        System.out.println("Query: " + cadena);
         Query query;
 
         query = em.createNativeQuery(cadena.toString());
@@ -133,7 +123,6 @@ public class EjbAbonoDocumento implements NegocioAbonoDocumento{
 
     @Override
     public BigDecimal getTotalAbonadoByIdDocumento(BigDecimal idDocumentoFk) {
-        System.out.println("IdDocumento: "+idDocumentoFk);
        Query query = em.createNativeQuery("select NVL(sum(ad.MONTO_ABONO),0) as total_abonado from ABONO_DOCUMENTOS ad where ad.ID_DOCUMENTO_FK=?");
        query.setParameter(1, idDocumentoFk);
        return new BigDecimal(Integer.parseInt(query.getSingleResult().toString()));

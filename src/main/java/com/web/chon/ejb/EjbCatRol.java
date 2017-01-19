@@ -93,13 +93,13 @@ public class EjbCatRol implements NegocioCatRol {
 
     @Override
     public int getNextVal() {
-        try{
-            
+        try {
+
             Query query = em.createNativeQuery("SELECT S_ROL.NextVal FROM DUAL");
-            
+
             return Integer.parseInt(query.getSingleResult().toString());
-            
-        }catch(Exception e){
+
+        } catch (Exception e) {
             return 1;
         }
     }

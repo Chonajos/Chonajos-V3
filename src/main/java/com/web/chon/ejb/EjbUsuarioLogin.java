@@ -1,7 +1,5 @@
 package com.web.chon.ejb;
 
-import com.web.chon.dominio.AnalisisMercado;
-import com.web.chon.negocio.NegocioBuscaVenta;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;

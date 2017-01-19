@@ -1,8 +1,6 @@
 
 package com.web.chon.ejb;
 
-
-
 import com.web.chon.dominio.Producto;
 import com.web.chon.negocio.NegocioProducto;
 import java.util.List;

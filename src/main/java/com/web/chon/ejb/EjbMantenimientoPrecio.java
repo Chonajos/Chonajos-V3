@@ -1,7 +1,6 @@
 package com.web.chon.ejb;
 
 import com.web.chon.dominio.MantenimientoPrecios;
-import com.web.chon.dominio.Subproducto;
 import com.web.chon.negocio.NegocioMantenimientoPrecio;
 import com.web.chon.util.TiempoUtil;
 import java.math.BigDecimal;

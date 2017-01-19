@@ -1,13 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.web.chon.ejb;
 
 import com.web.chon.dominio.EntradaMenudeoProducto;
 import com.web.chon.negocio.NegocioMenudeoProducto;
-import com.web.chon.util.TiempoUtil;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.logging.Level;
@@ -29,8 +23,6 @@ public class EjbEntradaMenudeoProducto implements NegocioMenudeoProducto {
 
     @Override
     public int insertEntradaMenudeoProducto(EntradaMenudeoProducto entrada) {
-        System.out.println("::::::::::::::::::::::::::::::::");
-        System.out.println(entrada.toString());
         try {
 
             Query query = em.createNativeQuery("INSERT INTO ENTRADAMENUDEOPRODUCTO (ID_EMMP_PK,ID_EMM_FK,ID_SUBPRODUCTO_FK,ID_TIPO_EMPAQUE_FK,KILOS_TOTALES,CANTIDAD_EMPACAQUE,COMENTARIOS,PRECIO,PORCENTAJEMERMA)VALUES (?,?,?,?,?,?,?,?,?)");

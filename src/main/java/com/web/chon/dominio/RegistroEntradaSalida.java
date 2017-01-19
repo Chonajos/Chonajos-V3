@@ -7,7 +7,7 @@ import java.util.Date;
 
 /**
  *
- * @author 
+ * @author Juan de la Cruz
  */
 public class RegistroEntradaSalida implements Serializable{
     private static final long serialVersionUID = 1L;

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.web.chon.ejb;
 
 import com.web.chon.dominio.Municipios;
@@ -21,28 +16,23 @@ import javax.persistence.Query;
  */
 @Stateless(mappedName = "ejbCatMunicipio")
 public class EjbCatMunicipio implements NegocioCatMunicipio {
-    
+
     @PersistenceContext(unitName = "persistenceJR")
     EntityManager em;
 
     @Override
-    public List<Object[]> getMunicipios(int idEntidad) 
-    {
-    try {
-
-            System.out.println("EJB_GET_MUNICIPIOS");
+    public List<Object[]> getMunicipios(int idEntidad) {
+        try {
             Query query = em.createNativeQuery("SELECT * FROM MUNICIPIOS WHERE ID_ENTIDAD_FK=? order by nombre_municipio");
             query.setParameter(1, idEntidad);
             List<Object[]> resultList = null;
             resultList = query.getResultList();
             return resultList;
-        } catch (Exception ex) 
-        {
+        } catch (Exception ex) {
             Logger.getLogger(EjbCatEntidad.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
     }
-            
 
     @Override
     public Object[] getMunicipioById(int idMunicipio) {
@@ -63,5 +53,5 @@ public class EjbCatMunicipio implements NegocioCatMunicipio {
     public int insertMunicipio(Municipios muni) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
 }

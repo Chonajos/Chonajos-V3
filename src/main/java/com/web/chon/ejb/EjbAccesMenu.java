@@ -1,4 +1,3 @@
-
 package com.web.chon.ejb;
 
 import com.web.chon.negocio.NegocioAccesMenu;
@@ -41,12 +40,11 @@ public class EjbAccesMenu implements NegocioAccesMenu {
     public int delete(BigDecimal idRol, BigDecimal idMenu) {
 
         try {
-            System.out.println("elimina "+idRol +" "+idMenu);
             Query query = em.createNativeQuery("DELETE ACCES_MENU WHERE ID_MENU_FK = ? AND ID_ROL_FK = ?");
 
             query.setParameter(1, idMenu);
             query.setParameter(2, idRol);
-            
+
             return query.executeUpdate();
         } catch (Exception ex) {
             Logger.getLogger(EjbAccesMenu.class.getName()).log(Level.SEVERE, null, ex);
@@ -57,7 +55,6 @@ public class EjbAccesMenu implements NegocioAccesMenu {
     @Override
     public int create(BigDecimal idRol, BigDecimal idMenu) {
         try {
-            System.out.println("ejb "+idRol +" idmenu "+idMenu);
             Query query = em.createNativeQuery("INSERT INTO ACCES_MENU(ID_MENU_FK,ID_ROL_FK) VALUES(?,?)");
 
             query.setParameter(1, idMenu);
