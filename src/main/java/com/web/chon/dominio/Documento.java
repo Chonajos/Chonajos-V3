@@ -38,11 +38,15 @@ public class Documento implements Serializable {
     private BigDecimal idTipoD;
     private BigDecimal idLlave;
     private BigDecimal idSucursalFk;
+    private String nombreSucursalFk;
 
     @Override
     public String toString() {
-        return "Documento{" + "idDocumentoPk=" + idDocumentoPk + ", idTipoDocumento=" + idTipoDocumento + ", idAbonoFk=" + idAbonoFk + ", idClienteFk=" + idClienteFk + ", idStatusFk=" + idStatusFk + ", monto=" + monto + ", fechaCobro=" + fechaCobro + ", comentario=" + comentario + ", idAbonoDocumentoFk=" + idAbonoDocumentoFk + ", numeroCheque=" + numeroCheque + ", factura=" + factura + ", banco=" + banco + ", librador=" + librador + ", idFormaCobroFk=" + idFormaCobroFk + ", idDocumentoPadreFk=" + idDocumentoPadreFk + ", nombreStatus=" + nombreStatus + ", nombreCliente=" + nombreCliente + ", nombreFormaCobro=" + nombreFormaCobro + ", totalAbonado=" + totalAbonado + ", idTipoD=" + idTipoD + ", idLlave=" + idLlave + ", idSucursalFk=" + idSucursalFk + '}';
+        return "Documento{" + "idDocumentoPk=" + idDocumentoPk + ", idTipoDocumento=" + idTipoDocumento + ", idAbonoFk=" + idAbonoFk + ", idClienteFk=" + idClienteFk + ", idStatusFk=" + idStatusFk + ", monto=" + monto + ", fechaCobro=" + fechaCobro + ", comentario=" + comentario + ", idAbonoDocumentoFk=" + idAbonoDocumentoFk + ", numeroCheque=" + numeroCheque + ", factura=" + factura + ", banco=" + banco + ", librador=" + librador + ", idFormaCobroFk=" + idFormaCobroFk + ", idDocumentoPadreFk=" + idDocumentoPadreFk + ", nombreStatus=" + nombreStatus + ", nombreCliente=" + nombreCliente + ", nombreFormaCobro=" + nombreFormaCobro + ", totalAbonado=" + totalAbonado + ", idTipoD=" + idTipoD + ", idLlave=" + idLlave + ", idSucursalFk=" + idSucursalFk + ", nombreSucursalFk=" + nombreSucursalFk + '}';
     }
+
+    
+    
 
     
     public void reset() {
@@ -65,8 +69,18 @@ public class Documento implements Serializable {
         idDocumentoPadreFk = null;
         totalAbonado=null;
         idSucursalFk=null;
+        nombreSucursalFk=null;
+    }
+    
+    public String getNombreSucursalFk() {
+        return nombreSucursalFk;
     }
 
+    public void setNombreSucursalFk(String nombreSucursalFk) {
+        this.nombreSucursalFk = nombreSucursalFk;
+    }
+
+    
     public BigDecimal getIdSucursalFk() {
         return idSucursalFk;
     }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2017-01-13T13:30:20 -->
+<!-- Created with Jaspersoft Studio version 6.0.1.final using JasperReports Library version 6.0.0  -->
+<!-- 2017-01-19T12:04:01 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EntradaMayoreoV1" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="df013db5-f76e-44d3-b0df-bcbc46d93160">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="AdaptadorJuan"/>
 	<style name="Title" fontName="Times New Roman" fontSize="50" isBold="true"/>
 	<style name="SubTitle" forecolor="#736343" fontName="Arial" fontSize="18"/>
 	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
@@ -131,6 +131,33 @@
 			<rightPen lineWidth="0.5" lineColor="#000000"/>
 		</box>
 	</style>
+	<style name="Table 5_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table 5_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table 5_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
 	<subDataset name="Dataset1" uuid="97c72877-a34b-423c-a3bc-694d763aba9f">
 		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="AdaptadorChoni.xml"/>
@@ -181,6 +208,37 @@ WHERE EMP.ID_EM_FK= $P{parametro}]]>
 			<variableExpression><![CDATA[$F{TOTAL}]]></variableExpression>
 		</variable>
 	</subDataset>
+	<subDataset name="Dataset2" uuid="b2ac8d3e-309b-4672-819d-fb4b225aca76">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="AdaptadorJuan"/>
+		<parameter name="idSucursal" class="java.lang.String">
+			<parameterDescription><![CDATA[]]></parameterDescription>
+		</parameter>
+		<queryString language="SQL">
+			<![CDATA[select cb.NOMBRE_BANCO,cb.RAZON,cb.CUENTA,cb.CLABE,cb.SUCURSAL from CUENTA_SUCURSAL_1 cs 
+inner join CUENTA_BANCARIA cb on cb.ID_CUENTA_BANCARIA_PK= cs.ID_ID_CUENTA_BANCARIA_1_FK
+where cs.ID_SUCURSAL_1_FK=$P{idSucursal}]]>
+		</queryString>
+		<field name="NOMBRE_BANCO" class="java.lang.String"/>
+		<field name="RAZON" class="java.lang.String"/>
+		<field name="CUENTA" class="java.math.BigDecimal"/>
+		<field name="CLABE" class="java.math.BigDecimal"/>
+		<field name="SUCURSAL" class="java.math.BigDecimal"/>
+		<group name="NOMBRE_BANCO">
+			<groupExpression><![CDATA[$F{NOMBRE_BANCO}]]></groupExpression>
+		</group>
+		<group name="RAZON">
+			<groupExpression><![CDATA[$F{RAZON}]]></groupExpression>
+		</group>
+		<group name="CUENTA">
+			<groupExpression><![CDATA[$F{CUENTA}]]></groupExpression>
+		</group>
+		<group name="CLABE">
+			<groupExpression><![CDATA[$F{CLABE}]]></groupExpression>
+		</group>
+		<group name="SUCURSAL">
+			<groupExpression><![CDATA[$F{SUCURSAL}]]></groupExpression>
+		</group>
+	</subDataset>
 	<parameter name="nombreSucursal" class="java.lang.String"/>
 	<parameter name="carro" class="java.lang.String"/>
 	<parameter name="fecha" class="java.lang.String"/>
@@ -198,6 +256,7 @@ WHERE EMP.ID_EM_FK= $P{parametro}]]>
 	<parameter name="cantidadProvedor" class="java.math.BigDecimal"/>
 	<parameter name="cantidadBodega" class="java.math.BigDecimal"/>
 	<parameter name="fechaPago" class="java.lang.String"/>
+	<parameter name="idSucursalFk" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT SYSDATE FROM DUAL]]>
 	</queryString>
@@ -258,7 +317,7 @@ WHERE EMP.ID_EM_FK= $P{parametro}]]>
 					<text><![CDATA[Carro:]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="120" y="21" width="120" height="20" uuid="2237c0ad-9c42-4e4d-b70a-276ba8f31a28"/>
+					<reportElement x="120" y="21" width="148" height="20" uuid="2237c0ad-9c42-4e4d-b70a-276ba8f31a28"/>
 					<textElement verticalAlignment="Middle">
 						<font size="14"/>
 					</textElement>
@@ -293,7 +352,7 @@ WHERE EMP.ID_EM_FK= $P{parametro}]]>
 					<text><![CDATA[Provedor:]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="240" y="21" width="110" height="20" uuid="f3ef2115-44c2-4182-895e-3e02e4d98ad2"/>
+					<reportElement x="276" y="21" width="110" height="20" uuid="f3ef2115-44c2-4182-895e-3e02e4d98ad2"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="14"/>
 					</textElement>
@@ -342,14 +401,14 @@ WHERE EMP.ID_EM_FK= $P{parametro}]]>
 					<text><![CDATA[Recibió:]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="82" y="152" width="210" height="22" uuid="80faf234-a556-4123-bd2c-093a34c7cca6"/>
+					<reportElement x="82" y="152" width="498" height="22" uuid="80faf234-a556-4123-bd2c-093a34c7cca6"/>
 					<textElement verticalAlignment="Middle">
 						<font size="14"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{nombreRecibidor}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="98" y="131" width="360" height="20" uuid="19e857fa-7b92-4513-8363-bcbd308740cc"/>
+					<reportElement x="98" y="131" width="482" height="20" uuid="19e857fa-7b92-4513-8363-bcbd308740cc"/>
 					<textElement>
 						<font size="14"/>
 					</textElement>
@@ -406,7 +465,7 @@ WHERE EMP.ID_EM_FK= $P{parametro}]]>
 				</textField>
 			</frame>
 		</band>
-		<band height="125">
+		<band height="110">
 			<componentElement>
 				<reportElement x="14" y="20" width="768" height="90" uuid="14c392ce-4ccd-4c57-b7de-b0d52ee4be2d">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
@@ -654,14 +713,28 @@ WHERE EMP.ID_EM_FK= $P{parametro}]]>
 				</jr:table>
 			</componentElement>
 		</band>
-		<band height="51">
+		<band height="145">
 			<textField>
-				<reportElement x="90" y="10" width="600" height="30" uuid="8f47fcf5-7e33-4984-8503-5c6b9dc73de6"/>
+				<reportElement x="110" y="90" width="600" height="30" uuid="8f47fcf5-7e33-4984-8503-5c6b9dc73de6"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="13"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{leyenda}]]></textFieldExpression>
 			</textField>
+			<line>
+				<reportElement x="590" y="40" width="170" height="1" uuid="704e1cb9-7e03-478b-8a08-8fea7856ca12"/>
+			</line>
+			<staticText>
+				<reportElement x="620" y="50" width="100" height="14" uuid="141dae69-0d9e-45e2-9589-d41cf817475a"/>
+				<text><![CDATA[Nombre y Firma ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="70" y="50" width="100" height="14" uuid="8fa81bef-92c0-4ccf-a586-10ad6da2ecac"/>
+				<text><![CDATA[Recibió  Firma ]]></text>
+			</staticText>
+			<line>
+				<reportElement x="25" y="40" width="170" height="1" uuid="2fd9bd50-873b-46f1-a20a-6fc0a5ad59ad"/>
+			</line>
 		</band>
 	</detail>
 	<summary>

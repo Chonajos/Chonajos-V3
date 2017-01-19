@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2016-10-26T15:22:22 -->
+<!-- Created with Jaspersoft Studio version 6.0.1.final using JasperReports Library version 6.0.0  -->
+<!-- 2017-01-19T09:42:57 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ticket" pageWidth="219" pageHeight="1224" columnWidth="179" leftMargin="20" rightMargin="20" topMargin="4" bottomMargin="20" isIgnorePagination="true" uuid="cce07992-6ec7-4616-8caf-ceb4ee12975b">
 	<property name="ireport.zoom" value="2.5937424601000028"/>
 	<property name="ireport.x" value="0"/>
@@ -48,9 +48,9 @@
 				<text><![CDATA[S DE RL DE CV]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="28" y="73" width="57" height="10" uuid="6e57c4b1-dfa7-4eba-a047-8b089afdeb7c"/>
+				<reportElement x="32" y="73" width="90" height="10" uuid="6e57c4b1-dfa7-4eba-a047-8b089afdeb7c"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="6"/>
+					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{fecha}]]></textFieldExpression>
 			</textField>

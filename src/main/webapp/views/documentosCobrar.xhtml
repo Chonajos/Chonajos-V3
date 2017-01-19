@@ -251,7 +251,7 @@
                             </p:selectOneMenu>
                         </div>
                         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 alignLeft ">
-                            <p:outputLabel class="col-lg-3 col-md-2 col-sm-4 col-xs-12 alignLeft"  for="autocompleteCliente"
+                            <p:outputLabel class="col-lg-6 col-md-2 col-sm-4 col-xs-12 alignLeft"  for="autocompleteCliente"
                                            value ="Cliente:" /> 
                             <p:autoComplete  placeholder="Seleccione un Cliente" id="autocompleteCliente"  required="false" 
                                              requiredMessage="Ingresa un valor para el campo Cliente." 
@@ -295,9 +295,14 @@
                     <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <p:dataTable id="tabla" var="model" value="#{beanDocumentosCobrar.listaDocumentos}" 
                                      scrollable="true" scrollHeight="300"
-                                     styleClass="ui-datatable-hor-scroll"  
+                                     styleClass="ui-datatable-hor-scroll" rowStyleClass="#{model.idStatusFk.intValue() eq 1 ? 'alert-info': (model.idStatusFk.intValue()  eq 2 ? 'alert-warning':(model.idStatusFk.intValue()  eq 3 ? 'alert-success':'alert-danger'))}"
+                                      
                                      rowKey="#{model.idDocumentoPk}"
                                      emptyMessage="No se encontraron registros.">
+                            <p:column headerText="Sucursal" width="50px;" class="alignCenter">
+                                <h:outputText value="#{model.nombreSucursalFk}" >     
+                                </h:outputText>
+                            </p:column>
                             <p:column headerText="Cliente" width="50px;" class="alignCenter">
                                 <h:outputText value="#{model.nombreCliente}" >     
                                 </h:outputText>

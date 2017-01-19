@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2017-01-16T17:03:53 -->
+<!-- Created with Jaspersoft Studio version 6.0.1.final using JasperReports Library version 6.0.0  -->
+<!-- 2017-01-19T12:05:55 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="credito" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="df013db5-f76e-44d3-b0df-bcbc46d93160">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -131,6 +131,33 @@
 			<rightPen lineWidth="0.5" lineColor="#000000"/>
 		</box>
 	</style>
+	<style name="Table 5_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table 5_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table 5_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
 	<subDataset name="DatasetCredito" uuid="3d032ba3-c959-4c6c-aaaf-9673846db138">
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 		<queryString>
@@ -182,6 +209,22 @@
 			<variableExpression><![CDATA[$F{saldoLiquidar}]]></variableExpression>
 		</variable>
 	</subDataset>
+	<subDataset name="DatasetSucursales" uuid="9eea528b-7038-4f8b-ae1e-624947b27b64">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="AdaptadorJuan"/>
+		<parameter name="idSucursal" class="java.lang.String">
+			<parameterDescription><![CDATA[]]></parameterDescription>
+		</parameter>
+		<queryString language="SQL">
+			<![CDATA[select cb.NOMBRE_BANCO,cb.RAZON,cb.CUENTA,cb.CLABE,cb.SUCURSAL from CUENTA_SUCURSAL_1 cs 
+inner join CUENTA_BANCARIA cb on cb.ID_CUENTA_BANCARIA_PK= cs.ID_ID_CUENTA_BANCARIA_1_FK
+where cs.ID_SUCURSAL_1_FK=$P{idSucursal}]]>
+		</queryString>
+		<field name="NOMBRE_BANCO" class="java.lang.String"/>
+		<field name="RAZON" class="java.lang.String"/>
+		<field name="CUENTA" class="java.math.BigDecimal"/>
+		<field name="CLABE" class="java.math.BigDecimal"/>
+		<field name="SUCURSAL" class="java.math.BigDecimal"/>
+	</subDataset>
 	<parameter name="nombreSucursal" class="java.lang.String"/>
 	<parameter name="fecha" class="java.lang.String"/>
 	<parameter name="leyenda" class="java.lang.String"/>
@@ -189,6 +232,7 @@
 	<parameter name="creditoUtilizado" class="java.lang.String"/>
 	<parameter name="creditoDisponible" class="java.lang.String"/>
 	<parameter name="lstCredito" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<parameter name="idSucursalFk" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT SYSDATE FROM DUAL]]>
 	</queryString>
@@ -299,9 +343,9 @@
 				</textField>
 			</frame>
 		</band>
-		<band height="207">
+		<band height="96">
 			<componentElement>
-				<reportElement x="0" y="0" width="780" height="200" isPrintWhenDetailOverflows="true" uuid="8b681ddc-29b9-45cb-9798-540a588dbc79">
+				<reportElement x="0" y="0" width="780" height="90" isPrintWhenDetailOverflows="true" uuid="8b681ddc-29b9-45cb-9798-540a588dbc79">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table 4_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table 4_CH"/>
@@ -551,9 +595,102 @@
 				</jr:table>
 			</componentElement>
 		</band>
-		<band height="51">
+		<band height="79">
+			<componentElement>
+				<reportElement x="0" y="10" width="640" height="59" uuid="101c9fbc-ed5a-47ee-a9c2-be8507f398ef"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="DatasetSucursales" uuid="84d0a268-3042-4163-8c6f-d4f7f40ef494">
+						<datasetParameter name="idSucursal">
+							<datasetParameterExpression><![CDATA[$P{idSucursalFk}]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:column width="100" uuid="607564dd-e2f9-4b3e-bca9-4e6aa7f544db">
+						<jr:columnHeader style="Table 5_CH" height="30">
+							<staticText>
+								<reportElement x="0" y="0" width="100" height="30" uuid="6d2ef97b-5d3c-4dea-865c-ff7226d42bed"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[BANCO]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table 5_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="100" height="30" uuid="2934fe3a-a9a7-4342-89dc-823379d14354"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{NOMBRE_BANCO}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="160" uuid="672b3f62-a9ee-4a5f-8d98-2f3c95a586b8">
+						<jr:columnHeader style="Table 5_CH" height="30">
+							<staticText>
+								<reportElement x="0" y="0" width="160" height="30" uuid="9b8ca430-9a24-437c-93c1-13b518c9e4c8"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[RAZON SOCIAL]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table 5_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="160" height="30" uuid="6ebf7da5-8899-4edb-8207-c5d6b1f98f6a"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{RAZON}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="130" uuid="5b3bd7f1-d251-4feb-a719-30f310a73118">
+						<jr:columnHeader style="Table 5_CH" height="30">
+							<staticText>
+								<reportElement x="0" y="0" width="130" height="30" uuid="72ea3a4a-c8f3-4630-a4b5-1e5864b2db93"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[CUENTA]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table 5_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="130" height="30" uuid="9fa9dd72-836a-4808-95e6-8123d8f5673c"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{CUENTA}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="170" uuid="e16fa3b4-a6a2-4a76-abd8-dc46cc642ad1">
+						<jr:columnHeader style="Table 5_CH" height="30">
+							<staticText>
+								<reportElement x="0" y="0" width="170" height="30" uuid="3eee4984-f313-4ea5-bdbc-2395cda8ae84"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[CLABE]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table 5_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="170" height="30" uuid="e7f6e820-fd7f-4169-bf23-92e4c7da4657"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{CLABE}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="79" uuid="f8bbfa24-d854-48a3-bbf6-38da7b7cf8dd">
+						<jr:columnHeader style="Table 5_CH" height="30">
+							<staticText>
+								<reportElement x="0" y="0" width="79" height="30" uuid="c9487f56-3452-4751-a6f1-bbb1c58157ea"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[SUCURSAL]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table 5_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="79" height="30" uuid="e3b36991-4066-44f7-bcb9-58aa63948176"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{SUCURSAL}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
+		<band height="50">
 			<textField>
-				<reportElement x="90" y="10" width="600" height="30" uuid="8f47fcf5-7e33-4984-8503-5c6b9dc73de6"/>
+				<reportElement x="83" y="10" width="600" height="30" uuid="8f47fcf5-7e33-4984-8503-5c6b9dc73de6"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="13"/>
 				</textElement>

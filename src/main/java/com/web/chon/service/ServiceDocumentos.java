@@ -108,6 +108,7 @@ public class ServiceDocumentos implements IfaceDocumentos {
             documento.setNombreCliente(object[16] == null ? "" : object[16].toString());
             documento.setNombreFormaCobro(object[17] == null ? "" : object[17].toString());
             documento.setNombreStatus(object[18] == null ? "" : object[18].toString());
+            documento.setNombreSucursalFk(object[19] == null ? "" : object[19].toString());
             documento.setTotalAbonado(ifaceAbonoDocumentos.getTotalAbonadoByIdDocumento(documento.getIdDocumentoPk()));
             lstDocumentos.add(documento);
         }
