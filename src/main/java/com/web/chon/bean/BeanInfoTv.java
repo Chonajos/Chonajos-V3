@@ -93,11 +93,6 @@ public class BeanInfoTv implements Serializable {
                 }
 
             }
-            try {
-                Thread.sleep(250);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(BeanInfoTv.class.getName()).log(Level.SEVERE, null, ex);
-            }
 
             byte[] image = subproducto.getFichero();
             return new DefaultStreamedContent(new ByteArrayInputStream(image), imageType, subproducto.getIdSubproductoPk());
