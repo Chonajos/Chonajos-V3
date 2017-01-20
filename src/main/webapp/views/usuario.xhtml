@@ -25,7 +25,7 @@
                     <p:commandButton value="Nuevo" update=":formUsuario" ajax="true" action="#{beanCatUsuario.viewNew}" icon="ui-icon-person" onclick="PF('statusDialog').show()"/>
                     <p:commandButton value="Eliminar" update=":formUsuario" ajax="true" action="#{beanCatUsuario.delete()}" icon="ui-icon-trash" onclick="PF('statusDialog').show()"/>
                 </div>
-                <p:dataTable var="model" value="#{beanCatUsuario.model}" rows="10" scrollable="true" rowStyleClass="#{model.status eq 1 ? 'alert-info': 'alert-danger'}"
+                <p:dataTable var="model" value="#{beanCatUsuario.model}" rows="20" scrollable="true" rowStyleClass="#{model.status eq 1 ? 'alert-info': 'alert-danger'}"
                              paginator="true" selection="#{beanCatUsuario.selectedUsuario}" rowKey="#{model.idUsuarioPk}"
                              emptyMessage="No se encontraron Registros.">
 
