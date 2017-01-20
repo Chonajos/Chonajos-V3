@@ -34,7 +34,7 @@
                         <h:outputText value="#{model.idUsuarioPk}" />
                     </p:column>
 
-                    <p:column headerText="Nombre del Usuario" width ="120px;" class="alignLeft">
+                    <p:column headerText="Nombre del Usuario" filterBy="#{model.nombreUsuario}" width ="120px;" class="alignLeft">
                         <h:outputText value="#{model.nombreUsuario}" />
                     </p:column>
 
@@ -46,7 +46,7 @@
                         <h:outputText value="#{model.amaternoUsuario}" />
                     </p:column>
 
-                    <p:column headerText="UserName o Alias" width ="90px;" class="alignLeft">
+                    <p:column headerText="UserName o Alias" filterBy="#{model.claveUsuario}" width ="90px;" class="alignLeft">
                         <h:outputText value="#{model.claveUsuario}" />
                     </p:column>
 
