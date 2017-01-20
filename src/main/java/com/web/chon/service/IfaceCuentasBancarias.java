@@ -6,6 +6,7 @@
 package com.web.chon.service;
 
 import com.web.chon.dominio.CuentaBancaria;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,4 +16,5 @@ import java.util.List;
  */
 public interface IfaceCuentasBancarias {
     public ArrayList<CuentaBancaria> getCuentas();
+    public ArrayList<CuentaBancaria> getCuentasByIdSucursalFk(BigDecimal idSucursalFk);
 }

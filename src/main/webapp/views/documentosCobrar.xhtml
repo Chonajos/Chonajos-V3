@@ -295,7 +295,7 @@
                     <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <p:dataTable id="tabla" var="model" value="#{beanDocumentosCobrar.listaDocumentos}" 
                                      scrollable="true" scrollHeight="300"
-                                     styleClass="ui-datatable-hor-scroll" rowStyleClass="#{model.idStatusFk.intValue() eq 1 ? 'alert-info': (model.idStatusFk.intValue()  eq 2 ? 'alert-warning':(model.idStatusFk.intValue()  eq 3 ? 'alert-success':'alert-danger'))}"
+                                     styleClass="ui-datatable-hor-scroll" rowStyleClass="#{model.idStatusFk.intValue() eq 1 ? 'alert-warning': (model.idStatusFk.intValue()  eq 2 ? 'alert-success':(model.idStatusFk.intValue()  eq 3 ? 'alert-danger':' alert-success'))}"
                                       
                                      rowKey="#{model.idDocumentoPk}"
                                      emptyMessage="No se encontraron registros.">

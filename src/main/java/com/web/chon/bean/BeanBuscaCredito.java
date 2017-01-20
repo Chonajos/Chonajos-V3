@@ -36,6 +36,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -43,9 +45,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Level;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.ServletContext;
+import javax.sql.DataSource;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRExporter;
 import net.sf.jasperreports.engine.JRExporterParameter;
@@ -83,6 +90,7 @@ public class BeanBuscaCredito implements Serializable {
     @Autowired private IfaceCuentasBancarias ifaceCuentasBancarias;
     @Autowired private IfaceCatSucursales ifaceCatSucursales;
     @Autowired private IfacePagosBancarios ifacePagosBancarios;
+    
     
     private Logger logger = LoggerFactory.getLogger(BeanBuscaCredito.class);
 
@@ -173,9 +181,11 @@ public class BeanBuscaCredito implements Serializable {
     
     private boolean banderaAbono;
     private BigDecimal numeroAbono;
+    private ArrayList<CuentaBancaria> lstCuentas;
 
     @PostConstruct
     public void init() {
+        lstCuentas=new ArrayList<CuentaBancaria>();
         banderaAbono=true;
         numeroAbono = new BigDecimal(0);
         pagoBancario = new PagosBancarios();
@@ -190,7 +200,6 @@ public class BeanBuscaCredito implements Serializable {
         abono.setIdtipoAbonoFk(new BigDecimal(1));
         listaSucursales = new ArrayList<Sucursal>();
         listaSucursales = ifaceCatSucursales.getSucursales();
-
         usuarioDominio = context.getUsuarioAutenticado();
         dataAbonar = new SaldosDeudas();
         modelo = new ArrayList<SaldosDeudas>();
@@ -207,7 +216,6 @@ public class BeanBuscaCredito implements Serializable {
         opcaja.setIdUserFk(usuarioDominio.getIdUsuario());
         opcaja.setEntradaSalida(entradaSalida);
         idSucursal = new BigDecimal(usuarioDominio.getSucId());
-
         opcaja.setIdSucursalFk(new BigDecimal(usuarioDominio.getSucId()));
         //-- Datos para Transferencias Bancarias o Dépositos Bancarios--//
         listaCuentas = ifaceCuentasBancarias.getCuentas();
@@ -220,6 +228,7 @@ public class BeanBuscaCredito implements Serializable {
         habilitaBotones = true;
         idCuentaDestinoBean = new BigDecimal(1);
         filtroIdSucursalFk = new BigDecimal(usuarioDominio.getSucId());
+        
     }
 
     public void cancelarAbonar() {
@@ -1211,7 +1220,8 @@ bandera = true;
 
     }
 
-    public void reporteCredito() {
+    public void reporteCredito() 
+    {
         if (cliente != null) {
             setParameterTicketCredito();
             generateReport(cliente.getId_cliente().intValue(), "creditos.jasper",false);
@@ -1226,8 +1236,11 @@ bandera = true;
         NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
         DecimalFormat df = new DecimalFormat("$#,###.##");
         Date date = new Date();
+        //modelo.get(1).getIdSucursal()
+        lstCuentas = ifaceCuentasBancarias.getCuentasByIdSucursalFk(opcaja.getIdSucursalFk());
 
         JRBeanCollectionDataSource collectionCredito = new JRBeanCollectionDataSource(modelo);
+        JRBeanCollectionDataSource listaCuentasBancarias = new JRBeanCollectionDataSource(lstCuentas);
 
         paramReport.put("creditoDisponible", df.format(cliente.getCreditoDisponible()));
         paramReport.put("creditoUtilizado", df.format(cliente.getUtilizadoTotal()));
@@ -1235,6 +1248,8 @@ bandera = true;
         paramReport.put("fecha", TiempoUtil.getFechaDDMMYYYYHHMM(date));
         paramReport.put("nombreSucursal", usuarioDominio.getNombreSucursal());
         paramReport.put("lstCredito", collectionCredito);
+        paramReport.put("lstCuentas", listaCuentasBancarias);
+        
         paramReport.put("leyenda", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:" + usuarioDominio.getTelefonoSucursal());
 
     }

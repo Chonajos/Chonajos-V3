@@ -19,11 +19,42 @@ public class CuentaBancaria implements Serializable {
     private String nombreBanco;
     private BigDecimal cuenta;
     private BigDecimal idUsuarioFk;
+    private BigDecimal  clabe;
+    private BigDecimal sucursal;
+    private String razon;
+    
 
     @Override
     public String toString() {
         return "CuentaBancaria{" + "idCuentaBancariaPk=" + idCuentaBancariaPk + ", nombreBanco=" + nombreBanco + ", cuenta=" + cuenta + '}';
     }
+
+    public BigDecimal getClabe() {
+        return clabe;
+    }
+
+    public void setClabe(BigDecimal clabe) {
+        this.clabe = clabe;
+    }
+
+    public BigDecimal getSucursal() {
+        return sucursal;
+    }
+
+    public void setSucursal(BigDecimal sucursal) {
+        this.sucursal = sucursal;
+    }
+
+    public String getRazon() {
+        return razon;
+    }
+
+    public void setRazon(String razon) {
+        this.razon = razon;
+    }
+
+    
+    
 
     public BigDecimal getIdUsuarioFk() {
         return idUsuarioFk;

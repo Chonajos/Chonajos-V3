@@ -51,4 +51,24 @@ public class ServiceCuentaBancaria implements IfaceCuentasBancarias {
         }
         return lstCuentas;
     }
+
+    @Override
+    public ArrayList<CuentaBancaria> getCuentasByIdSucursalFk(BigDecimal idSucursalFk) {
+    
+        getEjb();
+        ArrayList<CuentaBancaria> lstCuentas = new ArrayList<CuentaBancaria>();
+        List<Object[]> lstObject = new ArrayList<Object[]>();
+        lstObject = ejb.getCuentasByIdSucursalFk(idSucursalFk);
+        for (Object[] object : lstObject) {
+            CuentaBancaria cuenta = new CuentaBancaria();
+            cuenta.setNombreBanco(object[0] == null ? null : object[0].toString());
+            cuenta.setRazon(object[1] == null ? null : object[1].toString());
+            cuenta.setCuenta(object[2] == null ? null : new BigDecimal(object[2].toString()));
+            cuenta.setClabe(object[3] == null ? null : new BigDecimal(object[3].toString()));
+            cuenta.setSucursal(object[4] == null ? null : new BigDecimal(object[4].toString()));
+            lstCuentas.add(cuenta);
+        }
+        return lstCuentas;
+    
+    }
 }
