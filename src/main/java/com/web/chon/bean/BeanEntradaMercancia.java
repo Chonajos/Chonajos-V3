@@ -193,7 +193,7 @@ public class BeanEntradaMercancia implements Serializable {
         EntradaMercancia entrada_mercancia = new EntradaMercancia();
 
         try {
-            if (validaDatos()) {
+            //if (validaDatos()) {
                 if (!listaMercanciaProducto.isEmpty() && listaMercanciaProducto.size() > 0) {
                     calculaCantidadReal();
                     idEntradaMercancia = ifaceEntradaMercancia.getNextVal();
@@ -276,9 +276,9 @@ public class BeanEntradaMercancia implements Serializable {
                     JsfUtil.addErrorMessage("Error!", "Necesitas agregar al menos un producto para realizar la orden de venta.");
 
                 }
-            } else {
-                JsfUtil.addErrorMessage("Error!", "Necesitas completar todos los campos");
-            }
+//            } else {
+//                JsfUtil.addErrorMessage("Error!", "Necesitas completar todos los campos");
+//            }
 
         } catch (StackOverflowError ex) {
             ex.printStackTrace();
