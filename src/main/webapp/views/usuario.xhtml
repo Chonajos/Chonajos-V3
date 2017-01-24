@@ -65,6 +65,7 @@
                     <div class="form-group" align="right">
                         <p:commandButton value="Guardar" update=":formUsuario" ajax="true" action="#{beanCatUsuario.insert}" rendered="#{beanCatUsuario.viewEstate=='new'}" onclick="PF('statusDialog').show()"/>
                         <p:commandButton value="Actualizar" update=":formUsuario" ajax="true" action="#{beanCatUsuario.update}" rendered="#{beanCatUsuario.viewEstate=='searchById'}" onclick="PF('statusDialog').show()"/>
+                        <!--<p:commandButton value="Enviar correo" update=":formUsuario" ajax="true" action="{beanCatUsuario.sendEmail}" rendered="{beanCatUsuario.viewEstate=='searchById'}" onclick="PF('statusDialog').show()"/>-->
                         <p:commandButton value="Atras" immediate="true" resetValues="true" update=":formUsuario" ajax="true" action="#{beanCatUsuario.backView}" onclick="PF('statusDialog').show()"/>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">

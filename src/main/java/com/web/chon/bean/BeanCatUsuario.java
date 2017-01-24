@@ -8,14 +8,27 @@ import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceCatRol;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceCatUsuario;
+import com.web.chon.util.SendEmail;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.mail.Authenticator;
+import javax.mail.BodyPart;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-
 import org.springframework.stereotype.Component;
 
 /**
@@ -50,7 +63,6 @@ public class BeanCatUsuario implements BeanSimple {
 
     @PostConstruct
     public void init() {
-
         data = new Usuario();
         model = new ArrayList<Usuario>();
         lstRol = new ArrayList<Rol>();
@@ -113,7 +125,7 @@ public class BeanCatUsuario implements BeanSimple {
             //Se codifica la contraseña del usuario
             CharSequence encoder = passwordEncoder.encode(data.getClaveUsuario()).toString().toUpperCase();
             data.setContrasenaUsuario(encoder.toString());
-                    
+
             if (ifaceCatUsuario.updateUsuario(data) == 1) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro modificado."));
             } else {
@@ -143,6 +155,79 @@ public class BeanCatUsuario implements BeanSimple {
         setTitle("Catalogo de Usuarios");
         setViewEstate("init");
     }
+
+//    public void sendEmail() {
+//        
+//        SendEmail.send();
+//        System.out.println("enviar correo sencillo 1");
+////        if (data.getCorreoUsuario() == null || data.getCorreoUsuario().equals("")) {
+////            System.out.println("no se tiene registrado un correo");
+////        } else {
+//
+//        // La dirección de envío (to)
+//        System.out.println("direcion de envio1");
+//        String para = "juancruzh91@gmail.com";
+//
+//        // La dirección de la cuenta de envío (from)
+//        System.out.println("direcion from1");
+//        String de = "juancruzh91@gmail.com";
+//
+//        // El servidor (host). En este caso usamos localhost
+//        System.out.println("localhost 1");
+//
+////        =
+////=
+////=
+////
+////
+//        
+//
+//        String host = "smtp.gmail.com";
+//
+//        // Obtenemos las propiedades del sistema
+//        Properties propiedades = System.getProperties();
+//
+//        // Configuramos el servidor de correo
+//        System.out.println("configurar el servidor de correo 1");
+////        propiedades.setProperty("mail.smtp.host", host);
+//        propiedades.put("mail.smtp.host","smtp.gmail.com");
+//        propiedades.put("mail.smtp.socketFactory.port", "465");
+//        propiedades.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+//        propiedades.put("mail.smtp.auth", "true");
+//        propiedades.put("mail.smtp.port", "465");
+//
+//        // Obtenemos la sesión por defecto
+//        System.out.println("se obtiene la session por defect");
+//        Session session = Session.getInstance(propiedades,new Authenticator() {protected PasswordAuthentication getPasswordAuthentication() {return new PasswordAuthentication("juancruzh91@gmail.com", "juancruzh91");}});
+////        Session session = Session.getDefaultInstance(propiedades,new Authenticator() {protected PasswordAuthentication getPasswordAuthentication() {return new PasswordAuthentication("juancruzh91@gmail.com", "juancruzh91");}});
+//
+//        
+//        try {
+//            // Creamos un objeto mensaje tipo MimeMessage por defecto.
+//            MimeMessage mensaje = new MimeMessage(session);
+//
+//            // Asignamos el “de o from” al header del correo.
+//            mensaje.setFrom(new InternetAddress(de));
+//
+//            // Asignamos el “para o to” al header del correo.
+//            mensaje.addRecipient(Message.RecipientType.TO, new InternetAddress(para));
+//
+//            // Asignamos el asunto
+//            mensaje.setSubject("Primer correo sencillo");
+//
+//            // Asignamos el mensaje como tal
+//            mensaje.setText("El mensaje de nuestro primer correo");
+//
+//            // Enviamos el correo
+//            Transport.send(mensaje);
+//            System.out.println("Mensaje enviado");
+//        } catch (MessagingException e) {
+//            System.out.println("error :(");
+//            e.printStackTrace();
+//        }
+//    }
+
+    
 
     public Usuario getData() {
         return data;

@@ -14,6 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
 import com.web.chon.core.exception.SecurityAccessException;
 import com.web.chon.dominio.UsuarioDominio;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.mail.internet.MimeMessage;
+import javax.servlet.ServletRequest;
 
 @Service(value = "customFilter")
 public class CustomFilter extends OncePerRequestFilter {
@@ -24,6 +28,8 @@ public class CustomFilter extends OncePerRequestFilter {
     private PlataformaSecurityContext context;
 
     private UsuarioDominio usuario;
+
+    private Pattern pattern = null;
 
     @Override
     protected void doFilterInternal(HttpServletRequest req,
@@ -81,8 +87,9 @@ public class CustomFilter extends OncePerRequestFilter {
         }
 
 //        if (!urlPrimePush.equals("primepush/notify")) {
-        chain.doFilter(req, res);
-//        }
+        
+       
+            chain.doFilter(req, res);
     }
 
     private boolean isAjaxRequest(HttpServletRequest request) {
@@ -103,5 +110,20 @@ public class CustomFilter extends OncePerRequestFilter {
         throw new SecurityAccessException(
                 "No tiene permisos para ver esta Pagina.");
     }
+
+    //son para el envio de email
+//    private Matcher applyPattern(HttpServletRequest req) {
+//        Matcher m = pattern.matcher(req.getServletPath());
+//        if (!m.matches()) {
+//            m = null;
+//        }
+//
+//        req.setAttribute("matcher", m);
+//        return m;
+//    }
+//
+//    protected Matcher getMatcherFromRequest(ServletRequest req) {
+//        return (Matcher) req.getAttribute("matcher");
+//    }
 
 }
