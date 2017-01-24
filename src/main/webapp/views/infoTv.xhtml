@@ -16,7 +16,7 @@
             <div class="form-group">
                 <p:poll update="formContent" listener="#{beanInfoTv.generarListaMostrar}" interval="10"/>
                 <ui:repeat value="#{beanInfoTv.lstTempShow}" var="producto">
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 form-group">
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 form-group">
                         <div class="col-xs-12 col-md-12 col-sm-12 col-xs-12 noPadding form-group">
                             <h5><strong>#{producto.nombreSubproducto} <a style="font-weight: bold !important; color: green !important;">$:#{producto.precioProducto}</a> </strong></h5>
                         </div>

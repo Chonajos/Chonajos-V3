@@ -49,7 +49,7 @@ public class BeanInfoTv implements Serializable {
     private ArrayList<Subproducto> lstTempShow;
     private Subproducto subproducto;
     private int cont;
-    private int registroShow = 7;
+    private int registroShow = 5;
 
     @PostConstruct
     public void init() {
@@ -90,6 +90,7 @@ public class BeanInfoTv implements Serializable {
             for (Subproducto dominio : lstTempShow) {
                 if (dominio.getIdSubproductoPk().equals(idSubProducto)) {
                     subproducto = dominio;
+                    break;
                 }
 
             }

@@ -151,7 +151,7 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
 
     @Override
     public int getCarroSucursal(BigDecimal idSucursal) {
-        Query query = em.createNativeQuery("select count(*) from ENTRADAMERCANCIA where ID_SUCURSAL_FK=?");
+        Query query = em.createNativeQuery("select MAX(CARROSUCURSAL) from ENTRADAMERCANCIA where ID_SUCURSAL_FK=?");
         query.setParameter(1, idSucursal);
         return Integer.parseInt(query.getSingleResult().toString());
 
