@@ -61,10 +61,50 @@ public class ServiceConceptos implements IfaceConceptos {
         ArrayList<ConceptosES> lstConceptos= new ArrayList<ConceptosES>();
         List<Object[]> lstObject = new ArrayList<Object[]>();
         lstObject = ejb.getConceptos();
-        for (Object[] object : lstObject) {
+        for (Object[] object : lstObject) 
+        {
             ConceptosES c = new ConceptosES();
             c.setIdConceptoPk(object[0] == null ? null : new BigDecimal(object[0].toString()));
             c.setIdTipoOperacionFk(object[1] == null ? null : new BigDecimal(object[1].toString()));
+            c.setNombreOperacion(object[2] == null ? null : object[2].toString());
+            c.setNombre(object[3] == null ? null : object[3].toString());
+            c.setDescripcion(object[4] == null ? null : object[4].toString());
+            lstConceptos.add(c);
+        }
+        return lstConceptos;
+    }
+
+    @Override
+    public int insertConcepto(ConceptosES c) {
+        getEjb();
+        return ejb.insertConcepto(c);
+        
+    }
+
+    @Override
+    public int getNextVal() {
+        getEjb();
+        return ejb.getNextVal();
+    }
+
+    @Override
+    public int updateConcepto(ConceptosES c) {
+        getEjb();
+        return ejb.updateConcepto(c);
+    }
+
+    @Override
+    public ArrayList<ConceptosES> getConceptosByIdCategoria(BigDecimal id) {
+        getEjb();
+        ArrayList<ConceptosES> lstConceptos= new ArrayList<ConceptosES>();
+        List<Object[]> lstObject = new ArrayList<Object[]>();
+        lstObject = ejb.getConceptosByIdCategoria(id);
+        for (Object[] object : lstObject) 
+        {
+            ConceptosES c = new ConceptosES();
+            c.setIdConceptoPk(object[0] == null ? null : new BigDecimal(object[0].toString()));
+            c.setIdTipoOperacionFk(object[1] == null ? null : new BigDecimal(object[1].toString()));
+            //c.setNombreOperacion(object[2] == null ? null : object[2].toString());
             c.setNombre(object[2] == null ? null : object[2].toString());
             c.setDescripcion(object[3] == null ? null : object[3].toString());
             lstConceptos.add(c);

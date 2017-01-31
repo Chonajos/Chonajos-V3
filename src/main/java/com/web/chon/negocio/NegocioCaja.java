@@ -23,5 +23,6 @@ public interface NegocioCaja
     public List<Object[]> getCajas();
     public List<Object[]> getCajaByIdUsuarioPk(BigDecimal idUsuarioPk);
     public List<Object[]> getSucursalesByIdCaja(BigDecimal idCajaFk);
+    public List<Object[]> getCajasByIdSucusal(BigDecimal idSucusalFk);
     
 }

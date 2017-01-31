@@ -24,7 +24,7 @@ public class EjbEntradaMercanciaProducto implements NegocioEntradaMercanciaProdu
     @Override
     public int insertEntradaMercanciaProducto(EntradaMercanciaProducto producto) {
         try {
-            Query query = em.createNativeQuery("INSERT INTO ENTRADAMERCANCIAPRODUCTO (ID_EM_FK,ID_SUBPRODUCTO_FK,ID_TIPO_EMPAQUE_FK,KILOS_TOTALES,CANTIDAD_EMPACAQUE,COMENTARIOS,ID_BODEGA_FK,ID_TIPO_CONVENIO_FK,CONVENIO,KILOSPROMPROD,ID_EMP_PK)VALUES (?,?,?,?,?,?,?,?,?,?,?)");
+            Query query = em.createNativeQuery("INSERT INTO ENTRADAMERCANCIAPRODUCTO (ID_EM_FK,ID_SUBPRODUCTO_FK,ID_TIPO_EMPAQUE_FK,KILOS_TOTALES,CANTIDAD_EMPACAQUE,COMENTARIOS,ID_BODEGA_FK,ID_TIPO_CONVENIO_FK,CONVENIO,KILOSPROMPROD,ID_EMP_PK,EMPAQUES_PROVEDOR,KILOS_PROVEDOR)VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)");
             query.setParameter(1, producto.getIdEmFK());
             query.setParameter(2, producto.getIdSubProductoFK());
             query.setParameter(3, producto.getIdTipoEmpaqueFK());
@@ -36,6 +36,8 @@ public class EjbEntradaMercanciaProducto implements NegocioEntradaMercanciaProdu
             query.setParameter(9, producto.getPrecio());
             query.setParameter(10, producto.getKilospromprod());
             query.setParameter(11, producto.getIdEmpPK());
+            query.setParameter(12, producto.getEmpaquesProProvedor());
+            query.setParameter(13, producto.getKilosProProvedor());
 
             return query.executeUpdate();
 

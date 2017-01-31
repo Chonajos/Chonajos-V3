@@ -5,6 +5,7 @@
  */
 package com.web.chon.negocio;
 
+import java.math.BigDecimal;
 import java.util.List;
 import javax.ejb.Remote;
 
@@ -15,4 +16,5 @@ import javax.ejb.Remote;
 @Remote
 public interface NegocioTiposOperacion {
     public List<Object[]> getOperaciones();
+    public List<Object[]> getOperacionesByIdCategoria(BigDecimal id);
 }

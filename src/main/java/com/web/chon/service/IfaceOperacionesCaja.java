@@ -24,7 +24,7 @@ public interface IfaceOperacionesCaja {
     public int updateCorte(BigDecimal idOperacionPk,BigDecimal idCorteFk);
     public OperacionesCaja getOperacionByIdPk(BigDecimal idPk);
     
-    public ArrayList<OperacionesCaja> getOperacionesBy(BigDecimal idCajaFk,BigDecimal idOperacionFk,BigDecimal idConceptoFk,String fechaInicio, String fechaFin,BigDecimal idStatusFk,BigDecimal idUserFk,BigDecimal idCorte,BigDecimal inout);
+    public ArrayList<OperacionesCaja> getOperacionesBy(BigDecimal idCajaFk,BigDecimal idOperacionFk,BigDecimal idConceptoFk,String fechaInicio, String fechaFin,BigDecimal idStatusFk,BigDecimal idUserFk,BigDecimal idCorte,BigDecimal inout,BigDecimal idFormaPago);
     public ArrayList<OperacionesCaja> getTransferenciasEntrantes(BigDecimal idCajaFk);
     public ArrayList<OperacionesCaja> getDepositosEntrantes(BigDecimal idSucursalFk);
     public ArrayList<TipoOperacion> getOperacionesCorteBy(BigDecimal idCajaFk, BigDecimal idUserFk, BigDecimal idES);
@@ -34,8 +34,14 @@ public interface IfaceOperacionesCaja {
     public ArrayList<TipoOperacion> getOperacionesByIdCorteCajaFk(BigDecimal idCorteCajaFk,BigDecimal entrada_salida);
     public ArrayList<OperacionesCaja> getDetalles(BigDecimal idCajaFk,BigDecimal idUserFk,BigDecimal entrada_salida,BigDecimal idStatusFk);
     public ArrayList<OperacionesCaja> getDetallesCorte(BigDecimal idCajaFk, BigDecimal idUserFk, BigDecimal entrada_salida, BigDecimal idStatusFk,BigDecimal idCorteFk);
-    
+    public ArrayList<OperacionesCaja> getOperacionesByCategoria(BigDecimal idCategoriaFk,BigDecimal idSucursalFk,BigDecimal idCajaFk,BigDecimal idStatusFk,BigDecimal idConceptoFk,BigDecimal idTipoOperacionFk,String fechaInicio,String fechaFin);
     public ArrayList<OperacionesCaja> getOperaciones(BigDecimal idCajaFk,BigDecimal idEntradaSalida,BigDecimal idUsuarioFk);
+    
+    
+    //Prueba de Nuevos Métodos para Corte de Caja//
+    //-- no toco los alteriores para no afecar en caso de falla--//
+    public ArrayList<OperacionesCaja> getGenerales(BigDecimal idCajaFk,BigDecimal idEntradaSalida,BigDecimal idUsuarioFk,BigDecimal idStatusFk, BigDecimal idSucursalFk,BigDecimal TIPO);
+    
     
 
 }

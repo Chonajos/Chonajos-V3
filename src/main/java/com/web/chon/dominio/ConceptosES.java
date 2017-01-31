@@ -18,11 +18,43 @@ public class ConceptosES implements Serializable {
     private BigDecimal idTipoOperacionFk;
     private String nombre;
     private String descripcion;
+    private BigDecimal idStatusFk;
+    private String nombreStatus;
+    private String nombreOperacion;
 
     @Override
     public String toString() {
-        return "ConceptosES{" + "idConceptoPk=" + idConceptoPk + ", idTipoOperacionFk=" + idTipoOperacionFk + ", nombre=" + nombre + ", descripcion=" + descripcion + '}';
+        return "ConceptosES{" + "idConceptoPk=" + idConceptoPk + ", idTipoOperacionFk=" + idTipoOperacionFk + ", nombre=" + nombre + ", descripcion=" + descripcion + ", idStatusFk=" + idStatusFk + ", nombreStatus=" + nombreStatus + ", nombreOperacion=" + nombreOperacion + '}';
     }
+    
+
+    public String getNombreStatus() {
+        return nombreStatus;
+    }
+
+    public void setNombreStatus(String nombreStatus) {
+        this.nombreStatus = nombreStatus;
+    }
+
+    public String getNombreOperacion() {
+        return nombreOperacion;
+    }
+
+    public void setNombreOperacion(String nombreOperacion) {
+        this.nombreOperacion = nombreOperacion;
+    }
+
+    
+
+    public BigDecimal getIdStatusFk() {
+        return idStatusFk;
+    }
+
+    public void setIdStatusFk(BigDecimal idStatusFk) {
+        this.idStatusFk = idStatusFk;
+    }
+    
+    
 
    
     

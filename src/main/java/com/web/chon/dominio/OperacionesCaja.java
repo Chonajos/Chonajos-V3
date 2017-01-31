@@ -8,6 +8,7 @@ package com.web.chon.dominio;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import org.primefaces.model.StreamedContent;
 
 /**
  *
@@ -41,16 +42,21 @@ public class OperacionesCaja implements Serializable {
     private BigDecimal cuentaBanco;
     private BigDecimal idSucursalFk;
     private String nombreSucursal;
+    private BigDecimal idFormaPago;
+    private String nombrePago;
+    private StreamedContent productImage;
+    
+    
+    private byte[] fichero;
 
     @Override
     public String toString() {
         return "OperacionesCaja{" + "idOperacionesCajaPk=" + idOperacionesCajaPk + ", idCorteCajaFk=" + idCorteCajaFk + ", idCajaFk=" + idCajaFk + ", idCajaDestinoFk=" + idCajaDestinoFk + ", idConceptoFk=" + idConceptoFk + ", fecha=" + fecha + ", idStatusFk=" + idStatusFk + ", idUserFk=" + idUserFk + ", comentarios=" + comentarios + ", monto=" + monto + ", nombreUsuario=" + nombreUsuario + ", nombreCaja=" + nombreCaja + ", nombreCajaDestino=" + nombreCajaDestino + ", nombreStatus=" + nombreStatus + ", nombreConcepto=" + nombreConcepto + ", nombreOperacion=" + nombreOperacion + ", idTipoOperacionFk=" + idTipoOperacionFk + ", entradaSalida=" + entradaSalida + ", nombreEntradaSalida=" + nombreEntradaSalida + ", numero=" + numero + ", idCuentaDestinoFk=" + idCuentaDestinoFk + ", nombreBanco=" + nombreBanco + ", cuentaBanco=" + cuentaBanco + ", idSucursalFk=" + idSucursalFk + '}';
     }
-
-   
-    
     
     public void reset() {
+        idFormaPago=null;
+        nombrePago=null;
         idOperacionesCajaPk = null;
         idCorteCajaFk = null;
         idCajaFk = null;
@@ -73,8 +79,44 @@ public class OperacionesCaja implements Serializable {
         idCuentaDestinoFk=null;
         idSucursalFk = null;
         nombreSucursal = null;
-        
+       
     }
+
+    public StreamedContent getProductImage() {
+        return productImage;
+    }
+
+    public void setProductImage(StreamedContent productImage) {
+        this.productImage = productImage;
+    }
+
+    public byte[] getFichero() {
+        return fichero;
+    }
+
+    public void setFichero(byte[] fichero) {
+        this.fichero = fichero;
+    }
+
+    
+    public BigDecimal getIdFormaPago() {
+        return idFormaPago;
+    }
+
+    public void setIdFormaPago(BigDecimal idFormaPago) {
+        this.idFormaPago = idFormaPago;
+    }
+
+    public String getNombrePago() {
+        return nombrePago;
+    }
+
+    public void setNombrePago(String nombrePago) {
+        this.nombrePago = nombrePago;
+    }
+
+    
+    
 
     public String getNombreSucursal() {
         return nombreSucursal;

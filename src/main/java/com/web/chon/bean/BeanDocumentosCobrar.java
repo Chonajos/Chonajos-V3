@@ -147,21 +147,10 @@ public class BeanDocumentosCobrar implements Serializable {
     private Caja caja;
     private OperacionesCaja opcaja;
 
-    private static final BigDecimal entrada = new BigDecimal(1);
-    private static final BigDecimal salida = new BigDecimal(2);
+    private static final BigDecimal ENTRADA = new BigDecimal(1);
+    private static final BigDecimal SALIDA = new BigDecimal(2);
 
-    private static final BigDecimal statusOperacionRealizada = new BigDecimal(1);
-    private static final BigDecimal statusOperacionPendiente = new BigDecimal(2);
-    private static final BigDecimal statusOperacionRechazada = new BigDecimal(3);
 
-    private static final BigDecimal conceptoAbonoDocumentoEfectivo = new BigDecimal(13);
-    private static final BigDecimal conceptoAbonoDocumentoTransferencia = new BigDecimal(35);
-    private static final BigDecimal conceptoAbonoDocumentoCheques = new BigDecimal(36);
-    private static final BigDecimal conceptoAbonoDocumentoCuentas = new BigDecimal(37);
-
-    private static final BigDecimal conceptoAbonoCreditoCheque = new BigDecimal(30);
-
-    private static final BigDecimal entradaSalida = new BigDecimal(1);
 
     //Variables para el pago de Documentos
     private AbonoDocumentos ad;
@@ -178,6 +167,20 @@ public class BeanDocumentosCobrar implements Serializable {
     private BigDecimal total;
     private ArrayList<Sucursal> listaSucursales;
     private BigDecimal idSucursalFK;
+    
+    //-------------------------------//
+    private static final BigDecimal STATUS_REALIZADA = new BigDecimal(1);
+    private static final BigDecimal STATUS_PENDIENTE = new BigDecimal(2);
+    private static final BigDecimal STATUS_RECHAZADA = new BigDecimal(3);
+    private static final BigDecimal STATUS_CANCELADA = new BigDecimal(4);
+    
+    private static final BigDecimal EFECTIVO = new BigDecimal(1);
+    private static final BigDecimal TRANSFERENCIA = new BigDecimal(2);
+    private static final BigDecimal CHEQUE = new BigDecimal(3);
+    private static final BigDecimal DEPOSITO = new BigDecimal(4);
+    
+    private static final BigDecimal CONCEPTO = new BigDecimal(13);
+    private static final BigDecimal OPERACION = new BigDecimal(10);
 
     @PostConstruct
     public void init() {
@@ -211,8 +214,10 @@ public class BeanDocumentosCobrar implements Serializable {
         opcaja = new OperacionesCaja();
         opcaja.setIdCajaFk(caja.getIdCajaPk());
         opcaja.setIdUserFk(usuario.getIdUsuario());
-        opcaja.setIdStatusFk(statusOperacionRealizada);
+        opcaja.setIdStatusFk(STATUS_REALIZADA);
         opcaja.setIdSucursalFk(idSucursalFk);
+        opcaja.setIdConceptoFk(CONCEPTO);
+        opcaja.setIdTipoOperacionFk(OPERACION);
 
         opcuenta = new OperacionesCuentas();
         opcuenta.setIdUserFk(usuario.getIdUsuario());
@@ -316,7 +321,7 @@ public class BeanDocumentosCobrar implements Serializable {
             //Primero tengo que agregar una operacion en caja de ingreso del tipo de pago
             verificarAbono();
             opcaja.setMonto(dataAbonar.getMontoAbono());
-            opcaja.setEntradaSalida(entradaSalida);
+            opcaja.setEntradaSalida(ENTRADA);
             opcaja.setComentarios("C: "+documentoData.getNombreCliente() +" | NC: "+documentoData.getNumeroCheque());
             
             if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
@@ -327,9 +332,9 @@ public class BeanDocumentosCobrar implements Serializable {
                     pagoBancario.setFechaTranferencia(dataAbonar.getFechaTransferencia());
                     pagoBancario.setFolioElectronico(dataAbonar.getFolioElectronico());
                     if (dataAbonar.getIdTipoAbonoFk().intValue() == 2) {
-                        pagoBancario.setIdConceptoFk(conceptoAbonoDocumentoTransferencia);
+                        pagoBancario.setIdConceptoFk(CONCEPTO);
                     } else {
-                        pagoBancario.setIdConceptoFk(conceptoAbonoDocumentoCuentas);
+                        pagoBancario.setIdConceptoFk(CONCEPTO);
                     }
 
                     pagoBancario.setIdCuentaFk(idCuentaDestinoBean);
@@ -350,10 +355,11 @@ public class BeanDocumentosCobrar implements Serializable {
                 }
                 JsfUtil.addSuccessMessageClean("Se ha ingresado correctamente en la tabla de documentos por cobrar");
                 //si se ingreso la entrada a continuación se debe generar una salida de cheque por la cantidad del abono.
-                opcaja.setIdConceptoFk(conceptoAbonoCreditoCheque);
+                opcaja.setIdConceptoFk(CONCEPTO);
+                opcaja.setIdFormaPago(CHEQUE);
                 opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
                 opcaja.setMonto(dataAbonar.getMontoAbono());
-                opcaja.setEntradaSalida(salida);
+                opcaja.setEntradaSalida(SALIDA);
                 opcaja.setComentarios("C: "+documentoData.getNombreCliente() +" | NC: "+documentoData.getNumeroCheque());
             
                 if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
@@ -423,11 +429,13 @@ public class BeanDocumentosCobrar implements Serializable {
         switch (cobroCheque.getIdTipoCobro().intValue()) {
             case 1:
                 System.out.println("deposito");
-                opcaja.setIdConceptoFk(conceptoAbonoDocumentoCuentas);
+                opcaja.setIdConceptoFk(CONCEPTO);
+                opcaja.setIdFormaPago(DEPOSITO);
                 break;
             case 2:
                 System.out.println("efectivo");
-                opcaja.setIdConceptoFk(conceptoAbonoDocumentoEfectivo);
+                opcaja.setIdConceptoFk(CONCEPTO);
+                opcaja.setIdFormaPago(EFECTIVO);
                 break;
 
             default:
@@ -441,19 +449,23 @@ public class BeanDocumentosCobrar implements Serializable {
         switch (dataAbonar.getIdTipoAbonoFk().intValue()) {
             case 1:
                 System.out.println("Efectivo");
-                opcaja.setIdConceptoFk(conceptoAbonoDocumentoEfectivo);
+                opcaja.setIdConceptoFk(CONCEPTO);
+                opcaja.setIdFormaPago(EFECTIVO);
                 break;
             case 2:
                 System.out.println("Transferencia");
-                opcaja.setIdConceptoFk(conceptoAbonoDocumentoTransferencia);
+                opcaja.setIdConceptoFk(CONCEPTO);
+                opcaja.setIdFormaPago(TRANSFERENCIA);
                 break;
             case 3:
                 System.out.println("Cheque");
-                opcaja.setIdConceptoFk(conceptoAbonoDocumentoCheques);
+                opcaja.setIdConceptoFk(CONCEPTO);
+                opcaja.setIdFormaPago(CHEQUE);
                 break;
             case 4:
                 System.out.println("cuenta");
-                opcaja.setIdConceptoFk(conceptoAbonoDocumentoCuentas);
+                opcaja.setIdConceptoFk(CONCEPTO);
+                opcaja.setIdFormaPago(DEPOSITO);
                 break;
             default:
                 JsfUtil.addErrorMessageClean("Ocurrio un error contactar al administrador");
@@ -476,11 +488,14 @@ public class BeanDocumentosCobrar implements Serializable {
 
                 opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
                 opcaja.setMonto(documentoData.getMonto());
-                opcaja.setEntradaSalida(entrada);
+                opcaja.setEntradaSalida(ENTRADA);
                 if (cobroCheque.getIdTipoCobro().intValue() == 1) {
-                    opcaja.setIdConceptoFk(conceptoAbonoDocumentoCuentas);
+                    opcaja.setIdConceptoFk(CONCEPTO);
+                    
+                    opcaja.setIdFormaPago(DEPOSITO);
                 } else {
-                    opcaja.setIdConceptoFk(conceptoAbonoDocumentoEfectivo);
+                    opcaja.setIdConceptoFk(CONCEPTO);
+                    opcaja.setIdFormaPago(EFECTIVO);
                 }
                 opcaja.setComentarios("C: "+documentoData.getNombreCliente() +" | NC: "+documentoData.getNumeroCheque());
             
@@ -490,11 +505,12 @@ public class BeanDocumentosCobrar implements Serializable {
                     //para poder cobrar cheques es necesario transferirlos a la caja de Tere.
 
                     System.out.println("Se registro primer movimiento");
-                    opcaja.setIdConceptoFk(conceptoAbonoCreditoCheque);
+                    opcaja.setIdConceptoFk(CONCEPTO);
+                    opcaja.setIdFormaPago(CHEQUE);
 
                     opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
                     opcaja.setMonto(documentoData.getMonto());
-                    opcaja.setEntradaSalida(salida);
+                    opcaja.setEntradaSalida(SALIDA);
                     opcaja.setComentarios("C: "+documentoData.getNombreCliente() +" | NC: "+documentoData.getNumeroCheque());
             
                     if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
@@ -509,7 +525,7 @@ public class BeanDocumentosCobrar implements Serializable {
                     pagoBancario.setFechaDeposito(cobroCheque.getFechaDeposito());
                     //pagoBancario.setFechaTranferencia(dataAbonar.getFechaTransferencia());
                     pagoBancario.setFolioElectronico(cobroCheque.getFolioFicha());
-                    pagoBancario.setIdConceptoFk(conceptoAbonoDocumentoCuentas);
+                    pagoBancario.setIdConceptoFk(CONCEPTO);
                     pagoBancario.setIdCuentaFk(idCuentaDestinoBean);
                     pagoBancario.setIdStatusFk(new BigDecimal(2));
                     pagoBancario.setIdTipoFk(new BigDecimal(4));

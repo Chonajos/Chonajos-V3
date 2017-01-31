@@ -10,6 +10,7 @@ import com.web.chon.dominio.CorteCaja;
 import com.web.chon.dominio.DominioCajas;
 import com.web.chon.dominio.OperacionesCaja;
 import com.web.chon.dominio.Sucursal;
+import com.web.chon.dominio.Usuario;
 import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceCaja;
@@ -49,7 +50,9 @@ public class BeanCajas implements Serializable {
     private String viewEstate;
     private UsuarioDominio usuario;
     private BigDecimal idCajaBean;
-    private BigDecimal idSucursal;
+    private BigDecimal idSucursalBean;
+    private BigDecimal idUsuarioCajaBean;
+
     private BigDecimal totalEntradasEfectivo;
     private BigDecimal totalEntradasCheques;
     private BigDecimal totalEntradasCuentas;
@@ -60,33 +63,107 @@ public class BeanCajas implements Serializable {
     private ArrayList<Caja> listaCajas;
     private ArrayList<OperacionesCaja> lstOperacionesEntrada;
     private ArrayList<OperacionesCaja> lstOperacionesSalida;
+
+    private ArrayList<OperacionesCaja> lstOperacionesGeneralesEntrada;
+    private ArrayList<OperacionesCaja> lstOperacionesGeneralesSalida;
+
+    private ArrayList<OperacionesCaja> lstOperacionesGeneralesEntradaPendiente;
+    private ArrayList<OperacionesCaja> lstOperacionesGeneralesSalidaPendiente;
+
+    private ArrayList<OperacionesCaja> lstOperacionesGeneralesEntradaRechazada;
+    private ArrayList<OperacionesCaja> lstOperacionesGeneralesSalidaRechazada;
+
+    private ArrayList<OperacionesCaja> lstOperacionesGeneralesEntradaCancelada;
+    private ArrayList<OperacionesCaja> lstOperacionesGeneralesSalidaCancelada;
+
+    private ArrayList<OperacionesCaja> lstOperacionesDetallesEntrada;
+    private ArrayList<OperacionesCaja> lstOperacionesDetallesSalida;
+
     private ArrayList<DominioCajas> listaGeneral;
     private ArrayList<Sucursal> listaSucursal;
     private CorteCaja corteAnterior;
-    
+    private Caja caja;
+    private ArrayList<Usuario> listaResponsables;
+    private ArrayList<Caja> listaSucursales;
+    private DominioCajas data;
 
     private static final BigDecimal ENTRADA = new BigDecimal(1);
     private static final BigDecimal SALIDA = new BigDecimal(2);
     private static final BigDecimal CERO = new BigDecimal(2);
+    private static final BigDecimal STATUSOPERACIONREALIZADA = new BigDecimal(1);
+    private static final BigDecimal TIPO_1 = new BigDecimal(1);
+    private static final BigDecimal TIPO_2 = new BigDecimal(1);
+    private static final BigDecimal STATUSOPERACIONPENDIENTE = new BigDecimal(2);
+    private static final BigDecimal STATUSOPERACIONRECHAZADA = new BigDecimal(3);
 
     @PostConstruct
     public void init() {
         setTitle("Relación de Operaciones de Cajas");
         setViewEstate("init");
+        data = new DominioCajas();
         listaCajas = new ArrayList<Caja>();
         listaCajas = ifaceCaja.getCajas();
         lstOperacionesEntrada = new ArrayList<OperacionesCaja>();
+        lstOperacionesGeneralesEntrada = new ArrayList<OperacionesCaja>();
         lstOperacionesSalida = new ArrayList<OperacionesCaja>();
+        lstOperacionesEntrada = new ArrayList<OperacionesCaja>();
+        lstOperacionesGeneralesSalida = new ArrayList<OperacionesCaja>();
+        lstOperacionesDetallesEntrada = new ArrayList<OperacionesCaja>();
+        lstOperacionesDetallesSalida = new ArrayList<OperacionesCaja>();
         listaSucursal = new ArrayList<Sucursal>();
         listaSucursal = ifaceCatSucursales.getSucursales();
         listaGeneral = new ArrayList<DominioCajas>();
-        corteAnterior= new CorteCaja();
-        
+        corteAnterior = new CorteCaja();
+        usuario = context.getUsuarioAutenticado();
+        caja = ifaceCaja.getCajaByIdUsuarioPk(usuario.getIdUsuario());
+        idCajaBean = caja.getIdCajaPk();
+        listaResponsables = new ArrayList<Usuario>();
+
+        listaSucursales = new ArrayList<Caja>();
+        listaSucursales = ifaceCaja.getSucursalesByIdCaja(caja.getIdCajaPk());
+        idSucursalBean = new BigDecimal(usuario.getSucId());
+        buscarCajas();
+        buscarReponsables();
         buscar();
 
     }
 
+    public void buscarCajas() {
+        listaCajas.clear();
+        listaResponsables.clear();
+        listaCajas = ifaceCaja.getCajasByIdSucusal(idSucursalBean);
+        buscarReponsables();
+    }
+
+    public void buscarReponsables() {
+        listaResponsables.clear();
+        listaResponsables = ifaceOperacionesCaja.getResponsables(idCajaBean);
+        if (idCajaBean != null) {
+            if (!listaResponsables.isEmpty()) {
+                idUsuarioCajaBean = listaResponsables.get(0).getIdUsuarioPk();
+            }
+        }
+    }
+
+    public void generarCorte() {
+
+    }
+
     public void buscar() {
+        listaGeneral.clear();
+        lstOperacionesGeneralesEntrada.clear();
+        lstOperacionesGeneralesSalida.clear();
+        lstOperacionesEntrada.clear();
+        lstOperacionesSalida.clear();
+        lstOperacionesDetallesSalida.clear();
+        lstOperacionesDetallesEntrada.clear();
+
+        lstOperacionesGeneralesEntrada = ifaceOperacionesCaja.getGenerales(idCajaBean, ENTRADA, idUsuarioCajaBean, STATUSOPERACIONREALIZADA, idSucursalBean, new BigDecimal(1));
+        lstOperacionesGeneralesSalida = ifaceOperacionesCaja.getGenerales(idCajaBean, SALIDA, idUsuarioCajaBean, STATUSOPERACIONREALIZADA, idSucursalBean, new BigDecimal(1));
+
+        lstOperacionesDetallesEntrada = ifaceOperacionesCaja.getGenerales(idCajaBean, ENTRADA, idUsuarioCajaBean, STATUSOPERACIONREALIZADA, idSucursalBean, new BigDecimal(2));
+        lstOperacionesDetallesSalida = ifaceOperacionesCaja.getGenerales(idCajaBean, SALIDA, idUsuarioCajaBean, STATUSOPERACIONREALIZADA, idSucursalBean, new BigDecimal(2));
+
         for (Caja c : listaCajas) {
             DominioCajas dc = new DominioCajas();
             dc.setNombreCaja(c.getNombre());
@@ -94,51 +171,60 @@ public class BeanCajas implements Serializable {
             BigDecimal cheques = new BigDecimal(0);
             BigDecimal efectivo = new BigDecimal(0);
             BigDecimal cuentas = new BigDecimal(0);
-            //dc.setNombreSucursal(idSucursal);
+            if (idUsuarioCajaBean == null) 
+            {
 
-            lstOperacionesEntrada = ifaceOperacionesCaja.getOperaciones(c.getIdCajaPk(), ENTRADA, null);
-            lstOperacionesSalida = ifaceOperacionesCaja.getOperaciones(c.getIdCajaPk(), SALIDA, null);
-            for (OperacionesCaja ope : lstOperacionesEntrada) {
+                lstOperacionesGeneralesEntrada = ifaceOperacionesCaja.getGenerales(idCajaBean, ENTRADA, idUsuarioCajaBean, STATUSOPERACIONREALIZADA, idSucursalBean, new BigDecimal(1));
+                lstOperacionesGeneralesSalida = ifaceOperacionesCaja.getGenerales(idCajaBean, SALIDA, idUsuarioCajaBean, STATUSOPERACIONREALIZADA, idSucursalBean, new BigDecimal(1));
 
-                if (ope.getIdConceptoFk().intValue() == 10 || ope.getIdConceptoFk().intValue() == 6 || ope.getIdConceptoFk().intValue() == 11 || ope.getIdConceptoFk().intValue() == 7 || ope.getIdConceptoFk().intValue() == 8 || ope.getIdConceptoFk().intValue() == 9 || ope.getIdConceptoFk().intValue() == 16 || ope.getIdConceptoFk().intValue() == 13) {
-                    efectivo = efectivo.add(ope.getMonto(), MathContext.UNLIMITED);
-                } else if (ope.getIdConceptoFk().intValue() == 30 || ope.getIdConceptoFk().intValue() == 33 || ope.getIdConceptoFk().intValue() == 27 || ope.getIdConceptoFk().intValue() == 17 || ope.getIdConceptoFk().intValue() == 36) {
-                    cheques = cheques.add(ope.getMonto(), MathContext.UNLIMITED);
-                } else if (ope.getIdConceptoFk().intValue() == 12 || ope.getIdConceptoFk().intValue() == 29 || ope.getIdConceptoFk().intValue() == 31 || ope.getIdConceptoFk().intValue() == 28 || ope.getIdConceptoFk().intValue() == 32 || ope.getIdConceptoFk().intValue() == 34 || ope.getIdConceptoFk().intValue() == 37 || ope.getIdConceptoFk().intValue() == 35) {
-                    cuentas = cuentas.add(ope.getMonto(), MathContext.UNLIMITED);
+                lstOperacionesEntrada = ifaceOperacionesCaja.getOperaciones(c.getIdCajaPk(), ENTRADA, null);
+                lstOperacionesSalida = ifaceOperacionesCaja.getOperaciones(c.getIdCajaPk(), SALIDA, null);
+
+                corteAnterior = ifaceCorteCaja.getLastCorteByCaja(c.getIdCajaPk());
+
+                System.out.println("Corte Anterior: ");
+                System.out.println(corteAnterior.toString());
+                dc.setAperturaEfectivo(corteAnterior.getSaldoNuevo() == null ? CERO : corteAnterior.getSaldoNuevo());
+                dc.setAperturaCuentas(corteAnterior.getMontoCuentaNuevo() == null ? CERO : corteAnterior.getMontoCuentaNuevo());
+                dc.setAperturaCheques(corteAnterior.getMontoChequesNuevos() == null ? CERO : corteAnterior.getMontoChequesNuevos());
+
+                dc.setCheques(cheques.add(dc.getAperturaCheques() == null ? CERO : dc.getAperturaCheques(), MathContext.UNLIMITED));
+                dc.setCuentas(cuentas.add(dc.getCuentas() == null ? CERO : dc.getCuentas(), MathContext.UNLIMITED));
+                dc.setEfectivo(efectivo.add(dc.getEfectivo() == null ? CERO : dc.getEfectivo(), MathContext.UNLIMITED));
+
+                dc.setSaldoActual(dc.getCheques().add(dc.getCuentas().add(dc.getEfectivo(), MathContext.UNLIMITED), MathContext.UNLIMITED));
+                listaGeneral.add(dc);
+            } else 
+            {
+                if(c.getIdCajaPk().intValue()==idCajaBean.intValue())
+                {
+                lstOperacionesGeneralesEntrada = ifaceOperacionesCaja.getGenerales(idCajaBean, ENTRADA, c.getIdUsuarioFK(), STATUSOPERACIONREALIZADA, c.getIdSucursalFk(), new BigDecimal(1));
+                lstOperacionesGeneralesSalida = ifaceOperacionesCaja.getGenerales(idCajaBean, SALIDA, c.getIdUsuarioFK(), STATUSOPERACIONREALIZADA, c.getIdSucursalFk(), new BigDecimal(1));
+
+                lstOperacionesEntrada = ifaceOperacionesCaja.getOperaciones(c.getIdCajaPk(), ENTRADA, null);
+                lstOperacionesSalida = ifaceOperacionesCaja.getOperaciones(c.getIdCajaPk(), SALIDA, null);
+
+                corteAnterior = ifaceCorteCaja.getLastCorteByCaja(c.getIdCajaPk());
+
+                System.out.println("Corte Anterior: ");
+                System.out.println(corteAnterior.toString());
+                dc.setAperturaEfectivo(corteAnterior.getSaldoNuevo() == null ? CERO : corteAnterior.getSaldoNuevo());
+                dc.setAperturaCuentas(corteAnterior.getMontoCuentaNuevo() == null ? CERO : corteAnterior.getMontoCuentaNuevo());
+                dc.setAperturaCheques(corteAnterior.getMontoChequesNuevos() == null ? CERO : corteAnterior.getMontoChequesNuevos());
+
+                
+                dc.setCheques(cheques.add(dc.getAperturaCheques() == null ? CERO : dc.getAperturaCheques(), MathContext.UNLIMITED));
+                dc.setCuentas(cuentas.add(dc.getCuentas() == null ? CERO : dc.getCuentas(), MathContext.UNLIMITED));
+                dc.setEfectivo(efectivo.add(dc.getEfectivo() == null ? CERO : dc.getEfectivo(), MathContext.UNLIMITED));
+
+                dc.setSaldoActual(dc.getCheques().add(dc.getCuentas().add(dc.getEfectivo(), MathContext.UNLIMITED), MathContext.UNLIMITED));
+                listaGeneral.add(dc);
                 }
-            }
-            for (OperacionesCaja ope : lstOperacionesSalida) {
-                if (ope.getIdConceptoFk().intValue() == 7 || ope.getIdConceptoFk().intValue() == 1 || ope.getIdConceptoFk().intValue() == 3 || ope.getIdConceptoFk().intValue() == 4 || ope.getIdConceptoFk().intValue() == 6 || ope.getIdConceptoFk().intValue() == 11 || ope.getIdConceptoFk().intValue() == 10 || ope.getIdConceptoFk().intValue() == 8 || ope.getIdConceptoFk().intValue() == 9 || ope.getIdConceptoFk().intValue() == 16 || ope.getIdConceptoFk().intValue() == 13 || ope.getIdConceptoFk().intValue() == 2 || ope.getIdConceptoFk().intValue() == 25 || ope.getIdConceptoFk().intValue() == 24
-                        || ope.getIdConceptoFk().intValue() == 21 || ope.getIdConceptoFk().intValue() == 20 || ope.getIdConceptoFk().intValue() == 23
-                        || ope.getIdConceptoFk().intValue() == 22) {
-                    efectivo = efectivo.subtract(ope.getMonto(), MathContext.UNLIMITED);
-                } else if (ope.getIdConceptoFk().intValue() == 30 || ope.getIdConceptoFk().intValue() == 33 || ope.getIdConceptoFk().intValue() == 27 || ope.getIdConceptoFk().intValue() == 17 || ope.getIdConceptoFk().intValue() == 36) {
-                    cheques = cheques.subtract(ope.getMonto(), MathContext.UNLIMITED);
-                } else if (ope.getIdConceptoFk().intValue() == 12 || ope.getIdConceptoFk().intValue() == 29 || ope.getIdConceptoFk().intValue() == 31 || ope.getIdConceptoFk().intValue() == 28 || ope.getIdConceptoFk().intValue() == 32 || ope.getIdConceptoFk().intValue() == 34 || ope.getIdConceptoFk().intValue() == 37 || ope.getIdConceptoFk().intValue() == 35) {
-                    cuentas = cuentas.subtract(ope.getMonto(), MathContext.UNLIMITED);
-                }
 
             }
-            corteAnterior = ifaceCorteCaja.getLastCorteByCaja(c.getIdCajaPk());
-            
-            System.out.println("Corte Anterior: ");
-            System.out.println(corteAnterior.toString());
-            dc.setAperturaEfectivo(corteAnterior.getSaldoNuevo()==null? CERO:corteAnterior.getSaldoNuevo() );
-            dc.setAperturaCuentas(corteAnterior.getMontoCuentaNuevo()==null? CERO:corteAnterior.getMontoCuentaNuevo());
-            dc.setAperturaCheques(corteAnterior.getMontoChequesNuevos()==null? CERO:corteAnterior.getMontoChequesNuevos());
-            
-            dc.setCheques(cheques.add(dc.getAperturaCheques()==null? CERO:dc.getAperturaCheques(), MathContext.UNLIMITED));
-            dc.setCuentas(cuentas.add(dc.getCuentas()==null? CERO:dc.getCuentas(), MathContext.UNLIMITED));
-            dc.setEfectivo(efectivo.add(dc.getEfectivo()==null? CERO:dc.getEfectivo(), MathContext.UNLIMITED));
-
-            dc.setSaldoActual(dc.getCheques().add(dc.getCuentas().add(dc.getEfectivo(), MathContext.UNLIMITED), MathContext.UNLIMITED));
-            listaGeneral.add(dc);
         }
         // lstOperacionesEntrada = ifaceOperacionesCaja.getOperaciones(idCajaBean, entrada, null);
     }
-
-    
 
     public BigDecimal getIdCajaBean() {
         return idCajaBean;
@@ -252,12 +338,20 @@ public class BeanCajas implements Serializable {
         this.listaGeneral = listaGeneral;
     }
 
-    public BigDecimal getIdSucursal() {
-        return idSucursal;
+    public BigDecimal getIdSucursalBean() {
+        return idSucursalBean;
     }
 
-    public void setIdSucursal(BigDecimal idSucursal) {
-        this.idSucursal = idSucursal;
+    public void setIdSucursalBean(BigDecimal idSucursalBean) {
+        this.idSucursalBean = idSucursalBean;
+    }
+
+    public BigDecimal getIdUsuarioCajaBean() {
+        return idUsuarioCajaBean;
+    }
+
+    public void setIdUsuarioCajaBean(BigDecimal idUsuarioCajaBean) {
+        this.idUsuarioCajaBean = idUsuarioCajaBean;
     }
 
     public ArrayList<Sucursal> getListaSucursal() {
@@ -266,6 +360,126 @@ public class BeanCajas implements Serializable {
 
     public void setListaSucursal(ArrayList<Sucursal> listaSucursal) {
         this.listaSucursal = listaSucursal;
+    }
+
+    public ArrayList<OperacionesCaja> getLstOperacionesGeneralesEntrada() {
+        return lstOperacionesGeneralesEntrada;
+    }
+
+    public void setLstOperacionesGeneralesEntrada(ArrayList<OperacionesCaja> lstOperacionesGeneralesEntrada) {
+        this.lstOperacionesGeneralesEntrada = lstOperacionesGeneralesEntrada;
+    }
+
+    public ArrayList<OperacionesCaja> getLstOperacionesGeneralesSalida() {
+        return lstOperacionesGeneralesSalida;
+    }
+
+    public void setLstOperacionesGeneralesSalida(ArrayList<OperacionesCaja> lstOperacionesGeneralesSalida) {
+        this.lstOperacionesGeneralesSalida = lstOperacionesGeneralesSalida;
+    }
+
+    public CorteCaja getCorteAnterior() {
+        return corteAnterior;
+    }
+
+    public void setCorteAnterior(CorteCaja corteAnterior) {
+        this.corteAnterior = corteAnterior;
+    }
+
+    public Caja getCaja() {
+        return caja;
+    }
+
+    public void setCaja(Caja caja) {
+        this.caja = caja;
+    }
+
+    public ArrayList<Usuario> getListaResponsables() {
+        return listaResponsables;
+    }
+
+    public void setListaResponsables(ArrayList<Usuario> listaResponsables) {
+        this.listaResponsables = listaResponsables;
+    }
+
+    public ArrayList<Caja> getListaSucursales() {
+        return listaSucursales;
+    }
+
+    public void setListaSucursales(ArrayList<Caja> listaSucursales) {
+        this.listaSucursales = listaSucursales;
+    }
+
+    public ArrayList<OperacionesCaja> getLstOperacionesDetallesEntrada() {
+        return lstOperacionesDetallesEntrada;
+    }
+
+    public void setLstOperacionesDetallesEntrada(ArrayList<OperacionesCaja> lstOperacionesDetallesEntrada) {
+        this.lstOperacionesDetallesEntrada = lstOperacionesDetallesEntrada;
+    }
+
+    public ArrayList<OperacionesCaja> getLstOperacionesDetallesSalida() {
+        return lstOperacionesDetallesSalida;
+    }
+
+    public void setLstOperacionesDetallesSalida(ArrayList<OperacionesCaja> lstOperacionesDetallesSalida) {
+        this.lstOperacionesDetallesSalida = lstOperacionesDetallesSalida;
+    }
+
+    public DominioCajas getData() {
+        return data;
+    }
+
+    public void setData(DominioCajas data) {
+        this.data = data;
+    }
+
+    public ArrayList<OperacionesCaja> getLstOperacionesGeneralesEntradaPendiente() {
+        return lstOperacionesGeneralesEntradaPendiente;
+    }
+
+    public void setLstOperacionesGeneralesEntradaPendiente(ArrayList<OperacionesCaja> lstOperacionesGeneralesEntradaPendiente) {
+        this.lstOperacionesGeneralesEntradaPendiente = lstOperacionesGeneralesEntradaPendiente;
+    }
+
+    public ArrayList<OperacionesCaja> getLstOperacionesGeneralesSalidaPendiente() {
+        return lstOperacionesGeneralesSalidaPendiente;
+    }
+
+    public void setLstOperacionesGeneralesSalidaPendiente(ArrayList<OperacionesCaja> lstOperacionesGeneralesSalidaPendiente) {
+        this.lstOperacionesGeneralesSalidaPendiente = lstOperacionesGeneralesSalidaPendiente;
+    }
+
+    public ArrayList<OperacionesCaja> getLstOperacionesGeneralesEntradaRechazada() {
+        return lstOperacionesGeneralesEntradaRechazada;
+    }
+
+    public void setLstOperacionesGeneralesEntradaRechazada(ArrayList<OperacionesCaja> lstOperacionesGeneralesEntradaRechazada) {
+        this.lstOperacionesGeneralesEntradaRechazada = lstOperacionesGeneralesEntradaRechazada;
+    }
+
+    public ArrayList<OperacionesCaja> getLstOperacionesGeneralesSalidaRechazada() {
+        return lstOperacionesGeneralesSalidaRechazada;
+    }
+
+    public void setLstOperacionesGeneralesSalidaRechazada(ArrayList<OperacionesCaja> lstOperacionesGeneralesSalidaRechazada) {
+        this.lstOperacionesGeneralesSalidaRechazada = lstOperacionesGeneralesSalidaRechazada;
+    }
+
+    public ArrayList<OperacionesCaja> getLstOperacionesGeneralesEntradaCancelada() {
+        return lstOperacionesGeneralesEntradaCancelada;
+    }
+
+    public void setLstOperacionesGeneralesEntradaCancelada(ArrayList<OperacionesCaja> lstOperacionesGeneralesEntradaCancelada) {
+        this.lstOperacionesGeneralesEntradaCancelada = lstOperacionesGeneralesEntradaCancelada;
+    }
+
+    public ArrayList<OperacionesCaja> getLstOperacionesGeneralesSalidaCancelada() {
+        return lstOperacionesGeneralesSalidaCancelada;
+    }
+
+    public void setLstOperacionesGeneralesSalidaCancelada(ArrayList<OperacionesCaja> lstOperacionesGeneralesSalidaCancelada) {
+        this.lstOperacionesGeneralesSalidaCancelada = lstOperacionesGeneralesSalidaCancelada;
     }
 
 }

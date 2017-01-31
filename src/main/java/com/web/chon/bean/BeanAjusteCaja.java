@@ -9,12 +9,15 @@ import com.web.chon.dominio.Caja;
 import com.web.chon.dominio.ConceptosES;
 import com.web.chon.dominio.OperacionesCaja;
 import com.web.chon.dominio.Sucursal;
+import com.web.chon.dominio.TipoAbono;
 import com.web.chon.dominio.TipoOperacion;
+import com.web.chon.dominio.Usuario;
 import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceCaja;
 import com.web.chon.service.IfaceConceptos;
 import com.web.chon.service.IfaceOperacionesCaja;
+import com.web.chon.service.IfaceTipoAbono;
 import com.web.chon.util.JsfUtil;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -39,6 +42,8 @@ public class BeanAjusteCaja  implements Serializable{
     private IfaceCaja ifaceCaja;
     @Autowired
     private IfaceOperacionesCaja ifaceOperacionesCaja;
+    @Autowired
+    private IfaceTipoAbono ifaceTipoAbono;
 
     private ArrayList<ConceptosES> listaConceptos;
     
@@ -57,17 +62,24 @@ public class BeanAjusteCaja  implements Serializable{
     private OperacionesCaja opcaja;
     private BigDecimal idSucursalBean;
     private BigDecimal idCajaBean;
-    private BigDecimal idTipoOperacionBean;
     private BigDecimal monto;
     private String comentarios;
+    private BigDecimal idFormaPagoBean;
+    private ArrayList<TipoAbono> listaAbonos;
     
-    private static final BigDecimal idConcepto = new BigDecimal(11);
-    private static final BigDecimal statusOperacion = new BigDecimal(1);
-    private static final BigDecimal salida = new BigDecimal(2);
-    private static final BigDecimal entrada = new BigDecimal(1);
+    private static final BigDecimal CONCEPTO_AJUSTE = new BigDecimal(11);
+    private static final BigDecimal OPERACION_AJUSTE = new BigDecimal(8);
+    private static final BigDecimal STATUS_REALIZADA = new BigDecimal(1);
+
+    private static final BigDecimal SALIDA = new BigDecimal(2);
+    private static final BigDecimal ENTRADA = new BigDecimal(1);
+    private BigDecimal idUsuarioCajaBean;
+    private ArrayList<Usuario> listaResponsables;
     @PostConstruct
     public void init() 
     {
+        listaAbonos= new ArrayList<TipoAbono>();
+        listaAbonos=ifaceTipoAbono.getAll();
         filtroES=1;
         usuario = context.getUsuarioAutenticado();
         setTitle("Ajuste de Caja");
@@ -79,9 +91,23 @@ public class BeanAjusteCaja  implements Serializable{
         opcaja.setIdCajaFk(caja.getIdCajaPk());
         opcaja.setIdUserFk(usuario.getIdUsuario());
         opcaja.setEntradaSalida(new BigDecimal(filtroES));
-        opcaja.setIdStatusFk(statusOperacion);
-        opcaja.setIdConceptoFk(idConcepto);
+        opcaja.setIdStatusFk(STATUS_REALIZADA);
+        opcaja.setIdConceptoFk(CONCEPTO_AJUSTE);
+        opcaja.setIdTipoOperacionFk(OPERACION_AJUSTE);
         opcaja.setIdSucursalFk( new BigDecimal(usuario.getSucId()));
+        listaResponsables=new ArrayList<Usuario>();
+        listaCajas=ifaceCaja.getCajas();
+    }
+    public void buscarReponsables()
+    {
+        listaResponsables.clear();
+        listaResponsables = ifaceOperacionesCaja.getResponsables(idCajaBean);
+        if (idCajaBean != null) {
+          if(!listaResponsables.isEmpty())
+          {
+            idUsuarioCajaBean = listaResponsables.get(0).getIdUsuarioPk();
+          }
+        }
     }
     public void ajustar()
     {
@@ -89,8 +115,11 @@ public class BeanAjusteCaja  implements Serializable{
         opcaja.setMonto(monto);
         opcaja.setComentarios(comentarios);
         opcaja.setEntradaSalida(new BigDecimal(filtroES));
+        opcaja.setIdFormaPago(idFormaPagoBean);
+        opcaja.setIdCajaFk(idCajaBean);
+        opcaja.setIdUserFk(idUsuarioCajaBean);
         
-
+        
         if(caja.getIdCajaPk()!=null)
         {
         if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
@@ -218,13 +247,7 @@ public class BeanAjusteCaja  implements Serializable{
         this.idCajaBean = idCajaBean;
     }
 
-    public BigDecimal getIdTipoOperacionBean() {
-        return idTipoOperacionBean;
-    }
-
-    public void setIdTipoOperacionBean(BigDecimal idTipoOperacionBean) {
-        this.idTipoOperacionBean = idTipoOperacionBean;
-    }
+    
 
     public BigDecimal getMonto() {
         return monto;
@@ -241,6 +264,40 @@ public class BeanAjusteCaja  implements Serializable{
     public void setComentarios(String comentarios) {
         this.comentarios = comentarios;
     }
+
+    public ArrayList<TipoAbono> getListaAbonos() {
+        return listaAbonos;
+    }
+
+    public void setListaAbonos(ArrayList<TipoAbono> listaAbonos) {
+        this.listaAbonos = listaAbonos;
+    }
+
+    public BigDecimal getIdFormaPagoBean() {
+        return idFormaPagoBean;
+    }
+
+    public void setIdFormaPagoBean(BigDecimal idFormaPagoBean) {
+        this.idFormaPagoBean = idFormaPagoBean;
+    }
+
+    public BigDecimal getIdUsuarioCajaBean() {
+        return idUsuarioCajaBean;
+    }
+
+    public void setIdUsuarioCajaBean(BigDecimal idUsuarioCajaBean) {
+        this.idUsuarioCajaBean = idUsuarioCajaBean;
+    }
+
+    public ArrayList<Usuario> getListaResponsables() {
+        return listaResponsables;
+    }
+
+    public void setListaResponsables(ArrayList<Usuario> listaResponsables) {
+        this.listaResponsables = listaResponsables;
+    }
+    
+    
     
     
     

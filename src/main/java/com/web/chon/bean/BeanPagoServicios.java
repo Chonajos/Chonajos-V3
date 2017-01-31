@@ -16,13 +16,25 @@ import com.web.chon.service.IfaceCaja;
 import com.web.chon.service.IfaceConceptos;
 import com.web.chon.service.IfaceCorteCaja;
 import com.web.chon.service.IfaceOperacionesCaja;
+import com.web.chon.service.IfaceTiposOperacion;
+import com.web.chon.util.Constantes;
+import com.web.chon.util.FileUtils;
 import com.web.chon.util.JsfUtil;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
+import org.apache.commons.io.IOUtils;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.UploadedFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -43,45 +55,52 @@ public class BeanPagoServicios implements Serializable {
     private IfaceCaja ifaceCaja;
     @Autowired
     private IfaceOperacionesCaja ifaceOperacionesCaja;
-
-    private ArrayList<ConceptosES> listaConceptos;
-    private String title;
-    private String viewEstate;
-    private BigDecimal idConceptoBean;
-
-    private UsuarioDominio usuario;
-
-    private Caja caja;
-    private OperacionesCaja opcaja;
-
-    private static final BigDecimal entradaSalida = new BigDecimal(2);
-    private static final BigDecimal statusOperacion = new BigDecimal(1);
-
-    private BigDecimal totalServicio;
-    private String referencia;
-    private String comentarios;
-
-    //--Variables para Verificar Maximo en Caja --//
-    private ArrayList<TipoOperacion> lstOperacionesEntrada;
-    private ArrayList<TipoOperacion> lstOperacionesSalida;
-    private ArrayList<Caja> listaSucursales;
-    private CorteCaja corteAnterior;
     @Autowired
     private IfaceCorteCaja ifaceCorteCaja;
+    @Autowired
+    private IfaceTiposOperacion ifaceTiposOperacion;
+    
+    private ArrayList<ConceptosES> listaConceptos;
+    //--Variables para Verificar Maximo en Caja --//
+    private ArrayList<TipoOperacion> lstOperaciones;
+    private ArrayList<Caja> listaSucursales;
+    
+    
+    private String title;
+    private String viewEstate;
+    private String referencia;
+    private String comentarios;
+    
+    private UsuarioDominio usuario;
+    private Caja caja;
+    private OperacionesCaja opcaja;
+    private CorteCaja corteAnterior;
+    
     private BigDecimal saldoAnterior;
     private BigDecimal totalEntradas;
     private BigDecimal totalSalidas;
-    private static final BigDecimal entrada = new BigDecimal(1);
-    private static final BigDecimal salida = new BigDecimal(2);
+    private BigDecimal totalServicio;
+    private BigDecimal idConceptoBean;
     private BigDecimal idSucursalFk;
-    //--Variables para Verificar Maximo en Caja --//
+    private BigDecimal idOperacionBean;
     
-     //==========codigo para verificar dinero en caja =========//
+    private static final BigDecimal ENTRADA = new BigDecimal(1);
+    private static final BigDecimal SALIDA = new BigDecimal(2);
+    private static final BigDecimal STATUS_REALIZADA = new BigDecimal(1);
+    private static final BigDecimal STATUS_PENDIENTE = new BigDecimal(2);
+    private static final BigDecimal STATUS_RECHAZADA = new BigDecimal(3);
+    private static final BigDecimal STATUS_CANCELADA = new BigDecimal(4);
+    
+    
+    private static final BigDecimal CERO = new BigDecimal(0).setScale(2, RoundingMode.CEILING);
+    
+    //--Variables para Verificar Maximo en Caja --//
+
+    //==========codigo para verificar dinero en caja =========//
     private ArrayList<OperacionesCaja> listaDetalleEntradas;
     private ArrayList<OperacionesCaja> listaDetalleSalidas;
-    private static final BigDecimal statusAplicado = new BigDecimal(1);
-    private static final BigDecimal statusPendiente = new BigDecimal(2);
-    private static final BigDecimal CERO = new BigDecimal(0).setScale(2, RoundingMode.CEILING);
+    
+    
     private BigDecimal nuevoSaldo;
     private BigDecimal nuevoSaldoCheques;
     private BigDecimal nuevoSaldoCuentas;
@@ -92,34 +111,39 @@ public class BeanPagoServicios implements Serializable {
     private BigDecimal totalCheques;
     private BigDecimal totalCuentasBancarias;
     //========codigo para verificar dinero en caja ============//
+    private byte[] bytes;
 
     @PostConstruct
-    public void init() 
-    {
+    public void init() {
         usuario = context.getUsuarioAutenticado();
         setTitle("Pago de Servicios");
         setViewEstate("init");
+        lstOperaciones=new ArrayList<TipoOperacion>();
+        lstOperaciones = ifaceTiposOperacion.getOperacionesByIdCategoria(new BigDecimal(1));
         
-        listaConceptos = ifaceConceptos.getConceptosByTipoOperacion(new BigDecimal(1));
+        listaConceptos =ifaceConceptos.getConceptosByIdCategoria(new BigDecimal(1));
+       
+        //listaConceptos = ifaceConceptos.getConceptosByTipoOperacion(new BigDecimal(1));
+        
         caja = new Caja();
         caja = ifaceCaja.getCajaByIdUsuarioPk(usuario.getIdUsuario());
         opcaja = new OperacionesCaja();
         opcaja.setIdCajaFk(caja.getIdCajaPk());
         opcaja.setIdUserFk(usuario.getIdUsuario());
-        opcaja.setEntradaSalida(entradaSalida);
-        opcaja.setIdStatusFk(statusOperacion);
-        
+        opcaja.setEntradaSalida(SALIDA);
+        opcaja.setIdStatusFk(STATUS_PENDIENTE);
+
         //--Maximo Pago--//
         corteAnterior = new CorteCaja();
         corteAnterior = ifaceCorteCaja.getLastCorteByCaja(caja.getIdCajaPk());
         totalEntradas = CERO;
         totalSalidas = CERO;
         saldoAnterior = CERO;
-       
+
         listaSucursales = new ArrayList<Caja>();
-        System.out.println("=================idCaja: "+caja.getIdCajaPk());
+        System.out.println("=================idCaja: " + caja.getIdCajaPk());
         listaSucursales = ifaceCaja.getSucursalesByIdCaja(caja.getIdCajaPk());
-         nuevoSaldo = CERO;
+        nuevoSaldo = CERO;
         nuevoSaldoCheques = CERO;
         nuevoSaldoCuentas = CERO;
         saldoAnteriorEfectivo = CERO;
@@ -150,8 +174,33 @@ public class BeanPagoServicios implements Serializable {
         System.out.println("Saldo Anterior Cheques: " + saldoAnteriorCheques.setScale(2, RoundingMode.CEILING));
         System.out.println("Saldo Anterior Cuentas: " + saldoAnteriorCuentas.setScale(2, RoundingMode.CEILING));
 
+    }
 
-        
+    public void handleFileUpload(FileUploadEvent event) throws IOException {
+
+        UploadedFile uploadedFile = (UploadedFile) event.getFile();
+        InputStream inputStr = null;
+        try {
+
+            inputStr = uploadedFile.getInputstream();
+        } catch (IOException e) {
+            JsfUtil.addErrorMessage("No se permite guardar valores nulos.");
+            manageException(e);
+        }
+
+        try {
+            bytes = IOUtils.toByteArray(inputStr);
+            opcaja.setFichero(bytes);
+            JsfUtil.addSuccessMessageClean("El archivo "+event.getFile().getFileName().trim()+"fue cargado con éxito");
+        } catch (IOException e) {
+            JsfUtil.addErrorMessageClean("Ocurrio un error al cargar el archivo");
+            e.printStackTrace();
+        }
+
+    }
+
+    private void manageException(IOException e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public void reset() {
@@ -166,16 +215,16 @@ public class BeanPagoServicios implements Serializable {
         totalEfectivo = CERO;
         totalCheques = CERO;
         totalCuentasBancarias = CERO;
-        nuevoSaldo=CERO;
-        nuevoSaldoCheques=CERO;
-        nuevoSaldoCuentas=CERO;
-        
-        listaDetalleEntradas= new ArrayList<OperacionesCaja>();
-        listaDetalleEntradas =new ArrayList<OperacionesCaja>();
-        listaDetalleSalidas=new ArrayList<OperacionesCaja>();
-        
-        listaDetalleEntradas = ifaceOperacionesCaja.getDetalles(caja.getIdCajaPk(), caja.getIdUsuarioFK(), entrada, statusAplicado);
-        listaDetalleSalidas = ifaceOperacionesCaja.getDetalles(caja.getIdCajaPk(), caja.getIdUsuarioFK(), salida, statusAplicado);
+        nuevoSaldo = CERO;
+        nuevoSaldoCheques = CERO;
+        nuevoSaldoCuentas = CERO;
+
+        listaDetalleEntradas = new ArrayList<OperacionesCaja>();
+        listaDetalleEntradas = new ArrayList<OperacionesCaja>();
+        listaDetalleSalidas = new ArrayList<OperacionesCaja>();
+
+        listaDetalleEntradas = ifaceOperacionesCaja.getDetalles(caja.getIdCajaPk(), caja.getIdUsuarioFK(), ENTRADA, STATUS_REALIZADA);
+        listaDetalleSalidas = ifaceOperacionesCaja.getDetalles(caja.getIdCajaPk(), caja.getIdUsuarioFK(), SALIDA, STATUS_REALIZADA);
 
         for (OperacionesCaja ope : listaDetalleEntradas) {
             if (ope.getIdConceptoFk().intValue() == 10 || ope.getIdConceptoFk().intValue() == 6 || ope.getIdConceptoFk().intValue() == 11 || ope.getIdConceptoFk().intValue() == 7 || ope.getIdConceptoFk().intValue() == 8 || ope.getIdConceptoFk().intValue() == 9 || ope.getIdConceptoFk().intValue() == 16 || ope.getIdConceptoFk().intValue() == 13) {
@@ -208,24 +257,23 @@ public class BeanPagoServicios implements Serializable {
         nuevoSaldoCuentas = totalCuentasBancarias.add(saldoAnteriorCuentas.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
     }
 
-  
-
     //----Funciones para Verificar Maximo de Dinero en Caja --//
     public void pagar() {
         verificarDinero();
         System.out.println("Saldo Actual: " + nuevoSaldo.setScale(2, RoundingMode.CEILING));
         System.out.println("Saldo Actual Cheques: " + nuevoSaldoCheques.setScale(2, RoundingMode.CEILING));
         System.out.println("Saldo Actual Cuentas: " + nuevoSaldoCuentas.setScale(2, RoundingMode.CEILING));
-        
-        if (nuevoSaldo.setScale(2, RoundingMode.CEILING).compareTo(totalServicio.setScale(2, RoundingMode.CEILING)) >= 0) 
-        {
+
+        if (nuevoSaldo.setScale(2, RoundingMode.CEILING).compareTo(totalServicio.setScale(2, RoundingMode.CEILING)) >= 0) {
             opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
             opcaja.setMonto(totalServicio);
             opcaja.setComentarios(comentarios);
             opcaja.setIdConceptoFk(idConceptoBean);
+            opcaja.setIdTipoOperacionFk(idOperacionBean);
+            opcaja.setIdFormaPago(new BigDecimal(1));
             opcaja.setIdSucursalFk(idSucursalFk);
-            if (caja.getIdCajaPk() != null) 
-            {
+            
+            if (caja.getIdCajaPk() != null) {
                 if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
                     JsfUtil.addSuccessMessageClean("Pago de servicio registrado correctamente");
                     reset();
@@ -239,7 +287,7 @@ public class BeanPagoServicios implements Serializable {
         } else {
             JsfUtil.addErrorMessageClean("No hay suficiente dinero en caja");
         }
-       
+
     }
 
     public ArrayList<ConceptosES> getListaConceptos() {
@@ -362,21 +410,15 @@ public class BeanPagoServicios implements Serializable {
         this.idSucursalFk = idSucursalFk;
     }
 
-    public ArrayList<TipoOperacion> getLstOperacionesEntrada() {
-        return lstOperacionesEntrada;
+    public ArrayList<TipoOperacion> getLstOperaciones() {
+        return lstOperaciones;
     }
 
-    public void setLstOperacionesEntrada(ArrayList<TipoOperacion> lstOperacionesEntrada) {
-        this.lstOperacionesEntrada = lstOperacionesEntrada;
+    public void setLstOperaciones(ArrayList<TipoOperacion> lstOperaciones) {
+        this.lstOperaciones = lstOperaciones;
     }
 
-    public ArrayList<TipoOperacion> getLstOperacionesSalida() {
-        return lstOperacionesSalida;
-    }
-
-    public void setLstOperacionesSalida(ArrayList<TipoOperacion> lstOperacionesSalida) {
-        this.lstOperacionesSalida = lstOperacionesSalida;
-    }
+   
 
     public ArrayList<Caja> getListaSucursales() {
         return listaSucursales;
@@ -474,7 +516,14 @@ public class BeanPagoServicios implements Serializable {
         this.totalCuentasBancarias = totalCuentasBancarias;
     }
 
+    public BigDecimal getIdOperacionBean() {
+        return idOperacionBean;
+    }
+
+    public void setIdOperacionBean(BigDecimal idOperacionBean) {
+        this.idOperacionBean = idOperacionBean;
+    }
     
     
-    
+
 }

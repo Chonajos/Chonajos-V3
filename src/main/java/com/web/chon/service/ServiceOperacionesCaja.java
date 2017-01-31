@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.stereotype.Service;
 import com.web.chon.negocio.NegocioOperacionesCaja;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -46,9 +47,19 @@ public class ServiceOperacionesCaja implements IfaceOperacionesCaja {
     }
 
     @Override
-    public int insertaOperacion(OperacionesCaja es) {
+    public int insertaOperacion(OperacionesCaja o) {
        getEjb();
-       return ejb.insertaOperacion(es);
+       int i= ejb.insertaOperacion(o);
+       
+       if (i == 1) {
+            try {
+                byte[] fichero = o.getFichero();
+                ejb.insertarDocumento(o.getIdOperacionesCajaPk(), fichero);
+            } catch (SQLException ex) {
+                Logger.getLogger(ServiceOperacionesCaja.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return i;
     }
 
     @Override
@@ -59,15 +70,43 @@ public class ServiceOperacionesCaja implements IfaceOperacionesCaja {
 
     @Override
     public OperacionesCaja getOperacionByIdPk(BigDecimal idPk) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            OperacionesCaja opcaja = new OperacionesCaja();
+            getEjb();
+            List<Object[]> object = ejb.getOperacionByIdOperacionPK(idPk);
+            for (Object[] obj : object) 
+            {
+                opcaja.setIdOperacionesCajaPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+                opcaja.setIdCorteCajaFk(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
+                opcaja.setIdCajaFk(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
+                opcaja.setIdCajaDestinoFk(obj[3] == null ? null : new BigDecimal(obj[3].toString()));
+                opcaja.setIdConceptoFk(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
+                opcaja.setFecha(obj[5] == null ? null : (Date)obj[5]);
+                opcaja.setIdStatusFk(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
+                opcaja.setIdUserFk(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
+                opcaja.setComentarios(obj[8] == null ? null : obj[8].toString());
+                opcaja.setMonto(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
+                opcaja.setEntradaSalida(obj[10] == null ? null : new BigDecimal(obj[10].toString()));
+                opcaja.setIdCuentaDestinoFk(obj[11] == null ? null : new BigDecimal(obj[11].toString()));
+                opcaja.setIdSucursalFk(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
+                opcaja.setIdFormaPago(obj[13] == null ? null : new BigDecimal(obj[13].toString()));
+                opcaja.setIdTipoOperacionFk(obj[14] == null ? null : new BigDecimal(obj[14].toString()));
+                opcaja.setFichero((obj[15] == null ? null : (byte[]) (obj[15])));
+            }
+
+            return opcaja;
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceOperacionesCaja.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 
     @Override
-    public ArrayList<OperacionesCaja> getOperacionesBy(BigDecimal idCajaFk, BigDecimal idOperacionFk, BigDecimal idConceptoFk, String fechaInicio, String fechaFin, BigDecimal idStatusFk, BigDecimal idUserFk,BigDecimal idCorte,BigDecimal inout) {
+    public ArrayList<OperacionesCaja> getOperacionesBy(BigDecimal idCajaFk, BigDecimal idOperacionFk, BigDecimal idConceptoFk, String fechaInicio, String fechaFin, BigDecimal idStatusFk, BigDecimal idUserFk,BigDecimal idCorte,BigDecimal inout,BigDecimal idFormaPago) {
         getEjb();
         int i = 1;
         ArrayList<OperacionesCaja> listaOperaciones = new ArrayList<OperacionesCaja>();
-        List<Object[]> lstObject = ejb.getOperacionesBy(idCajaFk, idOperacionFk, idConceptoFk, fechaInicio, fechaFin, idStatusFk, idUserFk,idCorte,inout);
+        List<Object[]> lstObject = ejb.getOperacionesBy(idCajaFk, idOperacionFk, idConceptoFk, fechaInicio, fechaFin, idStatusFk, idUserFk,idCorte,inout,idFormaPago);
         for (Object[] obj : lstObject) 
         {
             OperacionesCaja op = new OperacionesCaja();
@@ -84,21 +123,37 @@ public class ServiceOperacionesCaja implements IfaceOperacionesCaja {
             op.setEntradaSalida(obj[10] == null ? null : new BigDecimal(obj[10].toString()));
             op.setIdCuentaDestinoFk(obj[11] == null ? null : new BigDecimal(obj[11].toString()));
             op.setIdSucursalFk(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
-            op.setNombreCaja(obj[13] == null ? null : obj[13].toString());
-            op.setNombreConcepto(obj[14] == null ? "" : obj[14].toString());
-            op.setNombreOperacion(obj[15] == null ? null : obj[15].toString());
-            op.setNombreUsuario(obj[16] == null ? null : obj[16].toString());
-            op.setNombreSucursal(obj[17] == null ? null : obj[17].toString());
+            op.setIdFormaPago(obj[13] == null ? null : new BigDecimal(obj[13].toString()));
+            op.setIdTipoOperacionFk(obj[14] == null ? null : new BigDecimal(obj[14].toString()));
+            op.setFichero((obj[15] == null ? null : (byte[]) (obj[15])));
+           
+            op.setNombreCaja(obj[16] == null ? null : obj[16].toString());
+            op.setNombreConcepto(obj[17] == null ? "" : obj[17].toString());
+            op.setNombreOperacion(obj[18] == null ? null : obj[18].toString());
+            op.setNombreUsuario(obj[19] == null ? null : obj[19].toString());
+            op.setNombreSucursal(obj[20] == null ? null : obj[20].toString());
+            op.setNombrePago(obj[21] == null ? null : obj[21].toString());
             op.setNumero(i);
             i+=1;
-            if(op.getIdStatusFk().intValue()==1)
+            switch(op.getIdStatusFk().intValue())
             {
-                op.setNombreStatus("APLICADO");
+                case 1:
+                    op.setNombreStatus("APLICADO");
+                    break;
+                case 2:
+                     op.setNombreStatus("PENDIENTE");
+                    break;
+                case 3:
+                     op.setNombreStatus("RECHAZADA");
+                    break;
+                case 4:
+                     op.setNombreStatus("CANCELADA");
+                    break;
+                default:
+                     op.setNombreStatus("ERROR");
+                    break;
             }
-            else
-            {
-                op.setNombreStatus("PENDIENTE");
-            }
+           
             if(op.getEntradaSalida().intValue()==1)
             {
                 op.setNombreEntradaSalida("E");
@@ -136,10 +191,13 @@ public class ServiceOperacionesCaja implements IfaceOperacionesCaja {
             op.setIdCuentaDestinoFk(obj[11] == null ? null : new BigDecimal(obj[11].toString()));
             op.setIdSucursalFk(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
             
-            op.setNombreCaja(obj[13] == null ? null : obj[13].toString());
-            op.setNombreConcepto(obj[14] == null ? "" : obj[14].toString());
-            op.setNombreOperacion(obj[15] == null ? null : obj[15].toString());
-            op.setNombreUsuario(obj[16] == null ? null : obj[16].toString());
+            op.setIdFormaPago(obj[13] == null ? null : new BigDecimal(obj[13].toString()));
+            op.setIdTipoOperacionFk(obj[14] == null ? null : new BigDecimal(obj[14].toString()));
+            op.setFichero((obj[15] == null ? null : (byte[]) (obj[15])));
+            op.setNombreCaja(obj[16] == null ? null : obj[16].toString());
+            op.setNombreConcepto(obj[17] == null ? "" : obj[17].toString());
+            op.setNombreOperacion(obj[18] == null ? null : obj[18].toString());
+            op.setNombreUsuario(obj[19] == null ? null : obj[19].toString());
             op.setNumero(i);
             i+=1;
             if(op.getIdStatusFk().intValue()==1)
@@ -212,6 +270,10 @@ public class ServiceOperacionesCaja implements IfaceOperacionesCaja {
             op.setMonto(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
             op.setEntradaSalida(obj[10] == null ? null : new BigDecimal(obj[10].toString()));
             op.setIdCuentaDestinoFk(obj[11] == null ? null : new BigDecimal(obj[11].toString()));
+            op.setIdSucursalFk(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
+            op.setIdFormaPago(obj[13] == null ? null : new BigDecimal(obj[13].toString()));
+            op.setIdTipoOperacionFk(obj[14] == null ? null : new BigDecimal(obj[14].toString()));
+           
             listaOperaciones.add(op);
         }
         return listaOperaciones;
@@ -447,6 +509,64 @@ public class ServiceOperacionesCaja implements IfaceOperacionesCaja {
             listaOperaciones.add(op);
         }
         return listaOperaciones;
+    }
+
+    @Override
+    public ArrayList<OperacionesCaja> getOperacionesByCategoria(BigDecimal idCategoriaFk, BigDecimal idSucursalFk, BigDecimal idCajaFk, BigDecimal idStatusFk, BigDecimal idConceptoFk, BigDecimal idTipoOperacionFk,String fechaInicio,String fechaFin) {
+       getEjb();
+        int i = 1;
+        ArrayList<OperacionesCaja> listaOperaciones = new ArrayList<OperacionesCaja>();
+        List<Object[]> lstObject = ejb.getOperacionesByCategoria(idCategoriaFk, idSucursalFk, idCajaFk, idStatusFk, idConceptoFk, idTipoOperacionFk, fechaInicio, fechaFin);
+        for (Object[] obj : lstObject) 
+        {
+            OperacionesCaja op = new OperacionesCaja();
+            op.setIdOperacionesCajaPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+            op.setNombreSucursal(obj[1] == null ? null : obj[1].toString());
+            op.setNombreCaja(obj[2] == null ? null : obj[2].toString());
+            op.setIdSucursalFk(obj[3] == null ? null : new BigDecimal(obj[3].toString()));
+            op.setNombreStatus(obj[4] == null ? null : obj[4].toString());
+            op.setIdStatusFk(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
+            op.setFecha(obj[6] == null ? null : (Date)obj[6]);
+            op.setNombreOperacion(obj[7] == null ? null : obj[7].toString());
+            op.setNombreConcepto(obj[8] == null ? null : obj[8].toString());
+            op.setMonto(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
+            op.setComentarios(obj[10] == null ? null : obj[10].toString());
+            op.setFichero((obj[11] == null ? null : (byte[]) (obj[11])));
+            op.setIdConceptoFk(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
+            listaOperaciones.add(op);
+        }
+        return listaOperaciones;
+    
+    }
+
+    @Override
+    public ArrayList<OperacionesCaja> getGenerales(BigDecimal idCajaFk, BigDecimal idEntradaSalida, BigDecimal idUsuarioFk, BigDecimal idStatusFk, BigDecimal idSucursalFk,BigDecimal TIPO) {
+       getEjb();
+        
+        ArrayList<OperacionesCaja> listaOperaciones = new ArrayList<OperacionesCaja>();
+        List<Object[]> lstObject = ejb.getGenerales(idCajaFk,  idEntradaSalida,  idUsuarioFk,  idStatusFk,  idSucursalFk,TIPO);
+        for (Object[] obj : lstObject) 
+        {
+            OperacionesCaja op = new OperacionesCaja();
+            if(TIPO.intValue()==1)
+            {
+                 op.setNombrePago(obj[0] == null ? null : obj[0].toString());
+                op.setMonto(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
+               
+            }
+            else
+            {
+                op.setNombreOperacion(obj[0] == null ? null : obj[0].toString());
+                op.setNombreConcepto(obj[1] == null ? null : obj[1].toString());
+                op.setNombrePago(obj[2] == null ? null : obj[2].toString());
+                op.setMonto(obj[3] == null ? null : new BigDecimal(obj[3].toString()));
+            }
+            
+            listaOperaciones.add(op);
+        }
+        return listaOperaciones;
+    
+    
     }
 
     

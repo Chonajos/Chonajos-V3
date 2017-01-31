@@ -23,28 +23,57 @@
             <p:panel> 
                 <div class="container-fluid">
                     <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 ">
-<!--                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="sucursalFiltro" value ="Sucursal:" rendered="{beanAjusteCaja.viewEstate =='init'}"/> 
-                            <h:selectOneMenu  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="{beanAjusteCaja.idSucursalBean}" rendered="{beanAjusteCaja.viewEstate =='init'}" disabled="{beanAjusteCaja.usuario.perId != 1}">
-                                <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="" />
-                                <f:selectItems value="{beanAjusteCaja.listaSucursales}" var="sucursal" itemLabel="{sucursal.nombreSucursal}" itemValue="{sucursal.idSucursalPk}"/>
-                            </h:selectOneMenu>
+                        <!--                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                                                    <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="sucursalFiltro" value ="Sucursal:" rendered="{beanAjusteCaja.viewEstate =='init'}"/> 
+                                                    <h:selectOneMenu  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="{beanAjusteCaja.idSucursalBean}" rendered="{beanAjusteCaja.viewEstate =='init'}" disabled="{beanAjusteCaja.usuario.perId != 1}">
+                                                        <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="" />
+                                                        <f:selectItems value="{beanAjusteCaja.listaSucursales}" var="sucursal" itemLabel="{sucursal.nombreSucursal}" itemValue="{sucursal.idSucursalPk}"/>
+                                                    </h:selectOneMenu>
+                                                </div>
+                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                    <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="cajaFiltro" value ="Caja:" rendered="{beanAjusteCaja.viewEstate =='init'}" /> 
+                                                    <h:selectOneMenu  id="cajaFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="{beanAjusteCaja.idCajaBean}" rendered="{beanAjusteCaja.viewEstate =='init'}" disabled="{beanAjusteCaja.usuario.perId != 1}" >
+                                                        <f:selectItem itemLabel="Selecciona" itemValue="" />
+                                                        <f:selectItems value="{beanAjusteCaja.listaCajas}" var="cajita" itemLabel="{cajita.nombre}" itemValue="{cajita.idCajaPk}"/>
+                                                        <p:ajax event="change" listener="{beanAjusteCaja.printStatus()}" update=":formContent:table" />
+                                                    </h:selectOneMenu>
+                                                </div>-->
+                        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="cajaFiltro" value ="Caja " rendered="#{beanAjusteCaja.viewEstate =='init'}" /> 
+                            <p:selectOneMenu style="width: 97% !important"  id="cajaFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanAjusteCaja.idCajaBean}" rendered="#{beanAjusteCaja.viewEstate =='init'}" disabled="#{beanAjusteCaja.usuario.perId != 1}" >
+                                <f:selectItem itemLabel="Todas" itemValue="" />
+                                <f:selectItems value="#{beanAjusteCaja.listaCajas}" var="cajita" itemLabel="#{cajita.nombre}" itemValue="#{cajita.idCajaPk}"/>
+                                <!--<p:ajax event="change" listener="{beanCajas.printStatus()}" update=":formContent:table" />-->
+                                <p:ajax event="change" update="formContent:usuarioFiltro" listener="#{beanAjusteCaja.buscarReponsables()}" />
+                            </p:selectOneMenu>
                         </div>
-                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="cajaFiltro" value ="Caja:" rendered="{beanAjusteCaja.viewEstate =='init'}" /> 
-                            <h:selectOneMenu  id="cajaFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="{beanAjusteCaja.idCajaBean}" rendered="{beanAjusteCaja.viewEstate =='init'}" disabled="{beanAjusteCaja.usuario.perId != 1}" >
-                                <f:selectItem itemLabel="Selecciona" itemValue="" />
-                                <f:selectItems value="{beanAjusteCaja.listaCajas}" var="cajita" itemLabel="{cajita.nombre}" itemValue="{cajita.idCajaPk}"/>
-                                <p:ajax event="change" listener="{beanAjusteCaja.printStatus()}" update=":formContent:table" />
-                            </h:selectOneMenu>
-                        </div>-->
+                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="usuarioFiltro" 
+                                           value ="Responsable " rendered="#{beanAjusteCaja.viewEstate =='init'}"/> 
+                            <p:selectOneMenu style="width: 97% !important"   id="usuarioFiltro" 
+                                             class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" 
+                                             value="#{beanAjusteCaja.idUsuarioCajaBean}" 
+                                             rendered="#{beanAjusteCaja.viewEstate =='init'}" disabled="#{beanAjusteCaja.usuario.perId != 1}" >
+                                <f:selectItem itemLabel="Todos" itemValue="" />
+                                <f:selectItems value="#{beanAjusteCaja.listaResponsables}" 
+                                               var="usuario" itemLabel="#{usuario.nombreUsuario}" 
+                                               itemValue="#{usuario.idUsuarioPk}"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="pagoFiltro" value ="Pago:" rendered="#{beanAjusteCaja.viewEstate =='init'}" /> 
+                            <p:selectOneMenu  style="width: 97% !important"  id="pagoFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanAjusteCaja.idFormaPagoBean}" rendered="#{beanAjusteCaja.viewEstate =='init'}" >
+                                <f:selectItem itemLabel="Todos" itemValue="" />
+                                <f:selectItems value="#{beanAjusteCaja.listaAbonos}" var="operacioncita" itemLabel="#{operacioncita.nombreTipoAbono}" itemValue="#{operacioncita.idTipoAbono}"/>
+                                </p:selectOneMenu>
+                        </div>
                         <div class="col-lg-3 col-md-2 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-6 col-md-5 col-sm-4 col-xs-12 "  for="comboEntradaSalida" value ="Entrada/Salida:" rendered="#{beanAjusteCaja.viewEstate =='init'}"/> 
-                            <h:selectOneMenu  id="comboEntradaSalida" class="col-lg-6 col-md-7 col-sm-8 col-xs-12" value="#{beanAjusteCaja.filtroES}" rendered="#{beanAjusteCaja.viewEstate =='init'}">
-                                
+                            <p:selectOneMenu  style="width: 97% !important" id="comboEntradaSalida" class="col-lg-6 col-md-7 col-sm-8 col-xs-12" value="#{beanAjusteCaja.filtroES}" rendered="#{beanAjusteCaja.viewEstate =='init'}">
+
                                 <f:selectItem itemLabel="ENTRADA (E)" itemValue="1"/>
                                 <f:selectItem itemLabel="SALIDA (S)" itemValue="2"/>
-                            </h:selectOneMenu>
+                            </p:selectOneMenu>
                         </div>
                         <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
                             <p:outputLabel  class="col-lg-6 col-md-3 col-sm-4 col-xs-6"  for="txtPrecio" id="labelprecio" value ="Monto :" /> 

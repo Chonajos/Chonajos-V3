@@ -110,26 +110,30 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     private BigDecimal cambio;
 
     //CONSTANTES PARA PAGAR VENTA MAYOREO
-    private static final BigDecimal ENTRADASALIDA = new BigDecimal(1);
-    private static final BigDecimal STATUSOPERACIONREALIZADA = new BigDecimal(1);
-    private static final BigDecimal STATUSOPERACIONPENDIENTE = new BigDecimal(2);
-    private static final BigDecimal STATUSOPERACIONRECHAZADA = new BigDecimal(3);
+    private static final BigDecimal ENTRADA = new BigDecimal(1);
+    private static final BigDecimal STATUS_REALIZADA = new BigDecimal(1);
+    private static final BigDecimal STATUS_PENDIENTE = new BigDecimal(2);
+    private static final BigDecimal STATUS_RECHAZADA = new BigDecimal(3);
+    private static final BigDecimal STATUS_CANCELADA = new BigDecimal(4);
+
+    //CONSTANTES PARA FORMA DE PAGO
+    private static final BigDecimal EFECTIVO = new BigDecimal(1);
+    private static final BigDecimal TRANSFERENCIA = new BigDecimal(2);
+    private static final BigDecimal CHEQUE = new BigDecimal(3);
+    private static final BigDecimal DEPOSITO = new BigDecimal(4);
 
     //private static final BigDecimal concepto = new BigDecimal(9);
-    private static final BigDecimal CONCEPTOMAYOREOEFECTIVO = new BigDecimal(9);
-    private static final BigDecimal CONCEPTOMAYOREOCHEQUES = new BigDecimal(27);
-    private static final BigDecimal CONCEPTOMAYOREODEPOSITO = new BigDecimal(28);
-    private static final BigDecimal CONCEPTOMAYOREOTRANSFERENCIA = new BigDecimal(29);
+    private static final BigDecimal CONCEPTOMAYOREO = new BigDecimal(9);
 
     //--- Datos para Cheque ---//
     private static final BigDecimal DOCUMENTOACTIVO = new BigDecimal(1);
     private static final BigDecimal DOCUMENTOTIPOCHEQUE = new BigDecimal(1);
 
     //CONSTANTES PARA PAGAR VENTA MENUDEO
-    private static final BigDecimal CONCEPTOMENUDEOEFECTIVO = new BigDecimal(8);
-    private static final BigDecimal CONCEPTOMENUDEOCHEQUES = new BigDecimal(33);
-    private static final BigDecimal CONCEPTOMENUDEODEPOSITO = new BigDecimal(32);
-    private static final BigDecimal CONCEPTOMENUDEOTRANSFERENCIA = new BigDecimal(34);
+    private static final BigDecimal CONCEPTOMENUDEO = new BigDecimal(8);
+    //CONSTANTES TIPO OPERACION
+    private static final BigDecimal OPERACIONVENTASMENUDEO = new BigDecimal(5);
+    private static final BigDecimal OPERACIONVENTASMAYOREO = new BigDecimal(6);
 
     //-------------- Variables para Registrar Pago ----------//
     private BigDecimal idTipoPagoFk;
@@ -195,8 +199,8 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
         opcaja.setIdCajaFk(caja.getIdCajaPk());
         //opcaja.setIdConceptoFk(concepto);
         opcaja.setIdUserFk(usuario.getIdUsuarioPk());
-        opcaja.setEntradaSalida(ENTRADASALIDA);
-        opcaja.setIdStatusFk(STATUSOPERACIONREALIZADA);
+        opcaja.setEntradaSalida(ENTRADA);
+        //opcaja.setIdStatusFk(STATUS_REALIZADA);
         opcaja.setIdSucursalFk(new BigDecimal(usuario.getIdSucursal()));
         lstTipoAbonos = ifaceTipoAbono.getAll();
         pagoBancario = new PagosBancarios();
@@ -215,20 +219,26 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
 
     public void verificarTipo() {
         if (ventaMenudeo) {
+            opcaja.setIdConceptoFk(CONCEPTOMENUDEO);
+            opcaja.setIdTipoOperacionFk(OPERACIONVENTASMENUDEO);
             switch (idTipoPagoFk.intValue()) {
                 case 1:
-                    opcaja.setIdConceptoFk(CONCEPTOMENUDEOEFECTIVO);
+                    opcaja.setIdFormaPago(EFECTIVO);
+                    opcaja.setIdStatusFk(STATUS_REALIZADA);
                     break;
                 case 2:
-                    opcaja.setIdConceptoFk(CONCEPTOMENUDEOTRANSFERENCIA);
+                    opcaja.setIdFormaPago(TRANSFERENCIA);
+                    opcaja.setIdStatusFk(STATUS_PENDIENTE);
 
                     break;
                 case 3:
-                    opcaja.setIdConceptoFk(CONCEPTOMENUDEOCHEQUES);
+                    opcaja.setIdFormaPago(CHEQUE);
+                    opcaja.setIdStatusFk(STATUS_REALIZADA);
 
                     break;
                 case 4:
-                    opcaja.setIdConceptoFk(CONCEPTOMENUDEODEPOSITO);
+                    opcaja.setIdFormaPago(DEPOSITO);
+                    opcaja.setIdStatusFk(STATUS_PENDIENTE);
                     break;
                 default:
                     break;
@@ -236,23 +246,29 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
             }
 
         } else {
+            opcaja.setIdConceptoFk(CONCEPTOMAYOREO);
+            opcaja.setIdTipoOperacionFk(OPERACIONVENTASMAYOREO);
             switch (idTipoPagoFk.intValue()) {
-
                 case 1:
-                    opcaja.setIdConceptoFk(CONCEPTOMAYOREOEFECTIVO);
+                    opcaja.setIdFormaPago(EFECTIVO);
+                    opcaja.setIdStatusFk(STATUS_REALIZADA);
                     break;
                 case 2:
-                    opcaja.setIdConceptoFk(CONCEPTOMAYOREOTRANSFERENCIA);
+                    opcaja.setIdFormaPago(TRANSFERENCIA);
+                    opcaja.setIdStatusFk(STATUS_PENDIENTE);
+
                     break;
                 case 3:
-                    opcaja.setIdConceptoFk(CONCEPTOMAYOREOCHEQUES);
+                    opcaja.setIdFormaPago(CHEQUE);
+                    opcaja.setIdStatusFk(STATUS_REALIZADA);
+
                     break;
                 case 4:
-                    opcaja.setIdConceptoFk(CONCEPTOMAYOREODEPOSITO);
+                    opcaja.setIdFormaPago(DEPOSITO);
+                    opcaja.setIdStatusFk(STATUS_PENDIENTE);
                     break;
                 default:
                     break;
-
             }
 
         }
@@ -489,8 +505,6 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
             pagoBancario.setIdOperacionCajaFk(opcaja.getIdOperacionesCajaPk());
             pagoBancario.setIdTipoTD(new BigDecimal(3));
             pagoBancario.setIdLlaveFk(ventaMayoreo.getIdVentaMayoreoPk());
-            
-           
 
             System.out.println("Pago Bancario Bean Busca Venta Mayoreo: " + pagoBancario.toString());
             if (idTipoPagoFk.intValue() == 2 || idTipoPagoFk.intValue() == 4) {
@@ -508,7 +522,6 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
         } else {
             JsfUtil.addErrorMessageClean("Ocurrió un error al registrar el pago de la venta");
         }
-
 
     }
 

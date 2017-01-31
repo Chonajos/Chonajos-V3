@@ -110,4 +110,19 @@ public class ServiceCaja implements IfaceCaja {
     
     }
 
+    @Override
+    public ArrayList<Caja> getCajasByIdSucusal(BigDecimal idSucusalFk) {
+        getEjb();
+        ArrayList<Caja> listaCajas = new ArrayList<Caja>();
+        List<Object[]> lstObject = ejb.getCajasByIdSucusal(idSucusalFk);
+        for (Object[] obj : lstObject) 
+        {
+            Caja caja = new Caja();
+            caja.setIdCajaPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+            caja.setNombre(obj[1] == null ? "" : obj[1].toString());
+            listaCajas.add(caja);
+        }
+        return listaCajas;
+    }
+
 }

@@ -16,4 +16,5 @@ import java.util.List;
  */
 public interface IfaceTiposOperacion {
     public ArrayList<TipoOperacion> getOperaciones();
+    public ArrayList<TipoOperacion> getOperacionesByIdCategoria(BigDecimal id);
 }

@@ -9,14 +9,17 @@ import com.web.chon.dominio.Caja;
 import com.web.chon.dominio.ConceptosES;
 import com.web.chon.dominio.OperacionesCaja;
 import com.web.chon.dominio.Sucursal;
+import com.web.chon.dominio.TipoAbono;
 import com.web.chon.dominio.TipoOperacion;
 import com.web.chon.dominio.Usuario;
 import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.security.service.PlataformaSecurityContext;
+import com.web.chon.service.IfaceAbonoCredito;
 import com.web.chon.service.IfaceCaja;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceConceptos;
 import com.web.chon.service.IfaceOperacionesCaja;
+import com.web.chon.service.IfaceTipoAbono;
 import com.web.chon.service.IfaceTiposOperacion;
 import com.web.chon.util.TiempoUtil;
 import java.io.Serializable;
@@ -50,6 +53,8 @@ public class BeanOperacionesCaja implements Serializable {
     private IfaceTiposOperacion ifaceTiposOperacion;
     @Autowired
     private IfaceConceptos ifaceConceptos;
+    @Autowired
+    private IfaceTipoAbono ifaceTipoAbono;
 
     private OperacionesCaja data;
     private UsuarioDominio usuario;
@@ -59,6 +64,7 @@ public class BeanOperacionesCaja implements Serializable {
     private ArrayList<Caja> listaCajas;
     private ArrayList<ConceptosES> listaConceptos;
     private ArrayList<TipoOperacion> listaTiposOperaciones;
+    private ArrayList<TipoAbono> listaAbonos;
     private ArrayList<Usuario> listaResponsables;
 
     private String title;
@@ -84,10 +90,12 @@ public class BeanOperacionesCaja implements Serializable {
 
     private BigDecimal idCorteBean;
     private BigDecimal total;
+    private BigDecimal idFormaPagoBean;
 
     @PostConstruct
     public void init() {
-        idCajaBean = new BigDecimal(0);
+        
+        
         total = new BigDecimal(0);
         idCorteBean = new BigDecimal(1);
         idUsuarioCajaBean = new BigDecimal(0);
@@ -104,11 +112,12 @@ public class BeanOperacionesCaja implements Serializable {
         Caja c = new Caja();
         c = ifaceCaja.getCajaByIdUsuarioPk(usuario.getIdUsuario());
         idCajaBean = c.getIdCajaPk();
-
+        listaAbonos= new ArrayList<TipoAbono>();
+        listaAbonos=ifaceTipoAbono.getAll();
         //listaConceptos = ifaceConceptos.getConceptos();
         listaTiposOperaciones = ifaceTiposOperacion.getOperaciones();
         listaResponsables = ifaceOperacionesCaja.getResponsables(idCajaBean);
-        listaOperaciones = ifaceOperacionesCaja.getOperacionesBy(idCajaBean, idTipoOperacionBean, idConceptoBean, TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicio), TiempoUtil.getFechaDDMMYYYY(fechaFiltroFin), idStatusBean, idUsuarioCajaBean, idCorteBean,idInOut);
+        listaOperaciones = ifaceOperacionesCaja.getOperacionesBy(idCajaBean, idTipoOperacionBean, idConceptoBean, TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicio), TiempoUtil.getFechaDDMMYYYY(fechaFiltroFin), idStatusBean, idUsuarioCajaBean, idCorteBean,idInOut,idFormaPagoBean);
         System.out.println("IDCAJABEAN: ---------------"+idCajaBean);
         
         if (idCajaBean != null) {
@@ -138,7 +147,7 @@ public class BeanOperacionesCaja implements Serializable {
 
     public void buscar() {
         System.out.println("Entro a buscar");
-        listaOperaciones = ifaceOperacionesCaja.getOperacionesBy(idCajaBean, idTipoOperacionBean, idConceptoBean, TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicio), TiempoUtil.getFechaDDMMYYYY(fechaFiltroFin), idStatusBean, idUsuarioCajaBean, idCorteBean,idInOut);
+        listaOperaciones = ifaceOperacionesCaja.getOperacionesBy(idCajaBean, idTipoOperacionBean, idConceptoBean, TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicio), TiempoUtil.getFechaDDMMYYYY(fechaFiltroFin), idStatusBean, idUsuarioCajaBean, idCorteBean,idInOut,idFormaPagoBean);
         sumaTotal();
     }
     public void sumaTotal() {
@@ -394,6 +403,23 @@ public class BeanOperacionesCaja implements Serializable {
     public void setTotal(BigDecimal total) {
         this.total = total;
     }
+
+    public ArrayList<TipoAbono> getListaAbonos() {
+        return listaAbonos;
+    }
+
+    public void setListaAbonos(ArrayList<TipoAbono> listaAbonos) {
+        this.listaAbonos = listaAbonos;
+    }
+
+    public BigDecimal getIdFormaPagoBean() {
+        return idFormaPagoBean;
+    }
+
+    public void setIdFormaPagoBean(BigDecimal idFormaPagoBean) {
+        this.idFormaPagoBean = idFormaPagoBean;
+    }
+    
 
     
 }

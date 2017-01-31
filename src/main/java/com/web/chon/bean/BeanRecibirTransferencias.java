@@ -60,11 +60,21 @@ public class BeanRecibirTransferencias implements Serializable {
     private String comentarios;
     private BigDecimal idCajaDestinoBean;
 
-    private static final BigDecimal entrada = new BigDecimal(1);
-    private static final BigDecimal salida = new BigDecimal(2);
-    private static final BigDecimal aprobada = new BigDecimal(1);
-    private static final BigDecimal rechazada = new BigDecimal(2);
+    private static final BigDecimal ENTRADA = new BigDecimal(1);
+    private static final BigDecimal SALIDA = new BigDecimal(2);
 
+    private static final BigDecimal STATUS_REALIZADA = new BigDecimal(1);
+    private static final BigDecimal STATUS_PENDIENTE = new BigDecimal(2);
+    private static final BigDecimal STATUS_RECHAZADA = new BigDecimal(3);
+    private static final BigDecimal STATUS_CANCELADA = new BigDecimal(4);
+
+    private static final BigDecimal EFECTIVO = new BigDecimal(1);
+    private static final BigDecimal TRANSFERENCIA = new BigDecimal(2);
+    private static final BigDecimal CHEQUE = new BigDecimal(3);
+    private static final BigDecimal DEPOSITO = new BigDecimal(4);
+
+    private static final BigDecimal CONCEPTO_TRANSFERENCIA = new BigDecimal(5);
+    private static final BigDecimal OPERACION_TRANSFERENCIA = new BigDecimal(2);
 
     @PostConstruct
     public void init() {
@@ -77,8 +87,8 @@ public class BeanRecibirTransferencias implements Serializable {
         opcaja.setIdCajaFk(caja.getIdCajaPk());
         opcaja.setIdUserFk(usuario.getIdUsuario());
         opcaja.setIdSucursalFk(new BigDecimal(usuario.getSucId()));
-        
-        opcaja.setEntradaSalida(entrada);
+
+        opcaja.setEntradaSalida(ENTRADA);
         data = new OperacionesCaja();
         lstTransferenciasEntrantes = new ArrayList<OperacionesCaja>();
         lstTransferenciasEntrantes = ifaceOperacionesCaja.getTransferenciasEntrantes(opcaja.getIdCajaFk());
@@ -89,13 +99,14 @@ public class BeanRecibirTransferencias implements Serializable {
             opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
             opcaja.setMonto(data.getMonto());
             opcaja.setIdConceptoFk(data.getIdConceptoFk());
-            //opcaja.setIdConceptoFk(idConceptoTransAprobada);
-            
-            opcaja.setIdStatusFk(aprobada);
-            
-            if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) 
-            {
-                ifaceOperacionesCaja.updateStatusConcepto(data.getIdOperacionesCajaPk(), aprobada,data.getIdConceptoFk());
+            opcaja.setIdTipoOperacionFk(data.getIdTipoOperacionFk());
+            opcaja.setIdFormaPago(data.getIdTipoOperacionFk());
+            opcaja.setComentarios("SISTEMA: TRANSFERENCIA: OC:" + data.getIdOperacionesCajaPk());
+
+            opcaja.setIdStatusFk(STATUS_REALIZADA);
+
+            if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
+                ifaceOperacionesCaja.updateStatusConcepto(data.getIdOperacionesCajaPk(), STATUS_REALIZADA, data.getIdConceptoFk());
                 lstTransferenciasEntrantes = ifaceOperacionesCaja.getTransferenciasEntrantes(opcaja.getIdCajaFk());
                 JsfUtil.addSuccessMessageClean("Transferencia Recibida Correctamente");
             } else {
@@ -105,17 +116,18 @@ public class BeanRecibirTransferencias implements Serializable {
             JsfUtil.addErrorMessageClean("Su usuario no cuenta con caja registrada para realizar el pago de servicios");
         }
     }
-    public void rechazarTransferencia()
-    {
+
+    public void rechazarTransferencia() {
         if (caja.getIdCajaPk() != null) {
-            opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
-            opcaja.setMonto(data.getMonto());
-            opcaja.setIdConceptoFk(data.getIdConceptoFk());
-            opcaja.setIdStatusFk(rechazada);
-            if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) 
-            {
-                System.out.println("======="+data.getIdOperacionesCajaPk());
-                ifaceOperacionesCaja.updateStatusConcepto(data.getIdOperacionesCajaPk(), rechazada,data.getIdConceptoFk());
+//            opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
+//            opcaja.setMonto(data.getMonto());
+//            opcaja.setIdConceptoFk(data.getIdConceptoFk());
+//            
+//            opcaja.setIdStatusFk(STATUS_RECHAZADA);
+//            if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) 
+//            {
+            System.out.println("=======" + data.getIdOperacionesCajaPk());
+            if (ifaceOperacionesCaja.updateStatusConcepto(data.getIdOperacionesCajaPk(), STATUS_RECHAZADA, data.getIdConceptoFk()) == 1) {
                 lstTransferenciasEntrantes = ifaceOperacionesCaja.getTransferenciasEntrantes(opcaja.getIdCajaFk());
                 JsfUtil.addSuccessMessageClean("Transferencia Rechazada Correctamente");
             } else {

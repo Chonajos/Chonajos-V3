@@ -7,7 +7,7 @@ package com.web.chon.negocio;
 
 import com.web.chon.dominio.OperacionesCaja;
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.List;
 import javax.ejb.Remote;
 
@@ -23,8 +23,8 @@ public interface NegocioOperacionesCaja {
     public int updateStatusConceptoOperacion(BigDecimal idOperacionPk,BigDecimal idStatusFk,BigDecimal idConceptoFk);
     public int updateCorteCaja(BigDecimal idOperacionPk,BigDecimal idCorteCajaFk);
     public List<Object[]> getOperacionByIdOperacionPK(BigDecimal idOperacionPk);
-    public List<Object[]> getOperacionesBy(BigDecimal idCajaFk, BigDecimal idOperacionFk, BigDecimal idConceptoFk, String fechaInicio, String fechaFin, BigDecimal idStatusFk, BigDecimal idUserFk,BigDecimal idCorte,BigDecimal inout);    
-    public List<Object[]> getTransferenciasEntrantes(BigDecimal idCorteCajaFk);
+    public List<Object[]> getOperacionesBy(BigDecimal idCajaFk, BigDecimal idOperacionFk, BigDecimal idConceptoFk, String fechaInicio, String fechaFin, BigDecimal idStatusFk, BigDecimal idUserFk,BigDecimal idCorte,BigDecimal inout,BigDecimal idFormaPago);    
+    public List<Object[]> getTransferenciasEntrantes(BigDecimal idCajaFk);
     public List<Object[]> getDepositosEntrantes(BigDecimal idSucursalFk);
     public List<Object[]> getOperacionesCorteBy(BigDecimal idCajaFk, BigDecimal idUserFk, BigDecimal idES);
     public List<Object[]> getOperaciones(BigDecimal idCajaFk,BigDecimal idUserFk);
@@ -35,4 +35,10 @@ public interface NegocioOperacionesCaja {
     public int getNextVal();
     public List<Object[]> getDetallesCorte(BigDecimal idCajaFk, BigDecimal idUserFk, BigDecimal entrada_salida, BigDecimal idStatusFk,BigDecimal idCorteFk);
     public List<Object[]> getOperaciones(BigDecimal idCajaFk, BigDecimal idEntradaSalida, BigDecimal idUsuarioFk);
+    public void insertarDocumento(BigDecimal id, byte[] fichero)throws SQLException ;
+    public List<Object[]> getOperacionesByCategoria(BigDecimal idCategoriaFk,BigDecimal idSucursalFk,BigDecimal idCajaFk,BigDecimal idStatusFk,BigDecimal idConceptoFk,BigDecimal idTipoOperacionFk,String fechaInicio,String fechaFin);
+
+    //nuevo cortre
+    public List<Object[]> getGenerales(BigDecimal idCajaFk, BigDecimal idEntradaSalida, BigDecimal idUsuarioFk, BigDecimal idStatusFk, BigDecimal idSucursalFk,BigDecimal TIPO);
+    
 }

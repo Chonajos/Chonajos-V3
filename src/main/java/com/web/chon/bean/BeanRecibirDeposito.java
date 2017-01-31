@@ -67,10 +67,16 @@ public class BeanRecibirDeposito implements Serializable {
     private String comentarios;
     private BigDecimal idCajaDestinoBean;
 
-    private static final BigDecimal entrada = new BigDecimal(1);
-    private static final BigDecimal salida = new BigDecimal(2);
-    private static final BigDecimal statusAprobada = new BigDecimal(1);
-    private static final BigDecimal statusRechazada = new BigDecimal(2);
+    private static final BigDecimal ENTRADA = new BigDecimal(1);
+    private static final BigDecimal SALIDA = new BigDecimal(2);
+    
+    private static final BigDecimal STATUS_REALIZADA = new BigDecimal(1);
+    private static final BigDecimal STATUS_PENDIENTE = new BigDecimal(2);
+    private static final BigDecimal STATUS_RECHAZADA = new BigDecimal(3);
+    private static final BigDecimal STATUS_CANCELADA = new BigDecimal(4);
+    
+    //---Status Pagos Bancarios---//
+    private static final BigDecimal STATUS_APROBADA = new BigDecimal(3);
 
     private OperacionesCaja opcaja;
     private ArrayList<Sucursal> listaSucursales;
@@ -86,7 +92,7 @@ public class BeanRecibirDeposito implements Serializable {
         opcuenta = new OperacionesCuentas();
         opcuenta.setIdUserFk(usuario.getIdUsuario());
         listaDepositosTransferencias = new ArrayList<PagosBancarios>();
-        opcuenta.setEntradaSalida(entrada);
+        opcuenta.setEntradaSalida(ENTRADA);
         listaSucursales = new ArrayList<Sucursal>();
         listaSucursales = ifaceCatSucursales.getSucursales();
 
@@ -111,16 +117,23 @@ public class BeanRecibirDeposito implements Serializable {
         opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
         opcaja.setIdCajaFk(data1.getIdCajaFk());
         opcaja.setIdConceptoFk(data1.getIdConceptoFk());
-        opcaja.setIdStatusFk(statusAprobada);
+        opcaja.setIdStatusFk(STATUS_REALIZADA);
         opcaja.setIdUserFk(data1.getIdUserFk());
         opcaja.setMonto(data1.getMonto());
-        opcaja.setEntradaSalida(salida);
+        opcaja.setEntradaSalida(SALIDA);
+        opcaja.setComentarios("SISTEMA: Pago Bancario : OC: "+data1.getIdOperacionCajaFk());
+        OperacionesCaja opTemporal = new OperacionesCaja();
+        opTemporal=ifaceOperacionesCaja.getOperacionByIdPk(data1.getIdOperacionCajaFk());
+        
+        opcaja.setIdTipoOperacionFk(opTemporal.getIdTipoOperacionFk());
+        opcaja.setIdFormaPago(opTemporal.getIdFormaPago());
         //opcaja.setIdSucursalFk();
         //opcaja.setIdConceptoFk(idConceptoTransAprobada);
 
         if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
             System.out.println("Se cambio concepto de operacion de caja");
-            data1.setIdStatusFk(new BigDecimal(3));
+            ifaceOperacionesCaja.updateStatusConcepto(data1.getIdOperacionCajaFk(), STATUS_REALIZADA, data1.getIdConceptoFk());
+            data1.setIdStatusFk(STATUS_APROBADA);
             if (ifacePagosBancarios.updatePagoBancario(data1) == 1)
             {
                 System.out.println("Se actualizo el pago bancario.");
@@ -138,11 +151,11 @@ public class BeanRecibirDeposito implements Serializable {
     public void aceptar() {
         opcuenta.setIdOperacionCuenta(new BigDecimal(ifaceOperacionesCuentas.getNextVal()));
         opcuenta.setMonto(data.getMonto());
-        opcuenta.setIdStatusFk(statusAprobada);
+        opcuenta.setIdStatusFk(STATUS_REALIZADA);
         opcuenta.setIdConceptoFk(data.getIdConceptoFk());
         System.out.println("Data :" + data.toString());
         if (ifaceOperacionesCuentas.insertaOperacion(opcuenta) == 1) {
-            if (ifaceOperacionesCaja.updateStatusConcepto(data.getIdOperacionesCajaPk(), statusAprobada, data.getIdConceptoFk()) == 1) {
+            if (ifaceOperacionesCaja.updateStatusConcepto(data.getIdOperacionesCajaPk(), STATUS_REALIZADA, data.getIdConceptoFk()) == 1) {
                 JsfUtil.addSuccessMessageClean("Se ha recibido el Depósito Correctamente");
                 buscar();
             } else {
@@ -155,15 +168,17 @@ public class BeanRecibirDeposito implements Serializable {
     }
 
     public void rechazarDeposito() {
-        opcuenta.setIdOperacionCuenta(new BigDecimal(ifaceOperacionesCuentas.getNextVal()));
-        opcuenta.setMonto(data.getMonto());
-        opcuenta.setIdStatusFk(statusRechazada);
-        opcuenta.setIdConceptoFk(data.getIdConceptoFk());
-        if (ifaceOperacionesCuentas.insertaOperacion(opcuenta) == 1) {
-            ifaceOperacionesCaja.updateStatusConcepto(data.getIdOperacionesCajaPk(), statusRechazada, data.getIdConceptoFk());
+        opcuenta.setIdOperacionCuenta(data1.getIdTransBancariasPk());
+        opcuenta.setMonto(data1.getMonto());
+        opcuenta.setIdStatusFk(STATUS_CANCELADA);
+        opcuenta.setIdConceptoFk(data1.getIdConceptoFk());
+        if (ifaceOperacionesCuentas.updateOperacion(opcuenta) == 1) 
+        {
+            ifaceOperacionesCaja.updateStatusConcepto(data1.getIdOperacionCajaFk(), STATUS_RECHAZADA, data1.getIdConceptoFk());
             buscar();
             JsfUtil.addSuccessMessageClean("Se ha rechazado el Depósito Correctamente");
-        } else {
+        } else 
+        {
             JsfUtil.addErrorMessageClean("Ocurrió un error al rechazar el Depósito");
         }
     }

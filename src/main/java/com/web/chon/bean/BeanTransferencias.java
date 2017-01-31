@@ -75,12 +75,24 @@ public class BeanTransferencias implements Serializable {
     private String comentarios;
     private BigDecimal idCajaDestinoBean;
 
-    private static final BigDecimal entrada = new BigDecimal(1);
-    private static final BigDecimal salida = new BigDecimal(2);
-    private static final BigDecimal statusOperacionPendiente = new BigDecimal(2);
+   
+    
+    private static final BigDecimal ENTRADA = new BigDecimal(1);
+    private static final BigDecimal SALIDA = new BigDecimal(2);
+    
+    private static final BigDecimal STATUS_REALIZADA = new BigDecimal(1);
+    private static final BigDecimal STATUS_PENDIENTE = new BigDecimal(2);
+    private static final BigDecimal STATUS_RECHAZADA = new BigDecimal(3);
+    private static final BigDecimal STATUS_CANCELADA = new BigDecimal(4);
+    
+    private static final BigDecimal EFECTIVO = new BigDecimal(1);
+    private static final BigDecimal TRANSFERENCIA = new BigDecimal(2);
+    private static final BigDecimal CHEQUE = new BigDecimal(3);
+    private static final BigDecimal DEPOSITO = new BigDecimal(4);
+    
 
-    private static final BigDecimal idTransferenciaEfectivo = new BigDecimal(16);
-    private static final BigDecimal idTransferenciaCheques = new BigDecimal(17);
+    private static final BigDecimal CONCEPTO_TRANSFERENCIA = new BigDecimal(5);
+    private static final BigDecimal OPERACION_TRANSFERENCIA = new BigDecimal(2);
 
     //--Variables para Verificar Maximo en Caja --//
     private ArrayList<TipoOperacion> lstOperacionesEntrada;
@@ -119,9 +131,13 @@ public class BeanTransferencias implements Serializable {
         opcajaOrigen = new OperacionesCaja();
         opcajaOrigen.setIdCajaFk(caja.getIdCajaPk());
         opcajaOrigen.setIdUserFk(usuario.getIdUsuario());
-        opcajaOrigen.setEntradaSalida(salida);
-        opcajaOrigen.setIdStatusFk(statusOperacionPendiente);
+        opcajaOrigen.setEntradaSalida(SALIDA);
+        opcajaOrigen.setIdStatusFk(STATUS_PENDIENTE);
         opcajaOrigen.setIdSucursalFk(new BigDecimal(usuario.getSucId()));
+        opcajaOrigen.setIdTipoOperacionFk(idTipoOperacionBean);
+        opcajaOrigen.setIdFormaPago(EFECTIVO);
+        opcajaOrigen.setIdConceptoFk(CONCEPTO_TRANSFERENCIA);
+        opcajaOrigen.setIdTipoOperacionFk(OPERACION_TRANSFERENCIA);
 
         //--Maximo Pago--//
         corteAnterior = new CorteCaja();
@@ -186,8 +202,8 @@ public class BeanTransferencias implements Serializable {
         listaDetalleEntradas =new ArrayList<OperacionesCaja>();
         listaDetalleSalidas=new ArrayList<OperacionesCaja>();
         
-        listaDetalleEntradas = ifaceOperacionesCaja.getDetalles(caja.getIdCajaPk(), caja.getIdUsuarioFK(), entrada, statusAplicado);
-        listaDetalleSalidas = ifaceOperacionesCaja.getDetalles(caja.getIdCajaPk(), caja.getIdUsuarioFK(), salida, statusAplicado);
+        listaDetalleEntradas = ifaceOperacionesCaja.getDetalles(caja.getIdCajaPk(), caja.getIdUsuarioFK(), ENTRADA, statusAplicado);
+        listaDetalleSalidas = ifaceOperacionesCaja.getDetalles(caja.getIdCajaPk(), caja.getIdUsuarioFK(), SALIDA, statusAplicado);
 
         for (OperacionesCaja ope : listaDetalleEntradas) {
             if (ope.getIdConceptoFk().intValue() == 10 || ope.getIdConceptoFk().intValue() == 6 || ope.getIdConceptoFk().intValue() == 11 || ope.getIdConceptoFk().intValue() == 7 || ope.getIdConceptoFk().intValue() == 8 || ope.getIdConceptoFk().intValue() == 9 || ope.getIdConceptoFk().intValue() == 16 || ope.getIdConceptoFk().intValue() == 13) {
@@ -237,12 +253,14 @@ public class BeanTransferencias implements Serializable {
                 if ((opcajaOrigen.getMonto().setScale(2, RoundingMode.CEILING)).compareTo((nuevoSaldo.setScale(2, RoundingMode.CEILING))) >= 0) {
                     bandera = true;
                 }
-                opcajaOrigen.setIdConceptoFk(idTransferenciaEfectivo);
+                
+                opcajaOrigen.setIdFormaPago(EFECTIVO);
             } else {
                 if (opcajaOrigen.getMonto().setScale(2, RoundingMode.CEILING).compareTo(nuevoSaldoCheques.setScale(2, RoundingMode.CEILING)) >= 0) {
                     bandera = true;
                 }
-                opcajaOrigen.setIdConceptoFk(idTransferenciaCheques);
+                
+                opcajaOrigen.setIdFormaPago(CHEQUE);
             }
 
             opcajaOrigen.setIdCajaDestinoFk(idCajaDestinoBean);

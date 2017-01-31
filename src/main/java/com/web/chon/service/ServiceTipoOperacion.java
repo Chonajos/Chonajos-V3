@@ -48,5 +48,21 @@ public class ServiceTipoOperacion implements IfaceTiposOperacion {
         }
         return lstOperaciones;
     }
+
+    @Override
+    public ArrayList<TipoOperacion> getOperacionesByIdCategoria(BigDecimal id) {
+        getEjb();
+        ArrayList<TipoOperacion> lstOperaciones= new ArrayList<TipoOperacion>();
+        List<Object[]> lstObject = new ArrayList<Object[]>();
+        lstObject = ejb.getOperacionesByIdCategoria(id);
+        for (Object[] object : lstObject) {
+            TipoOperacion c = new TipoOperacion();
+            c.setIdTipoOperacionPk(object[0] == null ? null : new BigDecimal(object[0].toString()));
+            c.setNombre(object[1] == null ? null : object[1].toString());
+            c.setDescripcion(object[2] == null ? null : object[2].toString());
+            lstOperaciones.add(c);
+        }
+        return lstOperaciones;
+    }
     
 }

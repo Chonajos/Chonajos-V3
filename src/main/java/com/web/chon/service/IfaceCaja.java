@@ -21,4 +21,5 @@ public interface IfaceCaja {
     public ArrayList<Caja> getCajas();
     public Caja getCajaByIdPk(BigDecimal idCajaPk);
     public ArrayList<Caja> getSucursalesByIdCaja(BigDecimal idCajaFk);
+    public ArrayList<Caja> getCajasByIdSucusal(BigDecimal idSucusalFk);
 }
