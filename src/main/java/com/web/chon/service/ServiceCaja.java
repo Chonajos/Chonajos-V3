@@ -120,6 +120,10 @@ public class ServiceCaja implements IfaceCaja {
             Caja caja = new Caja();
             caja.setIdCajaPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
             caja.setNombre(obj[1] == null ? "" : obj[1].toString());
+            caja.setNombreSucursal(obj[2] == null ? "" : obj[2].toString());
+            caja.setIdSucursalFk(obj[3] == null ? null : new BigDecimal(obj[3].toString()));
+            caja.setIdUsuarioFK(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
+            
             listaCajas.add(caja);
         }
         return listaCajas;

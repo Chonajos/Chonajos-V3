@@ -18,14 +18,12 @@
                       closable="false" resizable="false" showHeader="false">
                 <p:graphicImage value="../resources/img/carga.gif" />
             </p:dialog>
-            
-            
+
+
             <p:panel> 
                 <div class="container-fluid">
                     <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 form-group">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignRight form-group">
-                            <p:commandButton value="Buscar" onclick="PF('statusDialog').show()" update=":formContent" ajax="true" action="#{beanCajas.buscar()}"/>
-                        </div>
+                        
                         <p:confirmDialog  global="true" showEffect="fade" hideEffect="fade">
                             <div class="alignCenter">
                                 <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
@@ -34,10 +32,10 @@
                         </p:confirmDialog>
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="comboSucursal" value ="Sucursal:" rendered="#{beanCajas.viewEstate =='init'}" /> 
-                            <p:selectOneMenu style="width: 97% !important"  id="comboSucursal" class="col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanCajas.idSucursalBean}" rendered="#{beanCajas.viewEstate =='init'}" required="false">
+                            <p:selectOneMenu style="width: 97% !important"  id="comboSucursal" class="col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanCajas.idSucursalBean}" rendered="#{beanCajas.viewEstate =='init'}" disabled="#{beanCajas.usuario.perId != 1}" required="false">
                                 <f:selectItem itemLabel="Todas" itemValue="" />
                                 <f:selectItems value="#{beanCajas.listaSucursal}" var="sucu" itemLabel="#{sucu.nombreSucursal}" itemValue="#{sucu.idSucursalPk}"/>
-                            
+
                                 <p:ajax event="change" update=":formContent:cajaFiltro :formContent:usuarioFiltro" listener="#{beanCajas.buscarCajas()}" />
                             </p:selectOneMenu>
                         </div>
@@ -63,13 +61,16 @@
                                                itemValue="#{usuario.idUsuarioPk}"/>
                             </p:selectOneMenu>
                         </div>
+                        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 alignRight form-group">
+                            <p:commandButton value="Buscar" onclick="PF('statusDialog').show()" update=":formContent" ajax="true" action="#{beanCajas.buscar()}"/>
+                        </div>
 
                     </div>
 
                 </div>
             </p:panel>
-            <p:panel id="toggleable" header="Saldo Actual" toggleable="true" closable="true" toggleSpeed="500" closeSpeed="500" widgetVar="panel" style="margin-bottom:20px">
-
+            <p:panel id="toggleable"  header="Saldo Actual" toggleable="true" closable="true" toggleSpeed="500" closeSpeed="500" widgetVar="panel" >
+                <h:panelGrid columns="2" cellpadding="10">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                     <p:dataTable id="tabla3" var="model3" 
                                  value="#{beanCajas.listaGeneral}" 
@@ -121,8 +122,9 @@
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </h:outputText>
                         </p:column>
+                        
                         <p:column headerText="Generar Corte"  width="60px;" class="alignCenter">
-                            <p:commandButton id="print" disabled="#{model3.idCaja.intValue() != 2}"  ajax="true" process="@this" action="#{beanCajas.generarCorte()}" 
+                            <p:commandButton id="print" disabled="#{model3.idUsuarioFk != beanCajas.usuario.idUsuario.intValue()}"  ajax="true" process="@this" action="#{beanCajas.generarCorte()}" 
                                              icon="ui-icon-transfer-e-w" styleClass="ui-priority-primary" update=":formContent">
                                 <f:setPropertyActionListener value="#{model3}" target="#{beanCajas.data}"/>
                                 <p:confirm header="Confirmación" message="¿Estás seguro de realizar el corte de caja?" icon="ui-icon-alert"/>
@@ -134,61 +136,64 @@
                                 <p:column colspan="1" style="text-align:right" footerText="Totales:" />
                                 <p:column colspan="1" class="alignRight">
                                     <f:facet name="footer">
-                                        <h:outputText value="#{beanCajas.totalEntradasEfectivo}" >
+                                        <h:outputText value="#{beanCajas.totalAperturaEfectivo}" >
                                             <f:convertNumber currencySymbol="$" type="currency" />
                                         </h:outputText>
                                     </f:facet>
                                 </p:column>
                                 <p:column colspan="1" class="alignRight">
                                     <f:facet name="footer">
-                                        <h:outputText value="#{beanCajas.totalEntradasEfectivo}" >
+                                        <h:outputText value="#{beanCajas.totalAperturaCheques}" >
                                             <f:convertNumber currencySymbol="$" type="currency" />
                                         </h:outputText>
                                     </f:facet>
                                 </p:column>
                                 <p:column colspan="1" class="alignRight">
                                     <f:facet name="footer">
-                                        <h:outputText value="#{beanCajas.totalEntradasEfectivo}" >
+                                        <h:outputText value="#{beanCajas.totalAperturaCuentas}" >
                                             <f:convertNumber currencySymbol="$" type="currency" />
                                         </h:outputText>
                                     </f:facet>
                                 </p:column>
                                 <p:column colspan="1" class="alignRight">
                                     <f:facet name="footer">
-                                        <h:outputText value="#{beanCajas.totalEntradasEfectivo}" >
+                                        <h:outputText value="#{beanCajas.totalEfectivo}" >
                                             <f:convertNumber currencySymbol="$" type="currency" />
                                         </h:outputText>
                                     </f:facet>
                                 </p:column>
                                 <p:column colspan="1" class="alignRight">
                                     <f:facet name="footer">
-                                        <h:outputText value="#{beanCajas.totalEntradasEfectivo}" >
+                                        <h:outputText value="#{beanCajas.totalCheques}" >
                                             <f:convertNumber currencySymbol="$" type="currency" />
                                         </h:outputText>
                                     </f:facet>
                                 </p:column>
                                 <p:column colspan="1" class="alignRight">
                                     <f:facet name="footer">
-                                        <h:outputText value="#{beanCajas.totalEntradasEfectivo}" >
+                                        <h:outputText value="#{beanCajas.totalCuentas}" >
                                             <f:convertNumber currencySymbol="$" type="currency" />
                                         </h:outputText>
                                     </f:facet>
                                 </p:column>
                                 <p:column colspan="1" class="alignRight">
                                     <f:facet name="footer">
-                                        <h:outputText value="#{beanCajas.totalEntradasEfectivo}" >
+                                        <h:outputText value="#{beanCajas.totalSaldoActual}" >
                                             <f:convertNumber currencySymbol="$" type="currency" />
                                         </h:outputText>
                                     </f:facet>
                                 </p:column>
+                                <p:column colspan="1" />
 
                             </p:row>
                         </p:columnGroup>
                     </p:dataTable>
                 </div>
+                    </h:panelGrid>
             </p:panel>
 
-            <p:panel id="toggleable2" header="Detalle Entradas y Salidas" toggleable="true" closable="true" toggleSpeed="500" closeSpeed="500" widgetVar="panel2" style="margin-bottom:20px">
+            <p:panel id="toggleable2"  header="Detalle Entradas y Salidas" toggleable="true" closable="true" toggleSpeed="500" closeSpeed="500" widgetVar="panel2" >
+                
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                     <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
                         <p:dataTable id="tabla4" var="model4" 
@@ -222,7 +227,7 @@
                                     <p:column colspan="4" style="text-align:right" footerText="Total:" />
                                     <p:column colspan="1" class="alignRight">
                                         <f:facet name="footer">
-                                            <h:outputText value="#{beanCajas.totalEntradasEfectivo}" >
+                                            <h:outputText value="#{beanCajas.totalEntradas}" >
                                                 <f:convertNumber currencySymbol="$" type="currency" />
                                             </h:outputText>
                                         </f:facet>
@@ -268,7 +273,7 @@
                                     <p:column colspan="4" style="text-align:right" footerText="Total:" />
                                     <p:column colspan="1" class="alignRight">
                                         <f:facet name="footer">
-                                            <h:outputText value="#{beanCajas.totalEntradasEfectivo}" >
+                                            <h:outputText value="#{beanCajas.totalSalidas}" >
                                                 <f:convertNumber currencySymbol="$" type="currency" />
                                             </h:outputText>
                                         </f:facet>
@@ -281,6 +286,86 @@
                     </div>
                 </div>
             </p:panel>
+            <p:panel id="toggleable3" rendered="#{beanCajas.viewEstate =='h'}" header="Detalle Entradas y Salidas Generales" toggleable="true" closable="true" toggleSpeed="500" closeSpeed="500" widgetVar="panel3">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                            <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                <p:dataTable id="tabla1" var="model1" 
+                                             value="#{beanCajas.lstOperacionesGeneralesEntrada}" 
+                                             scrollable="true"
+                                             scrollHeight="100" styleClass="ui-datatable-hor-scroll" 
+                                             emptyMessage="No se encontraron Registros" 
+                                             rendered="#{beanCajas.viewEstate =='init'}">
+                                    <f:facet name="header">
+                                        (+) Entradas
+                                    </f:facet>
+
+                                    <p:column headerText="Forma de Pago" width="150px;" class="alignLeft">
+                                        <h:outputText value="#{model1.nombrePago}" />
+                                    </p:column>
+
+                                    <p:column headerText="Monto" width="100px;" class="alignRight">
+                                        <h:outputText value="#{model1.monto}">
+                                            <f:convertNumber type="currency" currencySymbol="$" />
+                                        </h:outputText>
+                                    </p:column>
+                                    <p:columnGroup type="footer">
+                                        <p:row>
+
+                                            <p:column colspan="4" style="text-align:right" footerText="Total:" />
+                                            <p:column colspan="1" class="alignRight">
+                                                <f:facet name="footer">
+                                                    <h:outputText value="#{beanCajas.totalEntradasEfectivo}" >
+                                                        <f:convertNumber currencySymbol="$" type="currency" />
+                                                    </h:outputText>
+                                                </f:facet>
+                                            </p:column>
+                                        </p:row>
+                                    </p:columnGroup>
+                                </p:dataTable>
+
+                            </div>
+
+                            <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+
+                                <p:dataTable id="tabla2" var="model2" 
+                                             value="#{beanCajas.lstOperacionesGeneralesSalida}" 
+                                             scrollable="true"
+                                             scrollHeight="100" styleClass="ui-datatable-hor-scroll" 
+                                             emptyMessage="No se encontraron Registros" 
+                                             rendered="#{beanCajas.viewEstate =='init'}">
+                                    <f:facet name="header">
+                                        (-) Salidas
+                                    </f:facet>
+
+                                    <p:column headerText="Forma de Pago" width="150px;" class="alignLeft">
+                                        <h:outputText value="#{model2.nombrePago}" />
+                                    </p:column>
+
+                                    <p:column headerText="Monto" width="100px;" class="alignRight">
+                                        <h:outputText value="#{model2.monto}">
+                                            <f:convertNumber type="currency" currencySymbol="$" />
+                                        </h:outputText>
+                                    </p:column>
+                                    <p:columnGroup type="footer">
+                                        <p:row>
+
+                                            <p:column colspan="4" style="text-align:right" footerText="Total:" />
+                                            <p:column colspan="1" class="alignRight">
+                                                <f:facet name="footer">
+                                                    <h:outputText value="#{beanCajas.totalEntradasEfectivo}" >
+                                                        <f:convertNumber currencySymbol="$" type="currency" />
+                                                    </h:outputText>
+                                                </f:facet>
+                                            </p:column>
+
+                                        </p:row>
+                                    </p:columnGroup>
+
+                                </p:dataTable>
+                            </div>
+                        </div>
+            </p:panel>
+
 
 
         </h:form>

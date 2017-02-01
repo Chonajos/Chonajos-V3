@@ -550,12 +550,15 @@ public class ServiceOperacionesCaja implements IfaceOperacionesCaja {
             OperacionesCaja op = new OperacionesCaja();
             if(TIPO.intValue()==1)
             {
-                 op.setNombrePago(obj[0] == null ? null : obj[0].toString());
+               
+                op.setNombrePago(obj[0] == null ? null : obj[0].toString());
                 op.setMonto(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
+                op.setIdFormaPago(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
                
             }
             else
             {
+                
                 op.setNombreOperacion(obj[0] == null ? null : obj[0].toString());
                 op.setNombreConcepto(obj[1] == null ? null : obj[1].toString());
                 op.setNombrePago(obj[2] == null ? null : obj[2].toString());

@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 public class DominioCajas implements Serializable{
     private static final long serialVersionUID = 1L;
     private BigDecimal idCaja;
+    private BigDecimal idUsuarioFk;
     private String nombreCaja;
     private String nombreSucursal;
     private BigDecimal aperturaEfectivo;
@@ -29,6 +30,15 @@ public class DominioCajas implements Serializable{
     public String toString() {
         return "DominioCajas{" + "idCaja=" + idCaja + ", nombreCaja=" + nombreCaja + ", nombreSucursal=" + nombreSucursal + ", aperturaEfectivo=" + aperturaEfectivo + ", aperturaCheques=" + aperturaCheques + ", aperturaCuentas=" + aperturaCuentas + ", cheques=" + cheques + ", efectivo=" + efectivo + ", cuentas=" + cuentas + '}';
     }
+
+    public BigDecimal getIdUsuarioFk() {
+        return idUsuarioFk;
+    }
+
+    public void setIdUsuarioFk(BigDecimal idUsuarioFk) {
+        this.idUsuarioFk = idUsuarioFk;
+    }
+    
 
     public BigDecimal getSaldoActual() {
         return saldoActual;
