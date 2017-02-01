@@ -45,6 +45,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 import java.util.logging.Level;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
@@ -1237,11 +1238,15 @@ public class BeanBuscaCredito implements Serializable {
 
     }
 
-    public void reporteCredito() 
+    
+     public void reporteCredito() 
     {
+        Random random = new Random();
+        //Se genera un numero aleatorio para que no traiga el mismo reporte por la cache
+        int numberRandom = random.nextInt(999);
         if (cliente != null) {
             setParameterTicketCredito();
-            generateReport(cliente.getId_cliente().intValue(), "creditos.jasper",false);
+            generateReport(numberRandom, "creditos.jasper",false);
             RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
         }else{
             JsfUtil.addErrorMessage("No se puede generar el estado de cuenta.");
