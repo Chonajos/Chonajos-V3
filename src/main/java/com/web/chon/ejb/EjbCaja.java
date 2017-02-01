@@ -91,10 +91,12 @@ public class EjbCaja implements NegocioCaja {
     @Override
     public List<Object[]> getCajasByIdSucusal(BigDecimal idSucusalFk) {
         try {
-            Query query = em.createNativeQuery("select cs.ID_CAJA_FK,cj.NOMBRE from CAJA_SUCURSAL cs \n" +
+            Query query = em.createNativeQuery("select cs.ID_CAJA_FK,cj.NOMBRE,suc.NOMBRE_SUCURSAL,suc.ID_SUCURSAL_PK,usu.ID_USUARIO_PK from CAJA_SUCURSAL cs \n" +
 "inner join CAJA cj on cj.ID_CAJA_PK = cs.ID_CAJA_FK\n" +
+"inner join SUCURSAL suc on suc.ID_SUCURSAL_PK = cs.ID_SUCURSAL_FK\n" +
+"inner join USUARIO usu on usu.ID_USUARIO_PK = cj.ID_USER_FK\n" +
 "where \n" +
-"cs.ID_SUCURSAL_FK=  ?");
+"cs.ID_SUCURSAL_FK= ?");
             query.setParameter(1, idSucusalFk);
             return query.getResultList();
         } catch (Exception ex) {

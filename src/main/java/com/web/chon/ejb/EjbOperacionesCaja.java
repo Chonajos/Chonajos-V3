@@ -409,7 +409,7 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
         StringBuffer cadena=null;
         if (TIPO != null && TIPO.intValue() == 1) 
         {
-            cadena = new StringBuffer("SELECT ta.NOMBRE_ABONO,SUM(OC.MONTO) as monto FROM OPERACIONES_CAJA OC  \n"
+            cadena = new StringBuffer("SELECT ta.NOMBRE_ABONO,SUM(OC.MONTO) as monto,ta.ID_TIPO_ABONO_PK FROM OPERACIONES_CAJA OC  \n"
                     + "inner join TIPO_ABONO ta on ta.ID_TIPO_ABONO_PK = oc.ID_FORM_PAGO_FK\n"
                     + "where  oc.ID_CORTE_CAJA_FK is null  ");
         }
@@ -441,14 +441,14 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
         
         if (TIPO != null && TIPO.intValue() == 1) 
         {
-           cadena.append(" group by ta.NOMBRE_ABONO ");
+           cadena.append(" group by ta.NOMBRE_ABONO,ta.ID_TIPO_ABONO_PK ");
         }
         else
         {
             cadena.append(" group by tio.NOMBRE ,cn.NOMBRE ,ta.NOMBRE_ABONO ");
         }
+        System.out.println("idEntradaSalida : "+idEntradaSalida +" idCajaFk:"+idCajaFk+ " idUsuarioFk:  "+idUsuarioFk+" idStatusFk: "+idStatusFk + " idSucursalFk: "+idSucursalFk +" TIPO :"+TIPO);
         
-
         Query query;
         query = em.createNativeQuery(cadena.toString());
         System.out.println("====================================================");
