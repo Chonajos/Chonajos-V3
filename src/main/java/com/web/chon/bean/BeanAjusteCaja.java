@@ -109,10 +109,20 @@ public class BeanAjusteCaja  implements Serializable{
           }
         }
     }
+    public void reset()
+    {
+        comentarios =null;
+        idFormaPagoBean=null;
+        idCajaBean=null;
+        idUsuarioCajaBean=null;
+        monto =null;
+        
+    }
     public void ajustar()
     {
         opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
         opcaja.setMonto(monto);
+        comentarios =comentarios + "SISTEMA: Usuario "+usuario.getNombreCompleto();
         opcaja.setComentarios(comentarios);
         opcaja.setEntradaSalida(new BigDecimal(filtroES));
         opcaja.setIdFormaPago(idFormaPagoBean);
@@ -125,6 +135,7 @@ public class BeanAjusteCaja  implements Serializable{
         if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
 
             JsfUtil.addSuccessMessageClean("Ajuste de Caja Registrado Correctamente");
+            reset();
         } else {
             JsfUtil.addErrorMessageClean("Ocurrió un error al reslizar el ajuste de Caja");
         }

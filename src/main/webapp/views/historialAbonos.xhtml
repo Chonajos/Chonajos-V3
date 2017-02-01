@@ -44,10 +44,10 @@
 
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-3 col-md-4 col-sm-4 col-xs-12"  for="operacionFiltro" value ="Cajero:" rendered="#{beanHistorialAbonos.viewEstate =='init'}" /> 
-                            <h:selectOneMenu  id="operacionFiltro" class="col-lg-9 col-md-8 col-sm-8 col-xs-12" value="#{beanHistorialAbonos.idCobradorFk}" rendered="#{beanHistorialAbonos.viewEstate =='init'}" >
+                            <p:selectOneMenu style="width: 97% !important"   id="operacionFiltro" class="col-lg-9 col-md-8 col-sm-8 col-xs-12" value="#{beanHistorialAbonos.idCobradorFk}" rendered="#{beanHistorialAbonos.viewEstate =='init'}" >
                                 <f:selectItem itemLabel="TODOS" itemValue="" />
                                 <f:selectItems value="#{beanHistorialAbonos.lstUsuariosCaja}" var="cobrador" itemLabel="#{cobrador.nombreCompletoUsuario}" itemValue="#{cobrador.idUsuarioPk}"/>
-                            </h:selectOneMenu>
+                            </p:selectOneMenu>
                         </div>
 
                         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -76,10 +76,10 @@
                     <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 form-group">
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="comboTipoAbono" value ="Forma de Pago:" /> 
-                            <h:selectOneMenu  id="comboTipoAbono" class="col-lg-6 col-md-8 col-sm-8 col-xs-12 " value="#{beanHistorialAbonos.idTipoAbonoFk}" >
+                            <p:selectOneMenu style="width: 97% !important"   id="comboTipoAbono" class="col-lg-6 col-md-8 col-sm-8 col-xs-12 " value="#{beanHistorialAbonos.idTipoAbonoFk}" >
                                 <f:selectItem itemLabel="TODOS" itemValue="" />
                                 <f:selectItems value="#{beanHistorialAbonos.lstTipoAbonos}" var="tipoAbono" itemLabel="#{tipoAbono.nombreTipoAbono}" itemValue="#{tipoAbono.idTipoAbono}"/>
-                            </h:selectOneMenu>
+                            </p:selectOneMenu>
                         </div>
                         <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-6 col-md-7 col-sm-6 col-xs-12"  for="txtFolioAbono" value ="Folio Abono:" /> 

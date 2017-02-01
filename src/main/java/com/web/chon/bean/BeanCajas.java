@@ -108,11 +108,13 @@ public class BeanCajas implements Serializable {
     private BigDecimal totalSalidas;
 
     private CorteCaja cj;
+    private String mensaje;
 
     @PostConstruct
     public void init() {
 
         setTitle("Relación de Operaciones de Cajas");
+        mensaje = "";
         setViewEstate("init");
         data = new DominioCajas();
         listaCajas = new ArrayList<Caja>();
@@ -755,4 +757,13 @@ public class BeanCajas implements Serializable {
         this.totalSalidas = totalSalidas;
     }
 
+    public String getMensaje() {
+        return mensaje;
+    }
+
+    public void setMensaje(String mensaje) {
+        this.mensaje = mensaje;
+    }
+
+    
 }

@@ -113,12 +113,23 @@ public class BeanHistorialAbonos implements Serializable {
     private BigDecimal total;
     AbonoCredito abono;
 
-    private static final BigDecimal conceptoAbonoEfectivo = new BigDecimal(7);
-    private static final BigDecimal conceptoAbonoTransferencia = new BigDecimal(12);
-    private static final BigDecimal conceptoAbonoCheque = new BigDecimal(30);
-    private static final BigDecimal conceptoAbonoDeposito = new BigDecimal(31);
+   
+    
+    private static final BigDecimal CONCEPTO_ABONO = new BigDecimal(7);
+    
+    private static final BigDecimal EFECTIVO = new BigDecimal(1);
+    private static final BigDecimal TRANSFERENCIA = new BigDecimal(2);
+    private static final BigDecimal CHEQUE = new BigDecimal(3);
+    private static final BigDecimal DEPOSITO = new BigDecimal(4);
+    private static final BigDecimal OPERACIONABONOS_CREDITO = new BigDecimal(4);
+    
+    
+    private static final BigDecimal STATUS_REALIZADA = new BigDecimal(1);
+    private static final BigDecimal STATUS_PENDIENTE = new BigDecimal(2);
+    private static final BigDecimal STATUS_RECHAZADA = new BigDecimal(3);
+    private static final BigDecimal STATUS_CANCELADA = new BigDecimal(4);
 
-    private static final BigDecimal salida = new BigDecimal(2);
+    private static final BigDecimal SALIDA = new BigDecimal(2);
 
     //------------variables para generar el ticket----------//
     private ArrayList<SaldosDeudas> modelo;
@@ -276,11 +287,14 @@ public class BeanHistorialAbonos implements Serializable {
         caja = ifaceCaja.getCajaByIdUsuarioPk(usuarioDominio.getIdUsuario());
         opcaja.setIdCajaFk(caja.getIdCajaPk());
         opcaja.setIdUserFk(usuarioDominio.getIdUsuario());
-        opcaja.setEntradaSalida(salida);
+        opcaja.setEntradaSalida(SALIDA);
         opcaja.setIdSucursalFk(new BigDecimal(usuarioDominio.getSucId()));
         opcaja.setMonto(abono.getMontoAbono());
         opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
-        opcaja.setIdStatusFk(new BigDecimal(1));
+        opcaja.setIdStatusFk(STATUS_REALIZADA);
+        opcaja.setIdConceptoFk(CONCEPTO_ABONO);
+        opcaja.setIdTipoOperacionFk(OPERACIONABONOS_CREDITO);
+        
         abono.setEstatusAbono(new BigDecimal(2));
 
         PagosBancarios pb = new PagosBancarios();
@@ -291,7 +305,7 @@ public class BeanHistorialAbonos implements Serializable {
                 //verificar si el credito se libero. si se libero volver a activarlo
                 //cancelar el abono de credito
                 opcaja.setComentarios("Cancelación de Abono");
-                opcaja.setIdConceptoFk(conceptoAbonoEfectivo);
+                opcaja.setIdFormaPago(EFECTIVO);
                 ifaceOperacionesCaja.insertaOperacion(opcaja);
                 for (AbonoCredito abonito : abono.getListaAbonitos()) {
                     abonito.setEstatusAbono(new BigDecimal(2));
@@ -314,7 +328,7 @@ public class BeanHistorialAbonos implements Serializable {
                     if (pb.getIdStatusFk().intValue() == 2) {
                         System.out.println("No ha sido aceptado");
                         opcaja.setComentarios("Cancelación de Abono");
-                        opcaja.setIdConceptoFk(conceptoAbonoTransferencia);
+                        opcaja.setIdFormaPago(TRANSFERENCIA);
                         ifaceOperacionesCaja.insertaOperacion(opcaja);
                     }
                     pb.setIdStatusFk(new BigDecimal(1));
@@ -344,7 +358,7 @@ public class BeanHistorialAbonos implements Serializable {
                 if (d != null && d.getIdDocumentoPk() != null) {
                     if (d.getIdStatusFk().intValue() == 1) {
                         opcaja.setComentarios("Cancelación de Abono");
-                        opcaja.setIdConceptoFk(conceptoAbonoCheque);
+                        opcaja.setIdFormaPago(CHEQUE);
                         ifaceOperacionesCaja.insertaOperacion(opcaja);
                         d.setIdStatusFk(new BigDecimal(3));
                         ifaceDocumentos.updateDocumentoById(d);
@@ -378,7 +392,7 @@ public class BeanHistorialAbonos implements Serializable {
                     if (pb.getIdStatusFk().intValue() == 2) {
                         System.out.println("No ha sido aceptado");
                         opcaja.setComentarios("Cancelación de Abono");
-                        opcaja.setIdConceptoFk(conceptoAbonoDeposito);
+                        opcaja.setIdFormaPago(DEPOSITO);
                         ifaceOperacionesCaja.insertaOperacion(opcaja);
                     }
                     pb.setIdStatusFk(new BigDecimal(1));
