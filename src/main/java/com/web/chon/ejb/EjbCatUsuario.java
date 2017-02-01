@@ -176,8 +176,12 @@ public class EjbCatUsuario implements NegocioCatUsuario {
     public List<Object[]> getUsuariosbyIdSucursal(int idSucursal) {
 
         try {
-
-            Query query = em.createNativeQuery("SELECT * FROM USUARIO where ID_SUCURSAL_FK = ? AND STATUS = 1");
+            StringBuffer txtQuery = new StringBuffer("SELECT * FROM USUARIO WHERE STATUS = 1 ");
+            
+            if(idSucursal!=0){
+                txtQuery.append("AND ID_SUCURSAL_FK="+idSucursal);
+            }
+            Query query = em.createNativeQuery(txtQuery.toString());
             query.setParameter(1, idSucursal);
             List<Object[]> resultList = null;
             resultList = query.getResultList();

@@ -1,4 +1,3 @@
-
 package com.web.chon.dominio;
 
 import java.io.Serializable;
@@ -9,7 +8,8 @@ import java.util.Date;
  *
  * @author Juan de la Cruz
  */
-public class RegistroEntradaSalida implements Serializable{
+public class RegistroEntradaSalida implements Serializable {
+
     private static final long serialVersionUID = 1L;
     private BigDecimal idRegEntSalPk;
     private Date fecha;
@@ -17,6 +17,8 @@ public class RegistroEntradaSalida implements Serializable{
     private Date fechaSalida;
     private String horaEntrada;
     private String horaSalida;
+    private String horarioEntrada;
+    private String horarioSalida;
     private double latitudEntrada;
     private double latitudSalida;
     private double longitudEntrada;
@@ -28,13 +30,18 @@ public class RegistroEntradaSalida implements Serializable{
     private String nombre;
     private String apPaterno;
     private String apMaterno;
+    private String dia;
+
+    private boolean diaDescanso;
+    private boolean retardo;
+    private boolean falta;
+    private String[] diasDescanso;
 
     @Override
     public String toString() {
-        return "RegistroEntradaSalida{" + "idRegEntSalPk=" + idRegEntSalPk + ", fechaEntrada=" + fechaEntrada + ", fechaSalida=" + fechaSalida + ", latitudEntrada=" + latitudEntrada + ", latitudSalida=" + latitudSalida + ", longitudEntrada=" + longitudEntrada + ", longitudSalida=" + longitudSalida + ", idUsuarioFk=" + idUsuarioFk + ", idSucursalFk=" + idSucursalFk + ", fechaFiltroInicio=" + fechaFiltroInicio + ", fechaFiltroFin=" + fechaFiltroFin + ", nombre=" + nombre + ", apPaterno=" + apPaterno + ", apMaterno=" + apMaterno + '}';
+        return "RegistroEntradaSalida{" + "idRegEntSalPk=" + idRegEntSalPk + ", fecha=" + fecha + ", fechaEntrada=" + fechaEntrada + ", fechaSalida=" + fechaSalida + ", horaEntrada=" + horaEntrada + ", horaSalida=" + horaSalida + ", horarioEntrada=" + horarioEntrada + ", horarioSalida=" + horarioSalida + ", latitudEntrada=" + latitudEntrada + ", latitudSalida=" + latitudSalida + ", longitudEntrada=" + longitudEntrada + ", longitudSalida=" + longitudSalida + ", idUsuarioFk=" + idUsuarioFk + ", idSucursalFk=" + idSucursalFk + ", fechaFiltroInicio=" + fechaFiltroInicio + ", fechaFiltroFin=" + fechaFiltroFin + ", nombre=" + nombre + ", apPaterno=" + apPaterno + ", apMaterno=" + apMaterno + ", dia=" + dia + ", diaDescanso=" + diaDescanso + ", retardo=" + retardo + ", falta=" + falta + ", diasDescanso=" + diasDescanso + '}';
     }
 
-    
     public BigDecimal getIdRegEntSalPk() {
         return idRegEntSalPk;
     }
@@ -171,7 +178,60 @@ public class RegistroEntradaSalida implements Serializable{
         this.horaSalida = horaSalida;
     }
 
-    
-   
-    
+    public String getHorarioEntrada() {
+        return horarioEntrada;
+    }
+
+    public void setHorarioEntrada(String horarioEntrada) {
+        this.horarioEntrada = horarioEntrada;
+    }
+
+    public String getHorarioSalida() {
+        return horarioSalida;
+    }
+
+    public void setHorarioSalida(String horarioSalida) {
+        this.horarioSalida = horarioSalida;
+    }
+
+    public String getDia() {
+        return dia;
+    }
+
+    public void setDia(String dia) {
+        this.dia = dia;
+    }
+
+    public boolean isDiaDescanso() {
+        return diaDescanso;
+    }
+
+    public void setDiaDescanso(boolean diaDescanso) {
+        this.diaDescanso = diaDescanso;
+    }
+
+    public String[] getDiasDescanso() {
+        return diasDescanso;
+    }
+
+    public void setDiasDescanso(String[] diasDescanso) {
+        this.diasDescanso = diasDescanso;
+    }
+
+    public boolean isRetardo() {
+        return retardo;
+    }
+
+    public void setRetardo(boolean retardo) {
+        this.retardo = retardo;
+    }
+
+    public boolean isFalta() {
+        return falta;
+    }
+
+    public void setFalta(boolean falta) {
+        this.falta = falta;
+    }
+
 }

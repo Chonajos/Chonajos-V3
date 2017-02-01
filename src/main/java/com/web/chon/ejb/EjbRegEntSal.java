@@ -71,18 +71,24 @@ public class EjbRegEntSal implements NegocioRegEntSal {
     @Override
     public List<Object[]> getRegistros(BigDecimal idUsuarioFK, String fechaInicio, String fechaFin) {
         try {
-
-            Query query = em.createNativeQuery("select days.fecha,RE.FECHAENTRADA,to_char(nvl(RE.FECHAENTRADA, to_date(null)),'hh24:mi') HORA_ENTRADA,RE.FECHASALIDA,to_char(nvl(RE.FECHASALIDA, to_date(null)),'hh24:mi') AS HORA_SALIDA,RE.LATITUDENTRADA,RE.LATITUDSALIDA,RE.LONGITUDENTRADA,RE.LONGITUDSALIDA from(SELECT TRUNC (to_date(?, 'DD/MM/YYYY'), 'DD') + r fecha FROM (SELECT ROWNUM - 1 r "
-                    + " FROM all_objects WHERE ROWNUM <= to_char(last_day(trunc(to_date(?,'DD/MM/YYYY'))), 'DD')) WHERE "
-                    + "	TRUNC (TRUNC (to_date(?,'DD/MM/YYYY'), 'yyyy') + r, 'yyyy') = TRUNC (to_date(?,'DD/MM/YYYY'), 'yyyy')) days "
-                    + " LEFT JOIN REGISTROENTRADA RE ON  to_date(RE.FECHAENTRADA,'DD/MM/YYYY')    =to_date(DAYS.fecha,'DD/MM/YYYY')  AND RE.ID_USUARIO_FK =? "
-                    + " ORDER BY DAYS.fecha");
+            
+            Query query = em.createNativeQuery("select days.fecha,RE.FECHAENTRADA,to_char(nvl(RE.FECHAENTRADA, to_date(null)),'hh24:mi') HORA_ENTRADA,RE.FECHASALIDA,to_char(nvl(RE.FECHASALIDA, to_date(null)),'hh24:mi') AS HORA_SALIDA, "
+                    + "RE.LATITUDENTRADA,RE.LATITUDSALIDA,RE.LONGITUDENTRADA,RE.LONGITUDSALIDA,to_char(nvl(HU.HORA_ENTRADA, to_date(null)),'hh24:mi') AS HORARIO_ENTRADA,to_char(nvl(HU.HORA_SALIDA, to_date(null)),'hh24:mi') AS HORARIO_SALIDA "
+                    + ",DDU.DIA FROM(SELECT TRUNC (to_date(?, 'DD/MM/YYYY'), 'DD') + r fecha FROM (SELECT ROWNUM - 1 r  "
+                    + "FROM all_objects WHERE ROWNUM <= to_char(last_day(trunc(to_date(?,'DD/MM/YYYY'))), 'DD')) WHERE "
+                    + "TRUNC (TRUNC (to_date(?,'DD/MM/YYYY'), 'yyyy') + r, 'yyyy') = TRUNC (to_date(?,'DD/MM/YYYY'), 'yyyy')) days "
+                    + "LEFT JOIN REGISTROENTRADA RE ON  to_date(RE.FECHAENTRADA,'DD/MM/YYYY')=to_date(DAYS.fecha,'DD/MM/YYYY')  AND RE.ID_USUARIO_FK =? "
+                    + "LEFT JOIN HORARIO_USUARIO HU ON HU.ID_USUARIO_FK = ? AND ( TO_DATE(TO_CHAR(days.fecha,'dd/mm/yyyy'),'dd/mm/yyyy')  BETWEEN TO_DATE(TO_CHAR(HU.FECHA_INICIO,'dd/mm/yyyy'),'dd/mm/yyyy') AND TO_DATE(TO_CHAR(HU.FECHA_FIN,'dd/mm/yyyy'),'dd/mm/yyyy') ) "
+                    + "LEFT JOIN DIA_DESCANSO_USUARIO DDU ON DDU.ID_USUARIO_FK = ? AND ( TO_DATE(TO_CHAR(days.fecha,'dd/mm/yyyy'),'dd/mm/yyyy')  BETWEEN TO_DATE(TO_CHAR(DDU.FECHA_INICIO,'dd/mm/yyyy'),'dd/mm/yyyy') AND TO_DATE(TO_CHAR(DDU.FECHA_FIN,'dd/mm/yyyy'),'dd/mm/yyyy') ) "
+                    + "ORDER BY DAYS.fecha");
 
             query.setParameter(1, fechaInicio);
             query.setParameter(2, fechaInicio);
             query.setParameter(3, fechaInicio);
             query.setParameter(4, fechaInicio);
             query.setParameter(5, idUsuarioFK);
+            query.setParameter(6, idUsuarioFK);
+            query.setParameter(7, idUsuarioFK);
 
             return query.getResultList();
 

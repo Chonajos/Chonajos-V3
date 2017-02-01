@@ -33,9 +33,9 @@ var DOM = {
             week: 'Semana',
             day: 'Día',
             allDayText: 'Todo el día'
-            
+
         };
-   },
+    },
     menu: function () {
 
         $('[data-toggle=collapse]').click(function () {
@@ -88,11 +88,19 @@ var DOM = {
         if ($(element).val().indexOf(character) != -1) {
             $(element).val($(element).val().slice(0, -1));
         }
+    },
+    validFilters: function (element, characters) {
+        for (var i = 0; i < characters.length; i++) {
+            var caracter = characters.charAt(i);
+            if ($(element).val().indexOf(caracter) != -1) {
+                $(element).val($(element).val().slice(0, -1));
+            }
+        }
     }
+
 }
 $(document).ready(function () {
     DOM.main();
-//    setClassH3();
 
 });
 
@@ -107,6 +115,6 @@ function trimSpaces(component) {
 
 }
 
-function setClassH3(){
-    $( "h3" ).addClass("col-lg-6 col-md-7 col-sm-8 col-xs-12");
+function setClassH3() {
+    $("h3").addClass("col-lg-6 col-md-7 col-sm-8 col-xs-12");
 }

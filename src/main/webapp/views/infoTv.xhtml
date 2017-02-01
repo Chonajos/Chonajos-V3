@@ -21,7 +21,7 @@
                             <h5><strong>#{producto.nombreSubproducto} <a style="font-weight: bold !important; color: green !important;">$:#{producto.precioProducto}</a> </strong></h5>
                         </div>
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 noPadding form-group">
-                            <p:graphicImage  value="#{beanInfoTv.productImage}" style="height:200px; width:250px;">
+                            <p:graphicImage cache="false" value="#{beanInfoTv.productImage}" style="height:200px; width:250px;">
                                 <f:param  name="idSubproducto" value="#{producto.idSubproductoPk}"/>
                             </p:graphicImage>
                         </div>

@@ -39,12 +39,10 @@ html{
     color: #FACC2E;
 }
 
-
-
-
 .calendario input 
 {
     width:85px;
+    padding-left: 0px !important;
 }
 .statusActivo
 {
@@ -171,6 +169,20 @@ ul .ui-state-highlight {
     margin-right:4px !important;
     width: 102px !important;
 }
+/*Cambiar el fondo de columna de una tabla*/
+.diaDescanso{
+    background: #f7ecb5 !important;
+}
+/*letras en color rojo*/
+.letterRed{
+    color:red !important;
+}
+
+.letterYellow{
+    color: #FACC2E !important;
+}
+
+
 
 /*Color azul a los botones*/
 /*.ui-button-text{
@@ -200,6 +212,11 @@ div label{
 /*.ui-panel .ui-panel-content{
     padding: 0.2em 0.2em !important;
 }*/
+
+.zeroPaddingPanel div{
+     padding: 0.0em 0.0em !important;
+}
+
 .container-fluid{
     padding-right: 2px;
     padding-left: 2px;
@@ -345,6 +362,12 @@ div label:hover{
 .ui-selectonemenu label{
     text-align: left !important;
 }
+/*Clase para timerPicker tome un tamaño mas grande default 1.2 se le puso 2*/
+.ui-timepicker-table td a {
+    width: 2em !important;
+}
+
+
 /*Pantalla celular*/
 @media ( max-width : 767px) {
     .navbar {

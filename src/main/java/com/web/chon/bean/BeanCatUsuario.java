@@ -1,5 +1,7 @@
 package com.web.chon.bean;
 
+import com.web.chon.dominio.DiaDescansoUsuario;
+import com.web.chon.dominio.HorarioUsuario;
 import com.web.chon.dominio.Rol;
 import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.Usuario;
@@ -8,25 +10,26 @@ import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceCatRol;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceCatUsuario;
-import com.web.chon.util.SendEmail;
+//import com.web.chon.util.SendEmail;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Properties;
+//import java.util.Properties;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.mail.Authenticator;
-import javax.mail.BodyPart;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
+//import javax.mail.Authenticator;
+//import javax.mail.BodyPart;
+//import javax.mail.Message;
+//import javax.mail.MessagingException;
+//import javax.mail.Multipart;
+//import javax.mail.PasswordAuthentication;
+//import javax.mail.Session;
+//import javax.mail.Transport;
+//import javax.mail.internet.InternetAddress;
+//import javax.mail.internet.MimeBodyPart;
+//import javax.mail.internet.MimeMessage;
+//import javax.mail.internet.MimeMultipart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -58,6 +61,7 @@ public class BeanCatUsuario implements BeanSimple {
     private ArrayList<Usuario> selectedUsuario;
 
     private Usuario data;
+    
     private String title;
     private String viewEstate;
 
@@ -99,9 +103,8 @@ public class BeanCatUsuario implements BeanSimple {
     @Override
     public String insert() {
         try {
-
             //Se codifica la contraseña del usuario
-            CharSequence encoder = passwordEncoder.encode(data.getClaveUsuario()).toString().toUpperCase();
+            CharSequence encoder = passwordEncoder.encode(data.getClaveUsuario()).toUpperCase();
             data.setContrasenaUsuario(encoder.toString());
             data.setFechaAltaUsuario(context.getFechaSistema());
             if (ifaceCatUsuario.insertarUsuarios(data) == 0) {
@@ -284,4 +287,5 @@ public class BeanCatUsuario implements BeanSimple {
     public void setLstSucursal(List<Sucursal> lstSucursal) {
         this.lstSucursal = lstSucursal;
     }
+    
 }

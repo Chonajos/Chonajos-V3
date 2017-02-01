@@ -15,6 +15,7 @@ import com.web.chon.service.IfaceRegistroEntradaSalida;
 import com.web.chon.service.IfaceUsuario;
 import com.web.chon.util.TiempoUtil;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.annotation.PostConstruct;
@@ -32,7 +33,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Scope("view")
-public class BeanHistorialRegEntSal implements Serializable{
+public class BeanHistorialRegEntSal implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Autowired
     IfaceRegistroEntradaSalida ifaceRegEntSal;
@@ -42,7 +44,7 @@ public class BeanHistorialRegEntSal implements Serializable{
     private IfaceCatUsuario ifaceCatUsuario;
     @Autowired
     private PlataformaSecurityContext context;
-    
+
     private RegistroEntradaSalida data;
     private ArrayList<RegistroEntradaSalida> model;
     private ArrayList<Usuario> listaUsuarios;
@@ -55,13 +57,17 @@ public class BeanHistorialRegEntSal implements Serializable{
     private MapModel simpleModel;
     private String puntoCentral;
     public static final double R = 6372.8;
-    
+
+    private int faltas = 0;
+    private int retardos = 0;
+
+    private final int RETARDOS_EQUIVALE_FALTA = 3;
+
     @PostConstruct
-    public void init()
-    {
+    public void init() {
         setTitle("Registros");
         setViewEstate("init");
-        data =new RegistroEntradaSalida();
+        data = new RegistroEntradaSalida();
         model = new ArrayList<RegistroEntradaSalida>();
         simpleModel = new DefaultMapModel();
         listaSucursales = new ArrayList<Sucursal>();
@@ -71,49 +77,73 @@ public class BeanHistorialRegEntSal implements Serializable{
         setFechaFin(context.getFechaSistema());
         data.setFechaFiltroInicio(TiempoUtil.getDayOneOfMonth(new Date()));
         data.setFechaFiltroFin(TiempoUtil.getDayEndOfMonth(new Date()));
-        model = ifaceRegEntSal.getALL(data.getFechaFiltroInicio(), data.getFechaFiltroFin());
-        
+        data.setIdSucursalFk(new BigDecimal(context.getUsuarioAutenticado().getSucId()));
+        changeComboUsers();
+
     }
-    public void verUbicaciones()
-    {
-        
-        LatLng coord1 = new LatLng(data.getLatitudEntrada(),data.getLongitudEntrada());
-        LatLng coord2 = new LatLng(data.getLatitudSalida(), data.getLongitudSalida()+0.00001);
-        puntoCentral = data.getLatitudEntrada()+","+data.getLongitudEntrada();
+
+    public void verUbicaciones() {
+
+        LatLng coord1 = new LatLng(data.getLatitudEntrada(), data.getLongitudEntrada());
+        LatLng coord2 = new LatLng(data.getLatitudSalida(), data.getLongitudSalida() + 0.00001);
+        puntoCentral = data.getLatitudEntrada() + "," + data.getLongitudEntrada();
         simpleModel.addOverlay(new Marker(coord1, "Entrada"));
         simpleModel.addOverlay(new Marker(coord2, "Salida"));
         simpleModel.getMarkers().get(0).setIcon("http://www.google.com/mapfiles/dd-start.png");
         simpleModel.getMarkers().get(1).setIcon("http://www.google.com/mapfiles/dd-end.png");
-        
+
     }
-    
+
     private boolean validateLocation(double lat1, double lon1, double lat2, double lon2, double rangoMaximoPermitido) {
-        
-		double dLat = Math.toRadians(lat2 - lat1);
+
+        double dLat = Math.toRadians(lat2 - lat1);
         double dLon = Math.toRadians(lon2 - lon1);
         lat1 = Math.toRadians(lat1);
         lat2 = Math.toRadians(lat2);
         int metros;
- 
+
         double a = Math.pow(Math.sin(dLat / 2), 2) + Math.pow(Math.sin(dLon / 2), 2) * Math.cos(lat1) * Math.cos(lat2);
         double c = 2 * Math.asin(Math.sqrt(a));
-        metros = (int) ((R * c)/0.00062137);
-        
-        if(metros > rangoMaximoPermitido){ 
-        	return false;
+        metros = (int) ((R * c) / 0.00062137);
+
+        System.out.println("metros "+metros);
+        System.out.println("rangoMaximoPermitido "+rangoMaximoPermitido);
+        if (metros > rangoMaximoPermitido) {
+            return false;
         }
         return true;
     }
-        
-    public void changeComboUsers()
-    {
-        
+
+    public void changeComboUsers() {
+
         listaUsuarios = ifaceCatUsuario.getUsuariosbyIdSucursal(data.getIdSucursalFk().intValue());
     }
-    
+
     public void getRegistrosByIntervalDate() {
-        model = ifaceRegEntSal.getRegistros(data.getIdUsuarioFk(),data.getFechaFiltroInicio(), data.getFechaFiltroFin());
+        retardos = 0;
+        faltas = 0;
+        model = ifaceRegEntSal.getRegistros(data.getIdUsuarioFk(), data.getFechaFiltroInicio(), data.getFechaFiltroFin());
+        int faltaPorRetardos = 0;
         
+        for (RegistroEntradaSalida dominio : model) {
+            if (dominio.isFalta()) {
+                faltas++;
+            } else if (dominio.isRetardo()) {
+                retardos++;
+            }
+                        double latitud =new Double(19.370436);
+                        double longitud =new Double(-99.091470);
+
+            validateLocation(dominio.getLatitudEntrada(),dominio.getLongitudEntrada(),latitud ,longitud , 2000L);
+        }
+
+        //Se calculan las faltas que se generan por retardos
+        faltaPorRetardos = retardos/RETARDOS_EQUIVALE_FALTA;
+        
+        //retardos restantes
+        retardos = retardos%RETARDOS_EQUIVALE_FALTA;
+        faltas+=faltaPorRetardos;
+
     }
 
     public ArrayList<Sucursal> getListaSucursales() {
@@ -132,7 +162,6 @@ public class BeanHistorialRegEntSal implements Serializable{
         this.listaUsuarios = listaUsuarios;
     }
 
-    
     public Date getFechaFin() {
         return fechaFin;
     }
@@ -205,8 +234,20 @@ public class BeanHistorialRegEntSal implements Serializable{
         this.puntoCentral = puntoCentral;
     }
 
-    
-    
-    
-    
+    public int getFaltas() {
+        return faltas;
+    }
+
+    public void setFaltas(int faltas) {
+        this.faltas = faltas;
+    }
+
+    public int getRetardos() {
+        return retardos;
+    }
+
+    public void setRetardos(int retardos) {
+        this.retardos = retardos;
+    }
+
 }

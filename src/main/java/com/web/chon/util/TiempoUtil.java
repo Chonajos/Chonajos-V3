@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  *
@@ -484,10 +485,10 @@ public class TiempoUtil {
                 break;
 
         }
-        
+
         return dia;
     }
-    
+
     /**
      * Obtiene el numero del dia de la semana
      *
@@ -501,7 +502,30 @@ public class TiempoUtil {
 
         int numeroDia = cal.get(Calendar.DAY_OF_WEEK);
 
-        return numeroDia-1;
+        return numeroDia - 1;
+    }
+
+    /**
+     * Recibe dos parametros de tipo estring en el formato HH:MM y devuelve la diferencia entre ellos en minutos
+     * @param hhmm
+     * @param hhmmTwo
+     * @return 
+     */
+    public static int getMinutesBetweenTwoHour(String hhmm, String hhmmTwo) {
+
+        String[] hhmmSplit = hhmm.split(":");
+        String[] hhmmTwoSplit = hhmmTwo.split(":");
+
+        int hora = Integer.parseInt(hhmmSplit[0]);
+        int minuto = Integer.parseInt(hhmmSplit[1]);
+        int horaTwo = Integer.parseInt(hhmmTwoSplit[0]);
+        int minutoTwo = Integer.parseInt(hhmmTwoSplit[1]);
+
+        minuto += hora * 60;
+        minutoTwo += horaTwo * 60;
+
+        return minuto - minutoTwo;
+
     }
 
 }
