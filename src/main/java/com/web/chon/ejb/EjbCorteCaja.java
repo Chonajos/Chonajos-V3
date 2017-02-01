@@ -23,6 +23,8 @@ public class EjbCorteCaja implements NegocioCorteCaja {
 
     @Override
     public int insertCorte(CorteCaja cc) {
+        System.out.println("+++++++++++++EJB++++++++++");
+        System.out.println(cc.toString());
         Query query = em.createNativeQuery("INSERT INTO Corte_Caja(ID_CORTE_CAJA_PK,ID_CAJA_FK,FECHA,CANT_CHEQUES_ANT,"
                 + "                         MONTO_CHEQUES_ANT,SALDO_ANTERIOR,CANT_CHEQUES_NUEVOS,MONTO_CHEQUES_NUEVOS,NUEVO_SALDO,"
                 + "                         COMENTARIOS,ID_USER_FK,ID_STATUS_FK,MONTO_CUENTA_ANT,MONTO_CUENTA_NUEVO) VALUES(?,?,sysdate,?,?,?,?,?,?,?,?,?,?,?)");

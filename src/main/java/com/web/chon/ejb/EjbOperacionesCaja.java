@@ -457,4 +457,21 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
 
     }
 
+    @Override
+    public int updateCortebyIdCaja(BigDecimal idCajaFk, BigDecimal idCorteFk) {
+        try {
+            System.out.println("Parametros: "+idCajaFk + "  "+idCorteFk);
+            Query query = em.createNativeQuery("UPDATE OPERACIONES_CAJA SET ID_CORTE_CAJA_FK = ? WHERE ID_CAJA_FK = ? and ID_STATUS_FK=1 and ID_CORTE_CAJA_FK is null");
+            query.setParameter(1, idCorteFk);
+            query.setParameter(2, idCajaFk);
+            System.out.println("Query: "+query.toString());
+            return query.executeUpdate();
+        } catch (Exception ex) {
+            System.out.println("Error> "+ex.toString());
+            Logger.getLogger(EjbOperacionesCaja.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        }
+    
+    }
+
 }

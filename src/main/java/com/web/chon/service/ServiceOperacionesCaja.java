@@ -572,6 +572,15 @@ public class ServiceOperacionesCaja implements IfaceOperacionesCaja {
     
     }
 
+    @Override
+    public int updateCortebyIdCaja(BigDecimal idCajaFk, BigDecimal idCorteFk) {
+        getEjb();
+        int variable =ejb.updateCortebyIdCaja(idCajaFk, idCorteFk);
+        System.out.println("VARIABLE: "+variable);
+        return variable;
+    
+    }
+
     
     
 }

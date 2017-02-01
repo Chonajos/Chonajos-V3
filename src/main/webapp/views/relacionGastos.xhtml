@@ -1,0 +1,205 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="./../templates/main.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content">
+        <div>
+            <h3>#{beanRelacionGastos.title}</h3>
+        </div>
+
+        <h:form id="formContent">
+            <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
+            <div class="form-group" align="right">
+                <div>
+                    <p:commandButton value="Buscar" update=":formContent" ajax="true" disabled="false" action="#{beanRelacionGastos.buscar()}"/>
+                </div>
+                <p:confirmDialog  global="true" showEffect="fade" hideEffect="fade">
+                    <div class="alignCenter">
+                        <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                        <p:commandButton  value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                    </div>
+                </p:confirmDialog>
+            </div>
+            <p:panel> 
+                <div class="container-fluid">
+                    <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 form-group">
+                        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="comboSucursal" value ="Sucursal:" rendered="#{beanRelacionGastos.viewEstate =='init'}" /> 
+                            <p:selectOneMenu  style="width: 97% !important"   id="comboSucursal" class="col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanRelacionGastos.idSucursalFk}" rendered="#{beanRelacionGastos.viewEstate =='init'}" >
+
+                                <f:selectItems value="#{beanRelacionGastos.listaSucursales}" var="sucu" itemLabel="#{sucu.nombreSucursal}" itemValue="#{sucu.idSucursalPk}"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="cajaFiltro" value ="Caja " rendered="#{beanRelacionGastos.viewEstate =='init'}" /> 
+                            <p:selectOneMenu  style="width: 97% !important"  id="cajaFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanRelacionGastos.idCajaFk}" rendered="#{beanRelacionGastos.viewEstate =='init'}" disabled="#{beanRelacionGastos.usuario.perId != 1}" >
+                                <f:selectItem itemLabel="Todas" itemValue="" />
+                                <f:selectItems value="#{beanRelacionGastos.listaCajas}" var="cajita" itemLabel="#{cajita.nombre}" itemValue="#{cajita.idCajaPk}"/>
+                                <!--<p:ajax event="change" listener="{beanRelacionGastos.printStatus()}" update=":formContent:table" />-->
+
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="operacionFiltro" value ="Operación:" rendered="#{beanRelacionGastos.viewEstate =='init'}" /> 
+                            <p:selectOneMenu style="width: 97% !important"  id="operacionFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanRelacionGastos.idTipoOperacionFk}" rendered="#{beanRelacionGastos.viewEstate =='init'}" >
+                                <f:selectItem itemLabel="Todas" itemValue="" />
+                                <f:selectItems value="#{beanRelacionGastos.listaTiposOperaciones}" var="operacioncita" itemLabel="#{operacioncita.nombre}" itemValue="#{operacioncita.idTipoOperacionPk}"/>
+
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="conceptoFiltro" value ="Concepto:" rendered="#{beanRelacionGastos.viewEstate =='init'}" /> 
+                            <p:selectOneMenu  style="width: 97% !important"  id="conceptoFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanRelacionGastos.idConceptoFk}" rendered="#{beanRelacionGastos.viewEstate =='init'}" >
+                                <f:selectItem itemLabel="Todas" itemValue="" />
+                                <f:selectItems value="#{beanRelacionGastos.listaConceptos}" var="conceptito" itemLabel="#{conceptito.nombre}" itemValue="#{conceptito.idConceptoPk}"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 form-group">
+                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12 alignLeft">
+                            <p:outputLabel class="col-lg-5 col-md-5 col-sm-4 col-xs-12 alignLeft"  for="selectFiltro" value ="Fechas:" rendered="#{beanRelacionGastos.viewEstate =='init'}"/> 
+                            <p:selectOneMenu  style="width: 97% !important" id="selectFiltro" class="col-lg-7 col-md-7 col-sm-8 col-xs-12" value="#{beanRelacionGastos.filtro}" rendered="#{beanRelacionGastos.viewEstate =='init'}">
+                                <f:selectItem itemLabel="Selecciona" itemValue="-1" />
+                                <f:selectItem itemLabel="Día" itemValue="1"/>
+                                <f:selectItem itemLabel="Mes" itemValue="2"/>
+
+                                <p:ajax event="change" update=":formContent:calendarInicio :formContent:calendarFin " listener="#{beanRelacionGastos.verificarCombo()}"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12 alignLeft "  
+                                           for="calendarInicio" value ="Fecha Inicio" 
+                                           rendered="#{beanRelacionGastos.viewEstate =='init'}"/> 
+                            <p:calendar disabled="#{beanRelacionGastos.enableCalendar}" id="calendarInicio" 
+                                        class="col-lg-6 col-md-8 col-sm-8 col-xs-12 
+                                        calendario alignRight" navigator="true" placeholder="dd/mm/yyyy"
+                                        value="#{beanRelacionGastos.fechaFiltroInicio}" locale="es" pattern="dd/MM/yyyy" 
+                                        readonlyInput="true" showOn="button" rendered="#{beanRelacionGastos.viewEstate =='init'}">
+                            </p:calendar>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12 alignLeft "  
+                                           for="calendarFin" value ="Fecha Fin" 
+                                           rendered="#{beanRelacionGastos.viewEstate =='init'}"/> 
+                            <p:calendar disabled="#{beanRelacionGastos.enableCalendar}" id="calendarFin" 
+                                        class="col-lg-6 col-md-8 col-sm-8 col-xs-12 
+                                        calendario alignRight" navigator="true" placeholder="dd/mm/yyyy"
+                                        value="#{beanRelacionGastos.fechaFiltroFin}" locale="es" pattern="dd/MM/yyyy" 
+                                        readonlyInput="true" showOn="button" rendered="#{beanRelacionGastos.viewEstate =='init'}">
+                            </p:calendar>
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel for="txtStatus" value="Estatus:" rendered="#{beanRelacionGastos.viewEstate =='init'}"/>    
+                            <p:selectOneMenu  style="width: 97% !important"  id="txtStatus"  value="#{beanRelacionGastos.idStatusFk}" rendered="#{beanRelacionGastos.viewEstate =='init'}">
+                                <f:selectItem  itemLabel="Todas" itemValue=""/>
+                                <f:selectItem  itemLabel="Aprobada" itemValue="1"/>
+                                <f:selectItem  itemLabel="Pendiente" itemValue="2"/>
+                                <f:selectItem  itemLabel="Rechazada" itemValue="3"/>
+                                <f:selectItem  itemLabel="Cancelada" itemValue="4"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <p:dataTable id="tabla" var="model" 
+                                     rowStyleClass="#{model.idStatusFk.intValue() eq 1 ? 'alert-success': (model.idStatusFk.intValue()  eq 2 ? 'alert-info':(model.idStatusFk.intValue()  eq 3 ? 'alert-warning':'alert-danger'))}"
+                                     value="#{beanRelacionGastos.listaOperaciones}" 
+                                     rows="20"
+                                     paginator="true" styleClass="ui-datatable-hor-scroll" 
+                                     emptyMessage="No se encontraron Registros" 
+                                     rendered="#{beanRelacionGastos.viewEstate =='init'}">
+
+                            <p:column headerText="Sucursal" width="80px;" class="alignCenter">
+                                <h:outputText value="#{model.nombreSucursal}" />
+                            </p:column>
+                            <!--<p:column headerText="N° Operación" width="60px;" class="alignCenter">
+                                <h:outputText value="{model.numero}" />
+                            </p:column>-->
+                            <p:column headerText="Fecha" width="80px;" class="alignCenter">
+                                <h:outputText value="#{model.fecha}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Caja" width="100px;" class="alignLeft">
+                                <h:outputText value="#{model.nombreCaja}" />
+                            </p:column>
+                            <p:column headerText="Tipo Operacion" width="100px;" class="alignLeft">
+                                <h:outputText value="#{model.nombreOperacion}">
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Concepto" width="150px;" class="alignLeft">
+                                <h:outputText value="#{model.nombreConcepto}">
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Comentarios" width="200px;" class="alignLeft">
+                                <h:outputText value="#{model.comentarios}">
+                                </h:outputText>
+                            </p:column>
+
+
+                            <p:column headerText="Estatus" width="80px;" class="alignCenter">
+                                <h:outputText value="#{model.nombreStatus}">
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="Monto" width="100px;" class="alignRight">
+                                <h:outputText value="#{model.monto}">
+                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="imagen" width="60px;"  class="alignCenter">
+                                <p:commandButton icon="ui-icon-image" id="openDialogLink" disabled="#{model.fichero ==null}" update=":formContent:imagen"  onclick="PF('dlg').show();" >
+                                    <f:setPropertyActionListener value="#{model}" target="#{beanRelacionGastos.data}"/>
+                                </p:commandButton>
+                            </p:column>
+                            <p:column headerText="Recibir"  width="60px;" class="alignCenter">
+                                <p:commandButton id="print" disabled="#{model.idStatusFk.intValue() != 2}"  ajax="true" process="@this" action="#{beanRelacionGastos.aceptarGasto()}" 
+                                                 icon="ui-icon-transfer-e-w" styleClass="ui-priority-primary" update=":formContent">
+                                    <f:setPropertyActionListener value="#{model}" target="#{beanRelacionGastos.data}"/>
+                                    <p:confirm header="Confirmación" message="¿Estás seguro que deseas recibir el gasto?" icon="ui-icon-alert"/>
+                                </p:commandButton>
+                            </p:column>
+                            <p:column headerText="Rechazar" width="60px;" class="alignCenter">
+                                <p:commandButton id="cancel" disabled="#{model.idStatusFk.intValue() != 2}"  ajax="true" process="@this" action="#{beanRelacionGastos.rechazarGasto()}" icon="ui-icon-trash" styleClass="ui-priority-primary" update=":formContent">
+                                    <f:setPropertyActionListener value="#{model}" target="#{beanRelacionGastos.data}"/>
+                                    <p:confirm header="Confirmación" message="¿Estás seguro de rechazar el gasto?" icon="ui-icon-alert"/>
+                                </p:commandButton>
+                            </p:column>
+                            <p:columnGroup type="footer">
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+
+                                <p:column colspan="1" footerText="Total: " style="text-align:right"/>
+                                <p:column colspan="1" class="alignRight">
+                                    <f:facet name="footer">
+                                        <h:outputText value="#{beanRelacionGastos.total}" class="alignRight">
+                                            <f:convertNumber type="currency" currencySymbol="$" />
+                                        </h:outputText>
+                                    </f:facet>
+                                </p:column>
+
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                            </p:columnGroup>
+                        </p:dataTable>
+
+                    </div>
+                    <p:dialog id="picture"  widgetVar="dlg" header="Comprobante" resizable="false" showEffect="clip" hideEffect="clip">
+                        <p:graphicImage cache="false" style="height:250px; width:250px;" id="imagen" value="#{beanRelacionGastos.productImage}"/>
+                    </p:dialog> 
+                </div>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>

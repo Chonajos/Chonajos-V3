@@ -17,6 +17,7 @@ import com.web.chon.service.IfaceCaja;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceCorteCaja;
 import com.web.chon.service.IfaceOperacionesCaja;
+import com.web.chon.util.JsfUtil;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -106,8 +107,11 @@ public class BeanCajas implements Serializable {
     private BigDecimal totalEntradas;
     private BigDecimal totalSalidas;
 
+    private CorteCaja cj;
+
     @PostConstruct
     public void init() {
+
         setTitle("Relación de Operaciones de Cajas");
         setViewEstate("init");
         data = new DominioCajas();
@@ -165,18 +169,46 @@ public class BeanCajas implements Serializable {
         }
     }
 
-    public void generarCorte()
-    {
-        for (DominioCajas dc : listaGeneral) 
+    public void generarCorte() {
+        cj = new CorteCaja();
+        System.out.println("----------------------DATA: " + data.toString());
+        BigDecimal llave = new BigDecimal(ifaceCorteCaja.getNextVal());
+        cj.setIdCorteCajaPk(llave);
+
+        cj.setIdCajaFk(data.getIdCaja());
+        cj.setIdStatusFk(new BigDecimal(1));
+        cj.setIdUserFk(data.getIdUsuarioFk());
+
+        cj.setMontoChequesAnt(data.getAperturaCheques());
+        cj.setMontoCuentaAnterior(data.getAperturaCuentas());
+        cj.setSaldoAnterior(data.getAperturaEfectivo());
+
+        cj.setSaldoNuevo(data.getEfectivo());
+        cj.setMontoChequesNuevos(data.getCheques());
+        cj.setMontoCuentaNuevo(data.getCuentas());
+        if (ifaceCorteCaja.insertCorte(cj) == 1) 
         {
             
+            if(ifaceOperacionesCaja.updateCortebyIdCaja(data.getIdCaja(), llave)>=0)
+            {
+                JsfUtil.addSuccessMessageClean("Corte de Caja Realizado con éxito");
+                buscar();
+            }
+            else
+            {
+                JsfUtil.addErrorMessageClean("Ocurrio un error al realizar el corte de caja operaciones");
+            }
         }
+        else
+            {
+                JsfUtil.addErrorMessageClean("Ocurrio un error al realizar el corte de caja");
+            }
 
     }
 
     public void sumaTotales() {
-        totalEntradas=CERO;
-        totalSalidas=CERO;
+        totalEntradas = CERO;
+        totalSalidas = CERO;
         totalAperturaEfectivo = CERO;
         totalAperturaCheques = CERO;
         totalAperturaCuentas = CERO;
@@ -185,8 +217,7 @@ public class BeanCajas implements Serializable {
         totalCuentas = CERO;
         totalSaldoActual = CERO;
 
-        for (DominioCajas dc : listaGeneral) 
-        {
+        for (DominioCajas dc : listaGeneral) {
             totalAperturaEfectivo = totalAperturaEfectivo.add(dc.getAperturaEfectivo(), MathContext.UNLIMITED);
             totalAperturaCheques = totalAperturaCheques.add(dc.getAperturaCheques(), MathContext.UNLIMITED);
             totalAperturaCuentas = totalAperturaCuentas.add(dc.getAperturaCuentas(), MathContext.UNLIMITED);
@@ -195,13 +226,11 @@ public class BeanCajas implements Serializable {
             totalCuentas = totalCuentas.add(dc.getCuentas(), MathContext.UNLIMITED);
             totalSaldoActual = totalSaldoActual.add(dc.getSaldoActual(), MathContext.UNLIMITED);
         }
-        for(OperacionesCaja o : lstOperacionesDetallesEntrada)
-        {
-            totalEntradas=totalEntradas.add(o.getMonto(), MathContext.UNLIMITED);
+        for (OperacionesCaja o : lstOperacionesDetallesEntrada) {
+            totalEntradas = totalEntradas.add(o.getMonto(), MathContext.UNLIMITED);
         }
-        for(OperacionesCaja o : lstOperacionesDetallesSalida)
-        {
-            totalSalidas=totalSalidas.add(o.getMonto(), MathContext.UNLIMITED);
+        for (OperacionesCaja o : lstOperacionesDetallesSalida) {
+            totalSalidas = totalSalidas.add(o.getMonto(), MathContext.UNLIMITED);
         }
     }
 
@@ -228,6 +257,7 @@ public class BeanCajas implements Serializable {
             dc.setIdUsuarioFk(c.getIdUsuarioFK());
             dc.setNombreCaja(c.getNombre());
             dc.setNombreSucursal(c.getNombreSucursal());
+            dc.setIdCaja(c.getIdCajaPk());
             BigDecimal cheques = CERO;
             BigDecimal efectivo = CERO;
             BigDecimal cuentas = CERO;
@@ -321,7 +351,6 @@ public class BeanCajas implements Serializable {
 
                     corteAnterior = ifaceCorteCaja.getLastCorteByCaja(c.getIdCajaPk());
 
-                   
                     if (corteAnterior.getIdCorteCajaPk() == null) {
                         dc.setAperturaEfectivo(CERO);
                         dc.setAperturaCuentas(CERO);
@@ -725,6 +754,5 @@ public class BeanCajas implements Serializable {
     public void setTotalSalidas(BigDecimal totalSalidas) {
         this.totalSalidas = totalSalidas;
     }
-    
 
 }

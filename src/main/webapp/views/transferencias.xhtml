@@ -37,19 +37,19 @@
 
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12" for="txtTipoTransferencia" value="Tipo de Transferencia:" rendered="#{beanTransferencias.viewEstate =='init'}"/>    
-                            <h:selectOneMenu  class="col-lg-6 col-md-8 col-sm-8 col-xs-12" id="txtTipoTransferencia"  value="#{beanTransferencias.idTipoTransferenciaFk}" rendered="#{beanTransferencias.viewEstate =='init'}">
+                            <p:selectOneMenu style="width: 97% !important"  class="col-lg-6 col-md-8 col-sm-8 col-xs-12" id="txtTipoTransferencia"  value="#{beanTransferencias.idTipoTransferenciaFk}" rendered="#{beanTransferencias.viewEstate =='init'}">
                                 <f:selectItem  itemLabel="Efectivo" itemValue="1"/>
                                 <f:selectItem  itemLabel="Cheques" itemValue="2"/>
-                            </h:selectOneMenu>
+                            </p:selectOneMenu>
                         </div>
 
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="cajaFiltro" value ="Caja Destino:" rendered="#{beanTransferencias.viewEstate =='init'}" /> 
-                            <h:selectOneMenu  id="cajaFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanTransferencias.idCajaDestinoBean}" rendered="#{beanTransferencias.viewEstate =='init'}" required="true">
+                            <p:selectOneMenu style="width: 97% !important"  id="cajaFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanTransferencias.idCajaDestinoBean}" rendered="#{beanTransferencias.viewEstate =='init'}" required="true">
                                 <f:selectItem itemLabel="Selecciona" itemValue="" />
                                 <f:selectItems value="#{beanTransferencias.listaCajas}" var="cajita" itemLabel="#{cajita.nombre}" itemValue="#{cajita.idCajaPk}"/>
                                 <!--<p:ajax event="change" listener="{beanOperacionesCaja.printStatus()}" update=":formContent:table" />-->
-                            </h:selectOneMenu>
+                            </p:selectOneMenu>
                         </div>
                         <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
                             <p:outputLabel  class="col-lg-6 col-md-3 col-sm-4 col-xs-6"  for="txtPrecio" id="labelprecio" value ="Monto:" /> 

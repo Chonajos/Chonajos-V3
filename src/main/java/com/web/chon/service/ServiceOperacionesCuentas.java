@@ -44,7 +44,8 @@ public class ServiceOperacionesCuentas implements IfaceOperacionesCuentas {
 
     @Override
     public int updateOperacion(OperacionesCuentas es) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       getEjb();
+        return ejb.updateOperacion(es);
     }
 
     @Override

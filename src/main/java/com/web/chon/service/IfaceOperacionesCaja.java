@@ -41,7 +41,7 @@ public interface IfaceOperacionesCaja {
     //Prueba de Nuevos Métodos para Corte de Caja//
     //-- no toco los alteriores para no afecar en caso de falla--//
     public ArrayList<OperacionesCaja> getGenerales(BigDecimal idCajaFk,BigDecimal idEntradaSalida,BigDecimal idUsuarioFk,BigDecimal idStatusFk, BigDecimal idSucursalFk,BigDecimal TIPO);
-    
+    public int updateCortebyIdCaja(BigDecimal idCajaFk,BigDecimal idCorteFk);
     
 
 }

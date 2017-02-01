@@ -48,7 +48,19 @@ public class EjbOperacionesCuentas implements NegocioOperacionesCuentas{
 
     @Override
     public int updateOperacion(OperacionesCuentas es) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            System.out.println("ejb UPDATE" + es.toString());
+            Query query = em.createNativeQuery("UPDATE PAGOS_BANCARIOS SET ID_STATUS_FK=? WHERE ID_TRANS_BANCARIAS_PK = ?");
+            query.setParameter(1, es.getIdStatusFk());
+            query.setParameter(2, es.getIdOperacionCuenta());
+            return query.executeUpdate();
+
+        } catch (Exception ex) {
+            System.out.println("Errro> "+ex);
+            Logger.getLogger(EjbOperacionesCuentas.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        }
+    
     }
 
     @Override

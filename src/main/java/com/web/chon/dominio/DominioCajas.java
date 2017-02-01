@@ -28,8 +28,10 @@ public class DominioCajas implements Serializable{
 
     @Override
     public String toString() {
-        return "DominioCajas{" + "idCaja=" + idCaja + ", nombreCaja=" + nombreCaja + ", nombreSucursal=" + nombreSucursal + ", aperturaEfectivo=" + aperturaEfectivo + ", aperturaCheques=" + aperturaCheques + ", aperturaCuentas=" + aperturaCuentas + ", cheques=" + cheques + ", efectivo=" + efectivo + ", cuentas=" + cuentas + '}';
+        return "DominioCajas{" + "idCaja=" + idCaja + ", idUsuarioFk=" + idUsuarioFk + ", nombreCaja=" + nombreCaja + ", nombreSucursal=" + nombreSucursal + ", aperturaEfectivo=" + aperturaEfectivo + ", aperturaCheques=" + aperturaCheques + ", aperturaCuentas=" + aperturaCuentas + ", cheques=" + cheques + ", efectivo=" + efectivo + ", cuentas=" + cuentas + ", saldoActual=" + saldoActual + '}';
     }
+
+   
 
     public BigDecimal getIdUsuarioFk() {
         return idUsuarioFk;
