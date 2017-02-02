@@ -2,6 +2,8 @@ package com.web.chon.ejb;
 
 import com.web.chon.dominio.HorarioUsuario;
 import com.web.chon.negocio.NegocioHorarioUsuario;
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
@@ -54,6 +56,22 @@ public class EjbHorarioUsuario implements NegocioHorarioUsuario {
         } catch (Exception ex) {
             Logger.getLogger(EjbHorarioUsuario.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
+        }
+    }
+
+       @Override
+    public List<Object[]> getByIdUsuario(BigDecimal id) {
+        try {
+
+            Query query = em.createNativeQuery("SELECT ID_HORARIO_PK,ID_USUARIO_FK,HORA_ENTRADA,HORA_SALIDA,FECHA_INICIO,FECHA_FIN FROM HORARIO_USUARIO WHERE ID_USUARIO_FK = ?");
+
+            query.setParameter(1,id);
+
+            return query.getResultList();
+            
+        }catch (Exception ex) {
+            Logger.getLogger(EjbDiaDescansoUsuario.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
     }
 

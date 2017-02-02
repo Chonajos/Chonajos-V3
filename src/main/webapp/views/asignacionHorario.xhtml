@@ -16,11 +16,11 @@
         </p:dialog>
         <h:form id="formUsuario">
             <div>
-                <h3>#{asignacionHorario.title}</h3>
+                <h3>#{beanAsignacionHorario.title}</h3>
             </div>
             <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <div class="form-group" align="right">
-                <p:commandButton value="Guardar" update=":formUsuario" ajax="true" action="#{asignacionHorario.insert}" onclick="PF('statusDialog').show()"/>
+                <p:commandButton value="Guardar" update=":formUsuario" ajax="true" action="#{beanAsignacionHorario.insert}" onclick="PF('statusDialog').show()"/>
             </div>
 
             <p:panel class="container">
@@ -28,28 +28,30 @@
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group ">
                     <!--                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-6 col-xs-12"  for="selectSucursal" value ="Sucursal:"/> 
-                                            <p:selectOneMenu  id="selectSucursal" class="col-lg-8 col-md-8 col-sm-6 col-xs-12" value="{asignacionHorario.idSucursal}" style="width:60% !important;" >
+                                            <p:selectOneMenu  id="selectSucursal" class="col-lg-8 col-md-8 col-sm-6 col-xs-12" value="{beanAsignacionHorario.idSucursal}" style="width:60% !important;" >
                                                 <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="-1" />
-                                                <f:selectItems value="{asignacionHorario.lstSucursal}" var="sucursal" itemLabel="{sucursal.nombreSucursal}" itemValue="{sucursal.idSucursalPk}"/>
+                                                <f:selectItems value="{beanAsignacionHorario.lstSucursal}" var="sucursal" itemLabel="{sucursal.nombreSucursal}" itemValue="{sucursal.idSucursalPk}"/>
                                             </p:selectOneMenu>
                                         </div>-->
 
 
                     <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 form-group">
                         <p:outputLabel class="col-lg-4 col-md-4 col-sm-6 col-xs-12"  for="selectUsuario" value ="Usuario:"/> 
-                        <p:selectOneMenu  id="selectUsuario" required="true" class="col-lg-6 col-md-6 col-sm-6 col-xs-12" value="#{asignacionHorario.idUsuario}" style="width:60% !important;">
+                        <p:selectOneMenu  id="selectUsuario" required="true" class="col-lg-6 col-md-6 col-sm-6 col-xs-12" value="#{beanAsignacionHorario.idUsuario}" style="width:60% !important;">
                             <f:selectItem itemLabel="Selecciona un Usuario" itemValue="" />
-                            <f:selectItems value="#{asignacionHorario.lstUsuario}" var="usuario" itemLabel="#{usuario.nombreCompletoUsuario}" itemValue="#{usuario.idUsuarioPk}"/>
+                            <f:selectItems value="#{beanAsignacionHorario.lstUsuario}" var="usuario" itemLabel="#{usuario.nombreCompletoUsuario}" itemValue="#{usuario.idUsuarioPk}"/>
+                            <p:ajax event="change" listener="#{beanAsignacionHorario.searchById()}" update=":formUsuario" />
+                            <p:ajax event="itemSelect" update=":formUsuario" listener="#{beanAsignacionHorario.searchById()}" />
                         </p:selectOneMenu>
                     </div>
                     <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 form-group">
                         <p:outputLabel class="col-lg-6 col-md-6 col-sm-6 col-xs-12"  for="txtHoraEntrada" value ="Hora de Entrada:" /> 
-                        <pe:timePicker id="txtHoraEntrada" mode="popup" value="#{asignacionHorario.horarioUsuario.horaEntrada}"/>  
+                        <pe:timePicker id="txtHoraEntrada" mode="popup" value="#{beanAsignacionHorario.horarioUsuario.horaEntrada}"/>  
 
                     </div>
                     <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 form-group">
                         <p:outputLabel class="col-lg-6 col-md-6 col-sm-6 col-xs-12"  for="txtHoraSalida" value ="Hora de Salida:" /> 
-                        <pe:timePicker id="txtHoraSalida" mode="popup" intervalMinutes="5" startHours="0" startMinutes="0" maxHour="23" maxMinute="55" value="#{asignacionHorario.horarioUsuario.horaSalida}" />  
+                        <pe:timePicker id="txtHoraSalida" mode="popup" intervalMinutes="5" startHours="0" startMinutes="0" maxHour="23" maxMinute="55" value="#{beanAsignacionHorario.horarioUsuario.horaSalida}" />  
 
                     </div>
                 </div>
@@ -59,14 +61,14 @@
                         <p:outputLabel class="col-lg-4 col-md-6 col-sm-6 col-xs-12"  for="calendarFechaInicio" value ="Fecha Inicio:" /> 
                         <p:calendar id="calendarFechaInicio" 
                                     class="calendario " navigator="true" placeholder="dd/mm/yyyy"
-                                    value="#{asignacionHorario.horarioUsuario.fechaInicio}" locale="es" pattern="dd/MM/yyyy" readonlyInput="false" showOn="button" >
+                                    value="#{beanAsignacionHorario.horarioUsuario.fechaInicio}" locale="es" pattern="dd/MM/yyyy" readonlyInput="false" showOn="button" >
 
                         </p:calendar>
                     </div>
                     <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 form-group">
                         <p:outputLabel class="col-lg-6 col-md-6 col-sm-6 col-xs-12"  for="calendarFechaFin" value ="Fecha Fin:" /> 
                         <p:calendar id="calendarFechaFin" class="calendario" navigator="true" placeholder="dd/mm/yyyy"
-                                    value="#{asignacionHorario.horarioUsuario.fechaFin}" locale="es" pattern="dd/mm/yyyy" readonly="false" showOn="button"/>
+                                    value="#{beanAsignacionHorario.horarioUsuario.fechaFin}" locale="es" pattern="dd/mm/yyyy" readonly="false" showOn="button"/>
 
                     </div>
                 </div>
@@ -75,7 +77,7 @@
                     <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12 form-group">
                         <p:outputLabel class="col-lg-6 col-md-6 col-sm-6 col-xs-12"  for="checkDiaDescanso" value ="Días de Descanso:" /> 
 
-                        <p:selectManyCheckbox id="checkDiaDescanso" value="#{asignacionHorario.diaDescanso.diasSelecionados}" class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                        <p:selectManyCheckbox id="checkDiaDescanso" value="#{beanAsignacionHorario.diaDescanso.diasSelecionados}" class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                             <f:selectItem itemLabel="Domingo" itemValue="0" />
                             <f:selectItem itemLabel="Lunes" itemValue="1" />
                             <f:selectItem itemLabel="Martes" itemValue="2" />

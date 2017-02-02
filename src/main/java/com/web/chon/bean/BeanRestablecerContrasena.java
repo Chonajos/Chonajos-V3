@@ -2,6 +2,7 @@ package com.web.chon.bean;
 
 import com.web.chon.dominio.Usuario;
 import com.web.chon.dominio.UsuarioDominio;
+import com.web.chon.security.service.PasswordEncoderChonajos;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceCatUsuario;
 import com.web.chon.util.JsfUtil;
@@ -28,6 +29,9 @@ public class BeanRestablecerContrasena {
     private IfaceCatUsuario ifaceCatUsuario;
     @Autowired
     private PlataformaSecurityContext context;
+    
+    @Autowired
+    private PasswordEncoderChonajos passwordEncoder;
 
     private ArrayList<Usuario> lstUsuario;
 
@@ -54,7 +58,10 @@ public class BeanRestablecerContrasena {
     public String restablecer() {
         try {
 
-            data.setContrasenaUsuario(data.getClaveUsuario());
+            //Se codifica la contraseña del usuario
+            CharSequence encoder = passwordEncoder.encode(data.getClaveUsuario()).toUpperCase();
+            data.setContrasenaUsuario(encoder.toString());
+            
             if (ifaceCatUsuario.updateUsuario(data) == 1) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Contraseña modificada."));
             } else {
