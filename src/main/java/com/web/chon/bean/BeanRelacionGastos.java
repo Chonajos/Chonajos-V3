@@ -29,6 +29,7 @@ import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
+import org.primefaces.event.RowEditEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +62,7 @@ public class BeanRelacionGastos implements Serializable {
     private String viewEstate;
 
     private OperacionesCaja data;
+    private OperacionesCaja dataEdit;
     private UsuarioDominio usuario;
     private Caja caja;
 
@@ -102,7 +104,6 @@ public class BeanRelacionGastos implements Serializable {
         idSucursalFk =new BigDecimal(usuario.getSucId());
         setTitle("Relación de Gastos");
         idCajaFk= caja.getIdCajaPk();
-        listaCajas = ifaceCaja.getCajas();
         setViewEstate("init");
         idStatusFk= new BigDecimal(2);
         listaSucursales = ifaceCatSucursales.getSucursales();
@@ -110,9 +111,32 @@ public class BeanRelacionGastos implements Serializable {
         listaTiposOperaciones=new ArrayList<TipoOperacion>();
         listaTiposOperaciones = ifaceTiposOperacion.getOperacionesByIdCategoria(new BigDecimal(1));
         data = new OperacionesCaja();
-        listaSucursales = ifaceCatSucursales.getSucursales();
+        buscaCajas();
         buscar();
         
+    }
+    public void onRowCancel(RowEditEvent event) {
+        System.out.println("cancel");
+
+    }
+    public void onRowEdit(RowEditEvent event) 
+    {
+        dataEdit = (OperacionesCaja) event.getObject();
+        System.out.println("DataEdit: "+dataEdit.toString());
+        if(ifaceOperacionesCaja.updateOperacion(dataEdit)==1)
+        {
+            buscar();
+            JsfUtil.addSuccessMessageClean("Se ha actualizado el gasto correctamente");
+        }
+        else
+        {
+            JsfUtil.addErrorMessageClean("Ha ocurrido un error al actualizar el gasto");
+        }
+        
+    }
+    public void buscaCajas()
+    {
+        listaCajas = ifaceCaja.getCajasByIdSucusal(idSucursalFk);
     }
     public void rechazarGasto()
     {
@@ -373,6 +397,15 @@ public class BeanRelacionGastos implements Serializable {
     public void setFiltro(int filtro) {
         this.filtro = filtro;
     }
+
+    public OperacionesCaja getDataEdit() {
+        return dataEdit;
+    }
+
+    public void setDataEdit(OperacionesCaja dataEdit) {
+        this.dataEdit = dataEdit;
+    }
+    
     
 
 }

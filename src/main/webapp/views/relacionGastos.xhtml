@@ -17,7 +17,7 @@
             <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <div class="form-group" align="right">
                 <div>
-                    <p:commandButton value="Buscar" update=":formContent" ajax="true" disabled="false" action="#{beanRelacionGastos.buscar()}"/>
+                    <p:commandButton value="Buscar" onclick="PF('statusDialog').show()" update=":formContent" ajax="true" disabled="false" action="#{beanRelacionGastos.buscar()}"/>
                 </div>
                 <p:confirmDialog  global="true" showEffect="fade" hideEffect="fade">
                     <div class="alignCenter">
@@ -25,6 +25,12 @@
                         <p:commandButton  value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
                     </div>
                 </p:confirmDialog>
+
+                <p:ajaxStatus onsuccess="PF('statusDialog').hide()" oncomplete="PF('statusDialog').hide()" onerror="PF('statusDialog').hide()" />
+                <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                          closable="false" resizable="false" showHeader="false">
+                    <p:graphicImage value="../resources/img/carga.gif" />
+                </p:dialog>
             </div>
             <p:panel> 
                 <div class="container-fluid">
@@ -34,6 +40,8 @@
                             <p:selectOneMenu  style="width: 97% !important"   id="comboSucursal" class="col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanRelacionGastos.idSucursalFk}" rendered="#{beanRelacionGastos.viewEstate =='init'}" >
 
                                 <f:selectItems value="#{beanRelacionGastos.listaSucursales}" var="sucu" itemLabel="#{sucu.nombreSucursal}" itemValue="#{sucu.idSucursalPk}"/>
+                                <p:ajax event="change" listener="#{beanRelacionGastos.buscaCajas()}" update=":formContent:cajaFiltro" />
+
                             </p:selectOneMenu>
                         </div>
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
@@ -111,9 +119,13 @@
                                      rowStyleClass="#{model.idStatusFk.intValue() eq 1 ? 'alert-success': (model.idStatusFk.intValue()  eq 2 ? 'alert-info':(model.idStatusFk.intValue()  eq 3 ? 'alert-warning':'alert-danger'))}"
                                      value="#{beanRelacionGastos.listaOperaciones}" 
                                      rows="20"
+                                     editable="true" 
                                      paginator="true" styleClass="ui-datatable-hor-scroll" 
                                      emptyMessage="No se encontraron Registros" 
                                      rendered="#{beanRelacionGastos.viewEstate =='init'}">
+                            <p:ajax event="rowEdit" listener="#{beanRelacionGastos.onRowEdit}" update=":formContent:tabla"/>
+                            <p:ajax event="rowEditCancel" listener="#{beanRelacionGastos.onRowCancel}" update=":formContent:tabla" />
+
 
                             <p:column headerText="Sucursal" width="80px;" class="alignCenter">
                                 <h:outputText value="#{model.nombreSucursal}" />
@@ -129,14 +141,40 @@
                             <p:column headerText="Caja" width="100px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreCaja}" />
                             </p:column>
-                            <p:column headerText="Tipo Operacion" width="100px;" class="alignLeft">
-                                <h:outputText value="#{model.nombreOperacion}">
-                                </h:outputText>
+                            <p:column headerText="Tipo Operación" width="100px;" class="alignLeft">
+                                
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText  value="#{model.nombreOperacion}" />
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <h:selectOneMenu  id="comboOperacion"  value="#{model.idTipoOperacionFk}">
+                                            <f:selectItem itemLabel="Selecciona" itemValue="#{model.idTipoOperacionFk}" />
+                                            <f:selectItems value="#{beanRelacionGastos.listaTiposOperaciones}" 
+                                                           var="listitaOpe" itemLabel="#{listitaOpe.nombre}" 
+                                                           itemValue="#{listitaOpe.idTipoOperacionPk}"/>
+                                        </h:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
                             </p:column>
+                            
                             <p:column headerText="Concepto" width="150px;" class="alignLeft">
-                                <h:outputText value="#{model.nombreConcepto}">
-                                </h:outputText>
+                                
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{model.nombreConcepto}" />
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <h:selectOneMenu  id="comboConcepto"  value="#{model.idConceptoFk}">
+                                            <f:selectItem itemLabel="Selecciona" itemValue="#{model.idConceptoFk}" />
+                                            <f:selectItems value="#{beanRelacionGastos.listaConceptos}" 
+                                                           var="listitacon" itemLabel="#{listitacon.nombre}" 
+                                                           itemValue="#{listitacon.idConceptoPk}"/>
+                                        </h:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
                             </p:column>
+                            
                             <p:column headerText="Comentarios" width="200px;" class="alignLeft">
                                 <h:outputText value="#{model.comentarios}">
                                 </h:outputText>
@@ -157,6 +195,9 @@
                                 <p:commandButton icon="ui-icon-image" id="openDialogLink" disabled="#{model.fichero ==null}" update=":formContent:imagen"  onclick="PF('dlg').show();" >
                                     <f:setPropertyActionListener value="#{model}" target="#{beanRelacionGastos.data}"/>
                                 </p:commandButton>
+                            </p:column>
+                            <p:column width="60px;" class="alignCenter" headerText="Editar">
+                                <p:rowEditor/>
                             </p:column>
                             <p:column headerText="Recibir"  width="60px;" class="alignCenter">
                                 <p:commandButton id="print" disabled="#{model.idStatusFk.intValue() != 2}"  ajax="true" process="@this" action="#{beanRelacionGastos.aceptarGasto()}" 
@@ -196,7 +237,14 @@
 
                     </div>
                     <p:dialog id="picture"  widgetVar="dlg" header="Comprobante" resizable="false" showEffect="clip" hideEffect="clip">
-                        <p:graphicImage cache="false" style="height:250px; width:250px;" id="imagen" value="#{beanRelacionGastos.productImage}"/>
+                        <div>
+                            <p:graphicImage cache="false" style="height:300px; width:300px;" id="imagen" value="#{beanRelacionGastos.productImage}"/>
+                        </div>
+                        <div>
+                            <p:commandButton value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="ui-icon-arrowthick-1-s">
+                                <p:fileDownload value="#{beanRelacionGastos.productImage}" />
+                            </p:commandButton>
+                        </div>
                     </p:dialog> 
                 </div>
             </p:panel>

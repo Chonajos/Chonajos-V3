@@ -39,6 +39,9 @@
                             <p:selectOneMenu style="width: 97% !important"  id="conceptoCategoria" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanPagoServicios.idOperacionBean}" rendered="#{beanPagoServicios.viewEstate =='init'}" required="true">
                                 <f:selectItem itemLabel="selecciona un tipo de gasto" itemValue="" />
                                 <f:selectItems value="#{beanPagoServicios.lstOperaciones}" var="gastito" itemLabel="#{gastito.nombre}" itemValue="#{gastito.idTipoOperacionPk}"/>
+                             <p:ajax event="change" listener="#{beanPagoServicios.buscaConceptos()}" update=":formContent:conceptoFiltro" />
+
+                
                             </p:selectOneMenu>
                         </div>
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">

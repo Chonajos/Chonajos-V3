@@ -664,6 +664,8 @@ INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Empaque', 0,'10.4','/views/empaque.xhtml');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Sucursales', 0,'10.5','/views/sucursales.xhtml');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Sucursales', 0,'10.6','/views/roles.xhtml');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Operaciones', 0,'10.8','/views/catalogosOperaciones.xhtml');
+
 
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Productos', 1,'20','NULL');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Mantenimiento Precios Menudeo', 0,'20.1','/views/mantenimientoPrecios.xhtml');
@@ -742,6 +744,8 @@ INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Recibir Depositos', 0,'90.12','/views/recibirDeposito.xhtml');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Historial de Cortes', 0,'90.13','/views/historialCortes.xhtml');
 
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Historial de Cortes', 0,'90.13','/views/historialCortes.xhtml');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Historial de Cortes', 0,'90.13','/views/historialCortes.xhtml');
 
 
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Corte Caja', 0,'90.5','/views/corteCaja.xhtml');
@@ -1604,6 +1608,8 @@ Insert into CHONAJOS.CAJA_SUCURSAL (ID_CAJA_SUCURSAL_PK,ID_CAJA_FK,ID_SUCURSAL_F
 Insert into CHONAJOS.CAJA_SUCURSAL (ID_CAJA_SUCURSAL_PK,ID_CAJA_FK,ID_SUCURSAL_FK) values (8,7,1);
 Insert into CHONAJOS.CAJA_SUCURSAL (ID_CAJA_SUCURSAL_PK,ID_CAJA_FK,ID_SUCURSAL_FK) values (9,8,23);
 Insert into CHONAJOS.CAJA_SUCURSAL (ID_CAJA_SUCURSAL_PK,ID_CAJA_FK,ID_SUCURSAL_FK) values (10,9,23);
+
+
 
 
 ---corres estadisticas a la base EXEC DBMS_UTILITY.analyze_schema('CHONI','COMPUTE');

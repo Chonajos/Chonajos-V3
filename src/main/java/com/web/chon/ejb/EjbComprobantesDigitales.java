@@ -8,7 +8,10 @@ package com.web.chon.ejb;
 import com.web.chon.dominio.ComprobantesDigitales;
 import com.web.chon.negocio.NegocioComprobantes;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -33,22 +36,69 @@ public class EjbComprobantesDigitales implements NegocioComprobantes {
 
     @Override
     public int insertaComprobante(ComprobantesDigitales cd) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+
+            Query query = em.createNativeQuery("INSERT INTO COMPROBANTES_DIGITALES (ID_COMPROBANTES_DIGITALES_PK,ID_TIPO_FK,ID_LLAVE_FK,FECHA,NOMBRE)VALUES (?,?,?,sysdate,?)");
+            query.setParameter(1, cd.getIdComprobantesDigitalesPk());
+            query.setParameter(2, cd.getIdTipoFk());
+            query.setParameter(3, cd.getIdLlaveFk());
+            query.setParameter(4, cd.getNombre());
+            return query.executeUpdate();
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbComprobantesDigitales.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        }
+    }
+    public void insertarImagen(BigDecimal id, byte[] fichero) throws SQLException {
+
+        Query querys = em.createNativeQuery("update COMPROBANTES_DIGITALES SET FICHERO = ? WHERE ID_COMPROBANTES_DIGITALES_PK = ?");
+        querys.setParameter(1, fichero);
+        querys.setParameter(2, id);
+        querys.executeUpdate();
+
     }
 
     @Override
     public int updateComprobante(ComprobantesDigitales cd) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       try {
+            Query query = em.createNativeQuery("update COMPROBANTES_DIGITALES SET ID_TIPO_FK=?, ID_LLAVE_FK=?,NOMBRE=? WHERE ID_COMPROBANTES_DIGITALES_PK = ?");
+            query.setParameter(1, cd.getIdTipoFk());
+            query.setParameter(2, cd.getIdLlaveFk());
+            query.setParameter(3, cd.getNombre());
+            query.setParameter(4, cd.getIdComprobantesDigitalesPk());
+            return query.executeUpdate();
+        } catch (Exception ex) {
+            Logger.getLogger(EjbComprobantesDigitales.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        }
     }
 
     @Override
     public int deleteComprobante(ComprobantesDigitales cd) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+
+            Query query = em.createNativeQuery("DELETE COMPROBANTES_DIGITALES where ID_COMPROBANTES_DIGITALES_PK = ?");
+            query.setParameter(1, cd.getIdComprobantesDigitalesPk());
+            return query.executeUpdate();
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbComprobantesDigitales.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        }
+
+    
     }
 
     @Override
     public List<Object[]> getComprobanteByIdTipoLlave(BigDecimal idTipoFk, BigDecimal idLlave) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+         try {
+            Query query = em.createNativeQuery("select * from COMPROBANTES_DIGITALES where ID_LLAVE_FK=?, and ID_TIPO_FK=? ");
+            return query.getResultList();
+        } catch (Exception ex) {
+            Logger.getLogger(EjbComprobantesDigitales.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
     
 }

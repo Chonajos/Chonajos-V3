@@ -59,23 +59,22 @@ public class BeanPagoServicios implements Serializable {
     private IfaceCorteCaja ifaceCorteCaja;
     @Autowired
     private IfaceTiposOperacion ifaceTiposOperacion;
-    
+
     private ArrayList<ConceptosES> listaConceptos;
     //--Variables para Verificar Maximo en Caja --//
     private ArrayList<TipoOperacion> lstOperaciones;
     private ArrayList<Caja> listaSucursales;
-    
-    
+
     private String title;
     private String viewEstate;
     private String referencia;
     private String comentarios;
-    
+
     private UsuarioDominio usuario;
     private Caja caja;
     private OperacionesCaja opcaja;
     private CorteCaja corteAnterior;
-    
+
     private BigDecimal saldoAnterior;
     private BigDecimal totalEntradas;
     private BigDecimal totalSalidas;
@@ -83,34 +82,17 @@ public class BeanPagoServicios implements Serializable {
     private BigDecimal idConceptoBean;
     private BigDecimal idSucursalFk;
     private BigDecimal idOperacionBean;
-    
+
     private static final BigDecimal ENTRADA = new BigDecimal(1);
     private static final BigDecimal SALIDA = new BigDecimal(2);
     private static final BigDecimal STATUS_REALIZADA = new BigDecimal(1);
     private static final BigDecimal STATUS_PENDIENTE = new BigDecimal(2);
     private static final BigDecimal STATUS_RECHAZADA = new BigDecimal(3);
     private static final BigDecimal STATUS_CANCELADA = new BigDecimal(4);
-    
-    
-    private static final BigDecimal CERO = new BigDecimal(0).setScale(2, RoundingMode.CEILING);
-    
-    //--Variables para Verificar Maximo en Caja --//
 
-    //==========codigo para verificar dinero en caja =========//
-    private ArrayList<OperacionesCaja> listaDetalleEntradas;
-    private ArrayList<OperacionesCaja> listaDetalleSalidas;
-    
-    
-    private BigDecimal nuevoSaldo;
-    private BigDecimal nuevoSaldoCheques;
-    private BigDecimal nuevoSaldoCuentas;
-    private BigDecimal saldoAnteriorEfectivo;
-    private BigDecimal saldoAnteriorCheques;
-    private BigDecimal saldoAnteriorCuentas;
-    private BigDecimal totalEfectivo;
-    private BigDecimal totalCheques;
-    private BigDecimal totalCuentasBancarias;
-    //========codigo para verificar dinero en caja ============//
+    private static final BigDecimal CERO = new BigDecimal(0).setScale(2, RoundingMode.CEILING);
+
+
     private byte[] bytes;
 
     @PostConstruct
@@ -118,13 +100,12 @@ public class BeanPagoServicios implements Serializable {
         usuario = context.getUsuarioAutenticado();
         setTitle("Pago de Servicios");
         setViewEstate("init");
-        lstOperaciones=new ArrayList<TipoOperacion>();
+        lstOperaciones = new ArrayList<TipoOperacion>();
         lstOperaciones = ifaceTiposOperacion.getOperacionesByIdCategoria(new BigDecimal(1));
-        
-        listaConceptos =ifaceConceptos.getConceptosByIdCategoria(new BigDecimal(1));
-       
+
+        listaConceptos = ifaceConceptos.getConceptosByTipoOperacion(idOperacionBean);
+
         //listaConceptos = ifaceConceptos.getConceptosByTipoOperacion(new BigDecimal(1));
-        
         caja = new Caja();
         caja = ifaceCaja.getCajaByIdUsuarioPk(usuario.getIdUsuario());
         opcaja = new OperacionesCaja();
@@ -134,46 +115,21 @@ public class BeanPagoServicios implements Serializable {
         opcaja.setIdStatusFk(STATUS_PENDIENTE);
 
         //--Maximo Pago--//
-        corteAnterior = new CorteCaja();
-        corteAnterior = ifaceCorteCaja.getLastCorteByCaja(caja.getIdCajaPk());
-        totalEntradas = CERO;
-        totalSalidas = CERO;
-        saldoAnterior = CERO;
+       
 
         listaSucursales = new ArrayList<Caja>();
-        System.out.println("=================idCaja: " + caja.getIdCajaPk());
         listaSucursales = ifaceCaja.getSucursalesByIdCaja(caja.getIdCajaPk());
-        nuevoSaldo = CERO;
-        nuevoSaldoCheques = CERO;
-        nuevoSaldoCuentas = CERO;
-        saldoAnteriorEfectivo = CERO;
-        saldoAnteriorCheques = CERO;
-        saldoAnteriorCuentas = CERO;
-        totalEfectivo = CERO;
-        totalCheques = CERO;
-        totalCuentasBancarias = CERO;
+        
 
-        if (corteAnterior.getSaldoNuevo() == null) {
-            corteAnterior.setSaldoNuevo(CERO);
-        }
-        saldoAnteriorEfectivo = corteAnterior.getSaldoNuevo();
-        saldoAnteriorCheques = corteAnterior.getMontoChequesNuevos();
-        saldoAnteriorCuentas = corteAnterior.getMontoCuentaNuevo();
-        if (saldoAnteriorCheques == null) {
-            saldoAnteriorCheques = CERO;
-        }
-        if (saldoAnteriorEfectivo == null) {
-            saldoAnteriorEfectivo = CERO;
-        }
-        if (saldoAnteriorCuentas == null) {
-            saldoAnteriorCuentas = CERO;
-        }
+       
 
-        //---codigo para verificar dinero en caja --//
-        System.out.println("Saldo Anterior: " + saldoAnteriorEfectivo.setScale(2, RoundingMode.CEILING));
-        System.out.println("Saldo Anterior Cheques: " + saldoAnteriorCheques.setScale(2, RoundingMode.CEILING));
-        System.out.println("Saldo Anterior Cuentas: " + saldoAnteriorCuentas.setScale(2, RoundingMode.CEILING));
-
+        
+    }
+    
+    public void buscaConceptos()
+    {
+        System.out.println("Operacion: "+idOperacionBean);
+          listaConceptos = ifaceConceptos.getConceptosByTipoOperacion(idOperacionBean);
     }
 
     public void handleFileUpload(FileUploadEvent event) throws IOException {
@@ -191,7 +147,7 @@ public class BeanPagoServicios implements Serializable {
         try {
             bytes = IOUtils.toByteArray(inputStr);
             opcaja.setFichero(bytes);
-            JsfUtil.addSuccessMessageClean("El archivo "+event.getFile().getFileName().trim()+"fue cargado con éxito");
+            JsfUtil.addSuccessMessageClean("El archivo " + event.getFile().getFileName().trim() + "fue cargado con éxito");
         } catch (IOException e) {
             JsfUtil.addErrorMessageClean("Ocurrio un error al cargar el archivo");
             e.printStackTrace();
@@ -210,82 +166,28 @@ public class BeanPagoServicios implements Serializable {
         idConceptoBean = null;
     }
 
-    //----Funciones para Verificar Maximo de Dinero en Caja --//
-    public void verificarDinero() {
-        totalEfectivo = CERO;
-        totalCheques = CERO;
-        totalCuentasBancarias = CERO;
-        nuevoSaldo = CERO;
-        nuevoSaldoCheques = CERO;
-        nuevoSaldoCuentas = CERO;
-
-        listaDetalleEntradas = new ArrayList<OperacionesCaja>();
-        listaDetalleEntradas = new ArrayList<OperacionesCaja>();
-        listaDetalleSalidas = new ArrayList<OperacionesCaja>();
-
-        listaDetalleEntradas = ifaceOperacionesCaja.getDetalles(caja.getIdCajaPk(), caja.getIdUsuarioFK(), ENTRADA, STATUS_REALIZADA);
-        listaDetalleSalidas = ifaceOperacionesCaja.getDetalles(caja.getIdCajaPk(), caja.getIdUsuarioFK(), SALIDA, STATUS_REALIZADA);
-
-        for (OperacionesCaja ope : listaDetalleEntradas) {
-            if (ope.getIdConceptoFk().intValue() == 10 || ope.getIdConceptoFk().intValue() == 6 || ope.getIdConceptoFk().intValue() == 11 || ope.getIdConceptoFk().intValue() == 7 || ope.getIdConceptoFk().intValue() == 8 || ope.getIdConceptoFk().intValue() == 9 || ope.getIdConceptoFk().intValue() == 16 || ope.getIdConceptoFk().intValue() == 13) {
-
-                totalEfectivo = totalEfectivo.add(ope.getMonto(), MathContext.UNLIMITED);
-            } else if (ope.getIdConceptoFk().intValue() == 30 || ope.getIdConceptoFk().intValue() == 33 || ope.getIdConceptoFk().intValue() == 27 || ope.getIdConceptoFk().intValue() == 17 || ope.getIdConceptoFk().intValue() == 36) {
-
-                totalCheques = totalCheques.add(ope.getMonto(), MathContext.UNLIMITED);
-            } else if (ope.getIdConceptoFk().intValue() == 12 || ope.getIdConceptoFk().intValue() == 29 || ope.getIdConceptoFk().intValue() == 31 || ope.getIdConceptoFk().intValue() == 28 || ope.getIdConceptoFk().intValue() == 32 || ope.getIdConceptoFk().intValue() == 34 || ope.getIdConceptoFk().intValue() == 37 || ope.getIdConceptoFk().intValue() == 35) {
-                totalCuentasBancarias = totalCuentasBancarias.add(ope.getMonto(), MathContext.UNLIMITED);
-            }
-
-        }
-        for (OperacionesCaja ope : listaDetalleSalidas) {
-            if (ope.getIdConceptoFk().intValue() == 7 || ope.getIdConceptoFk().intValue() == 1 || ope.getIdConceptoFk().intValue() == 3 || ope.getIdConceptoFk().intValue() == 4 || ope.getIdConceptoFk().intValue() == 6 || ope.getIdConceptoFk().intValue() == 11 || ope.getIdConceptoFk().intValue() == 10 || ope.getIdConceptoFk().intValue() == 8 || ope.getIdConceptoFk().intValue() == 9 || ope.getIdConceptoFk().intValue() == 16 || ope.getIdConceptoFk().intValue() == 13 || ope.getIdConceptoFk().intValue() == 2 || ope.getIdConceptoFk().intValue() == 25 || ope.getIdConceptoFk().intValue() == 24
-                    || ope.getIdConceptoFk().intValue() == 21 || ope.getIdConceptoFk().intValue() == 20 || ope.getIdConceptoFk().intValue() == 23
-                    || ope.getIdConceptoFk().intValue() == 22) {
-                totalEfectivo = totalEfectivo.subtract(ope.getMonto(), MathContext.UNLIMITED);
-            } else if (ope.getIdConceptoFk().intValue() == 30 || ope.getIdConceptoFk().intValue() == 33 || ope.getIdConceptoFk().intValue() == 27 || ope.getIdConceptoFk().intValue() == 17 || ope.getIdConceptoFk().intValue() == 36) {
-
-                totalCheques = totalCheques.subtract(ope.getMonto(), MathContext.UNLIMITED);
-            } else if (ope.getIdConceptoFk().intValue() == 12 || ope.getIdConceptoFk().intValue() == 29 || ope.getIdConceptoFk().intValue() == 31 || ope.getIdConceptoFk().intValue() == 28 || ope.getIdConceptoFk().intValue() == 32 || ope.getIdConceptoFk().intValue() == 34 || ope.getIdConceptoFk().intValue() == 37 || ope.getIdConceptoFk().intValue() == 35) {
-
-                totalCuentasBancarias = totalCuentasBancarias.subtract(ope.getMonto(), MathContext.UNLIMITED);
-            }
-
-        }
-        nuevoSaldo = totalEfectivo.add(saldoAnteriorEfectivo.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
-        nuevoSaldoCheques = totalCheques.add(saldoAnteriorCheques.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
-        nuevoSaldoCuentas = totalCuentasBancarias.add(saldoAnteriorCuentas.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
-    }
-
-    //----Funciones para Verificar Maximo de Dinero en Caja --//
+    
     public void pagar() {
-        verificarDinero();
-        System.out.println("Saldo Actual: " + nuevoSaldo.setScale(2, RoundingMode.CEILING));
-        System.out.println("Saldo Actual Cheques: " + nuevoSaldoCheques.setScale(2, RoundingMode.CEILING));
-        System.out.println("Saldo Actual Cuentas: " + nuevoSaldoCuentas.setScale(2, RoundingMode.CEILING));
+        //verificarDinero();
 
-        if (nuevoSaldo.setScale(2, RoundingMode.CEILING).compareTo(totalServicio.setScale(2, RoundingMode.CEILING)) >= 0) {
-            opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
-            opcaja.setMonto(totalServicio);
-            opcaja.setComentarios(comentarios);
-            opcaja.setIdConceptoFk(idConceptoBean);
-            opcaja.setIdTipoOperacionFk(idOperacionBean);
-            opcaja.setIdFormaPago(new BigDecimal(1));
-            opcaja.setIdSucursalFk(idSucursalFk);
-            
-            if (caja.getIdCajaPk() != null) {
-                if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
-                    JsfUtil.addSuccessMessageClean("Pago de servicio registrado correctamente");
-                    reset();
-                } else {
-                    JsfUtil.addErrorMessageClean("Ocurrio un error al registrar el pago de servicio, contactar al administrador");
-                }
+        opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
+        opcaja.setMonto(totalServicio);
+        opcaja.setComentarios(comentarios);
+        opcaja.setIdConceptoFk(idConceptoBean);
+        opcaja.setIdTipoOperacionFk(idOperacionBean);
+        opcaja.setIdFormaPago(new BigDecimal(1));
+        opcaja.setIdSucursalFk(idSucursalFk);
 
+        if (caja.getIdCajaPk() != null) {
+            if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
+                JsfUtil.addSuccessMessageClean("Pago de servicio registrado correctamente");
+                reset();
             } else {
-                JsfUtil.addErrorMessageClean("Su usuario no cuenta con caja registrada para realizar el pago de servicios");
+                JsfUtil.addErrorMessageClean("Ocurrio un error al registrar el pago de servicio, contactar al administrador");
             }
+
         } else {
-            JsfUtil.addErrorMessageClean("No hay suficiente dinero en caja");
+            JsfUtil.addErrorMessageClean("Su usuario no cuenta con caja registrada para realizar el pago de servicios");
         }
 
     }
@@ -378,14 +280,7 @@ public class BeanPagoServicios implements Serializable {
         this.saldoAnterior = saldoAnterior;
     }
 
-    public BigDecimal getNuevoSaldo() {
-        return nuevoSaldo;
-    }
-
-    public void setNuevoSaldo(BigDecimal nuevoSaldo) {
-        this.nuevoSaldo = nuevoSaldo;
-    }
-
+    
     public BigDecimal getTotalEntradas() {
         return totalEntradas;
     }
@@ -418,8 +313,6 @@ public class BeanPagoServicios implements Serializable {
         this.lstOperaciones = lstOperaciones;
     }
 
-   
-
     public ArrayList<Caja> getListaSucursales() {
         return listaSucursales;
     }
@@ -436,86 +329,7 @@ public class BeanPagoServicios implements Serializable {
         this.corteAnterior = corteAnterior;
     }
 
-    public ArrayList<OperacionesCaja> getListaDetalleEntradas() {
-        return listaDetalleEntradas;
-    }
-
-    public void setListaDetalleEntradas(ArrayList<OperacionesCaja> listaDetalleEntradas) {
-        this.listaDetalleEntradas = listaDetalleEntradas;
-    }
-
-    public ArrayList<OperacionesCaja> getListaDetalleSalidas() {
-        return listaDetalleSalidas;
-    }
-
-    public void setListaDetalleSalidas(ArrayList<OperacionesCaja> listaDetalleSalidas) {
-        this.listaDetalleSalidas = listaDetalleSalidas;
-    }
-
-    public BigDecimal getNuevoSaldoCheques() {
-        return nuevoSaldoCheques;
-    }
-
-    public void setNuevoSaldoCheques(BigDecimal nuevoSaldoCheques) {
-        this.nuevoSaldoCheques = nuevoSaldoCheques;
-    }
-
-    public BigDecimal getNuevoSaldoCuentas() {
-        return nuevoSaldoCuentas;
-    }
-
-    public void setNuevoSaldoCuentas(BigDecimal nuevoSaldoCuentas) {
-        this.nuevoSaldoCuentas = nuevoSaldoCuentas;
-    }
-
-    public BigDecimal getSaldoAnteriorEfectivo() {
-        return saldoAnteriorEfectivo;
-    }
-
-    public void setSaldoAnteriorEfectivo(BigDecimal saldoAnteriorEfectivo) {
-        this.saldoAnteriorEfectivo = saldoAnteriorEfectivo;
-    }
-
-    public BigDecimal getSaldoAnteriorCheques() {
-        return saldoAnteriorCheques;
-    }
-
-    public void setSaldoAnteriorCheques(BigDecimal saldoAnteriorCheques) {
-        this.saldoAnteriorCheques = saldoAnteriorCheques;
-    }
-
-    public BigDecimal getSaldoAnteriorCuentas() {
-        return saldoAnteriorCuentas;
-    }
-
-    public void setSaldoAnteriorCuentas(BigDecimal saldoAnteriorCuentas) {
-        this.saldoAnteriorCuentas = saldoAnteriorCuentas;
-    }
-
-    public BigDecimal getTotalEfectivo() {
-        return totalEfectivo;
-    }
-
-    public void setTotalEfectivo(BigDecimal totalEfectivo) {
-        this.totalEfectivo = totalEfectivo;
-    }
-
-    public BigDecimal getTotalCheques() {
-        return totalCheques;
-    }
-
-    public void setTotalCheques(BigDecimal totalCheques) {
-        this.totalCheques = totalCheques;
-    }
-
-    public BigDecimal getTotalCuentasBancarias() {
-        return totalCuentasBancarias;
-    }
-
-    public void setTotalCuentasBancarias(BigDecimal totalCuentasBancarias) {
-        this.totalCuentasBancarias = totalCuentasBancarias;
-    }
-
+    
     public BigDecimal getIdOperacionBean() {
         return idOperacionBean;
     }
@@ -523,7 +337,5 @@ public class BeanPagoServicios implements Serializable {
     public void setIdOperacionBean(BigDecimal idOperacionBean) {
         this.idOperacionBean = idOperacionBean;
     }
-    
-    
 
 }

@@ -67,18 +67,25 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
 
         try {
             //System.out.println("ejb UPDATE" + es.toString());
-            Query query = em.createNativeQuery("UPDATE OPERACIONES_CAJA SET ID_CORTE_CAJA_FK = ?,ID_CAJA_DESTINO_FK = ?,ID_CONCEPTO_FK = ?,FECHA = ?,ID_STATUS_FK = ?,ID_USER_FK = ?,COMENTARIOS = ?,MONTO=? WHERE ID_OPERACIONES_CAJA_PK = ?");
+            Query query = em.createNativeQuery("UPDATE OPERACIONES_CAJA SET ID_CORTE_CAJA_FK = ?,ID_CAJA_FK=?,ID_CAJA_DESTINO_FK = ?,ID_CONCEPTO_FK = ?,ID_STATUS_FK = ?,ID_USER_FK = ?,COMENTARIOS = ?,MONTO=?, E_S=?,ID_SUCURSAL_FK=?,ID_FORM_PAGO_FK=?, ID_TIPO_OPERACION_FK=? WHERE ID_OPERACIONES_CAJA_PK = ?");
 
             query.setParameter(1, es.getIdCorteCajaFk());
             query.setParameter(2, es.getIdCajaFk());
             query.setParameter(3, es.getIdCajaDestinoFk());
             query.setParameter(4, es.getIdConceptoFk());
-            query.setParameter(5, es.getFecha());
-            query.setParameter(6, es.getIdStatusFk());
-            query.setParameter(7, es.getIdUserFk());
-            query.setParameter(8, es.getComentarios());
-            query.setParameter(9, es.getMonto());
-            query.setParameter(10, es.getIdOperacionesCajaPk());
+            
+            query.setParameter(5, es.getIdStatusFk());
+            query.setParameter(6, es.getIdUserFk());
+            query.setParameter(7, es.getComentarios());
+            query.setParameter(8, es.getMonto());
+            
+            query.setParameter(9, es.getEntradaSalida());
+            query.setParameter(10, es.getIdSucursalFk());
+            query.setParameter(11, es.getIdFormaPago());
+            query.setParameter(12, es.getIdTipoOperacionFk());
+            query.setParameter(13, es.getIdOperacionesCajaPk());
+            
+            
             return query.executeUpdate();
 
         } catch (Exception ex) {
@@ -362,16 +369,19 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
 
     @Override
     public List<Object[]> getOperacionesByCategoria(BigDecimal idCategoriaFk, BigDecimal idSucursalFk, BigDecimal idCajaFk, BigDecimal idStatusFk, BigDecimal idConceptoFk, BigDecimal idTipoOperacionFk, String fechaInicio, String fechaFin) {
-        StringBuffer cadena = new StringBuffer("select op.ID_OPERACIONES_CAJA_PK,sucu.NOMBRE_SUCURSAL,cj.NOMBRE,op.ID_SUCURSAL_FK,sto.NOMBRE,op.ID_STATUS_FK,\n"
-                + "op.FECHA,tip.NOMBRE as OPERACION,cn.NOMBRE AS CONCEPTO,\n"
-                + "op.MONTO,op.COMENTARIOS,op.FICHERO,op.ID_CONCEPTO_FK  from OPERACIONES_CAJA op\n"
-                + "inner join CONCEPTOS cn on cn.ID_CONCEPTOS_PK = op.ID_CONCEPTO_FK\n"
-                + "inner join TIPOS_OPERACION tip on tip.ID_TIPO_OPERACION_PK = op.ID_TIPO_OPERACION_FK\n"
-                + "inner join GRUPO_CATEGORIAS gc on gc.ID_GRUPO_CATEGORIAS_PK=tip.ID_GRUPO_FK\n"
-                + "inner join SUCURSAL sucu on sucu.ID_SUCURSAL_PK = op.ID_SUCURSAL_FK\n"
-                + "inner join STATUS_OPERACIONES sto on sto.ID_STATUS_OPERACIONES_PK=op.ID_STATUS_FK\n"
-                + "inner join CAJA cj on cj.ID_CAJA_PK = op.ID_CAJA_FK\n"
-                + "where ");
+        StringBuffer cadena = new StringBuffer("select op.ID_OPERACIONES_CAJA_PK,op.ID_CORTE_CAJA_FK,op.ID_CAJA_FK,\n" +
+"op.ID_CAJA_DESTINO_FK,op.FECHA,op.ID_STATUS_FK,op.ID_USER_FK,op.COMENTARIOS,op.MONTO,\n" +
+"op.E_S,op.ID_CUENTA_DESTINO_FK,op.ID_SUCURSAL_FK,op.ID_FORM_PAGO_FK,op.ID_TIPO_OPERACION_FK,\n" +
+"op.FICHERO,\n" +
+"sucu.NOMBRE_SUCURSAL,cj.NOMBRE,sto.NOMBRE,tip.NOMBRE as OPERACION,cn.NOMBRE AS CONCEPTO,op.ID_CONCEPTO_FK\n" +
+"from OPERACIONES_CAJA op\n" +
+"inner join CONCEPTOS cn on cn.ID_CONCEPTOS_PK = op.ID_CONCEPTO_FK\n" +
+"inner join TIPOS_OPERACION tip on tip.ID_TIPO_OPERACION_PK = op.ID_TIPO_OPERACION_FK\n" +
+"inner join GRUPO_CATEGORIAS gc on gc.ID_GRUPO_CATEGORIAS_PK=tip.ID_GRUPO_FK\n" +
+"inner join SUCURSAL sucu on sucu.ID_SUCURSAL_PK = op.ID_SUCURSAL_FK\n" +
+"inner join STATUS_OPERACIONES sto on sto.ID_STATUS_OPERACIONES_PK=op.ID_STATUS_FK\n" +
+"inner join CAJA cj on cj.ID_CAJA_PK = op.ID_CAJA_FK\n" +
+"where ");
 
         if (idCategoriaFk != null && idCategoriaFk.intValue() != 0) {
             cadena.append(" gc.ID_GRUPO_CATEGORIAS_PK= '" + idCategoriaFk + "' ");

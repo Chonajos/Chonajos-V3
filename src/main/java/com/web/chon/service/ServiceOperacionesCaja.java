@@ -521,19 +521,30 @@ public class ServiceOperacionesCaja implements IfaceOperacionesCaja {
         {
             OperacionesCaja op = new OperacionesCaja();
             op.setIdOperacionesCajaPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
-            op.setNombreSucursal(obj[1] == null ? null : obj[1].toString());
-            op.setNombreCaja(obj[2] == null ? null : obj[2].toString());
-            op.setIdSucursalFk(obj[3] == null ? null : new BigDecimal(obj[3].toString()));
-            op.setNombreStatus(obj[4] == null ? null : obj[4].toString());
+            op.setIdCorteCajaFk(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
+            op.setIdCajaFk(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
+            op.setIdCajaDestinoFk(obj[3] == null ? null : new BigDecimal(obj[3].toString()));
+            
+            op.setFecha(obj[4] == null ? null : (Date)obj[4]);
             op.setIdStatusFk(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
-            op.setFecha(obj[6] == null ? null : (Date)obj[6]);
-            op.setNombreOperacion(obj[7] == null ? null : obj[7].toString());
-            op.setNombreConcepto(obj[8] == null ? null : obj[8].toString());
-            op.setMonto(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
-            op.setComentarios(obj[10] == null ? null : obj[10].toString());
-            op.setFichero((obj[11] == null ? null : (byte[]) (obj[11])));
-            op.setIdConceptoFk(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
+            op.setIdUserFk(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
+            op.setComentarios(obj[7] == null ? null : obj[7].toString());
+            op.setMonto(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
+            op.setEntradaSalida(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
+            op.setIdCuentaDestinoFk(obj[10] == null ? null : new BigDecimal(obj[10].toString()));
+            op.setIdSucursalFk(obj[11] == null ? null : new BigDecimal(obj[11].toString()));
+            op.setIdFormaPago(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
+            op.setIdTipoOperacionFk(obj[13] == null ? null : new BigDecimal(obj[13].toString()));
+            op.setFichero((obj[14] == null ? null : (byte[]) (obj[14])));
+            op.setNombreSucursal(obj[15] == null ? null : obj[15].toString());
+            op.setNombreCaja(obj[16] == null ? null : obj[16].toString());
+            op.setNombreStatus(obj[17] == null ? null : obj[17].toString());
+            op.setNombreOperacion(obj[18] == null ? null : obj[18].toString());
+            op.setNombreConcepto(obj[19] == null ? null : obj[19].toString());
+            op.setIdConceptoFk(obj[20] == null ? null : new BigDecimal(obj[20].toString()));
+            
             listaOperaciones.add(op);
+            
         }
         return listaOperaciones;
     

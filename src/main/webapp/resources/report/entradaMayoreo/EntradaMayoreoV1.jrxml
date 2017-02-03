@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.0.1.final using JasperReports Library version 6.0.0  -->
-<!-- 2017-01-19T12:04:01 -->
+<!-- 2017-02-03T14:23:28 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EntradaMayoreoV1" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="df013db5-f76e-44d3-b0df-bcbc46d93160">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="AdaptadorJuan"/>
@@ -324,7 +324,7 @@ where cs.ID_SUCURSAL_1_FK=$P{idSucursal}]]>
 					<text><![CDATA[Folio de Remisión:]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="509" y="31" width="129" height="20" uuid="86216d54-e1df-4c11-8420-a15d6c37ce10"/>
+					<reportElement x="421" y="22" width="129" height="20" uuid="86216d54-e1df-4c11-8420-a15d6c37ce10"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="14"/>
 					</textElement>
@@ -366,7 +366,7 @@ where cs.ID_SUCURSAL_1_FK=$P{idSucursal}]]>
 					<textFieldExpression><![CDATA[$P{carro}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="637" y="31" width="119" height="20" uuid="f0287479-b9c2-48e0-9a67-832530e435d8"/>
+					<reportElement x="551" y="23" width="192" height="20" uuid="f0287479-b9c2-48e0-9a67-832530e435d8"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="14"/>
 					</textElement>
@@ -450,14 +450,14 @@ where cs.ID_SUCURSAL_1_FK=$P{idSucursal}]]>
 					<textFieldExpression><![CDATA[$P{cantidadBodega}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="509" y="56" width="129" height="19" uuid="65474610-f6b1-45e5-9122-7aea5801e716"/>
+					<reportElement x="8" y="3" width="288" height="18" uuid="65474610-f6b1-45e5-9122-7aea5801e716"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="14"/>
 					</textElement>
-					<text><![CDATA[Fecha de Pago:]]></text>
+					<text><![CDATA[Fecha de revisión para programar pago]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="637" y="56" width="120" height="19" uuid="6b9298e8-270e-40aa-a8c6-102153b2a26f"/>
+					<reportElement x="301" y="4" width="159" height="19" uuid="6b9298e8-270e-40aa-a8c6-102153b2a26f"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="14"/>
 					</textElement>
