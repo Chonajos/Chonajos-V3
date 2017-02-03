@@ -106,8 +106,8 @@ public class BeanHistorialRegEntSal implements Serializable {
         double c = 2 * Math.asin(Math.sqrt(a));
         metros = (int) ((R * c) / 0.00062137);
 
-        System.out.println("metros "+metros);
-        System.out.println("rangoMaximoPermitido "+rangoMaximoPermitido);
+        System.out.println("metros " + metros);
+        System.out.println("rangoMaximoPermitido " + rangoMaximoPermitido);
         if (metros > rangoMaximoPermitido) {
             return false;
         }
@@ -124,25 +124,26 @@ public class BeanHistorialRegEntSal implements Serializable {
         faltas = 0;
         model = ifaceRegEntSal.getRegistros(data.getIdUsuarioFk(), data.getFechaFiltroInicio(), data.getFechaFiltroFin());
         int faltaPorRetardos = 0;
-        
+
         for (RegistroEntradaSalida dominio : model) {
             if (dominio.isFalta()) {
                 faltas++;
             } else if (dominio.isRetardo()) {
                 retardos++;
             }
-                        double latitud =new Double(19.370436);
-                        double longitud =new Double(-99.091470);
-
-            validateLocation(dominio.getLatitudEntrada(),dominio.getLongitudEntrada(),latitud ,longitud , 2000L);
+            
+//            double latitud = new Double(19.370436);
+//            double longitud = new Double(-99.091470);
+//
+//            validateLocation(dominio.getLatitudEntrada(), dominio.getLongitudEntrada(), latitud, longitud, 2000L);
         }
 
         //Se calculan las faltas que se generan por retardos
-        faltaPorRetardos = retardos/RETARDOS_EQUIVALE_FALTA;
-        
+        faltaPorRetardos = retardos / RETARDOS_EQUIVALE_FALTA;
+
         //retardos restantes
-        retardos = retardos%RETARDOS_EQUIVALE_FALTA;
-        faltas+=faltaPorRetardos;
+        retardos = retardos % RETARDOS_EQUIVALE_FALTA;
+        faltas += faltaPorRetardos;
 
     }
 

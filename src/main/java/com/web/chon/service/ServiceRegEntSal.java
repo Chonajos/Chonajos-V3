@@ -142,7 +142,7 @@ public class ServiceRegEntSal implements IfaceRegistroEntradaSalida {
                             reg.setFalta(true);
                         }
 
-                    } else {
+                    } else if (!reg.getHorarioEntrada().equals(SIN_REGISTOR)) {
                         int minutosDiferencia = TiempoUtil.getMinutesBetweenTwoHour(reg.getHoraEntrada(), reg.getHorarioEntrada());
                         if (minutosDiferencia > RETARDO_MINUTOS) {
                             reg.setRetardo(true);
