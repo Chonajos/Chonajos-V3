@@ -35,6 +35,8 @@ public class OperacionesVentasMayoreo implements Serializable {
     private BigDecimal idEmpFk;
     private BigDecimal precioMinimo;
     
+    private BigDecimal totalVenta;
+    
     private ArrayList lstOperacionesVentasMayoreo;
 
     @Override
@@ -194,6 +196,15 @@ public class OperacionesVentasMayoreo implements Serializable {
         this.precioMinimo = precioMinimo;
     }
 
+    public BigDecimal getTotalVenta() {
+        return this.kiloVendidos.multiply(this.precioVenta);
+    }
+
+    public void setTotalVenta(BigDecimal totalVenta) {
+        this.totalVenta = totalVenta;
+    }
+
+    
     
     
 }

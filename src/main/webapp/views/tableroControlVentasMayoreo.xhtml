@@ -45,11 +45,11 @@
                         <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
                             <p:outputLabel value="Carro:" class="col-lg-4 col-md-4 col-sm-6 col-xs-12"/>
                             <p:autoComplete id="carro" class="col-lg-1 col-md-1 col-sm-2 col-xs-12" value="#{beanTableroControlVentaMeyoreo.carroSucursal}" completeMethod="#{beanTableroControlVentaMeyoreo.autocompleteCarro}" inputStyle="width: 50px" placeholder="Todos"/>
-                          
+
                         </div>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                        
+
                         <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 ">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="selectEstaus" value ="Estatus Carro:" /> 
                             <p:selectOneMenu value="#{beanTableroControlVentaMeyoreo.estausCarro}" id="selectEstaus" style="width:50% !important;" class="col-lg-8 col-md-8 col-sm-6 col-xs-12">
@@ -59,7 +59,7 @@
                                 <p:ajax event="change" update=":formContent:carro :formContent:table" listener="#{beanTableroControlVentaMeyoreo.getCarros()}"/>
                             </p:selectOneMenu>
                         </div>
-                        
+
                         <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 ">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="calendarInicio" value ="Fecha de Inicio:" /> 
                             <p:calendar id="calendarInicio" class="col-lg-6 col-md-8 col-sm-8 col-xs-12 calendario paddingZero" navigator="true" placeholder="dd/mm/yyyy"
@@ -222,7 +222,14 @@
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <p:dataTable id="tableDetalle" var="model" styleClass="ui-datatable-hor-scroll" paginator="true" rows="16" rendered="#{beanTableroControlVentaMeyoreo.tipoReporte =='cliente'}"
                                      value="#{beanTableroControlVentaMeyoreo.lstCarroDetalle}"
-                                     emptyMessage="No se encontraron Registros" >
+                                     emptyMessage="No se encontraron Registros" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}">
+                            <f:facet name="header">
+                                <div style="float: right">
+                                    <h:commandLink action="#{beanTableroControlVentaMeyoreo.reporte()}">
+                                        <p:graphicImage value="../resources/img/pdf.png" width="24"/>
+                                    </h:commandLink>
+                                </div>
+                            </f:facet>
                             <p:column headerText="Tipo Venta" class="alignLeft"  width="60px;" >
                                 <h:outputText value="#{model.tipoVenta}" />
                             </p:column>
@@ -241,6 +248,7 @@
                                     <f:convertNumber pattern="###,###.00"/>
                                 </h:outputText>
                             </p:column>
+                            
                             <p:column headerText="$Venta" width="100px;" class="alignRight">
                                 <h:outputText value="#{model.totalVenta}" >
                                     <f:convertNumber type="currency" currencySymbol="$"/>
@@ -301,7 +309,15 @@
 
                         <p:dataTable id="tableProducto" var="model" styleClass="ui-datatable-hor-scroll" paginator="true" rows="16" rendered="#{beanTableroControlVentaMeyoreo.tipoReporte =='producto'}"
                                      value="#{beanTableroControlVentaMeyoreo.lstOperacionesVentasMayoreo}"
-                                     emptyMessage="No se encontraron Registros" >
+                                     emptyMessage="No se encontraron Registros" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}">
+
+                            <f:facet name="header">
+                                <div style="float: right">
+                                    <h:commandLink action="#{beanTableroControlVentaMeyoreo.reporte()}">
+                                        <p:graphicImage value="../resources/img/pdf.png" width="24"/>
+                                    </h:commandLink>
+                                </div>
+                            </f:facet>
                             <p:column style="width:20px">
                                 <p:rowToggler />
                             </p:column>
@@ -349,7 +365,7 @@
                                         </h:outputText>
                                     </f:facet>
                                 </p:column>
-                              
+
                                 <p:column colspan="1" class="alignRight">
                                     <f:facet name="footer" >
                                         <h:outputText value="#{beanTableroControlVentaMeyoreo.totalEntradaKilosDetalle}" >
@@ -357,7 +373,7 @@
                                         </h:outputText>
                                     </f:facet>
                                 </p:column>
-                                  <p:column colspan="1" class="alignRight">
+                                <p:column colspan="1" class="alignRight">
                                     <f:facet name="footer" >
                                         <h:outputText value="#{beanTableroControlVentaMeyoreo.totalEmpaquesDetalle}" >
                                             <f:convertNumber pattern="###,###" />
@@ -432,6 +448,7 @@
                     </div>
                 </div>
             </p:panel>
+            <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanTableroControlVentaMeyoreo.rutaPDF}"/>
         </h:form>
     </ui:define>
 </ui:composition>
