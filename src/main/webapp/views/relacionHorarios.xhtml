@@ -16,9 +16,18 @@
         <script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=true"></script>
 
         <h:form id="formContent">
+            <p:ajaxStatus onsuccess="PF('statusDialog').hide()" />
+            <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                      closable="false" resizable="false" showHeader="false">
+                <p:graphicImage value="../resources/img/carga.gif" />
+            </p:dialog>
             <p:messages id="messages" showDetail="true" showSummary="false" showIcon="false" autoUpdate="true" closable="true" />
             <p:growl id="messagess" showDetail="true" life="2000" />
+            
             <p:panel id="panel1" rendered="#{beanHistorialRegEntSal.viewEstate=='init'}">
+                <div class="form-group" align="right">
+                    <p:commandButton value="Reporte" onclick="PF('statusDialog').show()" update=":formContent" ajax="false" action="#{beanHistorialRegEntSal.viewReport}"/>
+                </div>
                 <div class="container-fluid">
                     <div class="form-group">
                         <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
@@ -26,7 +35,7 @@
                             <p:selectOneMenu  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanHistorialRegEntSal.data.idSucursalFk}" style="width:60% !important;">
                                 <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="" />
                                 <f:selectItems value="#{beanHistorialRegEntSal.listaSucursales}" var="sucursalita" itemLabel="#{sucursalita.nombreSucursal}" itemValue="#{sucursalita.idSucursalPk}"/>
-                                <p:ajax event="change" listener="#{beanHistorialRegEntSal.changeComboUsers()}" update=":formContent:comboUser"/>
+                                <p:ajax event="change" listener="#{beanHistorialRegEntSal.changeComboUsers()}" update=":formContent" onstart="PF('statusDialog').show()"/>
                             </p:selectOneMenu>
                         </div>
                         <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
@@ -34,7 +43,7 @@
                             <p:selectOneMenu  id="comboUser" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanHistorialRegEntSal.data.idUsuarioFk}" style="width:60% !important;">
                                 <f:selectItem itemLabel="Selecciona un usuario" itemValue="" />
                                 <f:selectItems value="#{beanHistorialRegEntSal.listaUsuarios}" var="usuarios" itemLabel="#{usuarios.nombreCompletoUsuario}" itemValue="#{usuarios.idUsuarioPk}"/>
-                                <p:ajax event="change" listener="#{beanHistorialRegEntSal.getRegistrosByIntervalDate()}" update=":formContent"/>
+                                <p:ajax event="change" listener="#{beanHistorialRegEntSal.getRegistrosByIntervalDate()}" update=":formContent" onstart="PF('statusDialog').show()"/>
                             </p:selectOneMenu>
                         </div>
                         <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 form-group">
@@ -42,8 +51,8 @@
                             <p:calendar id="calendarInicio" class="col-lg-6 col-md-8 col-sm-8 col-xs-12 calendario" navigator="true" placeholder="dd/mm/yyyy"
                                         value="#{beanHistorialRegEntSal.data.fechaFiltroInicio}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button" rendered="#{beanHistorialRegEntSal.viewEstate =='init'}">
                                 <p:ajax   event="dateSelect"
-                                          listener="#{beanHistorialRegEntSal.getRegistrosByIntervalDate}"
-                                          update=":formContent:table" />
+                                          listener="#{beanHistorialRegEntSal.getRegistrosByIntervalDate()}"
+                                          update=":formContent" onstart="PF('statusDialog').show()"/>
                             </p:calendar>
                         </div>
                     </div>
@@ -53,8 +62,6 @@
                     <div class="col-lg-offset-1 col-md-offset-1 col-lg-10 col-md-10 col-sm-12 col-xs-12 form-group">
                         <p:dataTable id="table" var="model" value="#{beanHistorialRegEntSal.model}" styleClass="ui-datatable-hor-scroll"  emptyMessage="No se encontraron Registros." rendered="#{beanHistorialRegEntSal.viewEstate =='init'}" tableStyle="width:968px"
                                      rowStyleClass="#{model.diaDescanso eq true? 'diaDescanso':(model.falta eq true ? 'letterRed':(model.retardo eq true ? 'letterYellow':'clases'))}" >
-                            
-
                             <p:column headerText="Fecha" width="80px;" class="alignCenter">
                                 <h:outputText value="#{model.fecha}">
                                     <f:convertDateTime pattern="dd/MM/yyyy"/>
@@ -101,6 +108,8 @@
             <p:dialog id="gmapDialog" widgetVar="dlg" width="625" height="350" style="width: 625px; height: auto; left: 362px; top: 120px; z-index: 1002;" modal="true">
                 <p:gmap id="gmap" center="#{beanHistorialRegEntSal.puntoCentral}" zoom="15" type="HYBRID" style="width:600px;height:340px" model="#{beanHistorialRegEntSal.simpleModel}" />
             </p:dialog>
+
+            <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanHistorialRegEntSal.rutaPDF}"/>
 
         </h:form>
     </ui:define>

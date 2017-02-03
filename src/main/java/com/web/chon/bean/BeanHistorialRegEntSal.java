@@ -6,6 +6,7 @@
 package com.web.chon.bean;
 
 import com.web.chon.dominio.RegistroEntradaSalida;
+import com.web.chon.dominio.RetardosFaltas;
 import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.Usuario;
 import com.web.chon.security.service.PlataformaSecurityContext;
@@ -13,16 +14,40 @@ import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceCatUsuario;
 import com.web.chon.service.IfaceRegistroEntradaSalida;
 import com.web.chon.service.IfaceUsuario;
+import com.web.chon.util.Constantes;
+import com.web.chon.util.JasperReportUtil;
+import com.web.chon.util.JsfUtil;
 import com.web.chon.util.TiempoUtil;
+import com.web.chon.util.UtilUpload;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Random;
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
+import net.sf.jasperreports.engine.JREmptyDataSource;
+import net.sf.jasperreports.engine.JRExporter;
+import net.sf.jasperreports.engine.JRExporterParameter;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
+import org.primefaces.context.RequestContext;
 import org.primefaces.model.map.DefaultMapModel;
 import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
 import org.primefaces.model.map.Marker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -45,9 +70,14 @@ public class BeanHistorialRegEntSal implements Serializable {
     @Autowired
     private PlataformaSecurityContext context;
 
+    private Logger logger = LoggerFactory.getLogger(BeanHistorialRegEntSal.class);
+
     private RegistroEntradaSalida data;
     private ArrayList<RegistroEntradaSalida> model;
+    private ArrayList<RegistroEntradaSalida> lstModelFaltasRetardos;
     private ArrayList<Usuario> listaUsuarios;
+    private ArrayList<RetardosFaltas> lstRetardosFaltas;
+
     private Date fechaFin;
     private Date fechaInicio;
     private ArrayList<Sucursal> listaSucursales;
@@ -56,6 +86,12 @@ public class BeanHistorialRegEntSal implements Serializable {
     private int filtro;
     private MapModel simpleModel;
     private String puntoCentral;
+
+    private ByteArrayOutputStream outputStream;
+    private Map paramReport = new HashMap();
+    private String rutaPDF;
+    private String pathFileJasper = "C:/Users/Juan/Documents/NetBeansProjects/Chonajos-V3/faltasRetardos.jasper";
+
     public static final double R = 6372.8;
 
     private int faltas = 0;
@@ -65,14 +101,19 @@ public class BeanHistorialRegEntSal implements Serializable {
 
     @PostConstruct
     public void init() {
+
         setTitle("Registros");
         setViewEstate("init");
+
         data = new RegistroEntradaSalida();
+
         model = new ArrayList<RegistroEntradaSalida>();
         simpleModel = new DefaultMapModel();
         listaSucursales = new ArrayList<Sucursal>();
         listaSucursales = ifaceCatSucursales.getSucursales();
         listaUsuarios = new ArrayList<Usuario>();
+        lstRetardosFaltas = new ArrayList<RetardosFaltas>();
+
         filtro = 2;
         setFechaFin(context.getFechaSistema());
         data.setFechaFiltroInicio(TiempoUtil.getDayOneOfMonth(new Date()));
@@ -122,6 +163,7 @@ public class BeanHistorialRegEntSal implements Serializable {
     public void getRegistrosByIntervalDate() {
         retardos = 0;
         faltas = 0;
+        model = new ArrayList<RegistroEntradaSalida>();
         model = ifaceRegEntSal.getRegistros(data.getIdUsuarioFk(), data.getFechaFiltroInicio(), data.getFechaFiltroFin());
         int faltaPorRetardos = 0;
 
@@ -131,7 +173,7 @@ public class BeanHistorialRegEntSal implements Serializable {
             } else if (dominio.isRetardo()) {
                 retardos++;
             }
-            
+
 //            double latitud = new Double(19.370436);
 //            double longitud = new Double(-99.091470);
 //
@@ -144,6 +186,98 @@ public class BeanHistorialRegEntSal implements Serializable {
         //retardos restantes
         retardos = retardos % RETARDOS_EQUIVALE_FALTA;
         faltas += faltaPorRetardos;
+
+    }
+
+    public void viewReport() {
+        Random random = new Random();
+        //Se genera un numero aleatorio para que no traiga el mismo reporte por la cache
+        int numberRandom = random.nextInt(999);
+        lstRetardosFaltas = new ArrayList<RetardosFaltas>();
+        for (Usuario usuario : listaUsuarios) {
+            lstRetardosFaltas.add(getFaltasRetardoByIdUsuario(usuario.getIdUsuarioPk(), usuario.getNombreCompletoUsuario()));
+        }
+
+        setParameter();
+        generateReport(numberRandom, "faltasRetardos.jasper", false);
+        RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
+
+    }
+
+    private void setParameter() {
+        JRBeanCollectionDataSource collectionFaltasRetardos = new JRBeanCollectionDataSource(lstRetardosFaltas);
+
+        paramReport.put("fecha", TiempoUtil.getMonthYear(data.getFechaFiltroInicio()));
+        paramReport.put("nombreSucursal", context.getUsuarioAutenticado().getNombreSucursal());
+        paramReport.put("lstFaltasRetardos", collectionFaltasRetardos);
+
+    }
+
+    public void generateReport(int folio, String nombreTipoTicket, boolean emptyDataSource) {
+        JRExporter exporter = null;
+
+        try {
+            ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+            String temporal = "";
+            if (servletContext.getRealPath("") == null) {
+                temporal = Constantes.PATHSERVER;
+            } else {
+                temporal = servletContext.getRealPath("");
+            }
+
+            pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "registroAsistencia" + File.separatorChar + nombreTipoTicket;
+            JasperPrint jp = null;
+
+            jp = JasperFillManager.fillReport(pathFileJasper, paramReport);
+
+            outputStream = JasperReportUtil.getOutputStreamFromReport(paramReport, pathFileJasper);
+            exporter = new JRPdfExporter();
+            exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
+            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, outputStream);
+            byte[] bytes = outputStream.toByteArray();
+
+            rutaPDF = UtilUpload.saveFileTemp(bytes, "ReporteFaltasRetardos", folio, context.getUsuarioAutenticado().getSucId());
+
+        } catch (Exception exception) {
+            logger.error("Error al generar el reporte " + exception.getMessage(), "Error ", exception.getMessage());
+            JsfUtil.addErrorMessage("Error al Generar el Reporte.");
+        }
+
+    }
+
+    public RetardosFaltas getFaltasRetardoByIdUsuario(BigDecimal idUsuario, String nombreCompleto) {
+
+        int faltaPorRetardos = 0;
+
+        RetardosFaltas retardosFaltas = new RetardosFaltas();
+
+        retardos = 0;
+        faltas = 0;
+
+        lstModelFaltasRetardos = new ArrayList<RegistroEntradaSalida>();
+        lstModelFaltasRetardos = ifaceRegEntSal.getRegistros(idUsuario, data.getFechaFiltroInicio(), data.getFechaFiltroFin());
+
+        for (RegistroEntradaSalida dominio : lstModelFaltasRetardos) {
+            if (dominio.isFalta()) {
+                faltas++;
+            } else if (dominio.isRetardo()) {
+                retardos++;
+            }
+
+        }
+
+        //Se calculan las faltas que se generan por retardos
+        faltaPorRetardos = retardos / RETARDOS_EQUIVALE_FALTA;
+
+        //retardos restantes
+        retardos = retardos % RETARDOS_EQUIVALE_FALTA;
+        faltas += faltaPorRetardos;
+
+        retardosFaltas.setNombreUsuario(nombreCompleto);
+        retardosFaltas.setFaltas(faltas);
+        retardosFaltas.setRetardos(retardos);
+
+        return retardosFaltas;
 
     }
 
@@ -250,5 +384,15 @@ public class BeanHistorialRegEntSal implements Serializable {
     public void setRetardos(int retardos) {
         this.retardos = retardos;
     }
+
+    public String getRutaPDF() {
+        return rutaPDF;
+    }
+
+    public void setRutaPDF(String rutaPDF) {
+        this.rutaPDF = rutaPDF;
+    }
+    
+    
 
 }

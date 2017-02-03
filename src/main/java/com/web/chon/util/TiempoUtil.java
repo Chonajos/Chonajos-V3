@@ -254,40 +254,40 @@ public class TiempoUtil {
 
         String nameMonth = "Enero";
         switch (month) {
-            case 1:
+            case 0:
                 nameMonth = "Enero";
                 break;
-            case 2:
+            case 1:
                 nameMonth = "Febrero";
                 break;
-            case 3:
+            case 2:
                 nameMonth = "Marzo";
                 break;
-            case 4:
+            case 3:
                 nameMonth = "Abril";
                 break;
-            case 5:
+            case 4:
                 nameMonth = "Mayo";
                 break;
-            case 6:
+            case 5:
                 nameMonth = "Junio";
                 break;
-            case 7:
+            case 6:
                 nameMonth = "Julio";
                 break;
-            case 8:
+            case 7:
                 nameMonth = "Agosto";
                 break;
-            case 9:
+            case 8:
                 nameMonth = "Septiembre";
                 break;
-            case 10:
+            case 9:
                 nameMonth = "Octubre";
                 break;
-            case 11:
+            case 10:
                 nameMonth = "Noviembre";
                 break;
-            case 12:
+            case 11:
                 nameMonth = "Diciembre";
                 break;
             default:
