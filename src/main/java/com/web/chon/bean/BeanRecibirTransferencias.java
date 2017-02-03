@@ -100,7 +100,7 @@ public class BeanRecibirTransferencias implements Serializable {
             opcaja.setMonto(data.getMonto());
             opcaja.setIdConceptoFk(data.getIdConceptoFk());
             opcaja.setIdTipoOperacionFk(data.getIdTipoOperacionFk());
-            opcaja.setIdFormaPago(data.getIdTipoOperacionFk());
+            opcaja.setIdFormaPago(data.getIdFormaPago());
             opcaja.setComentarios("SISTEMA: TRANSFERENCIA: OC:" + data.getIdOperacionesCajaPk());
 
             opcaja.setIdStatusFk(STATUS_REALIZADA);
