@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2017-02-03T15:17:05 -->
+<!-- 2017-02-03T15:25:18 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cliente" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="df013db5-f76e-44d3-b0df-bcbc46d93160">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -226,9 +226,6 @@
 		<field name="totalVenta" class="java.math.BigDecimal">
 			<fieldDescription><![CDATA[totalVenta]]></fieldDescription>
 		</field>
-		<field name="saldoPorCobrar" class="java.math.BigDecimal">
-			<fieldDescription><![CDATA[saldoPorCobrar]]></fieldDescription>
-		</field>
 	</subDataset>
 	<parameter name="nombreSucursal" class="java.lang.String"/>
 	<parameter name="fecha" class="java.lang.String"/>
@@ -326,7 +323,7 @@
 					<property name="com.jaspersoft.studio.table.style.detail" value="Table 8_TD"/>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="DatasetProducto" uuid="9a2978b3-dfa5-4d8f-99d5-3197b9a7d40b">
+					<datasetRun subDataset="DatasetProducto" uuid="c9a04054-5a7b-49c5-b2ae-beb233265c75">
 						<dataSourceExpression><![CDATA[$P{lstcliente}]]></dataSourceExpression>
 					</datasetRun>
 					<jr:column width="150" uuid="21c7864c-c951-4716-a584-e9b67eef7f1e">
@@ -415,7 +412,7 @@
 						<jr:detailCell style="Table 8_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="104" height="30" uuid="74242283-5123-4076-87fc-f89303c2e981"/>
-								<textFieldExpression><![CDATA[$F{totalVenta}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{precioVenta}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -430,7 +427,7 @@
 						<jr:detailCell style="Table 8_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="142" height="30" uuid="acdb1524-0425-4f9a-8c62-bfd6e24cdef7"/>
-								<textFieldExpression><![CDATA[$F{saldoPorCobrar}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{totalVenta}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
