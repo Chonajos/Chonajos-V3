@@ -25,6 +25,7 @@ public class EjbDiaDescansoUsuario implements NegocioDiaDescansoUsuario {
     public int insert(DiaDescansoUsuario diaDescansoUsuario) {
         try {
 
+            System.out.println("diasdescanso "+diaDescansoUsuario.toString());
             Query query = em.createNativeQuery("INSERT INTO DIA_DESCANSO_USUARIO (ID_DIA_DESCANSO_PK,ID_USUARIO_FK,FECHA_INICIO,FECHA_FIN,DIA) VALUES(S_DIA_DESCANSO_USUARIO.NextVal,?,?,?,?)");
 
             query.setParameter(1, diaDescansoUsuario.getIdUsuario());

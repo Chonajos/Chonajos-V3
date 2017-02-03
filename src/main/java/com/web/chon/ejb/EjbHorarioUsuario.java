@@ -26,6 +26,8 @@ public class EjbHorarioUsuario implements NegocioHorarioUsuario {
     public int insert(HorarioUsuario horarioUsuario) {
 
         try {
+            
+            System.out.println("horarioUsuario "+horarioUsuario.toString());
             Query query = em.createNativeQuery("INSERT INTO HORARIO_USUARIO (ID_HORARIO_PK,ID_USUARIO_FK,HORA_ENTRADA,HORA_SALIDA,FECHA_INICIO,FECHA_FIN) VALUES(S_HORARIO_USUARIO.NextVal,?,?,?,?,?)");
 
             query.setParameter(1, horarioUsuario.getIdUsuario());
