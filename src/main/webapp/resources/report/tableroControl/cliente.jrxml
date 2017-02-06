@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2017-02-03T15:25:18 -->
+<!-- 2017-02-03T15:36:19 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cliente" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="df013db5-f76e-44d3-b0df-bcbc46d93160">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -185,7 +185,7 @@
 			<rightPen lineWidth="0.5" lineColor="#000000"/>
 		</box>
 	</style>
-	<style name="Table 8_CH" mode="Opaque" backcolor="#BFE1FF">
+	<style name="Table 9_TH" mode="Opaque" backcolor="#F0F8FF">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
 			<topPen lineWidth="0.5" lineColor="#000000"/>
@@ -194,7 +194,16 @@
 			<rightPen lineWidth="0.5" lineColor="#000000"/>
 		</box>
 	</style>
-	<style name="Table 8_TD" mode="Opaque" backcolor="#FFFFFF">
+	<style name="Table 9_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table 9_TD" mode="Opaque" backcolor="#FFFFFF">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
 			<topPen lineWidth="0.5" lineColor="#000000"/>
@@ -225,6 +234,9 @@
 		</field>
 		<field name="totalVenta" class="java.math.BigDecimal">
 			<fieldDescription><![CDATA[totalVenta]]></fieldDescription>
+		</field>
+		<field name="saldoPorCobrar" class="java.math.BigDecimal">
+			<fieldDescription><![CDATA[saldoPorCobrar]]></fieldDescription>
 		</field>
 	</subDataset>
 	<parameter name="nombreSucursal" class="java.lang.String"/>
@@ -314,120 +326,134 @@
 				<textFieldExpression><![CDATA[$P{fechaRemision}]]></textFieldExpression>
 			</textField>
 		</band>
-		<band height="76">
+		<band height="241">
 			<componentElement>
-				<reportElement x="-5" y="8" width="770" height="60" uuid="04a54591-27b3-4d48-b58f-10ee8b3903d8">
+				<reportElement x="343" y="41" width="200" height="200" uuid="9c6b2295-1633-44ac-af49-15b0154a7875">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
-					<property name="com.jaspersoft.studio.table.style.table_header" value="Table 8_TH"/>
-					<property name="com.jaspersoft.studio.table.style.column_header" value="Table 8_CH"/>
-					<property name="com.jaspersoft.studio.table.style.detail" value="Table 8_TD"/>
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table 9_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table 9_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table 9_TD"/>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="DatasetProducto" uuid="c9a04054-5a7b-49c5-b2ae-beb233265c75">
+					<datasetRun subDataset="DatasetProducto" uuid="63000fe3-bb88-44b1-b602-c94099afe8fc">
 						<dataSourceExpression><![CDATA[$P{lstcliente}]]></dataSourceExpression>
 					</datasetRun>
-					<jr:column width="150" uuid="21c7864c-c951-4716-a584-e9b67eef7f1e">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
-						<jr:columnHeader style="Table 8_CH" height="30" rowSpan="1">
+					<jr:column width="28" uuid="a9306c14-f3e0-4f8e-94bc-2e3fc3650612">
+						<jr:tableHeader style="Table 9_TH" height="30"/>
+						<jr:tableFooter style="Table 9_TH" height="30"/>
+						<jr:columnHeader style="Table 9_CH" height="30">
 							<staticText>
-								<reportElement x="0" y="0" width="150" height="30" uuid="9e3c1aaa-8e3b-43cf-8ef5-22f9d3e5bd6c"/>
-								<text><![CDATA[Tipo Venta]]></text>
+								<reportElement x="0" y="0" width="28" height="30" uuid="13343d56-cfb7-4124-811f-1876af7a0879"/>
+								<text><![CDATA[tipoVenta]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table 8_TD" height="30">
+						<jr:columnFooter style="Table 9_CH" height="30"/>
+						<jr:detailCell style="Table 9_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="150" height="30" uuid="1edb6ed1-1a61-42a5-be58-b376724ef8fc"/>
+								<reportElement x="0" y="0" width="28" height="30" uuid="d6332a0f-ce84-47a3-af52-da6bd597c4af"/>
 								<textFieldExpression><![CDATA[$F{tipoVenta}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="112" uuid="d0ab2c87-1229-4420-9217-e02c879e0545">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
-						<jr:columnHeader style="Table 8_CH" height="30" rowSpan="1">
+					<jr:column width="28" uuid="62a3b629-54ea-46c0-a2b8-f5398fbf8446">
+						<jr:tableHeader style="Table 9_TH" height="30"/>
+						<jr:tableFooter style="Table 9_TH" height="30"/>
+						<jr:columnHeader style="Table 9_CH" height="30">
 							<staticText>
-								<reportElement x="0" y="0" width="112" height="30" uuid="e28ba7d4-3480-467c-b713-ed86b80cc61a"/>
-								<text><![CDATA[Fecha Venta	]]></text>
+								<reportElement x="0" y="0" width="28" height="30" uuid="dc78c1f0-241b-4214-90c3-398ea1f47bba"/>
+								<text><![CDATA[strFecha]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table 8_TD" height="30">
+						<jr:columnFooter style="Table 9_CH" height="30"/>
+						<jr:detailCell style="Table 9_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="112" height="30" uuid="1f0fcd20-63af-4f9e-aa89-7898437d4d13"/>
+								<reportElement x="0" y="0" width="28" height="30" uuid="3bcdd29d-6da7-4c48-ab3c-914f80c4c746"/>
 								<textFieldExpression><![CDATA[$F{strFecha}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="68" uuid="a1f457b4-25de-4710-a6ca-b44da324247c">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
-						<jr:columnHeader style="Table 8_CH" height="30" rowSpan="1">
+					<jr:column width="28" uuid="fbc4f364-660c-4339-9f63-35c986faa608">
+						<jr:tableHeader style="Table 9_TH" height="30"/>
+						<jr:tableFooter style="Table 9_TH" height="30"/>
+						<jr:columnHeader style="Table 9_CH" height="30">
 							<staticText>
-								<reportElement x="0" y="0" width="68" height="30" uuid="00f00804-a380-4600-aac2-2d68d689e082"/>
-								<text><![CDATA[Cliente]]></text>
+								<reportElement x="0" y="0" width="28" height="30" uuid="338d3e76-7871-40eb-9fad-aab785e31af4"/>
+								<text><![CDATA[nombreCliente]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table 8_TD" height="30">
+						<jr:columnFooter style="Table 9_CH" height="30"/>
+						<jr:detailCell style="Table 9_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="68" height="30" uuid="223e00a2-b148-4c43-9f7a-d1ea762cc9d2"/>
+								<reportElement x="0" y="0" width="28" height="30" uuid="bf330462-72fd-4100-9ec1-edc2ffef5c7b"/>
 								<textFieldExpression><![CDATA[$F{nombreCliente}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="110" uuid="7adf03c6-6bae-4cc0-afea-5de7b50af626">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
-						<jr:columnHeader style="Table 8_CH" height="30" rowSpan="1">
+					<jr:column width="28" uuid="bc27df5b-fa26-41b5-83c3-2977ee719d9a">
+						<jr:tableHeader style="Table 9_TH" height="30"/>
+						<jr:tableFooter style="Table 9_TH" height="30"/>
+						<jr:columnHeader style="Table 9_CH" height="30">
 							<staticText>
-								<reportElement x="0" y="0" width="110" height="30" uuid="d5180949-305d-4e96-ac53-890b56cc6101"/>
-								<text><![CDATA[No. Empaques]]></text>
+								<reportElement x="0" y="0" width="28" height="30" uuid="b66dd6b9-9826-42b1-bf1d-e2cb662e0c68"/>
+								<text><![CDATA[paquetesVendidos]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table 8_TD" height="30">
+						<jr:columnFooter style="Table 9_CH" height="30"/>
+						<jr:detailCell style="Table 9_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="110" height="30" uuid="bfa58448-051d-4bc2-b9b7-7bc444ee6048"/>
+								<reportElement x="0" y="0" width="28" height="30" uuid="35040300-3660-488b-b828-cd4f07db58ac"/>
 								<textFieldExpression><![CDATA[$F{paquetesVendidos}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="84" uuid="e184496f-1cd3-4fa3-8d4a-f1e2b7ea24d3">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
-						<jr:columnHeader style="Table 8_CH" height="30" rowSpan="1">
+					<jr:column width="28" uuid="60e55049-f163-49bc-8b01-690f7d62128b">
+						<jr:tableHeader style="Table 9_TH" height="30"/>
+						<jr:tableFooter style="Table 9_TH" height="30"/>
+						<jr:columnHeader style="Table 9_CH" height="30">
 							<staticText>
-								<reportElement x="0" y="0" width="84" height="30" uuid="d79680ec-5e1b-4dbd-b9c4-1c61c5447ed1"/>
-								<text><![CDATA[Kg.]]></text>
+								<reportElement x="0" y="0" width="28" height="30" uuid="b6fb4d16-d8b7-4864-88f3-ffbd31629e17"/>
+								<text><![CDATA[kilosVendidos]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table 8_TD" height="30">
+						<jr:columnFooter style="Table 9_CH" height="30"/>
+						<jr:detailCell style="Table 9_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="84" height="30" uuid="576d12b4-6eb0-4a49-b36e-a82f830f79a2"/>
+								<reportElement x="0" y="0" width="28" height="30" uuid="22b30981-451d-440a-8957-cc95c627b834"/>
 								<textFieldExpression><![CDATA[$F{kilosVendidos}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="104" uuid="63c72d51-a733-4d76-982f-7a4413229479">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
-						<jr:columnHeader style="Table 8_CH" height="30" rowSpan="1">
+					<jr:column width="28" uuid="9338e7cc-302d-482f-98d6-40c9f388ea66">
+						<jr:tableHeader style="Table 9_TH" height="30"/>
+						<jr:tableFooter style="Table 9_TH" height="30"/>
+						<jr:columnHeader style="Table 9_CH" height="30">
 							<staticText>
-								<reportElement x="0" y="0" width="104" height="30" uuid="22227012-00c8-446d-a65f-c5ea25792855"/>
-								<text><![CDATA[$Venta]]></text>
+								<reportElement x="0" y="0" width="28" height="30" uuid="6179573b-618f-43a4-b016-f6ee7c97acc2"/>
+								<text><![CDATA[totalVenta]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table 8_TD" height="30">
+						<jr:columnFooter style="Table 9_CH" height="30"/>
+						<jr:detailCell style="Table 9_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="104" height="30" uuid="74242283-5123-4076-87fc-f89303c2e981"/>
-								<textFieldExpression><![CDATA[$F{precioVenta}]]></textFieldExpression>
+								<reportElement x="0" y="0" width="28" height="30" uuid="04e09898-744c-4af2-bca6-b3889711f090"/>
+								<textFieldExpression><![CDATA[$F{totalVenta}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="142" uuid="8d37940d-09de-4e87-90ad-1a5ee5c53728">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
-						<jr:columnHeader style="Table 8_CH" height="30" rowSpan="1">
+					<jr:column width="28" uuid="f0bb0728-7603-4aa2-9957-d8482a6c7250">
+						<jr:tableHeader style="Table 9_TH" height="30"/>
+						<jr:tableFooter style="Table 9_TH" height="30"/>
+						<jr:columnHeader style="Table 9_CH" height="30">
 							<staticText>
-								<reportElement x="0" y="0" width="142" height="30" uuid="c8a8c9d0-0294-41e2-a4e3-d75f0b721b40"/>
-								<text><![CDATA[$Saldo por Cobrar]]></text>
+								<reportElement x="0" y="0" width="28" height="30" uuid="09fccaa4-f0d0-456c-b670-aa34d647047e"/>
+								<text><![CDATA[saldoPorCobrar]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table 8_TD" height="30">
+						<jr:columnFooter style="Table 9_CH" height="30"/>
+						<jr:detailCell style="Table 9_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="142" height="30" uuid="acdb1524-0425-4f9a-8c62-bfd6e24cdef7"/>
-								<textFieldExpression><![CDATA[$F{totalVenta}]]></textFieldExpression>
+								<reportElement x="0" y="0" width="28" height="30" uuid="b862d1e0-af18-402f-808f-518b737844e1"/>
+								<textFieldExpression><![CDATA[$F{saldoPorCobrar}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>

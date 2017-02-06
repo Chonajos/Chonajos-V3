@@ -460,6 +460,26 @@
                                                 <f:setPropertyActionListener value="#{item}" target="#{beanRelOperEntradaMercancia.dataProductoAutoAjuste}"/>
                                             </p:commandButton>
                                         </p:column>
+                                        <p:column headerText="Videor" width="120px;" class="alignCenter">
+                                            <h:form>
+                                                <p:fileUpload id="fileUpload" fileUploadListener="#{beanRelOperEntradaMercancia.handleFileUpload}" mode="advanced" dragDropSupport="false"
+                                                              update=":formContent:messages" auto="true" sizeLimit="25000000" allowTypes="/(\.)(mp4|avi|flv)$/"  onstart="loadProperty()" >
+                                                    
+                                                    <f:attribute name="carro" value="#{model.idCarroSucursal}" />
+                                                    <f:attribute name="producto" value="#{model.idEmPK}" />
+                                                    <f:attribute name="item" value="#{item}" />
+                                                    
+                                                </p:fileUpload>
+                                                
+                  
+
+    <p:remoteCommand name="loadProperty">
+        <f:setPropertyActionListener for="fileUpload"
+                                     value="#{model.idCarroSucursal}"
+                                     target="#{beanRelOperEntradaMercancia.loaderName}"/>
+    </p:remoteCommand>
+                                            </h:form>
+                                        </p:column>
                                         <p:rowExpansion>
                                             <div class="col-lg-6 col-md-10 col-md-12 col-xs-12 col-lg-offset-0 col-md-offset-1">
                                                 <p:dataTable id="tabla4" var="paquete" 
@@ -514,9 +534,14 @@
                         </p:dataTable>
                     </div>
                 </div>
+                <video width="100%" height="50%" autoplay="true" name="media" controls="true" >
+                    <source src="../resources/video/120/cortoPixar.mp4" type="video/mp4"/>
+                </video>
                 <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanRelOperEntradaMercancia.rutaPDF}"/>
             </p:panel>
             <p:inputText value="#{beanRelOperEntradaMercancia.expande}" id="inputExpande" class="hidden"/>
+
+
         </h:form>
         <h:panelGroup id="script">
             <h:outputScript>

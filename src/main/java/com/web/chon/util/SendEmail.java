@@ -1,15 +1,12 @@
 package com.web.chon.util;
 
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
 import java.util.Properties;
-import javax.mail.Authenticator;
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
 import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.Multipart;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -25,68 +22,112 @@ import javax.mail.internet.MimeMultipart;
  */
 public class SendEmail {
 
-    public static void send() {
+    public static void sendTLS() {
+
+        final String username = "juancruzh91@gmail.com";
+        final String password = "juancruzh91";
 
         Properties props = new Properties();
-
-        props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.socketFactory.port", "465");
-        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.port", "465");
-//        =
-//=
-//=
-//
-//
-        Session session = Session.getInstance(props, new Authenticator() {
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+
+        Session session = Session.getInstance(props,
+                new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("juancruzh91@gmail.com", "juancruzh91");
+                return new PasswordAuthentication(username, password);
             }
         });
 
         try {
-            Message message = new MimeMessage(session);
 
-            message.setFrom(new InternetAddress("test@gmail.com"));
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("juancruzh91@gmail.com"));
             message.setRecipients(Message.RecipientType.TO,
                     InternetAddress.parse("juancruzh91@gmail.com"));
             message.setSubject("Testing Subject");
+            message.setText("Dear Mail Crawler,"
+                    + "\n\n No spam to my email, please! TLS");
 
-            BodyPart body = new MimeBodyPart();
+            Transport.send(message);
 
-            // freemarker stuff.
-//            Configuration cfg = new Configuration();
-//            Template template = cfg.getTemplate("html-mail-template.ftl");
-            Map<String, String> rootMap = new HashMap<String, String>();
-            rootMap.put("to", "Bharat Sharma");
-            rootMap.put("body", "Sample html email using freemarker");
-            rootMap.put("from", "Vijaya.");
-            Writer out = new StringWriter();
-//            template.process(rootMap, out);
-            // freemarker stuff ends.
+            System.out.println("Done");
 
-            /* you can add html tags in your text to decorate it. */
-            body.setContent(out.toString(), "text/html");
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-            Multipart multipart = new MimeMultipart();
-            multipart.addBodyPart(body);
+    public static void sendAdjunto(String asunto, String mensaje, ArrayList<FileDataSource> lstFileDataSource, String correoDe, ArrayList<String> lstCorreoPara) {
 
-            body = new MimeBodyPart();
+        final String username = "juancruzh91@gmail.com";
+        final String password = "juancruzh91";
 
-//            String filename = "hello.txt";
-//            DataSource source = new FileDataSource(filename);
-//            body.setDataHandler(new DataHandler(source));
-//            body.setFileName(filename);
-//            multipart.addBodyPart(body);
-            message.setContent(multipart, "text/html");
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+
+        Session session = Session.getInstance(props,
+                new javax.mail.Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(username, password);
+            }
+        });
+
+        try {
+            MimeMultipart multiParte = new MimeMultipart();
+            BodyPart texto = new MimeBodyPart();
+            texto.setText(mensaje);
+
+            BodyPart adjunto = new MimeBodyPart();
+
+            int tamanioMaximo = 0;
+            //Se preparan los archivos adjuntos
+            for (FileDataSource fileDataSource : lstFileDataSource) {
+                
+                System.out.println("Tamaño " + fileDataSource.getFile().getUsableSpace());
+                adjunto.setDataHandler(new DataHandler(fileDataSource));
+                adjunto.setFileName(fileDataSource.getName());
+                multiParte.addBodyPart(adjunto);
+                
+            }
+
+            multiParte.addBodyPart(texto);
+
+            MimeMessage message = new MimeMessage(session);
+
+            // Se mete el texto y la foto adjunta.
+            message.setContent(multiParte);
+
+            // Se rellena el From
+            message.setFrom(new InternetAddress(correoDe));
+
+            // Se rellenan los destinatarios
+            for (String correoPara : lstCorreoPara) {
+                message.addRecipient(Message.RecipientType.TO, new InternetAddress(correoPara));
+            }
+
+            // Se rellena el subject
+            message.setSubject(asunto);
 
             Transport.send(message);
 
         } catch (MessagingException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-
-        System.out.println("Done....");
     }
+
+    private int count = 0;
+
+    public void write(int b) {
+        count++;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
 }
