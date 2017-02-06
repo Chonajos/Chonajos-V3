@@ -2,6 +2,7 @@ package com.web.chon.bean;
 
 import com.web.chon.dominio.Apartado;
 import com.web.chon.dominio.Caja;
+import com.web.chon.dominio.ComprobantesDigitales;
 import com.web.chon.dominio.CuentaBancaria;
 import com.web.chon.dominio.Documento;
 import com.web.chon.dominio.OperacionesCaja;
@@ -16,6 +17,7 @@ import com.web.chon.service.IfaceApartado;
 import com.web.chon.service.IfaceBuscaVenta;
 import com.web.chon.service.IfaceCaja;
 import com.web.chon.service.IfaceCatUsuario;
+import com.web.chon.service.IfaceComprobantes;
 import com.web.chon.service.IfaceCuentasBancarias;
 import com.web.chon.service.IfaceDocumentos;
 import com.web.chon.service.IfaceOperacionesCaja;
@@ -30,10 +32,13 @@ import com.web.chon.util.UtilUpload;
 import com.web.chon.util.TiempoUtil;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -51,8 +56,11 @@ import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
+import org.apache.commons.io.IOUtils;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.StreamedContent;
+import org.primefaces.model.UploadedFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -84,6 +92,8 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     private IfacePagosBancarios ifacePagosBancarios;
     @Autowired
     private IfaceApartado ifaceApartado;
+    @Autowired
+    private IfaceComprobantes ifaceComprobantes;
 
     private ArrayList<CuentaBancaria> listaCuentas;
 
@@ -99,6 +109,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
 
     private Map paramReport = new HashMap();
     private boolean statusButtonPagar;
+    private boolean statusButtonCargar;
     private int idVentaTemporal; //utilizado para comprobacion de venta
     private String rutaPDF;
     private String number;
@@ -165,6 +176,8 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     private BigDecimal montoApartado;
     private BigDecimal montoTotal;
     private boolean mensajeApartado;
+    private byte[] bytes;
+    ComprobantesDigitales cd;
 
     //-------------- Variables para Registrar Pago ----------//
     @PostConstruct
@@ -173,6 +186,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
         mensajeApartado = false;
         value1 = false;
         apartado = new Apartado();
+        cd = new ComprobantesDigitales();
         //cambio = new BigDecimal(0);
         //recibido = new BigDecimal(0);
         idTipoPagoFk = new BigDecimal(1);
@@ -204,6 +218,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
         opcaja.setIdSucursalFk(new BigDecimal(usuario.getIdSucursal()));
         lstTipoAbonos = ifaceTipoAbono.getAll();
         pagoBancario = new PagosBancarios();
+        statusButtonCargar = true;
     }
 
     public void habilitaApartado() {
@@ -620,6 +635,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
         if (ventaMayoreo == null || ventaMayoreo.getIdVentaMayoreoPk() == null) {
             JsfUtil.addErrorMessageClean("No se encontró ese folio, podría ser de otra sucursal.");
         } else if (ventaMayoreo.getIdtipoVentaFk().intValue() == 1) {
+            statusButtonCargar = true;
             montoApartado = ifaceApartado.montoApartado(ventaMayoreo.getIdVentaMayoreoPk(), new BigDecimal(1));
             montoTotal = ventaMayoreo.getTotalVenta();
             switch (ventaMayoreo.getIdStatusFk().intValue()) {
@@ -643,10 +659,65 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
                     JsfUtil.addErrorMessageClean("Ha ocurrido un error, contactar al administrador.");
                     break;
             }
-        } else {
+        } else
+        {
             JsfUtil.addErrorMessageClean("No puedes cobrar una venta de crédito, ir a la sección abonar crédito.");
             statusButtonPagar = true;
+            statusButtonCargar = false;
         }
+    }
+    public void cargarImagen() throws SQLException
+    {
+        
+        cd.setIdComprobantesDigitalesPk(new BigDecimal(ifaceComprobantes.getNextVal()));
+        cd.setIdTipoFk(new BigDecimal(2));
+        cd.setIdLlaveFk(ventaMayoreo.getIdVentaMayoreoPk());
+        if(ifaceComprobantes.insertaComprobante(cd)==1)
+        {
+            if(ifaceComprobantes.insertarImagen(cd.getIdComprobantesDigitalesPk(), cd.getFichero())==1)
+            {
+                statusButtonCargar = true;
+                JsfUtil.addSuccessMessageClean("Se ha cargado con éxito el comprobante");
+            }
+            else
+            {
+                JsfUtil.addErrorMessageClean("1.- Ha ocurrido un error al subir la imagen");
+            }
+        }
+        else
+        {
+             JsfUtil.addErrorMessageClean("2.- Ha ocurrido un error al subir la imagen");
+        }
+    }
+    public void handleFileUpload(FileUploadEvent event) throws IOException 
+    {
+
+        UploadedFile uploadedFile = (UploadedFile) event.getFile();
+        InputStream inputStr = null;
+        try {
+
+            inputStr = uploadedFile.getInputstream();
+        } catch (IOException e) 
+        {
+            JsfUtil.addErrorMessage("No se permite guardar valores nulos.");
+            manageException(e);
+        }
+
+        try 
+        {
+            bytes = IOUtils.toByteArray(inputStr);
+            cd.setFichero(bytes);
+            JsfUtil.addSuccessMessageClean("El archivo " + event.getFile().getFileName().trim() + "fue cargado con éxito");
+        } catch (IOException e) 
+        {
+            JsfUtil.addErrorMessageClean("Ocurrio un error al cargar el archivo");
+            e.printStackTrace();
+        }
+
+    }
+
+    private void manageException(IOException e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public String getTitle() {
@@ -973,5 +1044,14 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     public void setMontoTotal(BigDecimal montoTotal) {
         this.montoTotal = montoTotal;
     }
+
+    public boolean isStatusButtonCargar() {
+        return statusButtonCargar;
+    }
+
+    public void setStatusButtonCargar(boolean statusButtonCargar) {
+        this.statusButtonCargar = statusButtonCargar;
+    }
+    
 
 }
