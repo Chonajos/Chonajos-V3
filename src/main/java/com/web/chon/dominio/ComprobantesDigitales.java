@@ -22,6 +22,7 @@ public class ComprobantesDigitales implements Serializable{
     private Date fecha; 
     private String nombre;
     private StreamedContent productImage;
+    private byte[] fichero;
 
     @Override
     public String toString() {
@@ -77,6 +78,15 @@ public class ComprobantesDigitales implements Serializable{
     public void setProductImage(StreamedContent productImage) {
         this.productImage = productImage;
     }
+
+    public byte[] getFichero() {
+        return fichero;
+    }
+
+    public void setFichero(byte[] fichero) {
+        this.fichero = fichero;
+    }
+    
     
     
     

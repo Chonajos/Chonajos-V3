@@ -50,9 +50,11 @@ public class BeanDepositoBancario implements Serializable{
     private OperacionesCaja opcajaDestino;
     private ArrayList<CuentaBancaria> listaCuentas;
     
-    private static final BigDecimal salida = new BigDecimal(2);
-    private static final BigDecimal concepto = new BigDecimal(10);
-    private static final BigDecimal statusOperacion = new BigDecimal(2);
+    private static final BigDecimal SALIDA = new BigDecimal(2);
+    private static final BigDecimal CONCEPTO = new BigDecimal(10);
+    private static final BigDecimal STATUS_PENDIENTE = new BigDecimal(2);
+    private static final BigDecimal OPERACION = new BigDecimal(7);
+    private static final BigDecimal EFECTIVO = new BigDecimal(1);
     private BigDecimal monto;
     private String comentarios;
     private BigDecimal idCuentaDestinoBean;
@@ -68,8 +70,8 @@ public class BeanDepositoBancario implements Serializable{
         opcajaOrigen = new OperacionesCaja();
         opcajaOrigen.setIdCajaFk(caja.getIdCajaPk());
         opcajaOrigen.setIdUserFk(usuario.getIdUsuario());
-        opcajaOrigen.setEntradaSalida(salida);
-        opcajaOrigen.setIdStatusFk(statusOperacion);
+        opcajaOrigen.setEntradaSalida(SALIDA);
+        opcajaOrigen.setIdStatusFk(STATUS_PENDIENTE);
         opcajaOrigen.setIdSucursalFk(new BigDecimal(usuario.getSucId()));
         
     }
@@ -77,7 +79,9 @@ public class BeanDepositoBancario implements Serializable{
         opcajaOrigen.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
         opcajaOrigen.setMonto(monto);
         opcajaOrigen.setComentarios(comentarios);
-        opcajaOrigen.setIdConceptoFk(concepto);
+        opcajaOrigen.setIdConceptoFk(CONCEPTO);
+        opcajaOrigen.setIdTipoOperacionFk(OPERACION);
+        opcajaOrigen.setIdFormaPago(EFECTIVO);
         
         opcajaOrigen.setIdCuentaDestinoFk(idCuentaDestinoBean);
 

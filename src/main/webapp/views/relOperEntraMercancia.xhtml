@@ -253,6 +253,13 @@
                             <p:column headerText="Kilos Bodega" width="120px;" class="alignCenter">
                                 <h:outputText value="#{model.kilosTotales}"/>
                             </p:column>
+                            <p:column headerText="Imagenes" width="70px;" class="alignCenter">
+                                <p:commandButton id="imagenes"  
+                                                 ajax="true" 
+                                                 icon="ui-icon-search" styleClass="ui-priority-primary">
+                                    <f:setPropertyActionListener value="#{model}" target="#{beanRelOperEntradaMercancia.data}"/>
+                                </p:commandButton>
+                            </p:column>
 
                             <p:column headerText="Agregar" width="70px;" class="alignCenter">
                                 <p:commandButton id="agregarProducto"  
@@ -520,5 +527,17 @@
                 };
             </h:outputScript>
         </h:panelGroup>
+        <p:dialog id="picture"  widgetVar="dlg" header="Comprobante" resizable="false" showEffect="clip" hideEffect="clip">
+            <div>
+                <p:graphicImage cache="false" style="height:300px; width:300px;" id="imagen" value="#{beanRelacionGastos.productImage}"/>
+            </div>
+            <p:galleria value="#{imagesView.images}" var="image" 
+                        panelWidth="500" panelHeight="313" 
+                        showCaption="true">
+                <p:graphicImage name="demo/images/nature/#{image}"/>
+            </p:galleria>
+
+        </p:dialog> 
+
     </ui:define>
 </ui:composition>

@@ -90,18 +90,20 @@
                         <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
                             <p:outputLabel class="col-lg-12 col-md-3 col-sm-4 col-xs-6 alignLeft"  for="txtDiasPago" value ="Días de Pago:" /> 
                             <p:inputText id="txtDiasPago" maxlength="3" class=" col-lg-6 col-md-4 col-sm-8 col-xs-6" value="#{beanEntradaMercancia.data.diasPago}" >
-                             <pe:keyFilter regEx="/[0-9]/i"/>
-                             <p:ajax event="blur" update="formContent:popup2" listener ="#{beanEntradaMercancia.sumaDias()}"/>
+                                <pe:keyFilter regEx="/[0-9]/i"/>
+                                <p:ajax event="blur" update="formContent:popup2" listener ="#{beanEntradaMercancia.sumaDias()}"/>
                             </p:inputText>
                         </div>
                         <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
                             <p:outputLabel class="col-lg-12 col-md-3 col-sm-4 col-xs-5 alignLeft" for="popup2" value="Fecha de Pago:"  />
                             <p:calendar class="col-lg-12 col-md-12 col-sm-12 col-xs-7 calendario" navigator="true" placeholder="dd/mm/yyyy" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button"  id="popup2" value="#{beanEntradaMercancia.data.fechaPago}" />
                         </div>
+                        
                     </div>
 
                     <!-- <p:fileUpload value="{fileUploadView.file}" mode="simple" skinSimple="true"/>
                      <p:commandButton value="Submit" ajax="false" actionListener="{fileUploadView.upload}" />-->
+                    
 
                 </div>
 
@@ -266,6 +268,24 @@
 
                 </div>
             </p:panel>
+            <div class="col-lg-7 col-md-12 col-sm-12 col-xs-12 ">
+                        <p:panel id="filefrm" style="border: 1px solid #FFF;">
+                            <h:form>
+                                <p:fileUpload fileUploadListener="#{beanEntradaMercancia.handleFileUpload}" 
+                                    mode="advanced" dragDropSupport="false"
+                                    label="Seleccionar" uploadLabel="Subir" cancelLabel="Cancelar"
+                                    multiple="true"  sizeLimit="5242880" 
+                                    fileLimit="3" allowTypes="/(\.|\/)(png|jpg)$/">
+ 
+                                 </p:fileUpload>
+
+
+                            </h:form>
+                        </p:panel>
+                        <!--                        <p:commandButton id="descargar" resetValues="true" value="Descargar" ajax="false" actionListener="{beanSubProducto.descarga(beanSubProducto.data)}" disabled="{beanSubProducto.data.urlImagenSubproducto == null}" >
+                                                    <p:fileDownload value="{beanPagoServicios.download}" />
+                                                </p:commandButton>-->
+                    </div>
         </h:form>
     </ui:define>
 </ui:composition>

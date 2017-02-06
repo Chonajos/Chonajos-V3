@@ -6,6 +6,7 @@
 package com.web.chon.bean;
 
 import com.web.chon.dominio.Bodega;
+import com.web.chon.dominio.ComprobantesDigitales;
 import com.web.chon.dominio.EntradaMercancia;
 import com.web.chon.dominio.EntradaMercanciaProducto;
 import com.web.chon.dominio.ExistenciaProducto;
@@ -19,6 +20,7 @@ import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceCatBodegas;
 import com.web.chon.service.IfaceCatProvedores;
 import com.web.chon.service.IfaceCatSucursales;
+import com.web.chon.service.IfaceComprobantes;
 import com.web.chon.service.IfaceEmpaque;
 import com.web.chon.service.IfaceEntradaMercancia;
 import com.web.chon.service.IfaceEntradaMercanciaProducto;
@@ -37,8 +39,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import com.web.chon.service.IfaceTipoCovenio;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import jdk.nashorn.internal.runtime.arrays.ArrayLikeIterator;
+import org.apache.commons.io.IOUtils;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.UploadedFile;
 
 /**
  *
@@ -52,6 +60,8 @@ public class BeanEntradaMercancia implements Serializable {
 
     @Autowired
     private IfaceCatSucursales ifaceCatSucursales;
+    @Autowired
+    private IfaceComprobantes ifaceComprobantes;
     @Autowired
     private IfaceEntradaMercancia ifaceEntradaMercancia;
     @Autowired
@@ -82,6 +92,7 @@ public class BeanEntradaMercancia implements Serializable {
     private ArrayList<ExistenciaProducto> existencia_repetida;
 
     private EntradaMercancia data;
+    private ArrayList<ComprobantesDigitales> listaComprobantes;
     private EntradaMercanciaProducto dataProducto;
     private EntradaMercanciaProducto dataRemove;
     private EntradaMercanciaProducto dataEdit;
@@ -104,6 +115,7 @@ public class BeanEntradaMercancia implements Serializable {
     private boolean permisionToGenerate;
     private boolean permisionToPush;
     private boolean permisionToEditProducto;
+    private byte[] bytes;
 
     @PostConstruct
     public void init() {
@@ -115,6 +127,7 @@ public class BeanEntradaMercancia implements Serializable {
 
         permisionToPush = true;
         listaSucursales = new ArrayList<Sucursal>();
+        listaComprobantes = new ArrayList<ComprobantesDigitales>();
         listaSucursales = ifaceCatSucursales.getSucursales();
         listaProvedores = new ArrayList<Provedor>();
         listaProvedores = ifaceCatProvedores.getProvedores();
@@ -142,6 +155,37 @@ public class BeanEntradaMercancia implements Serializable {
         listaBodegas = new ArrayList<Bodega>();
         listaBodegas = ifaceCatBodegas.getBodegaByIdSucursal(data.getIdSucursalFK());
         cantidadReal = new BigDecimal(0);
+    }
+
+    private void manageException(IOException e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void handleFileUpload(FileUploadEvent event) throws IOException {
+        UploadedFile uploadedFile = (UploadedFile) event.getFile();
+        InputStream inputStr = null;
+        try {
+
+            inputStr = uploadedFile.getInputstream();
+        } catch (IOException e) {
+            JsfUtil.addErrorMessage("No se permite guardar valores nulos.");
+            manageException(e);
+        }
+
+        try {
+            bytes = IOUtils.toByteArray(inputStr);
+            ComprobantesDigitales cd = new ComprobantesDigitales();
+            cd.setFichero(bytes);
+            listaComprobantes.add(cd);
+
+            JsfUtil.addSuccessMessageClean("El archivo " + event.getFile().getFileName().trim() + "fue cargado con éxito");
+            for (ComprobantesDigitales c : listaComprobantes) {
+                System.out.println("Fichero :" + c.getFichero());
+            }
+        } catch (IOException e) {
+            JsfUtil.addErrorMessageClean("Ocurrio un error al cargar el archivo");
+            e.printStackTrace();
+        }
     }
 
     public void sumaDias() {
@@ -194,88 +238,97 @@ public class BeanEntradaMercancia implements Serializable {
 
         try {
             //if (validaDatos()) {
-                if (!listaMercanciaProducto.isEmpty() && listaMercanciaProducto.size() > 0) {
-                    calculaCantidadReal();
-                    idEntradaMercancia = ifaceEntradaMercancia.getNextVal();
-                    idCarroSucursal = ifaceEntradaMercancia.getCarroSucursal(data.getIdSucursalFK());
-                    entrada_mercancia.setIdEmPK(new BigDecimal(idEntradaMercancia));
-                    entrada_mercancia.setIdUsuario(data.getIdUsuario());
-                    entrada_mercancia.setIdProvedorFK(data.getIdProvedorFK());
-                    entrada_mercancia.setIdSucursalFK(data.getIdSucursalFK());
-                    entrada_mercancia.setAbreviacion(data.getAbreviacion());
-                    entrada_mercancia.setMovimiento(data.getMovimiento());
-                    entrada_mercancia.setRemision(data.getRemision());
-                    entrada_mercancia.setFecha(data.getFecha());
-                    entrada_mercancia.setFolio(data.getFolio());
-                    entrada_mercancia.setCantidadEmpaquesProvedor(data.getCantidadEmpaquesProvedor());
-                    //System.out.println("CantidadReal ===" +cantidadReal);
-                    entrada_mercancia.setCantidadEmpaquesReales(cantidadReal);
-                    entrada_mercancia.setKilosTotales(kilos);
-                    //System.out.println("kilos ===" +kilos);
-                    entrada_mercancia.setKilosTotalesProvedor(data.getKilosTotalesProvedor());
-                    entrada_mercancia.setComentariosGenerales(data.getComentariosGenerales());
-                    entrada_mercancia.setFechaRemision(data.getFechaRemision());
-                    entrada_mercancia.setIdCarroSucursal(new BigDecimal(idCarroSucursal + 1));
-                    entrada_mercancia.setFechaPago(data.getFechaPago());
-                    //System.out.println("=============Entrada=================");
-                    //System.out.println(data.toString());
-                    //System.out.println("Entrada: "+entrada_mercancia.toString());
+            if (!listaMercanciaProducto.isEmpty() && listaMercanciaProducto.size() > 0) {
+                calculaCantidadReal();
+                idEntradaMercancia = ifaceEntradaMercancia.getNextVal();
+                idCarroSucursal = ifaceEntradaMercancia.getCarroSucursal(data.getIdSucursalFK());
+                entrada_mercancia.setIdEmPK(new BigDecimal(idEntradaMercancia));
+                entrada_mercancia.setIdUsuario(data.getIdUsuario());
+                entrada_mercancia.setIdProvedorFK(data.getIdProvedorFK());
+                entrada_mercancia.setIdSucursalFK(data.getIdSucursalFK());
+                entrada_mercancia.setAbreviacion(data.getAbreviacion());
+                entrada_mercancia.setMovimiento(data.getMovimiento());
+                entrada_mercancia.setRemision(data.getRemision());
+                entrada_mercancia.setFecha(data.getFecha());
+                entrada_mercancia.setFolio(data.getFolio());
+                entrada_mercancia.setCantidadEmpaquesProvedor(data.getCantidadEmpaquesProvedor());
+                //System.out.println("CantidadReal ===" +cantidadReal);
+                entrada_mercancia.setCantidadEmpaquesReales(cantidadReal);
+                entrada_mercancia.setKilosTotales(kilos);
+                //System.out.println("kilos ===" +kilos);
+                entrada_mercancia.setKilosTotalesProvedor(data.getKilosTotalesProvedor());
+                entrada_mercancia.setComentariosGenerales(data.getComentariosGenerales());
+                entrada_mercancia.setFechaRemision(data.getFechaRemision());
+                entrada_mercancia.setIdCarroSucursal(new BigDecimal(idCarroSucursal + 1));
+                entrada_mercancia.setFechaPago(data.getFechaPago());
+                //System.out.println("=============Entrada=================");
+                //System.out.println(data.toString());
+                //System.out.println("Entrada: "+entrada_mercancia.toString());
 
-                    int mercanciaOrdenada = ifaceEntradaMercancia.insertEntradaMercancia(entrada_mercancia);
-                    if (mercanciaOrdenada != 0) {
-                        for (int i = 0; i < listaMercanciaProducto.size(); i++) {
-                            EntradaMercanciaProducto producto = new EntradaMercanciaProducto();
-                            producto = listaMercanciaProducto.get(i);
-                            int idEnTMerPro = ifaceEntradaMercanciaProducto.getNextVal();
-                            producto.setIdEmpPK(new BigDecimal(idEnTMerPro));
-                            producto.setIdEmFK(new BigDecimal(idEntradaMercancia));
-                            producto.setKilospromprod(producto.getKilosTotalesProducto().divide(producto.getCantidadPaquetes(), 2, RoundingMode.HALF_EVEN));
-                            producto.setKilosProProvedor(producto.getKilosTotalesProducto());
-                            producto.setEmpaquesProProvedor(producto.getCantidadPaquetes());
-                            //int idEntradaMercanciaProducto = ifaceEntradaMercanciaProducto.getNextVal();
-                            if (ifaceEntradaMercanciaProducto.insertEntradaMercanciaProducto(producto) != 0) {
-                                //BUSCAR SI YA EXISTE EN LA TABLA EXISTENCIA PRODUCTO.
-                                ExistenciaProducto ep = new ExistenciaProducto();
-                                ep.setIdSubProductoFK(producto.getIdSubProductoFK());
-                                ep.setIdTipoEmpaqueFK(producto.getIdTipoEmpaqueFK());
-                                ep.setKilosTotalesProducto(producto.getKilosTotalesProducto());
-                                ep.setCantidadPaquetes(producto.getCantidadPaquetes());
-                                ep.setComentarios(producto.getComentarios());
-                                ep.setIdBodegaFK(producto.getIdBodegaFK());
-                                ep.setIdTipoConvenio(producto.getIdTipoConvenio());
-                                ep.setPrecio(producto.getPrecio());
-                                ep.setKilospromprod(producto.getKilospromprod());
-                                ep.setIdSucursal(entrada_mercancia.getIdSucursalFK());
-                                ep.setIdProvedor(entrada_mercancia.getIdProvedorFK());
-                                ep.setIdEntradaMercanciaProductoFK(new BigDecimal(idEnTMerPro));
-                                if (ifaceNegocioExistencia.insertExistenciaProducto(ep) == 1) {
-                                    JsfUtil.addSuccessMessageClean("¡Registro de Mercancias correcto !");
-                                } else {
-                                    JsfUtil.addErrorMessage("Error!", "Ocurrio un error al registrar la mercancia en existencias");
-                                }
-
+                int mercanciaOrdenada = ifaceEntradaMercancia.insertEntradaMercancia(entrada_mercancia);
+                if (mercanciaOrdenada != 0) 
+                {
+                    for(ComprobantesDigitales cd: listaComprobantes)
+                    {
+                        cd.setIdComprobantesDigitalesPk(new BigDecimal(ifaceComprobantes.getNextVal()));
+                        cd.setIdTipoFk(new BigDecimal(1));
+                        cd.setIdLlaveFk(entrada_mercancia.getIdEmPK());
+                        ifaceComprobantes.insertaComprobante(cd);
+                        ifaceComprobantes.insertarImagen(cd.getIdComprobantesDigitalesPk(), cd.getFichero());
+                    }
+                    for (int i = 0; i < listaMercanciaProducto.size(); i++) {
+                        EntradaMercanciaProducto producto = new EntradaMercanciaProducto();
+                        producto = listaMercanciaProducto.get(i);
+                        int idEnTMerPro = ifaceEntradaMercanciaProducto.getNextVal();
+                        producto.setIdEmpPK(new BigDecimal(idEnTMerPro));
+                        producto.setIdEmFK(new BigDecimal(idEntradaMercancia));
+                        producto.setKilospromprod(producto.getKilosTotalesProducto().divide(producto.getCantidadPaquetes(), 2, RoundingMode.HALF_EVEN));
+                        producto.setKilosProProvedor(producto.getKilosTotalesProducto());
+                        producto.setEmpaquesProProvedor(producto.getCantidadPaquetes());
+                        //int idEntradaMercanciaProducto = ifaceEntradaMercanciaProducto.getNextVal();
+                        if (ifaceEntradaMercanciaProducto.insertEntradaMercanciaProducto(producto) != 0) {
+                            //BUSCAR SI YA EXISTE EN LA TABLA EXISTENCIA PRODUCTO.
+                            ExistenciaProducto ep = new ExistenciaProducto();
+                            ep.setIdSubProductoFK(producto.getIdSubProductoFK());
+                            ep.setIdTipoEmpaqueFK(producto.getIdTipoEmpaqueFK());
+                            ep.setKilosTotalesProducto(producto.getKilosTotalesProducto());
+                            ep.setCantidadPaquetes(producto.getCantidadPaquetes());
+                            ep.setComentarios(producto.getComentarios());
+                            ep.setIdBodegaFK(producto.getIdBodegaFK());
+                            ep.setIdTipoConvenio(producto.getIdTipoConvenio());
+                            ep.setPrecio(producto.getPrecio());
+                            ep.setKilospromprod(producto.getKilospromprod());
+                            ep.setIdSucursal(entrada_mercancia.getIdSucursalFK());
+                            ep.setIdProvedor(entrada_mercancia.getIdProvedorFK());
+                            ep.setIdEntradaMercanciaProductoFK(new BigDecimal(idEnTMerPro));
+                            if (ifaceNegocioExistencia.insertExistenciaProducto(ep) == 1) {
+                                JsfUtil.addSuccessMessageClean("¡Registro de Mercancias correcto !");
                             } else {
-                                JsfUtil.addErrorMessage("Error!", "Ocurrio un error al registrar un producto de la entrada de Mercancia");
+                                JsfUtil.addErrorMessage("Error!", "Ocurrio un error al registrar la mercancia en existencias");
                             }
 
-                        } //fin for
+                        } else {
+                            JsfUtil.addErrorMessage("Error!", "Ocurrio un error al registrar un producto de la entrada de Mercancia");
+                        }
 
-                        data.reset();
-                        listaMercanciaProducto.clear();
-                        dataProducto.reset();
-                        kilos = new BigDecimal(0);
-                        setViewEstate("init");
-                        permisionToPush = true;
-                        permisionToGenerate = true;
-                        reset();
+                    } //fin for
 
-                    } else {
-                        JsfUtil.addErrorMessage("Error!", "Ocurrio un error al registrar la mercancia");
-                    }
+                    data.reset();
+                    listaMercanciaProducto.clear();
+                    dataProducto.reset();
+                    kilos = new BigDecimal(0);
+                    setViewEstate("init");
+                    permisionToPush = true;
+                    permisionToGenerate = true;
+                    reset();
+
                 } else {
-                    JsfUtil.addErrorMessage("Error!", "Necesitas agregar al menos un producto para realizar la orden de venta.");
-
+                    JsfUtil.addErrorMessage("Error!", "Ocurrio un error al registrar la mercancia");
                 }
+            } else {
+                JsfUtil.addErrorMessage("Error!", "Necesitas agregar al menos un producto para realizar la orden de venta.");
+
+            }
 //            } else {
 //                JsfUtil.addErrorMessage("Error!", "Necesitas completar todos los campos");
 //            }
@@ -773,6 +826,14 @@ public class BeanEntradaMercancia implements Serializable {
 
     public void setUsuario(UsuarioDominio usuario) {
         this.usuario = usuario;
+    }
+
+    public ArrayList<ComprobantesDigitales> getListaComprobantes() {
+        return listaComprobantes;
+    }
+
+    public void setListaComprobantes(ArrayList<ComprobantesDigitales> listaComprobantes) {
+        this.listaComprobantes = listaComprobantes;
     }
 
 }

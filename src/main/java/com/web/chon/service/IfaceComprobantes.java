@@ -3,25 +3,23 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.web.chon.negocio;
+package com.web.chon.service;
 
 import com.web.chon.dominio.ComprobantesDigitales;
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.util.List;
-import javax.ejb.Remote;
+import java.util.ArrayList;
 
 /**
  *
  * @author jramirez
  */
-@Remote
-public interface NegocioComprobantes {
+public interface IfaceComprobantes {
     public int getNextVal();
     public int insertaComprobante(ComprobantesDigitales cd);
     public int updateComprobante(ComprobantesDigitales cd);
     public int deleteComprobante(ComprobantesDigitales cd);
     public int insertarImagen(BigDecimal id, byte[] fichero) throws SQLException;
-    public List<Object[]> getComprobanteByIdTipoLlave(BigDecimal idTipoFk, BigDecimal idLlave);
+    public ArrayList<ComprobantesDigitales> getComprobanteByIdTipoLlave(BigDecimal idTipoFk, BigDecimal idLlave);
     
 }
