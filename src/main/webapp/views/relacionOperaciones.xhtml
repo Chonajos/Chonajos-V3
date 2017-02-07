@@ -44,20 +44,20 @@
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
                         <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="sucursalFiltro" value ="Sucursal:" /> 
-                            <h:selectOneMenu  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanRelacionOperaciones.idSucursal}"  disabled="#{beanRelacionOperaciones.usuario.perId != 1}">
+                            <p:selectOneMenu  style="width: 70% !important"  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanRelacionOperaciones.idSucursal}"  disabled="#{beanRelacionOperaciones.usuario.perId != 1}">
                                 <f:selectItem itemLabel="Selecciona una Sucursal" itemValue="" />
                                 <f:selectItems value="#{beanRelacionOperaciones.listaSucursales}" var="sucursal" itemLabel="#{sucursal.nombreSucursal}" itemValue="#{sucursal.idSucursalPk}"/>
-                            </h:selectOneMenu>
+                            </p:selectOneMenu>
                         </div>
                         <div class="col-lg-3 col-md-2 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-6 col-md-5 col-sm-4 col-xs-12 alignRight"  for="selectFiltro" value ="Fecha:" /> 
-                            <h:selectOneMenu  id="selectFiltro" class="col-lg-6 col-md-7 col-sm-8 col-xs-12" value="#{beanRelacionOperaciones.filtro}" >
+                            <p:selectOneMenu  style="width: 40% !important" id="selectFiltro" class="col-lg-6 col-md-7 col-sm-8 col-xs-12" value="#{beanRelacionOperaciones.filtro}" >
                                 <f:selectItem itemLabel="Selecciona" itemValue="-1" />
                                 <f:selectItem itemLabel="Día" itemValue="1"/>
                                 <f:selectItem itemLabel="Mes" itemValue="2"/>
                                 <f:selectItem itemLabel="Año" itemValue="3"/>
                                 <p:ajax event="change" update=":formContent:calendarInicio formContent:calendarFin" listener="#{beanRelacionOperaciones.verificarCombo()}"/>
-                            </h:selectOneMenu>
+                            </p:selectOneMenu>
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-5 col-md-4 col-sm-4 col-xs-12"  for="calendarInicio" value ="Fecha de Inicio:" /> 
@@ -107,17 +107,17 @@
                         </div>
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-5 col-md-4 col-sm-4 col-xs-12"  for="tipoVentaFiltro" value =" Tipo de Venta:"  /> 
-                            <h:selectOneMenu  id="tipoVentaFiltro" class="col-lg-7 col-md-8 col-sm-8 col-xs-12" value="#{beanRelacionOperaciones.idTipoVenta}"  >
+                            <p:selectOneMenu  style="width: 45% !important" id="tipoVentaFiltro" class="col-lg-7 col-md-8 col-sm-8 col-xs-12" value="#{beanRelacionOperaciones.idTipoVenta}"  >
                                 <f:selectItem itemLabel="Selecciona" itemValue="" />
                                 <f:selectItem itemLabel="CONTADO" itemValue="1" />
                                 <f:selectItem itemLabel="CREDITO" itemValue="2" />
-                            </h:selectOneMenu>
+                            </p:selectOneMenu>
                         </div>
 
 
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="statusFiltro" value ="Status de Venta:"  /> 
-                            <p:selectOneMenu  id="statusFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanRelacionOperaciones.idStatusVenta}"  >
+                            <p:selectOneMenu  style="width: 45% !important" id="statusFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanRelacionOperaciones.idStatusVenta}"  >
                                 <f:selectItem itemLabel="Selecciona" itemValue="" />
                                 <f:selectItems value="#{beanRelacionOperaciones.listaStatusVenta}" var="staditosVenta" itemLabel="#{staditosVenta.status}" itemValue="#{staditosVenta.id_status_pk}" class="#{staditosVenta.id_status_pk eq 1 ? 'alert-info': (staditosVenta.id_status_pk eq 2 ? 'alert-warning':(staditosVenta.id_status_pk eq 3 ? 'alert-success':'alert-danger'))}"/>
                                 <!--<p:ajax event="change" listener="{beanRelacionOperaciones.printStatus()}" update=":formContent:table" />-->
@@ -164,10 +164,10 @@
                             <p:column headerText="Cliente" width="200px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreCliente}" />
                             </p:column>
-                            <p:column headerText="Usuario Logueado" width="200px;" class="alignLeft">
+                            <p:column headerText="Usuario Logueado" width="180px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreUsuarioLogueado}" />
                             </p:column>
-                            <p:column headerText="Vendedor" width="200px;" class="alignLeft">
+                            <p:column headerText="Vendedor" width="180px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreVendedor}" />
                             </p:column>
                             

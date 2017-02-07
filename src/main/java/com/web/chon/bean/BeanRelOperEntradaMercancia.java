@@ -1,6 +1,7 @@
 package com.web.chon.bean;
 
 import com.web.chon.dominio.Bodega;
+import com.web.chon.dominio.ComprobantesDigitales;
 import com.web.chon.dominio.EntradaMercancia;
 import com.web.chon.dominio.EntradaMercanciaProducto;
 import com.web.chon.dominio.EntradaMercanciaProductoPaquete;
@@ -30,6 +31,7 @@ import com.web.chon.util.JasperReportUtil;
 import com.web.chon.util.JsfUtil;
 import com.web.chon.util.TiempoUtil;
 import com.web.chon.util.UtilUpload;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -119,6 +121,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     private EntradaMercanciaProducto dataProductoAutoAjuste;
     private EntradaMercanciaProducto dataProductoNuevo;
     private EntradaMercanciaProducto dataProductEdit;
+    
     private UsuarioDominio usuario;
     private Subproducto subProducto;
     private EntradaMercanciaProductoPaquete dataPaquete;
@@ -168,6 +171,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     private byte[] bytes;
 
     private String pathFileJasper = "";
+    private StreamedContent variable;
 
     @PostConstruct
     public void init() {
@@ -742,6 +746,33 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     public void onRowCancel(RowEditEvent event) {
         System.out.println("cancel");
 
+    }
+    public StreamedContent getProductImage() throws IOException, SQLException {
+        FacesContext context = FacesContext.getCurrentInstance();
+        String imageType = "image/jpg";
+        if(data.getListaComprobantes()==null|| data.getListaComprobantes().isEmpty())
+        {
+            JsfUtil.addErrorMessageClean("Esta operación no cuenta con comprobante");
+            return variable;
+        }
+        else
+        {
+            variable = null;
+            System.out.println("Data:" +data.toString());
+            for(ComprobantesDigitales cd:data.getListaComprobantes())
+            {
+                if(cd.getIdLlaveFk().intValue()==data.getIdEmPK().intValue())
+                {
+                     byte[] image = cd.getFichero();
+                    variable = new DefaultStreamedContent(new ByteArrayInputStream(image), imageType, data.getIdEmPK().toString());
+                }
+                 
+            }
+             
+             
+             return variable;
+        }
+           
     }
 
     public void cancel() {

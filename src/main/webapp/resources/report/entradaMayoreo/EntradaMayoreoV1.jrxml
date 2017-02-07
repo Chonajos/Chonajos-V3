@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.0.1.final using JasperReports Library version 6.0.0  -->
-<!-- 2017-02-03T14:23:28 -->
+<!-- 2017-02-07T13:20:45 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EntradaMayoreoV1" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="df013db5-f76e-44d3-b0df-bcbc46d93160">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="AdaptadorJuan"/>
@@ -300,9 +300,9 @@ where cs.ID_SUCURSAL_1_FK=$P{idSucursal}]]>
 		<band splitType="Stretch"/>
 	</pageHeader>
 	<detail>
-		<band height="193">
+		<band height="223">
 			<frame>
-				<reportElement x="16" y="10" width="764" height="183" uuid="01717125-9bc4-4857-ada7-420099db6c64"/>
+				<reportElement x="30" y="31" width="764" height="183" uuid="01717125-9bc4-4857-ada7-420099db6c64"/>
 				<box>
 					<topPen lineWidth="1.0" lineStyle="Solid"/>
 					<leftPen lineWidth="1.0" lineStyle="Solid"/>
@@ -310,35 +310,35 @@ where cs.ID_SUCURSAL_1_FK=$P{idSucursal}]]>
 					<rightPen lineWidth="1.0" lineStyle="Solid"/>
 				</box>
 				<staticText>
-					<reportElement x="7" y="22" width="43" height="20" uuid="aa663885-8d86-4414-a608-b29428deee62"/>
+					<reportElement x="6" y="31" width="53" height="20" uuid="aa663885-8d86-4414-a608-b29428deee62"/>
 					<textElement>
 						<font size="14"/>
 					</textElement>
 					<text><![CDATA[Carro:]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="120" y="21" width="148" height="20" uuid="2237c0ad-9c42-4e4d-b70a-276ba8f31a28"/>
+					<reportElement x="111" y="32" width="148" height="20" uuid="2237c0ad-9c42-4e4d-b70a-276ba8f31a28"/>
 					<textElement verticalAlignment="Middle">
 						<font size="14"/>
 					</textElement>
 					<text><![CDATA[Folio de Remisión:]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="421" y="22" width="129" height="20" uuid="86216d54-e1df-4c11-8420-a15d6c37ce10"/>
+					<reportElement x="421" y="31" width="129" height="20" uuid="86216d54-e1df-4c11-8420-a15d6c37ce10"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="14"/>
 					</textElement>
 					<text><![CDATA[Fecha de Entrada :]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="282" y="54" width="98" height="20" uuid="25ff3d8e-da8c-4a86-ab53-84b1c098b73e"/>
+					<reportElement x="282" y="54" width="118" height="20" uuid="25ff3d8e-da8c-4a86-ab53-84b1c098b73e"/>
 					<textElement>
 						<font size="14"/>
 					</textElement>
 					<text><![CDATA[Kilos Provedor:]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="281" y="79" width="99" height="20" uuid="c6e500a2-86e0-4a2a-8a03-d6293ccc6946"/>
+					<reportElement x="281" y="79" width="119" height="20" uuid="c6e500a2-86e0-4a2a-8a03-d6293ccc6946"/>
 					<textElement>
 						<font size="14"/>
 					</textElement>
@@ -352,21 +352,21 @@ where cs.ID_SUCURSAL_1_FK=$P{idSucursal}]]>
 					<text><![CDATA[Provedor:]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="276" y="21" width="110" height="20" uuid="f3ef2115-44c2-4182-895e-3e02e4d98ad2"/>
+					<reportElement x="261" y="32" width="110" height="20" uuid="f3ef2115-44c2-4182-895e-3e02e4d98ad2"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="14"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{folio}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="51" y="22" width="50" height="20" uuid="16bfc63e-6e57-44ae-bc8b-8dee475fa6d1"/>
+					<reportElement x="60" y="32" width="50" height="20" uuid="16bfc63e-6e57-44ae-bc8b-8dee475fa6d1"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="14"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{carro}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="551" y="23" width="192" height="20" uuid="f0287479-b9c2-48e0-9a67-832530e435d8"/>
+					<reportElement x="551" y="31" width="192" height="20" uuid="f0287479-b9c2-48e0-9a67-832530e435d8"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="14"/>
 					</textElement>
@@ -380,14 +380,14 @@ where cs.ID_SUCURSAL_1_FK=$P{idSucursal}]]>
 					<textFieldExpression><![CDATA[$P{provedor}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="382" y="56" width="100" height="20" uuid="6d2e294c-a7d7-47f3-b976-3c512368c53b"/>
+					<reportElement x="401" y="54" width="100" height="20" uuid="6d2e294c-a7d7-47f3-b976-3c512368c53b"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="14"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{kilosProvedor}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="381" y="79" width="100" height="20" uuid="208dcaaf-f681-4bad-979f-f586ec117576"/>
+					<reportElement x="402" y="79" width="100" height="19" uuid="208dcaaf-f681-4bad-979f-f586ec117576"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="14"/>
 					</textElement>
@@ -408,14 +408,14 @@ where cs.ID_SUCURSAL_1_FK=$P{idSucursal}]]>
 					<textFieldExpression><![CDATA[$P{nombreRecibidor}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="98" y="131" width="482" height="20" uuid="19e857fa-7b92-4513-8363-bcbd308740cc"/>
+					<reportElement x="111" y="132" width="482" height="20" uuid="19e857fa-7b92-4513-8363-bcbd308740cc"/>
 					<textElement>
 						<font size="14"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{comentariosGenerales}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="8" y="131" width="90" height="20" uuid="6aa75a88-1540-4320-ac20-1a87e0e97b4e"/>
+					<reportElement x="8" y="131" width="103" height="20" uuid="6aa75a88-1540-4320-ac20-1a87e0e97b4e"/>
 					<textElement>
 						<font size="14"/>
 					</textElement>
@@ -429,7 +429,7 @@ where cs.ID_SUCURSAL_1_FK=$P{idSucursal}]]>
 					<text><![CDATA[Empaques Provedor:]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="5" y="78" width="143" height="20" uuid="536f1297-93be-4f1a-b2fd-0d6293dd049e"/>
+					<reportElement x="5" y="78" width="150" height="20" uuid="536f1297-93be-4f1a-b2fd-0d6293dd049e"/>
 					<textElement>
 						<font size="14"/>
 					</textElement>
@@ -443,7 +443,7 @@ where cs.ID_SUCURSAL_1_FK=$P{idSucursal}]]>
 					<textFieldExpression><![CDATA[$P{cantidadProvedor}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="156" y="78" width="112" height="18" uuid="ba5a547d-3414-407d-bf9c-2540159cc123"/>
+					<reportElement x="161" y="80" width="112" height="18" uuid="ba5a547d-3414-407d-bf9c-2540159cc123"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="14"/>
 					</textElement>
@@ -457,7 +457,7 @@ where cs.ID_SUCURSAL_1_FK=$P{idSucursal}]]>
 					<text><![CDATA[Fecha de revisión para programar pago]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="301" y="4" width="159" height="19" uuid="6b9298e8-270e-40aa-a8c6-102153b2a26f"/>
+					<reportElement x="297" y="3" width="159" height="18" uuid="6b9298e8-270e-40aa-a8c6-102153b2a26f"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="14"/>
 					</textElement>

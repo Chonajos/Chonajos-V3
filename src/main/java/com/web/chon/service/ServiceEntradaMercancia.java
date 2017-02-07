@@ -1,6 +1,7 @@
 package com.web.chon.service;
 
 import com.web.chon.dominio.CarroDetalleGeneral;
+import com.web.chon.dominio.ComprobantesDigitales;
 import com.web.chon.dominio.EntradaMercancia;
 import com.web.chon.dominio.MayoreoProductoEntradaProducto;
 import com.web.chon.dominio.Pagina;
@@ -28,6 +29,8 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
     IfaceEntradaMercanciaProducto ifaceEntradaMercanciaProducto;
     @Autowired
     IfaceVentaMayoreoProducto ifaceVentaMayoreoProducto;
+    @Autowired
+    private IfaceComprobantes ifaceComprobantes;
     NegocioEntradaMercancia ejb;
 
     public void getEjb() {
@@ -106,6 +109,13 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
             dominio.setNombreRecibidor(obj[19] == null ? " " : obj[19].toString());
             dominio.setIdUsuario(obj[20] == null ? null : new BigDecimal(obj[20].toString()));
             dominio.setListaProductos(ifaceEntradaMercanciaProducto.getEntradaProductoByIdEM(dominio.getIdEmPK()));
+            
+            ArrayList<ComprobantesDigitales> lista_cd = new ArrayList<ComprobantesDigitales>();
+            
+            lista_cd = ifaceComprobantes.getComprobantesByIdTipoLlave(new BigDecimal(1), dominio.getIdEmPK());
+
+            dominio.setListaComprobantes(lista_cd);
+            
             lstEntradaMercancia2.add(dominio);
         }
 

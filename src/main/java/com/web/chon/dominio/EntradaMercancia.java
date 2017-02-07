@@ -42,6 +42,7 @@ public class EntradaMercancia extends ValueObject implements Serializable {
     private BigDecimal diasPago;
     private String nombreRecibidor;
     private BigDecimal statusCarro;
+    private ArrayList<ComprobantesDigitales> listaComprobantes;
 
     @Override
     public String toString() {
@@ -279,6 +280,16 @@ public class EntradaMercancia extends ValueObject implements Serializable {
     public void setStatusCarro(BigDecimal statusCarro) {
         this.statusCarro = statusCarro;
     }
+
+    public ArrayList<ComprobantesDigitales> getListaComprobantes() {
+        return listaComprobantes;
+    }
+
+    public void setListaComprobantes(ArrayList<ComprobantesDigitales> listaComprobantes) {
+        this.listaComprobantes = listaComprobantes;
+    }
+    
+    
     
     
 
