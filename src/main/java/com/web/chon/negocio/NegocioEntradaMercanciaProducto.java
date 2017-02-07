@@ -26,4 +26,6 @@ public interface NegocioEntradaMercanciaProducto {
     public List<Object[]> getEntradaMercanciaProductoByIdEmpPk(BigDecimal idEmpPk);
     
     public int updateEntradaMercanciaProducto(EntradaMercanciaProducto producto);
+    
+    public int updateVideo(BigDecimal id, byte[] fichero,String url);
 }

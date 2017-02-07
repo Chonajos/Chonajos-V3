@@ -3,6 +3,7 @@ package com.web.chon.ejb;
 import com.web.chon.dominio.EntradaMercanciaProducto;
 import com.web.chon.negocio.NegocioEntradaMercanciaProducto;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,14 +52,16 @@ public class EjbEntradaMercanciaProducto implements NegocioEntradaMercanciaProdu
     @Override
     public List<Object[]> getEntradaProductoByIdEM(BigDecimal idEntradaProducto) {
 
-        Query query = em.createNativeQuery("SELECT EMP.*, SUB.NOMBRE_SUBPRODUCTO, "
+        Query query = em.createNativeQuery("SELECT EMP.ID_EMP_PK,EMP.ID_EM_FK,EMP.ID_SUBPRODUCTO_FK,EMP.ID_TIPO_EMPAQUE_FK, "
+                + "EMP.KILOS_TOTALES,EMP.CANTIDAD_EMPACAQUE,EMP.COMENTARIOS,EMP.ID_BODEGA_FK,EMP.ID_TIPO_CONVENIO_FK,EMP.CONVENIO, "
+                + "EMP.KILOSPROMPROD,EMP.EMPAQUES_PROVEDOR,EMP.KILOS_PROVEDOR, SUB.NOMBRE_SUBPRODUCTO, "
                 + "TE.NOMBRE_EMPAQUE, BD.NOMBRE,TC.TIPO, SUCU.ID_SUCURSAL_PK "
                 + "FROM ENTRADAMERCANCIAPRODUCTO EMP  JOIN TIPO_EMPAQUE TE ON "
-                + "TE.ID_TIPO_EMPAQUE_PK = EMP.ID_TIPO_EMPAQUE_FK \n"
-                + "INNER JOIN BODEGA BD ON BD.ID_BD_PK = EMP.ID_BODEGA_FK \n"
-                + "INNER JOIN TIPO_CONVENIO TC ON TC.ID_TC_PK = EMP.ID_TIPO_CONVENIO_FK \n"
-                + "INNER JOIN SUCURSAL SUCU ON SUCU.ID_SUCURSAL_PK = BD.ID_SUCURSAL_FK\n"
-                + "INNER JOIN SUBPRODUCTO SUB ON SUB.ID_SUBPRODUCTO_PK = EMP.ID_SUBPRODUCTO_FK\n"
+                + "TE.ID_TIPO_EMPAQUE_PK = EMP.ID_TIPO_EMPAQUE_FK "
+                + "INNER JOIN BODEGA BD ON BD.ID_BD_PK = EMP.ID_BODEGA_FK "
+                + "INNER JOIN TIPO_CONVENIO TC ON TC.ID_TC_PK = EMP.ID_TIPO_CONVENIO_FK "
+                + "INNER JOIN SUCURSAL SUCU ON SUCU.ID_SUCURSAL_PK = BD.ID_SUCURSAL_FK "
+                + "INNER JOIN SUBPRODUCTO SUB ON SUB.ID_SUBPRODUCTO_PK = EMP.ID_SUBPRODUCTO_FK "
                 + "WHERE ID_EM_FK = ?");
 
         query.setParameter(1, idEntradaProducto);
@@ -94,18 +97,17 @@ public class EjbEntradaMercanciaProducto implements NegocioEntradaMercanciaProdu
     public List<Object[]> getTotalVentasByIdEMP(BigDecimal idEmP) {
 
         try {
-            Query query = em.createNativeQuery("select NVL(sum(vmp.TOTAL_VENTA),0)as total, NVL(sum(vmp.KILOS_VENDIDOS),0) as kilos , NVL(sum(vmp.CANTIDAD_EMPAQUE),0)\n" +
-"as Cantidad\n" +
-"from ENTRADAMERCANCIAPRODUCTO emp\n" +
-"inner join EXISTENCIA_PRODUCTO ex on ex.ID_EMP_FK = emp.ID_EMP_PK\n" +
-"inner join VENTAMAYOREOPRODUCTO vmp on vmp.ID_EXISTENCIA_FK = ex.ID_EXP_PK\n" +
-"inner join VENTA_MAYOREO vm on vm.ID_VENTA_MAYOREO_PK  = vmp.ID_VENTA_MAYOREO_FK\n" +
-"where vm.ID_STATUS_FK != 4 and  emp.ID_EMP_PK = ? ");
+            Query query = em.createNativeQuery("select NVL(sum(vmp.TOTAL_VENTA),0)as total, NVL(sum(vmp.KILOS_VENDIDOS),0) as kilos , NVL(sum(vmp.CANTIDAD_EMPAQUE),0)\n"
+                    + "as Cantidad\n"
+                    + "from ENTRADAMERCANCIAPRODUCTO emp\n"
+                    + "inner join EXISTENCIA_PRODUCTO ex on ex.ID_EMP_FK = emp.ID_EMP_PK\n"
+                    + "inner join VENTAMAYOREOPRODUCTO vmp on vmp.ID_EXISTENCIA_FK = ex.ID_EXP_PK\n"
+                    + "inner join VENTA_MAYOREO vm on vm.ID_VENTA_MAYOREO_PK  = vmp.ID_VENTA_MAYOREO_FK\n"
+                    + "where vm.ID_STATUS_FK != 4 and  emp.ID_EMP_PK = ? ");
             query.setParameter(1, idEmP);
             //System.out.println(query);
             return query.getResultList();
-        } catch (Exception ex) 
-        {
+        } catch (Exception ex) {
             //System.out.println("Encontro null ejb");
             Logger.getLogger(EjbEntradaMercanciaProducto.class.getName()).log(Level.SEVERE, null, ex);
             return null;
@@ -149,14 +151,23 @@ public class EjbEntradaMercanciaProducto implements NegocioEntradaMercanciaProdu
 
             Query query = em.createNativeQuery("select emp.ID_EMP_PK,emp.CANTIDAD_EMPACAQUE,emp.KILOS_TOTALES,emp.ID_SUBPRODUCTO_FK from ENTRADAMERCANCIAPRODUCTO emp where emp.ID_EMP_PK =?");
             query.setParameter(1, idEmpPk);
-            //System.out.println(query);
+
             return query.getResultList();
         } catch (Exception ex) {
-            //System.out.println("Encontro null ejb");
             Logger.getLogger(EjbEntradaMercanciaProducto.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
 
+    }
+
+    @Override
+    public int updateVideo(BigDecimal id, byte[] fichero,String url) {
+
+        Query query = em.createNativeQuery("update ENTRADAMERCANCIAPRODUCTO SET VIDEO = ?,URL_VIDEO = ? WHERE ID_EMP_PK = ?");
+        query.setParameter(1, fichero);
+        query.setParameter(2, url);
+        query.setParameter(3, id);
+        return query.executeUpdate();
     }
 
 }

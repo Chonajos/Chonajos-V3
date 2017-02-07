@@ -13,6 +13,7 @@ import com.web.chon.negocio.NegocioEntradaMercanciaProducto;
 import com.web.chon.util.Utilidades;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -23,7 +24,7 @@ import org.springframework.stereotype.Service;
 
 /**
  *
- * @author marcogante
+ * @author 
  */
 @Service
 public class ServiceEntradaMercanciaProducto implements IfaceEntradaMercanciaProducto {
@@ -220,8 +221,12 @@ public class ServiceEntradaMercanciaProducto implements IfaceEntradaMercanciaPro
             return null;
         }
         
-        
-        
     }
 
+    @Override
+    public int updateVideo(EntradaMercanciaProducto entradaMercanciaProducto) {
+            getEjb();
+            
+            return ejb.updateVideo(entradaMercanciaProducto.getIdEmpPK(), entradaMercanciaProducto.getVideoByte(),entradaMercanciaProducto.getUrlVideo());
+    }
 }

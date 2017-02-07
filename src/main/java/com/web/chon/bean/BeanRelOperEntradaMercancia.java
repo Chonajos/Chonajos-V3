@@ -781,15 +781,15 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     }
 
     public void handleFileUpload(FileUploadEvent event) {
-        
-        EntradaMercanciaProducto item = (EntradaMercanciaProducto)event.getComponent().getAttributes().get("item");
-        
+
+        EntradaMercanciaProducto item = (EntradaMercanciaProducto) event.getComponent().getAttributes().get("item");
+
         String fileName = event.getFile().getFileName().trim();
         String pathServer = null;
         ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
 
         if (servletContext.getRealPath("") == null) {
-            pathServer = Constantes.PATHSERVERVIDEO;
+            pathServer = Constantes.PATHSERVER;
         } else {
             pathServer = path;
         }
@@ -799,57 +799,48 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         } else {
             UploadedFile uploadedFile = (UploadedFile) event.getFile();
             InputStream inputStr = null;
+            InputStream inputStrBd = null;
             try {
                 logger.debug("selecciona archivo");
                 inputStr = uploadedFile.getInputstream();
+                inputStrBd = uploadedFile.getInputstream();
             } catch (IOException e) {
                 JsfUtil.addErrorMessage("No se permite guardar valores nulos. ");
                 manageException(e);
             }
             try {
-//				if(carpeta.trim() == null){
-//					String carpeta = "ENCUESTA";
-//				  FileUtils.creaCarpeta(path +"/"+ carpeta + "/");	
-//				}else{
-                FileUtils.creaCarpeta(pathServer + "/" + "120" + "/");
-//				}				
+
+                FileUtils.creaCarpeta(pathServer + "/" + "entradaProducto" + "/");
 
             } catch (Exception e) {
 
             }
 
-//			if(carpeta.trim() == null){
-//				String carpeta = "ENCUESTA";			 
-//			    destPath = path +"/"+ carpeta + "/" + fileName;
-//			}else{
-            destPath = pathServer + "/" + "120" + "/" + fileName;
-//			}	
+            destPath = pathServer + "/" + "entradaProducto" + "/" + fileName;
 
             try {
-//				if(state == ViewState.NEW)
-//				{
+
                 FileUtils.guardaArchivo(destPath, inputStr);
-//				}else{
-//					
-//					inputStream = inputStr;
-//				}
-//				
+                bytes = IOUtils.toByteArray(inputStrBd);
+                item.setVideoByte(bytes);
+
                 FacesMessage message = new FacesMessage("exito", "El archivo "
                         + event.getFile().getFileName().trim()
                         + " fue cargado.");
                 FacesContext.getCurrentInstance().addMessage(null, message);
                 fileSaved = 1;
 
-//				String filePath = (data.getPlRutaPlantilla() != null ? data
-//						.getPlRutaPlantilla() : null);
-//
-//				if (filePath != null && data.getIdEncuesta() != null) {
-//					if (existFile(filePath)) {
-//						deleteFile(filePath);
-//					}
-//
-//				} si existe la ruta y se vuelve a guardar un nuevo video se elimina y se vuelve a crear
-//				data.setPlRutaPlantilla(destPath); se guarda la ruta en la bd
+                String strPath = "";
+                strPath = ".." + File.separatorChar + "resources" + File.separatorChar + "video" + File.separatorChar + "entradaProducto" + File.separatorChar + fileName;
+
+                item.setUrlVideo(strPath);
+
+                if (ifaceEntradaMercanciaProducto.updateVideo(item) > 0) {
+                    JsfUtil.addSuccessMessage("Video Guardado Correctamente.");
+                } else {
+                    JsfUtil.addErrorMessage("No se pudo Guardar el Video.");
+                }
+
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (Exception e) {
@@ -1253,12 +1244,9 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     public void setFile(UploadedFile file) {
         this.file = file;
     }
-    
 
     private void manageException(IOException e) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
-    
 
 }

@@ -8,6 +8,7 @@ package com.web.chon.dominio;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import org.primefaces.model.StreamedContent;
 
 /**
  *
@@ -37,6 +38,8 @@ public class EntradaMercanciaProducto extends ValueObject implements Serializabl
     private ArrayList<Bodega> listaBodegas;
     private BigDecimal empaquesProProvedor;
     private BigDecimal kilosProProvedor;
+    private String urlVideo;
+    private byte[] videoByte;
     
     private Subproducto subProducto;
     private ArrayList<EntradaMercanciaProductoPaquete> listaPaquetes;
@@ -343,11 +346,21 @@ public class EntradaMercanciaProducto extends ValueObject implements Serializabl
     public void setKilosProProvedor(BigDecimal kilosProProvedor) {
         this.kilosProProvedor = kilosProProvedor;
     }
-    
 
-    
-    
-    
-    
+    public String getUrlVideo() {
+        return urlVideo;
+    }
+
+    public void setUrlVideo(String urlVideo) {
+        this.urlVideo = urlVideo;
+    }
+
+    public byte[] getVideoByte() {
+        return videoByte;
+    }
+
+    public void setVideoByte(byte[] videoByte) {
+        this.videoByte = videoByte;
+    }
     
 }
