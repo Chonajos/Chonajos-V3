@@ -247,10 +247,10 @@
                             <p:column headerText="Empaques Bodega" width="80px;" class="alignCenter">
                                 <h:outputText value="#{model.cantidadEmpaquesReales}"/>
                             </p:column>
-                            <p:column headerText="Kilos Provedor" width="120px;" class="alignCenter">
+                            <p:column headerText="Kilos Provedor" width="100px;" class="alignCenter">
                                 <h:outputText value="#{model.kilosTotalesProvedor}" />
                             </p:column>
-                            <p:column headerText="Kilos Bodega" width="120px;" class="alignCenter">
+                            <p:column headerText="Kilos Bodega" width="100px;" class="alignCenter">
                                 <h:outputText value="#{model.kilosTotales}"/>
                             </p:column>
                             <p:column headerText="Imagenes" width="70px;" class="alignCenter">
@@ -316,7 +316,7 @@
                                                     <h:outputText id="outputProducto" value="#{item.nombreProducto}" />
                                                 </f:facet>
                                                 <f:facet name="input">
-                                                    <p:autoComplete  placeholder="Seleccione un Producto ss1" id="autocompletePoducto"  
+                                                    <p:autoComplete  placeholder="Seleccione un Producto" id="autocompletePoducto"  
                                                                      required="true" requiredMessage="Ingresa un valor para el campo Producto" 
 
                                                                      styleClass="autocomplete-input-text-media"
@@ -348,7 +348,7 @@
                                             </p:cellEditor>
 
                                         </p:column>
-                                        <p:column headerText="Cant" width="85px;" class="alignCenter">
+                                        <p:column headerText="Cant" width="65px;" class="alignCenter">
                                             <p:cellEditor>
                                                 <f:facet name="output">
                                                     <h:outputText value="#{item.cantidadPaquetes}" >
@@ -360,7 +360,7 @@
                                                 </f:facet>
                                             </p:cellEditor>
                                         </p:column>
-                                        <p:column headerText="Costo" width="85px;" class="alignCenter">
+                                        <p:column headerText="Costo" width="75px;" class="alignCenter">
                                             <p:cellEditor>
                                                 <f:facet name="output">
                                                     <h:outputText value="#{item.precio}" >
@@ -387,7 +387,7 @@
 
 
                                         </p:column>
-                                        <p:column headerText="Bodega" width="100px;" class="alignLeft">
+                                        <p:column headerText="Bodega" width="95px;" class="alignLeft">
                                             <p:cellEditor>
                                                 <f:facet name="output">
                                                     <h:outputText id="outputBodega" value="#{item.nombreBodega}" />
@@ -401,7 +401,7 @@
                                                 </f:facet>
                                             </p:cellEditor>
                                         </p:column>
-                                        <p:column headerText="Convenio" width="85px;" class="alignLeft">
+                                        <p:column headerText="Convenio" width="80px;" class="alignLeft">
                                             <p:cellEditor>
                                                 <f:facet name="output">
                                                     <h:outputText id="outputMotivo" value="#{item.nombreTipoConvenio}" />
@@ -416,7 +416,7 @@
                                                 </f:facet>
                                             </p:cellEditor>
                                         </p:column>
-                                        <p:column headerText="Comentarios" width="110px;" class="alignLeft">
+                                        <p:column headerText="Comentarios" width="100px;" class="alignLeft">
                                             <p:cellEditor>
                                                 <f:facet name="output">
                                                     <h:outputText value="#{item.comentarios}"/>
@@ -437,7 +437,7 @@
                                         <p:column width="60px;" class="alignCenter" headerText="Editar">
                                             <p:rowEditor rendered="#{model.idStatusFk.intValue() == 1}" />
                                         </p:column>
-                                        <p:column headerText="Remover" width="75px;" class="alignCenter">
+                                        <p:column headerText="Remover" width="60px;" class="alignCenter">
                                             <p:commandButton id="Remover" ajax="true" process="@this" action="#{beanRelOperEntradaMercancia.cancelarProducto()}" 
                                                              disabled="#{model.idStatusFk.intValue() != 1}" 
                                                              icon="ui-icon-closethick" styleClass="ui-priority-primary" update=":formContent:table" oncomplete="rcExtends()">
@@ -446,13 +446,13 @@
 
                                             </p:commandButton>
                                         </p:column>
-                                        <p:column headerText="Código" width="70px;" class="alignCenter">
+                                        <p:column headerText="Código" width="60px;" class="alignCenter">
                                             <p:commandButton id="codigo" ajax="true" process="@this" action="#{beanRelOperEntradaMercancia.imprimirCodigoBarras()}" 
                                                              icon="ui-icon-print" styleClass="ui-priority-primary" update=":formContent">
                                                 <f:setPropertyActionListener value="#{item}" target="#{beanRelOperEntradaMercancia.dataProducto}"/>
                                             </p:commandButton>
                                         </p:column> 
-                                        <p:column headerText="Auto-Ajuste" width="70px;" class="alignCenter">
+                                        <p:column headerText="Auto-Ajuste" width="60x;" class="alignCenter">
                                             <p:commandButton id="autoAjuste" ajax="true" 
                                                              disabled="#{model.idStatusFk.intValue() != 1}" 
                                                              oncomplete="PF('dlg3').show();" update =":formContent:dialogoAutoAjustar"
@@ -460,7 +460,7 @@
                                                 <f:setPropertyActionListener value="#{item}" target="#{beanRelOperEntradaMercancia.dataProductoAutoAjuste}"/>
                                             </p:commandButton>
                                         </p:column>
-                                        <p:column headerText="Video" width="120px;" class="alignCenter">
+                                        <p:column headerText="Video" width="90px;" class="alignCenter">
                                             <h:form>
                                                 <p:fileUpload id="fileUpload" fileUploadListener="#{beanRelOperEntradaMercancia.handleFileUpload}" label="Subir" invalidSizeMessage="El tamaño del video excede el peso permitido 25 mb." invalidFileMessage="Archivo invalido." mode="advanced" skinSimple="true"
                                                               update=":formContent:messages" auto="true" sizeLimit="25000000" allowTypes="/(\.)(mp4|avi|flv)$/" >

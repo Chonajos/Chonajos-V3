@@ -29,13 +29,16 @@ public class BeanBodega extends SimpleViewBean<Bodega> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Autowired private IfaceCatBodegas ifaceCatBodega;
-    @Autowired private PlataformaSecurityContext context;
-    @Autowired private IfaceCatSucursales ifaceCatSucursales;
+    @Autowired
+    private IfaceCatBodegas ifaceCatBodega;
+    @Autowired
+    private PlataformaSecurityContext context;
+    @Autowired
+    private IfaceCatSucursales ifaceCatSucursales;
 
     private ArrayList<Bodega> selectedBodega;
     private ArrayList<Sucursal> lstSucursal;
-    
+
     private UsuarioDominio usuario;
 
     private String title = "";
@@ -45,15 +48,11 @@ public class BeanBodega extends SimpleViewBean<Bodega> implements Serializable {
     public void initModel() {
 
         usuario = context.getUsuarioAutenticado();
-        
+
         lstSucursal = new ArrayList<Sucursal>();
         lstSucursal = ifaceCatSucursales.getSucursales();
-        
-        data = new Bodega();
-        if (usuario.getPerId() != 1) {
-            data.setIdSucursalFk(new BigDecimal(usuario.getSucId()));
-        }
 
+        data = new Bodega();
         model = new PaginationLazyDataModel<Bodega, BigDecimal>(ifaceCatBodega, data);
 
         selectedBodega = new ArrayList<Bodega>();
@@ -123,6 +122,11 @@ public class BeanBodega extends SimpleViewBean<Bodega> implements Serializable {
 
     public void viewNew() {
         data = new Bodega();
+        
+        if (usuario.getPerId() != 1) {
+            data.setIdSucursalFk(new BigDecimal(usuario.getSucId()));
+        }
+        
         setTitle("Alta de Bodegas");
         actionNew();
 
@@ -179,7 +183,5 @@ public class BeanBodega extends SimpleViewBean<Bodega> implements Serializable {
     public void setUsuario(UsuarioDominio usuario) {
         this.usuario = usuario;
     }
-    
-    
 
 }

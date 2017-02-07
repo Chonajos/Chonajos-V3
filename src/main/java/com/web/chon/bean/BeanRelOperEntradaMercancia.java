@@ -123,6 +123,8 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     private Subproducto subProducto;
     private EntradaMercanciaProductoPaquete dataPaquete;
     private EntradaMercanciaProductoPaquete dataPaqueteEliminar;
+    
+    private FacesContext facesContext;
 
     private String title;
     private String viewEstate;
