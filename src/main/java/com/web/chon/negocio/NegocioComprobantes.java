@@ -22,6 +22,8 @@ public interface NegocioComprobantes {
     public int updateComprobante(ComprobantesDigitales cd);
     public int deleteComprobante(ComprobantesDigitales cd);
     public int insertarImagen(BigDecimal id, byte[] fichero) throws SQLException;
+    public List<Object[]> getComprobantesByIdTipoLlave(BigDecimal idTipoFk, BigDecimal idLlave);
+    
     public List<Object[]> getComprobanteByIdTipoLlave(BigDecimal idTipoFk, BigDecimal idLlave);
     
 }

@@ -20,6 +20,7 @@ public interface IfaceComprobantes {
     public int updateComprobante(ComprobantesDigitales cd);
     public int deleteComprobante(ComprobantesDigitales cd);
     public int insertarImagen(BigDecimal id, byte[] fichero) throws SQLException;
-    public ArrayList<ComprobantesDigitales> getComprobanteByIdTipoLlave(BigDecimal idTipoFk, BigDecimal idLlave);
+    public ComprobantesDigitales getComprobanteByIdTipoLlave(BigDecimal idTipoFk, BigDecimal idLlave);
+    public ArrayList<ComprobantesDigitales> getComprobantesByIdTipoLlave(BigDecimal idTipoFk, BigDecimal idLlave);
     
 }

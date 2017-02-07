@@ -40,6 +40,8 @@ public class VentaMayoreo implements Serializable {
     private BigDecimal ganciaVenta;
     private BigDecimal idUsuarioLogueadoFk;
     private String nombreUsuarioLogueado;
+    private byte[] fichero;
+    
 
     @Override
     public String toString() {
@@ -256,5 +258,14 @@ public class VentaMayoreo implements Serializable {
     public void setGanciaVenta(BigDecimal ganciaVenta) {
         this.ganciaVenta = ganciaVenta;
     }
+
+    public byte[] getFichero() {
+        return fichero;
+    }
+
+    public void setFichero(byte[] fichero) {
+        this.fichero = fichero;
+    }
+    
 
 }

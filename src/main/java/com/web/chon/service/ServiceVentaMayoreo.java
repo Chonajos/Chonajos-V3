@@ -6,6 +6,7 @@
 package com.web.chon.service;
 
 import com.web.chon.dominio.CarroDetalle;
+import com.web.chon.dominio.ComprobantesDigitales;
 import com.web.chon.dominio.OperacionesVentasMayoreo;
 import com.web.chon.dominio.VentaMayoreo;
 import com.web.chon.dominio.VentaProductoMayoreo;
@@ -33,7 +34,9 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
     NegocioVentaMayoreo ejb;
 
     @Autowired
-    IfaceVentaMayoreoProducto ifaceVentaMayoreoProducto;
+    private IfaceVentaMayoreoProducto ifaceVentaMayoreoProducto;
+    @Autowired
+    private IfaceComprobantes ifaceComprobantes;
 
     private void getEjb() {
         try {
@@ -81,16 +84,22 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
             venta.setIdCancelUser(obj[11] == null ? null : new BigDecimal(obj[11].toString()));
             venta.setFechaCancelacion((Date) obj[12]);
             venta.setComentariosCancel(obj[13] == null ? "" : obj[13].toString());
-            
+
             venta.setIdUsuarioLogueadoFk(obj[14] == null ? new BigDecimal(0) : new BigDecimal(obj[14].toString()));
             venta.setNombreCliente(obj[15] == null ? "" : obj[15].toString());
-            venta.setNombreVendedor(obj[16] == null ? "":obj[16].toString());
+            venta.setNombreVendedor(obj[16] == null ? "" : obj[16].toString());
             venta.setTotalVenta(obj[17] == null ? new BigDecimal(0) : new BigDecimal(obj[17].toString()));
             venta.setNombreTipoVenta(obj[18].toString());
             ganacias = obj[19] == null ? new BigDecimal(0) : new BigDecimal(obj[19].toString());
             venta.setNombreUsuarioLogueado(obj[20].toString().trim().equals("") ? venta.getNombreVendedor() : obj[20].toString());
             venta.setGanciaVenta(venta.getTotalVenta().subtract(ganacias));
             venta.setListaProductos(ifaceVentaMayoreoProducto.getProductosbyIdVmFk(venta.getIdVentaMayoreoPk()));
+            ComprobantesDigitales cd = new ComprobantesDigitales();
+            cd = ifaceComprobantes.getComprobanteByIdTipoLlave(new BigDecimal(2), venta.getIdVentaMayoreoPk());
+
+            if (cd != null) {
+                venta.setFichero(cd.getFichero());
+            }
             lstVenta.add(venta);
         }
 

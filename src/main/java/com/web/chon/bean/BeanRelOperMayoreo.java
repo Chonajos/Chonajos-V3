@@ -33,12 +33,15 @@ import com.web.chon.util.JsfUtil;
 import com.web.chon.util.NumeroALetra;
 import com.web.chon.util.TiempoUtil;
 import com.web.chon.util.UtilUpload;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -56,6 +59,8 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import org.primefaces.context.RequestContext;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -65,7 +70,7 @@ import org.springframework.stereotype.Component;
  * @author freddy
  */
 @Component
-@Scope("view")
+@Scope("session")
 public class BeanRelOperMayoreo implements Serializable, BeanSimple {
 
     private static final long serialVersionUID = 1L;
@@ -144,7 +149,7 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
     private Credito c;
     private boolean variableInicial;
     private boolean credito;
-
+    private StreamedContent variable;
     private Date date;
 
     @PostConstruct
@@ -240,13 +245,23 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
 
     }
 
-//    public void getVentasByIntervalDate() {
-//
-//        setFechaInicioFin(filtro);
-//
-//        listaVentasMayoreo = ifaceVentaMayoreo.getVentasByIntervalDate(data.getFechaFiltroInicio(), data.getFechaFiltroFin(), data.getIdSucursal(), data.getIdStatus(), data.getIdTipoVenta());
-//        getTotalVentaByInterval();
-//    }
+public StreamedContent getProductImage() throws IOException, SQLException {
+        FacesContext context = FacesContext.getCurrentInstance();
+        String imageType = "image/jpg";
+        if(data.getFichero()==null)
+        {
+            JsfUtil.addErrorMessageClean("Esta operación no cuenta con comprobante");
+            return variable;
+        }
+        else{
+            variable = null;
+            System.out.println("Data:" +data.toString());
+             byte[] image = data.getFichero();
+             variable = new DefaultStreamedContent(new ByteArrayInputStream(image), imageType, data.getIdVentaMayoreoPk().toString());
+            return variable;
+        }
+           
+    }
     public void getTotalVentaByInterval() {
         totalVenta = new BigDecimal(0);
         totalUtilidad = new BigDecimal(0);

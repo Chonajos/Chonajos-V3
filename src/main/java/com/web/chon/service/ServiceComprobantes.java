@@ -11,6 +11,7 @@ import com.web.chon.util.Utilidades;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -63,7 +64,7 @@ public class ServiceComprobantes implements IfaceComprobantes{
     }
 
     @Override
-    public ArrayList<ComprobantesDigitales> getComprobanteByIdTipoLlave(BigDecimal idTipoFk, BigDecimal idLlave) {
+    public ArrayList<ComprobantesDigitales> getComprobantesByIdTipoLlave(BigDecimal idTipoFk, BigDecimal idLlave) {
        getEjb();
 
         List<Object[]> lstObject = new ArrayList<Object[]>();
@@ -74,8 +75,9 @@ public class ServiceComprobantes implements IfaceComprobantes{
             dominio.setIdComprobantesDigitalesPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));;
             dominio.setIdTipoFk(obj[1] == null ? null : new BigDecimal(obj[1].toString()));;
             dominio.setIdLlaveFk(obj[2] == null ? null : new BigDecimal(obj[2].toString()));;
-            dominio.setNombre(obj[3] == null ? "" : obj[3].toString());
-            dominio.setFichero((obj[4] == null ? null : (byte[]) (obj[4])));
+            dominio.setFecha(obj[3] == null ? null : (Date) obj[3]);
+            dominio.setNombre(obj[4] == null ? "" : obj[4].toString());
+            dominio.setFichero((obj[5] == null ? null : (byte[]) (obj[5])));
 
             lstComprobantes.add(dominio);
         }
@@ -88,5 +90,25 @@ public class ServiceComprobantes implements IfaceComprobantes{
     {
         getEjb();
         return ejb.insertarImagen(id, fichero);
+    }
+
+    @Override
+    public ComprobantesDigitales getComprobanteByIdTipoLlave(BigDecimal idTipoFk, BigDecimal idLlave) {
+         getEjb();
+        List<Object[]> lstObject = new ArrayList<Object[]>();
+        lstObject = ejb.getComprobanteByIdTipoLlave(idTipoFk,idLlave);
+      
+        ComprobantesDigitales dominio = new ComprobantesDigitales();
+        for (Object[] obj : lstObject) {
+            dominio.setIdComprobantesDigitalesPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));;
+            dominio.setIdTipoFk(obj[1] == null ? null : new BigDecimal(obj[1].toString()));;
+            dominio.setIdLlaveFk(obj[2] == null ? null : new BigDecimal(obj[2].toString()));;
+            dominio.setFecha(obj[3] == null ? null : (Date) obj[3]);
+            dominio.setNombre(obj[4] == null ? "" : obj[4].toString());
+            dominio.setFichero((obj[5] == null ? null : (byte[]) (obj[5])));
+
+        }
+        return dominio;
+    
     }
 }

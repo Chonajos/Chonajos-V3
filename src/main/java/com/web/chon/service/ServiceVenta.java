@@ -1,4 +1,5 @@
 package com.web.chon.service;
+import com.web.chon.dominio.ComprobantesDigitales;
 import com.web.chon.dominio.Venta;
 import com.web.chon.dominio.VentaProducto;
 import com.web.chon.negocio.NegocioVenta;
@@ -26,6 +27,8 @@ public class ServiceVenta implements IfaceVenta {
     NegocioVenta ejb;
     @Autowired
     private IfaceVentaProducto ifaceVentaProducto;
+    @Autowired
+    private IfaceComprobantes ifaceComprobantes;
 
     private void getEjb() {
         try {
@@ -88,6 +91,14 @@ public class ServiceVenta implements IfaceVenta {
             venta.setLstVentaProducto(listaProductos);
             count = count.add(new BigDecimal(1), MathContext.UNLIMITED);
             venta.setCount(count);
+            ComprobantesDigitales cd = new ComprobantesDigitales();
+            cd = ifaceComprobantes.getComprobanteByIdTipoLlave(new BigDecimal(3), venta.getIdVentaPk());
+
+            if (cd != null) {
+                venta.setFichero(cd.getFichero());
+            }
+            
+            
             lstVenta.add(venta);
         }
 

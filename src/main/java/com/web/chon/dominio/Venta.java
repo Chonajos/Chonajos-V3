@@ -47,11 +47,22 @@ public class Venta implements Serializable {
     private BigDecimal numeroPagos;
     private BigDecimal plazos;
     private BigDecimal aCuenta;
+    private byte[] fichero;
 
     @Override
     public String toString() {
         return "Venta{" + "idVentaPk=" + idVentaPk + ", fechaVenta=" + fechaVenta + ", fechaPromesaPago=" + fechaPromesaPago + ", idClienteFk=" + idClienteFk + ", idSucursal=" + idSucursal + ", idVendedorFk=" + idVendedorFk + ", nombrestatus=" + nombrestatus + ", fechaPago=" + fechaPago + ", nombreCliente=" + nombreCliente + ", nombreVendedor=" + nombreVendedor + ", totalVenta=" + totalVenta + ", folio=" + folio + ", idStatusVenta=" + idStatusVenta + ", count=" + count + ", nombreSucursal=" + nombreSucursal + ", nombreEstatus=" + nombreEstatus + ", lstVentaProducto=" + lstVentaProducto + ", tipoVenta=" + tipoVenta + ", descripcionTipoVenta=" + descripcionTipoVenta + ", idTipoVenta=" + idTipoVenta + ", idCredito=" + idCredito + ", fechaPromesaPagoCredito=" + fechaPromesaPagoCredito + ", montoCredito=" + montoCredito + ", numeroPagos=" + numeroPagos + ", plazos=" + plazos + ", aCuenta=" + aCuenta + '}';
     }
+
+    public byte[] getFichero() {
+        return fichero;
+    }
+
+    public void setFichero(byte[] fichero) {
+        this.fichero = fichero;
+    }
+    
+    
 
     public String getNombreUsuarioLogueado() {
         return nombreUsuarioLogueado;

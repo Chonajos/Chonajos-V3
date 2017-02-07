@@ -26,12 +26,15 @@ import com.web.chon.util.JsfUtil;
 import com.web.chon.util.NumeroALetra;
 import com.web.chon.util.TiempoUtil;
 import com.web.chon.util.UtilUpload;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -48,6 +51,8 @@ import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -58,7 +63,7 @@ import org.springframework.stereotype.Component;
  * @author Juan de la Cruz
  */
 @Component
-@Scope("view")
+@Scope("session")
 public class BeanRelacionOperaciones implements Serializable, BeanSimple {
 
     private static final long serialVersionUID = 1L;
@@ -84,6 +89,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     private UsuarioDominio usuario;
     private Venta ventaImpresion;
     private Venta ventaCancelar;
+    private Venta data;
     private Subproducto subProducto;
     private Cliente cliente;
 
@@ -120,6 +126,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     private String comentarioCancelacion;
 
     private static final BigDecimal TIPO = new BigDecimal(1);
+    private StreamedContent variable;
 
     @PostConstruct
     public void init() {
@@ -136,6 +143,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
         filtro = 1;
         idTipoVenta = null;
         comentarioCancelacion = "";
+        data= new Venta();
         totalVenta = new BigDecimal(0);
         verificarCombo();
         buscar();
@@ -325,6 +333,23 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
                 totalVenta = totalVenta.add(v.getTotalVenta(), MathContext.UNLIMITED);
             }
         }
+    }
+    public StreamedContent getProductImage() throws IOException, SQLException {
+        FacesContext context = FacesContext.getCurrentInstance();
+        String imageType = "image/jpg";
+        if(data.getFichero()==null)
+        {
+            JsfUtil.addErrorMessageClean("Esta operación no cuenta con comprobante");
+            return variable;
+        }
+        else{
+            variable = null;
+            System.out.println("Data:" +data.toString());
+             byte[] image = data.getFichero();
+             variable = new DefaultStreamedContent(new ByteArrayInputStream(image), imageType, data.getIdVentaPk().toString());
+            return variable;
+        }
+           
     }
 
     public void cancelarVenta() {
@@ -705,5 +730,14 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
+
+    public Venta getData() {
+        return data;
+    }
+
+    public void setData(Venta data) {
+        this.data = data;
+    }
+    
 
 }

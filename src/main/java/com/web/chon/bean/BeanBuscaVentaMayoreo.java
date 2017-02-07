@@ -145,6 +145,9 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     //CONSTANTES TIPO OPERACION
     private static final BigDecimal OPERACIONVENTASMENUDEO = new BigDecimal(5);
     private static final BigDecimal OPERACIONVENTASMAYOREO = new BigDecimal(6);
+    
+    private static final BigDecimal IMAGEN_TIPO_MAYOREO = new BigDecimal(2);
+    private static final BigDecimal IMAGEN_TIPO_MENUDEO = new BigDecimal(3);
 
     //-------------- Variables para Registrar Pago ----------//
     private BigDecimal idTipoPagoFk;
@@ -625,16 +628,19 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
 
         ventaMenudeo = false;
         //SE HACE LA BUSQUEDA A MENUDEO
-        if (ventaMayoreo == null || ventaMayoreo.getIdVentaMayoreoPk() == null) {
+        if (ventaMayoreo == null || ventaMayoreo.getIdVentaMayoreoPk() == null) 
+        {
             ventaMayoreo = ifaceBuscaVenta.getVentaByfolioAndIdSuc(folioVenta, usuario.getIdSucursal());
             ventaMenudeo = true;
             montoApartado = ifaceApartado.montoApartado(ventaMayoreo.getIdVentaMayoreoPk(), new BigDecimal(2));
             montoTotal = ventaMayoreo.getTotalVenta();
         }
 
-        if (ventaMayoreo == null || ventaMayoreo.getIdVentaMayoreoPk() == null) {
+        if (ventaMayoreo == null || ventaMayoreo.getIdVentaMayoreoPk() == null) 
+        {
             JsfUtil.addErrorMessageClean("No se encontró ese folio, podría ser de otra sucursal.");
-        } else if (ventaMayoreo.getIdtipoVentaFk().intValue() == 1) {
+        } else if (ventaMayoreo.getIdtipoVentaFk().intValue() == 1) 
+        {
             statusButtonCargar = true;
             montoApartado = ifaceApartado.montoApartado(ventaMayoreo.getIdVentaMayoreoPk(), new BigDecimal(1));
             montoTotal = ventaMayoreo.getTotalVenta();
@@ -659,57 +665,68 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
                     JsfUtil.addErrorMessageClean("Ha ocurrido un error, contactar al administrador.");
                     break;
             }
-        } else
-        {
-            JsfUtil.addErrorMessageClean("No puedes cobrar una venta de crédito, ir a la sección abonar crédito.");
+        } else {
+            JsfUtil.addWarnMessageClean("No puedes cobrar una venta de crédito, ir a la sección abonar crédito, subir imagen");
             statusButtonPagar = true;
             statusButtonCargar = false;
         }
     }
-    public void cargarImagen() throws SQLException
-    {
+
+    public void cargarImagen() throws SQLException {
+
         
-        cd.setIdComprobantesDigitalesPk(new BigDecimal(ifaceComprobantes.getNextVal()));
-        cd.setIdTipoFk(new BigDecimal(2));
-        cd.setIdLlaveFk(ventaMayoreo.getIdVentaMayoreoPk());
-        if(ifaceComprobantes.insertaComprobante(cd)==1)
+        if(ventaMenudeo)
         {
-            if(ifaceComprobantes.insertarImagen(cd.getIdComprobantesDigitalesPk(), cd.getFichero())==1)
-            {
-                statusButtonCargar = true;
-                JsfUtil.addSuccessMessageClean("Se ha cargado con éxito el comprobante");
-            }
-            else
-            {
-                JsfUtil.addErrorMessageClean("1.- Ha ocurrido un error al subir la imagen");
-            }
+           cd.setIdTipoFk(IMAGEN_TIPO_MENUDEO); 
         }
         else
         {
-             JsfUtil.addErrorMessageClean("2.- Ha ocurrido un error al subir la imagen");
+            cd.setIdTipoFk(IMAGEN_TIPO_MAYOREO);
         }
+        
+        cd.setIdLlaveFk(ventaMayoreo.getIdVentaMayoreoPk());
+
+        //Primero verificamos que ya exista imagen para ese folio
+        ComprobantesDigitales cdi = new ComprobantesDigitales();
+        cdi = ifaceComprobantes.getComprobanteByIdTipoLlave(cd.getIdTipoFk(), cd.getIdLlaveFk());
+        System.out.println("CDI: "+cdi.toString());
+        if (cdi.getIdComprobantesDigitalesPk() == null) 
+        {
+            cd.setIdComprobantesDigitalesPk(new BigDecimal(ifaceComprobantes.getNextVal()));
+
+            if (ifaceComprobantes.insertaComprobante(cd) == 1) {
+                if (ifaceComprobantes.insertarImagen(cd.getIdComprobantesDigitalesPk(), cd.getFichero()) == 1) {
+                    statusButtonCargar = true;
+                    JsfUtil.addSuccessMessageClean("Se ha cargado con éxito el comprobante");
+                } else {
+                    JsfUtil.addErrorMessageClean("1.- Ha ocurrido un error al subir la imagen");
+                }
+            } else {
+                JsfUtil.addErrorMessageClean("2.- Ha ocurrido un error al subir la imagen");
+            }
+        } else {
+            JsfUtil.addErrorMessageClean("Error, ya se ha subido imagen para este número de folio");
+        }
+
     }
-    public void handleFileUpload(FileUploadEvent event) throws IOException 
-    {
+
+    public void handleFileUpload(FileUploadEvent event) throws IOException {
 
         UploadedFile uploadedFile = (UploadedFile) event.getFile();
         InputStream inputStr = null;
         try {
 
             inputStr = uploadedFile.getInputstream();
-        } catch (IOException e) 
-        {
+        } catch (IOException e) {
             JsfUtil.addErrorMessage("No se permite guardar valores nulos.");
             manageException(e);
         }
 
-        try 
-        {
+        try {
             bytes = IOUtils.toByteArray(inputStr);
             cd.setFichero(bytes);
             JsfUtil.addSuccessMessageClean("El archivo " + event.getFile().getFileName().trim() + "fue cargado con éxito");
-        } catch (IOException e) 
-        {
+        } catch (IOException e) {
             JsfUtil.addErrorMessageClean("Ocurrio un error al cargar el archivo");
             e.printStackTrace();
         }
@@ -1052,6 +1069,5 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     public void setStatusButtonCargar(boolean statusButtonCargar) {
         this.statusButtonCargar = statusButtonCargar;
     }
-    
 
 }

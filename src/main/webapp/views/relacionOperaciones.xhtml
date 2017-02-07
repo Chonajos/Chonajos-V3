@@ -191,6 +191,11 @@
                                     <p:confirm header="Confirmación" message="¿Estás seguro de cancelar la venta?" icon="ui-icon-alert"/>
                                 </p:commandButton>
                             </p:column>
+                            <p:column headerText="imagen" width="60px;"  class="alignCenter">
+                                <p:commandButton icon="ui-icon-image" id="openDialogLink" disabled="#{model.fichero ==null}" update=":formContent:imagen"  onclick="PF('dlg').show();" >
+                                    <f:setPropertyActionListener value="#{model}" target="#{beanRelacionOperaciones.data}"/>
+                                </p:commandButton>
+                            </p:column>
 
                             <p:columnGroup type="footer">
 
@@ -241,6 +246,16 @@
                             </p:rowExpansion>
                         </p:dataTable>
                     </div>
+                    <p:dialog id="picture"  widgetVar="dlg" header="Comprobante" resizable="false" showEffect="clip" hideEffect="clip">
+                        <div>
+                            <p:graphicImage cache="false" style="height:300px; width:300px;" id="imagen" value="#{beanRelacionOperaciones.productImage}"/>
+                        </div>
+                        <div>
+                            <p:commandButton value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="ui-icon-arrowthick-1-s">
+                                <p:fileDownload value="#{beanRelacionOperaciones.productImage}" />
+                            </p:commandButton>
+                        </div>
+                    </p:dialog> 
                 </div>
                 <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanRelacionOperaciones.rutaPDF}"/>
 

@@ -92,9 +92,25 @@ public class EjbComprobantesDigitales implements NegocioComprobantes {
     }
 
     @Override
-    public List<Object[]> getComprobanteByIdTipoLlave(BigDecimal idTipoFk, BigDecimal idLlave) {
+    public List<Object[]> getComprobantesByIdTipoLlave(BigDecimal idTipoFk, BigDecimal idLlave) {
          try {
-            Query query = em.createNativeQuery("select * from COMPROBANTES_DIGITALES where ID_LLAVE_FK=?, and ID_TIPO_FK=? ");
+            Query query = em.createNativeQuery("select * from COMPROBANTES_DIGITALES where ID_LLAVE_FK=? and ID_TIPO_FK=? ");
+            query.setParameter(1, idLlave);
+            query.setParameter(2, idTipoFk);
+            return query.getResultList();
+        } catch (Exception ex) {
+            Logger.getLogger(EjbComprobantesDigitales.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
+    @Override
+    public List<Object[]> getComprobanteByIdTipoLlave(BigDecimal idTipoFk, BigDecimal idLlave) {
+        System.out.println("Variables: Tipo: "+idTipoFk + " LLave: "+idLlave);
+        try {
+            Query query = em.createNativeQuery("select * from COMPROBANTES_DIGITALES where ID_LLAVE_FK=? and ID_TIPO_FK=? ");
+            query.setParameter(1, idLlave);
+            query.setParameter(2, idTipoFk);
             return query.getResultList();
         } catch (Exception ex) {
             Logger.getLogger(EjbComprobantesDigitales.class.getName()).log(Level.SEVERE, null, ex);
