@@ -41,7 +41,7 @@ public class CustomFilter extends OncePerRequestFilter {
         }
 
         String url = req.getRequestURL().toString();
-        String urlPrimePush = url.substring(url.length() - 16, url.length());
+//        String urlPrimePush = url.substring(url.length() - 16, url.length());
 
         int i = url.lastIndexOf("/views/");
         int j = url.lastIndexOf("7001");
@@ -110,20 +110,5 @@ public class CustomFilter extends OncePerRequestFilter {
         throw new SecurityAccessException(
                 "No tiene permisos para ver esta Pagina.");
     }
-
-    //son para el envio de email
-//    private Matcher applyPattern(HttpServletRequest req) {
-//        Matcher m = pattern.matcher(req.getServletPath());
-//        if (!m.matches()) {
-//            m = null;
-//        }
-//
-//        req.setAttribute("matcher", m);
-//        return m;
-//    }
-//
-//    protected Matcher getMatcherFromRequest(ServletRequest req) {
-//        return (Matcher) req.getAttribute("matcher");
-//    }
 
 }

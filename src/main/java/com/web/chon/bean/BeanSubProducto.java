@@ -250,7 +250,6 @@ public class BeanSubProducto implements Serializable, BeanSimple {
             temporal = Constantes.PATHSERVER;
         } else {
             temporal = servletContext.getRealPath("");
-            System.out.println("temporal: " + temporal);
         }
         path = temporal + File.separatorChar + "resources" + File.separatorChar + "img" + File.separatorChar + "RODUCTOS";
 
@@ -260,7 +259,6 @@ public class BeanSubProducto implements Serializable, BeanSimple {
             UploadedFile uploadedFile = (UploadedFile) event.getFile();
             InputStream inputStr = null;
             try {
-//                logger.debug("selecciona archivo");
                 inputStr = uploadedFile.getInputstream();
             } catch (IOException e) {
                 JsfUtil.addErrorMessage("No se permite guardar valores nulos. ");
@@ -277,18 +275,11 @@ public class BeanSubProducto implements Serializable, BeanSimple {
             destPath = path + File.separatorChar + fileName;
 
             try {
-//                if (state == ViewState.NEW) {
                 bytes = IOUtils.toByteArray(inputStr);
                 System.out.println("bytes = " + bytes);
                 data.setFichero(bytes);
                 FileUtils.guardaArchivo(destPath, inputStr);
 
-                System.out.println("archivo guardado en " + destPath);
-
-//                } else {
-//
-//                    inputStream = inputStr;
-//                }
                 FacesMessage message = new FacesMessage("exito", "El archivo "
                         + event.getFile().getFileName().trim()
                         + " fue cargado.");
@@ -308,7 +299,6 @@ public class BeanSubProducto implements Serializable, BeanSimple {
                 //Se cambia la ruta a guardar en la bd 
                 String strPath = "";
                 strPath = ".." + File.separatorChar + "resources" + File.separatorChar + "img" + File.separatorChar + "RODUCTOS" + File.separatorChar + fileName;
-                System.out.println("str path " + strPath);
 
                 data.setUrlImagenSubproducto(strPath);
             } catch (IOException e) {

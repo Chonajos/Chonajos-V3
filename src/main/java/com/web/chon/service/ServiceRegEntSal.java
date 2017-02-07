@@ -116,6 +116,9 @@ public class ServiceRegEntSal implements IfaceRegistroEntradaSalida {
                 reg.setLatitudSalida(obj[6] == null ? Double.valueOf(0) : Double.valueOf(obj[6].toString()));
                 reg.setLongitudEntrada(obj[7] == null ? Double.valueOf(0) : Double.valueOf(obj[7].toString()));
                 reg.setLatitudSalida(obj[8] == null ? Double.valueOf(0) : Double.valueOf(obj[8].toString()));
+                reg.setDiasTrabajdosDescanso(new BigDecimal(0));
+                reg.setHorasAtrabajar(new BigDecimal(0));
+                reg.setHorasTrabajada(new BigDecimal(0));
 
                 if (obj[11] != null) {
 
@@ -150,6 +153,17 @@ public class ServiceRegEntSal implements IfaceRegistroEntradaSalida {
                             reg.setRetardo(false);
                         }
                     }
+                }else{
+                     if (!reg.getHoraEntrada().equals(SIN_REGISTOR)) {
+                         reg.setDiasTrabajdosDescanso(reg.getDiasTrabajdosDescanso().add(new BigDecimal(1)));
+                         if(reg.getHoraSalida().equals(SIN_REGISTOR)){
+                             reg.setHoraSalida(reg.getHorarioSalida());
+                             
+                         }
+                         int minutosTrabajdos = TiempoUtil.getMinutesBetweenTwoHour(reg.getHoraEntrada(), reg.getHoraSalida());
+                         reg.setHorasTrabajada(reg.getHorasAtrabajar().add(new BigDecimal(minutosTrabajdos)));
+                         
+                     }
                 }
 
                 lstTop.add(reg);

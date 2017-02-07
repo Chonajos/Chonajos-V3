@@ -5,6 +5,7 @@ import com.web.chon.dominio.EntradaMercancia;
 import com.web.chon.dominio.EntradaMercanciaProducto;
 import com.web.chon.dominio.EntradaMercanciaProductoPaquete;
 import com.web.chon.dominio.ExistenciaProducto;
+import com.web.chon.dominio.FileDominio;
 import com.web.chon.dominio.Provedor;
 import com.web.chon.dominio.Subproducto;
 import com.web.chon.dominio.Sucursal;
@@ -24,12 +25,17 @@ import com.web.chon.service.IfaceNegocioExistencia;
 import com.web.chon.service.IfaceSubProducto;
 import com.web.chon.service.IfaceTipoCovenio;
 import com.web.chon.util.Constantes;
+import com.web.chon.util.FileUtils;
 import com.web.chon.util.JasperReportUtil;
 import com.web.chon.util.JsfUtil;
 import com.web.chon.util.TiempoUtil;
 import com.web.chon.util.UtilUpload;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -38,10 +44,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -53,9 +61,14 @@ import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
+import org.apache.commons.io.IOUtils;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.RowEditEvent;
+import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
+import org.primefaces.model.UploadedFile;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -70,6 +83,7 @@ import org.springframework.stereotype.Component;
 public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
     private static final long serialVersionUID = 1L;
+    private final static org.slf4j.Logger logger = LoggerFactory.getLogger(BeanRelOperEntradaMercancia.class);
     @Autowired
     private PlataformaSecurityContext context;
     @Autowired
@@ -135,7 +149,22 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     private String number;
     private int idSucu;
     private int expande;
-    
+
+    private List<FileDominio> filesUser = new ArrayList<FileDominio>();
+
+    private InputStream inputStream;
+    private int fileSaved = 0;
+    private DefaultStreamedContent download;
+    private String path = "C:/Users/Juan/Documents/NetBeansProjects/Chonajos-V3/src/main/webapp/resources/video";//path de prueba comentar cuando se suba al servidor
+    private File[] files = null;
+    private String carpetaCarro = "";
+    private String carpetaProducto = "";
+    private String destPath;
+
+    private UploadedFile file;
+
+    private byte[] bytes;
+
     private String pathFileJasper = "";
 
     @PostConstruct
@@ -357,8 +386,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
                 EntradaMercancia em = ifaceEntradaMercancia.getEntradaByIdEmPFk(dataProductoAutoAjuste.getIdEmpPK());
                 BigDecimal to = new BigDecimal(0);
                 BigDecimal ca = new BigDecimal(0);
-                for (EntradaMercanciaProducto p : em.getListaProductos()) 
-                {
+                for (EntradaMercanciaProducto p : em.getListaProductos()) {
                     to = to.add(p.getKilosTotalesProducto(), MathContext.UNLIMITED);
                     ca = ca.add(p.getCantidadPaquetes(), MathContext.UNLIMITED);
                 }
@@ -389,8 +417,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
     }
 
-    public void verificarCombo() 
-    {
+    public void verificarCombo() {
         if (filtro == -1) {
             //se habilitan los calendarios.
             //fechaFiltroInicio = null;
@@ -424,8 +451,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     }
 
     public void buscar() {
-        if ((fechaFiltroInicio == null || fechaFiltroFin == null) && carro ==null)
-        {
+        if ((fechaFiltroInicio == null || fechaFiltroFin == null) && carro == null) {
             JsfUtil.addErrorMessageClean("Favor de ingresar un rango de fechas");
         } else {
             if (provedor == null) {
@@ -433,10 +459,9 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
                 provedor.setIdProvedorPK(null);
             }
             BigDecimal idProvedor = provedor == null ? null : provedor.getIdProvedorPK();
-            if (carro != null) 
-            {
-                fechaInicio=fechaFiltroInicio;
-                fechaFin=fechaFiltroFin;
+            if (carro != null) {
+                fechaInicio = fechaFiltroInicio;
+                fechaFin = fechaFiltroFin;
                 fechaFiltroFin = null;
                 fechaFiltroInicio = null;
             }
@@ -446,16 +471,14 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     }
 
     public void registrarPaquete() {
-        System.out.println("Paquete: "+dataPaquete.toString());
+        System.out.println("Paquete: " + dataPaquete.toString());
         if (dataPaquete.getPesoNeto() == null || dataPaquete.getPaquetes() == null || dataPaquete.getKilos() == null) {
             JsfUtil.addErrorMessageClean("LLenar todos los datos del paquete");
-        } else 
-        {
+        } else {
             dataPaquete.setIdEmPP(new BigDecimal(ifaceEntMerProPaq.getNextVal()));
             dataPaquete.setIdEmpFK(dataProducto.getIdEmpPK());
             dataPaquete.setIdStatusFk(new BigDecimal(1));
-            if (ifaceEntMerProPaq.insertPaquete(dataPaquete) == 1) 
-            {
+            if (ifaceEntMerProPaq.insertPaquete(dataPaquete) == 1) {
                 JsfUtil.addSuccessMessageClean("Paquete agregado correctamente");
                 buscar();
             } else {
@@ -525,7 +548,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
                     to = to.add(p.getKilosTotalesProducto(), MathContext.UNLIMITED);
                     ca = ca.add(p.getCantidadPaquetes(), MathContext.UNLIMITED);
                 }
-                
+
                 em.setKilosTotales(to);
                 em.setCantidadEmpaquesReales(ca);
                 ifaceEntradaMercancia.updateEntradaMercancia(em);
@@ -677,8 +700,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
                 ep.setIdExistenciaProductoPk(e.getIdExistenciaProductoPk());
                 System.out.println("--------------Existencia Actualizar------------");
                 System.out.println(ep.toString());
-                if (ifaceNegocioExistencia.update(ep) == 1)
-                {
+                if (ifaceNegocioExistencia.update(ep) == 1) {
                     JsfUtil.addSuccessMessageClean("Actualización de datos correcta");
                     recalcularKilosEmpaques(dataProductEdit);
                 } else {
@@ -699,11 +721,10 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         BigDecimal ki = new BigDecimal(0);
         for (EntradaMercancia entrada : lstEntradaMercancia) {
             if (entrada.getIdEmPK().intValue() == dataProductEdit.getIdEmFK().intValue()) {
-                
+
                 for (EntradaMercanciaProducto producto : entrada.getListaProductos()) {
                     ca = ca.add(producto.getCantidadPaquetes(), MathContext.UNLIMITED);
                     ki = ki.add(producto.getKilosTotalesProducto(), MathContext.UNLIMITED);
-                   
 
                 }
                 entrada.setKilosTotales(ki);
@@ -754,9 +775,140 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         return lstProvedor;
 
     }
-    
-    public void expandedRow(int expanded){
+
+    public void expandedRow(int expanded) {
         setExpande(expanded);
+    }
+
+    public void handleFileUpload(FileUploadEvent event) {
+
+        EntradaMercanciaProducto item = (EntradaMercanciaProducto) event.getComponent().getAttributes().get("item");
+
+        String fileName = event.getFile().getFileName().trim();
+        String pathServer = null;
+        ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+
+        if (servletContext.getRealPath("") == null) {
+            pathServer = Constantes.PATHSERVER;
+        } else {
+            pathServer = path;
+        }
+
+        if (existFileOnFolder(fileName)) {
+            JsfUtil.addErrorMessage("Archivo existente, seleccione otro.");
+        } else {
+            UploadedFile uploadedFile = (UploadedFile) event.getFile();
+            InputStream inputStr = null;
+            InputStream inputStrBd = null;
+            try {
+                logger.debug("selecciona archivo");
+                inputStr = uploadedFile.getInputstream();
+                inputStrBd = uploadedFile.getInputstream();
+            } catch (IOException e) {
+                JsfUtil.addErrorMessage("No se permite guardar valores nulos. ");
+                manageException(e);
+            }
+            try {
+
+                FileUtils.creaCarpeta(pathServer + "/" + "entradaProducto" + "/");
+
+            } catch (Exception e) {
+
+            }
+
+            destPath = pathServer + "/" + "entradaProducto" + "/" + fileName;
+
+            try {
+
+                FileUtils.guardaArchivo(destPath, inputStr);
+                bytes = IOUtils.toByteArray(inputStrBd);
+                item.setVideoByte(bytes);
+
+                FacesMessage message = new FacesMessage("exito", "El archivo "
+                        + event.getFile().getFileName().trim()
+                        + " fue cargado.");
+                FacesContext.getCurrentInstance().addMessage(null, message);
+                fileSaved = 1;
+
+                String strPath = "";
+                strPath = ".." + File.separatorChar + "resources" + File.separatorChar + "video" + File.separatorChar + "entradaProducto" + File.separatorChar + fileName;
+
+                item.setUrlVideo(strPath);
+
+                if (ifaceEntradaMercanciaProducto.updateVideo(item) > 0) {
+                    JsfUtil.addSuccessMessage("Video Guardado Correctamente.");
+                } else {
+                    JsfUtil.addErrorMessage("No se pudo Guardar el Video.");
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * ** Archivo ****
+     */
+    private boolean existFileOnFolder(String fileName) {
+        boolean exist = false;
+        getFiles();
+        for (FileDominio o : filesUser) {
+            if (fileName.equals(o.getFileName())) {
+                exist = true;
+            }
+        }
+        return exist;
+    }
+
+    public void getFiles() {
+        File folder = new File(path + carpetaCarro.trim());
+        if (folder.exists()) {
+            files = new File(path + carpetaCarro.trim()).listFiles();
+            if (files.length > 0) {
+                filesUser.clear();
+                for (File file : files) {
+                    FileDominio fileDto = new FileDominio();
+                    if (file.isFile()) {
+                        fileDto.setFileName(file.getName());
+                        filesUser.add(fileDto);
+                    }
+                }
+            }
+        } else {
+            try {
+                FileUtils.creaCarpeta(path + carpetaCarro.trim() + "/");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public boolean existFile(String filePath) throws Exception {
+        File file = new File(filePath);
+        return file.exists();
+    }
+
+    public void descarga(Subproducto dominio) throws Exception {
+        try {
+
+            if (dominio.getUrlImagenSubproducto() != null && !dominio.getUrlImagenSubproducto().isEmpty()) {
+                File file = new File(dominio.getUrlImagenSubproducto().trim());
+                InputStream input = new FileInputStream(file);
+                setDownload(new DefaultStreamedContent(input, file.getName(), file.getName()));
+            }
+
+        } catch (FileNotFoundException e) {
+            JsfUtil.addErrorMessage(e.toString());
+        }
+
+    }
+
+    public void deleteFile(String filePath) throws Exception {
+        File file = new File(filePath);
+        file.delete();
     }
 
     @Override
@@ -1077,5 +1229,24 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         this.expande = expande;
     }
 
-    
+    public DefaultStreamedContent getDownload() {
+        return download;
+    }
+
+    public void setDownload(DefaultStreamedContent download) {
+        this.download = download;
+    }
+
+    public UploadedFile getFile() {
+        return file;
+    }
+
+    public void setFile(UploadedFile file) {
+        this.file = file;
+    }
+
+    private void manageException(IOException e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

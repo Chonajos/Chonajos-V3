@@ -1,7 +1,5 @@
 package com.web.chon.bean;
 
-import com.web.chon.dominio.DiaDescansoUsuario;
-import com.web.chon.dominio.HorarioUsuario;
 import com.web.chon.dominio.Rol;
 import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.Usuario;
@@ -10,26 +8,26 @@ import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceCatRol;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceCatUsuario;
-//import com.web.chon.util.SendEmail;
+import com.web.chon.util.SendEmail;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-//import java.util.Properties;
+import java.util.Properties;
+import javax.activation.FileDataSource;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-//import javax.mail.Authenticator;
-//import javax.mail.BodyPart;
-//import javax.mail.Message;
-//import javax.mail.MessagingException;
-//import javax.mail.Multipart;
-//import javax.mail.PasswordAuthentication;
-//import javax.mail.Session;
-//import javax.mail.Transport;
-//import javax.mail.internet.InternetAddress;
-//import javax.mail.internet.MimeBodyPart;
-//import javax.mail.internet.MimeMessage;
-//import javax.mail.internet.MimeMultipart;
+import javax.mail.Authenticator;
+import javax.mail.BodyPart;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -159,76 +157,16 @@ public class BeanCatUsuario implements BeanSimple {
         setViewEstate("init");
     }
 
-//    public void sendEmail() {
-//        
-//        SendEmail.send();
-//        System.out.println("enviar correo sencillo 1");
-////        if (data.getCorreoUsuario() == null || data.getCorreoUsuario().equals("")) {
-////            System.out.println("no se tiene registrado un correo");
-////        } else {
-//
-//        // La dirección de envío (to)
-//        System.out.println("direcion de envio1");
-//        String para = "juancruzh91@gmail.com";
-//
-//        // La dirección de la cuenta de envío (from)
-//        System.out.println("direcion from1");
-//        String de = "juancruzh91@gmail.com";
-//
-//        // El servidor (host). En este caso usamos localhost
-//        System.out.println("localhost 1");
-//
-////        =
-////=
-////=
-////
-////
-//        
-//
-//        String host = "smtp.gmail.com";
-//
-//        // Obtenemos las propiedades del sistema
-//        Properties propiedades = System.getProperties();
-//
-//        // Configuramos el servidor de correo
-//        System.out.println("configurar el servidor de correo 1");
-////        propiedades.setProperty("mail.smtp.host", host);
-//        propiedades.put("mail.smtp.host","smtp.gmail.com");
-//        propiedades.put("mail.smtp.socketFactory.port", "465");
-//        propiedades.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-//        propiedades.put("mail.smtp.auth", "true");
-//        propiedades.put("mail.smtp.port", "465");
-//
-//        // Obtenemos la sesión por defecto
-//        System.out.println("se obtiene la session por defect");
-//        Session session = Session.getInstance(propiedades,new Authenticator() {protected PasswordAuthentication getPasswordAuthentication() {return new PasswordAuthentication("juancruzh91@gmail.com", "juancruzh91");}});
-////        Session session = Session.getDefaultInstance(propiedades,new Authenticator() {protected PasswordAuthentication getPasswordAuthentication() {return new PasswordAuthentication("juancruzh91@gmail.com", "juancruzh91");}});
-//
-//        
-//        try {
-//            // Creamos un objeto mensaje tipo MimeMessage por defecto.
-//            MimeMessage mensaje = new MimeMessage(session);
-//
-//            // Asignamos el “de o from” al header del correo.
-//            mensaje.setFrom(new InternetAddress(de));
-//
-//            // Asignamos el “para o to” al header del correo.
-//            mensaje.addRecipient(Message.RecipientType.TO, new InternetAddress(para));
-//
-//            // Asignamos el asunto
-//            mensaje.setSubject("Primer correo sencillo");
-//
-//            // Asignamos el mensaje como tal
-//            mensaje.setText("El mensaje de nuestro primer correo");
-//
-//            // Enviamos el correo
-//            Transport.send(mensaje);
-//            System.out.println("Mensaje enviado");
-//        } catch (MessagingException e) {
-//            System.out.println("error :(");
-//            e.printStackTrace();
-//        }
-//    }
+    public void sendEmail() {
+        
+//        SendEmail.sendTLS();
+      ArrayList<FileDataSource> lstFileDataSource = new ArrayList<FileDataSource>();
+      FileDataSource fileDataSource = new FileDataSource("C:/Users/Juan/Downloads/cortoPixar.mp4");
+      ArrayList<String> lstCorreoPara = new ArrayList<String>();
+      lstCorreoPara.add("juancruzh91@gmail.com");
+      lstFileDataSource.add(fileDataSource);
+       SendEmail.sendAdjunto("Productos Chonajos","Se adjunta video de nuestros nuevos prodctos",lstFileDataSource, "juancruzh91@gmail.com", lstCorreoPara);
+    }
 
     
 

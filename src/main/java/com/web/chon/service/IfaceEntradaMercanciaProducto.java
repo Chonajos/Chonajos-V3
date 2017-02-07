@@ -36,5 +36,7 @@ public interface IfaceEntradaMercanciaProducto extends PaginacionService<Entrada
     public EntradaMercanciaProducto getEntradaMercanciaProductoByIdEmpPk(BigDecimal idEmpPk);
     
     public VentaProductoMayoreo getTotalVentasByIdEMP(BigDecimal idEmP);
+    
+    public int updateVideo(EntradaMercanciaProducto entradaMercanciaProducto);
 
 }

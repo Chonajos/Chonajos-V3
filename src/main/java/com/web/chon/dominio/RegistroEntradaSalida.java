@@ -36,6 +36,10 @@ public class RegistroEntradaSalida implements Serializable {
     private boolean retardo;
     private boolean falta;
     private String[] diasDescanso;
+    
+    private BigDecimal diasTrabajdosDescanso;
+    private BigDecimal horasTrabajada;
+    private BigDecimal horasAtrabajar;
 
     @Override
     public String toString() {
@@ -233,5 +237,31 @@ public class RegistroEntradaSalida implements Serializable {
     public void setFalta(boolean falta) {
         this.falta = falta;
     }
+
+    public BigDecimal getDiasTrabajdosDescanso() {
+        return diasTrabajdosDescanso;
+    }
+
+    public void setDiasTrabajdosDescanso(BigDecimal diasTrabajdosDescanso) {
+        this.diasTrabajdosDescanso = diasTrabajdosDescanso;
+    }
+
+    public BigDecimal getHorasTrabajada() {
+        return horasTrabajada;
+    }
+
+    public void setHorasTrabajada(BigDecimal horasTrabajada) {
+        this.horasTrabajada = horasTrabajada;
+    }
+
+    public BigDecimal getHorasAtrabajar() {
+        return horasAtrabajar;
+    }
+
+    public void setHorasAtrabajar(BigDecimal horasAtrabajar) {
+        this.horasAtrabajar = horasAtrabajar;
+    }
+    
+    
 
 }
