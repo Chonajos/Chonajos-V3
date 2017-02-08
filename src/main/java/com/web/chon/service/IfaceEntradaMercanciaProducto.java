@@ -10,7 +10,6 @@ import com.web.chon.dominio.EntradaMercanciaProducto;
 import com.web.chon.dominio.VentaProductoMayoreo;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  *

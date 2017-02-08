@@ -1,6 +1,8 @@
 package com.web.chon.bean;
 
+import com.web.chon.dominio.EntradaMercanciaProducto;
 import com.web.chon.dominio.Usuario;
+import com.web.chon.service.IfaceEntradaMercanciaProducto;
 import com.web.chon.util.JsfUtil;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -23,11 +25,16 @@ import org.springframework.stereotype.Component;
 public class BeanVideoProductoMayoreo {
 
     private static final long serialVersionUID = 1L;
+    
+    @Autowired
+    private IfaceEntradaMercanciaProducto ifaceEntradaMercanciaProducto;
 
     private FacesContext facesContext;
+    
+    private EntradaMercanciaProducto data;
 
     private BigDecimal idEMP;
-    
+
     private String title;
 
     @PostConstruct
@@ -35,17 +42,49 @@ public class BeanVideoProductoMayoreo {
         facesContext = FacesContext.getCurrentInstance();
 
         String idEMPSTR = facesContext.getExternalContext().getRequestParameterMap().get("idEMP");
-        HttpServletRequest req = (HttpServletRequest) facesContext.getExternalContext().getRequest();
-        String url = req.getRequestURL().toString();
-        System.out.println("url "+url);
-
+        setTitle("Productos.");
+        
         if (idEMPSTR != null) {
             idEMP = new BigDecimal(idEMPSTR);
+            getVideoProducto(idEMP);
         }
-        setTitle("Productos.");
+        
+    }
+    
+    private void getVideoProducto(BigDecimal id){
+        
+        data = ifaceEntradaMercanciaProducto.getById(id);
+        String precioVenta = data.getPrecio() == null? "No Disponible.":data.getPrecio()+".";
+        setTitle(data.getNombreProducto().trim()+" "+data.getNombreEmpaque()+". Precio de Venta:$ "+precioVenta);
+        
     }
 
-   
+    private String getUrl(BigDecimal valorParametro, String nombreParametro, String nombrePantalla) {
+        HttpServletRequest req = (HttpServletRequest) facesContext.getExternalContext().getRequest();
+        String url = req.getRequestURL().toString();
+        String urlCustom = "";
+        String urlMap[];
+
+        urlMap = url.split(":");
+        urlCustom += urlMap[0] + ":";
+        urlCustom += urlMap[1];
+
+        urlCustom += ":" + urlMap[2].split("/")[0];
+
+        urlCustom += "/" + nombrePantalla + "?" + nombreParametro + "=" + valorParametro;
+
+        return urlCustom;
+    }
+
+    public EntradaMercanciaProducto getData() {
+        return data;
+    }
+
+    public void setData(EntradaMercanciaProducto data) {
+        this.data = data;
+    }
+    
+
     public String getTitle() {
         return title;
     }
@@ -53,6 +92,5 @@ public class BeanVideoProductoMayoreo {
     public void setTitle(String title) {
         this.title = title;
     }
-
 
 }

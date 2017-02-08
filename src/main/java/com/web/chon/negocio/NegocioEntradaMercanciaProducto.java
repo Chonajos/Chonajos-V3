@@ -28,4 +28,6 @@ public interface NegocioEntradaMercanciaProducto {
     public int updateEntradaMercanciaProducto(EntradaMercanciaProducto producto);
     
     public int updateVideo(BigDecimal id, byte[] fichero,String url);
+    
+    public List<Object[]> getById(BigDecimal idEMP);
 }
