@@ -253,11 +253,11 @@
                             <p:column headerText="Kilos Bodega" width="100px;" class="alignCenter">
                                 <h:outputText value="#{model.kilosTotales}"/>
                             </p:column>
-                            <p:column headerText="imagen" width="60px;"  class="alignCenter">
-                                <p:commandButton icon="ui-icon-image" id="openDialogLink"   onclick="PF('dlg8').show();" >
-                                    <f:setPropertyActionListener value="#{model}" target="#{beanRelOperEntradaMercancia.data}"/>
+<!--                            <p:column headerText="imagen" width="60px;"  class="alignCenter">
+                                <p:commandButton icon="ui-icon-image" id="openDialogLink"  update=":formContent:tabla5:imagen" onclick="PF('dlg8').show();" >
+                                    <f:setPropertyActionListener value="{model}" target="{beanRelOperEntradaMercancia.data}"/>
                                 </p:commandButton>
-                            </p:column>
+                            </p:column>-->
 
                             <p:column headerText="Agregar" width="70px;" class="alignCenter">
                                 <p:commandButton id="agregarProducto"  
@@ -527,7 +527,26 @@
             </p:panel>
             <p:inputText value="#{beanRelOperEntradaMercancia.expande}" id="inputExpande" class="hidden"/>
 
+           
+                <div class="col-lg-2 col-md-10 col-md-12 col-xs-12">
+                    <p:dataTable id="tabla5" var="comprobante" 
+                                 value="#{lstEntradaMercancia.listaComprobantes}" 
+                                 scrollable="true"
+                                 editable="true"
+                                 emptyMessage="No se encontraron Registros">
+                        <p:column headerText="id " width="80px;" class="alignCenter">
+                            <h:outputText value="#{comprobante.idComprobantesDigitalesPk}" />
+                        </p:column>
+<!--                        <p:column headerText="N°" width="30px;" class="alignCenter">
+                            <div>
+                                <p:graphicImage cache="false" style="height:300px; width:300px;" id="imagen" value="{comprobante.fichero}"/>
+                            </div>
+                        </p:column>-->
 
+                    </p:dataTable>
+                </div>
+
+            
         </h:form>
         <h:panelGroup id="script">
             <h:outputScript>
@@ -538,24 +557,7 @@
                 };
             </h:outputScript>
         </h:panelGroup>
-        <p:dialog id="picture"  style="height:300px; width:300px;" widgetVar="dlg8" header="Comprobantes" resizable="false"
-                  showEffect="clip" hideEffect="clip">
-            <div class="col-lg-2 col-md-10 col-md-12 col-xs-12 col-lg-offset-0 col-md-offset-1">
-                <p:dataTable id="tabla5" var="comprobante" 
-                             value="#{model.listaComprobantes}" 
-                             scrollable="true"
-                             editable="true"
-                             emptyMessage="No se encontraron Registros">
-                    <p:column headerText="N°" width="30px;" class="alignCenter">
-                       <div>
-                            <p:graphicImage cache="false" style="height:300px; width:300px;" id="imagen" value="#{beanRelOperEntradaMercancia.productImage}"/>
-                        </div>
-                    </p:column>
-                    
-                </p:dataTable>
-            </div>
 
-        </p:dialog> 
 
     </ui:define>
 </ui:composition>

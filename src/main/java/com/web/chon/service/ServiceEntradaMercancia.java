@@ -113,7 +113,10 @@ public class ServiceEntradaMercancia implements IfaceEntradaMercancia {
             ArrayList<ComprobantesDigitales> lista_cd = new ArrayList<ComprobantesDigitales>();
             
             lista_cd = ifaceComprobantes.getComprobantesByIdTipoLlave(new BigDecimal(1), dominio.getIdEmPK());
-
+            for(ComprobantesDigitales l :lista_cd)
+            {
+                System.out.println("-----------------: "+l.toString());
+            }
             dominio.setListaComprobantes(lista_cd);
             
             lstEntradaMercancia2.add(dominio);

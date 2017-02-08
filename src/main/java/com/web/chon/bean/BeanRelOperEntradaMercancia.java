@@ -472,6 +472,13 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
                 fechaFiltroInicio = null;
             }
             lstEntradaMercancia = ifaceEntradaMercancia.getEntradaProductoByIntervalDate(fechaFiltroInicio, fechaFiltroFin, idSucursal, idProvedor, carro);
+            
+            for(EntradaMercancia e:lstEntradaMercancia)
+            {
+                System.out.println("++++++++++++++++++++++++++++++++++++++++++++++");
+                System.out.println(e.getListaComprobantes().toString());
+            }
+            
             verificarCombo();
         }
     }
@@ -748,8 +755,13 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
     }
     public StreamedContent getProductImage() throws IOException, SQLException {
+        System.out.println("---------------------Entro al método------------------");
         FacesContext context = FacesContext.getCurrentInstance();
         String imageType = "image/jpg";
+        for(ComprobantesDigitales cd:data.getListaComprobantes())
+            {
+                System.out.println("Comprobante: "+cd.getIdComprobantesDigitalesPk());
+            }
         if(data.getListaComprobantes()==null|| data.getListaComprobantes().isEmpty())
         {
             JsfUtil.addErrorMessageClean("Esta operación no cuenta con comprobante");
