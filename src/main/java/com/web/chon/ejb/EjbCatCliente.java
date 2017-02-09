@@ -130,7 +130,7 @@ public class EjbCatCliente implements NegocioCatCliente {
 
         } catch (Exception ex) {
 
-            System.out.println("error ");
+            
             System.out.println("error >> " + ex.getMessage().toString());
             Logger.getLogger(EjbCatCliente.class.getName()).log(Level.SEVERE, null, ex);
             return 0;

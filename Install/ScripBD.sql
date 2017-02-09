@@ -731,6 +731,7 @@ INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Consultar créditos', 0,'80.3','/views/consultaCreditos.xhtml');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Alta Créditos', 0,'80.4','/views/altaCreditos.xhtml');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Historial Abonos', 0,'80.5','/views/historialAbonos.xhtml');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Historial Crediticio', 0,'80.6','/views/historialCredito.xhtml');
 
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Caja', 1,'90','NULL');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Relación Operaciones', 0,'90.1','/views/operacionesCaja.xhtml');

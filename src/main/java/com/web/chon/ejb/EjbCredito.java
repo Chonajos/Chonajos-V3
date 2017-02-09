@@ -347,4 +347,26 @@ public class EjbCredito implements NegocioCredito {
 
     }
 
+    @Override
+    public List<Object[]> getHistorialCrediticio(BigDecimal idClienteFk, String fechaInicio, String fechaFin) {
+       try {
+
+            Query query = em.createNativeQuery("select cre.ID_CREDITO_PK,cre.ID_VENTA_MAYOREO,cre.ID_VENTA_MENUDEO,cre.FECHA_INICIO_CREDITO,cre.MONTO_CREDITO from ABONO_CREDITO ab \n" +
+"inner join credito cre on cre.ID_CREDITO_PK = ab.ID_CREDITO_FK\n" +
+"WHERE TO_DATE(TO_CHAR(ab.FECHA_COBRO,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + fechaInicio + "' and '" + fechaFin + "'\n" +
+"and cre.ID_CLIENTE_FK= ? \n" +
+"order by cre.FECHA_INICIO_CREDITO");
+            System.out.println("Query: "+query.toString());
+            List<Object[]> resultList = null;
+            query.setParameter(1, idClienteFk);
+            resultList = query.getResultList();
+
+            return resultList;
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbCredito.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        } 
+    }
+
 }
