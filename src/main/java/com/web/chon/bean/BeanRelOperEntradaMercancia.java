@@ -968,7 +968,16 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     public void mandarCorreo() {
         
         String url = getUrl(dataProductoCorreo.getIdEmpPK(), "idEMP", "videProductoMayoreo.xhtml");
-        String mensaje = "Buen dia cliente \n se le da mostrar los nuevos productos \n"+url;
+        
+        String mensaje = "Estimado: \n\nEn CHONAJOS una de las prioridades es facilitar las compras "
+                + "de nuestros clientes por eso ponemos a su disposición este video del producto "
+                +dataProductoCorreo.getNombreProducto().trim()+" "+dataProductoCorreo.getNombreEmpaque()
+                + " con solo dar un click en el siguiente enlace "+url+" esta es una mercancía que el día de hoy "
+                + "estamos recibiendo en nuestra bodega Q85 de la Central de Abastos en Iztapalapa, Ciudad de México. "
+                + "\n\nPara mayor información y saber precios comuníquese con nosotros, "
+                + "será un placer atenderle.\n\nLuis Torres: 5525657896\nHéctor García: 5512345678\nRamsés Meza: 5578912345"
+                + "\nTelefono de Bodega:5556405846 ext: 105 \n\nGracias.";
+        
         ArrayList<String> lstCorreoPara = new ArrayList<String>();
 
         for (Cliente cliente : lstClienteCorreo) {
@@ -978,7 +987,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
         }
 
-        SendEmail.sendAdjunto("Nuevos Productos Chonajos", mensaje, null, "juancruzh91@gmail.com", lstCorreoPara);
+        SendEmail.sendAdjunto(dataProductoCorreo.getNombreProducto().trim()+" "+dataProductoCorreo.getNombreEmpaque(), mensaje, null, "freddyramix@gmail.com", lstCorreoPara);
 
     }
 
