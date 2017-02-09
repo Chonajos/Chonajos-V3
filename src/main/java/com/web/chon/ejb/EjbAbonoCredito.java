@@ -291,4 +291,9 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
 
     }
 
+    @Override
+    public List<Object[]> getHistorialCrediticio(BigDecimal idClienteFk, String fechaInicio, String fechaFin) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

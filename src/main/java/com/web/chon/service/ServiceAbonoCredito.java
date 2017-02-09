@@ -278,5 +278,24 @@ public class ServiceAbonoCredito implements IfaceAbonoCredito {
     
     }
 
+    @Override
+    public ArrayList<AbonoCredito> getHistorialCrediticio(BigDecimal idClienteFk, String fechaInicio, String fechaFin) {
+        getEjb();
+        ArrayList<AbonoCredito> lstAbonos = new ArrayList<AbonoCredito>();
+        List<Object[]> lstObject = new ArrayList<Object[]>();
+        lstObject = ejb.getHistorialCrediticio(idClienteFk,fechaInicio,fechaFin);
+        for (Object[] object : lstObject) {
+            AbonoCredito abono = new AbonoCredito();
+
+            abono.setIdAbonoCreditoPk(object[0] == null ? null : new BigDecimal(object[0].toString()));
+            abono.setFechaAbono(object[1] == null ? null : (Date) object[1]);
+            abono.setMontoAbono(object[2] == null ? null : new BigDecimal(object[2].toString()));
+            lstAbonos.add(abono);
+        }
+
+        return lstAbonos;
+    
+    }
+
 
 }

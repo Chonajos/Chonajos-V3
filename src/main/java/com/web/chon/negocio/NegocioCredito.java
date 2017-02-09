@@ -51,5 +51,7 @@ public interface NegocioCredito {
     
     public int eliminarCreditoByIdCreditoPk(BigDecimal idCreditoPk);
     
+    public List<Object[]>  getHistorialCrediticio(BigDecimal idClienteFk, String fechaInicio, String fechaFin);
+    
 
 }
