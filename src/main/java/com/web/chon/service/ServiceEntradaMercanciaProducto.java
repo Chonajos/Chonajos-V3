@@ -163,6 +163,10 @@ public class ServiceEntradaMercanciaProducto implements IfaceEntradaMercanciaPro
             dominio.setNombreBodega(obj[15] == null ? "" : obj[15].toString());
             dominio.setNombreTipoConvenio(obj[16] == null ? "" : obj[16].toString());
             dominio.setIdSucursalFk(obj[17] == null ? null : new BigDecimal(obj[17].toString()));
+            
+            dominio.setUrlVideo(obj[18] == null ? null : obj[18].toString());
+            dominio.setVideoByte(obj[19] == null ? null : (byte[])(obj[19]));
+            
             dominio.setNumeroMovimiento(numeroMovimiento);
             dominio.setListaBodegas(ifaceCatBodegas.getBodegaByIdSucursal(dominio.getIdSucursalFk()));
             dominio.setSubProducto(ifaceSubProducto.getSubProductoById(dominio.getIdSubProductoFK()));

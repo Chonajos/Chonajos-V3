@@ -1,4 +1,3 @@
-
 package com.web.chon.ejb;
 
 import com.web.chon.dominio.Cliente;
@@ -44,7 +43,7 @@ public class EjbCatCliente implements NegocioCatCliente {
                     + "LEFT JOIN ENTIDAD en1 "
                     + "on en1.ID_ENTIDAD_PK=m1.ID_ENTIDAD_FK "
                     + "order by c.NOMBRE");
-            
+
             List<Object[]> resultList = null;
             resultList = query.getResultList();
             return resultList;
@@ -277,6 +276,31 @@ public class EjbCatCliente implements NegocioCatCliente {
                     + "on en1.ID_ENTIDAD_PK=m1.ID_ENTIDAD_FK AND c.STATUS =1");
             List<Object[]> resultList = null;
             resultList = query.getResultList();
+            return resultList;
+        } catch (Exception ex) {
+            Logger.getLogger(EjbCatCliente.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
+    @Override
+    public List<Object[]> getClienteByIdSubProducto(String idSubProducto,BigDecimal idSucursal) {
+        try {
+
+            Query query = em.createNativeQuery("SELECT CL.NOMBRE ||' '|| CL.APELLIDO_PATERNO ||' '||CL.APELLIDO_MATERNO AS NOMBRE_CLIENTE ,CO.CORREO,SUM(VMP.CANTIDAD_EMPAQUE) AS TOTAL_EMPAQUE "
+                    + "FROM CLIENTE CL "
+                    + "LEFT JOIN CORREOS CO ON CO.ID_CLIENTE_FK = CL.ID_CLIENTE "
+                    + "LEFT JOIN VENTA_MAYOREO VM ON CL.ID_CLIENTE  = VM.ID_CLIENTE_FK "
+                    + "INNER JOIN VENTAMAYOREOPRODUCTO VMP ON VMP.ID_VENTA_MAYOREO_FK = VM.ID_VENTA_MAYOREO_PK "
+                    + "WHERE  VMP.ID_SUBPRODUCTO_FK = ? AND VM.ID_SUCURSAL_FK = ? AND VM.ID_STATUS_FK != 4 AND CL.STATUS !=2 "
+                    + "GROUP BY CL.NOMBRE ||' '|| CL.APELLIDO_PATERNO ||' '||CL.APELLIDO_MATERNO ,CO.CORREO ORDER BY TOTAL_EMPAQUE DESC");
+            
+            query.setParameter(1, idSubProducto);
+            query.setParameter(2, idSucursal);
+            
+            List<Object[]> resultList = null;
+            resultList = query.getResultList();
+
             return resultList;
         } catch (Exception ex) {
             Logger.getLogger(EjbCatCliente.class.getName()).log(Level.SEVERE, null, ex);
