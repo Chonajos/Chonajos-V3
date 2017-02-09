@@ -975,7 +975,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
                 + " con solo dar un click en el siguiente enlace "+url+" esta es una mercancía que el día de hoy "
                 + "estamos recibiendo en nuestra bodega Q85 de la Central de Abastos en Iztapalapa, Ciudad de México. "
                 + "\n\nPara mayor información y saber precios comuníquese con nosotros, "
-                + "será un placer atenderle.\n\nLuis Torres: 5525657896\nHéctor García: 5512345678\nRamsés Meza: 5578912345"
+                + "será un placer atenderle.\n\nLuis Torres: 5549896423\nHéctor García: 5565787018"
                 + "\nTelefono de Bodega:5556405846 ext: 105 \n\nGracias.";
         
         ArrayList<String> lstCorreoPara = new ArrayList<String>();

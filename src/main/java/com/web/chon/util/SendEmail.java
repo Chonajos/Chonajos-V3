@@ -24,8 +24,8 @@ public class SendEmail {
 
     public static void sendTLS() {
 
-        final String username = "juancruzh91@gmail.com";
-        final String password = "juancruzh91";
+        final String username = "chonajosmx@gmail.com";
+        final String password = "Ch0najos2017";
 
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
@@ -61,8 +61,8 @@ public class SendEmail {
 
     public static void sendAdjunto(String asunto, String mensaje, ArrayList<FileDataSource> lstFileDataSource, String correoDe, ArrayList<String> lstCorreoPara) {
 
-        final String username = "juancruzh91@gmail.com";
-        final String password = "juancruzh91";
+        final String username = "chonajosmx@gmail.com";
+        final String password = "Ch0najos2017";
 
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
@@ -84,12 +84,9 @@ public class SendEmail {
 
             BodyPart adjunto = new MimeBodyPart();
 
-            int tamanioMaximo = 0;
             //Se preparan los archivos adjuntos
             if (lstFileDataSource != null) {
                 for (FileDataSource fileDataSource : lstFileDataSource) {
-
-                    System.out.println("Tamaño " + fileDataSource.getFile().getUsableSpace());
                     adjunto.setDataHandler(new DataHandler(fileDataSource));
                     adjunto.setFileName(fileDataSource.getName());
                     multiParte.addBodyPart(adjunto);
