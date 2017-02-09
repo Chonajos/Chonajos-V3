@@ -461,7 +461,7 @@
                                         <p:column headerText="Video" width="90px;" class="alignCenter">
                                             <h:form>
                                                 <p:fileUpload id="fileUpload" fileUploadListener="#{beanRelOperEntradaMercancia.handleFileUpload}" label="Subir" invalidSizeMessage="El tamaño del video excede el peso permitido 25 mb." invalidFileMessage="Archivo invalido." mode="advanced" skinSimple="true"
-                                                              update=":formContent:messages" auto="true" sizeLimit="150000000" allowTypes="/(\.)(mp4|avi|flv|h.264|m4v|mov|mpeg-4|jpeg)$/" >
+                                                              update=":formContent:messages" auto="true" sizeLimit="150000000" allowTypes="/(\.)(mp4|avi|flv|h.264|m4v|mov|mpeg-4|jpeg|MOV)$/" >
                                                     <f:attribute name="item" value="#{item}" />
                                                 </p:fileUpload>
                                             </h:form>
