@@ -86,13 +86,15 @@ public class SendEmail {
 
             int tamanioMaximo = 0;
             //Se preparan los archivos adjuntos
-            for (FileDataSource fileDataSource : lstFileDataSource) {
-                
-                System.out.println("Tamaño " + fileDataSource.getFile().getUsableSpace());
-                adjunto.setDataHandler(new DataHandler(fileDataSource));
-                adjunto.setFileName(fileDataSource.getName());
-                multiParte.addBodyPart(adjunto);
-                
+            if (lstFileDataSource != null) {
+                for (FileDataSource fileDataSource : lstFileDataSource) {
+
+                    System.out.println("Tamaño " + fileDataSource.getFile().getUsableSpace());
+                    adjunto.setDataHandler(new DataHandler(fileDataSource));
+                    adjunto.setFileName(fileDataSource.getName());
+                    multiParte.addBodyPart(adjunto);
+
+                }
             }
 
             multiParte.addBodyPart(texto);

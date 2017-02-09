@@ -1,14 +1,10 @@
 package com.web.chon.bean;
 
-import com.web.chon.dominio.Usuario;
-import com.web.chon.util.JsfUtil;
+import com.web.chon.dominio.EntradaMercanciaProducto;
+import com.web.chon.service.IfaceEntradaMercanciaProducto;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -24,10 +20,15 @@ public class BeanVideoProductoMayoreo {
 
     private static final long serialVersionUID = 1L;
 
+    @Autowired
+    private IfaceEntradaMercanciaProducto ifaceEntradaMercanciaProducto;
+
     private FacesContext facesContext;
 
+    private EntradaMercanciaProducto data;
+
     private BigDecimal idEMP;
-    
+
     private String title;
 
     @PostConstruct
@@ -35,17 +36,34 @@ public class BeanVideoProductoMayoreo {
         facesContext = FacesContext.getCurrentInstance();
 
         String idEMPSTR = facesContext.getExternalContext().getRequestParameterMap().get("idEMP");
-        HttpServletRequest req = (HttpServletRequest) facesContext.getExternalContext().getRequest();
-        String url = req.getRequestURL().toString();
-        System.out.println("url "+url);
+        setTitle("Productos.");
 
         if (idEMPSTR != null) {
             idEMP = new BigDecimal(idEMPSTR);
+            getVideoProducto(idEMP);
         }
-        setTitle("Productos.");
+
     }
 
-   
+    private void getVideoProducto(BigDecimal id) {
+
+        data = ifaceEntradaMercanciaProducto.getById(id);
+        String precioVenta = data.getPrecio() == null ? "No Disponible." : data.getPrecio() + ".";
+        if (data.getIdSubProductoFK() != null) {
+            setTitle(data.getNombreProducto().trim() + " " + data.getNombreEmpaque() + ". Precio de Venta:$ " + precioVenta);
+        }
+
+    }
+
+    
+    public EntradaMercanciaProducto getData() {
+        return data;
+    }
+
+    public void setData(EntradaMercanciaProducto data) {
+        this.data = data;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -53,6 +71,5 @@ public class BeanVideoProductoMayoreo {
     public void setTitle(String title) {
         this.title = title;
     }
-
 
 }

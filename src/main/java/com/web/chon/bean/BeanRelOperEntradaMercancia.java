@@ -1,6 +1,8 @@
 package com.web.chon.bean;
 
+import com.lowagie.text.pdf.PdfName;
 import com.web.chon.dominio.Bodega;
+import com.web.chon.dominio.Cliente;
 import com.web.chon.dominio.ComprobantesDigitales;
 import com.web.chon.dominio.EntradaMercancia;
 import com.web.chon.dominio.EntradaMercanciaProducto;
@@ -16,6 +18,7 @@ import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.dominio.VentaProductoMayoreo;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceCatBodegas;
+import com.web.chon.service.IfaceCatCliente;
 import com.web.chon.service.IfaceCatProvedores;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceEmpaque;
@@ -29,6 +32,7 @@ import com.web.chon.util.Constantes;
 import com.web.chon.util.FileUtils;
 import com.web.chon.util.JasperReportUtil;
 import com.web.chon.util.JsfUtil;
+import com.web.chon.util.SendEmail;
 import com.web.chon.util.TiempoUtil;
 import com.web.chon.util.UtilUpload;
 import java.io.ByteArrayInputStream;
@@ -57,6 +61,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 import net.sf.jasperreports.engine.JRExporter;
 import net.sf.jasperreports.engine.JRExporterParameter;
@@ -108,6 +113,8 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     private IfaceSubProducto ifaceSubProducto;
     @Autowired
     private IfaceEntMerProPaq ifaceEntMerProPaq;
+    @Autowired
+    private IfaceCatCliente ifaceCatCliente;
 
     private ArrayList<Provedor> lstProvedor;
     private ArrayList<Sucursal> listaSucursales;
@@ -116,17 +123,21 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     private ArrayList<TipoEmpaque> lstTipoEmpaque;
     private ArrayList<Bodega> listaBodegas;
     private ArrayList<Subproducto> lstProducto;
+    private ArrayList<Cliente> lstCliente;
+    private ArrayList<Cliente> lstClienteCorreo;
+
     private EntradaMercancia data;
     private EntradaMercanciaProducto dataProducto;
     private EntradaMercanciaProducto dataProductoAutoAjuste;
     private EntradaMercanciaProducto dataProductoNuevo;
     private EntradaMercanciaProducto dataProductEdit;
-    
+    private EntradaMercanciaProducto dataProductoCorreo;
+
     private UsuarioDominio usuario;
     private Subproducto subProducto;
     private EntradaMercanciaProductoPaquete dataPaquete;
     private EntradaMercanciaProductoPaquete dataPaqueteEliminar;
-    
+
     private FacesContext facesContext;
 
     private String title;
@@ -175,6 +186,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
     @PostConstruct
     public void init() {
+
         usuario = context.getUsuarioAutenticado();
         listaSucursales = new ArrayList<Sucursal>();
         listaSucursales = ifaceCatSucursales.getSucursales();
@@ -189,6 +201,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         dataPaquete = new EntradaMercanciaProductoPaquete();
         dataPaqueteEliminar = new EntradaMercanciaProductoPaquete();
         dataProductoAutoAjuste = new EntradaMercanciaProducto();
+        dataProductoCorreo = new EntradaMercanciaProducto();
         /*Validacion de perfil administrador*/
         data.setIdSucursalFK(new BigDecimal(usuario.getSucId()));
         idSucursal = new BigDecimal(usuario.getSucId());
@@ -201,6 +214,9 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         dataProductoNuevo = new EntradaMercanciaProducto();
         lstProvedor = ifaceCatProvedores.getProvedores();
         buscar();
+
+        lstCliente = new ArrayList<Cliente>();
+        lstClienteCorreo = new ArrayList<Cliente>();
 
     }
 
@@ -472,13 +488,12 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
                 fechaFiltroInicio = null;
             }
             lstEntradaMercancia = ifaceEntradaMercancia.getEntradaProductoByIntervalDate(fechaFiltroInicio, fechaFiltroFin, idSucursal, idProvedor, carro);
-            
-            for(EntradaMercancia e:lstEntradaMercancia)
-            {
+
+            for (EntradaMercancia e : lstEntradaMercancia) {
                 System.out.println("++++++++++++++++++++++++++++++++++++++++++++++");
                 System.out.println(e.getListaComprobantes().toString());
             }
-            
+
             verificarCombo();
         }
     }
@@ -754,37 +769,31 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         System.out.println("cancel");
 
     }
+
     public StreamedContent getProductImage() throws IOException, SQLException {
         System.out.println("---------------------Entro al método------------------");
         FacesContext context = FacesContext.getCurrentInstance();
         String imageType = "image/jpg";
-        for(ComprobantesDigitales cd:data.getListaComprobantes())
-            {
-                System.out.println("Comprobante: "+cd.getIdComprobantesDigitalesPk());
-            }
-        if(data.getListaComprobantes()==null|| data.getListaComprobantes().isEmpty())
-        {
+        for (ComprobantesDigitales cd : data.getListaComprobantes()) {
+            System.out.println("Comprobante: " + cd.getIdComprobantesDigitalesPk());
+        }
+        if (data.getListaComprobantes() == null || data.getListaComprobantes().isEmpty()) {
             JsfUtil.addErrorMessageClean("Esta operación no cuenta con comprobante");
             return variable;
-        }
-        else
-        {
+        } else {
             variable = null;
-            System.out.println("Data:" +data.toString());
-            for(ComprobantesDigitales cd:data.getListaComprobantes())
-            {
-                if(cd.getIdLlaveFk().intValue()==data.getIdEmPK().intValue())
-                {
-                     byte[] image = cd.getFichero();
+            System.out.println("Data:" + data.toString());
+            for (ComprobantesDigitales cd : data.getListaComprobantes()) {
+                if (cd.getIdLlaveFk().intValue() == data.getIdEmPK().intValue()) {
+                    byte[] image = cd.getFichero();
                     variable = new DefaultStreamedContent(new ByteArrayInputStream(image), imageType, data.getIdEmPK().toString());
                 }
-                 
+
             }
-             
-             
-             return variable;
+
+            return variable;
         }
-           
+
     }
 
     public void cancel() {
@@ -954,6 +963,50 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     public void deleteFile(String filePath) throws Exception {
         File file = new File(filePath);
         file.delete();
+    }
+
+    public void mandarCorreo() {
+        
+        String url = getUrl(dataProductoCorreo.getIdEmpPK(), "idEMP", "videProductoMayoreo.xhtml");
+        String mensaje = "Buen dia cliente \n se le da mostrar los nuevos productos \n"+url;
+        ArrayList<String> lstCorreoPara = new ArrayList<String>();
+
+        for (Cliente cliente : lstClienteCorreo) {
+            if (cliente.getEmail() != null) {
+                lstCorreoPara.add(cliente.getEmail());
+            }
+
+        }
+
+        SendEmail.sendAdjunto("Nuevos Productos Chonajos", mensaje, null, "juancruzh91@gmail.com", lstCorreoPara);
+
+    }
+
+    public void getClientesProducto(EntradaMercanciaProducto dataCorreo) {
+
+        dataProductoCorreo = dataCorreo;
+        lstCliente = ifaceCatCliente.getClienteByIdSubProducto(dataCorreo.getIdSubProductoFK(), idSucursal);
+
+        lstClienteCorreo = new ArrayList<Cliente>();
+    }
+
+    private String getUrl(BigDecimal valorParametro, String nombreParametro, String nombrePantalla) {
+
+        facesContext = FacesContext.getCurrentInstance();
+        HttpServletRequest req = (HttpServletRequest) facesContext.getExternalContext().getRequest();
+        String url = req.getRequestURL().toString();
+        String urlCustom = "";
+        String urlMap[];
+
+        urlMap = url.split(":");
+        urlCustom += urlMap[0] + ":";
+        urlCustom += urlMap[1];
+
+        urlCustom += ":" + urlMap[2].split("/")[0];
+
+        urlCustom += "/" + nombrePantalla + "?" + nombreParametro + "=" + valorParametro;
+
+        return urlCustom;
     }
 
     @Override
@@ -1288,6 +1341,30 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
     public void setFile(UploadedFile file) {
         this.file = file;
+    }
+
+    public ArrayList<Cliente> getLstCliente() {
+        return lstCliente;
+    }
+
+    public void setLstCliente(ArrayList<Cliente> lstCliente) {
+        this.lstCliente = lstCliente;
+    }
+
+    public ArrayList<Cliente> getLstClienteCorreo() {
+        return lstClienteCorreo;
+    }
+
+    public void setLstClienteCorreo(ArrayList<Cliente> lstClienteCorreo) {
+        this.lstClienteCorreo = lstClienteCorreo;
+    }
+
+    public EntradaMercanciaProducto getDataProductoCorreo() {
+        return dataProductoCorreo;
+    }
+
+    public void setDataProductoCorreo(EntradaMercanciaProducto dataProductoCorreo) {
+        this.dataProductoCorreo = dataProductoCorreo;
     }
 
     private void manageException(IOException e) {

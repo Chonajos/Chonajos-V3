@@ -253,11 +253,11 @@
                             <p:column headerText="Kilos Bodega" width="100px;" class="alignCenter">
                                 <h:outputText value="#{model.kilosTotales}"/>
                             </p:column>
-<!--                            <p:column headerText="imagen" width="60px;"  class="alignCenter">
-                                <p:commandButton icon="ui-icon-image" id="openDialogLink"  update=":formContent:tabla5:imagen" onclick="PF('dlg8').show();" >
-                                    <f:setPropertyActionListener value="{model}" target="{beanRelOperEntradaMercancia.data}"/>
-                                </p:commandButton>
-                            </p:column>-->
+                            <!--                            <p:column headerText="imagen" width="60px;"  class="alignCenter">
+                                                            <p:commandButton icon="ui-icon-image" id="openDialogLink"  update=":formContent:tabla5:imagen" onclick="PF('dlg8').show();" >
+                                                                <f:setPropertyActionListener value="{model}" target="{beanRelOperEntradaMercancia.data}"/>
+                                                            </p:commandButton>
+                                                        </p:column>-->
 
                             <p:column headerText="Agregar" width="70px;" class="alignCenter">
                                 <p:commandButton id="agregarProducto"  
@@ -466,6 +466,13 @@
                                                 </p:fileUpload>
                                             </h:form>
                                         </p:column>
+                                        <p:column headerText="Correo" width="90px;" class="alignCenter" >
+                                            <p:commandButton id="idMandarCorreo" ajax="true" rendered="#{item.urlVideo != null}" actionListener="#{beanRelOperEntradaMercancia.getClientesProducto(item)}"
+                                                             oncomplete="PF('dlgMandarCorreo').show();" update =":formContent:dialogoMandarCorreo"
+                                                             icon="ui-icon-transferthick-e-w" >
+                                                <f:setPropertyActionListener value="#{item}" target="#{beanRelOperEntradaMercancia.dataProductoCorreo}"/>
+                                            </p:commandButton>
+                                        </p:column>
                                         <p:rowExpansion>
                                             <div class="col-lg-6 col-md-10 col-md-12 col-xs-12 col-lg-offset-0 col-md-offset-1">
                                                 <p:dataTable id="tabla4" var="paquete" 
@@ -527,26 +534,47 @@
             </p:panel>
             <p:inputText value="#{beanRelOperEntradaMercancia.expande}" id="inputExpande" class="hidden"/>
 
-           
-                <div class="col-lg-2 col-md-10 col-md-12 col-xs-12">
-                    <p:dataTable id="tabla5" var="comprobante" 
-                                 value="#{lstEntradaMercancia.listaComprobantes}" 
-                                 scrollable="true"
-                                 editable="true"
-                                 emptyMessage="No se encontraron Registros">
-                        <p:column headerText="id " width="80px;" class="alignCenter">
-                            <h:outputText value="#{comprobante.idComprobantesDigitalesPk}" />
+
+            <div class="col-lg-2 col-md-10 col-md-12 col-xs-12">
+                <p:dataTable id="tabla5" var="comprobante" 
+                             value="#{lstEntradaMercancia.listaComprobantes}" 
+                             scrollable="true"
+                             editable="true"
+                             emptyMessage="No se encontraron Registros">
+                    <p:column headerText="id " width="80px;" class="alignCenter">
+                        <h:outputText value="#{comprobante.idComprobantesDigitalesPk}" />
+                    </p:column>
+                    <!--                        <p:column headerText="N°" width="30px;" class="alignCenter">
+                                                <div>
+                                                    <p:graphicImage cache="false" style="height:300px; width:300px;" id="imagen" value="{comprobante.fichero}"/>
+                                                </div>
+                                            </p:column>-->
+
+                </p:dataTable>
+            </div>
+
+            <p:dialog  id="dialogoMandarCorreo" header="Mandar Correo" widgetVar="dlgMandarCorreo" resizable="false">
+                <h:panelGrid columns="1" cellpadding="5">
+                    <p:dataTable id="idTableCliente" var="model" value="#{beanRelOperEntradaMercancia.lstCliente}" selection="#{beanRelOperEntradaMercancia.lstClienteCorreo}" rowKey="#{model.nombreCompleto}" scrollable="true" scrollHeight="350"
+                                 style="width:285px;" >
+                        <p:column selectionMode="multiple" width="25px;" />
+                        <p:column headerText="Nombre Cliente" width="130px;" >
+                            <h:outputText value="#{model.nombreCompleto}" />
                         </p:column>
-<!--                        <p:column headerText="N°" width="30px;" class="alignCenter">
-                            <div>
-                                <p:graphicImage cache="false" style="height:300px; width:300px;" id="imagen" value="{comprobante.fichero}"/>
-                            </div>
-                        </p:column>-->
-
+                        <p:column headerText="Correo" width="130px;">
+                            <h:outputText value="#{model.email}" />
+                        </p:column>
                     </p:dataTable>
-                </div>
 
-            
+                    <p:commandButton value="Mandar" update=":formContent" 
+                                     action="#{beanRelOperEntradaMercancia.mandarCorreo()}" 
+                                     onclick="PF('dlgMandarCorreo').hide()">
+                        <p:confirm header="Confirmación" message="¿Estas seguro de Mandar el Correo?" icon="ui-icon-alert" />
+                    </p:commandButton>
+                </h:panelGrid>
+            </p:dialog>
+
+
         </h:form>
         <h:panelGroup id="script">
             <h:outputScript>

@@ -54,13 +54,9 @@ public class EntradaMercanciaProducto extends ValueObject implements Serializabl
 
     @Override
     public String toString() {
-        return "EntradaMercanciaProducto{" + "idEmpPK=" + idEmpPK + ", idEmFK=" + idEmFK + ", idSubProductoFK=" + idSubProductoFK + ", idTipoEmpaqueFK=" + idTipoEmpaqueFK + ", cantidadPaquetes=" + cantidadPaquetes + ", kilosTotalesProducto=" + kilosTotalesProducto + ", comentarios=" + comentarios + ", precio=" + precio + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + ", idTipoConvenio=" + idTipoConvenio + ", idBodegaFK=" + idBodegaFK + ", nombreTipoConvenio=" + nombreTipoConvenio + ", nombreBodega=" + nombreBodega + ", kilospromprod=" + kilospromprod + ", numeroMovimiento=" + numeroMovimiento + ", pesoTara=" + pesoTara + ", pesoNeto=" + pesoNeto + ", idSucursalFk=" + idSucursalFk + ", listaBodegas=" + listaBodegas + ", subProducto=" + subProducto + ", listaPaquetes=" + listaPaquetes + ", kilosVendidos=" + kilosVendidos + ", cantidadVendida=" + cantidadVendida + ", kilosReales=" + kilosReales + ", cantidadReales=" + cantidadReales + ", kilosPaquetes=" + kilosPaquetes + ", cantPaquetes=" + cantPaquetes + '}';
+        return "EntradaMercanciaProducto{" + "idEmpPK=" + idEmpPK + ", idEmFK=" + idEmFK + ", idSubProductoFK=" + idSubProductoFK + ", idTipoEmpaqueFK=" + idTipoEmpaqueFK + ", cantidadPaquetes=" + cantidadPaquetes + ", kilosTotalesProducto=" + kilosTotalesProducto + ", comentarios=" + comentarios + ", precio=" + precio + ", nombreProducto=" + nombreProducto + ", nombreEmpaque=" + nombreEmpaque + ", idTipoConvenio=" + idTipoConvenio + ", idBodegaFK=" + idBodegaFK + ", nombreTipoConvenio=" + nombreTipoConvenio + ", nombreBodega=" + nombreBodega + ", kilospromprod=" + kilospromprod + ", numeroMovimiento=" + numeroMovimiento + ", pesoTara=" + pesoTara + ", pesoNeto=" + pesoNeto + ", idSucursalFk=" + idSucursalFk + ", listaBodegas=" + listaBodegas + ", empaquesProProvedor=" + empaquesProProvedor + ", kilosProProvedor=" + kilosProProvedor + ", urlVideo=" + urlVideo + ", videoByte=" + videoByte + ", subProducto=" + subProducto + ", listaPaquetes=" + listaPaquetes + ", kilosVendidos=" + kilosVendidos + ", cantidadVendida=" + cantidadVendida + ", kilosReales=" + kilosReales + ", cantidadReales=" + cantidadReales + ", kilosPaquetes=" + kilosPaquetes + ", cantPaquetes=" + cantPaquetes + '}';
     }
-    
 
-   
-    
-   
     @Override
     public void reset() {
        idEmFK = null;
@@ -95,10 +91,8 @@ public class EntradaMercanciaProducto extends ValueObject implements Serializabl
     }
 
     public void setSubProducto(Subproducto subProducto) {
-        System.out.println("set Subproducto "+subProducto.toString());
         this.subProducto = subProducto;
     }
-
     
     public BigDecimal getPesoNeto() {
         return pesoNeto;
@@ -117,9 +111,6 @@ public class EntradaMercanciaProducto extends ValueObject implements Serializabl
         this.pesoTara = pesoTara;
     }
 
-    
-    
-
     public BigDecimal getKilospromprod() {
         return kilospromprod;
     }
@@ -127,9 +118,6 @@ public class EntradaMercanciaProducto extends ValueObject implements Serializabl
     public void setKilospromprod(BigDecimal kilospromprod) {
         this.kilospromprod = kilospromprod;
     }
-    
-    
-    
 
     public BigDecimal getIdTipoConvenio() {
         return idTipoConvenio;
@@ -147,11 +135,6 @@ public class EntradaMercanciaProducto extends ValueObject implements Serializabl
         this.nombreTipoConvenio = nombreTipoConvenio;
     }
 
-  
-    
-    
-    
-
     public BigDecimal getKilosTotalesProducto() {
         return kilosTotalesProducto;
     }
@@ -159,10 +142,6 @@ public class EntradaMercanciaProducto extends ValueObject implements Serializabl
     public void setKilosTotalesProducto(BigDecimal kilosTotalesProducto) {
         this.kilosTotalesProducto = kilosTotalesProducto;
     }
-
- 
-
-    
     
     public String getNombreProducto() {
         return nombreProducto;

@@ -37,5 +37,7 @@ public interface NegocioCatCliente {
     
     public List<Object[]> getClientesActivos();
     
+    public List<Object[]> getClienteByIdSubProducto(String idSubProducto,BigDecimal idSucursal);
+    
   
 }

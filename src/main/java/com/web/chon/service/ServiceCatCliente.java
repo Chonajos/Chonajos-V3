@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.web.chon.service;
 
 import com.web.chon.dominio.Cliente;
@@ -301,6 +296,30 @@ public class ServiceCatCliente implements IfaceCatCliente {
 
             }
             return lista_clientes;
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceCatCliente.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+
+        }
+    }
+
+    @Override
+    public ArrayList<Cliente> getClienteByIdSubProducto(String idSubProducto,BigDecimal idSucursal) {
+        try{
+        ArrayList<Cliente> lstCliente = new ArrayList<Cliente>();
+            ejb = (NegocioCatCliente) Utilidades.getEJBRemote("ejbCatCliente", NegocioCatCliente.class.getName());
+            List<Object[]> lstObject = ejb.getClienteByIdSubProducto(idSubProducto,idSucursal);
+
+            for (Object[] obj : lstObject) {
+                Cliente cliente = new Cliente();
+                
+                cliente.setNombreCompleto(obj[0] == null ? "" : obj[0].toString());
+                cliente.setEmail(obj[1] == null ? null : obj[1].toString());
+
+                lstCliente.add(cliente);
+
+            }
+            return lstCliente;
         } catch (Exception ex) {
             Logger.getLogger(ServiceCatCliente.class.getName()).log(Level.SEVERE, null, ex);
             return null;

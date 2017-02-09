@@ -13,7 +13,6 @@ import com.web.chon.negocio.NegocioEntradaMercanciaProducto;
 import com.web.chon.util.Utilidades;
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -51,6 +50,41 @@ public class ServiceEntradaMercanciaProducto implements IfaceEntradaMercanciaPro
         getEjb();
         return ejb.insertEntradaMercanciaProducto(producto);
     }
+    
+    @Override
+    public EntradaMercanciaProducto getById(BigDecimal dominio) {
+        getEjb();
+        List<Object[]> lstObject = new ArrayList<Object[]>();
+        EntradaMercanciaProducto entradaMercanciaProducto = new EntradaMercanciaProducto();
+        lstObject = ejb.getById(dominio);
+        
+        for(Object[] obj:lstObject){
+            
+            entradaMercanciaProducto.setIdEmpPK(new BigDecimal(obj[0].toString()));
+            entradaMercanciaProducto.setIdEmFK(new BigDecimal(obj[1].toString()));
+            entradaMercanciaProducto.setIdSubProductoFK(obj[2] == null ? null : obj[2].toString());
+            entradaMercanciaProducto.setIdTipoEmpaqueFK(obj[3] == null ? null : new BigDecimal(obj[3].toString()));
+            entradaMercanciaProducto.setKilosTotalesProducto(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
+            entradaMercanciaProducto.setCantidadPaquetes(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
+            entradaMercanciaProducto.setComentarios(obj[6] == null ? "" : obj[6].toString());
+            entradaMercanciaProducto.setIdBodegaFK(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
+            entradaMercanciaProducto.setIdTipoConvenio(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
+            entradaMercanciaProducto.setPrecio(obj[9] == null ? null : new BigDecimal(obj[9].toString()));
+            entradaMercanciaProducto.setEmpaquesProProvedor(obj[11] == null ? null : new BigDecimal(obj[11].toString()));
+            entradaMercanciaProducto.setKilosProProvedor(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
+            entradaMercanciaProducto.setUrlVideo(obj[13] == null ? null: obj[13].toString());
+            entradaMercanciaProducto.setVideoByte(obj[14] ==  null ? null: (byte[])(obj[14]) );
+            
+            entradaMercanciaProducto.setNombreProducto(obj[15] == null ? "" : obj[15].toString());
+            entradaMercanciaProducto.setNombreEmpaque(obj[16] == null ? "" : obj[16].toString());
+            entradaMercanciaProducto.setNumeroMovimiento(obj[17] == null ? 0: Integer.parseInt(obj[17].toString()));
+            entradaMercanciaProducto.setPrecio(obj[18] == null ? null: new BigDecimal(obj[18].toString()));
+            
+        }
+        
+        return entradaMercanciaProducto;
+        
+    }
 
     @Override
     public Pagina<EntradaMercanciaProducto> findAll(Pageable pageable) {
@@ -59,11 +93,6 @@ public class ServiceEntradaMercanciaProducto implements IfaceEntradaMercanciaPro
 
     @Override
     public Pagina<EntradaMercanciaProducto> findAllDominio(EntradaMercanciaProducto filters, int first, int pageSize) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public EntradaMercanciaProducto getById(BigDecimal dominio) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -134,6 +163,10 @@ public class ServiceEntradaMercanciaProducto implements IfaceEntradaMercanciaPro
             dominio.setNombreBodega(obj[15] == null ? "" : obj[15].toString());
             dominio.setNombreTipoConvenio(obj[16] == null ? "" : obj[16].toString());
             dominio.setIdSucursalFk(obj[17] == null ? null : new BigDecimal(obj[17].toString()));
+            
+            dominio.setUrlVideo(obj[18] == null ? null : obj[18].toString());
+            dominio.setVideoByte(obj[19] == null ? null : (byte[])(obj[19]));
+            
             dominio.setNumeroMovimiento(numeroMovimiento);
             dominio.setListaBodegas(ifaceCatBodegas.getBodegaByIdSucursal(dominio.getIdSucursalFk()));
             dominio.setSubProducto(ifaceSubProducto.getSubProductoById(dominio.getIdSubProductoFK()));
