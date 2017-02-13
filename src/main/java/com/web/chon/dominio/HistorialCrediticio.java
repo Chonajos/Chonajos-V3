@@ -25,6 +25,14 @@ public class HistorialCrediticio implements Serializable{
     private BigDecimal saldos;
     private BigDecimal tipo;
 
+    @Override
+    public String toString() {
+        return "HistorialCrediticio{" + "idRegistroPk=" + idRegistroPk + ", fechaCargo=" + fechaCargo + ", fechaAbono=" + fechaAbono + ", folioCargo=" + folioCargo + ", folioAbono=" + folioAbono + ", importeCargo=" + importeCargo + ", importeAbono=" + importeAbono + ", saldos=" + saldos + ", tipo=" + tipo + '}';
+    }
+    
+    
+    
+
     public BigDecimal getTipo() {
         return tipo;
     }
@@ -96,6 +104,8 @@ public class HistorialCrediticio implements Serializable{
     public void setSaldos(BigDecimal saldos) {
         this.saldos = saldos;
     }
+
+    
     
     
     

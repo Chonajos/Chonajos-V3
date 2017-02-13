@@ -292,8 +292,54 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
     }
 
     @Override
-    public List<Object[]> getHistorialCrediticio(BigDecimal idClienteFk, String fechaInicio, String fechaFin) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Object[]> getHistorialCrediticio(BigDecimal idClienteFk, String fechaInicio, String fechaFin ) {
+        try {
+            Query query;
+            
+            StringBuffer cadena = new StringBuffer("select ab.ID_ABONO_CREDITO_PK,ab.FECHA_ABONO,ab.MONTO_ABONO from ABONO_CREDITO ab \n"
+                    + "inner join credito cre on cre.ID_CREDITO_PK = ab.ID_CREDITO_FK");
+
+            if (!fechaInicio.equals("") && !fechaFin.equals("")) 
+            {
+                cadena.append(" WHERE TO_DATE(TO_CHAR(ab.FECHA_ABONO,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN  '" + fechaInicio + "' and '" + fechaFin + "'");
+                cadena.append(" AND ");
+            } else {
+                cadena.append(" WHERE ");
+
+            }
+            cadena.append(" cre.ID_CLIENTE_FK= ? \n"
+                    + "order by ab.FECHA_ABONO asc");
+
+            query = em.createNativeQuery(cadena.toString());
+
+            System.out.println("Query: " + query.toString());
+            List<Object[]> resultList = null;
+            query.setParameter(1, idClienteFk);
+            resultList = query.getResultList();
+
+            return resultList;
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbAbonoCredito.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+
+    }
+
+    @Override
+    public BigDecimal getTotalAbonos(BigDecimal idClienteFk, String fechaInicio) {
+        Query query = em.createNativeQuery("select nvl(sum(ab.MONTO_ABONO),0) from ABONO_CREDITO ab\n" +
+"inner join credito cre on cre.ID_CREDITO_PK = ab.ID_CREDITO_FK\n" +
+"WHERE TO_DATE(TO_CHAR(ab.FECHA_ABONO,'dd/mm/yyyy'),'dd/mm/yyyy')  <  '" + fechaInicio + "' \n" +
+" and cre.ID_CLIENTE_FK = "+ idClienteFk);
+        //query.setParameter(1, idClienteFk);
+        System.out.println("CLIENTE:::: "+idClienteFk);
+        System.out.println("Query: " + query.toString());
+        int d = Integer.parseInt(query.getSingleResult().toString());
+        System.out.println("DDDD: "+ d);
+        return new BigDecimal(d);
+    
+    
     }
 
 }

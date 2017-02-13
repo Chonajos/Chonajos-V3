@@ -279,7 +279,7 @@ public class ServiceAbonoCredito implements IfaceAbonoCredito {
     }
 
     @Override
-    public ArrayList<AbonoCredito> getHistorialCrediticio(BigDecimal idClienteFk, String fechaInicio, String fechaFin) {
+    public ArrayList<AbonoCredito> getHistorialCrediticio(BigDecimal idClienteFk, String fechaInicio, String fechaFin ) {
         getEjb();
         ArrayList<AbonoCredito> lstAbonos = new ArrayList<AbonoCredito>();
         List<Object[]> lstObject = new ArrayList<Object[]>();
@@ -294,6 +294,13 @@ public class ServiceAbonoCredito implements IfaceAbonoCredito {
         }
 
         return lstAbonos;
+    
+    }
+
+    @Override
+    public BigDecimal getTotalAbonos(BigDecimal idClienteFk, String fechaInicio) {
+        getEjb();
+        return ejb.getTotalAbonos(idClienteFk, fechaInicio);
     
     }
 

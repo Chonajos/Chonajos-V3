@@ -45,6 +45,8 @@ public interface IfaceAbonoCredito {
     
     public ArrayList<AbonoCredito> getHistorialAbonos(BigDecimal idClienteFk, BigDecimal idCajeroFk,Date fechaInicio, Date fechaFin, BigDecimal idTipoPagoFk,BigDecimal idAbonoPk, BigDecimal idCreditoFk);
     
-    public ArrayList<AbonoCredito> getHistorialCrediticio(BigDecimal idClienteFk,String fechaInicio,String fechaFin);
+    public ArrayList<AbonoCredito> getHistorialCrediticio(BigDecimal idClienteFk,String fechaInicio,String fechaFin );
     
+    
+    public BigDecimal  getTotalAbonos(BigDecimal idClienteFk,String fechaInicio);
 }

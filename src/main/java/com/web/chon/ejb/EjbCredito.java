@@ -349,14 +349,23 @@ public class EjbCredito implements NegocioCredito {
 
     @Override
     public List<Object[]> getHistorialCrediticio(BigDecimal idClienteFk, String fechaInicio, String fechaFin) {
-       try {
+        try {
 
-            Query query = em.createNativeQuery("select cre.ID_CREDITO_PK,cre.ID_VENTA_MAYOREO,cre.ID_VENTA_MENUDEO,cre.FECHA_INICIO_CREDITO,cre.MONTO_CREDITO from ABONO_CREDITO ab \n" +
-"inner join credito cre on cre.ID_CREDITO_PK = ab.ID_CREDITO_FK\n" +
-"WHERE TO_DATE(TO_CHAR(ab.FECHA_COBRO,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + fechaInicio + "' and '" + fechaFin + "'\n" +
-"and cre.ID_CLIENTE_FK= ? \n" +
-"order by cre.FECHA_INICIO_CREDITO");
-            System.out.println("Query: "+query.toString());
+            Query query;
+            StringBuffer cadena = new StringBuffer("select cre.ID_CREDITO_PK,cre.ID_VENTA_MAYOREO,cre.ID_VENTA_MENUDEO,cre.FECHA_INICIO_CREDITO,cre.MONTO_CREDITO \n"
+                    + "from  credito cre ");
+
+            if (!fechaInicio.equals("")) {
+                cadena.append(" WHERE TO_DATE(TO_CHAR(cre.FECHA_INICIO_CREDITO,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + fechaInicio + "' and '" + fechaFin + "'\n");
+                cadena.append(" AND ");
+            } else {
+                cadena.append(" WHERE ");
+
+            }
+            cadena.append(" cre.ID_CLIENTE_FK= ? order by cre.FECHA_INICIO_CREDITO asc ");
+
+            query = em.createNativeQuery(cadena.toString());
+            System.out.println("Query: " + query.toString());
             List<Object[]> resultList = null;
             query.setParameter(1, idClienteFk);
             resultList = query.getResultList();
@@ -366,7 +375,19 @@ public class EjbCredito implements NegocioCredito {
         } catch (Exception ex) {
             Logger.getLogger(EjbCredito.class.getName()).log(Level.SEVERE, null, ex);
             return null;
-        } 
+        }
+    }
+    public BigDecimal getTotalCargos(BigDecimal idClienteFk, String fechaInicio) {
+        Query query = em.createNativeQuery("select nvl(sum(cre.MONTO_CREDITO),0) as monto \n" +
+" from  credito cre \n" +
+" WHERE TO_DATE(TO_CHAR(cre.FECHA_INICIO_CREDITO,'dd/mm/yyyy'),'dd/mm/yyyy') < '" + fechaInicio + "' \n" +
+"  and cre.ID_CLIENTE_FK = "+idClienteFk);
+        
+        BigDecimal d = new BigDecimal (query.getSingleResult().toString());
+        
+        return (d);
+    
+    
     }
 
 }

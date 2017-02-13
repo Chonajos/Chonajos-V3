@@ -485,4 +485,11 @@ public class ServiceCredito implements IfaceCredito {
     
     }
 
+    @Override
+    public BigDecimal getTotalCargos(BigDecimal idClienteFk, String fechaInicio) {
+       getEjb();
+        return ejb.getTotalCargos(idClienteFk, fechaInicio);
+    
+    }
+
 }

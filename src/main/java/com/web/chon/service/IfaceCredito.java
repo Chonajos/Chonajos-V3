@@ -16,6 +16,8 @@ public interface IfaceCredito {
     
     public ArrayList<Credito> getHistorialCrediticio(BigDecimal idClienteFk,String fechaInicio,String fechaFin);
     
+    public BigDecimal  getTotalCargos(BigDecimal idClienteFk,String fechaInicio);
+    
     public ArrayList<SaldosDeudas> getCreditosActivos(BigDecimal idCliente,BigDecimal idAbonoPk,BigDecimal idSucursalFk);
     
     public Credito getById(BigDecimal idCredito);

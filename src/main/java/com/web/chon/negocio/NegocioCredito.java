@@ -53,5 +53,6 @@ public interface NegocioCredito {
     
     public List<Object[]>  getHistorialCrediticio(BigDecimal idClienteFk, String fechaInicio, String fechaFin);
     
+    public BigDecimal  getTotalCargos(BigDecimal idClienteFk,String fechaInicio);
 
 }

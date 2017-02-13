@@ -436,9 +436,7 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
         if (idCajaFk != null && idCajaFk.intValue() != 0) {
             cadena.append(" and oc.ID_CAJA_FK= " + idCajaFk + "");
         }
-        if (idSucursalFk != null && idSucursalFk.intValue() != 0) {
-            cadena.append(" and oc.ID_SUCURSAL_FK = " + idSucursalFk + "");
-        }
+        
         if (idStatusFk != null && idStatusFk.intValue() != 0) {
             cadena.append(" and oc.ID_STATUS_FK = " + idStatusFk + "");
         }

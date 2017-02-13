@@ -200,26 +200,21 @@ public class BeanCatCliente implements BeanSimple {
 
     @Override
     public String update() {
-        try {
-            System.out.println("update controller");
-            Correos ctemporal = new Correos();
-            ctemporal.setIdcorreo(data.getEmails().get(0).getIdcorreo());
-            ctemporal.setCorreo(data.getEmail());
-            ctemporal.setTipo(data.getEmails().get(0).getTipo());
 
-            if (ifaceCatCliente.updateCliente(data) == 1) {
-                if (!data.getEmails().isEmpty()) {
-                    ifaceCatCorreos.updateCorreos(ctemporal);
-                }
-                JsfUtil.addSuccessMessageClean("Datos Actualizados Correctamente");
-            } else {
+        System.out.println("update controller");
+        Correos ctemporal = new Correos();
 
-                JsfUtil.addErrorMessage("Ocurrio un problema al actualizar el cliente");
+        if (ifaceCatCliente.updateCliente(data) == 1) {
+            if (!data.getEmails().isEmpty()) {
+                ctemporal.setIdcorreo(data.getEmails().get(0).getIdcorreo());
+                ctemporal.setCorreo(data.getEmail());
+                ctemporal.setTipo(data.getEmails().get(0).getTipo());
+                ifaceCatCorreos.updateCorreos(ctemporal);
             }
+            JsfUtil.addSuccessMessageClean("Datos Actualizados Correctamente");
+        } else {
 
-        } catch (Exception ex) {
-
-            JsfUtil.addErrorMessage("Ocurrio un problema al actualizar el cliente");
+            JsfUtil.addErrorMessage("1.-Ocurrio un problema al actualizar el cliente");
         }
 
         backView();
