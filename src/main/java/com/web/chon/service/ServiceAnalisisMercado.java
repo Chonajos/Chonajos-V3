@@ -237,7 +237,7 @@ public class ServiceAnalisisMercado implements IfaceAnalisisMercado {
                             AnalisisMercado dominio = new AnalisisMercado();
                             dominio.setPrecio(new BigDecimal(object[0].toString()));
                             dominio.setCantidadToneladas(new BigDecimal(object[1].toString()));
-                            dominio.setDescripcionFiltro(TiempoUtil.getNameMonth(i + 1));
+                            dominio.setDescripcionFiltro(TiempoUtil.getNameMonth(i));
                             dominio.setDiasMes(diasMes);
 
                             for (Object[] objectRemanente : lstObjectRemanenteMonth) {

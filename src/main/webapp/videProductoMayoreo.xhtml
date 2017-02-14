@@ -7,6 +7,7 @@
     xmlns:o="http://omnifaces.org/ui"
     xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core">
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/dashboard.css"/>
     <h:head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
     </h:head>
@@ -18,14 +19,15 @@
                     <h3>#{beanVideoProductoMayoreo.title}</h3>
                 </div>
                 <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <video  height="100%;" width="100%" autoplay="true" name="media" controls="true" >
-                        <source src="#{beanVideoProductoMayoreo.data.urlVideo}" type="video/mp4"/>
-                    </video>
+                <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12 col-lg-offset-1 col-md-offset-1">
+                    <iframe id="video" width="420" height="315" src="#{beanVideoProductoMayoreo.data.urlVideo}" frameborder="0" allowfullscreen="true"></iframe>
+<!--                                            <video  height="100%;" width="100%" preload="none" name="media" controls="true" onclick="this.paused ? this.play() : this.pause();"  poster="/resources/img/logoChonajos.png">
+                                                <source src="#{beanVideoProductoMayoreo.data.urlVideo}" type="video/mp4"/>
+                    
+                                            </video>-->
+
                 </div>
-
             </p:panel>
-
         </h:form>
     </h:body>
 </html>
