@@ -1,6 +1,5 @@
 package com.web.chon.bean;
 
-import com.lowagie.text.pdf.PdfName;
 import com.web.chon.dominio.Bodega;
 import com.web.chon.dominio.Cliente;
 import com.web.chon.dominio.ComprobantesDigitales;
@@ -34,6 +33,7 @@ import com.web.chon.util.JasperReportUtil;
 import com.web.chon.util.JsfUtil;
 import com.web.chon.util.SendEmail;
 import com.web.chon.util.TiempoUtil;
+import com.web.chon.util.UploadVideo;
 import com.web.chon.util.UtilUpload;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -55,7 +55,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -68,7 +67,6 @@ import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
-import org.apache.commons.io.IOUtils;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.RowEditEvent;
@@ -168,14 +166,11 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
     private List<FileDominio> filesUser = new ArrayList<FileDominio>();
 
-    private InputStream inputStream;
-    private int fileSaved = 0;
     private DefaultStreamedContent download;
     private String path = "C:/Users/Juan/Documents/NetBeansProjects/Chonajos-V3/src/main/webapp/resources/video";//path de prueba comentar cuando se suba al servidor
     private File[] files = null;
     private String carpetaCarro = "";
     private String carpetaProducto = "";
-    private String destPath;
 
     private UploadedFile file;
 
@@ -222,7 +217,6 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
     public void imprimirCodigoBarras() {
         rutaPDF = null;
-        System.out.println("dataProducto: " + dataProducto.toString());
         String codigo = "";
         int folio = 0;
         int idSucursal = 0;
@@ -243,7 +237,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
                 codigo += dataProducto.getIdTipoConvenio().toString();
             }
         }
-        System.out.println("Codigo: " + codigo);
+
         paramReport.put("codigo", codigo);
         paramReport.put("carro", carro.toString());
         paramReport.put("producto", nombreProducto);
@@ -274,7 +268,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
                 try {
                     con = datasource.getConnection();
-                    //System.out.println("datsource" + con.toString());
+
                 } catch (SQLException ex) {
                     Logger.getLogger(BeanVenta.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -315,7 +309,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     }
 
     private void setParameterTicket(EntradaMercancia em) {
-        System.out.println("======================Entrada: " + em.toString());
+
         paramReport.put("nombreSucursal", usuario.getNombreSucursal());
         paramReport.put("carro", em.getIdCarroSucursal().toString());
         paramReport.put("fecha", TiempoUtil.getFechaDDMMYYYYHHMM(em.getFecha()));
@@ -330,7 +324,6 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         paramReport.put("cantidadBodega", em.getCantidadEmpaquesReales());
         paramReport.put("ID_EM_PK", em.getIdEmPK().toString());
 
-        System.out.println("==================" + em.getIdEmPK());
         paramReport.put("leyenda", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:" + usuario.getTelefonoSucursal());
 
     }
@@ -368,7 +361,6 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
                 try {
                     con = datasource.getConnection();
-                    System.out.println("datsource" + con.toString());
                 } catch (SQLException ex) {
                     Logger.getLogger(BeanVenta.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -393,12 +385,11 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
     public void autoAjustar() {
         //1.- Ajustar Existencias con los Paquetes nuevos
-        System.out.println("DataAjuste: " + dataProductoAutoAjuste);
+
         ExistenciaProducto exis = ifaceNegocioExistencia.getExistenciaByIdEmpFk(dataProductoAutoAjuste.getIdEmpPK());
         exis.setCantidadPaquetes(dataProductoAutoAjuste.getCantPaquetes());
         exis.setKilosTotalesProducto(dataProductoAutoAjuste.getKilosPaquetes());
-        System.out.println("-------------------------------------------------");
-        System.out.println(exis.toString());
+
         if (ifaceNegocioExistencia.updateCantidadKilo(exis) == 1) {
             //dataProductoAutoAjuste.setIdBodegaFK();
             dataProductoAutoAjuste.setKilosTotalesProducto(dataProductoAutoAjuste.getKilosReales());
@@ -429,7 +420,6 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     }
 
     public void cancelarPaquete() {
-        System.out.println("DataPaqueteEliminar: " + dataPaqueteEliminar.toString());
         if (ifaceEntMerProPaq.eliminarPaquete(dataPaqueteEliminar.getIdEmPP()) == 1) {
             JsfUtil.addSuccessMessageClean("Paquete Eliminado con Éxito");
             buscar();
@@ -488,18 +478,11 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
                 fechaFiltroInicio = null;
             }
             lstEntradaMercancia = ifaceEntradaMercancia.getEntradaProductoByIntervalDate(fechaFiltroInicio, fechaFiltroFin, idSucursal, idProvedor, carro);
-
-            for (EntradaMercancia e : lstEntradaMercancia) {
-                System.out.println("++++++++++++++++++++++++++++++++++++++++++++++");
-                System.out.println(e.getListaComprobantes().toString());
-            }
-
             verificarCombo();
         }
     }
 
     public void registrarPaquete() {
-        System.out.println("Paquete: " + dataPaquete.toString());
         if (dataPaquete.getPesoNeto() == null || dataPaquete.getPaquetes() == null || dataPaquete.getKilos() == null) {
             JsfUtil.addErrorMessageClean("LLenar todos los datos del paquete");
         } else {
@@ -531,7 +514,6 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     }
 
     public void calculaPesoNeto() {
-        System.out.println("Entro a metodo");
         if (dataProductoNuevo.getKilosTotalesProducto() != null && dataProductoNuevo.getPesoTara() != null) {
 
             BigDecimal h = dataProductoNuevo.getKilosTotalesProducto().subtract(dataProductoNuevo.getPesoTara(), MathContext.UNLIMITED);
@@ -551,7 +533,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         dataProductoNuevo.setIdEmFK(data.getIdEmPK());
         dataProductoNuevo.setIdSubProductoFK(subProducto.getIdSubproductoPk());
         dataProductoNuevo.setKilosTotalesProducto(dataProductoNuevo.getPesoNeto());
-        System.out.println("Nuevo Producto: " + dataProductoNuevo.toString());
+
         if (ifaceEntradaMercanciaProducto.insertEntradaMercanciaProducto(dataProductoNuevo) != 0) {
             ExistenciaProducto ep = new ExistenciaProducto();
             ep.setIdExistenciaProductoPk(new BigDecimal(ifaceNegocioExistencia.getNextVal()));
@@ -610,7 +592,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         venta = ifaceEntradaMercanciaProducto.getTotalVentasByIdEMP(dataProducto.getIdEmpPK());
         if (venta.getTotalVenta().intValue() == 0) {
             if (ifaceNegocioExistencia.deleteExistenciaProducto(ep) == 1) {
-                System.out.println("Se elimino la existencia producto");
+
                 if (ifaceEntradaMercanciaProducto.deleteEntradaMercanciaProducto(dataProducto) == 1) {
                     JsfUtil.addSuccessMessageClean("Se ha eliminado el producto correctamente");
                     buscar();
@@ -635,7 +617,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
                 venta = ifaceEntradaMercanciaProducto.getTotalVentasByIdEMP(items.getIdEmpPK());
                 if (venta.getTotalVenta().intValue() == 0) {
                     if (ifaceNegocioExistencia.deleteExistenciaProducto(ep) == 1) {
-                        System.out.println("Se elimino la existencia producto");
+
                         if (ifaceEntradaMercanciaProducto.deleteEntradaMercanciaProducto(items) == 1) {
                             JsfUtil.addSuccessMessageClean("Se ha eliminado el producto correctamente");
                             buscar();
@@ -654,10 +636,10 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
         }
         if (bandera) {
-            System.out.println("Al menos un producto tiene ventas y no se puede eliminar.");
+
             JsfUtil.addErrorMessageClean("Al menos un producto del carro tiene ventas, no se puede eliminar");
         } else {
-            System.out.println("Se han eliminado todos los productos del carro");
+
             if (ifaceEntradaMercancia.deleteEntradaMercancia(data) == 1) {
                 JsfUtil.addSuccessMessageClean("Se ha cancelado la entrada de mercancia correctamente");
                 buscar();
@@ -666,7 +648,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
             }
 
         }
-        System.out.println("Despues de eliminar los items eliminar la entrada general");
+        
 
     }
 
@@ -681,9 +663,9 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         kilosAnterior = epAnterio.getKilosTotalesProducto();
 
         if (dataProductEdit.getIdSubProductoFK().equals(dataProductEdit.getSubProducto().getIdSubproductoPk())) {
-            System.out.println("son iguales");
+        
         } else {
-            System.out.println("son diferentes");
+        
             dataProductEdit.setIdSubProductoFK(dataProductEdit.getSubProducto().getIdSubproductoPk());
             cambioProducto = true;
         }
@@ -694,16 +676,15 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
             if (venta.getTotalVenta().intValue() == 0) {
                 totalVentas = false;
-                System.out.println("No existen ventas");
+
             } else {
                 totalVentas = true;
-                System.out.println("Existen Ventas");
+
             }
         }
         if (totalVentas == false) {
             if (ifaceEntradaMercanciaProducto.update(dataProductEdit) == 1) {
                 JsfUtil.addSuccessMessageClean("Se actualizo correctamente el producto");
-                System.out.println("Se actualizo correctamente");
                 ExistenciaProducto ep = new ExistenciaProducto();
                 ep = ifaceNegocioExistencia.getExistenciaByIdEmpFk(dataProductEdit.getIdEmpPK());
                 ep.setIdSubProductoFK(dataProductEdit.getIdSubProductoFK());
@@ -712,22 +693,16 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
                 ep.setIdTipoConvenio(dataProductEdit.getIdTipoConvenio());
                 ep.setIdEntradaMercanciaProductoFK(dataProductEdit.getIdEmpPK());
                 ep.setConvenio(dataProductEdit.getPrecio());
-                System.out.println("Entrada Anterior kilos: " + kilosAnterior);
-                System.out.println("Entrada Anterior Cantidad: " + cantidadAnterior);
-                System.out.println("Entrada Nueva kilos: " + dataProductEdit.getKilosTotalesProducto());
-                System.out.println("Entrada Nueva Cantidad: " + dataProductEdit.getCantidadPaquetes());
+
                 ExistenciaProducto e = ifaceNegocioExistencia.getExistenciaByIdEmpFk(dataProductEdit.getIdEmpPK());
-                System.out.println("Existencia Anterior kilos: " + e.getKilosTotalesProducto());
-                System.out.println("Existencia Anterior Cantidad: " + e.getCantidadPaquetes());
+
                 e.setKilosTotalesProducto(e.getKilosTotalesProducto().subtract((kilosAnterior.subtract(dataProductEdit.getKilosTotalesProducto(), MathContext.UNLIMITED)), MathContext.UNLIMITED));
                 e.setCantidadPaquetes(e.getCantidadPaquetes().subtract((cantidadAnterior.subtract(dataProductEdit.getCantidadPaquetes(), MathContext.UNLIMITED)), MathContext.UNLIMITED));
-                System.out.println("Existencia Nueovs kilos: " + e.getKilosTotalesProducto());
-                System.out.println("Existencia Nuevos Cantidad: " + e.getCantidadPaquetes());
+
                 ep.setKilosTotalesProducto(e.getKilosTotalesProducto());
                 ep.setCantidadPaquetes(e.getCantidadPaquetes());
                 ep.setIdExistenciaProductoPk(e.getIdExistenciaProductoPk());
-                System.out.println("--------------Existencia Actualizar------------");
-                System.out.println(ep.toString());
+
                 if (ifaceNegocioExistencia.update(ep) == 1) {
                     JsfUtil.addSuccessMessageClean("Actualización de datos correcta");
                     recalcularKilosEmpaques(dataProductEdit);
@@ -766,23 +741,19 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     }
 
     public void onRowCancel(RowEditEvent event) {
-        System.out.println("cancel");
 
     }
 
     public StreamedContent getProductImage() throws IOException, SQLException {
-        System.out.println("---------------------Entro al método------------------");
+
         FacesContext context = FacesContext.getCurrentInstance();
         String imageType = "image/jpg";
-        for (ComprobantesDigitales cd : data.getListaComprobantes()) {
-            System.out.println("Comprobante: " + cd.getIdComprobantesDigitalesPk());
-        }
+
         if (data.getListaComprobantes() == null || data.getListaComprobantes().isEmpty()) {
             JsfUtil.addErrorMessageClean("Esta operación no cuenta con comprobante");
             return variable;
         } else {
             variable = null;
-            System.out.println("Data:" + data.toString());
             for (ComprobantesDigitales cd : data.getListaComprobantes()) {
                 if (cd.getIdLlaveFk().intValue() == data.getIdEmPK().intValue()) {
                     byte[] image = cd.getFichero();
@@ -852,12 +823,14 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
             JsfUtil.addErrorMessage("Archivo existente, seleccione otro.");
         } else {
             UploadedFile uploadedFile = (UploadedFile) event.getFile();
-            InputStream inputStr = null;
-            InputStream inputStrBd = null;
+//            InputStream inputStr = null;
+//            InputStream inputStrBd = null;
+            InputStream inputStrYoutube = null;
             try {
                 logger.debug("selecciona archivo");
-                inputStr = uploadedFile.getInputstream();
-                inputStrBd = uploadedFile.getInputstream();
+//                inputStr = uploadedFile.getInputstream();
+//                inputStrBd = uploadedFile.getInputstream();
+                inputStrYoutube = uploadedFile.getInputstream();
             } catch (IOException e) {
                 JsfUtil.addErrorMessage("No se permite guardar valores nulos. ");
                 manageException(e);
@@ -870,34 +843,35 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
             }
 
-            destPath = pathServer + "/" + "entradaProducto" + "/" + fileName;
-
+//            destPath = pathServer + "/" + "entradaProducto" + "/" + fileName;
             try {
 
-                FileUtils.guardaArchivo(destPath, inputStr);
-                bytes = IOUtils.toByteArray(inputStrBd);
-                item.setVideoByte(bytes);
+                String idVideo = "";
 
-                FacesMessage message = new FacesMessage("exito", "El archivo "
-                        + event.getFile().getFileName().trim()
-                        + " fue cargado.");
-                FacesContext.getCurrentInstance().addMessage(null, message);
-                fileSaved = 1;
+//                bytes = IOUtils.toByteArray(inputStrBd);
+//                item.setVideoByte(bytes);
+                idVideo = UploadVideo.subir(inputStrYoutube, item.getNombreProducto() + " " + item.getIdEmpPK());
+                if (!idVideo.equals("")) {
+                    String urlYoutube = "https://www.youtube.com/embed/" + idVideo + "?autoplay=1";
+                    item.setUrlVideo(urlYoutube);
+                    System.out.println("urlYoutube " + urlYoutube);
 
-                String strPath = "";
-                strPath = ".." + File.separatorChar + "resources" + File.separatorChar + "video" + File.separatorChar + "entradaProducto" + File.separatorChar + fileName;
-
-                item.setUrlVideo(strPath);
-
-                if (ifaceEntradaMercanciaProducto.updateVideo(item) > 0) {
-                    JsfUtil.addSuccessMessage("Video Guardado Correctamente.");
+                    if (ifaceEntradaMercanciaProducto.updateVideo(item) > 0) {
+                        JsfUtil.addSuccessMessage("Video Guardado Correctamente."+urlYoutube);
+                        buscar();
+                    } else {
+                        JsfUtil.addErrorMessage("No se pudo Guardar el Video.");
+                    }
+                    //Ejecuta script para ocultar el dialog
+                    RequestContext.getCurrentInstance().execute("PF('statusDialog').hide();");
                 } else {
                     JsfUtil.addErrorMessage("No se pudo Guardar el Video.");
                 }
 
-            } catch (IOException e) {
-                e.printStackTrace();
             } catch (Exception e) {
+                //Ejecuta script para ocultar el dialog
+                RequestContext.getCurrentInstance().execute("PF('statusDialog').hide();");
+                JsfUtil.addErrorMessage("No se pudo Guardar el Video.");
                 e.printStackTrace();
             }
         }
@@ -966,18 +940,18 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     }
 
     public void mandarCorreo() {
-        
+
         String url = getUrl(dataProductoCorreo.getIdEmpPK(), "idEMP", "videProductoMayoreo.xhtml");
-        
+
         String mensaje = "Estimado: \n\nEn CHONAJOS una de las prioridades es facilitar las compras "
                 + "de nuestros clientes por eso ponemos a su disposición este video del producto "
-                +dataProductoCorreo.getNombreProducto().trim()+" "+dataProductoCorreo.getNombreEmpaque()
-                + " con solo dar un click en el siguiente enlace "+url+" esta es una mercancía que el día de hoy "
+                + dataProductoCorreo.getNombreProducto().trim() + " " + dataProductoCorreo.getNombreEmpaque()
+                + " con solo dar un click en el siguiente enlace " + url + " esta es una mercancía que el día de hoy "
                 + "estamos recibiendo en nuestra bodega Q85 de la Central de Abastos en Iztapalapa, Ciudad de México. "
                 + "\n\nPara mayor información y saber precios comuníquese con nosotros, "
                 + "será un placer atenderle.\n\nLuis Torres: 5549896423\nHéctor García: 5565787018"
                 + "\nTelefono de Bodega:5556405846 ext: 105 \n\nGracias.";
-        
+
         ArrayList<String> lstCorreoPara = new ArrayList<String>();
 
         for (Cliente cliente : lstClienteCorreo) {
@@ -987,7 +961,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
         }
 
-        SendEmail.sendAdjunto(dataProductoCorreo.getNombreProducto().trim()+" "+dataProductoCorreo.getNombreEmpaque(), mensaje, null, "freddyramix@gmail.com", lstCorreoPara);
+        SendEmail.sendAdjunto(dataProductoCorreo.getNombreProducto().trim() + " " + dataProductoCorreo.getNombreEmpaque(), mensaje, null, "freddyramix@gmail.com", lstCorreoPara);
 
     }
 
@@ -1374,6 +1348,14 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
     public void setDataProductoCorreo(EntradaMercanciaProducto dataProductoCorreo) {
         this.dataProductoCorreo = dataProductoCorreo;
+    }
+
+    public IfaceTipoCovenio getIfaceCovenio() {
+        return ifaceCovenio;
+    }
+
+    public void setIfaceCovenio(IfaceTipoCovenio ifaceCovenio) {
+        this.ifaceCovenio = ifaceCovenio;
     }
 
     private void manageException(IOException e) {

@@ -156,7 +156,7 @@ public class BeanHistorialRegEntSal implements Serializable {
         faltas = 0;
         model = new ArrayList<RegistroEntradaSalida>();
         model = ifaceRegEntSal.getRegistros(data.getIdUsuarioFk(), data.getFechaFiltroInicio(), data.getFechaFiltroFin());
-        int faltaPorRetardos = 0;
+//        int faltaPorRetardos = 0;
 
         for (RegistroEntradaSalida dominio : model) {
             if (dominio.isFalta()) {
@@ -172,11 +172,11 @@ public class BeanHistorialRegEntSal implements Serializable {
         }
 
         //Se calculan las faltas que se generan por retardos
-        faltaPorRetardos = retardos / RETARDOS_EQUIVALE_FALTA;
+//        faltaPorRetardos = retardos / RETARDOS_EQUIVALE_FALTA;
 
         //retardos restantes
-        retardos = retardos % RETARDOS_EQUIVALE_FALTA;
-        faltas += faltaPorRetardos;
+//        retardos = retardos % RETARDOS_EQUIVALE_FALTA;
+//        faltas += faltaPorRetardos;
 
     }
 
@@ -238,7 +238,7 @@ public class BeanHistorialRegEntSal implements Serializable {
 
     public RetardosFaltas getFaltasRetardoByIdUsuario(BigDecimal idUsuario, String nombreCompleto) {
 
-        int faltaPorRetardos = 0;
+//        int faltaPorRetardos = 0;
 
         RetardosFaltas retardosFaltas = new RetardosFaltas();
 
@@ -258,11 +258,11 @@ public class BeanHistorialRegEntSal implements Serializable {
         }
 
         //Se calculan las faltas que se generan por retardos
-        faltaPorRetardos = retardos / RETARDOS_EQUIVALE_FALTA;
+//        faltaPorRetardos = retardos / RETARDOS_EQUIVALE_FALTA;
 
         //retardos restantes
-        retardos = retardos % RETARDOS_EQUIVALE_FALTA;
-        faltas += faltaPorRetardos;
+//        retardos = retardos % RETARDOS_EQUIVALE_FALTA;
+//        faltas += faltaPorRetardos;
 
         retardosFaltas.setNombreUsuario(nombreCompleto);
         retardosFaltas.setFaltas(faltas);
