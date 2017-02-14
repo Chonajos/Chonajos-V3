@@ -204,13 +204,33 @@ public class BeanCatCliente implements BeanSimple {
         System.out.println("update controller");
         Correos ctemporal = new Correos();
 
-        if (ifaceCatCliente.updateCliente(data) == 1) {
-            if (!data.getEmails().isEmpty()) {
-                ctemporal.setIdcorreo(data.getEmails().get(0).getIdcorreo());
+        if (ifaceCatCliente.updateCliente(data) == 1) 
+        {
+            if (data.getEmails()==null) 
+            {
+                ctemporal.setId_cliente_fk(data.getId_cliente());
+                ctemporal.setTipo("Personal");
                 ctemporal.setCorreo(data.getEmail());
-                ctemporal.setTipo(data.getEmails().get(0).getTipo());
-                ifaceCatCorreos.updateCorreos(ctemporal);
+                if(ifaceCatCorreos.insertCorreo(ctemporal)==1)
+                {
+                   JsfUtil.addSuccessMessageClean("Se han actualizado correctamente los datos");
+                }
+                else
+                {
+                    JsfUtil.addSuccessMessageClean("Ha ocurrido un error al actualizar los datos");
+                }
             }
+            else
+            {
+                if(!data.getEmails().isEmpty())
+                {
+                    ctemporal.setIdcorreo(data.getEmails().get(0).getIdcorreo());
+                    ctemporal.setCorreo(data.getEmail());
+                    ctemporal.setTipo(data.getEmails().get(0).getTipo());
+                    ifaceCatCorreos.updateCorreos(ctemporal);
+                }
+            }
+            
             JsfUtil.addSuccessMessageClean("Datos Actualizados Correctamente");
         } else {
 

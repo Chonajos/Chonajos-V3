@@ -52,10 +52,12 @@ public class EjbComprobantesDigitales implements NegocioComprobantes {
     }
     @Override
     public int insertarImagen(BigDecimal id, byte[] fichero) throws SQLException {
-
+        System.out.println("Fichero :"+fichero.toString());
+        System.out.println("ID: "+id);
         Query querys = em.createNativeQuery("update COMPROBANTES_DIGITALES SET FICHERO = ? WHERE ID_COMPROBANTES_DIGITALES_PK = ?");
         querys.setParameter(1, fichero);
         querys.setParameter(2, id);
+        
         return querys.executeUpdate();
 
     }

@@ -66,6 +66,11 @@
                                     <f:convertNumber type="currency" currencySymbol="$" />
                                 </h:outputText>
                             </p:column>
+                            <p:column headerText="imagen" width="60px;"  class="alignCenter">
+                                <p:commandButton icon="ui-icon-image" id="openDialogLink" disabled="#{model.fichero ==null}" update=":formContent:imagen"  onclick="PF('dlg').show();" >
+                                    <f:setPropertyActionListener value="#{model}" target="#{beanRecibirDeposito.data}"/>
+                                </p:commandButton>
+                            </p:column>
                             <p:column headerText="Recibir" width="60px;" class="alignCenter">
                                 <p:commandButton id="print" ajax="true" process="@this" action="#{beanRecibirDeposito.aceptar()}" 
                                                  icon="ui-icon-transfer-e-w" styleClass="ui-priority-primary" update=":formContent">
@@ -130,6 +135,17 @@
                             </p:column>
                         </p:dataTable>
                     </div>
+                    
+                    <p:dialog id="picture"  widgetVar="dlg" header="Comprobante" resizable="false" showEffect="clip" hideEffect="clip">
+                        <div>
+                            <p:graphicImage cache="false" style="height:300px; width:300px;" id="imagen" value="#{beanRecibirDeposito.productImage}"/>
+                        </div>
+                        <div>
+                            <p:commandButton value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="ui-icon-arrowthick-1-s">
+                                <p:fileDownload value="#{beanRecibirDeposito.productImage}" />
+                            </p:commandButton>
+                        </div>
+                    </p:dialog> 
                     
                 </div>
             </p:panel>

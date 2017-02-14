@@ -6,6 +6,7 @@
 package com.web.chon.service;
 
 
+import com.web.chon.dominio.ComprobantesDigitales;
 import com.web.chon.dominio.OperacionesCaja;
 import com.web.chon.dominio.TipoOperacion;
 import com.web.chon.dominio.Usuario;
@@ -19,6 +20,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
@@ -27,6 +29,8 @@ import java.util.List;
 @Service
 public class ServiceOperacionesCaja implements IfaceOperacionesCaja {
     NegocioOperacionesCaja ejb;
+    @Autowired
+    private IfaceComprobantes ifaceComprobantes;
     private void getEjb() 
     {
         if (ejb == null) {
@@ -341,6 +345,14 @@ public class ServiceOperacionesCaja implements IfaceOperacionesCaja {
             op.setIdCuentaDestinoFk(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
             op.setIdUserFk(obj[13] == null ? null : new BigDecimal(obj[13].toString()));
             op.setIdSucursalFk(obj[14] == null ? null : new BigDecimal(obj[14].toString()));
+            
+            ComprobantesDigitales cd = new ComprobantesDigitales();
+            cd = ifaceComprobantes.getComprobanteByIdTipoLlave(new BigDecimal(4), op.getIdOperacionesCajaPk());
+
+            if (cd != null) {
+                op.setFichero(cd.getFichero());
+            }
+            
             
             op.setNumero(i);
             i+=1;

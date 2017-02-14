@@ -17,10 +17,16 @@ import com.web.chon.service.IfaceOperacionesCaja;
 import com.web.chon.service.IfaceOperacionesCuentas;
 import com.web.chon.service.IfacePagosBancarios;
 import com.web.chon.util.JsfUtil;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -30,7 +36,7 @@ import org.springframework.stereotype.Component;
  * @author JesusAlfredo
  */
 @Component
-@Scope("view")
+@Scope("session")
 public class BeanRecibirDeposito implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -81,6 +87,7 @@ public class BeanRecibirDeposito implements Serializable {
     private OperacionesCaja opcaja;
     private ArrayList<Sucursal> listaSucursales;
     private BigDecimal idSucursalFK;
+    private StreamedContent variable;
 
     @PostConstruct
     public void init() {
@@ -109,7 +116,28 @@ public class BeanRecibirDeposito implements Serializable {
     public void buscar()
     {
         lstDespositosEntrantes = ifaceOperacionesCaja.getDepositosEntrantes(idSucursalFK);
+        
+        
+        
         listaDepositosTransferencias = ifacePagosBancarios.getPagosPendientes(idSucursalFK);
+    }
+    
+    public StreamedContent getProductImage() throws IOException, SQLException {
+        FacesContext context = FacesContext.getCurrentInstance();
+        String imageType = "image/jpg";
+        if(data.getFichero()==null)
+        {
+            JsfUtil.addErrorMessageClean("Esta operación no cuenta con comprobante");
+            return variable;
+        }
+        else{
+            variable = null;
+            System.out.println("Data:" +data.toString());
+             byte[] image = data.getFichero();
+             variable = new DefaultStreamedContent(new ByteArrayInputStream(image), imageType, data.getIdOperacionesCajaPk().toString());
+            return variable;
+        }
+           
     }
 
     public void aceptarDeposito() {
@@ -326,6 +354,15 @@ public class BeanRecibirDeposito implements Serializable {
     public void setIdSucursalFK(BigDecimal idSucursalFK) {
         this.idSucursalFK = idSucursalFK;
     }
+
+    public StreamedContent getVariable() {
+        return variable;
+    }
+
+    public void setVariable(StreamedContent variable) {
+        this.variable = variable;
+    }
+    
     
 
 }
