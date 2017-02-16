@@ -30,8 +30,10 @@ import com.web.chon.util.JsfUtil;
 import com.web.chon.util.NumeroALetra;
 import com.web.chon.util.TiempoUtil;
 import com.web.chon.util.UtilUpload;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -63,6 +65,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.RowEditEvent;
+import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,7 +78,7 @@ import org.springframework.stereotype.Component;
  * @author JesusAlfredo
  */
 @Component
-@Scope("view")
+@Scope("session")
 public class BeanBuscaCredito implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -108,6 +111,7 @@ public class BeanBuscaCredito implements Serializable {
     private BigDecimal totalAbonado;
 
     private ArrayList<SaldosDeudas> modelo;
+    private SaldosDeudas data;
     private ArrayList<TipoAbono> lstTipoAbonos;
     private ArrayList<Cliente> lstCliente;
     private ArrayList<AbonoCredito> chequesPendientes;
@@ -185,6 +189,7 @@ public class BeanBuscaCredito implements Serializable {
     private boolean banderaAbono;
     private BigDecimal numeroAbono;
     private ArrayList<CuentaBancaria> lstCuentas;
+    private StreamedContent variable;
     
     private static final BigDecimal STATUS_REALIZADA = new BigDecimal(1);
     private static final BigDecimal STATUS_PENDIENTE = new BigDecimal(2);
@@ -195,6 +200,7 @@ public class BeanBuscaCredito implements Serializable {
     public void init() {
         lstCuentas=new ArrayList<CuentaBancaria>();
         banderaAbono=true;
+        data = new SaldosDeudas();
         numeroAbono = new BigDecimal(0);
         pagoBancario = new PagosBancarios();
         botonCancelar = true;
@@ -235,7 +241,7 @@ public class BeanBuscaCredito implements Serializable {
         comboFiltro = new BigDecimal(1);
         habilitaBotones = true;
         idCuentaDestinoBean = new BigDecimal(1);
-        filtroIdSucursalFk = new BigDecimal(usuarioDominio.getSucId());
+        //filtroIdSucursalFk = new BigDecimal(usuarioDominio.getSucId());
         
     }
 
@@ -886,6 +892,23 @@ public class BeanBuscaCredito implements Serializable {
             JsfUtil.addErrorMessageClean("Selecione un tipo de abono, o no tiene caja para realizar este movimiento");
         }
 
+    }
+    public StreamedContent getProductImage() throws IOException, SQLException {
+        FacesContext context = FacesContext.getCurrentInstance();
+        String imageType = "image/jpg";
+        if(data.getFichero()==null)
+        {
+            JsfUtil.addErrorMessageClean("Esta operación no cuenta con comprobante");
+            return variable;
+        }
+        else{
+            variable = null;
+            System.out.println("Data:" +data.toString());
+             byte[] image = data.getFichero();
+             variable = new DefaultStreamedContent(new ByteArrayInputStream(image), imageType, data.getFolioVenta().toString());
+            return variable;
+        }
+           
     }
 
     public void finAbonar(AbonoCredito ac) {
@@ -1633,5 +1656,22 @@ public class BeanBuscaCredito implements Serializable {
     public void setIdSucursal(BigDecimal idSucursal) {
         this.idSucursal = idSucursal;
     }
+
+    public StreamedContent getVariable() {
+        return variable;
+    }
+
+    public void setVariable(StreamedContent variable) {
+        this.variable = variable;
+    }
+
+    public SaldosDeudas getData() {
+        return data;
+    }
+
+    public void setData(SaldosDeudas data) {
+        this.data = data;
+    }
+    
 
 }

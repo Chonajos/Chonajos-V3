@@ -54,6 +54,9 @@ public class SaldosDeudas implements Serializable {
     private BigDecimal idCliente;
     private BigDecimal abonarTemporal;
     private ArrayList<SaldosDeudas> lstSaldosDeudas;
+    private BigDecimal idVentaMayoreoFk;
+    private BigDecimal idVentaMenudeoFk;
+    private byte[] fichero;
 
     public void reset() {
         folioCredito = null;
@@ -376,6 +379,32 @@ public class SaldosDeudas implements Serializable {
     public void setIdCliente(BigDecimal idCliente) {
         this.idCliente = idCliente;
     }
+
+    public byte[] getFichero() {
+        return fichero;
+    }
+
+    public void setFichero(byte[] fichero) {
+        this.fichero = fichero;
+    }
+
+    public BigDecimal getIdVentaMayoreoFk() {
+        return idVentaMayoreoFk;
+    }
+
+    public void setIdVentaMayoreoFk(BigDecimal idVentaMayoreoFk) {
+        this.idVentaMayoreoFk = idVentaMayoreoFk;
+    }
+
+    public BigDecimal getIdVentaMenudeoFk() {
+        return idVentaMenudeoFk;
+    }
+
+    public void setIdVentaMenudeoFk(BigDecimal idVentaMenudeoFk) {
+        this.idVentaMenudeoFk = idVentaMenudeoFk;
+    }
+    
+    
     
     
     

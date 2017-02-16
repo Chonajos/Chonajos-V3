@@ -1,5 +1,6 @@
 package com.web.chon.service;
 
+import com.web.chon.dominio.ComprobantesDigitales;
 import com.web.chon.dominio.Credito;
 import com.web.chon.dominio.SaldosDeudas;
 import com.web.chon.negocio.NegocioCredito;
@@ -26,6 +27,8 @@ public class ServiceCredito implements IfaceCredito {
 
     @Autowired
     private PlataformaSecurityContext context;
+    @Autowired
+    private IfaceComprobantes ifaceComprobantes;
     NegocioCredito ejb;
     private static final BigDecimal CREDITOATRASADO = new BigDecimal(2);
     private static final BigDecimal CREDITONOATRASADO = new BigDecimal(1);
@@ -126,12 +129,12 @@ public class ServiceCredito implements IfaceCredito {
     }
 
     @Override
-    public ArrayList<SaldosDeudas> getCreditosActivos(BigDecimal idCliente,BigDecimal idAbonoPk,BigDecimal idSucursalFk) {
+    public ArrayList<SaldosDeudas> getCreditosActivos(BigDecimal idCliente, BigDecimal idAbonoPk, BigDecimal idSucursalFk) {
         //System.out.println("**************Service*************");
         getEjb();
         ArrayList<SaldosDeudas> lstCreditos = new ArrayList<SaldosDeudas>();
         List<Object[]> lstObject = new ArrayList<Object[]>();
-        lstObject = ejb.getCreditosActivos(idCliente,idAbonoPk,idSucursalFk);
+        lstObject = ejb.getCreditosActivos(idCliente, idAbonoPk, idSucursalFk);
         for (Object[] object : lstObject) {
             SaldosDeudas credito = new SaldosDeudas();
             credito.setFolioCredito(object[0] == null ? null : new BigDecimal(object[0].toString()));
@@ -146,12 +149,12 @@ public class ServiceCredito implements IfaceCredito {
             credito.setNumeroPagos(object[9] == null ? null : new BigDecimal(object[9].toString()));
             credito.setChequesPorCobrar(object[10] == null ? null : new BigDecimal(object[10].toString()));
             String nombreSucursal = null;
-            if(object[12] == null){
-                 nombreSucursal =object[11] == null ? "Registro Ingresado Manualmente":object[11].toString()+" Menudeo";
-            }else{
-                nombreSucursal =object[12].toString()+" Mayoreo";
+            if (object[12] == null) {
+                nombreSucursal = object[11] == null ? "Registro Ingresado Manualmente" : object[11].toString() + " Menudeo";
+            } else {
+                nombreSucursal = object[12].toString() + " Mayoreo";
             }
-            
+
             credito.setNombreSucursal(nombreSucursal);
             Date hoy = context.getFechaSistema();
             hoy.setHours(0);
@@ -171,11 +174,7 @@ public class ServiceCredito implements IfaceCredito {
                 pagos_por_fecha.add(credito.getMontoAbonar().multiply(new BigDecimal(i + 1), MathContext.UNLIMITED));
                 fechaVenta = auxiliar;
             }
-            //---En este Ciclo for obtenemos todas las fechas de pago y los montos del credito---//
 
-//            for (int j = 0; j < fechas_pagos.size(); j++) {
-//                System.out.println("Fecha: " + fechas_pagos.get(j) + "   Cantidad: " + pagos_por_fecha.get(j).toString());
-//            }
             int contador_periodos_atrasados = 0;
             BigDecimal deudas = new BigDecimal(0);
             boolean fechaPagoMayoraHoy = false;
@@ -217,24 +216,6 @@ public class ServiceCredito implements IfaceCredito {
                     default:
                         break;
                 }
-//                if (hoy.compareTo(fechas_pagos.get(x)) == 1) {//si hoy es menor que la primer fecha de pago
-//                    //mientras hoy sea mayor primer fecha de pago entonces hacer calculos
-//                    System.out.println("Total Abonado: " + credito.getTotalAbonado() + "  Pago por Fecha: " + pagos_por_fecha.get(x));
-//                    if (credito.getTotalAbonado().compareTo(pagos_por_fecha.get(x)) == -1) {
-//                        //si lo abonado es menor a la cantidad de esa fecha incrementar el contador de periodos atrasados
-//                        contador_periodos_atrasados = contador_periodos_atrasados + 1;
-//
-//                    }
-//                } else if (x == 0 && fechaPagoMayoraHoy == false) {
-//                    fechaPagoMayoraHoy = true;
-//                    credito.setFechaProximaAbonar(fechas_pagos.get(0));
-//                    credito.setStatusFechaProxima(new BigDecimal(1));
-//                } else if (fechaPagoMayoraHoy == false) {
-//                    credito.setStatusFechaProxima(new BigDecimal(2));
-//                    credito.setFechaProximaAbonar(fechas_pagos.get(x));
-//                } else {
-//                    System.out.println("=========================ERROR====================");
-//                }
 
                 credito.setSaldoLiquidar(credito.getSaldoTotal().subtract(credito.getTotalAbonado(), MathContext.UNLIMITED));
                 credito.setPeriodosAtraso(new BigDecimal(contador_periodos_atrasados));
@@ -249,6 +230,25 @@ public class ServiceCredito implements IfaceCredito {
 //                System.out.println("Periodos Atrasados: " + contador_periodos_atrasados + "  Cantidad: " + deudas);
 //                System.out.println("---------------------------------------------------------------");
             }
+
+            ComprobantesDigitales cd = new ComprobantesDigitales();
+
+            credito.setIdVentaMayoreoFk(object[13] == null ? null : new BigDecimal(object[13].toString()));
+            credito.setIdVentaMenudeoFk(object[14] == null ? null : new BigDecimal(object[14].toString()));
+
+            if (credito.getIdVentaMayoreoFk() != null) {
+                cd = ifaceComprobantes.getComprobanteByIdTipoLlave(new BigDecimal(2), credito.getIdVentaMayoreoFk());
+                credito.setFolioVenta(credito.getIdVentaMayoreoFk());
+            } else {
+                credito.setFolioVenta(credito.getIdVentaMenudeoFk());
+                cd = ifaceComprobantes.getComprobanteByIdTipoLlave(new BigDecimal(3), credito.getIdVentaMenudeoFk());
+
+            }
+
+            if (cd != null) {
+                credito.setFichero(cd.getFichero());
+            }
+
             lstCreditos.add(credito);
         }
         return lstCreditos;
@@ -285,13 +285,13 @@ public class ServiceCredito implements IfaceCredito {
     }
 
     @Override
-    public ArrayList<SaldosDeudas> getCreditosByEstatus(int estatus, int dias, BigDecimal idSucursal,BigDecimal tipoVenta) {
+    public ArrayList<SaldosDeudas> getCreditosByEstatus(int estatus, int dias, BigDecimal idSucursal, BigDecimal tipoVenta) {
 
         List<Object[]> lstObject = new ArrayList<Object[]>();
         ArrayList<SaldosDeudas> lstSaldoDeuda = new ArrayList<SaldosDeudas>();
         getEjb();
 
-        lstObject = ejb.getAllCreditosActivos(idSucursal,tipoVenta);
+        lstObject = ejb.getAllCreditosActivos(idSucursal, tipoVenta);
 
         try {
             for (Object[] obj : lstObject) {
@@ -468,7 +468,7 @@ public class ServiceCredito implements IfaceCredito {
         getEjb();
         ArrayList<Credito> lstCredito = new ArrayList<Credito>();
         List<Object[]> lstObject = new ArrayList<Object[]>();
-        lstObject = ejb.getHistorialCrediticio(idClienteFk,fechaInicio,fechaFin);
+        lstObject = ejb.getHistorialCrediticio(idClienteFk, fechaInicio, fechaFin);
         for (Object[] object : lstObject) {
             Credito credito = new Credito();
 
@@ -481,15 +481,14 @@ public class ServiceCredito implements IfaceCredito {
         }
 
         return lstCredito;
-    
-    
+
     }
 
     @Override
     public BigDecimal getTotalCargos(BigDecimal idClienteFk, String fechaInicio) {
-       getEjb();
+        getEjb();
         return ejb.getTotalCargos(idClienteFk, fechaInicio);
-    
+
     }
 
 }

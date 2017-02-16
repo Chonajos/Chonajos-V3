@@ -26,65 +26,55 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="container-fluid">
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-
-                        <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 alignLeft ">
-
-                            <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 alignLeft ">
-
-                                <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 "  for="autocompleteCliente" value ="Cliente:" /> 
-                                <p:autoComplete  placeholder="selecciona un Cliente" id="autocompleteCliente"  required="true" requiredMessage="Ingresa un valor para el campo Cliente." styleClass="autocomplete-input-text-media ui-state-highlight-autocomplete" class="ui-state-highlight-autocomplete"
-                                                 value="#{beanBuscaCredito.cliente}" completeMethod="#{beanBuscaCredito.autoCompleteCliente}" forceSelection="true" var="cliente"  inputStyle="width: 180px"
-                                                 itemLabel="#{cliente.nombreCompleto}"
-                                                 itemValue="#{cliente.id_cliente}" converter="#{clienteConverter}">
-                                    <p:ajax event="itemSelect" update=":formContent:btnactualizar :formContent:btncancelar :formContent:btnabonar :formContent:btnbuscar :formContent:table :formContent:txtCreditoUtilizado :formContent:txtCreditoDisponible" listener="#{beanBuscaCredito.searchByIdCliente()}" />
-                                    <p:ajax event="change" update=":formContent:btnactualizar :formContent:btncancelar :formContent:btnabonar :formContent:btnbuscar  :formContent:table :formContent:txtCreditoUtilizado :formContent:txtCreditoDisponible" listener="#{beanBuscaCredito.searchByIdCliente()}" />
-                                </p:autoComplete>
-                                <pe:keyFilter for="autocompleteCliente" regEx="/[a-z0-9-_Ã±\s]/i" />
-
-                            </div>
-
-
-                            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12   ">
-                                <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-6 "   for="txtCreditoUtilizado" value ="Linea de Crédito Utilizado:" /> 
-                                <p:inputText id="txtCreditoUtilizado"  readonly="true" class=" col-lg-2 col-md-4 col-sm-8 col-xs-6 " value="#{beanBuscaCredito.cliente.utilizadoTotal}">
-                                    <f:convertNumber type="currency" currencySymbol="$" />
-                                </p:inputText>
-                                <p:outputLabel class="col-lg-2 col-md-3 col-sm-4 col-xs-6 alignLeft"   for="txtCreditoDisponible" value =" Disponible:" /> 
-                                <p:inputText id="txtCreditoDisponible"  readonly="true" class=" col-lg-2 col-md-4 col-sm-8 col-xs-6 " value="#{beanBuscaCredito.cliente.creditoDisponible}">
-                                    <f:convertNumber type="currency" currencySymbol="$" />
-                                </p:inputText>
-                            </div>
+                    <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 alignLeft ">
+                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 alignLeft ">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 "  for="autocompleteCliente" value ="Cliente:" /> 
+                            <p:autoComplete  placeholder="selecciona un Cliente" id="autocompleteCliente"  required="true" requiredMessage="Ingresa un valor para el campo Cliente." styleClass="autocomplete-input-text-media ui-state-highlight-autocomplete" class="ui-state-highlight-autocomplete"
+                                             value="#{beanBuscaCredito.cliente}" completeMethod="#{beanBuscaCredito.autoCompleteCliente}" forceSelection="true" var="cliente"  inputStyle="width: 180px"
+                                             itemLabel="#{cliente.nombreCompleto}"
+                                             itemValue="#{cliente.id_cliente}" converter="#{clienteConverter}">
+                                <p:ajax event="itemSelect" update=":formContent:btnactualizar :formContent:btncancelar :formContent:btnabonar :formContent:btnbuscar :formContent:table :formContent:txtCreditoUtilizado :formContent:txtCreditoDisponible" listener="#{beanBuscaCredito.searchByIdCliente()}" />
+                                <p:ajax event="change" update=":formContent:btnactualizar :formContent:btncancelar :formContent:btnabonar :formContent:btnbuscar  :formContent:table :formContent:txtCreditoUtilizado :formContent:txtCreditoDisponible" listener="#{beanBuscaCredito.searchByIdCliente()}" />
+                            </p:autoComplete>
+                            <pe:keyFilter for="autocompleteCliente" regEx="/[a-z0-9-_Ã±\s]/i" />
                         </div>
-                        <div class="col-lg-offset-9 col-md-12 col-sm-12 col-xs-12 ">
-                            <p:outputLabel for="comboFiltro" value="Prelación de Abono:" rendered="#{beanBuscaCredito.habilitaBotones}"/> 
-                            <h:selectOneMenu  id="comboFiltro"  value="#{beanBuscaCredito.comboFiltro}">
+                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-3 col-sm-4 col-xs-6 "   for="txtCreditoUtilizado" value ="Crédito Utilizado:" /> 
+                            <p:inputText id="txtCreditoUtilizado"  readonly="true" class=" col-lg-7 col-md-4 col-sm-8 col-xs-6 " value="#{beanBuscaCredito.cliente.utilizadoTotal}">
+                                <f:convertNumber type="currency" currencySymbol="$" />
+                            </p:inputText>
+                        </div>
+                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">    
+                            <p:outputLabel class="col-lg-4 col-md-3 col-sm-4 col-xs-6 alignLeft"   for="txtCreditoDisponible" value ="Crédito Disponible:" /> 
+                            <p:inputText id="txtCreditoDisponible"  readonly="true" class=" col-lg-7 col-md-4 col-sm-8 col-xs-6 " value="#{beanBuscaCredito.cliente.creditoDisponible}">
+                                <f:convertNumber type="currency" currencySymbol="$" />
+                            </p:inputText>
+                        </div>
+
+                        
+                    </div>
+                    <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 alignLeft form-group">
+                    <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 ">
+                            <p:outputLabel class="col-lg-5 col-md-3 col-sm-4 col-xs-6 alignLeft"  for="comboFiltro" value="Prelación de Abono:" rendered="#{beanBuscaCredito.habilitaBotones}"/> 
+                            <p:selectOneMenu  style="width: 40% !important" class=" col-lg-5 col-md-8 col-sm-8 col-xs-12"   id="comboFiltro"  value="#{beanBuscaCredito.comboFiltro}">
                                 <f:selectItem  itemLabel="Saldo Atrasado" itemValue="1"/>
                                 <f:selectItem  itemLabel="Pago Requerido" itemValue="2"/>
                                 <f:selectItem  itemLabel="Saldo a Liquidar" itemValue="3"/>
                                 <p:ajax event="change" listener="#{beanBuscaCredito.prepararAbono()}" update=":formContent:table"/>
-                            </h:selectOneMenu>
+                            </p:selectOneMenu>
                         </div>
-                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="sucursalFiltro" value ="Sucursal:" /> 
-                            <h:selectOneMenu  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanBuscaCredito.filtroIdSucursalFk}">
+                            <p:selectOneMenu  style="width: 60% !important"  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanBuscaCredito.filtroIdSucursalFk}">
                                 <f:selectItem itemLabel="Todas" itemValue="" />
                                 <f:selectItems value="#{beanBuscaCredito.listaSucursales}" var="sucursal" itemLabel="#{sucursal.nombreSucursal}" itemValue="#{sucursal.idSucursalPk}"/>
-                            <p:ajax event="change" update=":formContent" listener="#{beanBuscaCredito.searchByIdCliente()}"/>
-                            </h:selectOneMenu>
+                                <p:ajax event="change" update=":formContent" listener="#{beanBuscaCredito.searchByIdCliente()}"/>
+                            </p:selectOneMenu>
                         </div>
                     </div>
                 </div>
-
             </p:panel>
-            <!--            <h:commandLink>
-                            <p:graphicImage value="../resources/img/excel.png" />
-                            <p:dataExporter type="xls" target="table" fileName="Creditos" pageOnly="false"/>
-                        </h:commandLink>-->
-
-
 
             <p:panel  rendered="#{beanBuscaCredito.viewEstate=='init'}" >
                 <div class="container-fluid">
@@ -227,6 +217,11 @@
                             <f:facet name="footer">
                                 <h:outputText value="" style="text-align:right"/>
                             </f:facet>
+                        </p:column>
+                        <p:column headerText="imagen" width="30px;"  class="alignCenter">
+                            <p:commandButton icon="ui-icon-image" id="openDialogLink" disabled="#{model.fichero ==null}" update=":formContent:imagen"  onclick="PF('dlg').show();" >
+                                <f:setPropertyActionListener value="#{model}" target="#{beanBuscaCredito.data}"/>
+                            </p:commandButton>
                         </p:column>
                         <p:column width="5px;" exportable="false">
                             <p:rowEditor/>
@@ -413,7 +408,16 @@
                 </div>
             </div>
             <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanBuscaCredito.rutaPDF}"/>
-
+            <p:dialog id="picture"  widgetVar="dlg" header="Comprobante" resizable="false" showEffect="clip" hideEffect="clip">
+                <div>
+                    <p:graphicImage cache="false" style="height:300px; width:300px;" id="imagen" value="#{beanBuscaCredito.productImage}"/>
+                </div>
+                <div>
+                    <p:commandButton value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="ui-icon-arrowthick-1-s">
+                        <p:fileDownload value="#{beanBuscaCredito.productImage}" />
+                    </p:commandButton>
+                </div>
+            </p:dialog>
         </h:form>
 
     </ui:define>

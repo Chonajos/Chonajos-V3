@@ -710,7 +710,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
 
     }
 
-    public void handleFileUpload(FileUploadEvent event) throws IOException {
+    public void handleFileUpload(FileUploadEvent event) throws IOException, SQLException {
 
         UploadedFile uploadedFile = (UploadedFile) event.getFile();
         InputStream inputStr = null;
@@ -726,6 +726,7 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
             bytes = IOUtils.toByteArray(inputStr);
             cd.setFichero(bytes);
             JsfUtil.addSuccessMessageClean("El archivo " + event.getFile().getFileName().trim() + "fue cargado con éxito");
+            cargarImagen();
         } catch (IOException e) {
             JsfUtil.addErrorMessageClean("Ocurrio un error al cargar el archivo");
             e.printStackTrace();

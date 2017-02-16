@@ -203,11 +203,13 @@ public class BeanCatCliente implements BeanSimple {
 
         System.out.println("update controller");
         Correos ctemporal = new Correos();
+        System.out.println("DATA: "+data.toString());
 
         if (ifaceCatCliente.updateCliente(data) == 1) 
         {
             if (data.getEmails()==null) 
             {
+                System.out.println("**************");
                 ctemporal.setId_cliente_fk(data.getId_cliente());
                 ctemporal.setTipo("Personal");
                 ctemporal.setCorreo(data.getEmail());
@@ -217,21 +219,23 @@ public class BeanCatCliente implements BeanSimple {
                 }
                 else
                 {
-                    JsfUtil.addSuccessMessageClean("Ha ocurrido un error al actualizar los datos");
+                    JsfUtil.addErrorMessageClean("Ha ocurrido un error al actualizar los datos, ese correo ya existe");
                 }
             }
             else
             {
                 if(!data.getEmails().isEmpty())
                 {
+                     System.out.println("---------------");
                     ctemporal.setIdcorreo(data.getEmails().get(0).getIdcorreo());
                     ctemporal.setCorreo(data.getEmail());
                     ctemporal.setTipo(data.getEmails().get(0).getTipo());
                     ifaceCatCorreos.updateCorreos(ctemporal);
+                    JsfUtil.addSuccessMessageClean("Datos Actualizados Correctamente");
                 }
             }
             
-            JsfUtil.addSuccessMessageClean("Datos Actualizados Correctamente");
+            
         } else {
 
             JsfUtil.addErrorMessage("1.-Ocurrio un problema al actualizar el cliente");

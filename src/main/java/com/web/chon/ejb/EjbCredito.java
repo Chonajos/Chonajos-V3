@@ -161,7 +161,7 @@ public class EjbCredito implements NegocioCredito {
                 + "cre.ESTATUS_CREDITO,cre.ACUENTA,cre.STATUSACUENTA, cre.NUMERO_PAGOS, "
                 + "(select NVL(sum(ac.MONTO_ABONO),0)from ABONO_CREDITO ac "
                 + "where ac.ID_CREDITO_FK= cre.ID_CREDITO_PK and ac.ESTATUS=2) "
-                + "as CHEQUES_PENDIENTES, SVM.NOMBRE_SUCURSAL,SV.NOMBRE_SUCURSAL "
+                + "as CHEQUES_PENDIENTES, SVM.NOMBRE_SUCURSAL,SV.NOMBRE_SUCURSAL,cre.ID_VENTA_MAYOREO,cre.ID_VENTA_MENUDEO  "
                 + "from credito cre "
                 + "INNER JOIN STATUS_CREDITO stc ON stc.ID_STATUS_CREDITO_PK = CRE.ESTATUS_CREDITO "
                 + " LEFT JOIN VENTA_MAYOREO VM ON VM.ID_VENTA_MAYOREO_PK =cre.ID_VENTA_MAYOREO "

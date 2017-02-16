@@ -23,6 +23,8 @@ public class EjbCatCorreos implements NegocioCatCorreos {
 
     @Override
     public int insertCorreo(Correos co) {
+        System.out.println("===============================EJB=================================");
+        System.out.println(co.toString());
         try {
             Query querySel = em.createNativeQuery("SELECT correo FROM CORREOS WHERE CORREO = '" + co.getCorreo() + "' ");
             List<Object[]> resultList = null;
