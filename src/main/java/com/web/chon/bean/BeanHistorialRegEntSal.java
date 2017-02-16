@@ -116,8 +116,11 @@ public class BeanHistorialRegEntSal implements Serializable {
 
     public void verUbicaciones() {
 
+        simpleModel = new DefaultMapModel();
+        
         LatLng coord1 = new LatLng(data.getLatitudEntrada(), data.getLongitudEntrada());
         LatLng coord2 = new LatLng(data.getLatitudSalida(), data.getLongitudSalida() + 0.00001);
+        
         puntoCentral = data.getLatitudEntrada() + "," + data.getLongitudEntrada();
         simpleModel.addOverlay(new Marker(coord1, "Entrada"));
         simpleModel.addOverlay(new Marker(coord2, "Salida"));
