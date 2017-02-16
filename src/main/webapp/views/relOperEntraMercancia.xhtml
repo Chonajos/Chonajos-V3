@@ -566,6 +566,9 @@
                         </p:column>
                     </p:dataTable>
 
+                    <div class="form-group">
+                        <p:outputLabel value="#{beanRelOperEntradaMercancia.dataProductoCorreo.urlVideo}"/>
+                    </div>
                     <p:commandButton value="Mandar" update=":formContent" 
                                      action="#{beanRelOperEntradaMercancia.mandarCorreo()}" 
                                      onclick="PF('dlgMandarCorreo').hide()">

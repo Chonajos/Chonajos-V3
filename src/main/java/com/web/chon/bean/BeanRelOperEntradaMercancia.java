@@ -865,6 +865,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
                     //Ejecuta script para ocultar el dialog
                     RequestContext.getCurrentInstance().execute("PF('statusDialog').hide();");
                 } else {
+                    RequestContext.getCurrentInstance().execute("PF('statusDialog').hide();");
                     JsfUtil.addErrorMessage("No se pudo Guardar el Video.");
                 }
 

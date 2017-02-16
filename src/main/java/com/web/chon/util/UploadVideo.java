@@ -50,6 +50,7 @@ public class UploadVideo {
             // Authorize the request.
             Credential credential = Auth.authorize(scopes, "uploadvideo");
 
+            System.out.println("credenciales "+credential.getTokenServerEncodedUrl());
             // This object is used to make YouTube Data API requests.
             youtube = new YouTube.Builder(Auth.HTTP_TRANSPORT, Auth.JSON_FACTORY, credential).setApplicationName("youtube-cmdline-uploadvideo-sample").build();
 
