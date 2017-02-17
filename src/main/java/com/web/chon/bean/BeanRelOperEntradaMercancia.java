@@ -84,7 +84,7 @@ import org.springframework.stereotype.Component;
  * @author Juan de la Cruz
  */
 @Component
-@Scope("view")
+@Scope("session")
 public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
     private static final long serialVersionUID = 1L;
@@ -745,7 +745,6 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     }
 
     public StreamedContent getProductImage() throws IOException, SQLException {
-
         FacesContext context = FacesContext.getCurrentInstance();
         String imageType = "image/jpg";
 
@@ -865,6 +864,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
                     //Ejecuta script para ocultar el dialog
                     RequestContext.getCurrentInstance().execute("PF('statusDialog').hide();");
                 } else {
+                    RequestContext.getCurrentInstance().execute("PF('statusDialog').hide();");
                     JsfUtil.addErrorMessage("No se pudo Guardar el Video.");
                 }
 
