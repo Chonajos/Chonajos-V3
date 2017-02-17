@@ -9,18 +9,44 @@ import com.web.chon.dominio.AbonoCredito;
 import com.web.chon.dominio.Cliente;
 import com.web.chon.dominio.Credito;
 import com.web.chon.dominio.HistorialCrediticio;
+import com.web.chon.dominio.UsuarioDominio;
+import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceAbonoCredito;
 import com.web.chon.service.IfaceCatCliente;
 import com.web.chon.service.IfaceCredito;
+import com.web.chon.util.Constantes;
+import com.web.chon.util.JasperReportUtil;
+import com.web.chon.util.JsfUtil;
 import com.web.chon.util.TiempoUtil;
+import com.web.chon.util.UtilUpload;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Random;
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
+import net.sf.jasperreports.engine.JREmptyDataSource;
+import net.sf.jasperreports.engine.JRExporter;
+import net.sf.jasperreports.engine.JRExporterParameter;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
+import org.primefaces.context.RequestContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -41,6 +67,7 @@ public class BeanHistorialCrediticio implements Serializable {
     private IfaceCredito ifaceCredito;
     @Autowired
     private IfaceCatCliente ifaceCatCliente;
+    @Autowired private PlataformaSecurityContext context;
 
     private String title;
     private String viewEstate;
@@ -58,9 +85,21 @@ public class BeanHistorialCrediticio implements Serializable {
     private BigDecimal saldoActual;
     private BigDecimal totalCargos;
     private BigDecimal totalAbonos;
+    private UsuarioDominio usuarioDominio;
+    
+    
+    private ByteArrayOutputStream outputStream;
+    private Map paramReport = new HashMap();
+    private String number;
+    private String rutaPDF;
+    private String pathFileJasper = "";
+    private Logger logger = LoggerFactory.getLogger(BeanBuscaCredito.class);
+
+    
     @PostConstruct
     public void init() {
         setTitle("Historial Crediticio");
+        
         setViewEstate("init");
         model = new ArrayList<HistorialCrediticio>();
         lstCredito = new ArrayList<Credito>();
@@ -69,7 +108,70 @@ public class BeanHistorialCrediticio implements Serializable {
         saldoAnterior = CERO;
         totalCargos=CERO;
         totalAbonos=CERO;
+        usuarioDominio = context.getUsuarioAutenticado();
         
+
+    }
+    public void generarReporte()
+    {
+         Random random = new Random();
+        //Se genera un numero aleatorio para que no traiga el mismo reporte por la cache
+        int numberRandom = random.nextInt(999);
+        if (cliente != null) {
+            setParameterTicketCredito();
+            generateReport(numberRandom, "historialCrediticio.jasper");
+            RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
+        }else{
+            JsfUtil.addErrorMessage("No se puede generar el estado de cuenta.");
+        }
+    }
+    private void setParameterTicketCredito() {
+        NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
+        DecimalFormat df = new DecimalFormat("$#,###.##");
+        Date date = new Date();
+        for(HistorialCrediticio hc:model)
+        {
+            System.out.println("HC: "+hc.toString());
+        }
+        JRBeanCollectionDataSource listaAbonosCargos = new JRBeanCollectionDataSource(model);
+        paramReport.put("creditoDisponible", df.format(cliente.getCreditoDisponible()));
+        paramReport.put("creditoUtilizado", df.format(cliente.getUtilizadoTotal()));
+        paramReport.put("cliente", cliente.getNombreCompleto());
+        paramReport.put("fecha", TiempoUtil.getFechaDDMMYYYYHHMM(date));
+        paramReport.put("nombreSucursal", usuarioDominio.getNombreSucursal());
+        paramReport.put("lstCargosAbonos", listaAbonosCargos);
+        paramReport.put("leyenda", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:" + usuarioDominio.getTelefonoSucursal());
+    }
+    public void generateReport(int folio, String nombreTipoTicket) {
+        JRExporter exporter = null;
+
+        try {
+            ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+            String temporal = "";
+            if (servletContext.getRealPath("") == null) {
+                temporal = Constantes.PATHSERVER;
+            } else {
+                temporal = servletContext.getRealPath("");
+            }
+
+            pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketAbonos" + File.separatorChar + nombreTipoTicket;
+            JasperPrint jp = null;
+            
+            jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport);
+            
+            
+            outputStream = JasperReportUtil.getOutputStreamFromReport(paramReport, getPathFileJasper());
+            exporter = new JRPdfExporter();
+            exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
+            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, outputStream);
+            byte[] bytes = outputStream.toByteArray();
+
+            rutaPDF = UtilUpload.saveFileTemp(bytes, "HistorialCrediticio", folio, usuarioDominio.getSucId());
+
+        } catch (Exception exception) {
+            logger.error("Error al generar el reporte "+exception.getMessage(),"Error ",exception.getMessage());
+            JsfUtil.addErrorMessage("Error al Generar el Reporte.");
+        }
 
     }
 
@@ -102,7 +204,6 @@ public class BeanHistorialCrediticio implements Serializable {
 //            hc.setImporteAbono(ac.getMontoAbono());
 //            model.add(hc);
 //        }
-        ArrayList<HistorialCrediticio> modelTemporal = new ArrayList<HistorialCrediticio>();
         for (AbonoCredito ac : lstAbonos) 
         {
             boolean bandera = true;
@@ -293,5 +394,46 @@ calculaSaldos();
     public void setSaldoActual(BigDecimal saldoActual) {
         this.saldoActual = saldoActual;
     }
+
+    public ByteArrayOutputStream getOutputStream() {
+        return outputStream;
+    }
+
+    public void setOutputStream(ByteArrayOutputStream outputStream) {
+        this.outputStream = outputStream;
+    }
+
+    public Map getParamReport() {
+        return paramReport;
+    }
+
+    public void setParamReport(Map paramReport) {
+        this.paramReport = paramReport;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getRutaPDF() {
+        return rutaPDF;
+    }
+
+    public void setRutaPDF(String rutaPDF) {
+        this.rutaPDF = rutaPDF;
+    }
+
+    public String getPathFileJasper() {
+        return pathFileJasper;
+    }
+
+    public void setPathFileJasper(String pathFileJasper) {
+        this.pathFileJasper = pathFileJasper;
+    }
+    
     
 }
