@@ -292,15 +292,14 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
     }
 
     @Override
-    public List<Object[]> getHistorialCrediticio(BigDecimal idClienteFk, String fechaInicio, String fechaFin ) {
+    public List<Object[]> getHistorialCrediticio(BigDecimal idClienteFk, String fechaInicio, String fechaFin) {
         try {
             Query query;
-            
-            StringBuffer cadena = new StringBuffer("select ab.ID_ABONO_CREDITO_PK,ab.FECHA_ABONO,ab.MONTO_ABONO from ABONO_CREDITO ab \n"
+
+            StringBuffer cadena = new StringBuffer("select ab.NUMERO_ABONO,ab.FECHA_ABONO,sum(ab.MONTO_ABONO) as monto from ABONO_CREDITO ab \n"
                     + "inner join credito cre on cre.ID_CREDITO_PK = ab.ID_CREDITO_FK");
 
-            if (!fechaInicio.equals("") && !fechaFin.equals("")) 
-            {
+            if (!fechaInicio.equals("") && !fechaFin.equals("")) {
                 cadena.append(" WHERE TO_DATE(TO_CHAR(ab.FECHA_ABONO,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN  '" + fechaInicio + "' and '" + fechaFin + "'");
                 cadena.append(" AND ");
             } else {
@@ -308,7 +307,8 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
 
             }
             cadena.append(" cre.ID_CLIENTE_FK= ? \n"
-                    + "order by ab.FECHA_ABONO asc");
+                    + " group by ab.NUMERO_ABONO,ab.FECHA_ABONO\n"
+                    + " order by ab.FECHA_ABONO asc");
 
             query = em.createNativeQuery(cadena.toString());
 
@@ -328,18 +328,12 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
 
     @Override
     public BigDecimal getTotalAbonos(BigDecimal idClienteFk, String fechaInicio) {
-        Query query = em.createNativeQuery("select nvl(sum(ab.MONTO_ABONO),0) from ABONO_CREDITO ab\n" +
-"inner join credito cre on cre.ID_CREDITO_PK = ab.ID_CREDITO_FK\n" +
-"WHERE TO_DATE(TO_CHAR(ab.FECHA_ABONO,'dd/mm/yyyy'),'dd/mm/yyyy')  <  '" + fechaInicio + "' \n" +
-" and cre.ID_CLIENTE_FK = "+ idClienteFk);
-        //query.setParameter(1, idClienteFk);
-        System.out.println("CLIENTE:::: "+idClienteFk);
-        System.out.println("Query: " + query.toString());
-        int d = Integer.parseInt(query.getSingleResult().toString());
-        System.out.println("DDDD: "+ d);
-        return new BigDecimal(d);
-    
-    
+        Query query = em.createNativeQuery("select nvl(sum(ab.MONTO_ABONO),0) from ABONO_CREDITO ab\n"
+                + "inner join credito cre on cre.ID_CREDITO_PK = ab.ID_CREDITO_FK\n"
+                + "WHERE TO_DATE(TO_CHAR(ab.FECHA_ABONO,'dd/mm/yyyy'),'dd/mm/yyyy')  <  '" + fechaInicio + "' \n"
+                + " and cre.ID_CLIENTE_FK = " + idClienteFk);
+        BigDecimal d = new BigDecimal(query.getSingleResult().toString());
+        return (d);
     }
 
 }

@@ -143,30 +143,33 @@ calculaSaldos();
     }
     public void calculaSaldos()
     {
+        saldoActual = CERO;
         BigDecimal tempAbonos = ifaceAbonoCredito.getTotalAbonos(cliente.getId_cliente(), TiempoUtil.getFechaDDMMYYYY(fechaInicio));
-        
         BigDecimal tempCargos = ifaceCredito.getTotalCargos(cliente.getId_cliente(), TiempoUtil.getFechaDDMMYYYY(fechaInicio));
-        System.out.println("Cargos: "+tempCargos);
-        System.out.println("Abonos: "+tempAbonos);
+        System.out.println("Temp-Cargos: "+tempCargos);
+        System.out.println("Temp-Abonos: "+tempAbonos);
         
-        saldoAnterior = tempCargos.subtract(tempAbonos, MathContext.UNLIMITED);
+        saldoAnterior = tempAbonos.subtract(tempCargos, MathContext.UNLIMITED);
         System.out.println("Saldo Anterior: "+saldoAnterior);
+        System.out.println("Saldo Actual: "+saldoActual);
+        saldoActual =saldoAnterior;
         totalCargos=CERO;
         totalAbonos=CERO;
         
         for (HistorialCrediticio temp : model) 
             {
                 //0-10
-                saldoAnterior = saldoAnterior.subtract(temp.getImporteCargo() == null ? CERO :temp.getImporteCargo(), MathContext.UNLIMITED);
+                saldoActual = saldoActual.subtract(temp.getImporteCargo() == null ? CERO :temp.getImporteCargo(), MathContext.UNLIMITED);
                 //-10+5
-                saldoAnterior = saldoAnterior.add(temp.getImporteAbono()== null ? CERO :temp.getImporteAbono(), MathContext.UNLIMITED);
+                saldoActual = saldoActual.add(temp.getImporteAbono()== null ? CERO :temp.getImporteAbono(), MathContext.UNLIMITED);
                 //5
-                temp.setSaldos(saldoAnterior);
+                temp.setSaldos(saldoActual);
                 totalAbonos = totalAbonos.add(temp.getImporteAbono()== null ? CERO :temp.getImporteAbono(), MathContext.UNLIMITED);
                 totalCargos = totalCargos.add(temp.getImporteCargo() == null ? CERO :temp.getImporteCargo(), MathContext.UNLIMITED);
             }
-        System.out.println("SAldo Anterior: "+saldoAnterior);
-        saldoActual =saldoAnterior;
+        System.out.println("Saldo Anterior: "+saldoAnterior);
+        System.out.println("Saldo Actual: "+saldoActual);
+        
     }
 
     public void ordenarLista() {
