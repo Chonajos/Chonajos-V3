@@ -50,7 +50,7 @@ public class UploadVideo {
             // Authorize the request.
             Credential credential = Auth.authorize(scopes, "uploadvideo");
 
-            System.out.println("credenciales "+credential.getTokenServerEncodedUrl());
+//            System.out.println("credenciales "+credential.getTokenServerEncodedUrl());
             // This object is used to make YouTube Data API requests.
             youtube = new YouTube.Builder(Auth.HTTP_TRANSPORT, Auth.JSON_FACTORY, credential).setApplicationName("youtube-cmdline-uploadvideo-sample").build();
 
@@ -158,3 +158,14 @@ public class UploadVideo {
         }
     }
 }
+
+// 3:55:51 PM org.mortbay.log.Slf4jLog info
+//INFORMACIÓN: Logging to org.slf4j.impl.JDK14LoggerAdapter(org.mortbay.log) via org.mortbay.log.Slf4jLog
+//feb 16, 2017 3:55:51 PM org.mortbay.log.Slf4jLog info
+//INFORMACIÓN: jetty-6.1.26
+//feb 16, 2017 3:55:51 PM org.mortbay.log.Slf4jLog info
+//INFORMACIÓN: Started SocketConnector@localhost:8080
+//Please open the following URL in your browser:
+//  https://accounts.google.com/o/oauth2/auth?client_id=171687895013-lf50q82du0emscl79vnstbv0g14kkq0j.apps.googleusercontent.com&redirect_uri=http://localhost:8080/Callback&response_type=code&scope=https://www.googleapis.com/auth/youtube.upload
+//
+
