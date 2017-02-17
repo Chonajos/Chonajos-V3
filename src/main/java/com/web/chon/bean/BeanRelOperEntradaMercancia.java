@@ -84,7 +84,7 @@ import org.springframework.stereotype.Component;
  * @author Juan de la Cruz
  */
 @Component
-@Scope("view")
+@Scope("session")
 public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
     private static final long serialVersionUID = 1L;
@@ -746,9 +746,11 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
     public StreamedContent getProductImage() throws IOException, SQLException {
 
+        System.out.println("get product");
         FacesContext context = FacesContext.getCurrentInstance();
         String imageType = "image/jpg";
 
+        System.out.println("busca imagenes");
         if (data.getListaComprobantes() == null || data.getListaComprobantes().isEmpty()) {
             JsfUtil.addErrorMessageClean("Esta operación no cuenta con comprobante");
             return variable;
@@ -1068,7 +1070,9 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     }
 
     public void setData(EntradaMercancia data) {
+        System.out.println("data "+data.toString());
         this.data = data;
+        System.out.println("set data");
     }
 
     public ArrayList<EntradaMercancia> getLstEntradaMercancia() {
