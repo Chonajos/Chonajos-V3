@@ -132,6 +132,7 @@ public class BeanHistorialCrediticio implements Serializable {
         for(HistorialCrediticio hc:model)
         {
             System.out.println("HC: "+hc.toString());
+            hc.setFechaCargoString(TiempoUtil.getFechaDDMMYYYYHHMM(hc.getFechaCargo()));
         }
         JRBeanCollectionDataSource listaAbonosCargos = new JRBeanCollectionDataSource(model);
         paramReport.put("creditoDisponible", df.format(cliente.getCreditoDisponible()));

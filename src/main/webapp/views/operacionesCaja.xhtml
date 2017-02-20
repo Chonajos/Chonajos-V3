@@ -24,7 +24,7 @@
                 <div class="container-fluid">
                     <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 form-group">
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="cajaFiltro" value ="Caja " rendered="#{beanOperacionesCaja.viewEstate =='init'}" /> 
+                            <p:outputLabel class="col-lg-1 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="cajaFiltro" value ="Caja:" rendered="#{beanOperacionesCaja.viewEstate =='init'}" /> 
                             <p:selectOneMenu  style="width: 97% !important"  id="cajaFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanOperacionesCaja.idCajaBean}" rendered="#{beanOperacionesCaja.viewEstate =='init'}" disabled="#{beanOperacionesCaja.usuario.perId != 1}" >
                                 <f:selectItem itemLabel="Selecciona" itemValue="" />
                                 <f:selectItems value="#{beanOperacionesCaja.listaCajas}" var="cajita" itemLabel="#{cajita.nombre}" itemValue="#{cajita.idCajaPk}"/>
@@ -34,7 +34,7 @@
                         </div>
                         <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="usuarioFiltro" 
-                                           value ="Responsable " rendered="#{beanOperacionesCaja.viewEstate =='init'}"/> 
+                                           value ="Responsable:" rendered="#{beanOperacionesCaja.viewEstate =='init'}"/> 
                             <p:selectOneMenu style="width: 97% !important"   id="usuarioFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" 
                                               value="#{beanOperacionesCaja.idUsuarioCajaBean}" 
                                               rendered="#{beanOperacionesCaja.viewEstate =='init'}" disabled="#{beanOperacionesCaja.usuario.perId != 1}" 
@@ -47,23 +47,23 @@
                             </p:selectOneMenu>
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft "  
-                                           for="calendarInicio" value ="Fecha Inicio" 
+                            <p:outputLabel class="col-lg-8 col-md-4 col-sm-4 col-xs-12 alignLeft "  
+                                           for="calendarInicio" value ="Fecha Inicio:" 
                                            rendered="#{beanOperacionesCaja.viewEstate =='init'}"/> 
                             <p:calendar disabled="#{beanOperacionesCaja.enableCalendar}" id="calendarInicio" 
-                                        class="col-lg-8 col-md-8 col-sm-8 col-xs-12 
-                                        calendario alignRight" navigator="true" placeholder="dd/mm/yyyy"
+                                        class="col-lg-12 col-md-8 col-sm-8 col-xs-12 
+                                        calendario alignLeft" navigator="true" placeholder="dd/mm/yyyy"
                                         value="#{beanOperacionesCaja.fechaFiltroInicio}" locale="es" pattern="dd/MM/yyyy" 
                                         readonlyInput="true" showOn="button" rendered="#{beanOperacionesCaja.viewEstate =='init'}">
                             </p:calendar>
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft "  
-                                           for="calendarFin" value ="Fecha Fin" 
+                                           for="calendarFin" value ="Fecha Fin:" 
                                            rendered="#{beanOperacionesCaja.viewEstate =='init'}"/> 
                             <p:calendar disabled="#{beanOperacionesCaja.enableCalendar}" id="calendarFin" 
-                                        class="col-lg-8 col-md-8 col-sm-8 col-xs-12 
-                                        calendario alignRight" navigator="true" placeholder="dd/mm/yyyy"
+                                        class="col-lg-12 col-md-8 col-sm-8 col-xs-12 
+                                        calendario alignLeft" navigator="true" placeholder="dd/mm/yyyy"
                                         value="#{beanOperacionesCaja.fechaFiltroFin}" locale="es" pattern="dd/MM/yyyy" 
                                         readonlyInput="true" showOn="button" rendered="#{beanOperacionesCaja.viewEstate =='init'}">
                             </p:calendar>
@@ -72,7 +72,7 @@
                     </div>
                     <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 form-group">
                     <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                        <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="operacionFiltro" value ="Operación:" rendered="#{beanOperacionesCaja.viewEstate =='init'}" /> 
+                        <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="operacionFiltro" value ="Operación:" rendered="#{beanOperacionesCaja.viewEstate =='init'}" /> 
                         <p:selectOneMenu style="width: 97% !important"  id="operacionFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanOperacionesCaja.idTipoOperacionBean}" rendered="#{beanOperacionesCaja.viewEstate =='init'}" >
                             <f:selectItem itemLabel="Todas" itemValue="" />
                             <f:selectItems value="#{beanOperacionesCaja.listaTiposOperaciones}" var="operacioncita" itemLabel="#{operacioncita.nombre}" itemValue="#{operacioncita.idTipoOperacionPk}"/>
@@ -81,7 +81,7 @@
                     </div>
                     
                     <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                        <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="conceptoFiltro" value ="Concepto" rendered="#{beanOperacionesCaja.viewEstate =='init'}" /> 
+                        <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="conceptoFiltro" value ="Concepto:" rendered="#{beanOperacionesCaja.viewEstate =='init'}" /> 
                         <p:selectOneMenu  style="width: 97% !important"  id="conceptoFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanOperacionesCaja.idConceptoBean}" rendered="#{beanOperacionesCaja.viewEstate =='init'}" >
                             <f:selectItem itemLabel="Todas" itemValue="" />
                             <f:selectItems value="#{beanOperacionesCaja.listaConceptos}" var="conceptito" itemLabel="#{conceptito.nombre}" itemValue="#{conceptito.idConceptoPk}"/>
@@ -97,7 +97,7 @@
                         </p:selectOneMenu>
                     </div>
                     <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
-                        <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="pagoFiltro" value ="Pago:" rendered="#{beanOperacionesCaja.viewEstate =='init'}" /> 
+                        <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="pagoFiltro" value ="Pago:" rendered="#{beanOperacionesCaja.viewEstate =='init'}" /> 
                         <p:selectOneMenu  style="width: 97% !important"  id="pagoFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanOperacionesCaja.idFormaPagoBean}" rendered="#{beanOperacionesCaja.viewEstate =='init'}" >
                             <f:selectItem itemLabel="Todos" itemValue="" />
                             <f:selectItems value="#{beanOperacionesCaja.listaAbonos}" var="operacioncita" itemLabel="#{operacioncita.nombreTipoAbono}" itemValue="#{operacioncita.idTipoAbono}"/>
@@ -112,6 +112,9 @@
                             <f:selectItem  itemLabel="Salida" itemValue="2"/>
                         </p:selectOneMenu>
                     </div>
+                        
+                        </div>
+                    <div class="col-lg-offset-5  col-md-12 col-sm-12 col-xs-12 form-group">
                     <p:commandButton value=" " id="buttonVendido" class="alert-info" title="Pendiente">
                             <p:tooltip for="buttonVendido" value="Pendiente"/>
                         </p:commandButton>

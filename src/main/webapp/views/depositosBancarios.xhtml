@@ -35,9 +35,9 @@
             <p:panel> 
                 <div class="container-fluid">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="cajaFiltro" value ="Cuenta Destino:" rendered="#{beanDepositoBancario.viewEstate =='init'}" /> 
-                            <p:selectOneMenu  style="width: 70% !important"   id="cajaFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanDepositoBancario.idCuentaDestinoBean}" rendered="#{beanDepositoBancario.viewEstate =='init'}" required="true">
+                        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12 "  for="cajaFiltro" value ="Cuenta Destino:" rendered="#{beanDepositoBancario.viewEstate =='init'}" /> 
+                            <p:selectOneMenu  style="width: 40% !important"   id="cajaFiltro" class="col-lg-12 col-md-8 col-sm-8 col-xs-12 alignLeft" value="#{beanDepositoBancario.idCuentaDestinoBean}" rendered="#{beanDepositoBancario.viewEstate =='init'}" required="true">
                                 <f:selectItem itemLabel="Selecciona" itemValue="" />
                                 <f:selectItems value="#{beanDepositoBancario.listaCuentas}" var="cuentita" itemLabel="#{cuentita.nombreBanco}" itemValue="#{cuentita.idCuentaBancariaPk}"/>
                                 <!--<p:ajax event="change" listener="{beanOperacionesCaja.printStatus()}" update=":formContent:table" />-->
@@ -49,11 +49,11 @@
                                 <pe:keyFilter regEx="/[0-9 .]/i"/>
                             </p:inputText>
                         </div>
-                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 ">
+                        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 ">
                             <p:outputLabel  class="col-lg-6 col-md-3 col-sm-4 col-xs-6 alignLeft"  for="txtComentarios" value ="Comentarios:" /> 
                             <p:inputTextarea  style=" width:50%; height:25px;" rows="1" cols="20" id="txtComentarios" maxlength="95" class=" col-lg-6 col-md-4 col-sm-8 col-xs-6" value="#{beanDepositoBancario.comentarios}"/>
                         </div>
-                        <div class="col-lg-7 col-md-12 col-sm-12 col-xs-12 " >
+                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 " >
                             <p:panel id="filefrm" style="border: 1px solid #FFF;">
                                 <h:form>
                                     <p:fileUpload

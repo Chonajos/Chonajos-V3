@@ -31,7 +31,7 @@
                             </div>
                         </p:confirmDialog>
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="comboSucursal" value ="Sucursal:" rendered="#{beanCajas.viewEstate =='init'}" /> 
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="comboSucursal" value ="Sucursal:" rendered="#{beanCajas.viewEstate =='init'}" /> 
                             <p:selectOneMenu style="width: 97% !important"  id="comboSucursal" class="col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanCajas.idSucursalBean}" rendered="#{beanCajas.viewEstate =='init'}" disabled="#{beanCajas.usuario.perId != 1}" required="false">
                                 <f:selectItem itemLabel="Todas" itemValue="" />
                                 <f:selectItems value="#{beanCajas.listaSucursal}" var="sucu" itemLabel="#{sucu.nombreSucursal}" itemValue="#{sucu.idSucursalPk}"/>
@@ -40,8 +40,8 @@
                             </p:selectOneMenu>
                         </div>
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12"  for="cajaFiltro" value ="Caja " rendered="#{beanCajas.viewEstate =='init'}" /> 
-                            <p:selectOneMenu style="width: 97% !important"  id="cajaFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanCajas.idCajaBean}" rendered="#{beanCajas.viewEstate =='init'}" disabled="#{beanCajas.usuario.perId != 1}" >
+                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12 "  for="cajaFiltro" value ="Caja: " rendered="#{beanCajas.viewEstate =='init'}" /> 
+                            <p:selectOneMenu style="width: 97% !important"  id="cajaFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12 alignLeft" value="#{beanCajas.idCajaBean}" rendered="#{beanCajas.viewEstate =='init'}" disabled="#{beanCajas.usuario.perId != 1}" >
                                 <f:selectItem itemLabel="Todas" itemValue="" />
                                 <f:selectItems value="#{beanCajas.listaCajas}" var="cajita" itemLabel="#{cajita.nombre}" itemValue="#{cajita.idCajaPk}"/>
                                 <!--<p:ajax event="change" listener="{beanCajas.printStatus()}" update=":formContent:table" />-->
@@ -50,7 +50,7 @@
                         </div>
                         <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="usuarioFiltro" 
-                                           value ="Responsable " rendered="#{beanCajas.viewEstate =='init'}"/> 
+                                           value ="Responsable: " rendered="#{beanCajas.viewEstate =='init'}"/> 
                             <p:selectOneMenu style="width: 97% !important"   id="usuarioFiltro" 
                                              class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" 
                                              value="#{beanCajas.idUsuarioCajaBean}" 

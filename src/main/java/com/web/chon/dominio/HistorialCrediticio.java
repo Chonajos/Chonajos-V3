@@ -24,6 +24,7 @@ public class HistorialCrediticio implements Serializable{
     private BigDecimal importeAbono;
     private BigDecimal saldos;
     private BigDecimal tipo;
+    private String fechaCargoString;
 
     @Override
     public String toString() {
@@ -105,6 +106,15 @@ public class HistorialCrediticio implements Serializable{
         this.saldos = saldos;
     }
 
+    public String getFechaCargoString() {
+        return fechaCargoString;
+    }
+
+    public void setFechaCargoString(String fechaCargoString) {
+        this.fechaCargoString = fechaCargoString;
+    }
+
+    
     
     
     

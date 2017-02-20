@@ -23,7 +23,7 @@
                             <p:commandButton  value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
                         </div>
                     </p:confirmDialog>
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                          <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12 ">
                             <p:outputLabel class="col-lg-12 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="comboSucursal" value ="Sucursal:"/> 
                             <p:selectOneMenu style="width: 97% !important" id="comboSucursal" class="col-lg-12 col-md-8 col-sm-8 col-xs-12 " value="#{beanRecibirDeposito.idSucursalFK}" required="false" disabled="#{beanRecibirDeposito.usuario.perId != 1}">
@@ -33,15 +33,19 @@
                             </p:selectOneMenu>
                         </div>
                     </div>
-                    <div>Recibir Depósitos de Cajas</div>
+                    
                    
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <p:dataTable id="tabla" var="model" 
                                      value="#{beanRecibirDeposito.lstDespositosEntrantes}" 
                                      scrollable="true"
                                       styleClass="ui-datatable-hor-scroll" 
                                      emptyMessage="No se encontraron Registros" 
                                      rendered="#{beanRecibirDeposito.viewEstate =='init'}">
+                            <f:facet name="header">
+                            Recibir Depósitos de Cajas
+                        </f:facet>
+                            
                             <p:column headerText="N° Operación" width="60px;" class="alignCenter">
                                 <h:outputText value="#{model.numero}" />
                             </p:column>
@@ -86,9 +90,9 @@
                             </p:column>
                         </p:dataTable>
                     </div>
-                    <div>Recibir Transferencias Bancarias y Depósitos</div>
                     
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <p:dataTable id="tabla2" var="model1" 
                                      value="#{beanRecibirDeposito.listaDepositosTransferencias}" 
                                      scrollable="true"
@@ -96,6 +100,9 @@
                                      styleClass="ui-datatable-hor-scroll" 
                                      emptyMessage="No se encontraron Registros" 
                                      rendered="#{beanRecibirDeposito.viewEstate =='init'}">
+                            <f:facet name="header">
+                            Recibir Transferencias Bancarias y Depósitos
+                        </f:facet>
                             <p:column headerText="N° Operación" width="60px;" class="alignCenter">
                                 <h:outputText value="#{model1.numero}" />
                             </p:column>
