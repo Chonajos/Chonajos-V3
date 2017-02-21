@@ -128,7 +128,7 @@ public class BeanHistorialCrediticio implements Serializable {
     private void setParameterTicketCredito() {
         NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
         DecimalFormat df = new DecimalFormat("$#,###.##");
-        Date date = new Date();
+        Date date = context.getFechaSistema();
         for(HistorialCrediticio hc:model)
         {
             System.out.println("HC: "+hc.toString());
@@ -137,8 +137,12 @@ public class BeanHistorialCrediticio implements Serializable {
         JRBeanCollectionDataSource listaAbonosCargos = new JRBeanCollectionDataSource(model);
         paramReport.put("creditoDisponible", df.format(cliente.getCreditoDisponible()));
         paramReport.put("creditoUtilizado", df.format(cliente.getUtilizadoTotal()));
+        paramReport.put("saldoAnterior", df.format(saldoAnterior));
+        paramReport.put("saldoActual", df.format(saldoActual));
         paramReport.put("cliente", cliente.getNombreCompleto());
-        paramReport.put("fecha", TiempoUtil.getFechaDDMMYYYYHHMM(date));
+        paramReport.put("fechaImpresion", TiempoUtil.getFechaDDMMYYYYHHMM(date));
+        paramReport.put("fechaInicio", TiempoUtil.getFechaDDMMYYYYHHMM(fechaInicio));
+        paramReport.put("fechaFin", TiempoUtil.getFechaDDMMYYYYHHMM(fechaFin));
         paramReport.put("nombreSucursal", usuarioDominio.getNombreSucursal());
         paramReport.put("lstCargosAbonos", listaAbonosCargos);
         paramReport.put("leyenda", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:" + usuarioDominio.getTelefonoSucursal());
