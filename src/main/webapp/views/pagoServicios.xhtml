@@ -9,18 +9,23 @@
                 xmlns:pe="http://primefaces.org/ui/extensions">
 
     <ui:define name="content">
-        <div>
-            <h3>#{beanPagoServicios.title}</h3>
-            <div class="form-group" align="right">
-                <div>
-                    <p:commandButton value="Registrar Pago" update=":formContent" ajax="true" action="#{beanPagoServicios.pagar()}" onclick="PF('statusDialog').show()">
-                        <p:confirm header="Confirmación" message="¿Estas seguro de realizar el pago de Servicio?" icon="ui-icon-alert" />
-                    </p:commandButton>
+        <h:form id="formContent">
+            <div class="container-fluid">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 ">
+                        <h3>#{beanPagoServicios.title}</h3>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 alignRight ">
+                        <div class="form-group" align="right">
+                            <p:commandButton value="Registrar Pago" update=":formContent" ajax="true" action="#{beanPagoServicios.pagar()}" onclick="PF('statusDialog').show()">
+                                <p:confirm header="Confirmación" message="¿Estas seguro de realizar el pago de Servicio?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <h:form id="formContent">
+
             <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
                 <p:commandButton value="Si" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
                 <p:commandButton value="No" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
@@ -31,13 +36,13 @@
                       closable="false" resizable="false" showHeader="false">
                 <p:graphicImage value="../resources/img/carga.gif" />
             </p:dialog>
-            
+
             <p:panel> 
                 <div class="container-fluid">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="conceptoCategoria" value ="Operación:" rendered="#{beanPagoServicios.viewEstate =='init'}" /> 
-                            <p:selectOneMenu style="width: 97% !important"  id="conceptoCategoria" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanPagoServicios.idOperacionBean}" rendered="#{beanPagoServicios.viewEstate =='init'}" required="true">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="conceptoCategoria" value ="Operación:" rendered="#{beanPagoServicios.viewEstate =='init'}" /> 
+                            <p:selectOneMenu style="width: 55% !important"  id="conceptoCategoria" class="col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanPagoServicios.idOperacionBean}" rendered="#{beanPagoServicios.viewEstate =='init'}" required="true">
                                 <f:selectItem itemLabel="selecciona un tipo de gasto" itemValue="" />
                                 <f:selectItems value="#{beanPagoServicios.lstOperaciones}" var="gastito" itemLabel="#{gastito.nombre}" itemValue="#{gastito.idTipoOperacionPk}"/>
                                 <p:ajax event="change" listener="#{beanPagoServicios.buscaConceptos()}" update=":formContent:conceptoFiltro" />
@@ -46,26 +51,26 @@
                             </p:selectOneMenu>
                         </div>
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="conceptoFiltro" value ="Concepto:" rendered="#{beanPagoServicios.viewEstate =='init'}" /> 
-                            <p:selectOneMenu style="width: 97% !important"  id="conceptoFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanPagoServicios.idConceptoBean}" rendered="#{beanPagoServicios.viewEstate =='init'}" required="true">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="conceptoFiltro" value ="Concepto:" rendered="#{beanPagoServicios.viewEstate =='init'}" /> 
+                            <p:selectOneMenu style="width: 55% !important"  id="conceptoFiltro" class="col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanPagoServicios.idConceptoBean}" rendered="#{beanPagoServicios.viewEstate =='init'}" required="true">
                                 <f:selectItem itemLabel="selecciona un servicio" itemValue="" />
                                 <f:selectItems value="#{beanPagoServicios.listaConceptos}" var="conceptito" itemLabel="#{conceptito.nombre}" itemValue="#{conceptito.idConceptoPk}"/>
                             </p:selectOneMenu>
                         </div>
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="comboSucursal" value ="Sucursal:" rendered="#{beanPagoServicios.viewEstate =='init'}" /> 
-                            <p:selectOneMenu style="width: 97% !important"  id="comboSucursal" class="col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanPagoServicios.idSucursalFk}" rendered="#{beanPagoServicios.viewEstate =='init'}" required="true">
+                            <p:selectOneMenu style="width: 55% !important"  id="comboSucursal" class="col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanPagoServicios.idSucursalFk}" rendered="#{beanPagoServicios.viewEstate =='init'}" required="true">
 
                                 <f:selectItems value="#{beanPagoServicios.listaSucursales}" var="sucu" itemLabel="#{sucu.nombre}" itemValue="#{sucu.idSucursalFk}"/>
                             </p:selectOneMenu>
                         </div>
                         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 ">
-                            <p:outputLabel  class="col-lg-12 col-md-3 col-sm-4 col-xs-6 alignLeft"  for="txtPrecio" id="labelprecio" value ="Monto:" /> 
+                            <p:outputLabel  class="col-lg-4 col-md-3 col-sm-4 col-xs-6 alignLeft"  for="txtPrecio" id="labelprecio" value ="Monto:" /> 
                             <p:inputText id="txtPrecio" maxlength="8" class=" col-lg-6 col-md-4 col-sm-8 col-xs-6" value="#{beanPagoServicios.totalServicio}" required="true">
                                 <pe:keyFilter regEx="/[0-9 .]/i"/>
                             </p:inputText>
                         </div>
-                       
+
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <div class="col-lg-3 col-md-8 col-sm-8 col-xs-3">

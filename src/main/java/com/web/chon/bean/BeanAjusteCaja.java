@@ -33,8 +33,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Scope("view")
-public class BeanAjusteCaja  implements Serializable{
-     @Autowired
+public class BeanAjusteCaja implements Serializable {
+
+    @Autowired
     private IfaceConceptos ifaceConceptos;
     @Autowired
     private PlataformaSecurityContext context;
@@ -46,12 +47,12 @@ public class BeanAjusteCaja  implements Serializable{
     private IfaceTipoAbono ifaceTipoAbono;
 
     private ArrayList<ConceptosES> listaConceptos;
-    
+
     private ArrayList<OperacionesCaja> listaOperaciones;
     private ArrayList<Sucursal> listaSucursales;
     private ArrayList<Caja> listaCajas;
     private ArrayList<TipoOperacion> listaTiposOperaciones;
-    
+
     private String title;
     private String viewEstate;
     private BigDecimal idConceptoBean;
@@ -66,7 +67,7 @@ public class BeanAjusteCaja  implements Serializable{
     private String comentarios;
     private BigDecimal idFormaPagoBean;
     private ArrayList<TipoAbono> listaAbonos;
-    
+
     private static final BigDecimal CONCEPTO_AJUSTE = new BigDecimal(11);
     private static final BigDecimal OPERACION_AJUSTE = new BigDecimal(8);
     private static final BigDecimal STATUS_REALIZADA = new BigDecimal(1);
@@ -75,12 +76,12 @@ public class BeanAjusteCaja  implements Serializable{
     private static final BigDecimal ENTRADA = new BigDecimal(1);
     private BigDecimal idUsuarioCajaBean;
     private ArrayList<Usuario> listaResponsables;
+
     @PostConstruct
-    public void init() 
-    {
-        listaAbonos= new ArrayList<TipoAbono>();
-        listaAbonos=ifaceTipoAbono.getAll();
-        filtroES=1;
+    public void init() {
+        listaAbonos = new ArrayList<TipoAbono>();
+        listaAbonos = ifaceTipoAbono.getAll();
+        filtroES = 1;
         usuario = context.getUsuarioAutenticado();
         setTitle("Ajuste de Caja");
         setViewEstate("init");
@@ -94,44 +95,40 @@ public class BeanAjusteCaja  implements Serializable{
         opcaja.setIdStatusFk(STATUS_REALIZADA);
         opcaja.setIdConceptoFk(CONCEPTO_AJUSTE);
         opcaja.setIdTipoOperacionFk(OPERACION_AJUSTE);
-        opcaja.setIdSucursalFk( new BigDecimal(usuario.getSucId()));
-        listaResponsables=new ArrayList<Usuario>();
-        listaCajas=ifaceCaja.getCajas();
+        opcaja.setIdSucursalFk(new BigDecimal(usuario.getSucId()));
+        listaResponsables = new ArrayList<Usuario>();
+        listaCajas = ifaceCaja.getCajas();
     }
-    public void buscarReponsables()
-    {
+
+    public void buscarReponsables() {
         listaResponsables.clear();
         listaResponsables = ifaceOperacionesCaja.getResponsables(idCajaBean);
         if (idCajaBean != null) {
-          if(!listaResponsables.isEmpty())
-          {
-            idUsuarioCajaBean = listaResponsables.get(0).getIdUsuarioPk();
-          }
+            if (!listaResponsables.isEmpty()) {
+                idUsuarioCajaBean = listaResponsables.get(0).getIdUsuarioPk();
+            }
         }
     }
-    public void reset()
-    {
-        comentarios =null;
-        idFormaPagoBean=null;
-        idCajaBean=null;
-        idUsuarioCajaBean=null;
-        monto =null;
-        
+
+    public void reset() {
+        comentarios = null;
+        idFormaPagoBean = null;
+        idCajaBean = null;
+        idUsuarioCajaBean = null;
+        monto = null;
+
     }
-    public void ajustar()
-    {
+
+    public void ajustar() {
         opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
         opcaja.setMonto(monto);
-        comentarios =comentarios + "SISTEMA: Usuario "+usuario.getNombreCompleto();
+        comentarios = comentarios + "SISTEMA: Usuario " + usuario.getNombreCompleto();
         opcaja.setComentarios(comentarios);
         opcaja.setEntradaSalida(new BigDecimal(filtroES));
         opcaja.setIdFormaPago(idFormaPagoBean);
         opcaja.setIdCajaFk(idCajaBean);
         opcaja.setIdUserFk(idUsuarioCajaBean);
-        
-        
-        if(caja.getIdCajaPk()!=null)
-        {
+
         if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
 
             JsfUtil.addSuccessMessageClean("Ajuste de Caja Registrado Correctamente");
@@ -139,11 +136,7 @@ public class BeanAjusteCaja  implements Serializable{
         } else {
             JsfUtil.addErrorMessageClean("Ocurrió un error al reslizar el ajuste de Caja");
         }
-        }
-        else
-        {
-             JsfUtil.addErrorMessageClean("Su usuario no cuenta con caja registrada para realizar el pago de servicios");
-        }
+
     }
 
     public ArrayList<ConceptosES> getListaConceptos() {
@@ -258,8 +251,6 @@ public class BeanAjusteCaja  implements Serializable{
         this.idCajaBean = idCajaBean;
     }
 
-    
-
     public BigDecimal getMonto() {
         return monto;
     }
@@ -307,10 +298,5 @@ public class BeanAjusteCaja  implements Serializable{
     public void setListaResponsables(ArrayList<Usuario> listaResponsables) {
         this.listaResponsables = listaResponsables;
     }
-    
-    
-    
-    
-    
-    
+
 }

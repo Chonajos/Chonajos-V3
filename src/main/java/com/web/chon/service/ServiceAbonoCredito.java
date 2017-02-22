@@ -238,11 +238,11 @@ public class ServiceAbonoCredito implements IfaceAbonoCredito {
     }
 
     @Override
-    public ArrayList<AbonoCredito> getHistorialAbonos(BigDecimal idClienteFk, BigDecimal idCajeroFk, Date fechaInicio, Date fechaFin, BigDecimal idTipoPagoFk, BigDecimal idAbonoPk, BigDecimal idCreditoFk) {
+    public ArrayList<AbonoCredito> getHistorialAbonos(BigDecimal idClienteFk, BigDecimal idCajeroFk, Date fechaInicio, Date fechaFin, BigDecimal idTipoPagoFk, BigDecimal idAbonoPk, BigDecimal idCreditoFk,BigDecimal idSucursalFk,BigDecimal idCajaFk) {
         getEjb();
         ArrayList<AbonoCredito> lstAbonoCredito = new ArrayList<AbonoCredito>();
         List<Object[]> lstObject = new ArrayList<Object[]>();
-        lstObject = ejb.getHistorialAbonos(idClienteFk, idCajeroFk, TiempoUtil.getFechaDDMMYYYY(fechaInicio),  TiempoUtil.getFechaDDMMYYYY(fechaFin),  idTipoPagoFk,  idAbonoPk,  idCreditoFk);
+        lstObject = ejb.getHistorialAbonos(idClienteFk, idCajeroFk, TiempoUtil.getFechaDDMMYYYY(fechaInicio),  TiempoUtil.getFechaDDMMYYYY(fechaFin),  idTipoPagoFk,  idAbonoPk,  idCreditoFk ,idSucursalFk,idCajaFk);
         for (Object[] object : lstObject) 
         {
             
@@ -266,8 +266,16 @@ public class ServiceAbonoCredito implements IfaceAbonoCredito {
             abonoCredito.setConcepto(object[16] == null ? "" : object[16].toString());
             abonoCredito.setFechaTransferencia(object[17] == null ? null : (Date) object[17]);
             abonoCredito.setIdClienteFk(object[18] == null ? null : new BigDecimal(object[18].toString()));
-            abonoCredito.setFolioElectronico(object[15] == null ? null : new BigDecimal(object[15].toString()));
+            try
+            {
+                abonoCredito.setFolioElectronico(object[15] == null ? null : new BigDecimal(object[15].toString()));
+            }
+            catch(NumberFormatException e)
+            {
+                abonoCredito.setFolioElectronico(null);
+            }
             abonoCredito.setNumeroAbono(object[19] == null ? null : new BigDecimal(object[19].toString()));
+            abonoCredito.setNombreSucursal(object[20] == null ? "" : object[20].toString());
             
             
             

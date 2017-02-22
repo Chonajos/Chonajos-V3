@@ -12,6 +12,7 @@ import com.web.chon.dominio.Documento;
 import com.web.chon.dominio.OperacionesCaja;
 import com.web.chon.dominio.PagosBancarios;
 import com.web.chon.dominio.SaldosDeudas;
+import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.TipoAbono;
 import com.web.chon.dominio.Usuario;
 import com.web.chon.dominio.UsuarioDominio;
@@ -19,6 +20,7 @@ import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceAbonoCredito;
 import com.web.chon.service.IfaceCaja;
 import com.web.chon.service.IfaceCatCliente;
+import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceCredito;
 import com.web.chon.service.IfaceDocumentos;
 import com.web.chon.service.IfaceOperacionesCaja;
@@ -112,6 +114,8 @@ public class BeanHistorialAbonos implements Serializable {
     private boolean enableCalendar;
     private BigDecimal total;
     AbonoCredito abono;
+    
+    private BigDecimal idSucursalBean;
 
    
     
@@ -145,6 +149,12 @@ public class BeanHistorialAbonos implements Serializable {
     private OperacionesCaja opcaja;
     private Caja caja;
     ArrayList<AbonoCredito> padres;
+    private ArrayList<Sucursal> listaSucursal;
+    @Autowired
+    private IfaceCatSucursales ifaceCatSucursales;
+    private ArrayList<Caja> listaCajas;
+    private ArrayList<Usuario> listaResponsables;
+    private BigDecimal idCajaBean;
 
     //--Datos para Operaciones Caja---//
     @PostConstruct
@@ -165,7 +175,16 @@ public class BeanHistorialAbonos implements Serializable {
         idCobradorFk = usuarioDominio.getIdUsuario();
         fechaFiltroInicio = context.getFechaSistema();
         fechaFiltroFin = context.getFechaSistema();
+        listaSucursal = new ArrayList<Sucursal>();
+        listaSucursal = ifaceCatSucursales.getSucursales();
         cliente = new Cliente();
+        listaCajas = new ArrayList<Caja>();
+        idSucursalBean = new BigDecimal(usuarioDominio.getSucId());
+        listaCajas = ifaceCaja.getCajasByIdSucusal(idSucursalBean);
+        listaResponsables = new ArrayList<Usuario>();
+        System.out.println("------------------------------------------");
+        System.out.println("UsuarioDominio: "+usuarioDominio.toString());
+        
         buscar();
         //idTipoAbonoFk = null;
 //        if (cliente == null) {
@@ -176,7 +195,30 @@ public class BeanHistorialAbonos implements Serializable {
 //        sumaAbonitos();
         modelo = new ArrayList<SaldosDeudas>();
         opcaja = new OperacionesCaja();
+        buscarReponsables();
 
+    }
+    public void buscarCajas() {
+        listaCajas.clear();
+        listaResponsables.clear();
+        System.out.println("IDSUCURSALBEAN: "+idSucursalBean);
+        listaCajas = ifaceCaja.getCajasByIdSucusal(idSucursalBean);
+        idCajaBean = null;
+        buscarReponsables();
+    }
+
+    public void buscarReponsables() {
+        System.out.println("IDCajaBean: " + idCajaBean);
+        listaResponsables.clear();
+        listaResponsables = ifaceOperacionesCaja.getResponsables(idCajaBean);
+        if (idCajaBean != null) {
+            if (!listaResponsables.isEmpty()) {
+                idCobradorFk = listaResponsables.get(0).getIdUsuarioPk();
+            }
+        } else {
+            idCobradorFk = null;
+            listaResponsables.clear();
+        }
     }
 
     private void setParameterTicket(AbonoCredito ac, BigDecimal saldoActual) {
@@ -456,12 +498,14 @@ public class BeanHistorialAbonos implements Serializable {
     }
 
     public void buscar() {
+        
         lstAbonosCreditos = new ArrayList<AbonoCredito>();
         padres = new ArrayList<AbonoCredito>();
         if (cliente == null) {
             cliente = new Cliente();
         }
-        lstAbonosCreditos = ifaceAbonoCredito.getHistorialAbonos(cliente.getId_cliente(), idCobradorFk, fechaFiltroInicio, fechaFiltroFin, idTipoAbonoFk, idAbonoPk, idCreditoFk);
+        
+        lstAbonosCreditos = ifaceAbonoCredito.getHistorialAbonos(cliente.getId_cliente(), idCobradorFk, fechaFiltroInicio, fechaFiltroFin, idTipoAbonoFk, idAbonoPk, idCreditoFk,idSucursalBean,idCajaBean);
         generaPadres();
         generaHijos();
         sumaTotal();
@@ -494,6 +538,7 @@ public class BeanHistorialAbonos implements Serializable {
                 abonoPadre.setIdClienteFk(ab.getIdClienteFk());
                 abonoPadre.setFolioElectronico(ab.getFolioElectronico());
                 abonoPadre.setNumeroAbono(ab.getNumeroAbono());
+                abonoPadre.setNombreSucursal(ab.getNombreSucursal());
                 padres.add(abonoPadre);
             } else {
                 int count = 0;
@@ -519,6 +564,8 @@ public class BeanHistorialAbonos implements Serializable {
                     abonoPadre.setIdClienteFk(ab.getIdClienteFk());
                     abonoPadre.setFolioElectronico(ab.getFolioElectronico());
                     abonoPadre.setNumeroAbono(ab.getNumeroAbono());
+                    
+                abonoPadre.setNombreSucursal(ab.getNombreSucursal());
                     if (a.getNumeroAbono().intValue() == ab.getNumeroAbono().intValue()) {
                         count++;
                     }
@@ -765,5 +812,48 @@ public class BeanHistorialAbonos implements Serializable {
     public void setPathFileJasper(String pathFileJasper) {
         this.pathFileJasper = pathFileJasper;
     }
+
+    public BigDecimal getIdSucursalBean() {
+        return idSucursalBean;
+    }
+
+    public void setIdSucursalBean(BigDecimal idSucursalBean) {
+        this.idSucursalBean = idSucursalBean;
+    }
+
+    public ArrayList<Sucursal> getListaSucursal() {
+        return listaSucursal;
+    }
+
+    public void setListaSucursal(ArrayList<Sucursal> listaSucursal) {
+        this.listaSucursal = listaSucursal;
+    }
+
+    public ArrayList<Caja> getListaCajas() {
+        return listaCajas;
+    }
+
+    public void setListaCajas(ArrayList<Caja> listaCajas) {
+        this.listaCajas = listaCajas;
+    }
+
+    public ArrayList<Usuario> getListaResponsables() {
+        return listaResponsables;
+    }
+
+    public void setListaResponsables(ArrayList<Usuario> listaResponsables) {
+        this.listaResponsables = listaResponsables;
+    }
+
+    public BigDecimal getIdCajaBean() {
+        return idCajaBean;
+    }
+
+    public void setIdCajaBean(BigDecimal idCajaBean) {
+        this.idCajaBean = idCajaBean;
+    }
+    
+    
+    
 
 }

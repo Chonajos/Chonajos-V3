@@ -36,7 +36,7 @@ public class AbonoCredito extends ValueObject {
     private String nombreCajero;
     private ArrayList<AbonoCredito> listaAbonitos;
     private BigDecimal numeroAbono;
-    
+    private String nombreSucursal;
 
     @Override
     public String toString() {
@@ -288,6 +288,14 @@ public class AbonoCredito extends ValueObject {
 
     public void setNumeroAbono(BigDecimal numeroAbono) {
         this.numeroAbono = numeroAbono;
+    }
+
+    public String getNombreSucursal() {
+        return nombreSucursal;
+    }
+
+    public void setNombreSucursal(String nombreSucursal) {
+        this.nombreSucursal = nombreSucursal;
     }
     
     

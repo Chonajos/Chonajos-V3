@@ -8,11 +8,30 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions">
     <ui:define name="content">
-        <div>
-            <h3>#{beanCajas.title}</h3>
-        </div>
+       
         <h:form id="formContent">
+            <div class="container-fluid">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 ">
+                        <h3>#{beanCajas.title}</h3>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 alignRight ">
+                        <div class="form-group" align="right">
+                            <p:commandButton value="Buscar" onclick="PF('statusDialog').show()" update=":formContent" ajax="true" action="#{beanCajas.buscar()}"/>
+                       
+                        </div>
+                    </div>
+                </div>
+            </div>
             <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
+            
+            <p:confirmDialog  global="true" showEffect="fade" hideEffect="fade">
+                            <div class="alignCenter">
+                                <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                <p:commandButton  value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                            </div>
+                        </p:confirmDialog>
+            
             <p:ajaxStatus onsuccess="PF('statusDialog').hide()" oncomplete="PF('statusDialog').hide()" onerror="PF('statusDialog').hide()" />
             <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
                       closable="false" resizable="false" showHeader="false">
@@ -23,16 +42,9 @@
             <p:panel> 
                 <div class="container-fluid">
                     <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 form-group">
-                        
-                        <p:confirmDialog  global="true" showEffect="fade" hideEffect="fade">
-                            <div class="alignCenter">
-                                <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-                                <p:commandButton  value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                            </div>
-                        </p:confirmDialog>
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="comboSucursal" value ="Sucursal:" rendered="#{beanCajas.viewEstate =='init'}" /> 
-                            <p:selectOneMenu style="width: 97% !important"  id="comboSucursal" class="col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanCajas.idSucursalBean}" rendered="#{beanCajas.viewEstate =='init'}" disabled="#{beanCajas.usuario.perId != 1}" required="false">
+                            <p:outputLabel class="col-lg-3 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="comboSucursal" value ="Sucursal:" rendered="#{beanCajas.viewEstate =='init'}" /> 
+                            <p:selectOneMenu style="width: 65% !important"  id="comboSucursal" class="col-lg-9 col-md-8 col-sm-8 col-xs-12" value="#{beanCajas.idSucursalBean}" rendered="#{beanCajas.viewEstate =='init'}" disabled="#{beanCajas.usuario.perId != 1}" required="false">
                                 <f:selectItem itemLabel="Todas" itemValue="" />
                                 <f:selectItems value="#{beanCajas.listaSucursal}" var="sucu" itemLabel="#{sucu.nombreSucursal}" itemValue="#{sucu.idSucursalPk}"/>
 
@@ -40,19 +52,19 @@
                             </p:selectOneMenu>
                         </div>
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12 "  for="cajaFiltro" value ="Caja: " rendered="#{beanCajas.viewEstate =='init'}" /> 
-                            <p:selectOneMenu style="width: 97% !important"  id="cajaFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12 alignLeft" value="#{beanCajas.idCajaBean}" rendered="#{beanCajas.viewEstate =='init'}" disabled="#{beanCajas.usuario.perId != 1}" >
+                            <p:outputLabel class="col-lg-3 col-md-4 col-sm-4 col-xs-12 "  for="cajaFiltro" value ="Caja: " rendered="#{beanCajas.viewEstate =='init'}" /> 
+                            <p:selectOneMenu style="width: 50% !important"  id="cajaFiltro" class="col-lg-9 col-md-8 col-sm-8 col-xs-12 alignLeft" value="#{beanCajas.idCajaBean}" rendered="#{beanCajas.viewEstate =='init'}" disabled="#{beanCajas.usuario.perId != 1}" >
                                 <f:selectItem itemLabel="Todas" itemValue="" />
                                 <f:selectItems value="#{beanCajas.listaCajas}" var="cajita" itemLabel="#{cajita.nombre}" itemValue="#{cajita.idCajaPk}"/>
                                 <!--<p:ajax event="change" listener="{beanCajas.printStatus()}" update=":formContent:table" />-->
                                 <p:ajax event="change" update="formContent:usuarioFiltro" listener="#{beanCajas.buscarReponsables()}" />
                             </p:selectOneMenu>
                         </div>
-                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="usuarioFiltro" 
+                        <div class="col-lg-5 col-md-4 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-3 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="usuarioFiltro" 
                                            value ="Responsable: " rendered="#{beanCajas.viewEstate =='init'}"/> 
-                            <p:selectOneMenu style="width: 97% !important"   id="usuarioFiltro" 
-                                             class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" 
+                            <p:selectOneMenu style="width: 50% !important"   id="usuarioFiltro" 
+                                             class=" col-lg-9 col-md-8 col-sm-8 col-xs-12" 
                                              value="#{beanCajas.idUsuarioCajaBean}" 
                                              rendered="#{beanCajas.viewEstate =='init'}" disabled="#{beanCajas.usuario.perId != 1}" >
                                 <f:selectItem itemLabel="Todos" itemValue="" />
@@ -61,9 +73,7 @@
                                                itemValue="#{usuario.idUsuarioPk}"/>
                             </p:selectOneMenu>
                         </div>
-                        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 alignRight form-group">
-                            <p:commandButton value="Buscar" onclick="PF('statusDialog').show()" update=":formContent" ajax="true" action="#{beanCajas.buscar()}"/>
-                        </div>
+                        
 
                     </div>
 

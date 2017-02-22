@@ -362,7 +362,9 @@
                                             <h:outputLabel for="txtFolioElectronico" value="Folio Electronico:" rendered="#{beanBuscaCredito.viewCheque =='deposito'}" />
                                         </div>
                                         <div>
-                                            <p:inputText id="txtFolioElectronico"  value="#{beanBuscaCredito.abono.folioElectronico}" rendered="#{beanBuscaCredito.viewCheque =='deposito'}" />
+                                            <p:inputText id="txtFolioElectronico"  value="#{beanBuscaCredito.abono.folioElectronico}" rendered="#{beanBuscaCredito.viewCheque =='deposito'}">
+                                        <pe:keyFilter regEx="/[0-9_ .]/i"/>
+                                        </p:inputText>
                                         </div>
 
                                         <div>
@@ -374,8 +376,11 @@
                                         <!--Datos para Transferencia-->
                                         <div>
                                             <h:outputLabel for="txtReferencia" value="N. Referencia:" rendered="#{beanBuscaCredito.viewCheque =='trans'}"/>
-                                        </div> <div> 
-                                            <p:inputText id="txtReferencia"  value="#{beanBuscaCredito.abono.referencia}" rendered="#{beanBuscaCredito.viewCheque =='trans'}"/>
+                                        </div> 
+                                        <div> 
+                                            <p:inputText id="txtReferencia"  value="#{beanBuscaCredito.abono.referencia}" rendered="#{beanBuscaCredito.viewCheque =='trans'}">
+                                        <pe:keyFilter regEx="/[0-9_ .]/i"/>
+                                        </p:inputText>
                                         </div>
 
                                         <div>

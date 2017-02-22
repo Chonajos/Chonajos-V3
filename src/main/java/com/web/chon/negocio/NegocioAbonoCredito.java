@@ -41,7 +41,7 @@ public interface NegocioAbonoCredito
      */
     public List<Object[]> getAbonosByIdCredito(BigDecimal idCredito) ;
     
-    public List<Object[]> getHistorialAbonos(BigDecimal idClienteFk, BigDecimal idCajeroFk, String fechaInicio, String fechaFin, BigDecimal idTipoPagoFk, BigDecimal idAbonoPk, BigDecimal idCreditoFk);
+    public List<Object[]> getHistorialAbonos(BigDecimal idClienteFk, BigDecimal idCajeroFk, String fechaInicio, String fechaFin, BigDecimal idTipoPagoFk, BigDecimal idAbonoPk, BigDecimal idCreditoFk,BigDecimal idSucursalFk,BigDecimal idCajaFk);
     
     public List<Object[]> getHistorialCrediticio(BigDecimal idClienteFk, String fechaInicio, String fechaFin);
     

@@ -248,7 +248,7 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
     }
 
     @Override
-    public List<Object[]> getHistorialAbonos(BigDecimal idClienteFk, BigDecimal idCajeroFk, String fechaInicio, String fechaFin, BigDecimal idTipoPagoFk, BigDecimal idAbonoPk, BigDecimal idCreditoFk) {
+    public List<Object[]> getHistorialAbonos(BigDecimal idClienteFk, BigDecimal idCajeroFk, String fechaInicio, String fechaFin, BigDecimal idTipoPagoFk, BigDecimal idAbonoPk, BigDecimal idCreditoFk,BigDecimal idSucursalFk,BigDecimal idCajaFk) {
         StringBuffer cadena = new StringBuffer("select ab.ID_ABONO_CREDITO_PK as folio,(CLI.NOMBRE||' '||CLI.APELLIDO_PATERNO ||' '||CLI.APELLIDO_MATERNO ) AS CLIENTE,\n"
                 + "(usu.NOMBRE_USUARIO||' '||usu.APATERNO_USUARIO) AS CAJERO,\n"
                 + "ab.ID_CREDITO_FK as folio_credito,\n"
@@ -256,13 +256,24 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
                 + "ab.ID_USUARIO_FK,ab.TIPO_ABONO_FK,ab.ESTATUS,\n"
                 + "ab.NUMERO_CHEQUE,ab.LIBRADOR,ab.FECHA_COBRO,\n"
                 + "ab.BANCO_EMISOR,ab.NUMERO_FACTURA,ab.REFERENCIA,ab.CONCEPTO,ab.FECHA_TRANSFERENCIA,\n"
-                + "cli.ID_CLIENTE,ab.NUMERO_ABONO \n"
+                + "cli.ID_CLIENTE,ab.NUMERO_ABONO,sucu.NOMBRE_SUCURSAL \n"
                 + "from ABONO_CREDITO ab inner join credito cre on cre.ID_CREDITO_PK = ab.ID_CREDITO_FK\n"
                 + "inner join cliente cli on cli.ID_CLIENTE = cre.ID_CLIENTE_FK\n"
                 + "inner join usuario usu  on usu.ID_USUARIO_PK = ab.ID_USUARIO_FK\n"
                 + "inner join TIPO_ABONO tipo on tipo.ID_TIPO_ABONO_PK = ab.TIPO_ABONO_FK\n"
+                + " inner join SUCURSAL sucu on sucu.ID_SUCURSAL_PK = usu.ID_SUCURSAL_FK\n"
                 + "WHERE  TO_DATE(TO_CHAR(ab.FECHA_ABONO,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + fechaInicio + " ' AND '" + fechaFin + "'");
 
+        
+        if (idSucursalFk != null && !idSucursalFk.equals("")) {
+            cadena.append(" and sucu.ID_SUCURSAL_PK =" + idSucursalFk + "");
+        }
+//        
+//        if (idCajaFk != null && !idCajaFk.equals("")) {
+//            cadena.append(" and cli.ID_CLIENTE =" + idClienteFk + "");
+//        }
+        System.out.println("*************");
+        System.out.println("ID-CLIENTE: "+idClienteFk);
         if (idClienteFk != null && !idClienteFk.equals("")) {
             cadena.append(" and cli.ID_CLIENTE =" + idClienteFk + "");
         }
@@ -281,6 +292,7 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
 
         Query query;
         query = em.createNativeQuery(cadena.toString());
+        System.out.println("Query: "+query.toString());
         try {
             List<Object[]> lstObject = query.getResultList();
             return lstObject;
