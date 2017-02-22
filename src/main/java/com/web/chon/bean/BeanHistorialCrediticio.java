@@ -93,7 +93,7 @@ public class BeanHistorialCrediticio implements Serializable {
     private String number;
     private String rutaPDF;
     private String pathFileJasper = "";
-    private Logger logger = LoggerFactory.getLogger(BeanBuscaCredito.class);
+    private Logger logger = LoggerFactory.getLogger(BeanAbonarCredito.class);
 
     
     @PostConstruct

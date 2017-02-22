@@ -130,7 +130,6 @@ public class BeanAjusteCaja implements Serializable {
         opcaja.setIdUserFk(idUsuarioCajaBean);
 
         if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
-
             JsfUtil.addSuccessMessageClean("Ajuste de Caja Registrado Correctamente");
             reset();
         } else {

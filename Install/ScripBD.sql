@@ -1682,3 +1682,6 @@ MINVALUE 0;
 --2 ENTRADA MERCANCIA MENUDEO
 --3 ....ETC
 
+--Ejecutar estos dos scripts para cambio
+update menu set URL_SISTEMA = '/views/abonarCredito.xhtml' where ID_MENU= 190;
+update menu set URL_SISTEMA = '/views/abonarCredito.xhtml' where ID_MENU= 313;

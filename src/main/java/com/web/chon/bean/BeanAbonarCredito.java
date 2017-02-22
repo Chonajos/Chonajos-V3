@@ -79,7 +79,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Scope("session")
-public class BeanBuscaCredito implements Serializable {
+public class BeanAbonarCredito implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Autowired private IfaceCatCliente ifaceCatCliente;
@@ -96,7 +96,7 @@ public class BeanBuscaCredito implements Serializable {
     @Autowired private IfacePagosBancarios ifacePagosBancarios;
     
     
-    private Logger logger = LoggerFactory.getLogger(BeanBuscaCredito.class);
+    private Logger logger = LoggerFactory.getLogger(BeanAbonarCredito.class);
 
     private BigDecimal idCliente;
     private String nombreCompletoCliente;

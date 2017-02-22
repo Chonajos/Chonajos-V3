@@ -114,7 +114,7 @@ public class BeanTableroControlVentaMeyoreo implements Serializable, BeanSimple 
     private String rutaPDF;
     private String pathFileJasper = "C:/Users/Juan/Documents/NetBeansProjects/Chonajos-V3/ticket.jasper";
 
-    private Logger logger = LoggerFactory.getLogger(BeanBuscaCredito.class);
+    private Logger logger = LoggerFactory.getLogger(BeanAbonarCredito.class);
 
     @PostConstruct
     public void init() {

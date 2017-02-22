@@ -38,7 +38,7 @@
                 <div class="container-fluid">
                     <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 form-group">
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-3 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="cajaFiltro" value ="Caja:" rendered="#{beanOperacionesCaja.viewEstate =='init'}" /> 
+                            <p:outputLabel class="col-lg-3 col-md-4 col-sm-4 col-xs-12 alignRight"  for="cajaFiltro" value ="Caja:" rendered="#{beanOperacionesCaja.viewEstate =='init'}" /> 
                             <p:selectOneMenu  style="width: 65% !important"  id="cajaFiltro" class="col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanOperacionesCaja.idCajaBean}" rendered="#{beanOperacionesCaja.viewEstate =='init'}" disabled="#{beanOperacionesCaja.usuario.perId != 1}" >
                                 <f:selectItem itemLabel="Selecciona" itemValue="" />
                                 <f:selectItems value="#{beanOperacionesCaja.listaCajas}" var="cajita" itemLabel="#{cajita.nombre}" itemValue="#{cajita.idCajaPk}"/>
@@ -47,7 +47,7 @@
                             </p:selectOneMenu>
                         </div>
                         <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="usuarioFiltro" 
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignRight"  for="usuarioFiltro" 
                                            value ="Cajero:" rendered="#{beanOperacionesCaja.viewEstate =='init'}"/> 
                             <p:selectOneMenu style="width: 55% !important"   id="usuarioFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" 
                                              value="#{beanOperacionesCaja.idUsuarioCajaBean}" 
@@ -61,7 +61,7 @@
                             </p:selectOneMenu>
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                            <p:outputLabel class="col-lg-5 col-md-4 col-sm-4 col-xs-12 alignLeft "  
+                            <p:outputLabel class="col-lg-5 col-md-4 col-sm-4 col-xs-12 alignRight "  
                                            for="calendarInicio" value ="Fecha Inicio:" 
                                            rendered="#{beanOperacionesCaja.viewEstate =='init'}"/> 
                             <p:calendar disabled="#{beanOperacionesCaja.enableCalendar}" id="calendarInicio" 
@@ -72,7 +72,7 @@
                             </p:calendar>
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                            <p:outputLabel class="col-lg-5 col-md-4 col-sm-4 col-xs-12 alignLeft "  
+                            <p:outputLabel class="col-lg-5 col-md-4 col-sm-4 col-xs-12 alignRight "  
                                            for="calendarFin" value ="Fecha Fin:" 
                                            rendered="#{beanOperacionesCaja.viewEstate =='init'}"/> 
                             <p:calendar disabled="#{beanOperacionesCaja.enableCalendar}" id="calendarFin" 
@@ -86,7 +86,7 @@
                     </div>
                     <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 form-group">
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="operacionFiltro" value ="Operación:" rendered="#{beanOperacionesCaja.viewEstate =='init'}" /> 
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignRight"  for="operacionFiltro" value ="Operación:" rendered="#{beanOperacionesCaja.viewEstate =='init'}" /> 
                             <p:selectOneMenu style="width: 60% !important"  id="operacionFiltro" class="col-lg-9 col-md-8 col-sm-8 col-xs-12" value="#{beanOperacionesCaja.idTipoOperacionBean}" rendered="#{beanOperacionesCaja.viewEstate =='init'}" >
                                 <f:selectItem itemLabel="Todas" itemValue="" />
                                 <f:selectItems value="#{beanOperacionesCaja.listaTiposOperaciones}" var="operacioncita" itemLabel="#{operacioncita.nombre}" itemValue="#{operacioncita.idTipoOperacionPk}"/>
@@ -95,14 +95,14 @@
                         </div>
 
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="conceptoFiltro" value ="Concepto:" rendered="#{beanOperacionesCaja.viewEstate =='init'}" /> 
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignRight"  for="conceptoFiltro" value ="Concepto:" rendered="#{beanOperacionesCaja.viewEstate =='init'}" /> 
                             <p:selectOneMenu  style="width: 65% !important"  id="conceptoFiltro" class="col-lg-9 col-md-8 col-sm-8 col-xs-12" value="#{beanOperacionesCaja.idConceptoBean}" rendered="#{beanOperacionesCaja.viewEstate =='init'}" >
                                 <f:selectItem itemLabel="Todas" itemValue="" />
                                 <f:selectItems value="#{beanOperacionesCaja.listaConceptos}" var="conceptito" itemLabel="#{conceptito.nombre}" itemValue="#{conceptito.idConceptoPk}"/>
                             </p:selectOneMenu>
                         </div>
                         <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-5 col-md-4 col-sm-4 col-xs-12 alignLeft" for="txtStatus" value="Estatus:" rendered="#{beanOperacionesCaja.viewEstate =='init'}"/>    
+                            <p:outputLabel class="col-lg-5 col-md-4 col-sm-4 col-xs-12 alignRight" for="txtStatus" value="Estatus:" rendered="#{beanOperacionesCaja.viewEstate =='init'}"/>    
                             <p:selectOneMenu  class="col-lg-6 col-md-8 col-sm-8 col-xs-12" style="width: 55% !important"  id="txtStatus"  value="#{beanOperacionesCaja.idStatusBean}" rendered="#{beanOperacionesCaja.viewEstate =='init'}">
                                 <f:selectItem  itemLabel="Todas" itemValue=""/>
                                 <f:selectItem  itemLabel="Aprobada" itemValue="1"/>
@@ -111,7 +111,7 @@
                             </p:selectOneMenu>
                         </div>
                         <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="pagoFiltro" value ="Pago:" rendered="#{beanOperacionesCaja.viewEstate =='init'}" /> 
+                            <p:outputLabel class="col-lg-6 col-md-4 col-sm-4 col-xs-12 alignRight"  for="pagoFiltro" value ="Pago:" rendered="#{beanOperacionesCaja.viewEstate =='init'}" /> 
                             <p:selectOneMenu  style="width: 40% !important"  id="pagoFiltro" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" value="#{beanOperacionesCaja.idFormaPagoBean}" rendered="#{beanOperacionesCaja.viewEstate =='init'}" >
                                 <f:selectItem itemLabel="Todos" itemValue="" />
                                 <f:selectItems value="#{beanOperacionesCaja.listaAbonos}" var="operacioncita" itemLabel="#{operacioncita.nombreTipoAbono}" itemValue="#{operacioncita.idTipoAbono}"/>
@@ -120,7 +120,7 @@
                         </div>
                         
                         <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft" for="txtEntradaSalida" value="E/S:" rendered="#{beanOperacionesCaja.viewEstate =='init'}"/>    
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignRight" for="txtEntradaSalida" value="E/S:" rendered="#{beanOperacionesCaja.viewEstate =='init'}"/>    
                             <p:selectOneMenu  class=" col-lg-8 col-md-8 col-sm-8 col-xs-12"  style="width: 35% !important"  id="txtEntradaSalida"  value="#{beanOperacionesCaja.idInOut}" rendered="#{beanOperacionesCaja.viewEstate =='init'}">
                                 <f:selectItem  itemLabel="Todas" itemValue=""/>
                                 <f:selectItem  itemLabel="Entrada" itemValue="1"/>
