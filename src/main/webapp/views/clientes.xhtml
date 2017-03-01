@@ -125,7 +125,7 @@
                             <p:fragment rendered="#{beanCatCliente.banderaTipoCliente=='pm'}">
                                 <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 form-group"  >
                                     <p:outputLabel class="col-lg-12 col-md-2 col-sm-3 col-xs-12"  for="txtRazon" value ="Razón Social"/> 
-                                    <p:inputText id="txtRazon" maxlength="50" class=" col-lg-12 col-md-2 col-sm-3 col-xs-12"
+                                    <p:inputText id="txtRazon" maxlength="70" class=" col-lg-12 col-md-2 col-sm-3 col-xs-12"
                                                  value="#{beanCatCliente.data.razon_social}" required="true"
                                                  disabled="#{beanCatCliente.permissionToWrite}"
                                                  requiredMessage="Ingresa un valor para el campo Razón Social">
@@ -176,7 +176,7 @@
                                 <p:inputText id="txtRFCEMPRESA" maxlength="13" class=" col-lg-12 col-md-2 col-sm-3 col-xs-12" 
                                              value="#{beanCatCliente.data.rfcFiscal}" 
                                              disabled="#{beanCatCliente.permissionToWrite}" rendered="#{beanCatCliente.banderaTipoCliente=='pm'}">                                   
-                                    <pe:keyFilter regEx="/[0-9-a-z]/i"/> 
+                                    <pe:keyFilter regEx="/[0-9-a-z_ñ]/i"/> 
                                 </p:inputText>
                             </div>
                             <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 form-group" rendered="#{beanCatCliente.banderaTipoCliente=='pf'}">
@@ -191,7 +191,7 @@
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                             <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 form-group">
                                 <p:outputLabel class="col-lg-12 col-md-1 col-sm-3 col-xs-12 alignLeft"  for="txtCalle" value ="Calle" /> 
-                                <p:inputText id="txtCalle" maxlength="60" class=" col-lg-12 col-md-2 col-sm-3 col-xs-12" value="#{beanCatCliente.data.calle}" disabled="#{beanCatCliente.permissionToWrite}">
+                                <p:inputText id="txtCalle" maxlength="70" class=" col-lg-12 col-md-2 col-sm-3 col-xs-12" value="#{beanCatCliente.data.calle}" disabled="#{beanCatCliente.permissionToWrite}">
                                     <pe:keyFilter regEx="/[a-z-0-9_ñ ]/i"/>
                                 </p:inputText>
                             </div>
