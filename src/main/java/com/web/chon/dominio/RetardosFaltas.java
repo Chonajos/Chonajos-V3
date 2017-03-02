@@ -1,6 +1,7 @@
 package com.web.chon.dominio;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  *
@@ -13,11 +14,14 @@ public class RetardosFaltas implements Serializable {
     private String nombreUsuario;
     private Integer faltas;
     private Integer retardos;
+    private String horasExtras;
+    private BigDecimal diasDescansoTrabajado;
 
     @Override
     public String toString() {
-        return "RetardosFaltas{" + "nombreUsuario=" + nombreUsuario + ", faltas=" + faltas + ", retardos=" + retardos + '}';
+        return "RetardosFaltas{" + "nombreUsuario=" + nombreUsuario + ", faltas=" + faltas + ", retardos=" + retardos + ", horasExtras=" + horasExtras + ", diasDescansoTrabajado=" + diasDescansoTrabajado + '}';
     }
+
 
     public String getNombreUsuario() {
         return nombreUsuario;
@@ -42,8 +46,24 @@ public class RetardosFaltas implements Serializable {
     public void setRetardos(Integer retardos) {
         this.retardos = retardos;
     }
+
+    public String getHorasExtras() {
+        return horasExtras;
+    }
+
+    public void setHorasExtras(String horasExtras) {
+        this.horasExtras = horasExtras;
+    }
+
+    public BigDecimal getDiasDescansoTrabajado() {
+        return diasDescansoTrabajado;
+    }
+
+    public void setDiasDescansoTrabajado(BigDecimal diasDescansoTrabajado) {
+        this.diasDescansoTrabajado = diasDescansoTrabajado;
+    }
     
-    
+     
 
   
 

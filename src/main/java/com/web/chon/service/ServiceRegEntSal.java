@@ -153,17 +153,28 @@ public class ServiceRegEntSal implements IfaceRegistroEntradaSalida {
                             reg.setRetardo(false);
                         }
                     }
+                } else if (!reg.getHoraEntrada().equals(SIN_REGISTOR)) {
+                    reg.setDiasTrabajdosDescanso(reg.getDiasTrabajdosDescanso().add(new BigDecimal(1)));
+                }
+
+                if ( (!reg.getHoraEntrada().equals(SIN_REGISTOR)) && reg.getHoraSalida().equals(SIN_REGISTOR)) {
+                    reg.setHoraSalida(reg.getHorarioSalida());
+                }
+
+                int minHoraEntradaSalida = TiempoUtil.getMinutesBetweenTwoHour(reg.getHoraEntrada(), reg.getHoraSalida());
+                int minHorarioEntradaSalida = TiempoUtil.getMinutesBetweenTwoHour(reg.getHorarioEntrada(), reg.getHorarioSalida());
+                int minutosExtra = minHorarioEntradaSalida - minHoraEntradaSalida;
+                if (minutosExtra < 0) {
+                    minutosExtra = 0;
+                }
+
+                int hora = minutosExtra / 60;
+                int minuto = minutosExtra % 60;
+                
+                if(reg.getHorarioEntrada().equals(SIN_REGISTOR) || reg.getHorarioSalida().equals(SIN_REGISTOR)){
+                    reg.setHoraExtra(TiempoUtil.gethhmm(0, 0));
                 }else{
-                     if (!reg.getHoraEntrada().equals(SIN_REGISTOR)) {
-                         reg.setDiasTrabajdosDescanso(reg.getDiasTrabajdosDescanso().add(new BigDecimal(1)));
-                         if(reg.getHoraSalida().equals(SIN_REGISTOR)){
-                             reg.setHoraSalida(reg.getHorarioSalida());
-                             
-                         }
-                         int minutosTrabajdos = TiempoUtil.getMinutesBetweenTwoHour(reg.getHoraEntrada(), reg.getHoraSalida());
-                         reg.setHorasTrabajada(reg.getHorasAtrabajar().add(new BigDecimal(minutosTrabajdos)));
-                         
-                     }
+                    reg.setHoraExtra(TiempoUtil.gethhmm(hora, minuto));
                 }
 
                 lstTop.add(reg);
