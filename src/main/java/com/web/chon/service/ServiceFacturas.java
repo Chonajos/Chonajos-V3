@@ -26,7 +26,7 @@ public class ServiceFacturas implements IfaceFacturas
     private void getEjb() {
         try {
             if (ejb == null) {
-                ejb = (NeogocioFacturas) Utilidades.getEJBRemote("ejbExistenciaMenudeo", NeogocioFacturas.class.getName());
+                ejb = (NeogocioFacturas) Utilidades.getEJBRemote("ejbFacturas", NeogocioFacturas.class.getName());
             }
 
         } catch (Exception ex) {
