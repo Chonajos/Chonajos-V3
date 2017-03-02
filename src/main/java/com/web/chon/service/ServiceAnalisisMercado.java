@@ -27,7 +27,6 @@ public class ServiceAnalisisMercado implements IfaceAnalisisMercado {
     public int saveEntradaProductoCentral(AnalisisMercado entradaMercancia) {
 
         getEjb();
-        System.out.println(entradaMercancia.toString());
         return ejb.saveEntradaProductoCentral(entradaMercancia);
     }
 
@@ -97,6 +96,7 @@ public class ServiceAnalisisMercado implements IfaceAnalisisMercado {
         try {
             switch (filtro) {
 
+                //Dia
                 case 1:
 
                     rangoFechaInicio = TiempoUtil.getintervalWeekDDMMYYYYbyDay(fechaInicio);
@@ -156,6 +156,7 @@ public class ServiceAnalisisMercado implements IfaceAnalisisMercado {
                     lstEntradaMercancia = lstEntradaMercanciaDate;
 
                     break;
+                //Semana
                 case 2:
 
                     fechaInicio = TiempoUtil.sumarRestarDias(fechaInicio, -numRegistros);
@@ -178,7 +179,6 @@ public class ServiceAnalisisMercado implements IfaceAnalisisMercado {
 
                         lstObject = ejb.getEntradaProductoByFiltroWeek(rangoFechaInicio.get(0), rangoFechaInicio.get(6), idProducto);
                         List<Object[]> lstObjectAnterior = ejb.getEntradaProductoByFiltroWeek(TiempoUtil.getFechaDDMMYYYY(anioAnteriorInicio), TiempoUtil.getFechaDDMMYYYY(anioAnteriorFin), idProducto);
-                        
 
                         for (Object[] obj : lstObject) {
                             AnalisisMercado dominio = new AnalisisMercado();
@@ -197,12 +197,13 @@ public class ServiceAnalisisMercado implements IfaceAnalisisMercado {
                             lstEntradaMercancia.add(dominio);
                             cont++;
                         }
-                        
+
                         fechaInicio = TiempoUtil.sumarRestarDias(fechaInicio, 7);
                         rangoFechaInicio = TiempoUtil.getintervalWeekDDMMYYYYbyDay(fechaInicio);
                     }
 
                     break;
+                //Mes
                 case 3:
                     List<Object[]> lstObjectMonth = null;
                     List<Object[]> lstObjectMonthAnterior = null;
@@ -211,8 +212,8 @@ public class ServiceAnalisisMercado implements IfaceAnalisisMercado {
 
                     List<String> fechaActual = new ArrayList<String>();
                     List<String> fechaAnterior = new ArrayList<String>();
-                    List<String> fechaActualRemanente = new ArrayList<String>();
-                    List<String> fechaAnteriorRemanente = new ArrayList<String>();
+//                    List<String> fechaActualRemanente = new ArrayList<String>();
+//                    List<String> fechaAnteriorRemanente = new ArrayList<String>();
 
                     Date fechaInicioAnterior = fechaInicio;
                     fechaInicioAnterior = TiempoUtil.sumarRestarAnios(fechaFin, -1);
@@ -221,17 +222,17 @@ public class ServiceAnalisisMercado implements IfaceAnalisisMercado {
                     for (int i = 0; i <= 11; i++) {
 
                         fechaActual = TiempoUtil.obtenerFecgaInicioMesFinMesPorMes(i, fechaInicio);
-                        fechaActualRemanente = TiempoUtil.getintervalWeekDDMMYYYYbyDay(TiempoUtil.fechaTextoDiaMesAnio(fechaActual.get(1)));
+//                        fechaActualRemanente = TiempoUtil.getintervalWeekDDMMYYYYbyDay(TiempoUtil.fechaTextoDiaMesAnio(fechaActual.get(1)));
                         rangoFechaInicio = TiempoUtil.getintervalWeekDDMMYYYYbyDay(fechaInicio);
                         fechaAnterior = TiempoUtil.obtenerFecgaInicioMesFinMesPorMes(i, fechaInicioAnterior);
-                        fechaAnteriorRemanente = TiempoUtil.getintervalWeekDDMMYYYYbyDay(TiempoUtil.fechaTextoDiaMesAnio(fechaAnterior.get(1)));
+//                        fechaAnteriorRemanente = TiempoUtil.getintervalWeekDDMMYYYYbyDay(TiempoUtil.fechaTextoDiaMesAnio(fechaAnterior.get(1)));
 
                         diasMes = TiempoUtil.obtenerUltimoDiaMes(TiempoUtil.fechaTextoDiaMesAnio(fechaActual.get(0)));
 
                         lstObjectMonth = ejb.getEntradaProductoByFiltroMonth(fechaActual.get(0), fechaActual.get(1), idProducto);
                         lstObjectMonthAnterior = ejb.getEntradaProductoByFiltroMonth(fechaAnterior.get(0), fechaAnterior.get(1), idProducto);
-                        lstObjectRemanenteMonth = ejb.getEntradaProductoByFiltroWeek(fechaActualRemanente.get(0), fechaActualRemanente.get(6), idProducto);
-                        lstObjectRemanenteMonthAnterior = ejb.getEntradaProductoByFiltroWeek(fechaAnteriorRemanente.get(0), fechaAnteriorRemanente.get(6), idProducto);
+                        lstObjectRemanenteMonth = ejb.getEntradaProductoByMonth(fechaActual.get(0), fechaActual.get(1), idProducto);
+                        lstObjectRemanenteMonthAnterior = ejb.getEntradaProductoByMonth(fechaAnterior.get(0), fechaAnterior.get(1), idProducto);
 
                         for (Object[] object : lstObjectMonth) {
                             AnalisisMercado dominio = new AnalisisMercado();
@@ -239,6 +240,9 @@ public class ServiceAnalisisMercado implements IfaceAnalisisMercado {
                             dominio.setCantidadToneladas(new BigDecimal(object[1].toString()));
                             dominio.setDescripcionFiltro(TiempoUtil.getNameMonth(i));
                             dominio.setDiasMes(diasMes);
+                            //Se inicializa variables
+                            dominio.setRemantePorSemana(new BigDecimal(0));
+                            dominio.setRemantePorSemanaAnterior(new BigDecimal(0));
 
                             for (Object[] objectRemanente : lstObjectRemanenteMonth) {
                                 dominio.setRemantePorSemana(new BigDecimal(objectRemanente[2].toString()));
@@ -260,7 +264,6 @@ public class ServiceAnalisisMercado implements IfaceAnalisisMercado {
 
                 default:
 
-                    System.out.println("default " + filtro);
                     break;
             }
         } catch (Exception e) {
@@ -319,10 +322,7 @@ public class ServiceAnalisisMercado implements IfaceAnalisisMercado {
     @Override
     public ArrayList<AnalisisMercado> getAnalisMercadoByNameDayOfYear(String fechaInicio, String fechaFin, String idProducto, String nombreDia) {
         List<Object[]> lstObject = null;
-        System.out.println("fechaInicio "+fechaInicio);
-        System.out.println("fechaFin "+fechaFin);
-        System.out.println("idProducto "+idProducto);
-        System.out.println("nombreDia "+nombreDia);
+
         ArrayList<AnalisisMercado> lstAnalisisMercado = new ArrayList<AnalisisMercado>();
         getEjb();
         lstObject = ejb.getAnalisMercadoByNameDayOfYear(fechaInicio, fechaFin, idProducto, nombreDia);
@@ -330,18 +330,17 @@ public class ServiceAnalisisMercado implements IfaceAnalisisMercado {
         getEjb();
         for (Object[] obj : lstObject) {
             AnalisisMercado dominio = new AnalisisMercado();
-        
+
             dominio.setIdEntrada(obj[1] != null ? new BigDecimal(obj[1].toString()) : new BigDecimal(0));
             dominio.setIdProductoFk(idProducto);
             dominio.setPrecio(obj[3] != null ? new BigDecimal(obj[3].toString()) : new BigDecimal(0));
             dominio.setCantidadToneladas(obj[4] != null ? new BigDecimal(obj[4].toString()) : new BigDecimal(0));
-            dominio.setFecha(obj[0] == null ? null:(Date) obj[0]);
+            dominio.setFecha(obj[0] == null ? null : (Date) obj[0]);
             dominio.setRemantePorSemana(obj[6] != null ? new BigDecimal(obj[6].toString()) : new BigDecimal(0));
             dominio.setDescripcionFiltro(TiempoUtil.getFechaDDMMYYYY(dominio.getFecha()));
             lstAnalisisMercado.add(dominio);
 
         }
-        System.out.println("termina");
 
         return lstAnalisisMercado;
     }

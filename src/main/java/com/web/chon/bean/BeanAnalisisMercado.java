@@ -331,6 +331,9 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
                 if (maxChartValue < dominio.getCantidadToneladas().intValue()) {
                     maxChartValue = dominio.getCantidadToneladas().intValue();
                 }
+                if (maxChartValue < dominio.getRemantePorSemana().intValue()) {
+                    maxChartValue = dominio.getRemantePorSemana().intValue();
+                }
 
                 toneladas.set(dominio.getDescripcionFiltro(), dominio.getCantidadToneladas());
                 precio.set(dominio.getDescripcionFiltro(), dominio.getPrecio());
@@ -424,6 +427,10 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
                     maxChartValue = dominio.getCantidadToneladas().intValue();
                 }
 
+                if (maxChartValue < dominio.getRemantePorSemana().intValue()) {
+                    maxChartValue = dominio.getRemantePorSemana().intValue();
+                }
+
                 toneladas.set(dominio.getDescripcionFiltro(), dominio.getCantidadToneladas());
                 precio.set(dominio.getDescripcionFiltro(), dominio.getPrecio());
                 toneladasAnt.set(dominio.getDescripcionFiltro(), dominio.getCantidadToneladasAnterior());
@@ -501,6 +508,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
         salidaMercancia.setLabel("Salida Mercancia");
         AnalisisMercado analisisMercadoTemp = null;
         maxChartValue = 500;
+
         for (AnalisisMercado dominio : lstEntradaMercanciaMes) {
 
             if (maxChartValue < dominio.getCantidadToneladasAnterior().intValue()) {
@@ -508,6 +516,10 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
             }
             if (maxChartValue < dominio.getCantidadToneladas().intValue()) {
                 maxChartValue = dominio.getCantidadToneladas().intValue();
+            }
+
+            if (maxChartValue < dominio.getRemantePorSemana().intValue()) {
+                maxChartValue = dominio.getRemantePorSemana().intValue();
             }
 
             toneladas.set(dominio.getDescripcionFiltro(), dominio.getCantidadToneladas());
@@ -596,6 +608,10 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
             }
             if (maxChartValue < dominio.getCantidadToneladas().intValue()) {
                 maxChartValue = dominio.getCantidadToneladas().intValue();
+            }
+
+            if (maxChartValue < dominio.getRemantePorSemana().intValue()) {
+                maxChartValue = dominio.getRemantePorSemana().intValue();
             }
 
             toneladas.set(dominio.getDescripcionFiltro(), dominio.getCantidadToneladas());
@@ -805,7 +821,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
     }
 
     public String searchDatabyIdProducto() {
-        
+
         String idProducto = data.getIdProductoFk();
         data = ifaceEntradaProductoCentral.getEntradaProductoByIdProducto(data.getIdProductoFk(), TiempoUtil.getFechaDDMMYYYY(fechaRemanente));
         data.setIdProductoFk(idProducto);

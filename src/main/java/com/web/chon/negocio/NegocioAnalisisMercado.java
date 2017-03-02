@@ -23,6 +23,8 @@ public interface NegocioAnalisisMercado
     
     public List<Object[]> getEntradaProductoByFiltroWeek(String fechaInicio,String fechaFin,String idProducto);
     
+    public List<Object[]> getEntradaProductoByMonth(String fechaInicio,String fechaFin,String idProducto);
+
     public List<Object[]> getEntradaProductoByFiltroMonth(String fechaInicio,String fechaFin,String idSubproducto);
     
     public List<Object[]> getEntradaProductoByFiltroYear(String fechaInicio,String fechaFin);
