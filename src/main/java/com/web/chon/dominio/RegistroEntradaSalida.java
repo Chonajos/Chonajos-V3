@@ -40,10 +40,12 @@ public class RegistroEntradaSalida implements Serializable {
     private BigDecimal diasTrabajdosDescanso;
     private BigDecimal horasTrabajada;
     private BigDecimal horasAtrabajar;
+    private BigDecimal diaDescTrabajado;
+    private String horaExtra;
 
     @Override
     public String toString() {
-        return "RegistroEntradaSalida{" + "idRegEntSalPk=" + idRegEntSalPk + ", fecha=" + fecha + ", fechaEntrada=" + fechaEntrada + ", fechaSalida=" + fechaSalida + ", horaEntrada=" + horaEntrada + ", horaSalida=" + horaSalida + ", horarioEntrada=" + horarioEntrada + ", horarioSalida=" + horarioSalida + ", latitudEntrada=" + latitudEntrada + ", latitudSalida=" + latitudSalida + ", longitudEntrada=" + longitudEntrada + ", longitudSalida=" + longitudSalida + ", idUsuarioFk=" + idUsuarioFk + ", idSucursalFk=" + idSucursalFk + ", fechaFiltroInicio=" + fechaFiltroInicio + ", fechaFiltroFin=" + fechaFiltroFin + ", nombre=" + nombre + ", apPaterno=" + apPaterno + ", apMaterno=" + apMaterno + ", dia=" + dia + ", diaDescanso=" + diaDescanso + ", retardo=" + retardo + ", falta=" + falta + ", diasDescanso=" + diasDescanso + '}';
+        return "RegistroEntradaSalida{" + "idRegEntSalPk=" + idRegEntSalPk + ", fecha=" + fecha + ", fechaEntrada=" + fechaEntrada + ", fechaSalida=" + fechaSalida + ", horaEntrada=" + horaEntrada + ", horaSalida=" + horaSalida + ", horarioEntrada=" + horarioEntrada + ", horarioSalida=" + horarioSalida + ", latitudEntrada=" + latitudEntrada + ", latitudSalida=" + latitudSalida + ", longitudEntrada=" + longitudEntrada + ", longitudSalida=" + longitudSalida + ", idUsuarioFk=" + idUsuarioFk + ", idSucursalFk=" + idSucursalFk + ", fechaFiltroInicio=" + fechaFiltroInicio + ", fechaFiltroFin=" + fechaFiltroFin + ", nombre=" + nombre + ", apPaterno=" + apPaterno + ", apMaterno=" + apMaterno + ", dia=" + dia + ", diaDescanso=" + diaDescanso + ", retardo=" + retardo + ", falta=" + falta + ", diasDescanso=" + diasDescanso + ", diasTrabajdosDescanso=" + diasTrabajdosDescanso + ", horasTrabajada=" + horasTrabajada + ", horasAtrabajar=" + horasAtrabajar + ", diaDescTrabajado=" + diaDescTrabajado + ", horaExtra=" + horaExtra + '}';
     }
 
     public BigDecimal getIdRegEntSalPk() {
@@ -260,6 +262,22 @@ public class RegistroEntradaSalida implements Serializable {
 
     public void setHorasAtrabajar(BigDecimal horasAtrabajar) {
         this.horasAtrabajar = horasAtrabajar;
+    }
+
+    public BigDecimal getDiaDescTrabajado() {
+        return diaDescTrabajado;
+    }
+
+    public void setDiaDescTrabajado(BigDecimal diaDescTrabajado) {
+        this.diaDescTrabajado = diaDescTrabajado;
+    }
+
+    public String getHoraExtra() {
+        return horaExtra;
+    }
+
+    public void setHoraExtra(String horaExtra) {
+        this.horaExtra = horaExtra;
     }
     
     

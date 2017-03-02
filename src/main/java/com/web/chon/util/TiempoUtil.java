@@ -506,12 +506,21 @@ public class TiempoUtil {
     }
 
     /**
-     * Recibe dos parametros de tipo estring en el formato HH:MM y devuelve la diferencia entre ellos en minutos
+     * Recibe dos parametros de tipo estring en el formato HH:MM y devuelve la
+     * diferencia entre ellos en minutos
+     *
      * @param hhmm
      * @param hhmmTwo
-     * @return 
+     * @return
      */
     public static int getMinutesBetweenTwoHour(String hhmm, String hhmmTwo) {
+
+        if (hhmm == null || hhmm.equals("--")) {
+            hhmm = "00:00";
+        }
+        if (hhmmTwo == null || hhmmTwo.equals("--")) {
+            hhmmTwo = "00:00";
+        }
 
         String[] hhmmSplit = hhmm.split(":");
         String[] hhmmTwoSplit = hhmmTwo.split(":");
@@ -525,6 +534,82 @@ public class TiempoUtil {
         minutoTwo += horaTwo * 60;
 
         return minuto - minutoTwo;
+
+    }
+
+    /**
+     * Recibe la hora y los minutos por separados y los devuelve en formato
+     * HH:MM
+     *
+     * @param hora
+     * @param minuto
+     * @return
+     */
+    public static String gethhmm(int hora, int minuto) {
+        String strHora = "";
+        String strMinutos = "";
+
+        if (hora < 10) {
+            strHora = "0" + hora;
+        } else {
+            strHora = Integer.toString(hora);
+        }
+        if (minuto < 10) {
+            strMinutos = "0" + minuto;
+        } else {
+            strMinutos = Integer.toString(minuto);
+        }
+
+        return strHora + ":" + strMinutos;
+
+    }
+
+    /**
+     * Suma dos horas tipo string en formato HH:MM regresa String con el formato
+     * HH:MM
+     *
+     * @param hhmm
+     * @param hhmmTwo
+     * @return
+     */
+    public static String sumarHorasFormatohhmm(String hhmm, String hhmmTwo) {
+
+        String strHora ="00";
+        String strMinuto ="00";
+        if (hhmm == null || hhmm.equals("--")) {
+            hhmm = "00:00";
+        }
+        if (hhmmTwo == null || hhmmTwo.equals("--")) {
+            hhmmTwo = "00:00";
+        }
+
+        String[] hhmmSplit = hhmm.split(":");
+        String[] hhmmTwoSplit = hhmmTwo.split(":");
+
+        int hora = Integer.parseInt(hhmmSplit[0]);
+        int minuto = Integer.parseInt(hhmmSplit[1]);
+        int horaTwo = Integer.parseInt(hhmmTwoSplit[0]);
+        int minutoTwo = Integer.parseInt(hhmmTwoSplit[1]);
+
+        hora += horaTwo;
+        minuto += minutoTwo;
+        
+        hora += minuto / 60;
+        minuto = minuto % 60;
+        
+        if(hora<10){
+            strHora ="0"+hora;
+        }else{
+            strHora =Integer.toString(hora);
+        }
+        
+         if(minuto<10){
+            strMinuto ="0"+minuto;
+        }else{
+            strMinuto =Integer.toString(minuto);
+        }
+
+        return strHora+":"+strMinuto;
 
     }
 

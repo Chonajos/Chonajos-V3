@@ -92,7 +92,9 @@
                                     <f:convertDateTime pattern="HH:mm"/>
                                 </h:outputText>							
                             </p:column>
-
+                            <p:column style="width:60px;" headerText="Horas Extras Trabajadas" class="alignCenter">
+                                <h:outputText value="#{model.horaExtra}" />		
+                            </p:column>
                             <p:column headerText="Ver Ubicaciones" width="60px;" class="alignCenter">
                                 <p:commandButton id="verEnt" ajax="true"  onclick="PF('dlg').show();" action="#{beanHistorialRegEntSal.verUbicaciones()}" icon="ui-icon-search" styleClass="ui-priority-primary" update=":formContent:gmap" >
                                     <f:setPropertyActionListener value="#{model}" target="#{beanHistorialRegEntSal.data}"/>
