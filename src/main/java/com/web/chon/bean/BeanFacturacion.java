@@ -5,10 +5,13 @@
  */
 package com.web.chon.bean;
 import com.web.chon.dominio.Cliente;
+import com.web.chon.dominio.FacturaPDFDomain;
 import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.UsuarioDominio;
+import com.web.chon.dominio.VentaMayoreo;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceCatCliente;
+import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.util.Constantes;
 import com.web.chon.util.JasperReportUtil;
 import com.web.chon.util.NumeroALetra;
@@ -61,12 +64,15 @@ public class BeanFacturacion implements Serializable
     private PlataformaSecurityContext context;
     @Autowired
     private IfaceCatCliente ifaceCatCliente;
+    @Autowired
+    private IfaceCatSucursales ifaceCatSucursales;
 
     //--Variables Generales Bean--//
     private String title;
     private String viewEstate;
     private UsuarioDominio usuario;
     private int filtro;
+    private int tipoFactura;
     private Date fechaFiltroInicio;
     private Date fechaFiltroFin;
     private boolean enableCalendar;
@@ -77,6 +83,11 @@ public class BeanFacturacion implements Serializable
     private BigDecimal folioVenta;
     private BigDecimal idSucursalFk;
     private ArrayList<Sucursal> listaSucursales;
+    private BigDecimal folioVentaG;
+    private ArrayList<FacturaPDFDomain> modelo;
+    private FacturaPDFDomain data;
+    private BigDecimal total;
+    private VentaMayoreo ventaMayoreo;
     
     //--Variables Para Generar PDF--//
     private String rutaPDF;
@@ -91,13 +102,40 @@ public class BeanFacturacion implements Serializable
     @PostConstruct
     public void init() {
         usuario = context.getUsuarioAutenticado();
+        setTitle("Facturación Electrónica");
+        setViewEstate("init");
+        lstCliente = new ArrayList<Cliente>();
+        listaSucursales = ifaceCatSucursales.getSucursales();
+        data = new FacturaPDFDomain();
+        ventaMayoreo  = new VentaMayoreo();
+        
     }
-    
+    public void descargarXML()
+    {
+        
+    }
+    public void descargarPDF()
+    {
+        
+    }
+    public void cancelarFactura()
+    {
+        
+    }
+    public void enviarFactura()
+    {
+        
+    }
     public void buscarFacturas()
     {
         
     }
     public void changeViewGenerarFactura()
+    {
+        
+        setViewEstate("generate");
+    }
+    public void emitirFactura()
     {
         
     }
@@ -153,53 +191,53 @@ public class BeanFacturacion implements Serializable
     }
     private void getTimbrado() throws ParserConfigurationException
     {
-        DocumentBuilderFactory factory =DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        
-        try {	
-         File inputFile = new File("input.txt");
-         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-         Document doc = dBuilder.parse(inputFile);
-         doc.getDocumentElement().normalize();
-         System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
-         NodeList nList = doc.getElementsByTagName("student");
-         
-         System.out.println("----------------------------");
-         for (int temp = 0; temp < nList.getLength(); temp++) 
-         {
-            Node nNode = nList.item(temp);
-            System.out.println("\nCurrent Element :" 
-               + nNode.getNodeName());
-            if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-               Element eElement = (Element) nNode;
-               System.out.println("Student roll no : " 
-                  + eElement.getAttribute("rollno"));
-               System.out.println("First Name : " 
-                  + eElement
-                  .getElementsByTagName("firstname")
-                  .item(0)
-                  .getTextContent());
-               System.out.println("Last Name : " 
-               + eElement
-                  .getElementsByTagName("lastname")
-                  .item(0)
-                  .getTextContent());
-               System.out.println("Nick Name : " 
-               + eElement
-                  .getElementsByTagName("nickname")
-                  .item(0)
-                  .getTextContent());
-               System.out.println("Marks : " 
-               + eElement
-                  .getElementsByTagName("marks")
-                  .item(0)
-                  .getTextContent());
-            }
-         }
-      } catch (Exception e) {
-         e.printStackTrace();
-      }
+//        DocumentBuilderFactory factory =DocumentBuilderFactory.newInstance();
+//        DocumentBuilder builder = factory.newDocumentBuilder();
+//        
+//        try {	
+//         File inputFile = new File("input.txt");
+//         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+//         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+//         Document doc = dBuilder.parse(inputFile);
+//         doc.getDocumentElement().normalize();
+//         System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
+//         NodeList nList = doc.getElementsByTagName("student");
+//         
+//         System.out.println("----------------------------");
+//         for (int temp = 0; temp < nList.getLength(); temp++) 
+//         {
+//            Node nNode = nList.item(temp);
+//            System.out.println("\nCurrent Element :" 
+//               + nNode.getNodeName());
+//            if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+//               Element eElement = (Element) nNode;
+//               System.out.println("Student roll no : " 
+//                  + eElement.getAttribute("rollno"));
+//               System.out.println("First Name : " 
+//                  + eElement
+//                  .getElementsByTagName("firstname")
+//                  .item(0)
+//                  .getTextContent());
+//               System.out.println("Last Name : " 
+//               + eElement
+//                  .getElementsByTagName("lastname")
+//                  .item(0)
+//                  .getTextContent());
+//               System.out.println("Nick Name : " 
+//               + eElement
+//                  .getElementsByTagName("nickname")
+//                  .item(0)
+//                  .getTextContent());
+//               System.out.println("Marks : " 
+//               + eElement
+//                  .getElementsByTagName("marks")
+//                  .item(0)
+//                  .getTextContent());
+//            }
+//         }
+//      } catch (Exception e) {
+//         e.printStackTrace();
+//      }
     }
  //   private void setParameterTicket(Venta v) {
 
@@ -453,6 +491,54 @@ public class BeanFacturacion implements Serializable
 
     public void setListaSucursales(ArrayList<Sucursal> listaSucursales) {
         this.listaSucursales = listaSucursales;
+    }
+
+    public ArrayList<FacturaPDFDomain> getModelo() {
+        return modelo;
+    }
+
+    public void setModelo(ArrayList<FacturaPDFDomain> modelo) {
+        this.modelo = modelo;
+    }
+
+    public FacturaPDFDomain getData() {
+        return data;
+    }
+
+    public void setData(FacturaPDFDomain data) {
+        this.data = data;
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
+    }
+
+    public int getTipoFactura() {
+        return tipoFactura;
+    }
+
+    public void setTipoFactura(int tipoFactura) {
+        this.tipoFactura = tipoFactura;
+    }
+
+    public BigDecimal getFolioVentaG() {
+        return folioVentaG;
+    }
+
+    public void setFolioVentaG(BigDecimal folioVentaG) {
+        this.folioVentaG = folioVentaG;
+    }
+
+    public VentaMayoreo getVentaMayoreo() {
+        return ventaMayoreo;
+    }
+
+    public void setVentaMayoreo(VentaMayoreo ventaMayoreo) {
+        this.ventaMayoreo = ventaMayoreo;
     }
     
     

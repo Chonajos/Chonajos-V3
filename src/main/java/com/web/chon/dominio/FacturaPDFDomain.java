@@ -6,6 +6,7 @@
 package com.web.chon.dominio;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 /**
@@ -14,6 +15,23 @@ import java.util.ArrayList;
  */
 public class FacturaPDFDomain implements Serializable {
     private static final long serialVersionUID = 1L;
+    
+    private BigDecimal idFacturaPk;
+    private BigDecimal numeroFactura;
+    private BigDecimal idUsuarioFk;
+    private BigDecimal idClienteFk;
+    private BigDecimal idLlaveFk;
+    private BigDecimal idTipoLlaveFk;
+    
+    private String nombreEstatus;
+    private BigDecimal idStatusFk;
+    private String comentarios;
+    private String nombreSucursal;
+    private BigDecimal idSucursalFk;
+    private String nombreCliente;
+    
+    
+    //========Datos para PDF======//
     //detail 1
     private String razonSocialEmpresa;
     private String rfcEmisor;
@@ -66,6 +84,35 @@ public class FacturaPDFDomain implements Serializable {
     private String folioFiscal;
     private String nSerieCertificadoSAT;
     private String fechaCertificacion;
+    
+    //========Datos para PDF======//
+
+    public BigDecimal getIdLlaveFk() {
+        return idLlaveFk;
+    }
+
+    public void setIdLlaveFk(BigDecimal idLlaveFk) {
+        this.idLlaveFk = idLlaveFk;
+    }
+
+    public BigDecimal getIdTipoLlaveFk() {
+        return idTipoLlaveFk;
+    }
+
+    public void setIdTipoLlaveFk(BigDecimal idTipoLlaveFk) {
+        this.idTipoLlaveFk = idTipoLlaveFk;
+    }
+
+    
+    
+    
+    public BigDecimal getIdClienteFk() {
+        return idClienteFk;
+    }
+
+    public void setIdClienteFk(BigDecimal idClienteFk) {
+        this.idClienteFk = idClienteFk;
+    }
 
    
 
@@ -368,6 +415,79 @@ public class FacturaPDFDomain implements Serializable {
     public void setFechaCertificacion(String fechaCertificacion) {
         this.fechaCertificacion = fechaCertificacion;
     }
+
+    public String getNombreEstatus() {
+        return nombreEstatus;
+    }
+
+    public void setNombreEstatus(String nombreEstatus) {
+        this.nombreEstatus = nombreEstatus;
+    }
+
+    public BigDecimal getIdStatusFk() {
+        return idStatusFk;
+    }
+
+    public void setIdStatusFk(BigDecimal idStatusFk) {
+        this.idStatusFk = idStatusFk;
+    }
+
+    public String getComentarios() {
+        return comentarios;
+    }
+
+    public void setComentarios(String comentarios) {
+        this.comentarios = comentarios;
+    }
+
+    public String getNombreSucursal() {
+        return nombreSucursal;
+    }
+
+    public void setNombreSucursal(String nombreSucursal) {
+        this.nombreSucursal = nombreSucursal;
+    }
+
+    public BigDecimal getIdSucursalFk() {
+        return idSucursalFk;
+    }
+
+    public void setIdSucursalFk(BigDecimal idSucursalFk) {
+        this.idSucursalFk = idSucursalFk;
+    }
+
+    public String getNombreCliente() {
+        return nombreCliente;
+    }
+
+    public void setNombreCliente(String nombreCliente) {
+        this.nombreCliente = nombreCliente;
+    }
+
+    public BigDecimal getIdFacturaPk() {
+        return idFacturaPk;
+    }
+
+    public void setIdFacturaPk(BigDecimal idFacturaPk) {
+        this.idFacturaPk = idFacturaPk;
+    }
+
+    public BigDecimal getNumeroFactura() {
+        return numeroFactura;
+    }
+
+    public void setNumeroFactura(BigDecimal numeroFactura) {
+        this.numeroFactura = numeroFactura;
+    }
+
+    public BigDecimal getIdUsuarioFk() {
+        return idUsuarioFk;
+    }
+
+    public void setIdUsuarioFk(BigDecimal idUsuarioFk) {
+        this.idUsuarioFk = idUsuarioFk;
+    }
+    
     
     
     

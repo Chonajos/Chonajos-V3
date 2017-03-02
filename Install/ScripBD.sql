@@ -748,7 +748,7 @@ INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Historial de Cortes', 0,'90.13','/views/historialCortes.xhtml');
 
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Historial de Cortes', 0,'90.13','/views/historialCortes.xhtml');
-INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Historial de Cortes', 0,'90.13','/views/historialCortes.xhtml');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Facturación', 0,'90.15','/views/facturacion.xhtml');
 
 
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Corte Caja', 0,'90.5','/views/corteCaja.xhtml');
@@ -1685,3 +1685,30 @@ MINVALUE 0;
 --Ejecutar estos dos scripts para cambio
 update menu set URL_SISTEMA = '/views/abonarCredito.xhtml' where ID_MENU= 190;
 update menu set URL_SISTEMA = '/views/abonarCredito.xhtml' where ID_MENU= 313;
+
+
+
+CREATE TABLE FACTURAS(
+ID_FACTURA_PK NUMBER NOT NULL,
+ID_NUMERO_FACTURA NUMBER,
+ID_FECHA_TIMBRADO DATE,
+ID_CLIENTE_FK NUMBER,
+ID_SUCURSAL_FK NUMBER,
+ID_LLAVE_VENTA_PK NUMBER,
+ID_TIPO_LLAVE_FK NUMBER,
+OBSERVACIONES VARCHAR(150),
+FECHA_EMISION DATE,
+FICHERO BLOB,
+ID_USUARIO_FK NUMBER,
+
+CONSTRAINT C_CF_ID_FACTURA_PK PRIMARY KEY (ID_FACTURA_PK),
+CONSTRAINT C_CF_ID_CLIENTE_FK FOREIGN KEY (ID_CLIENTE_FK) REFERENCES CLIENTE(ID_CLIENTE),
+CONSTRAINT C_CF_ID_SUCURSAL_FK FOREIGN KEY (ID_SUCURSAL_FK) REFERENCES SUCURSAL(ID_SUCURSAL_PK),
+CONSTRAINT C_CF_ID_USUARIO_FK FOREIGN KEY (ID_USUARIO_FK) REFERENCES USUARIO(ID_USUARIO_PK)
+);
+
+CREATE SEQUENCE S_FACTURAS
+INCREMENT BY 1
+START WITH 1
+MINVALUE 0;
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Facturación', 0,'90.14','/views/facturacion.xhtml');
