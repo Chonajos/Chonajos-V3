@@ -1069,7 +1069,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     public void setData(EntradaMercancia data) {
         this.data = data;
     }
-
+        
     public ArrayList<EntradaMercancia> getLstEntradaMercancia() {
         return lstEntradaMercancia;
     }

@@ -5,6 +5,11 @@
  */
 package com.web.chon.bean;
 
+import advanswsdl_pkg.AdvanswsdlLocator;
+import advanswsdl_pkg.RespuestaCancelacion;
+import advanswsdl_pkg.RespuestaTimbre;
+import advanswsdl_pkg.RespuestaTimbre2;
+
 import com.web.chon.dominio.AbonoCredito;
 import com.web.chon.dominio.Cliente;
 import com.web.chon.dominio.Credito;
@@ -46,18 +51,33 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
+import mx.bigdata.sat.cfdi.schema.Comprobante;
+import mx.bigdata.sat.cfdi.schema.ObjectFactory;
+import mx.bigdata.sat.cfdi.schema.TUbicacion;
+import mx.bigdata.sat.cfdi.schema.TUbicacionFiscal;
+import mx.bigdata.sat.cfdi.schema.Comprobante.Addenda;
+import mx.bigdata.sat.cfdi.schema.Comprobante.Conceptos;
+import mx.bigdata.sat.cfdi.schema.Comprobante.Emisor;
+import mx.bigdata.sat.cfdi.schema.Comprobante.Impuestos;
+import mx.bigdata.sat.cfdi.schema.Comprobante.Receptor;
+import mx.bigdata.sat.cfdi.schema.Comprobante.Conceptos.Concepto;
+import mx.bigdata.sat.cfdi.schema.Comprobante.Impuestos.Traslados;
+import mx.bigdata.sat.cfdi.schema.Comprobante.Impuestos.Traslados.Traslado;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRExporter;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
+import org.apache.xmlbeans.XmlOptions;
 import org.primefaces.context.RequestContext;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -65,12 +85,38 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.security.PrivateKey;
+import java.security.cert.X509Certificate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import mx.bigdata.sat.cfdi.CFDv3;
+import mx.bigdata.sat.security.KeyLoaderEnumeration;
+import mx.bigdata.sat.security.factory.KeyLoaderFactory;
+
+import org.apache.axis.client.Service;
+import org.apache.axis.client.Call;
+import javax.xml.namespace.QName;
+import javax.xml.rpc.ParameterMode;
+import javax.xml.rpc.ServiceException;
+import java.rmi.RemoteException;
+import org.apache.axis.AxisFault;
+import org.apache.commons.io.IOUtils;
+
 /**
  *
  * @author freddy
  */
 @Component
-@Scope("session")
+@Scope("view")
 public class BeanRelOperMayoreo implements Serializable, BeanSimple {
 
     private static final long serialVersionUID = 1L;
@@ -152,8 +198,17 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
     private StreamedContent variable;
     private Date date;
 
+    private static String API_KEY = "1e550c937ba7cf3f65a6136ae86add2b";
+    private String CONTRASENIA_SELLO_DIGITAL = "12345678a";
+    private static String strComprobante;
+
     @PostConstruct
     public void init() {
+
+        //PARA FACTURACION
+//        timbrar();
+//        cancelar();
+
         data = new VentaMayoreo();
         usuario = context.getUsuarioAutenticado();
         filtro = 1;
@@ -245,23 +300,22 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
 
     }
 
-public StreamedContent getProductImage() throws IOException, SQLException {
+    public StreamedContent getProductImage() throws IOException, SQLException {
         FacesContext context = FacesContext.getCurrentInstance();
         String imageType = "image/jpg";
-        if(data.getFichero()==null)
-        {
-            JsfUtil.addErrorMessageClean("Esta operación no cuenta con comprobante");
+        if (data.getFichero() == null) {
+            JsfUtil.addErrorMessageClean("Esta operaciÃ³n no cuenta con comprobante");
             return variable;
-        }
-        else{
+        } else {
             variable = null;
-            System.out.println("Data:" +data.toString());
-             byte[] image = data.getFichero();
-             variable = new DefaultStreamedContent(new ByteArrayInputStream(image), imageType, data.getIdVentaMayoreoPk().toString());
+            System.out.println("Data:" + data.toString());
+            byte[] image = data.getFichero();
+            variable = new DefaultStreamedContent(new ByteArrayInputStream(image), imageType, data.getIdVentaMayoreoPk().toString());
             return variable;
         }
-           
+
     }
+
     public void getTotalVentaByInterval() {
         totalVenta = new BigDecimal(0);
         totalUtilidad = new BigDecimal(0);
@@ -286,7 +340,7 @@ public StreamedContent getProductImage() throws IOException, SQLException {
         AbonoCredito ac = new AbonoCredito();
         ac = ifaceAbonoCredito.getByIdVentaMayoreoFk(data.getIdVentaMayoreoPk());
         if (ac != null && ac.getIdAbonoCreditoPk() != null) {
-            JsfUtil.addErrorMessageClean("Este crédito ya cuenta con abonos, no se puede cancelar");
+            JsfUtil.addErrorMessageClean("Este crÃ©dito ya cuenta con abonos, no se puede cancelar");
 
         } else if (data.getIdStatusFk().intValue() != 4 && data.getIdStatusFk().intValue() != 2 && data.getIdStatusFk().intValue() != 3) {
             boolean banderaError = false;
@@ -340,7 +394,7 @@ public StreamedContent getProductImage() throws IOException, SQLException {
                 }
 
             } else {
-                JsfUtil.addErrorMessageClean("Ocurrió un error al intentar cancelar la venta.");
+                JsfUtil.addErrorMessageClean("OcurriÃ³ un error al intentar cancelar la venta.");
             }
         } else {
             JsfUtil.addErrorMessageClean("No puedes volver a cancelar la venta, o cancelar una venta ya pagada");
@@ -434,11 +488,11 @@ public StreamedContent getProductImage() throws IOException, SQLException {
                 break;
             default:
                 paramReport.put("estado", "ERROR TICKET");
-                JsfUtil.addErrorMessageClean("Ocurrió un error");
+                JsfUtil.addErrorMessageClean("OcurriÃ³ un error");
         }
         paramReport.put("labelFecha", "Fecha de Venta:");
         paramReport.put("labelFolio", "Folio de Venta:");
-        paramReport.put("telefonos", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:" + usuario.getTelefonoSucursal());
+        paramReport.put("telefonos", "Para cualquier duda o comentario estamos a sus Ã³rdenes al telÃ©fono:" + usuario.getTelefonoSucursal());
         paramReport.put("labelSucursal", usuario.getNombreSucursal());
 
         //Se agregan los campos que se utiliza en el ticket de credito
@@ -871,6 +925,83 @@ public StreamedContent getProductImage() throws IOException, SQLException {
 
     public void setLstCliente(ArrayList<Cliente> lstCliente) {
         this.lstCliente = lstCliente;
+    }
+
+    public void timbrar() {
+        try {
+            RespuestaTimbre2 respuesta = new RespuestaTimbre2();
+            AdvanswsdlLocator service = new AdvanswsdlLocator();
+
+            URL url = new URL("file:///C:/Users/Juan/AAA010101AAA.xml");
+            InputStreamReader in = new InputStreamReader(url.openStream());
+
+            String xmlCfdi = IOUtils.toString(in);
+
+            advanswsdl_pkg.AdvanswsdlPortType port = service.getadvanswsdlPort();
+            respuesta = port.timbrar2(API_KEY, xmlCfdi);
+
+            System.out.println("url " + url.openStream());
+            System.out.println("codes:  " + respuesta.getCode());
+            System.out.println("mensajes: " + respuesta.getMessage());
+            System.out.println("subcodes:  " + respuesta.getSubCode());
+            System.out.println("CFDI:  " + respuesta.getCFDI());
+            System.out.println("timbres:  " + respuesta.getCFDI());
+
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(BeanRelOperMayoreo.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(BeanRelOperMayoreo.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(BeanRelOperMayoreo.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void cancelar() {
+        try {
+            String UUID = "FFFFFFFF-3861-A0BE-2044-76E36DDD09E0";
+            Path pathKey = Paths.get("c:/Users/Juan/AAA010101AAAKEY.pem");
+            byte[] keyPem = Files.readAllBytes(pathKey);
+            String strKeyPem = new String(keyPem, Charset.defaultCharset());
+            System.out.println("keypem " + strKeyPem);
+
+            Path pathCert = Paths.get("c:/Users/Juan/AAA010101AAACER.pem");
+            byte[] cerPem = Files.readAllBytes(pathCert);
+            String strCerPem = new String(cerPem, Charset.defaultCharset());
+            System.out.println("CERpem " + strCerPem);
+
+            RespuestaCancelacion respuesta = new RespuestaCancelacion();
+            AdvanswsdlLocator service = new AdvanswsdlLocator();
+
+            System.out.println("se acrgaron variable");
+
+            advanswsdl_pkg.AdvanswsdlPortType port = service.getadvanswsdlPort();
+            System.out.println("Antes de Cancelar");
+//            respuesta = port.cancelar(API_KEY, "AAA010101AAA", UUID, strKeyPem, strCerPem);
+            System.out.println("despues de cancelar");
+            System.out.println("codes:  " + respuesta.getCode());
+            System.out.println("mensajes: " + respuesta.getMessage());
+            System.out.println("subcodes:  " + respuesta.getSubCode());
+            System.out.println("Acuse:  " + respuesta.getAcuse());
+
+        } catch (IOException ex) {
+            Logger.getLogger(BeanRelOperMayoreo.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(BeanRelOperMayoreo.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void imprimir() {
+        String RutaDelXml = "";
+        File f = new File(RutaDelXml);
+        XmlOptions xmlOptions = new XmlOptions();
+
+        xmlOptions.setCharacterEncoding("UTF-8");
+        xmlOptions.setSavePrettyPrint();
+        xmlOptions.setSavePrettyPrintIndent(4);
+
+//        comprobante.xmlText(xmlOptions);
+//
+//        comprobante.save(f);
     }
 
 }
