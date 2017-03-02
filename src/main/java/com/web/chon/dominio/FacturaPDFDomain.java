@@ -17,11 +17,13 @@ public class FacturaPDFDomain implements Serializable {
     private static final long serialVersionUID = 1L;
     
     private BigDecimal idFacturaPk;
-    private BigDecimal numeroFactura;
+    private String numeroFactura;
     private BigDecimal idUsuarioFk;
     private BigDecimal idClienteFk;
     private BigDecimal idLlaveFk;
     private BigDecimal idTipoLlaveFk;
+    
+    private byte[] fichero;
     
     private String nombreEstatus;
     private BigDecimal idStatusFk;
@@ -472,13 +474,15 @@ public class FacturaPDFDomain implements Serializable {
         this.idFacturaPk = idFacturaPk;
     }
 
-    public BigDecimal getNumeroFactura() {
+    public String getNumeroFactura() {
         return numeroFactura;
     }
 
-    public void setNumeroFactura(BigDecimal numeroFactura) {
+    public void setNumeroFactura(String numeroFactura) {
         this.numeroFactura = numeroFactura;
     }
+
+    
 
     public BigDecimal getIdUsuarioFk() {
         return idUsuarioFk;
@@ -486,6 +490,14 @@ public class FacturaPDFDomain implements Serializable {
 
     public void setIdUsuarioFk(BigDecimal idUsuarioFk) {
         this.idUsuarioFk = idUsuarioFk;
+    }
+
+    public byte[] getFichero() {
+        return fichero;
+    }
+
+    public void setFichero(byte[] fichero) {
+        this.fichero = fichero;
     }
     
     
