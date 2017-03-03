@@ -52,6 +52,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
@@ -302,8 +303,11 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     }
 
     public void imprimirEntrada() {
+        Random random = new Random();
+        //Se genera un numero aleatorio para que no traiga el mismo reporte por la cache
+        int numberRandom = random.nextInt(999);
         setParameterTicket(data);
-        generateReport(data.getIdCarroSucursal().intValue());
+        generateReport(data.getIdCarroSucursal().intValue()+numberRandom);
         RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
 
     }
@@ -638,17 +642,12 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         if (bandera) {
 
             JsfUtil.addErrorMessageClean("Al menos un producto del carro tiene ventas, no se puede eliminar");
+        } else if (ifaceEntradaMercancia.deleteEntradaMercancia(data) == 1) {
+            JsfUtil.addSuccessMessageClean("Se ha cancelado la entrada de mercancia correctamente");
+            buscar();
         } else {
-
-            if (ifaceEntradaMercancia.deleteEntradaMercancia(data) == 1) {
-                JsfUtil.addSuccessMessageClean("Se ha cancelado la entrada de mercancia correctamente");
-                buscar();
-            } else {
-                JsfUtil.addErrorMessageClean("Ocurrio un problema al cancelar la entrada de mercancia");
-            }
-
+            JsfUtil.addErrorMessageClean("Ocurrio un problema al cancelar la entrada de mercancia");
         }
-        
 
     }
 
@@ -663,9 +662,9 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         kilosAnterior = epAnterio.getKilosTotalesProducto();
 
         if (dataProductEdit.getIdSubProductoFK().equals(dataProductEdit.getSubProducto().getIdSubproductoPk())) {
-        
+
         } else {
-        
+
             dataProductEdit.setIdSubProductoFK(dataProductEdit.getSubProducto().getIdSubproductoPk());
             cambioProducto = true;
         }
@@ -856,7 +855,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
                     System.out.println("urlYoutube " + urlYoutube);
 
                     if (ifaceEntradaMercanciaProducto.updateVideo(item) > 0) {
-                        JsfUtil.addSuccessMessage("Video Guardado Correctamente."+urlYoutube);
+                        JsfUtil.addSuccessMessage("Video Guardado Correctamente." + urlYoutube);
                         buscar();
                     } else {
                         JsfUtil.addErrorMessage("No se pudo Guardar el Video.");
@@ -1069,7 +1068,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     public void setData(EntradaMercancia data) {
         this.data = data;
     }
-        
+
     public ArrayList<EntradaMercancia> getLstEntradaMercancia() {
         return lstEntradaMercancia;
     }
