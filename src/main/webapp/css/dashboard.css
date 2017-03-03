@@ -228,6 +228,11 @@ select{
     font-size: 0.8em !important;
 }
 
+/*Se acomoda el tamaño del boton del selecone menu*/
+.ui-selectonemenu > div {
+    box-sizing: content-box !important;
+}
+
 .selects .ui-selectonemenu-list-item {
     width: 99px !important;
     font-size: 11px !important;

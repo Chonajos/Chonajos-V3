@@ -84,10 +84,10 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
     @Override
     public List<Object[]> getEntradaProductoByIntervalDate(Date fechaInicio, Date fechaFin, BigDecimal idSucursal, BigDecimal idProvedor, BigDecimal carro) {
         int cont = 0;
-        StringBuffer query = new StringBuffer("SELECT EMA.ID_EM_PK,EMA.ID_PROVEDOR_FK,EMA.MOVIMIENTO,EMA.FECHA,EMA.REMISION,EMA.ID_SUCURSAL_FK,EMA.IDENTIFICADOR, "
+        StringBuffer query = new StringBuffer("SELECT * FROM(SELECT EMA.ID_EM_PK,EMA.ID_PROVEDOR_FK,EMA.MOVIMIENTO,EMA.FECHA,EMA.REMISION,EMA.ID_SUCURSAL_FK,EMA.IDENTIFICADOR, "
                 + "EMA.ID_STATUS_FK,EMA.KILOSTOTALES,EMA.KILOSTOTALESPROVEDOR,EMA.COMENTARIOS,EMA.FECHAREMISION,PRO. "
                 + "NOMBRE_PROVEDOR ||' '|| PRO.A_PATERNO_PROVE ||' '|| PRO.A_MATERNO_PROVE AS NOMBRE_PROVEDOR, "
-                + "SUC.NOMBRE_SUCURSAL,EMA.CARROSUCURSAL,EMA.COMENTARIOS,EMA.CANTIDADTOTAL,EMA.CANTIDADTOTALPROVEDOR, "
+                + "SUC.NOMBRE_SUCURSAL,EMA.CARROSUCURSAL,EMA.CANTIDADTOTAL,EMA.CANTIDADTOTALPROVEDOR, "
                 + "EMA.FECHA_PAGO,usu.NOMBRE_USUARIO ||' '|| usu.APATERNO_USUARIO ||' '|| usu.AMATERNO_USUARIO as recibidor, "
                 + "EMA.id_usuario_fk,EMA.STATUS_CARRO "
                 + "FROM ENTRADAMERCANCIA EMA "
@@ -127,7 +127,7 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
             query.append(" EMA.ID_PROVEDOR_FK =" + idProvedor);
         }
 
-        query.append(" ORDER BY EMA.ID_EM_PK");
+        query.append(" ORDER BY EMA.ID_EM_PK) WHERE ROWNUM < 11 ORDER BY ID_EM_PK");
 
         return em.createNativeQuery(query.toString()).getResultList();
 
