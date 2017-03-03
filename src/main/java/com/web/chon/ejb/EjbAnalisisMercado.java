@@ -195,4 +195,20 @@ public class EjbAnalisisMercado implements NegocioAnalisisMercado {
         }
     }
 
+    @Override
+    public List<Object[]> getEntradaProductoByMonth(String fechaInicio, String fechaFin, String idProducto) {
+         try {
+            Query query = em.createNativeQuery("SELECT NVL(PRECIO_VENTA,0), NVL(TONELADAS,0),NVL(REMANENTE,0) FROM ANALISIS_MERCADO WHERE TO_DATE(TO_CHAR(FECHA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN ? AND ? AND ID_SUBPRODUCTO = ? AND REMANENTE IS NOT NULL ORDER  BY FECHA ASC");
+
+            query.setParameter(1, fechaInicio);
+            query.setParameter(2, fechaFin);
+            query.setParameter(3, idProducto.trim());
+
+            return query.getResultList();
+        } catch (Exception ex) {
+            Logger.getLogger(EjbAnalisisMercado.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
 }
