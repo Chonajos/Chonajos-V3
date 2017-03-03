@@ -4,16 +4,20 @@
  * and open the template in the editor.
  */
 package com.web.chon.bean;
+
 import com.web.chon.dominio.Cliente;
 import com.web.chon.dominio.FacturaPDFDomain;
 import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.dominio.VentaMayoreo;
 import com.web.chon.security.service.PlataformaSecurityContext;
+import com.web.chon.service.IfaceBuscaVenta;
 import com.web.chon.service.IfaceCatCliente;
 import com.web.chon.service.IfaceCatSucursales;
+import com.web.chon.service.IfaceVentaMayoreo;
 import com.web.chon.util.Constantes;
 import com.web.chon.util.JasperReportUtil;
+import com.web.chon.util.JsfUtil;
 import com.web.chon.util.NumeroALetra;
 import com.web.chon.util.TiempoUtil;
 import com.web.chon.util.UtilUpload;
@@ -45,6 +49,8 @@ import org.springframework.stereotype.Component;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
+import mx.bigdata.sat.cfdi.v32.schema.Comprobante;
+import mx.bigdata.sat.cfdi.v32.schema.ObjectFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
@@ -56,9 +62,8 @@ import org.w3c.dom.Element;
  */
 @Component
 @Scope("view")
-public class BeanFacturacion implements Serializable 
-{
-    
+public class BeanFacturacion implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Autowired
     private PlataformaSecurityContext context;
@@ -66,6 +71,10 @@ public class BeanFacturacion implements Serializable
     private IfaceCatCliente ifaceCatCliente;
     @Autowired
     private IfaceCatSucursales ifaceCatSucursales;
+    @Autowired
+    private IfaceVentaMayoreo ifaceVentaMayoreo;
+    @Autowired
+    private IfaceBuscaVenta ifaceBuscaVenta;
 
     //--Variables Generales Bean--//
     private String title;
@@ -88,76 +97,156 @@ public class BeanFacturacion implements Serializable
     private FacturaPDFDomain data;
     private BigDecimal total;
     private VentaMayoreo ventaMayoreo;
-    
+    private boolean ventaMenudeo;
+    private boolean statusButtonFacturar;
+
     //--Variables Para Generar PDF--//
     private String rutaPDF;
     private String number;
     private String pathFileJasper = "";
     private ByteArrayOutputStream outputStream;
     private Map paramReport = new HashMap();
-    
-    
-    
-    
+
+    ObjectFactory of;
+    Comprobante comp;
+
     @PostConstruct
     public void init() {
+        of = new ObjectFactory();
+        comp = of.createComprobante();
+
         usuario = context.getUsuarioAutenticado();
         setTitle("Facturación Electrónica");
         setViewEstate("init");
         lstCliente = new ArrayList<Cliente>();
         listaSucursales = ifaceCatSucursales.getSucursales();
         data = new FacturaPDFDomain();
-        ventaMayoreo  = new VentaMayoreo();
-        
+        ventaMayoreo = new VentaMayoreo();
+
+        //====INICIALIZACIÓN DE LOS DATOS DE COMPROBANTE DIGITAL===//
+        comp.setVersion("3.2");
+        comp.setSerie("A");
+        comp.setFolio("11639");
+        comp.setFecha(context.getFechaSistema());
+        cliente = new Cliente();
+
     }
-    public void descargarXML()
-    {
-        
+
+    public void buscarDatosEmisor() {
+        if (ventaMayoreo != null && ventaMayoreo.getIdClienteFk()!= null) {
+            
+            cliente = ifaceCatCliente.getClienteById(ventaMayoreo.getIdClienteFk().intValue());
+            if(cliente !=null && cliente.getId_cliente()!=null)
+            {
+                data.setNombreEmisor(cliente.getNombreCompleto());
+                data.setRfcEmisor(cliente.getRfcFiscal());
+                data.setCalleEmisor(cliente.getCalleFiscal());
+                data.setNoExteriorEmisor(cliente.getNum_ext_fiscal()  == null ? null : cliente.getNum_ext_fiscal().toString());
+                data.setNoInteriorEmisor(cliente.getNum_int_fiscal()== null ? null : cliente.getNum_int_fiscal().toString());
+                data.setColoniaEmisor(cliente.getColoniaFiscal());
+                data.setMunicipioEmisor(cliente.getNombreDeleMunFiscal());
+                data.setEstadoEmisor(cliente.getNombreEstadoFiscal());
+                data.setCodigoPostalEmisor(cliente.getCodigoPostalFiscal());
+                
+            }
+
+        }
+
     }
-    public void descargarPDF()
-    {
-        
+
+    public void buscarFolioVenta() {
+
+        ventaMayoreo = ifaceVentaMayoreo.getVentaMayoreoByFolioidSucursalFk(folioVentaG, new BigDecimal(usuario.getSucId()));
+
+        ventaMenudeo = false;
+        //SE HACE LA BUSQUEDA A MENUDEO
+        if (ventaMayoreo == null || ventaMayoreo.getIdVentaMayoreoPk() == null) {
+            ventaMayoreo = ifaceBuscaVenta.getVentaByfolioAndIdSuc(folioVentaG, usuario.getSucId());
+            ventaMenudeo = true;
+
+        }
+
+        if (ventaMayoreo == null || ventaMayoreo.getIdVentaMayoreoPk() == null) {
+            JsfUtil.addErrorMessageClean("No se encontró ese folio, podría ser de otra sucursal.");
+        } else if (ventaMayoreo.getIdtipoVentaFk().intValue() == 1) {
+            statusButtonFacturar = true;
+
+            switch (ventaMayoreo.getIdStatusFk().intValue()) {
+                case 1:
+                    statusButtonFacturar = true;
+                    JsfUtil.addErrorMessageClean("No puedes facturar la venta, no ha sido pagada");
+                    break;
+                case 2:
+                    statusButtonFacturar = false;
+
+                    break;
+                case 3:
+                    statusButtonFacturar = false;
+                    break;
+                case 4:
+                    statusButtonFacturar = true;
+                    JsfUtil.addErrorMessageClean("No puedes facturar una venta cancelada");
+                    break;
+                default:
+                    statusButtonFacturar = true;
+                    JsfUtil.addErrorMessageClean("Ha ocurrido un error, contactar al administrador.");
+                    break;
+            }
+        } else {
+            JsfUtil.addWarnMessageClean("No puedes cobrar una venta de crédito, ir a la sección abonar crédito, subir imagen");
+            statusButtonFacturar = true;
+
+        }
+        buscarDatosEmisor();
     }
-    public void cancelarFactura()
-    {
-        
+
+    public void descargarXML() {
+
     }
-    public void enviarFactura()
-    {
-        
+
+    public void descargarPDF() {
+
     }
-    public void buscarFacturas()
-    {
-        
+
+    public void cancelarFactura() {
+
     }
-    public void changeViewGenerarFactura()
-    {
-        
+
+    public void enviarFactura() {
+
+    }
+
+    public void buscarFacturas() {
+
+    }
+
+    public void changeViewGenerarFactura() {
+
         setViewEstate("generate");
+        setTitle("Generar Factura");
     }
-    public void emitirFactura()
-    {
-        
+
+    public void emitirFactura() {
+
     }
-    public void generarFactura()
-    {
+
+    public void generarFactura() {
         /* Aqui va todo el codigo de Juan para generar la factura
         hasta la inserción en la base de datos.
-        */
+         */
     }
-    
-    private void setParameters()
-    {
+
+    private void setParameters() {
         //paramReport.put("razonSocialEmpresa",);
     }
+
     public ArrayList<Cliente> autoCompleteCliente(String nombreCliente) {
         lstCliente = ifaceCatCliente.getClienteByNombreCompleto(nombreCliente.toUpperCase());
         return lstCliente;
 
     }
-    
-    public void verificarCombo() 
-    {
+
+    public void verificarCombo() {
         if (filtro == -1) {
             //se habilitan los calendarios.
             //fechaFiltroInicio = null;
@@ -168,29 +257,29 @@ public class BeanFacturacion implements Serializable
                 case 1:
                     fechaFiltroInicio = new Date();
                     fechaFiltroFin = new Date();
-                   
+
                     break;
                 case 2:
                     fechaFiltroInicio = TiempoUtil.getDayOneOfMonth(new Date());
                     fechaFiltroFin = TiempoUtil.getDayEndOfMonth(new Date());
-                    
+
                     break;
                 case 3:
                     fechaFiltroInicio = TiempoUtil.getDayOneYear(new Date());
                     fechaFiltroFin = TiempoUtil.getDayEndYear(new Date());
-                   
+
                     break;
                 default:
                     fechaFiltroFin = null;
                     fechaFiltroFin = null;
-                    
+
                     break;
             }
             enableCalendar = true;
         }
     }
-    private void getTimbrado() throws ParserConfigurationException
-    {
+
+    private void getTimbrado() throws ParserConfigurationException {
 //        DocumentBuilderFactory factory =DocumentBuilderFactory.newInstance();
 //        DocumentBuilder builder = factory.newDocumentBuilder();
 //        
@@ -239,7 +328,7 @@ public class BeanFacturacion implements Serializable
 //         e.printStackTrace();
 //      }
     }
- //   private void setParameterTicket(Venta v) {
+    //   private void setParameterTicket(Venta v) {
 
 //        NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
 //        DecimalFormat df = new DecimalFormat("###.##");
@@ -311,8 +400,7 @@ public class BeanFacturacion implements Serializable
 //            }
 //            paramReport.put("calendarioPago", calendario);
 //        }
-
-  //  }
+    //  }
     public void generateReport() {
 //        JRExporter exporter = null;
 //        try {
@@ -540,9 +628,5 @@ public class BeanFacturacion implements Serializable
     public void setVentaMayoreo(VentaMayoreo ventaMayoreo) {
         this.ventaMayoreo = ventaMayoreo;
     }
-    
-    
-    
-    
-    
+
 }

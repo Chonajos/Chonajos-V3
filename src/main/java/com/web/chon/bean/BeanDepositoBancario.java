@@ -113,17 +113,21 @@ public class BeanDepositoBancario implements Serializable {
                 System.out.println("CDI: " + cdi.toString());
                 if (cdi.getIdComprobantesDigitalesPk() == null) {
                     cd.setIdComprobantesDigitalesPk(new BigDecimal(ifaceComprobantes.getNextVal()));
-                    
-                    if (ifaceComprobantes.insertaComprobante(cd) == 1) {
-                        if (ifaceComprobantes.insertarImagen(cd.getIdComprobantesDigitalesPk(), cd.getFichero()) == 1) {
 
-                            JsfUtil.addSuccessMessageClean("Depósito Registrado Correctamente");
-                            monto = null;
-                            comentarios = null;
-                            idCuentaDestinoBean = null;
-                        } else {
-                            JsfUtil.addErrorMessageClean("1.- Ha ocurrido un error al subir la imagen");
+                    if (ifaceComprobantes.insertaComprobante(cd) == 1) {
+                        if (cd.getFichero() != null) {
+                            if (ifaceComprobantes.insertarImagen(cd.getIdComprobantesDigitalesPk(), cd.getFichero()) == 1) {
+                                System.out.println("Se inserto la imagen correctamente");
+                            } else {
+                                JsfUtil.addErrorMessageClean("1.- Ha ocurrido un error al subir la imagen");
+                            }
+
                         }
+                        monto = null;
+                        comentarios = null;
+                        idCuentaDestinoBean = null;
+                        JsfUtil.addSuccessMessageClean("Depósito Registrado Correctamente");
+
                     } else {
                         JsfUtil.addErrorMessageClean("2.- Ha ocurrido un error al subir la imagen");
                     }

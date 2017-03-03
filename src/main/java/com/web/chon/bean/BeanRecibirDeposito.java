@@ -120,6 +120,7 @@ public class BeanRecibirDeposito implements Serializable {
     }
 
     public void changeTable() {
+        buscar();
         if (idCombo != null) 
         {
             if (idCombo.intValue() == 1) {
@@ -132,6 +133,8 @@ public class BeanRecibirDeposito implements Serializable {
     }
 
     public void buscar() {
+        lstDespositosEntrantes.clear();
+        listaDepositosTransferencias.clear();
         lstDespositosEntrantes = ifaceOperacionesCaja.getDepositosEntrantes(idSucursalFK);
 
         listaDepositosTransferencias = ifacePagosBancarios.getPagosPendientes(idSucursalFK);

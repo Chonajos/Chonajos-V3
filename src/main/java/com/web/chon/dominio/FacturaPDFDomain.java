@@ -30,15 +30,29 @@ public class FacturaPDFDomain implements Serializable {
     private String comentarios;
     private String nombreSucursal;
     private BigDecimal idSucursalFk;
-    private String nombreCliente;
+    
+    
+    //Datos de Emisor:
+    private String nombreEmisor;
+    private String rfcEmisor;
+    private String calleEmisor;
+    private String noExteriorEmisor;
+    private String coloniaEmisor;
+    private String localidadEmisor;
+    private String municipioEmisor;
+    private String estadoEmisor;
+    private String paisEmisor;
+    private String codigoPostalEmisor;
+    private String domicilioFiscalEmisor;
+    private String noInteriorEmisor;
     
     
     //========Datos para PDF======//
     //detail 1
     private String razonSocialEmpresa;
-    private String rfcEmisor;
+   // private String rfcEmisor;
     private String domiciloFiscalEmisor;
-    private String coloniaEmisor;
+   // private String coloniaEmisor;
     private String ciudadEmisor;
     private String codigoPostalE;
     
@@ -51,11 +65,18 @@ public class FacturaPDFDomain implements Serializable {
     //detail 2
     //Datos de Cliente:
     private String rfcCliente;
-    private String domicilioFiscalCliente;
+    private String calleFiscalCliente;
     private String coloniaCliente;
+    private String domicilioFiscalCliente;
     private String ciudadCliente;
     private String codigoPostalCliente;
     private String telefonoCliente;
+    private String numeroExteriorCliente;
+    private String numeroInteriorCliente;
+    private String municipioCliente;
+    private String estadoCliente;
+    private String localidadCliente;
+    private String paisCliente;
     
     //detail 3
     private ArrayList<VentaProductoMayoreo> listaProductosMayoreo;
@@ -458,13 +479,7 @@ public class FacturaPDFDomain implements Serializable {
         this.idSucursalFk = idSucursalFk;
     }
 
-    public String getNombreCliente() {
-        return nombreCliente;
-    }
-
-    public void setNombreCliente(String nombreCliente) {
-        this.nombreCliente = nombreCliente;
-    }
+    
 
     public BigDecimal getIdFacturaPk() {
         return idFacturaPk;
@@ -498,6 +513,142 @@ public class FacturaPDFDomain implements Serializable {
 
     public void setFichero(byte[] fichero) {
         this.fichero = fichero;
+    }
+
+    public String getNombreEmisor() {
+        return nombreEmisor;
+    }
+
+    public void setNombreEmisor(String nombreEmisor) {
+        this.nombreEmisor = nombreEmisor;
+    }
+
+    public String getCalleEmisor() {
+        return calleEmisor;
+    }
+
+    public void setCalleEmisor(String calleEmisor) {
+        this.calleEmisor = calleEmisor;
+    }
+
+    public String getNoExteriorEmisor() {
+        return noExteriorEmisor;
+    }
+
+    public void setNoExteriorEmisor(String noExteriorEmisor) {
+        this.noExteriorEmisor = noExteriorEmisor;
+    }
+
+    public String getLocalidadEmisor() {
+        return localidadEmisor;
+    }
+
+    public void setLocalidadEmisor(String localidadEmisor) {
+        this.localidadEmisor = localidadEmisor;
+    }
+
+    public String getMunicipioEmisor() {
+        return municipioEmisor;
+    }
+
+    public void setMunicipioEmisor(String municipioEmisor) {
+        this.municipioEmisor = municipioEmisor;
+    }
+
+    public String getEstadoEmisor() {
+        return estadoEmisor;
+    }
+
+    public void setEstadoEmisor(String estadoEmisor) {
+        this.estadoEmisor = estadoEmisor;
+    }
+
+    public String getPaisEmisor() {
+        return paisEmisor;
+    }
+
+    public void setPaisEmisor(String paisEmisor) {
+        this.paisEmisor = paisEmisor;
+    }
+
+    public String getCodigoPostalEmisor() {
+        return codigoPostalEmisor;
+    }
+
+    public void setCodigoPostalEmisor(String codigoPostalEmisor) {
+        this.codigoPostalEmisor = codigoPostalEmisor;
+    }
+
+    public String getDomicilioFiscalEmisor() {
+        return domicilioFiscalEmisor;
+    }
+
+    public void setDomicilioFiscalEmisor(String domicilioFiscalEmisor) {
+        this.domicilioFiscalEmisor = domicilioFiscalEmisor;
+    }
+
+    public String getNoInteriorEmisor() {
+        return noInteriorEmisor;
+    }
+
+    public void setNoInteriorEmisor(String noInteriorEmisor) {
+        this.noInteriorEmisor = noInteriorEmisor;
+    }
+
+    public String getCalleFiscalCliente() {
+        return calleFiscalCliente;
+    }
+
+    public void setCalleFiscalCliente(String calleFiscalCliente) {
+        this.calleFiscalCliente = calleFiscalCliente;
+    }
+
+    public String getNumeroExteriorCliente() {
+        return numeroExteriorCliente;
+    }
+
+    public void setNumeroExteriorCliente(String numeroExteriorCliente) {
+        this.numeroExteriorCliente = numeroExteriorCliente;
+    }
+
+    public String getNumeroInteriorCliente() {
+        return numeroInteriorCliente;
+    }
+
+    public void setNumeroInteriorCliente(String numeroInteriorCliente) {
+        this.numeroInteriorCliente = numeroInteriorCliente;
+    }
+
+    public String getMunicipioCliente() {
+        return municipioCliente;
+    }
+
+    public void setMunicipioCliente(String municipioCliente) {
+        this.municipioCliente = municipioCliente;
+    }
+
+    public String getEstadoCliente() {
+        return estadoCliente;
+    }
+
+    public void setEstadoCliente(String estadoCliente) {
+        this.estadoCliente = estadoCliente;
+    }
+
+    public String getLocalidadCliente() {
+        return localidadCliente;
+    }
+
+    public void setLocalidadCliente(String localidadCliente) {
+        this.localidadCliente = localidadCliente;
+    }
+
+    public String getPaisCliente() {
+        return paisCliente;
+    }
+
+    public void setPaisCliente(String paisCliente) {
+        this.paisCliente = paisCliente;
     }
     
     

@@ -65,6 +65,7 @@ public final class CFDv32Factory {
         mx.bigdata.sat.cfdi.v32.schema.TUbicacionFiscal uf = of.createTUbicacionFiscal();
         uf.setCalle("AVENIDA TRABAJADORES SOCIALES EJE 5 ZONA V SECCION 5 NAVE 2");
         uf.setNoExterior("BODEGA Q 85");
+        
         uf.setColonia("CENTRAL DE ABASTO");
         uf.setLocalidad("MEXICO");
         uf.setMunicipio("IZTAPALAPA");
