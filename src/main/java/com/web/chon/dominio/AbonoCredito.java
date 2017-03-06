@@ -37,13 +37,13 @@ public class AbonoCredito extends ValueObject {
     private ArrayList<AbonoCredito> listaAbonitos;
     private BigDecimal numeroAbono;
     private String nombreSucursal;
+    private String nombreSucursalOrigenVenta;
 
     @Override
     public String toString() {
-        return "AbonoCredito{" + "idAbonoCreditoPk=" + idAbonoCreditoPk + ", idCreditoFk=" + idCreditoFk + ", montoAbono=" + montoAbono + ", fechaAbono=" + fechaAbono + ", idUsuarioFk=" + idUsuarioFk + ", idtipoAbonoFk=" + idtipoAbonoFk + ", estatusAbono=" + estatusAbono + ", numeroCheque=" + numeroCheque + ", librador=" + librador + ", fechaCobro=" + fechaCobro + ", banco=" + banco + ", factura=" + factura + ", referencia=" + referencia + ", concepto=" + concepto + ", fechaTransferencia=" + fechaTransferencia + ", datoACuenta=" + datoACuenta + ", idDocumentoPk=" + idDocumentoPk + ", nombreCliente=" + nombreCliente + ", nombreStatus=" + nombreStatus + ", idStatusDocumentoFk=" + idStatusDocumentoFk + ", idClienteFk=" + idClienteFk + ", folioElectronico=" + folioElectronico + '}';
+        return "AbonoCredito{" + "idAbonoCreditoPk=" + idAbonoCreditoPk + ", idCreditoFk=" + idCreditoFk + ", montoAbono=" + montoAbono + ", fechaAbono=" + fechaAbono + ", idUsuarioFk=" + idUsuarioFk + ", idtipoAbonoFk=" + idtipoAbonoFk + ", estatusAbono=" + estatusAbono + ", numeroCheque=" + numeroCheque + ", librador=" + librador + ", fechaCobro=" + fechaCobro + ", banco=" + banco + ", factura=" + factura + ", referencia=" + referencia + ", concepto=" + concepto + ", fechaTransferencia=" + fechaTransferencia + ", datoACuenta=" + datoACuenta + ", idDocumentoPk=" + idDocumentoPk + ", nombreCliente=" + nombreCliente + ", nombreStatus=" + nombreStatus + ", idStatusDocumentoFk=" + idStatusDocumentoFk + ", idClienteFk=" + idClienteFk + ", folioElectronico=" + folioElectronico + ", nombreAbono=" + nombreAbono + ", nombreCajero=" + nombreCajero + ", listaAbonitos=" + listaAbonitos + ", numeroAbono=" + numeroAbono + ", nombreSucursal=" + nombreSucursal + ", nombreSucursalOrigenVenta=" + nombreSucursalOrigenVenta + '}';
     }
 
-   
 
     @Override
     public void reset() {
@@ -297,9 +297,13 @@ public class AbonoCredito extends ValueObject {
     public void setNombreSucursal(String nombreSucursal) {
         this.nombreSucursal = nombreSucursal;
     }
-    
-    
-    
 
-    
+    public String getNombreSucursalOrigenVenta() {
+        return nombreSucursalOrigenVenta;
+    }
+
+    public void setNombreSucursalOrigenVenta(String nombreSucursalOrigenVenta) {
+        this.nombreSucursalOrigenVenta = nombreSucursalOrigenVenta;
+    }
+
 }

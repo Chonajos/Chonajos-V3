@@ -248,23 +248,27 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
     }
 
     @Override
-    public List<Object[]> getHistorialAbonos(BigDecimal idClienteFk, BigDecimal idCajeroFk, String fechaInicio, String fechaFin, BigDecimal idTipoPagoFk, BigDecimal idAbonoPk, BigDecimal idCreditoFk,BigDecimal idSucursalFk,BigDecimal idCajaFk) {
-        StringBuffer cadena = new StringBuffer("select ab.ID_ABONO_CREDITO_PK as folio,(CLI.NOMBRE||' '||CLI.APELLIDO_PATERNO ||' '||CLI.APELLIDO_MATERNO ) AS CLIENTE,\n"
-                + "(usu.NOMBRE_USUARIO||' '||usu.APATERNO_USUARIO) AS CAJERO,\n"
-                + "ab.ID_CREDITO_FK as folio_credito,\n"
-                + "ab.FECHA_ABONO,tipo.NOMBRE_ABONO,ab.MONTO_ABONO,\n"
-                + "ab.ID_USUARIO_FK,ab.TIPO_ABONO_FK,ab.ESTATUS,\n"
-                + "ab.NUMERO_CHEQUE,ab.LIBRADOR,ab.FECHA_COBRO,\n"
-                + "ab.BANCO_EMISOR,ab.NUMERO_FACTURA,ab.REFERENCIA,ab.CONCEPTO,ab.FECHA_TRANSFERENCIA,\n"
-                + "cli.ID_CLIENTE,ab.NUMERO_ABONO,sucu.NOMBRE_SUCURSAL \n"
-                + "from ABONO_CREDITO ab inner join credito cre on cre.ID_CREDITO_PK = ab.ID_CREDITO_FK\n"
-                + "inner join cliente cli on cli.ID_CLIENTE = cre.ID_CLIENTE_FK\n"
-                + "inner join usuario usu  on usu.ID_USUARIO_PK = ab.ID_USUARIO_FK\n"
-                + "inner join TIPO_ABONO tipo on tipo.ID_TIPO_ABONO_PK = ab.TIPO_ABONO_FK\n"
-                + " inner join SUCURSAL sucu on sucu.ID_SUCURSAL_PK = usu.ID_SUCURSAL_FK\n"
+    public List<Object[]> getHistorialAbonos(BigDecimal idClienteFk, BigDecimal idCajeroFk, String fechaInicio, String fechaFin, BigDecimal idTipoPagoFk, BigDecimal idAbonoPk, BigDecimal idCreditoFk, BigDecimal idSucursalFk, BigDecimal idCajaFk, BigDecimal idSucursalOrigenCredito) {
+        StringBuffer cadena = new StringBuffer("select ab.ID_ABONO_CREDITO_PK as folio,(CLI.NOMBRE||' '||CLI.APELLIDO_PATERNO ||' '||CLI.APELLIDO_MATERNO ) AS CLIENTE, "
+                + "(usu.NOMBRE_USUARIO||' '||usu.APATERNO_USUARIO) AS CAJERO, "
+                + "ab.ID_CREDITO_FK as folio_credito, "
+                + "ab.FECHA_ABONO,tipo.NOMBRE_ABONO,ab.MONTO_ABONO, "
+                + "ab.ID_USUARIO_FK,ab.TIPO_ABONO_FK,ab.ESTATUS, "
+                + "ab.NUMERO_CHEQUE,ab.LIBRADOR,ab.FECHA_COBRO, "
+                + "ab.BANCO_EMISOR,ab.NUMERO_FACTURA,ab.REFERENCIA,ab.CONCEPTO,ab.FECHA_TRANSFERENCIA, "
+                + "cli.ID_CLIENTE,ab.NUMERO_ABONO,sucu.NOMBRE_SUCURSAL "
+                + ",SVM.NOMBRE_SUCURSAL AS SUCURSAL_MAYOREO,SV.NOMBRE_SUCURSAL AS SUCURSAL_MENUDEO "
+                + "from ABONO_CREDITO ab inner join credito cre on cre.ID_CREDITO_PK = ab.ID_CREDITO_FK "
+                + "INNER join cliente cli on cli.ID_CLIENTE = cre.ID_CLIENTE_FK "
+                + "INNER join usuario usu  on usu.ID_USUARIO_PK = ab.ID_USUARIO_FK "
+                + "INNER join TIPO_ABONO tipo on tipo.ID_TIPO_ABONO_PK = ab.TIPO_ABONO_FK "
+                + "INNER join SUCURSAL sucu on sucu.ID_SUCURSAL_PK = usu.ID_SUCURSAL_FK "
+                + "LEFT JOIN VENTA_MAYOREO VM ON VM.ID_VENTA_MAYOREO_PK =cre.ID_VENTA_MAYOREO "
+                + "LEFT JOIN VENTA V ON V.ID_VENTA_PK = cre.ID_VENTA_MENUDEO "
+                + "LEFT JOIN SUCURSAL SVM ON SVM.ID_SUCURSAL_PK = VM.ID_SUCURSAL_FK "
+                + "LEFT JOIN SUCURSAL SV ON SV.ID_SUCURSAL_PK = V.ID_SUCURSAL_FK "
                 + "WHERE  TO_DATE(TO_CHAR(ab.FECHA_ABONO,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + fechaInicio + " ' AND '" + fechaFin + "'");
 
-        
         if (idSucursalFk != null && !idSucursalFk.equals("")) {
             cadena.append(" and sucu.ID_SUCURSAL_PK =" + idSucursalFk + "");
         }
@@ -273,26 +277,30 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
 //            cadena.append(" and cli.ID_CLIENTE =" + idClienteFk + "");
 //        }
         System.out.println("*************");
-        System.out.println("ID-CLIENTE: "+idClienteFk);
+        System.out.println("ID-CLIENTE: " + idClienteFk);
         if (idClienteFk != null && !idClienteFk.equals("")) {
-            cadena.append(" and cli.ID_CLIENTE =" + idClienteFk + "");
+            cadena.append(" AND cli.ID_CLIENTE =" + idClienteFk + "");
         }
         if (idCajeroFk != null && !idCajeroFk.equals("")) {
-            cadena.append(" and ab.ID_USUARIO_FK =" + idCajeroFk + "");
+            cadena.append(" AND ab.ID_USUARIO_FK =" + idCajeroFk + "");
         }
         if (idCreditoFk != null && !idCreditoFk.equals("")) {
-            cadena.append(" and ab.ID_CREDITO_FK =" + idCreditoFk + "");
+            cadena.append(" AND ab.ID_CREDITO_FK =" + idCreditoFk + "");
         }
         if (idTipoPagoFk != null && !idTipoPagoFk.equals("")) {
-            cadena.append(" and ab.TIPO_ABONO_FK =" + idTipoPagoFk + "");
+            cadena.append(" AND ab.TIPO_ABONO_FK =" + idTipoPagoFk + "");
         }
         if (idAbonoPk != null && !idAbonoPk.equals("")) {
-            cadena.append(" and ab.ID_ABONO_CREDITO_PK =" + idAbonoPk + "");
+            cadena.append(" AND ab.ID_ABONO_CREDITO_PK =" + idAbonoPk + "");
+        }
+
+        if (idSucursalOrigenCredito != null && !idSucursalOrigenCredito.equals("")) {
+            cadena.append(" AND (VM.ID_SUCURSAL_FK = "+idSucursalOrigenCredito+" OR V.ID_SUCURSAL_FK = "+idSucursalOrigenCredito+")");
         }
 
         Query query;
         query = em.createNativeQuery(cadena.toString());
-        System.out.println("Query: "+query.toString());
+        System.out.println("Query: " + query.toString());
         try {
             List<Object[]> lstObject = query.getResultList();
             return lstObject;
