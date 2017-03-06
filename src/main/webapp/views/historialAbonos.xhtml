@@ -119,14 +119,14 @@
                                 <f:selectItems value="#{beanHistorialAbonos.lstTipoAbonos}" var="tipoAbono" itemLabel="#{tipoAbono.nombreTipoAbono}" itemValue="#{tipoAbono.idTipoAbono}"/>
                             </p:selectOneMenu>
                         </div>
-                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
+<!--                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-5 col-md-7 col-sm-6 col-xs-12"  for="txtFolioAbono" value ="Folio Abono:" /> 
-                            <p:inputText id="txtFolioAbono" class="col-lg-3 col-md-4 col-sm-6 col-xs-12" value="#{beanHistorialAbonos.idAbonoPk}" /> 
+                            <p:inputText id="txtFolioAbono" class="col-lg-3 col-md-4 col-sm-6 col-xs-12" value="{beanHistorialAbonos.idAbonoPk}" /> 
                         </div>
                         <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-5 col-md-7 col-sm-6 col-xs-12 "  for="txtFolioCredito" value ="Folio Crédito:" /> 
-                            <p:inputText id="txtFolioCredito" class="col-lg-3 col-md-4 col-sm-6 col-xs-12" value="#{beanHistorialAbonos.idCreditoFk}"/> 
-                        </div>
+                            <p:inputText id="txtFolioCredito" class="col-lg-3 col-md-4 col-sm-6 col-xs-12" value="{beanHistorialAbonos.idCreditoFk}"/> 
+                        </div>-->
                     </div>
 
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -140,9 +140,9 @@
                             <p:column style="width:20px">
                                 <p:rowToggler />
                             </p:column>
-                            <p:column headerText="Folio Abono" width="60px;" class="alignCenter">
-                                <h:outputText value="#{model.idAbonoCreditoPk}" />
-                            </p:column>
+<!--                            <p:column headerText="Folio Abono" width="60px;" class="alignCenter">
+                                <h:outputText value="{model.idAbonoCreditoPk}" />
+                            </p:column>-->
 
                             <p:column headerText="Cliente" width="150px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreCliente}">
@@ -156,9 +156,9 @@
                                 <h:outputText value="#{model.nombreSucursalOrigenVenta}">
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Folio Crédito" width="60px;" class="alignCenter">
-                                <h:outputText value="#{model.idCreditoFk}" />
-                            </p:column>
+<!--                            <p:column headerText="Folio Crédito" width="60px;" class="alignCenter">
+                                <h:outputText value="{model.idCreditoFk}" />
+                            </p:column>-->
                             <p:column headerText="Cajero" width="125px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreCajero}">
                                 </h:outputText>
