@@ -277,7 +277,6 @@ public class ServiceAbonoCredito implements IfaceAbonoCredito {
             abonoCredito.setNumeroAbono(object[19] == null ? null : new BigDecimal(object[19].toString()));
             abonoCredito.setNombreSucursal(object[20] == null ? "" : object[20].toString());
             abonoCredito.setNombreSucursalOrigenVenta(object[21] == null ? (object[22] == null ? "Registro Agregado Manualmente":object[22].toString()) : object[21].toString());
-            System.out.println("abonoCredito.setNombreSucursalOrigenVenta( "+abonoCredito.getNombreSucursalOrigenVenta());
 
             lstAbonoCredito.add(abonoCredito);
         }

@@ -19,7 +19,7 @@
         </div>
         <h:form id="formContent">
             <div class="form-group" align="right">
-                <p:commandButton value="Buscar" update=":formContent" ajax="true" action="#{beanRelOperMayoreo.buscar()}" onclick="PF('statusDialog').show()"/>
+                <p:commandButton value="Buscar" update=":formContent" ajax="true" action="#{beanRelOperMayoreo.buscar()}" onclick="PF('statusDialog').show()" class="primaryButton"/>
             </div>
             <p:confirmDialog  global="true" showEffect="fade" hideEffect="fade">
                 <div class="alignCenter">

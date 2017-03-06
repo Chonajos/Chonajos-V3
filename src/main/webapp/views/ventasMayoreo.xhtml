@@ -83,7 +83,7 @@
 
                             <p:outputLabel class="col-lg-7 col-md-7 col-sm-4 col-xs-12"  for="comboTipoVenta" value ="Tipo de Venta:" style="padding-left: 0px;"/> 
                             <div class="col-lg-5 col-md-5 col-sm-5 col-xs-12" style="padding: 0px;">
-                                <p:selectOneMenu  id="comboTipoVenta" class="tipoVenta" style="width:97% !important;" panelStyleClass="selects" value="#{beanVentaMayoreo.data.idTipoVenta}" disabled="#{!beanVentaMayoreo.credito}">
+                                <p:selectOneMenu  id="comboTipoVenta" style="width:97% !important;" value="#{beanVentaMayoreo.data.idTipoVenta}" disabled="#{!beanVentaMayoreo.credito}">
                                     <f:selectItems value="#{beanVentaMayoreo.lstTipoVenta}" var="tventa" itemLabel="#{tventa.nombreTipoVenta}" itemValue="#{tventa.idTipoVentaPk}"/>
                                     <p:ajax event="change" update=":formContent" listener="#{beanVentaMayoreo.calculaPrecioProducto}"/>
                                 </p:selectOneMenu>

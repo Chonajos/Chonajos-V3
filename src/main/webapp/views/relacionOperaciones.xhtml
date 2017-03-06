@@ -21,7 +21,7 @@
         <h:form id="formContent">
             <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <div class="form-group" align="right">
-                <p:commandButton value="Buscar" onclick="PF('statusDialog').show()" update=":formContent" ajax="true" action="#{beanRelacionOperaciones.buscar}"/>
+                <p:commandButton value="Buscar" onclick="PF('statusDialog').show()" update=":formContent" ajax="true" action="#{beanRelacionOperaciones.buscar}" class="primaryButton"/>
             </div>
             <p:confirmDialog   global="true" showEffect="fade" hideEffect="fade">
                 <div class="alignCenter">

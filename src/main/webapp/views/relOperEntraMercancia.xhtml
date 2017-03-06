@@ -84,7 +84,7 @@
                     </div>
 
                     <p:remoteCommand name="rcExtends" onstart="expandRow();" />
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group zeroPadding">
                         <p:dataTable id="table" var="model"
                                      value="#{beanRelOperEntradaMercancia.lstEntradaMercancia}"
                                      scrollable="true" 
@@ -98,22 +98,22 @@
                                 <p:rowToggler/>
                             </p:column>
 
-                            <p:column headerText="Carro" width="40px;" class="alignCenter">
+                            <p:column headerText="Carro" width="50px;" class="alignCenter">
                                 <h:outputText value="#{model.idCarroSucursal}" />
                             </p:column>
-                            <p:column headerText="Folio de Remisión" width="150px;" class="alignCenter">
+                            <p:column headerText="Folio de Remisión" width="170px;" class="alignCenter">
                                 <h:outputText value="#{model.folio}"/>
                             </p:column>
-                            <p:column headerText="Fecha de Entrada" width="90px;" class="alignCenter">
+                            <p:column headerText="Fecha de Entrada" width="110px;" class="alignCenter">
                                 <h:outputText value="#{model.fecha}">
                                     <f:convertDateTime pattern="dd/MM/yyyy"/>
                                 </h:outputText>
                             </p:column>
 
-                            <p:column headerText="Provedor" width="140px;" class="alignLeft">
+                            <p:column headerText="Provedor" width="170px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreProvedor}"/>
                             </p:column>
-                            <p:column headerText="Fecha de Pago" width="90px;" class="alignCenter">
+                            <p:column headerText="Fecha de Pago" width="110px;" class="alignCenter">
                                 <h:outputText value="#{model.fechaPago}">
                                     <f:convertDateTime pattern="dd/MM/yyyy"/>
                                 </h:outputText>
@@ -136,7 +136,7 @@
                                 </p:commandButton>
                             </p:column>
 
-                            <p:column headerText="Agregar" width="70px;" class="alignCenter">
+                            <p:column headerText="Agregar" width="60px;" class="alignCenter">
                                 <p:commandButton id="agregarProducto"  
                                                  disabled="#{model.idStatusFk.intValue() != 1}"   
                                                  ajax="true" onclick="PF('dlg2').show();" 
@@ -159,7 +159,7 @@
                                     <f:setPropertyActionListener value="#{model}" target="#{beanRelOperEntradaMercancia.data}"/>
                                 </p:commandButton>
                             </p:column>
-                            <p:column headerText="Cerrar Entrada" width="70px;" class="alignCenter">
+                            <p:column headerText="Cerrar Entrada" width="60px;" class="alignCenter">
                                 <p:commandButton id="cerrar" ajax="true" process="@this" action="#{beanRelOperEntradaMercancia.cerrarEntrada()}" 
                                                  disabled="#{model.idStatusFk.intValue() != 1}" 
                                                  icon=" ui-icon-check" styleClass="ui-priority-primary" update=":formContent">
@@ -169,11 +169,11 @@
                                 </p:commandButton>
                             </p:column>
                             <p:rowExpansion>
-                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 zeroPadding">
                                     <p:dataTable id="tabla2" var="item" 
                                                  value="#{model.listaProductos}" 
                                                  scrollable="true"
-                                                 editable="true" styleClass="seconTable"  
+                                                 editable="true" styleClass="seconTable ui-datatable-hor-scroll"  
                                                  emptyMessage="No se encontraron Registros">
                                         <p:ajax event="rowEdit" listener="#{beanRelOperEntradaMercancia.onRowEdit}" update=":formContent:table"/>
                                         <p:ajax event="rowEditCancel" listener="#{beanRelOperEntradaMercancia.onRowCancel}" update=":formContent" />
@@ -343,7 +343,7 @@
                                                 </p:fileUpload>
                                             </h:form>
                                         </p:column>
-                                        <p:column headerText="Correo" width="90px;" class="alignCenter" >
+                                        <p:column headerText="Correo" width="70px;" class="alignCenter" >
                                             <p:commandButton id="idMandarCorreo" ajax="true" rendered="#{item.urlVideo != null}" actionListener="#{beanRelOperEntradaMercancia.getClientesProducto(item)}"
                                                              oncomplete="PF('dlgMandarCorreo').show();" update =":formContent:dialogoMandarCorreo"
                                                              icon="ui-icon-transferthick-e-w" >

@@ -172,19 +172,19 @@
                             <p:column headerText="Forma de Pago" width="110px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreAbono}" />
                             </p:column>   
-                            <p:column headerText="Monto" width="90px;" class="alignRight">
+                            <p:column headerText="Monto" width="100px;" class="alignRight">
                                 <h:outputText value="#{model.montoAbono}">
                                     <f:convertNumber type="currency" currencySymbol="$" />
                                 </h:outputText>
                             </p:column>
 
-                            <p:column headerText="Imprimir" width="70px;" class="alignCenter">
+                            <p:column headerText="Imprimir" width="65px;" class="alignCenter">
                                 <p:commandButton id="print" ajax="true" process="@this" action="#{beanHistorialAbonos.printVenta()}" icon="ui-icon-print" styleClass="ui-priority-primary" update=":formContent">
                                     <f:setPropertyActionListener value="#{model}" target="#{beanHistorialAbonos.data}"/>
                                 </p:commandButton>
                             </p:column>
 
-                            <p:column headerText="Cancelar" width="70px;" class="alignCenter">
+                            <p:column headerText="Cancelar" width="65px;" class="alignCenter">
                                 <p:commandButton id="cancel"  ajax="true" disabled="#{model.estatusAbono.intValue() != 1}"
                                                  process="@this" action="#{beanHistorialAbonos.cancelarAbono()}"
                                                  icon="ui-icon-trash" styleClass="ui-priority-primary" update=":formContent">
