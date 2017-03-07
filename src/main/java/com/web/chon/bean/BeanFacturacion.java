@@ -6,14 +6,17 @@
 package com.web.chon.bean;
 
 import com.web.chon.dominio.Cliente;
+import com.web.chon.dominio.DatosFacturacion;
 import com.web.chon.dominio.FacturaPDFDomain;
 import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.dominio.VentaMayoreo;
+import com.web.chon.dominio.VentaProductoMayoreo;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceBuscaVenta;
 import com.web.chon.service.IfaceCatCliente;
 import com.web.chon.service.IfaceCatSucursales;
+import com.web.chon.service.IfaceFacturacion;
 import com.web.chon.service.IfaceVentaMayoreo;
 import com.web.chon.util.Constantes;
 import com.web.chon.util.JasperReportUtil;
@@ -51,6 +54,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import mx.bigdata.sat.cfdi.v32.schema.Comprobante;
 import mx.bigdata.sat.cfdi.v32.schema.ObjectFactory;
+import org.primefaces.event.RowEditEvent;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
@@ -75,6 +79,8 @@ public class BeanFacturacion implements Serializable {
     private IfaceVentaMayoreo ifaceVentaMayoreo;
     @Autowired
     private IfaceBuscaVenta ifaceBuscaVenta;
+    @Autowired
+    private IfaceFacturacion ifaceFacturacion;
 
     //--Variables Generales Bean--//
     private String title;
@@ -95,10 +101,23 @@ public class BeanFacturacion implements Serializable {
     private BigDecimal folioVentaG;
     private ArrayList<FacturaPDFDomain> modelo;
     private FacturaPDFDomain data;
-    private BigDecimal total;
     private VentaMayoreo ventaMayoreo;
     private boolean ventaMenudeo;
     private boolean statusButtonFacturar;
+    private DatosFacturacion datosEmisor;
+    private DatosFacturacion datosCliente;
+    private ArrayList<DatosFacturacion> listaDatosEmisor;
+    private BigDecimal idEmisorPk;
+    private BigDecimal totalVenta;
+    private BigDecimal descuento;
+    private BigDecimal subTotal;
+    private BigDecimal iva;
+    private BigDecimal total;
+    private int filtroMostrador;
+    private boolean disableBotonBuscarVenta;
+    private boolean disableTextFolioVenta;
+
+    private ArrayList<VentaProductoMayoreo> selectedProductosVentas;
 
     //--Variables Para Generar PDF--//
     private String rutaPDF;
@@ -106,15 +125,25 @@ public class BeanFacturacion implements Serializable {
     private String pathFileJasper = "";
     private ByteArrayOutputStream outputStream;
     private Map paramReport = new HashMap();
+    private BigDecimal idClienteVentaMostradorPk;
+    private VentaProductoMayoreo dataEdit;
+    private VentaProductoMayoreo dataRemove;
+    
 
     ObjectFactory of;
     Comprobante comp;
 
     @PostConstruct
     public void init() {
+        disableBotonBuscarVenta = false;
+        disableTextFolioVenta = false;
+        filtroMostrador = 1;
+        totalVenta = new BigDecimal(0);
         of = new ObjectFactory();
         comp = of.createComprobante();
-
+        idClienteVentaMostradorPk = new BigDecimal(1103);
+        datosEmisor = new DatosFacturacion();
+        datosCliente = new DatosFacturacion();
         usuario = context.getUsuarioAutenticado();
         setTitle("Facturación Electrónica");
         setViewEstate("init");
@@ -122,6 +151,7 @@ public class BeanFacturacion implements Serializable {
         listaSucursales = ifaceCatSucursales.getSucursales();
         data = new FacturaPDFDomain();
         ventaMayoreo = new VentaMayoreo();
+        listaDatosEmisor = new ArrayList<DatosFacturacion>();
 
         //====INICIALIZACIÓN DE LOS DATOS DE COMPROBANTE DIGITAL===//
         comp.setVersion("3.2");
@@ -129,32 +159,37 @@ public class BeanFacturacion implements Serializable {
         comp.setFolio("11639");
         comp.setFecha(context.getFechaSistema());
         cliente = new Cliente();
+        buscarDatosEmisor();
 
     }
+    public void agregarProducto()
+    {
+        
+    }
 
-    public void buscarDatosEmisor() {
-        if (ventaMayoreo != null && ventaMayoreo.getIdClienteFk()!= null) {
-            
-            cliente = ifaceCatCliente.getClienteById(ventaMayoreo.getIdClienteFk().intValue());
-            if(cliente !=null && cliente.getId_cliente()!=null)
-            {
-                data.setNombreEmisor(cliente.getNombreCompleto());
-                data.setRfcEmisor(cliente.getRfcFiscal());
-                data.setCalleEmisor(cliente.getCalleFiscal());
-                data.setNoExteriorEmisor(cliente.getNum_ext_fiscal()  == null ? null : cliente.getNum_ext_fiscal().toString());
-                data.setNoInteriorEmisor(cliente.getNum_int_fiscal()== null ? null : cliente.getNum_int_fiscal().toString());
-                data.setColoniaEmisor(cliente.getColoniaFiscal());
-                data.setMunicipioEmisor(cliente.getNombreDeleMunFiscal());
-                data.setEstadoEmisor(cliente.getNombreEstadoFiscal());
-                data.setCodigoPostalEmisor(cliente.getCodigoPostalFiscal());
-                
+    public void removeProductoSugerido()
+    {
+        
+    }
+    public void buscarDatosCliente() {
+        if (filtroMostrador == 2) {
+            datosCliente = ifaceFacturacion.getDatosFacturacionByIdCliente(idClienteVentaMostradorPk);
+            System.out.println("222222222");
+        } else {
+            if (ventaMayoreo != null && ventaMayoreo.getIdClienteFk() != null) {
+                datosCliente = ifaceFacturacion.getDatosFacturacionByIdCliente(ventaMayoreo.getIdClienteFk());
+            System.out.println("11111111111");
             }
-
         }
 
     }
 
+    public void buscarDatosEmisor() {
+        listaDatosEmisor = ifaceFacturacion.getDatosFacturacionByIdSucursal(new BigDecimal(usuario.getSucId()));
+    }
+
     public void buscarFolioVenta() {
+        totalVenta = new BigDecimal(0);
 
         ventaMayoreo = ifaceVentaMayoreo.getVentaMayoreoByFolioidSucursalFk(folioVentaG, new BigDecimal(usuario.getSucId()));
 
@@ -197,7 +232,7 @@ public class BeanFacturacion implements Serializable {
             statusButtonFacturar = true;
 
         }
-        buscarDatosEmisor();
+        buscarDatosCliente();
     }
 
     public void descargarXML() {
@@ -224,6 +259,37 @@ public class BeanFacturacion implements Serializable {
 
         setViewEstate("generate");
         setTitle("Generar Factura");
+    }
+
+    public void backView() {
+        setViewEstate("init");
+
+    }
+
+    public void changeViewMostrador() {
+        if (filtroMostrador == 1) {
+            setViewEstate("generate");
+            disableBotonBuscarVenta = false;
+            disableTextFolioVenta = false;
+        } else {
+            setViewEstate("generateVentaMostrador");
+            disableBotonBuscarVenta = true;
+            disableTextFolioVenta = true;
+        }
+        buscarDatosCliente();
+
+    }
+
+    public void onRowEdit(RowEditEvent event) {
+        dataEdit = new VentaProductoMayoreo();
+        dataEdit = (VentaProductoMayoreo) event.getObject();
+
+        System.out.println("editado " + dataEdit.toString());
+    }
+
+    public void onRowCancel(RowEditEvent event) {
+        System.out.println("cancel");
+
     }
 
     public void emitirFactura() {
@@ -628,5 +694,142 @@ public class BeanFacturacion implements Serializable {
     public void setVentaMayoreo(VentaMayoreo ventaMayoreo) {
         this.ventaMayoreo = ventaMayoreo;
     }
+
+    public DatosFacturacion getDatosEmisor() {
+        return datosEmisor;
+    }
+
+    public void setDatosEmisor(DatosFacturacion datosEmisor) {
+        this.datosEmisor = datosEmisor;
+    }
+
+    public DatosFacturacion getDatosCliente() {
+        return datosCliente;
+    }
+
+    public void setDatosCliente(DatosFacturacion datosCliente) {
+        this.datosCliente = datosCliente;
+    }
+
+    public ArrayList<DatosFacturacion> getListaDatosEmisor() {
+        return listaDatosEmisor;
+    }
+
+    public void setListaDatosEmisor(ArrayList<DatosFacturacion> listaDatosEmisor) {
+        this.listaDatosEmisor = listaDatosEmisor;
+    }
+
+    public boolean isVentaMenudeo() {
+        return ventaMenudeo;
+    }
+
+    public void setVentaMenudeo(boolean ventaMenudeo) {
+        this.ventaMenudeo = ventaMenudeo;
+    }
+
+    public boolean isStatusButtonFacturar() {
+        return statusButtonFacturar;
+    }
+
+    public void setStatusButtonFacturar(boolean statusButtonFacturar) {
+        this.statusButtonFacturar = statusButtonFacturar;
+    }
+
+    public BigDecimal getIdEmisorPk() {
+        return idEmisorPk;
+    }
+
+    public void setIdEmisorPk(BigDecimal idEmisorPk) {
+        this.idEmisorPk = idEmisorPk;
+    }
+
+    public BigDecimal getTotalVenta() {
+        return totalVenta;
+    }
+
+    public void setTotalVenta(BigDecimal totalVenta) {
+        this.totalVenta = totalVenta;
+    }
+
+    public BigDecimal getSubTotal() {
+        return subTotal;
+    }
+
+    public void setSubTotal(BigDecimal subTotal) {
+        this.subTotal = subTotal;
+    }
+
+    public BigDecimal getIva() {
+        return iva;
+    }
+
+    public void setIva(BigDecimal iva) {
+        this.iva = iva;
+    }
+
+    public BigDecimal getDescuento() {
+        return descuento;
+    }
+
+    public void setDescuento(BigDecimal descuento) {
+        this.descuento = descuento;
+    }
+
+    public ArrayList<VentaProductoMayoreo> getSelectedProductosVentas() {
+        return selectedProductosVentas;
+    }
+
+    public void setSelectedProductosVentas(ArrayList<VentaProductoMayoreo> selectedProductosVentas) {
+        this.selectedProductosVentas = selectedProductosVentas;
+    }
+
+    public int getFiltroMostrador() {
+        return filtroMostrador;
+    }
+
+    public void setFiltroMostrador(int filtroMostrador) {
+        this.filtroMostrador = filtroMostrador;
+    }
+
+    public BigDecimal getIdClienteVentaMostradorPk() {
+        return idClienteVentaMostradorPk;
+    }
+
+    public void setIdClienteVentaMostradorPk(BigDecimal idClienteVentaMostradorPk) {
+        this.idClienteVentaMostradorPk = idClienteVentaMostradorPk;
+    }
+
+    public boolean isDisableBotonBuscarVenta() {
+        return disableBotonBuscarVenta;
+    }
+
+    public void setDisableBotonBuscarVenta(boolean disableBotonBuscarVenta) {
+        this.disableBotonBuscarVenta = disableBotonBuscarVenta;
+    }
+
+    public boolean isDisableTextFolioVenta() {
+        return disableTextFolioVenta;
+    }
+
+    public void setDisableTextFolioVenta(boolean disableTextFolioVenta) {
+        this.disableTextFolioVenta = disableTextFolioVenta;
+    }
+
+    public VentaProductoMayoreo getDataEdit() {
+        return dataEdit;
+    }
+
+    public void setDataEdit(VentaProductoMayoreo dataEdit) {
+        this.dataEdit = dataEdit;
+    }
+
+    public VentaProductoMayoreo getDataRemove() {
+        return dataRemove;
+    }
+
+    public void setDataRemove(VentaProductoMayoreo dataRemove) {
+        this.dataRemove = dataRemove;
+    }
+    
 
 }
