@@ -114,20 +114,18 @@ public class BeanHistorialAbonos implements Serializable {
     private boolean enableCalendar;
     private BigDecimal total;
     AbonoCredito abono;
-    
-    private BigDecimal idSucursalBean;
 
-   
-    
+    private BigDecimal idSucursalBean;
+    private BigDecimal idSucursalOrigenCredito;
+
     private static final BigDecimal CONCEPTO_ABONO = new BigDecimal(7);
-    
+
     private static final BigDecimal EFECTIVO = new BigDecimal(1);
     private static final BigDecimal TRANSFERENCIA = new BigDecimal(2);
     private static final BigDecimal CHEQUE = new BigDecimal(3);
     private static final BigDecimal DEPOSITO = new BigDecimal(4);
     private static final BigDecimal OPERACIONABONOS_CREDITO = new BigDecimal(4);
-    
-    
+
     private static final BigDecimal STATUS_REALIZADA = new BigDecimal(1);
     private static final BigDecimal STATUS_PENDIENTE = new BigDecimal(2);
     private static final BigDecimal STATUS_RECHAZADA = new BigDecimal(3);
@@ -180,11 +178,12 @@ public class BeanHistorialAbonos implements Serializable {
         cliente = new Cliente();
         listaCajas = new ArrayList<Caja>();
         idSucursalBean = new BigDecimal(usuarioDominio.getSucId());
+        idSucursalOrigenCredito = null;
         listaCajas = ifaceCaja.getCajasByIdSucusal(idSucursalBean);
         listaResponsables = new ArrayList<Usuario>();
         System.out.println("------------------------------------------");
-        System.out.println("UsuarioDominio: "+usuarioDominio.toString());
-        
+        System.out.println("UsuarioDominio: " + usuarioDominio.toString());
+
         buscar();
         //idTipoAbonoFk = null;
 //        if (cliente == null) {
@@ -198,10 +197,11 @@ public class BeanHistorialAbonos implements Serializable {
         buscarReponsables();
 
     }
+
     public void buscarCajas() {
         listaCajas.clear();
         listaResponsables.clear();
-        System.out.println("IDSUCURSALBEAN: "+idSucursalBean);
+        System.out.println("IDSUCURSALBEAN: " + idSucursalBean);
         listaCajas = ifaceCaja.getCajasByIdSucusal(idSucursalBean);
         idCajaBean = null;
         buscarReponsables();
@@ -336,7 +336,7 @@ public class BeanHistorialAbonos implements Serializable {
         opcaja.setIdStatusFk(STATUS_REALIZADA);
         opcaja.setIdConceptoFk(CONCEPTO_ABONO);
         opcaja.setIdTipoOperacionFk(OPERACIONABONOS_CREDITO);
-        
+
         abono.setEstatusAbono(new BigDecimal(2));
 
         PagosBancarios pb = new PagosBancarios();
@@ -498,14 +498,14 @@ public class BeanHistorialAbonos implements Serializable {
     }
 
     public void buscar() {
-        
+
         lstAbonosCreditos = new ArrayList<AbonoCredito>();
         padres = new ArrayList<AbonoCredito>();
         if (cliente == null) {
             cliente = new Cliente();
         }
-        
-        lstAbonosCreditos = ifaceAbonoCredito.getHistorialAbonos(cliente.getId_cliente(), idCobradorFk, fechaFiltroInicio, fechaFiltroFin, idTipoAbonoFk, idAbonoPk, idCreditoFk,idSucursalBean,idCajaBean);
+
+        lstAbonosCreditos = ifaceAbonoCredito.getHistorialAbonos(cliente.getId_cliente(), idCobradorFk, fechaFiltroInicio, fechaFiltroFin, idTipoAbonoFk, idAbonoPk, idCreditoFk, idSucursalBean, idCajaBean,idSucursalOrigenCredito);
         generaPadres();
         generaHijos();
         sumaTotal();
@@ -539,6 +539,7 @@ public class BeanHistorialAbonos implements Serializable {
                 abonoPadre.setFolioElectronico(ab.getFolioElectronico());
                 abonoPadre.setNumeroAbono(ab.getNumeroAbono());
                 abonoPadre.setNombreSucursal(ab.getNombreSucursal());
+                abonoPadre.setNombreSucursalOrigenVenta(ab.getNombreSucursalOrigenVenta());
                 padres.add(abonoPadre);
             } else {
                 int count = 0;
@@ -564,8 +565,9 @@ public class BeanHistorialAbonos implements Serializable {
                     abonoPadre.setIdClienteFk(ab.getIdClienteFk());
                     abonoPadre.setFolioElectronico(ab.getFolioElectronico());
                     abonoPadre.setNumeroAbono(ab.getNumeroAbono());
-                    
-                abonoPadre.setNombreSucursal(ab.getNombreSucursal());
+
+                    abonoPadre.setNombreSucursal(ab.getNombreSucursal());
+                    abonoPadre.setNombreSucursalOrigenVenta(ab.getNombreSucursalOrigenVenta());
                     if (a.getNumeroAbono().intValue() == ab.getNumeroAbono().intValue()) {
                         count++;
                     }
@@ -852,7 +854,14 @@ public class BeanHistorialAbonos implements Serializable {
     public void setIdCajaBean(BigDecimal idCajaBean) {
         this.idCajaBean = idCajaBean;
     }
-    
+
+    public BigDecimal getIdSucursalOrigenCredito() {
+        return idSucursalOrigenCredito;
+    }
+
+    public void setIdSucursalOrigenCredito(BigDecimal idSucursalOrigenCredito) {
+        this.idSucursalOrigenCredito = idSucursalOrigenCredito;
+    }
     
     
 

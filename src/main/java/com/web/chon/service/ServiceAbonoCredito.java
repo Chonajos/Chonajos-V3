@@ -238,11 +238,11 @@ public class ServiceAbonoCredito implements IfaceAbonoCredito {
     }
 
     @Override
-    public ArrayList<AbonoCredito> getHistorialAbonos(BigDecimal idClienteFk, BigDecimal idCajeroFk, Date fechaInicio, Date fechaFin, BigDecimal idTipoPagoFk, BigDecimal idAbonoPk, BigDecimal idCreditoFk,BigDecimal idSucursalFk,BigDecimal idCajaFk) {
+    public ArrayList<AbonoCredito> getHistorialAbonos(BigDecimal idClienteFk, BigDecimal idCajeroFk, Date fechaInicio, Date fechaFin, BigDecimal idTipoPagoFk, BigDecimal idAbonoPk, BigDecimal idCreditoFk,BigDecimal idSucursalFk,BigDecimal idCajaFk,BigDecimal idSucursalOrigenCredito) {
         getEjb();
         ArrayList<AbonoCredito> lstAbonoCredito = new ArrayList<AbonoCredito>();
         List<Object[]> lstObject = new ArrayList<Object[]>();
-        lstObject = ejb.getHistorialAbonos(idClienteFk, idCajeroFk, TiempoUtil.getFechaDDMMYYYY(fechaInicio),  TiempoUtil.getFechaDDMMYYYY(fechaFin),  idTipoPagoFk,  idAbonoPk,  idCreditoFk ,idSucursalFk,idCajaFk);
+        lstObject = ejb.getHistorialAbonos(idClienteFk, idCajeroFk, TiempoUtil.getFechaDDMMYYYY(fechaInicio),  TiempoUtil.getFechaDDMMYYYY(fechaFin),  idTipoPagoFk,  idAbonoPk,  idCreditoFk ,idSucursalFk,idCajaFk,idSucursalOrigenCredito);
         for (Object[] object : lstObject) 
         {
             
@@ -276,10 +276,8 @@ public class ServiceAbonoCredito implements IfaceAbonoCredito {
             }
             abonoCredito.setNumeroAbono(object[19] == null ? null : new BigDecimal(object[19].toString()));
             abonoCredito.setNombreSucursal(object[20] == null ? "" : object[20].toString());
-            
-            
-            
-            
+            abonoCredito.setNombreSucursalOrigenVenta(object[21] == null ? (object[22] == null ? "Registro Agregado Manualmente":object[22].toString()) : object[21].toString());
+
             lstAbonoCredito.add(abonoCredito);
         }
         return lstAbonoCredito;

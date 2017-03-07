@@ -22,7 +22,7 @@
             <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:panel rendered="#{beanCatProvedor.viewEstate=='init'}" style="border: 0px;" >
                 <div class="form-group" align="right">
-                    <p:commandButton value="Nuevo" update=":formProvedor" resetValues="true" ajax="true" action="#{beanCatProvedor.viewNew}" icon="ui-icon-person" onclick="PF('statusDialog').show()"/>
+                    <p:commandButton value="Nuevo" update=":formProvedor" resetValues="true" ajax="true" action="#{beanCatProvedor.viewNew}" icon="ui-icon-person" onclick="PF('statusDialog').show()" class="primaryButton"/>
 
                 </div>
                 <div class="col-lg-10 col-md-12 col-sm-12 col-xs-12 col-lg-offset-1">
@@ -67,9 +67,9 @@
             <p:panel rendered="#{beanCatProvedor.viewEstate=='searchById' || beanCatProvedor.viewEstate=='new' || beanCatProvedor.viewEstate=='viewDetails'}">
                 <div class="container">
                     <div class="form-group" align="right">
-                        <p:commandButton value="Guardar" update=":formProvedor" ajax="true" action="#{beanCatProvedor.save()}" rendered="#{beanCatProvedor.viewEstate=='new'}" onclick="PF('statusDialog').show()"/>
-                        <p:commandButton value="Actualizar" update=":formProvedor" ajax="true" action="#{beanCatProvedor.update()}" rendered="#{beanCatProvedor.viewEstate=='searchById'}" onclick="PF('statusDialog').show()"/>
-                        <p:commandButton value="Atras" immediate="true" resetValues="true" update=":formProvedor" ajax="true" action="#{beanCatProvedor.backView}" onclick="PF('statusDialog').show()"/>
+                        <p:commandButton value="Guardar" update=":formProvedor" ajax="true" action="#{beanCatProvedor.save()}" rendered="#{beanCatProvedor.viewEstate=='new'}" onclick="PF('statusDialog').show()" class="primaryButton"/>
+                        <p:commandButton value="Actualizar" update=":formProvedor" ajax="true" action="#{beanCatProvedor.update()}" rendered="#{beanCatProvedor.viewEstate=='searchById'}" onclick="PF('statusDialog').show()" class="primaryButton"/>
+                        <p:commandButton value="Atras" immediate="true" resetValues="true" update=":formProvedor" ajax="true" action="#{beanCatProvedor.backView}" onclick="PF('statusDialog').show()" class="primaryButton"/>
                     </div>
 
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
