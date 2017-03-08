@@ -109,6 +109,7 @@ public class ServiceFacturacion implements IfaceFacturacion {
             df.setRuta_certificado(obj[16] == null ? null : obj[16].toString());
             df.setRuta_llave_privada(obj[17] == null ? null : obj[17].toString());
             df.setRuta_certificado_cancel(obj[18] == null ? null : obj[18].toString());
+            df.setClavePublica(obj[19] == null ? null : obj[19].toString());
             listaDatos.add(df);
         }
         return listaDatos;

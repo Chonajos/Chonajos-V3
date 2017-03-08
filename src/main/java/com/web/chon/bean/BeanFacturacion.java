@@ -5,6 +5,7 @@
  */
 package com.web.chon.bean;
 
+import com.web.chon.dominio.CatalogoSat;
 import com.web.chon.dominio.Cliente;
 import com.web.chon.dominio.DatosFacturacion;
 import com.web.chon.dominio.FacturaPDFDomain;
@@ -16,6 +17,7 @@ import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceBuscaVenta;
 import com.web.chon.service.IfaceCatCliente;
 import com.web.chon.service.IfaceCatSucursales;
+import com.web.chon.service.IfaceCatalogoSat;
 import com.web.chon.service.IfaceFacturacion;
 import com.web.chon.service.IfaceVentaMayoreo;
 import com.web.chon.util.Constantes;
@@ -26,14 +28,24 @@ import com.web.chon.util.TiempoUtil;
 import com.web.chon.util.UtilUpload;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.security.PrivateKey;
+import java.security.cert.X509Certificate;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -52,8 +64,14 @@ import org.springframework.stereotype.Component;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
+import mx.bigdata.sat.cfdi.examples.CFDv32;
+import mx.bigdata.sat.cfdi.examples.CFDv32Factory;
 import mx.bigdata.sat.cfdi.v32.schema.Comprobante;
 import mx.bigdata.sat.cfdi.v32.schema.ObjectFactory;
+import mx.bigdata.sat.security.KeyLoaderEnumeration;
+import mx.bigdata.sat.security.factory.KeyLoaderFactory;
+import org.bouncycastle.openssl.PKCS8Generator;
+import org.bouncycastle.util.io.pem.PemWriter;
 import org.primefaces.event.RowEditEvent;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -81,6 +99,8 @@ public class BeanFacturacion implements Serializable {
     private IfaceBuscaVenta ifaceBuscaVenta;
     @Autowired
     private IfaceFacturacion ifaceFacturacion;
+    @Autowired
+    private IfaceCatalogoSat ifaceCatalogoSat;
 
     //--Variables Generales Bean--//
     private String title;
@@ -128,17 +148,40 @@ public class BeanFacturacion implements Serializable {
     private BigDecimal idClienteVentaMostradorPk;
     private VentaProductoMayoreo dataEdit;
     private VentaProductoMayoreo dataRemove;
-    
+    private BigDecimal importeParcialidad;
+    private String banderaImporteParcialidad;
+    private String metodoPago;
+    private String tipoPago;
+    private String formaPago;
+    private String tipoDocumento;
+    private String moneda;
+
+    private ArrayList<CatalogoSat> listaMetodosPago;
+    private ArrayList<CatalogoSat> listaFormaPago;
+    private ArrayList<CatalogoSat> listaTipoDocumento;
+    private ArrayList<CatalogoSat> listaMonedas;
+
+    private static final BigDecimal TIPO_METODO_PAGO = new BigDecimal(1);
+    private static final BigDecimal TIPO_FORMA_PAGO = new BigDecimal(2);
+    private static final BigDecimal TIPO_MONEDA = new BigDecimal(3);
+    private static final BigDecimal TIPO_DOCUMENTO = new BigDecimal(4);
+    private static final BigDecimal CERO = new BigDecimal(0);
 
     ObjectFactory of;
     Comprobante comp;
 
     @PostConstruct
     public void init() {
+        banderaImporteParcialidad = "false";
         disableBotonBuscarVenta = false;
         disableTextFolioVenta = false;
         filtroMostrador = 1;
-        totalVenta = new BigDecimal(0);
+        totalVenta = CERO;
+        descuento = CERO;
+        subTotal = CERO;
+        iva = CERO;
+        total = CERO;
+
         of = new ObjectFactory();
         comp = of.createComprobante();
         idClienteVentaMostradorPk = new BigDecimal(1103);
@@ -153,32 +196,38 @@ public class BeanFacturacion implements Serializable {
         ventaMayoreo = new VentaMayoreo();
         listaDatosEmisor = new ArrayList<DatosFacturacion>();
 
-        //====INICIALIZACIÓN DE LOS DATOS DE COMPROBANTE DIGITAL===//
-        comp.setVersion("3.2");
-        comp.setSerie("A");
-        comp.setFolio("11639");
-        comp.setFecha(context.getFechaSistema());
         cliente = new Cliente();
         buscarDatosEmisor();
 
-    }
-    public void agregarProducto()
-    {
-        
+        //--inicializacion de listas-----//
+        listaMetodosPago = new ArrayList<CatalogoSat>();
+        listaFormaPago = new ArrayList<CatalogoSat>();
+        listaTipoDocumento = new ArrayList<CatalogoSat>();
+        listaMonedas = new ArrayList<CatalogoSat>();
+
+        listaMetodosPago = ifaceCatalogoSat.getCatalogo(TIPO_METODO_PAGO);
+        listaFormaPago = ifaceCatalogoSat.getCatalogo(TIPO_FORMA_PAGO);
+        listaMonedas = ifaceCatalogoSat.getCatalogo(TIPO_MONEDA);
+        listaTipoDocumento = ifaceCatalogoSat.getCatalogo(TIPO_DOCUMENTO);
+
     }
 
-    public void removeProductoSugerido()
-    {
-        
+    public void agregarProducto() {
+
     }
+
+    public void removeProductoSugerido() {
+
+    }
+
     public void buscarDatosCliente() {
         if (filtroMostrador == 2) {
             datosCliente = ifaceFacturacion.getDatosFacturacionByIdCliente(idClienteVentaMostradorPk);
-            System.out.println("222222222");
+
         } else {
             if (ventaMayoreo != null && ventaMayoreo.getIdClienteFk() != null) {
                 datosCliente = ifaceFacturacion.getDatosFacturacionByIdCliente(ventaMayoreo.getIdClienteFk());
-            System.out.println("11111111111");
+
             }
         }
 
@@ -261,8 +310,17 @@ public class BeanFacturacion implements Serializable {
         setTitle("Generar Factura");
     }
 
+    public void habilitarImporteParcial() {
+        if (metodoPago.equals("01")) {
+            banderaImporteParcialidad = "true";
+        } else {
+            banderaImporteParcialidad = "false";
+        }
+    }
+
     public void backView() {
         setViewEstate("init");
+        setTitle("Facturación Electrónica");
 
     }
 
@@ -292,8 +350,183 @@ public class BeanFacturacion implements Serializable {
 
     }
 
-    public void emitirFactura() {
+    public void imprimirDatosFactura() {
+        System.out.println("Forma de Pago: " + comp.getFormaDePago());
+        System.out.println("Fecha: " + comp.getFecha());
+        System.out.println("Metodo de Pago: " + comp.getMetodoDePago());
+        System.out.println("Tipo de Documento: " + comp.getTipoDeComprobante());
+        System.out.println("Moneda: " + comp.getMoneda());
+    }
+    public void crearFactura() throws Exception
+    {
+        for(DatosFacturacion df:listaDatosEmisor)
+        {
+            if(df.getIdDatosFacturacionPk().intValue()==idEmisorPk.intValue())
+            {
+                datosEmisor.setCalle(df.getCalle()==null ? "":df.getCalle());
+                datosEmisor.setClavePublica(df.getClavePublica()==null ? "":df.getCalle());
+                datosEmisor.setCodigoPostal(df.getCodigoPostal()==null ? "":df.getCalle());
+                datosEmisor.setColonia(df.getColonia()==null ? "":df.getCalle());
+                datosEmisor.setCorreo(df.getCorreo()==null ? "":df.getCalle());
+                datosEmisor.setEstado(df.getEstado()==null ? "":df.getCalle());
+                datosEmisor.setField(df.getField()==null ? "":df.getCalle());
+                datosEmisor.setIdClienteFk(df.getIdClienteFk()==null ? null:df.getIdClienteFk());
+                datosEmisor.setIdCodigoPostalFk(df.getIdCodigoPostalFk()==null ? null:df.getIdCodigoPostalFk());
+                datosEmisor.setLocalidad(df.getLocalidad()==null ? "":df.getCalle());
+                datosEmisor.setMunicipio(df.getMunicipio()==null ? "":df.getCalle());
+                datosEmisor.setNombre(df.getCalle()==null ? "":df.getCalle());
+                datosEmisor.setNumExt(df.getCalle()==null ? "":df.getCalle());
+                datosEmisor.setNumInt(df.getCalle()==null ? "":df.getCalle());
+                datosEmisor.setPais(df.getCalle()==null ? "":df.getCalle());
+                datosEmisor.setRazonSocial(df.getCalle()==null ? "":df.getCalle());
+                datosEmisor.setRegimen(df.getCalle()==null ? "":df.getCalle());
+                datosEmisor.setRfc(df.getCalle()==null ? "":df.getCalle());
+                datosEmisor.setRuta_certificado(df.getCalle()==null ? "":df.getCalle());
+                datosEmisor.setRuta_certificado_cancel(df.getCalle()==null ? "":df.getCalle());
+                datosEmisor.setRuta_llave_privada(df.getCalle()==null ? "":df.getCalle());
+                datosEmisor.setRuta_llave_privada_cancel(df.getCalle()==null ? "":df.getCalle());
+                datosEmisor.setTelefono(df.getCalle()==null ? "":df.getCalle());
+            }
+        }
+        String pathFactura  = Constantes.PATHLOCALFACTURACION + File.separatorChar + "Clientes" + File.separatorChar + datosCliente.getRfc() + File.separatorChar + datosCliente.getRfc()+"_"+ventaMayoreo.getIdSucursalFk().toString()+"_"+ventaMayoreo.getVentaSucursal().toString()+".xml";
+        CFDv32 cfd = new CFDv32(createComprobante(), "mx.bigdata.sat.cfdi.examples");
+        //Cargamos el archivo con la llave
+        System.out.println("Ruta Llave Privada: "+datosEmisor.getRuta_llave_privada());
+        System.out.println("Clave  Publica: "+datosEmisor.getClavePublica());
+        PrivateKey key = KeyLoaderFactory.createInstance(KeyLoaderEnumeration.PRIVATE_KEY_LOADER, new FileInputStream(datosEmisor.getRuta_llave_privada()), datosEmisor.getClavePublica()).getKey();
+        //Cargamos el archivo con el certificado
+        X509Certificate cert = KeyLoaderFactory.createInstance(KeyLoaderEnumeration.PUBLIC_KEY_LOADER, new FileInputStream(datosEmisor.getRuta_certificado())).getKey();
+        mx.bigdata.sat.cfdi.v32.schema.Comprobante sellado = cfd.sellarComprobante(key, cert);
+        
+        FileOutputStream outFile = new FileOutputStream(pathFactura);
+        
+        cfd.validar();
+        cfd.verificar();
+        cfd.guardar(outFile);
+        System.out.println("cadema original " + cfd.getCadenaOriginal());
+    }
+    
+    
 
+    public  Comprobante createComprobante() 
+    {
+        //====INICIALIZACIÓN DE LOS DATOS DE COMPROBANTE DIGITAL===//
+        comp.setVersion("3.2");
+        comp.setSerie("A");
+        comp.setFolio(ventaMayoreo.getVentaSucursal().toString());
+        comp.setFecha(context.getFechaSistema());
+        comp.setFormaDePago(formaPago);
+        comp.setSubTotal(subTotal);
+        comp.setMetodoDePago(metodoPago);
+        comp.setDescuento(descuento);
+        comp.setTotal(total);
+        comp.setTipoDeComprobante(tipoDocumento);
+        comp.setLugarExpedicion(datosEmisor.getCodigoPostal());
+        comp.setMoneda(moneda);
+        comp.setNoCertificado("00001000000404327545");//es el numero del certificado
+        comp.setEmisor(createEmisor(of));
+        comp.setReceptor(createReceptor(of));
+        comp.setConceptos(createConceptos(of));
+        comp.setImpuestos(createImpuestos(of));
+        imprimirDatosFactura();
+        
+        return comp;
+
+    }
+
+    private Comprobante.Emisor createEmisor(ObjectFactory of) {
+        Comprobante.Emisor emisor = of.createComprobanteEmisor();
+        emisor.setNombre(datosEmisor.getRazonSocial());
+
+        emisor.setRfc(datosEmisor.getRfc());
+//        emisor.setRfc("CEC031212QF1");
+        mx.bigdata.sat.cfdi.v32.schema.TUbicacionFiscal uf = of.createTUbicacionFiscal();
+        uf.setCalle(datosEmisor.getCalle());
+        uf.setNoExterior(datosEmisor.getNumExt());
+
+        uf.setColonia(datosEmisor.getColonia());
+        uf.setLocalidad(datosEmisor.getLocalidad());
+        uf.setMunicipio(datosEmisor.getMunicipio());
+        uf.setEstado(datosEmisor.getEstado());
+        uf.setPais(datosEmisor.getPais());
+        uf.setCodigoPostal(datosEmisor.getCodigoPostal());
+        emisor.setDomicilioFiscal(uf);
+
+        //EXPEDIDO EN NO ES OBLIGATORIO
+//    mx.bigdata.sat.cfdi.v32.schema.TUbicacion u = of.createTUbicacion();
+//    u.setCalle("AV. UNIVERSIDAD");
+//    u.setCodigoPostal("09040");
+//    u.setColonia("CENTRAL DE ABASTOS"); 
+//    u.setEstado("DISTRITO FEDERAL");
+//    u.setNoExterior("Q85");
+//    u.setPais("Mexico"); 
+//    emisor.setExpedidoEn(u);
+//REGIMEN FISCAL
+        Comprobante.Emisor.RegimenFiscal regimenFiscal = new Comprobante.Emisor.RegimenFiscal();
+        regimenFiscal.setRegimen("REGIMEN GENERAL DE LEY");
+        ArrayList<Comprobante.Emisor.RegimenFiscal> lstRegimenFiscal = new ArrayList<Comprobante.Emisor.RegimenFiscal>();
+        lstRegimenFiscal.add(regimenFiscal);
+
+//        emisor.setRegimenFiscal(lstRegimenFiscal);
+        emisor.getRegimenFiscal().add(regimenFiscal);
+
+        return emisor;
+    }
+
+    private Comprobante.Receptor createReceptor(ObjectFactory of) {
+
+        Comprobante.Receptor receptor = of.createComprobanteReceptor();
+        receptor.setNombre(datosCliente.getNombre());
+        receptor.setRfc(datosCliente.getRfc());
+
+        mx.bigdata.sat.cfdi.v32.schema.TUbicacion uf = of.createTUbicacion();
+        uf.setCalle(datosCliente.getCalle());
+        uf.setColonia(datosCliente.getColonia());
+        uf.setMunicipio(datosCliente.getMunicipio());
+        uf.setEstado(datosCliente.getEstado());
+        uf.setPais(datosCliente.getPais());
+        uf.setCodigoPostal(datosCliente.getCodigoPostal());
+
+        //NO SON OBLIGATORIOS NO SE OCUPAN POR AHORA
+//    uf.setNoExterior("16 EDF 3"); 
+//    uf.setNoInterior("DPTO 101"); 
+        receptor.setDomicilio(uf);
+        return receptor;
+    }
+
+    private Comprobante.Conceptos createConceptos(ObjectFactory of) {
+        Comprobante.Conceptos cps = of.createComprobanteConceptos();
+        List<Comprobante.Conceptos.Concepto> list = cps.getConcepto();
+        for (VentaProductoMayoreo producto : ventaMayoreo.getListaProductos()) {
+            Comprobante.Conceptos.Concepto c1 = of.createComprobanteConceptosConcepto();
+            c1.setCantidad(producto.getKilosVendidos());
+            c1.setUnidad("KILOS");
+            c1.setDescripcion(producto.getNombreProducto());
+            c1.setValorUnitario(producto.getPrecioProducto());
+            c1.setImporte(producto.getTotalVenta());
+            list.add(c1);
+        }
+
+        
+        return cps;
+    }
+
+    private static Comprobante.Impuestos createImpuestos(ObjectFactory of) {
+        Comprobante.Impuestos imps = of.createComprobanteImpuestos();
+//        Comprobante.Impuestos.Traslados trs = of.createComprobanteImpuestosTraslados();
+//        List<Comprobante.Impuestos.Traslados.Traslado> list = trs.getTraslado();
+//        Comprobante.Impuestos.Traslados.Traslado t1 = of.createComprobanteImpuestosTrasladosTraslado();
+//        t1.setImporte(new BigDecimal("0.00"));
+//        t1.setImpuesto("IVA");
+//        t1.setTasa(new BigDecimal("0.00"));
+//        list.add(t1);
+//        Comprobante.Impuestos.Traslados.Traslado t2 = of.createComprobanteImpuestosTrasladosTraslado();
+//        t2.setImporte(new BigDecimal("22.07"));
+//        t2.setImpuesto("IVA");
+//        t2.setTasa(new BigDecimal("16.00"));
+//        list.add(t2);
+//        imps.setTraslados(trs);
+        return imps;
     }
 
     public void generarFactura() {
@@ -830,6 +1063,93 @@ public class BeanFacturacion implements Serializable {
     public void setDataRemove(VentaProductoMayoreo dataRemove) {
         this.dataRemove = dataRemove;
     }
-    
+
+    public BigDecimal getImporteParcialidad() {
+        return importeParcialidad;
+    }
+
+    public void setImporteParcialidad(BigDecimal importeParcialidad) {
+        this.importeParcialidad = importeParcialidad;
+    }
+
+    public String getBanderaImporteParcialidad() {
+        return banderaImporteParcialidad;
+    }
+
+    public void setBanderaImporteParcialidad(String banderaImporteParcialidad) {
+        this.banderaImporteParcialidad = banderaImporteParcialidad;
+    }
+
+    public String getMetodoPago() {
+        return metodoPago;
+    }
+
+    public void setMetodoPago(String metodoPago) {
+        this.metodoPago = metodoPago;
+    }
+
+    public String getTipoPago() {
+        return tipoPago;
+    }
+
+    public void setTipoPago(String tipoPago) {
+        this.tipoPago = tipoPago;
+    }
+
+    public String getFormaPago() {
+        return formaPago;
+    }
+
+    public void setFormaPago(String formaPago) {
+        this.formaPago = formaPago;
+    }
+
+    public String getTipoDocumento() {
+        return tipoDocumento;
+    }
+
+    public void setTipoDocumento(String tipoDocumento) {
+        this.tipoDocumento = tipoDocumento;
+    }
+
+    public String getMoneda() {
+        return moneda;
+    }
+
+    public void setMoneda(String moneda) {
+        this.moneda = moneda;
+    }
+
+    public ArrayList<CatalogoSat> getListaMetodosPago() {
+        return listaMetodosPago;
+    }
+
+    public void setListaMetodosPago(ArrayList<CatalogoSat> listaMetodosPago) {
+        this.listaMetodosPago = listaMetodosPago;
+    }
+
+    public ArrayList<CatalogoSat> getListaFormaPago() {
+        return listaFormaPago;
+    }
+
+    public void setListaFormaPago(ArrayList<CatalogoSat> listaFormaPago) {
+        this.listaFormaPago = listaFormaPago;
+    }
+
+    public ArrayList<CatalogoSat> getListaTipoDocumento() {
+        return listaTipoDocumento;
+    }
+
+    public void setListaTipoDocumento(ArrayList<CatalogoSat> listaTipoDocumento) {
+        this.listaTipoDocumento = listaTipoDocumento;
+    }
+
+    public ArrayList<CatalogoSat> getListaMonedas() {
+        return listaMonedas;
+    }
+
+    public void setListaMonedas(ArrayList<CatalogoSat> listaMonedas) {
+        this.listaMonedas = listaMonedas;
+    }
 
 }

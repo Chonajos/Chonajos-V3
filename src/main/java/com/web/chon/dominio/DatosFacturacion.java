@@ -39,6 +39,17 @@ public class DatosFacturacion implements Serializable
     private String estado;
     private String codigoPostal;
     private String nombre;
+    private String clavePublica;
+
+    public String getClavePublica() {
+        return clavePublica;
+    }
+
+    public void setClavePublica(String clavePublica) {
+        this.clavePublica = clavePublica;
+    }
+    
+    
 
     public String getNombre() {
         return nombre;

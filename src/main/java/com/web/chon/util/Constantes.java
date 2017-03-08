@@ -14,4 +14,8 @@ public class Constantes
     public static String PATHSERVER="/opt/wls/wls12210/user_projects/domains/base_domain/servers/AdminServer/tmp/_WL_user/Chonajos-1.0-SNAPSHOT/kkoz5u/war/";
     public static String PATHSERVERVIDEO="/home/servidorapl/videosProducto";
     public static String PATHLOCAL="";
+    
+    public static String PATHLOCALFACTURACION="/home/jramirez/SIV/Facturas/";
+    public static String PATHSERVERFACTURACION="/home/servidorapl/SIV/Facturas/";
+    
 }
