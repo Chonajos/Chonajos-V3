@@ -38,6 +38,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -161,7 +162,7 @@ public class BeanFacturacion implements Serializable {
     private String metodoPago;
     private String tipoPago;
     private String formaPago;
-    private String tipoDocumento;
+    private BigDecimal tipoDocumento;
     private String moneda;
 
     private ArrayList<CatalogoSat> listaMetodosPago;
@@ -223,6 +224,29 @@ public class BeanFacturacion implements Serializable {
         listaMonedas = ifaceCatalogoSat.getCatalogo(TIPO_MONEDA);
         listaTipoDocumento = ifaceCatalogoSat.getCatalogo(TIPO_DOCUMENTO);
 
+    }
+    public void calcularTotales()
+    {
+        for(CatalogoSat cs:listaTipoDocumento)
+        {
+           
+            if(cs.getIdCatalogoSatPk().intValue()==tipoDocumento.intValue())
+            {
+                subTotal = (ventaMayoreo.getTotalVenta().setScale(2, RoundingMode.CEILING)).subtract(descuento.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
+                System.out.println("subTotal : "+subTotal);
+                iva = (cs.getValor().setScale(2, RoundingMode.CEILING)).multiply(subTotal.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
+                System.out.println("Iva:  : "+iva);
+                iva = iva.setScale(2, RoundingMode.CEILING).divide(new BigDecimal(100).setScale(2, RoundingMode.CEILING));
+                System.out.println("Iva Dividido:  : "+iva);
+                total =(iva.setScale(2, RoundingMode.CEILING)).add(subTotal.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
+                System.out.println("Total: "+total);
+            }
+                    
+        }
+    }
+    public void agregarDescuento()
+    {
+        
     }
 
     public void agregarProducto() {
@@ -324,8 +348,11 @@ public class BeanFacturacion implements Serializable {
     }
 
     public void habilitarImporteParcial() {
-        if (metodoPago.equals("01")) {
+        System.out.println("forma de pago: "+formaPago);
+        if (formaPago.equals("02") || formaPago.equals("03")) 
+        {
             banderaImporteParcialidad = "true";
+            
         } else {
             banderaImporteParcialidad = "false";
         }
@@ -525,7 +552,15 @@ public class BeanFacturacion implements Serializable {
         comp.setMetodoDePago(metodoPago);
         comp.setDescuento(descuento);
         comp.setTotal(total);
-        comp.setTipoDeComprobante(tipoDocumento);
+        for(CatalogoSat cs:listaTipoDocumento)
+        {
+            
+            if(cs.getIdCatalogoSatPk().equals(tipoDocumento))
+            {
+                comp.setTipoDeComprobante(cs.getCodigo());
+            }
+        }
+        
         
         comp.setLugarExpedicion(datosEmisor.getCodigoPostal());
         comp.setMoneda(moneda);
@@ -617,21 +652,21 @@ public class BeanFacturacion implements Serializable {
         return cps;
     }
 
-    private static Comprobante.Impuestos createImpuestos(ObjectFactory of) {
+    private  Comprobante.Impuestos createImpuestos(ObjectFactory of) {
         Comprobante.Impuestos imps = of.createComprobanteImpuestos();
-//        Comprobante.Impuestos.Traslados trs = of.createComprobanteImpuestosTraslados();
-//        List<Comprobante.Impuestos.Traslados.Traslado> list = trs.getTraslado();
-//        Comprobante.Impuestos.Traslados.Traslado t1 = of.createComprobanteImpuestosTrasladosTraslado();
-//        t1.setImporte(new BigDecimal("0.00"));
-//        t1.setImpuesto("IVA");
-//        t1.setTasa(new BigDecimal("0.00"));
-//        list.add(t1);
+        Comprobante.Impuestos.Traslados trs = of.createComprobanteImpuestosTraslados();
+        List<Comprobante.Impuestos.Traslados.Traslado> list = trs.getTraslado();
+        Comprobante.Impuestos.Traslados.Traslado t1 = of.createComprobanteImpuestosTrasladosTraslado();
+        t1.setImporte(iva);
+        t1.setImpuesto("IVA");
+        t1.setTasa(new BigDecimal("16.00"));
+        list.add(t1);
 //        Comprobante.Impuestos.Traslados.Traslado t2 = of.createComprobanteImpuestosTrasladosTraslado();
 //        t2.setImporte(new BigDecimal("22.07"));
 //        t2.setImpuesto("IVA");
 //        t2.setTasa(new BigDecimal("16.00"));
 //        list.add(t2);
-//        imps.setTraslados(trs);
+        imps.setTraslados(trs);
         return imps;
     }
 
@@ -1210,11 +1245,11 @@ public class BeanFacturacion implements Serializable {
         this.formaPago = formaPago;
     }
 
-    public String getTipoDocumento() {
+    public BigDecimal getTipoDocumento() {
         return tipoDocumento;
     }
 
-    public void setTipoDocumento(String tipoDocumento) {
+    public void setTipoDocumento(BigDecimal tipoDocumento) {
         this.tipoDocumento = tipoDocumento;
     }
 

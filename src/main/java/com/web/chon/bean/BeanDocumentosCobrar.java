@@ -272,8 +272,6 @@ public class BeanDocumentosCobrar implements Serializable {
 
     public void abonar() {
         saldoActual = ifaceCorteCaja.getSaldoCajaByIdCaja(opcaja.getIdCajaFk());
-        System.out.println("*******************************************************");
-        System.out.println(saldoActual.toString());
         if (saldoActual.getMontoChequesNuevos().compareTo(documentoData.getMonto()) < 0) {
             JsfUtil.addErrorMessageClean("No cuenta con saldo de Cheques suficiente");
         } else {

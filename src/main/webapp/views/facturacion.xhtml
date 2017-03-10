@@ -240,13 +240,15 @@
                         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 alignLeft">
                             <p:outputLabel class="col-lg-4 col-md-5 col-sm-4 col-xs-12 alignRight"  for="filtroDocumento" value ="Tipo Documento" /> 
                             <p:selectOneMenu  style="width: 50% !important" id="filtroDocumento" class="col-lg-5 col-md-7 col-sm-8 col-xs-12" value="#{beanFacturacion.tipoDocumento}" >
-                                <f:selectItems value="#{beanFacturacion.listaTipoDocumento}" var="documento" itemLabel="#{documento.descripcion} #{documento.valor} %" itemValue="#{documento.codigo}"/>
+                                <f:selectItems value="#{beanFacturacion.listaTipoDocumento}" var="documento" itemLabel="#{documento.descripcion} #{documento.valor} %" itemValue="#{documento.idCatalogoSatPk}"/>
+                             <p:ajax event="change" update=":formContent" listener="#{beanFacturacion.calcularTotales()}"/>
                             </p:selectOneMenu>
                         </div>
                         <div class="col-lg-5 col-md-4 col-sm-12 col-xs-12 alignLeft">
                             <p:outputLabel class="col-lg-4 col-md-5 col-sm-4 col-xs-12 alignRight"  for="formaPago" value ="Forma de Pago:" /> 
                             <p:selectOneMenu  style="width: 65% !important" id="formaPago" class="col-lg-8 col-md-7 col-sm-8 col-xs-12" value="#{beanFacturacion.formaPago}" >
                                 <f:selectItems value="#{beanFacturacion.listaFormaPago}" var="forma" itemLabel="#{forma.descripcion}" itemValue="#{forma.codigo}"/>
+                            <p:ajax event="change" update=":formContent" listener="#{beanFacturacion.habilitarImporteParcial()}"/>
                             </p:selectOneMenu>
                         </div>
                        
@@ -254,7 +256,7 @@
                             <p:outputLabel class="col-lg-6 col-md-5 col-sm-4 col-xs-12 alignRight"  for="metodoPago" value ="Método de Pago:" /> 
                             <p:selectOneMenu  style="width: 50% !important" id="metodoPago" class="col-lg-5 col-md-7 col-sm-8 col-xs-12" value="#{beanFacturacion.metodoPago}" >
                                 <f:selectItems value="#{beanFacturacion.listaMetodosPago}" var="metodo" itemLabel="#{metodo.descripcion}" itemValue="#{metodo.codigo}"/>
-                                <p:ajax event="change" update=":formContent" listener="#{beanFacturacion.habilitarImporteParcial()}"/>
+                                
                             </p:selectOneMenu>
                         </div>
                     </div>
@@ -318,7 +320,8 @@
                             <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 alignRight ">
                                 <div class="form-group" align="right">
                                     <p:commandButton value="Agregar Otro Producto" onclick="PF('statusDialog').show()" update=":formContent"  rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}" ajax="true" disabled="false" action="#{beanFacturacion.agregarProducto()}"/>
-                                    <div class="col-lg- col-md-12 col-sm-12 col-xs-12 form-group">
+                                    <p:commandButton value="Agregar Descuento" onclick="PF('statusDialog').show()" update=":formContent"  rendered="#{beanFacturacion.viewEstate=='generate'}" ajax="true" disabled="false" action="#{beanFacturacion.agregarDescuento()}"/>
+                                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 form-group">
                                         <p:outputLabel class="col-lg-8 col-md-2 col-sm-3 col-xs-12"  rendered="#{beanFacturacion.banderaImporteParcialidad=='true'}" for="txtParcialidad" value ="Importe Parcialidad: " /> 
                                         <p:inputText id="txtParcialidad"  class=" col-lg-4 col-md-2 col-sm-3 col-xs-12" rendered="#{beanFacturacion.banderaImporteParcialidad=='true'}" value="#{beanFacturacion.importeParcialidad}" />
                                     </div>

@@ -6,6 +6,7 @@
 package com.web.chon.bean;
 
 import com.web.chon.dominio.Caja;
+import com.web.chon.dominio.CorteCaja;
 import com.web.chon.dominio.OperacionesCaja;
 import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.TipoOperacion;
@@ -95,8 +96,11 @@ public class BeanTransferencias implements Serializable {
 
     private BigDecimal idTipoTransferenciaFk;
 
+    private CorteCaja saldoActual;
+
     @PostConstruct
     public void init() {
+        saldoActual = new CorteCaja();
         usuario = context.getUsuarioAutenticado();
         setTitle("Transferencias entre Cajas");
         setViewEstate("init");
@@ -129,34 +133,53 @@ public class BeanTransferencias implements Serializable {
 
     //----Funciones para Verificar Maximo de Dinero en Caja --//
     public void transferir() {
-        opcajaOrigen.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
-        opcajaOrigen.setMonto(monto);
-        opcajaOrigen.setComentarios(comentarios);
-
-        if (idTipoTransferenciaFk.intValue() == 1) {
-
-            opcajaOrigen.setIdFormaPago(EFECTIVO);
+        boolean bandera = false;
+        saldoActual = ifaceCorteCaja.getSaldoCajaByIdCaja(opcajaOrigen.getIdCajaFk());
+        if (idTipoTransferenciaFk.intValue() == 1)
+        {
+            if (saldoActual.getSaldoNuevo().compareTo(monto) < 0)
+            {
+                bandera = true;
+            }
         } else {
-
-            opcajaOrigen.setIdFormaPago(CHEQUE);
+            if (saldoActual.getMontoChequesNuevos().compareTo(monto) < 0)
+            {
+                bandera = true;
+            }
         }
 
-        opcajaOrigen.setIdCajaDestinoFk(idCajaDestinoBean);
+        if (bandera) 
+        {
+            JsfUtil.addErrorMessageClean("No cuenta con saldo suficiente");
+        } else {
+            opcajaOrigen.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
+            opcajaOrigen.setMonto(monto);
+            opcajaOrigen.setComentarios(comentarios);
 
-        if (caja.getIdCajaPk() != null) {
+            if (idTipoTransferenciaFk.intValue() == 1) {
 
-            if (ifaceOperacionesCaja.insertaOperacion(opcajaOrigen) == 1) 
-            {
-                JsfUtil.addSuccessMessageClean("Transferencia Registrada Correctamente");
-                monto = null;
-                comentarios = null;
-                idCajaDestinoBean = null;
+                opcajaOrigen.setIdFormaPago(EFECTIVO);
             } else {
-                JsfUtil.addErrorMessageClean("Ocurrio un error al registrar transferencia, contactar al administrador");
+
+                opcajaOrigen.setIdFormaPago(CHEQUE);
             }
 
-        } else {
-            JsfUtil.addErrorMessageClean("Su usuario no cuenta con caja registrada para realizar el pago de servicios");
+            opcajaOrigen.setIdCajaDestinoFk(idCajaDestinoBean);
+
+            if (caja.getIdCajaPk() != null) {
+
+                if (ifaceOperacionesCaja.insertaOperacion(opcajaOrigen) == 1) {
+                    JsfUtil.addSuccessMessageClean("Transferencia Registrada Correctamente");
+                    monto = null;
+                    comentarios = null;
+                    idCajaDestinoBean = null;
+                } else {
+                    JsfUtil.addErrorMessageClean("Ocurrio un error al registrar transferencia, contactar al administrador");
+                }
+
+            } else {
+                JsfUtil.addErrorMessageClean("Su usuario no cuenta con caja registrada para realizar el pago de servicios");
+            }
         }
     }
 

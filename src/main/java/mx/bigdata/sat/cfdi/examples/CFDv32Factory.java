@@ -42,7 +42,6 @@ public final class CFDv32Factory {
         comp.setMetodoDePago("01");
         comp.setDescuento(new BigDecimal("0.000000"));
         comp.setTotal(new BigDecimal("3355.000000"));
-        
         comp.setTipoDeComprobante("ingreso");
         comp.setLugarExpedicion("09040");
         comp.setMoneda("MXN");
@@ -51,6 +50,8 @@ public final class CFDv32Factory {
         comp.setReceptor(createReceptor(of));
         comp.setConceptos(createConceptos(of));
         comp.setImpuestos(createImpuestos(of));
+        
+        
 
 //    comp.setAddenda(createAddenda(of));
         return comp;
