@@ -237,22 +237,22 @@
                     <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 form-group">
 
 
-                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12 alignLeft">
-                            <p:outputLabel class="col-lg-6 col-md-5 col-sm-4 col-xs-12 alignRight"  for="filtroDocumento" value ="Tipo Documento" /> 
+                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 alignLeft">
+                            <p:outputLabel class="col-lg-4 col-md-5 col-sm-4 col-xs-12 alignRight"  for="filtroDocumento" value ="Tipo Documento" /> 
                             <p:selectOneMenu  style="width: 50% !important" id="filtroDocumento" class="col-lg-5 col-md-7 col-sm-8 col-xs-12" value="#{beanFacturacion.tipoDocumento}" >
                                 <f:selectItems value="#{beanFacturacion.listaTipoDocumento}" var="documento" itemLabel="#{documento.descripcion}" itemValue="#{documento.codigo}"/>
                             </p:selectOneMenu>
                         </div>
-                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12 alignLeft">
-                            <p:outputLabel class="col-lg-6 col-md-5 col-sm-4 col-xs-12 alignRight"  for="formaPago" value ="Forma de Pago:" /> 
-                            <p:selectOneMenu  style="width: 50% !important" id="formaPago" class="col-lg-5 col-md-7 col-sm-8 col-xs-12" value="#{beanFacturacion.formaPago}" >
+                        <div class="col-lg-5 col-md-4 col-sm-12 col-xs-12 alignLeft">
+                            <p:outputLabel class="col-lg-4 col-md-5 col-sm-4 col-xs-12 alignRight"  for="formaPago" value ="Forma de Pago:" /> 
+                            <p:selectOneMenu  style="width: 65% !important" id="formaPago" class="col-lg-8 col-md-7 col-sm-8 col-xs-12" value="#{beanFacturacion.formaPago}" >
                                 <f:selectItems value="#{beanFacturacion.listaFormaPago}" var="forma" itemLabel="#{forma.descripcion}" itemValue="#{forma.codigo}"/>
                             </p:selectOneMenu>
                         </div>
                        
-                        <div class="col-lg-5 col-md-4 col-sm-12 col-xs-12 alignLeft">
-                            <p:outputLabel class="col-lg-4 col-md-5 col-sm-4 col-xs-12 alignRight"  for="metodoPago" value ="Método de Pago:" /> 
-                            <p:selectOneMenu  style="width: 65% !important" id="metodoPago" class="col-lg-8 col-md-7 col-sm-8 col-xs-12" value="#{beanFacturacion.metodoPago}" >
+                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12 alignLeft">
+                            <p:outputLabel class="col-lg-6 col-md-5 col-sm-4 col-xs-12 alignRight"  for="metodoPago" value ="Método de Pago:" /> 
+                            <p:selectOneMenu  style="width: 50% !important" id="metodoPago" class="col-lg-5 col-md-7 col-sm-8 col-xs-12" value="#{beanFacturacion.metodoPago}" >
                                 <f:selectItems value="#{beanFacturacion.listaMetodosPago}" var="metodo" itemLabel="#{metodo.descripcion}" itemValue="#{metodo.codigo}"/>
                                 <p:ajax event="change" update=":formContent" listener="#{beanFacturacion.habilitarImporteParcial()}"/>
                             </p:selectOneMenu>

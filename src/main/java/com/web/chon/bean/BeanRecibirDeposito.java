@@ -78,6 +78,7 @@ public class BeanRecibirDeposito implements Serializable {
     private static final BigDecimal SALIDA = new BigDecimal(2);
 
     private static final BigDecimal STATUS_REALIZADA = new BigDecimal(1);
+   
     private static final BigDecimal STATUS_PENDIENTE = new BigDecimal(2);
     private static final BigDecimal STATUS_RECHAZADA = new BigDecimal(3);
     private static final BigDecimal STATUS_CANCELADA = new BigDecimal(4);
@@ -86,6 +87,7 @@ public class BeanRecibirDeposito implements Serializable {
     private static final BigDecimal STATUS_APROBADA = new BigDecimal(3);
 
     //
+    private static final BigDecimal FORMAPAGOCUENTABANCARIA = new BigDecimal(4);
     private BigDecimal idCombo;
 
     private OperacionesCaja opcaja;
@@ -165,12 +167,13 @@ public class BeanRecibirDeposito implements Serializable {
         opcaja.setIdUserFk(data1.getIdUserFk());
         opcaja.setMonto(data1.getMonto());
         opcaja.setEntradaSalida(SALIDA);
-        opcaja.setComentarios("SISTEMA: Pago Bancario : OC: " + data1.getIdOperacionCajaFk());
+        opcaja.setComentarios(" SISTEMA: Pago Bancario : OC: " + data1.getIdOperacionCajaFk());
         OperacionesCaja opTemporal = new OperacionesCaja();
         opTemporal = ifaceOperacionesCaja.getOperacionByIdPk(data1.getIdOperacionCajaFk());
 
         opcaja.setIdTipoOperacionFk(opTemporal.getIdTipoOperacionFk());
-        opcaja.setIdFormaPago(opTemporal.getIdFormaPago());
+        opcaja.setIdFormaPago(FORMAPAGOCUENTABANCARIA);
+        
         //opcaja.setIdSucursalFk();
         //opcaja.setIdConceptoFk(idConceptoTransAprobada);
 

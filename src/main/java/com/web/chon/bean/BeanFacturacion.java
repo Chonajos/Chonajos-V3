@@ -5,6 +5,8 @@
  */
 package com.web.chon.bean;
 
+import advanswsdl_pkg.AdvanswsdlLocator;
+import advanswsdl_pkg.RespuestaTimbre2;
 import com.web.chon.dominio.CatalogoSat;
 import com.web.chon.dominio.Cliente;
 import com.web.chon.dominio.DatosFacturacion;
@@ -32,10 +34,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.text.DecimalFormat;
@@ -48,6 +53,8 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
@@ -70,6 +77,7 @@ import mx.bigdata.sat.cfdi.v32.schema.Comprobante;
 import mx.bigdata.sat.cfdi.v32.schema.ObjectFactory;
 import mx.bigdata.sat.security.KeyLoaderEnumeration;
 import mx.bigdata.sat.security.factory.KeyLoaderFactory;
+import org.apache.commons.io.IOUtils;
 import org.bouncycastle.openssl.PKCS8Generator;
 import org.bouncycastle.util.io.pem.PemWriter;
 import org.primefaces.event.RowEditEvent;
@@ -161,11 +169,16 @@ public class BeanFacturacion implements Serializable {
     private ArrayList<CatalogoSat> listaTipoDocumento;
     private ArrayList<CatalogoSat> listaMonedas;
 
-    private static final BigDecimal TIPO_METODO_PAGO = new BigDecimal(1);
-    private static final BigDecimal TIPO_FORMA_PAGO = new BigDecimal(2);
+    private static final BigDecimal TIPO_METODO_PAGO = new BigDecimal(2);
+    private static final BigDecimal TIPO_FORMA_PAGO = new BigDecimal(1);
     private static final BigDecimal TIPO_MONEDA = new BigDecimal(3);
     private static final BigDecimal TIPO_DOCUMENTO = new BigDecimal(4);
     private static final BigDecimal CERO = new BigDecimal(0);
+    
+    //nunca cambia, lo proporciono el pac
+    private static String API_KEY = "1e550c937ba7cf3f65a6136ae86add2b";
+    private String pathFacturaClienteComprobante;
+    private String pathFacturaClienteTimbrado;
 
     ObjectFactory of;
     Comprobante comp;
@@ -349,13 +362,88 @@ public class BeanFacturacion implements Serializable {
         System.out.println("cancel");
 
     }
+    
+    public void timbrar() {
+        try {
+            RespuestaTimbre2 respuesta = new RespuestaTimbre2();
+            AdvanswsdlLocator service = new AdvanswsdlLocator();
+
+            URL url = new URL(pathFacturaClienteTimbrado);
+            InputStreamReader in = new InputStreamReader(url.openStream());
+
+            String xmlCfdi = IOUtils.toString(in);
+
+            advanswsdl_pkg.AdvanswsdlPortType port = service.getadvanswsdlPort();
+            respuesta = port.timbrar2(API_KEY, xmlCfdi);
+
+            System.out.println("url " + url.openStream());
+            System.out.println("codes:  " + respuesta.getCode());
+            System.out.println("mensajes: " + respuesta.getMessage());
+            System.out.println("subcodes:  " + respuesta.getSubCode());
+            System.out.println("CFDI:  " + respuesta.getCFDI());
+            System.out.println("timbres:  " + respuesta.getCFDI());
+
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(BeanRelOperMayoreo.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(BeanRelOperMayoreo.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(BeanRelOperMayoreo.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     public void imprimirDatosFactura() {
+        System.out.println("Certificado: " + comp.getCertificado());
+        System.out.println("Condiciones de Pago: " + comp.getCondicionesDePago());
+        System.out.println("Folio: " + comp.getFolio());
+        System.out.println("Folio Fiscal Origen: " + comp.getFolioFiscalOrig());
         System.out.println("Forma de Pago: " + comp.getFormaDePago());
-        System.out.println("Fecha: " + comp.getFecha());
+        System.out.println("Lugar de Expedicion: " + comp.getLugarExpedicion());
         System.out.println("Metodo de Pago: " + comp.getMetodoDePago());
-        System.out.println("Tipo de Documento: " + comp.getTipoDeComprobante());
         System.out.println("Moneda: " + comp.getMoneda());
+        System.out.println("Motivo Descuento: " + comp.getMotivoDescuento());
+        System.out.println("No Certificado: " + comp.getNoCertificado());
+        System.out.println("Num Cta Pago: " + comp.getNumCtaPago());
+        System.out.println("Sello: " + comp.getSello());
+        System.out.println("Serie: " + comp.getSerie());
+        System.out.println("Folio Fiscal Origen: " + comp.getSerieFolioFiscalOrig());
+        System.out.println("Tipo Cambio: " + comp.getTipoCambio());
+        System.out.println("Tipo Comprobante: " + comp.getTipoDeComprobante());
+        System.out.println("Version: " + comp.getVersion());
+        System.out.println("Descuento: " + comp.getDescuento());
+        System.out.println("Fecha: " + comp.getFecha());
+        System.out.println("Certificado: " + comp.getCertificado());
+        System.out.println("---------------------DATOS DE EMISOR------------------------------");
+        System.out.println("Nombre Emisor: "+comp.getEmisor().getNombre());
+        System.out.println("RFC Emisor: "+comp.getEmisor().getRfc());
+        System.out.println("Domicilo Fiscal Emisor:");
+        System.out.println("    Calle: "+comp.getEmisor().getDomicilioFiscal().getCalle());
+        System.out.println("    Codigo Postal: "+comp.getEmisor().getDomicilioFiscal().getCodigoPostal());
+        System.out.println("    Colonia: "+comp.getEmisor().getDomicilioFiscal().getColonia());
+        System.out.println("    Estado: "+comp.getEmisor().getDomicilioFiscal().getEstado());
+        System.out.println("    Municipio: "+comp.getEmisor().getDomicilioFiscal().getMunicipio());
+        System.out.println("    Localidad: "+comp.getEmisor().getDomicilioFiscal().getLocalidad());
+        System.out.println("    No. Exterior: "+comp.getEmisor().getDomicilioFiscal().getNoExterior());
+        System.out.println("    No. Interior "+comp.getEmisor().getDomicilioFiscal().getNoInterior());
+        System.out.println("    Pais: "+comp.getEmisor().getDomicilioFiscal().getPais());
+        System.out.println("    Referencia: "+comp.getEmisor().getDomicilioFiscal().getReferencia());
+        
+        System.out.println("Expedido en: "+comp.getEmisor().getExpedidoEn());
+        
+        System.out.println("---------------------DATOS CLIENTE------------------------------");
+        System.out.println("Nombre Receptor: "+comp.getReceptor().getNombre());
+        System.out.println("RFC Receptor: "+comp.getReceptor().getRfc());
+        System.out.println("Domicilo Fiscal Receptor:");
+        System.out.println("    Calle: "+comp.getReceptor().getDomicilio().getCalle());
+        System.out.println("    Codigo Postal: "+comp.getReceptor().getDomicilio().getCodigoPostal());
+        System.out.println("    Colonia: "+comp.getReceptor().getDomicilio().getColonia());
+        System.out.println("    Estado: "+comp.getReceptor().getDomicilio().getEstado());
+        System.out.println("    Municipio: "+comp.getReceptor().getDomicilio().getMunicipio());
+        System.out.println("    Localidad: "+comp.getReceptor().getDomicilio().getLocalidad());
+        System.out.println("    No. Exterior: "+comp.getReceptor().getDomicilio().getNoExterior());
+        System.out.println("    No. Interior "+comp.getReceptor().getDomicilio().getNoInterior());
+        System.out.println("    Pais: "+comp.getReceptor().getDomicilio().getPais());
+        System.out.println("    Referencia: "+comp.getReceptor().getDomicilio().getReferencia());
     }
     public void crearFactura() throws Exception
     {
@@ -364,46 +452,55 @@ public class BeanFacturacion implements Serializable {
             if(df.getIdDatosFacturacionPk().intValue()==idEmisorPk.intValue())
             {
                 datosEmisor.setCalle(df.getCalle()==null ? "":df.getCalle());
-                datosEmisor.setClavePublica(df.getClavePublica()==null ? "":df.getCalle());
-                datosEmisor.setCodigoPostal(df.getCodigoPostal()==null ? "":df.getCalle());
-                datosEmisor.setColonia(df.getColonia()==null ? "":df.getCalle());
-                datosEmisor.setCorreo(df.getCorreo()==null ? "":df.getCalle());
-                datosEmisor.setEstado(df.getEstado()==null ? "":df.getCalle());
-                datosEmisor.setField(df.getField()==null ? "":df.getCalle());
+                datosEmisor.setClavePublica(df.getClavePublica()==null ? "":df.getClavePublica());
+                datosEmisor.setCodigoPostal(df.getCodigoPostal()==null ? "":df.getCodigoPostal());
+                datosEmisor.setColonia(df.getColonia()==null ? "":df.getColonia());
+                datosEmisor.setCorreo(df.getCorreo()==null ? "":df.getCorreo());
+                datosEmisor.setEstado(df.getEstado()==null ? "":df.getEstado());
+                datosEmisor.setField(df.getField()==null ? "":df.getField());
                 datosEmisor.setIdClienteFk(df.getIdClienteFk()==null ? null:df.getIdClienteFk());
                 datosEmisor.setIdCodigoPostalFk(df.getIdCodigoPostalFk()==null ? null:df.getIdCodigoPostalFk());
-                datosEmisor.setLocalidad(df.getLocalidad()==null ? "":df.getCalle());
-                datosEmisor.setMunicipio(df.getMunicipio()==null ? "":df.getCalle());
-                datosEmisor.setNombre(df.getCalle()==null ? "":df.getCalle());
-                datosEmisor.setNumExt(df.getCalle()==null ? "":df.getCalle());
-                datosEmisor.setNumInt(df.getCalle()==null ? "":df.getCalle());
-                datosEmisor.setPais(df.getCalle()==null ? "":df.getCalle());
-                datosEmisor.setRazonSocial(df.getCalle()==null ? "":df.getCalle());
-                datosEmisor.setRegimen(df.getCalle()==null ? "":df.getCalle());
-                datosEmisor.setRfc(df.getCalle()==null ? "":df.getCalle());
-                datosEmisor.setRuta_certificado(df.getCalle()==null ? "":df.getCalle());
-                datosEmisor.setRuta_certificado_cancel(df.getCalle()==null ? "":df.getCalle());
-                datosEmisor.setRuta_llave_privada(df.getCalle()==null ? "":df.getCalle());
-                datosEmisor.setRuta_llave_privada_cancel(df.getCalle()==null ? "":df.getCalle());
-                datosEmisor.setTelefono(df.getCalle()==null ? "":df.getCalle());
+                datosEmisor.setLocalidad(df.getLocalidad()==null ? "":df.getLocalidad());
+                datosEmisor.setMunicipio(df.getMunicipio()==null ? "":df.getMunicipio());
+                datosEmisor.setNombre(df.getNombre()==null ? "":df.getNombre());
+                datosEmisor.setNumExt(df.getNumExt()==null ? "":df.getNumExt());
+                datosEmisor.setNumInt(df.getNumInt()==null ? "":df.getNumInt());
+                datosEmisor.setPais(df.getPais()==null ? "":df.getPais());
+                datosEmisor.setRazonSocial(df.getRazonSocial()==null ? "":df.getRazonSocial());
+                datosEmisor.setRegimen(df.getRegimen()==null ? "":df.getRegimen());
+                datosEmisor.setRfc(df.getRfc()==null ? "":df.getRfc());
+                datosEmisor.setRuta_certificado(df.getRuta_certificado()==null ? "":df.getRuta_certificado());
+                datosEmisor.setRuta_certificado_cancel(df.getRuta_certificado_cancel()==null ? "":df.getRuta_certificado_cancel());
+                datosEmisor.setRuta_llave_privada(df.getRuta_llave_privada()==null ? "":df.getRuta_llave_privada());
+                datosEmisor.setRuta_llave_privada_cancel(df.getRuta_llave_privada_cancel()==null ? "":df.getRuta_llave_privada_cancel());
+                datosEmisor.setTelefono(df.getTelefono()==null ? "":df.getTelefono());
             }
         }
-        String pathFactura  = Constantes.PATHLOCALFACTURACION + File.separatorChar + "Clientes" + File.separatorChar + datosCliente.getRfc() + File.separatorChar + datosCliente.getRfc()+"_"+ventaMayoreo.getIdSucursalFk().toString()+"_"+ventaMayoreo.getVentaSucursal().toString()+".xml";
+        pathFacturaClienteComprobante  = Constantes.PATHLOCALFACTURACION + File.separatorChar + "Clientes" + File.separatorChar + datosCliente.getRfc()+ File.separatorChar+"COMPROBANTE" + File.separatorChar + File.separatorChar + datosCliente.getRfc()+"_"+ventaMayoreo.getIdSucursalFk().toString()+"_"+ventaMayoreo.getVentaSucursal().toString()+".xml";
+        
+        pathFacturaClienteTimbrado  = Constantes.PATHLOCALFACTURACION + File.separatorChar + "Clientes" + File.separatorChar + datosCliente.getRfc()+ File.separatorChar+"TIMBRADO" + File.separatorChar + File.separatorChar + datosCliente.getRfc()+"_"+ventaMayoreo.getIdSucursalFk().toString()+"_"+ventaMayoreo.getVentaSucursal().toString()+".xml";
+        
         CFDv32 cfd = new CFDv32(createComprobante(), "mx.bigdata.sat.cfdi.examples");
         //Cargamos el archivo con la llave
-        System.out.println("Ruta Llave Privada: "+datosEmisor.getRuta_llave_privada());
-        System.out.println("Clave  Publica: "+datosEmisor.getClavePublica());
+        
         PrivateKey key = KeyLoaderFactory.createInstance(KeyLoaderEnumeration.PRIVATE_KEY_LOADER, new FileInputStream(datosEmisor.getRuta_llave_privada()), datosEmisor.getClavePublica()).getKey();
         //Cargamos el archivo con el certificado
+        
+        System.out.println("Se cargaron exitosamente los archivos");
         X509Certificate cert = KeyLoaderFactory.createInstance(KeyLoaderEnumeration.PUBLIC_KEY_LOADER, new FileInputStream(datosEmisor.getRuta_certificado())).getKey();
+        
         mx.bigdata.sat.cfdi.v32.schema.Comprobante sellado = cfd.sellarComprobante(key, cert);
         
-        FileOutputStream outFile = new FileOutputStream(pathFactura);
-        
+        FileOutputStream outFile = new FileOutputStream(pathFacturaClienteComprobante);
+        imprimirDatosFactura();
         cfd.validar();
+        System.out.println("Se valido el cdf ");
         cfd.verificar();
+        System.out.println("Se verifico el cfd ");
         cfd.guardar(outFile);
+        System.out.println("Se guardo el cdf ");
         System.out.println("cadema original " + cfd.getCadenaOriginal());
+        
     }
     
     
@@ -415,12 +512,21 @@ public class BeanFacturacion implements Serializable {
         comp.setSerie("A");
         comp.setFolio(ventaMayoreo.getVentaSucursal().toString());
         comp.setFecha(context.getFechaSistema());
-        comp.setFormaDePago(formaPago);
+        for(CatalogoSat cs:listaFormaPago)
+        {
+            
+            if(cs.getCodigo().toString().equals(formaPago))
+            {
+                comp.setFormaDePago(cs.getDescripcion());
+            }
+        }
+        
         comp.setSubTotal(subTotal);
         comp.setMetodoDePago(metodoPago);
         comp.setDescuento(descuento);
         comp.setTotal(total);
         comp.setTipoDeComprobante(tipoDocumento);
+        
         comp.setLugarExpedicion(datosEmisor.getCodigoPostal());
         comp.setMoneda(moneda);
         comp.setNoCertificado("00001000000404327545");//es el numero del certificado
@@ -428,7 +534,7 @@ public class BeanFacturacion implements Serializable {
         comp.setReceptor(createReceptor(of));
         comp.setConceptos(createConceptos(of));
         comp.setImpuestos(createImpuestos(of));
-        imprimirDatosFactura();
+        
         
         return comp;
 
@@ -1151,5 +1257,24 @@ public class BeanFacturacion implements Serializable {
     public void setListaMonedas(ArrayList<CatalogoSat> listaMonedas) {
         this.listaMonedas = listaMonedas;
     }
+
+    public String getPathFacturaClienteComprobante() {
+        return pathFacturaClienteComprobante;
+    }
+
+    public void setPathFacturaClienteComprobante(String pathFacturaClienteComprobante) {
+        this.pathFacturaClienteComprobante = pathFacturaClienteComprobante;
+    }
+
+    public String getPathFacturaClienteTimbrado() {
+        return pathFacturaClienteTimbrado;
+    }
+
+    public void setPathFacturaClienteTimbrado(String pathFacturaClienteTimbrado) {
+        this.pathFacturaClienteTimbrado = pathFacturaClienteTimbrado;
+    }
+
+    
+    
 
 }
