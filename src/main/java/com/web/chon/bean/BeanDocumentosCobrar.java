@@ -482,6 +482,7 @@ public class BeanDocumentosCobrar implements Serializable {
     public void cobrarCheque() 
     {
         saldoActual=ifaceCorteCaja.getSaldoCajaByIdCaja(opcaja.getIdCajaFk());
+        
         cobroCheque.setIdCobroChequePk(new BigDecimal(ifaceCobroCheques.nextVal()));
         cobroCheque.setImporteDeposito(documentoData.getMonto());
         cobroCheque.setIdDocumentoFk(documentoData.getIdDocumentoPk());

@@ -201,9 +201,10 @@ public class ServiceCorteCaja implements IfaceCorteCaja {
         for (Object[] object : lstObject) 
         {
             corteCaja.setIdCajaFk(object[0] == null ? null : new BigDecimal(object[0].toString()));
-            corteCaja.setCantChequesNuevos(object[1] == null ? null : new BigDecimal(object[1].toString()));
-            corteCaja.setMontoChequesNuevos(object[2] == null ? null : new BigDecimal(object[2].toString()));
-            corteCaja.setSaldoNuevo(object[3] == null ? null : new BigDecimal(object[3].toString()));
+            corteCaja.setMontoChequesNuevos(object[1] == null ? null : new BigDecimal(object[1].toString()));
+            corteCaja.setSaldoNuevo(object[2] == null ? null : new BigDecimal(object[2].toString()));
+            corteCaja.setMontoCuentaNuevo(object[3] == null ? null : new BigDecimal(object[3].toString()));
+            
         }
         return corteCaja;
     }
