@@ -621,7 +621,8 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
     }
 
     @Override
-    public void searchById() {
+    public void searchById() 
+    {
         statusButtonPagar = false;
 
         ventaMayoreo = ifaceVentaMayoreo.getVentaMayoreoByFolioidSucursalFk(folioVenta, new BigDecimal(usuario.getIdSucursal()));
@@ -644,7 +645,8 @@ public class BeanBuscaVentaMayoreo implements Serializable, BeanSimple {
             statusButtonCargar = true;
             montoApartado = ifaceApartado.montoApartado(ventaMayoreo.getIdVentaMayoreoPk(), new BigDecimal(1));
             montoTotal = ventaMayoreo.getTotalVenta();
-            switch (ventaMayoreo.getIdStatusFk().intValue()) {
+            switch (ventaMayoreo.getIdStatusFk().intValue()) 
+            {
                 case 1:
                     statusButtonPagar = false;
                     break;

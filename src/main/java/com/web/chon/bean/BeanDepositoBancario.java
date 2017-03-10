@@ -111,11 +111,12 @@ public class BeanDepositoBancario implements Serializable {
                 ComprobantesDigitales cdi = new ComprobantesDigitales();
                 cdi = ifaceComprobantes.getComprobanteByIdTipoLlave(cd.getIdTipoFk(), cd.getIdLlaveFk());
                 System.out.println("CDI: " + cdi.toString());
-                if (cdi.getIdComprobantesDigitalesPk() == null) {
+                if (cdi == null || cdi.getIdComprobantesDigitalesPk() == null) {
                     cd.setIdComprobantesDigitalesPk(new BigDecimal(ifaceComprobantes.getNextVal()));
+                    if (cd.getFichero() != null) 
+                    {
+                        if (ifaceComprobantes.insertaComprobante(cd) == 1) {
 
-                    if (ifaceComprobantes.insertaComprobante(cd) == 1) {
-                        if (cd.getFichero() != null) {
                             if (ifaceComprobantes.insertarImagen(cd.getIdComprobantesDigitalesPk(), cd.getFichero()) == 1) {
                                 System.out.println("Se inserto la imagen correctamente");
                             } else {
@@ -123,13 +124,14 @@ public class BeanDepositoBancario implements Serializable {
                             }
 
                         }
+
                         monto = null;
                         comentarios = null;
                         idCuentaDestinoBean = null;
                         JsfUtil.addSuccessMessageClean("Depósito Registrado Correctamente");
 
                     } else {
-                        JsfUtil.addErrorMessageClean("2.- Ha ocurrido un error al subir la imagen");
+                        JsfUtil.addErrorMessageClean("Ingresa un comprobante digital");
                     }
                 } else {
                     JsfUtil.addErrorMessageClean("Error, ya se ha subido imagen para este número de folio");

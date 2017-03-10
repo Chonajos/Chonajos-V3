@@ -54,7 +54,15 @@ public class EjbDatosFacturacion implements NegocioFacturacion {
     @Override
     public List<Object[]> getDatosFacturacionByIdSucursal(BigDecimal idSucursalFk) {
         try {
-            Query query = em.createNativeQuery("select * from DATOS_FACTURACION df where df.ID_SUCURSAL_FK = ?");
+            Query query = em.createNativeQuery("select df.ID_DATOS_FACTURACION_PK,df.ID_CLIENTE_FK,df.ID_SUCURSAL_FK,df.RAZON_SOCIAL ,df.RFC,df.CALLE,df.NUM_INT,df.NUM_EXT\n" +
+",df.PAIS,df.LOCALIDAD,df.ID_CP_FISCAL,df.TELEFONO,df.CORREO,df.REGIMEN\n" +
+",df.FIELD,df.RUTA_LLAVE_PRIVADA,\n" +
+"df.RUTA_CERTIFICADO,df.RUTA_LLAVE_PRIVADA_CANCEL,df.RUTA_CERTIFICADO_CANCEL,df.CLAVE_PUBLICA,\n" +
+"cp.CODIGO_POSTAL,cp.NOMBRE_COLONIA,mun.NOMBRE_MUNICIPIO, en.NOMBRE_ENTIDAD from DATOS_FACTURACION df \n" +
+"inner join CODIGOS_POSTALES cp on cp.ID_PK = df.ID_CP_FISCAL\n" +
+"inner join MUNICIPIOS mun on mun.ID_MUNICIPIO_PK = cp.ID_MUNICIPIO_FK\n" +
+"inner join entidad en on en.ID_ENTIDAD_PK = mun.ID_ENTIDAD_FK\n" +
+"where df.ID_SUCURSAL_FK = ?");
             List<Object[]> resultList = null;
             
             query.setParameter(1, idSucursalFk);

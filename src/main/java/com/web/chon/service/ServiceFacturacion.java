@@ -70,6 +70,9 @@ public class ServiceFacturacion implements IfaceFacturacion {
                 df.setRuta_certificado_cancel(obj[18] == null ? null : obj[18].toString());
                 df.setNombre(obj[19] == null ? null : obj[19].toString());
                 df.setCodigoPostal(obj[20] == null ? null : obj[20].toString());
+                if (df.getCodigoPostal().length() < 5) {
+                    df.setCodigoPostal("0" + df.getCodigoPostal());
+                }
                 df.setColonia(obj[21] == null ? null : obj[21].toString());
                 df.setMunicipio(obj[22] == null ? null : obj[22].toString());
                 df.setEstado(obj[23] == null ? null : obj[23].toString());
@@ -101,15 +104,23 @@ public class ServiceFacturacion implements IfaceFacturacion {
             df.setPais(obj[8] == null ? null : obj[8].toString());
             df.setLocalidad(obj[9] == null ? null : obj[9].toString());
             df.setIdCodigoPostalFk(obj[10] == null ? null : new BigDecimal(obj[10].toString()));
+
             df.setTelefono(obj[11] == null ? null : obj[11].toString());
             df.setCorreo(obj[12] == null ? null : obj[12].toString());
             df.setRegimen(obj[13] == null ? null : obj[13].toString());
             df.setField(obj[14] == null ? null : obj[14].toString());
             df.setRuta_llave_privada(obj[15] == null ? null : obj[15].toString());
             df.setRuta_certificado(obj[16] == null ? null : obj[16].toString());
-            df.setRuta_llave_privada(obj[17] == null ? null : obj[17].toString());
+            df.setRuta_llave_privada_cancel(obj[17] == null ? null : obj[17].toString());
             df.setRuta_certificado_cancel(obj[18] == null ? null : obj[18].toString());
             df.setClavePublica(obj[19] == null ? null : obj[19].toString());
+            df.setCodigoPostal(obj[20] == null ? null : obj[20].toString());
+            if (df.getCodigoPostal().length() < 5) {
+                df.setCodigoPostal("0" + df.getCodigoPostal());
+            }
+            df.setColonia(obj[21] == null ? null : obj[21].toString());
+            df.setMunicipio(obj[22] == null ? null : obj[22].toString());
+            df.setEstado(obj[23] == null ? null : obj[23].toString());
             listaDatos.add(df);
         }
         return listaDatos;
