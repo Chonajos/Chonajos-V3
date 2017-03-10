@@ -40,7 +40,7 @@ public class EntradaMercanciaProducto extends ValueObject implements Serializabl
     private BigDecimal kilosProProvedor;
     private String urlVideo;
     private byte[] videoByte;
-    
+    private BigDecimal numBodegas;
     private Subproducto subProducto;
     private ArrayList<EntradaMercanciaProductoPaquete> listaPaquetes;
     
@@ -340,6 +340,14 @@ public class EntradaMercanciaProducto extends ValueObject implements Serializabl
 
     public void setVideoByte(byte[] videoByte) {
         this.videoByte = videoByte;
+    }
+
+    public BigDecimal getNumBodegas() {
+        return numBodegas;
+    }
+
+    public void setNumBodegas(BigDecimal numBodegas) {
+        this.numBodegas = numBodegas;
     }
     
 }

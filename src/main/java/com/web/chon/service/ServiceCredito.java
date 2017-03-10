@@ -130,7 +130,6 @@ public class ServiceCredito implements IfaceCredito {
 
     @Override
     public ArrayList<SaldosDeudas> getCreditosActivos(BigDecimal idCliente, BigDecimal idAbonoPk, BigDecimal idSucursalFk) {
-        //System.out.println("**************Service*************");
         getEjb();
         ArrayList<SaldosDeudas> lstCreditos = new ArrayList<SaldosDeudas>();
         List<Object[]> lstObject = new ArrayList<Object[]>();
@@ -196,8 +195,6 @@ public class ServiceCredito implements IfaceCredito {
                         break;
 
                     case -1:
-
-                        //System.out.println("Case -1: " + " Hoy: " + hoy + " Fecha: " + fechas_pagos.get(x));
                         if (fechaPagoMayoraHoy == false) {
                             credito.setFechaProximaAbonar(fechas_pagos.get(x));
                             credito.setStatusFechaProxima(CREDITONOATRASADO);
@@ -226,9 +223,7 @@ public class ServiceCredito implements IfaceCredito {
                 } else {
                     credito.setMinimoPago(deudas);
                 }
-//
-//                System.out.println("Periodos Atrasados: " + contador_periodos_atrasados + "  Cantidad: " + deudas);
-//                System.out.println("---------------------------------------------------------------");
+
             }
 
             ComprobantesDigitales cd = new ComprobantesDigitales();

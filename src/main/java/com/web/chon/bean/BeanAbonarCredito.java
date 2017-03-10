@@ -1,4 +1,5 @@
 package com.web.chon.bean;
+
 import com.web.chon.dominio.AbonoCredito;
 import com.web.chon.dominio.Caja;
 import com.web.chon.dominio.Cliente;
@@ -21,7 +22,6 @@ import com.web.chon.service.IfaceCredito;
 import com.web.chon.service.IfaceCuentasBancarias;
 import com.web.chon.service.IfaceDocumentos;
 import com.web.chon.service.IfaceOperacionesCaja;
-import com.web.chon.service.IfaceOperacionesCuentas;
 import com.web.chon.service.IfacePagosBancarios;
 import com.web.chon.service.IfaceTipoAbono;
 import com.web.chon.util.Constantes;
@@ -38,7 +38,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -48,14 +47,9 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
-import java.util.logging.Level;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.servlet.ServletContext;
-import javax.sql.DataSource;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRExporter;
 import net.sf.jasperreports.engine.JRExporterParameter;
@@ -90,11 +84,9 @@ public class BeanAbonarCredito implements Serializable {
     @Autowired private PlataformaSecurityContext context;
     @Autowired private IfaceCaja ifaceCaja;
     @Autowired private IfaceOperacionesCaja ifaceOperacionesCaja;
-    @Autowired private IfaceOperacionesCuentas ifaceOperacionesCuentas;
     @Autowired private IfaceCuentasBancarias ifaceCuentasBancarias;
     @Autowired private IfaceCatSucursales ifaceCatSucursales;
     @Autowired private IfacePagosBancarios ifacePagosBancarios;
-    
     
     private Logger logger = LoggerFactory.getLogger(BeanAbonarCredito.class);
 
@@ -142,37 +134,24 @@ public class BeanAbonarCredito implements Serializable {
     //------------variables para generar el ticket----------//
     //---Constantes---//
     private static final BigDecimal CREDITOFINALIZADO = new BigDecimal(2);
-    private static final BigDecimal CREDITOACTIVO = new BigDecimal(1);
     private static final BigDecimal ABONOREALIZADO = new BigDecimal(1);
-    private static final BigDecimal ABONOPENDIENTE = new BigDecimal(2);
     private static final BigDecimal DOCUMENTOACTIVO = new BigDecimal(1);
     private static final BigDecimal DOCUMENTOTIPOCHEQUE = new BigDecimal(1);
     private static final BigDecimal CERO = new BigDecimal(0).setScale(2, RoundingMode.CEILING);
 
-    //----Constantes--//
-    private static final BigDecimal TIPO = new BigDecimal(1);
-
     //--Datos para Operaciones Caja---//
     private OperacionesCaja opcaja;
+   
     private static final BigDecimal ENTRADA = new BigDecimal(1);
-    
-
     private static final BigDecimal CONCEPTO_ABONO = new BigDecimal(7);
-    
     private static final BigDecimal EFECTIVO = new BigDecimal(1);
     private static final BigDecimal TRANSFERENCIA = new BigDecimal(2);
     private static final BigDecimal CHEQUE = new BigDecimal(3);
     private static final BigDecimal DEPOSITO = new BigDecimal(4);
     private static final BigDecimal OPERACIONABONOS_CREDITO = new BigDecimal(4);
-    
-    
-    private static final BigDecimal conceptoMontoCheques = new BigDecimal(12);
-
-    
     //--Variables para datos Bancarios---//
-    private static final BigDecimal entradaCuenta = new BigDecimal(1);
-   
-    private static final BigDecimal idConceptoCuenta = new BigDecimal(15);
+    private static final BigDecimal ENTRADA_CUENTA = new BigDecimal(1);
+
     private OperacionesCuentas opcuenta;
     private BigDecimal idCuentaDestinoBean;
     private BigDecimal comboFiltro;
@@ -185,37 +164,35 @@ public class BeanAbonarCredito implements Serializable {
     private BigDecimal idSucursal;
 
     private PagosBancarios pagoBancario;
-    
+
     private boolean banderaAbono;
     private BigDecimal numeroAbono;
     private ArrayList<CuentaBancaria> lstCuentas;
     private StreamedContent variable;
-    
+
     private static final BigDecimal STATUS_REALIZADA = new BigDecimal(1);
     private static final BigDecimal STATUS_PENDIENTE = new BigDecimal(2);
-    private static final BigDecimal STATUS_RECHAZADA = new BigDecimal(3);
-    private static final BigDecimal STATUS_CANCELADA = new BigDecimal(4);
 
     @PostConstruct
     public void init() {
-        lstCuentas=new ArrayList<CuentaBancaria>();
-        banderaAbono=true;
+        lstCuentas = new ArrayList<CuentaBancaria>();
+        banderaAbono = true;
+
         data = new SaldosDeudas();
+        dataAbonar = new SaldosDeudas();
         numeroAbono = new BigDecimal(0);
         pagoBancario = new PagosBancarios();
         botonCancelar = true;
         botonActualizar = true;
-        caja = new Caja();
-        idCuentaDestinoBean = new BigDecimal(0);
+
         minimoPago = new BigDecimal(0);
         bandera = false;
-        fechaMasProximaPago = new Date();
+        fechaMasProximaPago = context.getFechaSistema();
         abono = new AbonoCredito();
         abono.setIdtipoAbonoFk(new BigDecimal(1));
-        listaSucursales = new ArrayList<Sucursal>();
         listaSucursales = ifaceCatSucursales.getSucursales();
         usuarioDominio = context.getUsuarioAutenticado();
-        dataAbonar = new SaldosDeudas();
+
         modelo = new ArrayList<SaldosDeudas>();
         chequesPendientes = new ArrayList<AbonoCredito>();
         selectedchequesPendientes = new ArrayList<AbonoCredito>();
@@ -225,24 +202,27 @@ public class BeanAbonarCredito implements Serializable {
         setViewEstate("init");
         setViewCheque("init");
         caja = ifaceCaja.getCajaByIdUsuarioPk(usuarioDominio.getIdUsuario());
+
         opcaja = new OperacionesCaja();
         opcaja.setIdCajaFk(caja.getIdCajaPk());
         opcaja.setIdUserFk(usuarioDominio.getIdUsuario());
         opcaja.setEntradaSalida(ENTRADA);
-        idSucursal = new BigDecimal(usuarioDominio.getSucId());
         opcaja.setIdSucursalFk(new BigDecimal(usuarioDominio.getSucId()));
+
+        idSucursal = new BigDecimal(usuarioDominio.getSucId());
         //-- Datos para Transferencias Bancarias o Dépositos Bancarios--//
         listaCuentas = ifaceCuentasBancarias.getCuentas();
+
         opcuenta = new OperacionesCuentas();
         opcuenta.setIdUserFk(usuarioDominio.getIdUsuario());
-        
-        opcuenta.setEntradaSalida(entradaCuenta);
+        opcuenta.setEntradaSalida(ENTRADA_CUENTA);
         opcuenta.setIdConceptoFk(CONCEPTO_ABONO);
+
         comboFiltro = new BigDecimal(1);
         habilitaBotones = true;
         idCuentaDestinoBean = new BigDecimal(1);
         //filtroIdSucursalFk = new BigDecimal(usuarioDominio.getSucId());
-        
+
     }
 
     public void cancelarAbonar() {
@@ -350,7 +330,7 @@ public class BeanAbonarCredito implements Serializable {
 
     }
 
-    public void generateReport(int folio, String nombreTipoTicket,boolean emptyDataSource) {
+    public void generateReport(int folio, String nombreTipoTicket, boolean emptyDataSource) {
         JRExporter exporter = null;
 
         try {
@@ -364,14 +344,14 @@ public class BeanAbonarCredito implements Serializable {
 
             pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "ticketAbonos" + File.separatorChar + nombreTipoTicket;
             JasperPrint jp = null;
-            
+
             //Verifica si llevara JREemptyDataSource
             if (emptyDataSource) {
                 jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport, new JREmptyDataSource());
             } else {
                 jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport);
             }
-            
+
             outputStream = JasperReportUtil.getOutputStreamFromReport(paramReport, getPathFileJasper());
             exporter = new JRPdfExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
@@ -381,7 +361,7 @@ public class BeanAbonarCredito implements Serializable {
             rutaPDF = UtilUpload.saveFileTemp(bytes, "ticketPdf", folio, usuarioDominio.getSucId());
 
         } catch (Exception exception) {
-            logger.error("Error al generar el reporte "+exception.getMessage(),"Error ",exception.getMessage());
+            logger.error("Error al generar el reporte " + exception.getMessage(), "Error ", exception.getMessage());
             JsfUtil.addErrorMessage("Error al Generar el Reporte.");
         }
 
@@ -427,26 +407,14 @@ public class BeanAbonarCredito implements Serializable {
 
                 break;
             case 2:
-                
+
                 if (idCuentaDestinoBean == null || abono.getReferencia() == null || abono.getConcepto() == null || abono.getFechaTransferencia() == null) {
                     cadena = "Faltan algunos campos en transferencia bancaria";
                 }
-                /*Campos Requeridos
-                idCuentaBancariaFk
-                numero de referencia
-                concepto
-                fechaTransferencia
-                 */
+                /*Campos Requeridos idCuentaBancariaFk, numero de referencia, concepto, fechaTransferencia */
                 break;
             case 3:
-                /*
-                Campos Requeridos
-                importe
-                numero de cheque
-                fecha de cobro
-                librador
-                banco emisor
-                 */
+                /* Campos Requeridos importe ,numero de cheque ,fecha de cobro ,librador ,banco ,emisor */
                 if (abono.getMontoAbono() == null || abono.getNumeroCheque() == null || abono.getFechaCobro() == null || abono.getLibrador() == null || abono.getBanco() == null) {
                     cadena = "Faltan algunos campos en Pago con cheques";
                 }
@@ -532,7 +500,7 @@ public class BeanAbonarCredito implements Serializable {
                             JsfUtil.addErrorMessageClean("Ocurrio un error, contactar al administrador");
                             break;
                     }
-                    
+
                     //llamar a funcion llenadora de datos
                     abonarRestante(to);
                     botonCancelar = false;
@@ -579,27 +547,25 @@ public class BeanAbonarCredito implements Serializable {
     public void abonarCreditos() {
         if (abono.getIdtipoAbonoFk() != null && opcaja.getIdCajaFk() != null) {
             AbonoCredito ac = new AbonoCredito();
-            
+
             ac.setIdUsuarioFk(usuarioDominio.getIdUsuario()); //aqui poner el usuario looggeado
             ac.setIdtipoAbonoFk(abono.getIdtipoAbonoFk());
 
             switch (abono.getIdtipoAbonoFk().intValue()) {
                 case 1:
-                    
+
                     for (SaldosDeudas sd : modelo) {
                         if (sd.getAbonarTemporal() != null && sd.getAbonarTemporal().setScale(2, RoundingMode.CEILING) != CERO) {
                             ac.setIdAbonoCreditoPk(new BigDecimal(ifaceAbonoCredito.getNextVal()));
                             ac.setIdCreditoFk(sd.getFolioCredito());
                             ac.setMontoAbono(sd.getAbonarTemporal());
                             ac.setEstatusAbono(ABONOREALIZADO);
-                            if(banderaAbono)
-                            {
+                            if (banderaAbono) {
                                 numeroAbono = ac.getIdAbonoCreditoPk();
                                 banderaAbono = false;
                             }
                             ac.setNumeroAbono(numeroAbono);
-                            
-                            //System.out.println("Abono: " + ac.toString());
+
                             if ((sd.getTotalAbonado().setScale(2, RoundingMode.CEILING)).add(ac.getMontoAbono().setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED).compareTo(sd.getSaldoTotal()) == 0) {
 
                                 if (ifaceCredito.updateStatus(ac.getIdCreditoFk(), CREDITOFINALIZADO) == 1) {
@@ -608,8 +574,8 @@ public class BeanAbonarCredito implements Serializable {
                                     JsfUtil.addErrorMessageClean("Se ha producido un error al liquidar todo el folio de credito: " + ac.getIdCreditoFk());
                                 }
                             } else {
-                                logger.info("Aun no se libera el credito","Info");
-                                
+                                logger.info("Aun no se libera el credito", "Info");
+
                             }
                             //insertar el abono
                             if (ifaceAbonoCredito.insert(ac) == 1) {
@@ -630,7 +596,7 @@ public class BeanAbonarCredito implements Serializable {
                     opcaja.setIdTipoOperacionFk(OPERACIONABONOS_CREDITO);
                     opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
                     opcaja.setMonto(ac.getMontoAbono());
-                    
+
                     opcaja.setComentarios("FA: " + ac.getIdAbonoCreditoPk() + " | FC: " + ac.getIdCreditoFk() + " | C:" + cliente.getNombreCompleto());
 
                     if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
@@ -651,13 +617,12 @@ public class BeanAbonarCredito implements Serializable {
                             ac.setConcepto(abono.getConcepto());
                             ac.setReferencia(abono.getReferencia());
                             ac.setFechaTransferencia(abono.getFechaTransferencia());
-                            if(banderaAbono)
-                            {
+                            if (banderaAbono) {
                                 numeroAbono = ac.getIdAbonoCreditoPk();
                                 banderaAbono = false;
                             }
                             ac.setNumeroAbono(numeroAbono);
-                            //System.out.println("Abono: " + ac.toString());
+
                             if ((sd.getTotalAbonado().setScale(2, RoundingMode.CEILING)).add(ac.getMontoAbono().setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED).compareTo(sd.getSaldoTotal()) == 0) {
                                 if (ifaceCredito.updateStatus(ac.getIdCreditoFk(), CREDITOFINALIZADO) == 1) {
                                     JsfUtil.addSuccessMessage("Se ha liquidado el crédito total  con el folio: " + ac.getIdCreditoFk() + " exitosamente");
@@ -730,13 +695,11 @@ public class BeanAbonarCredito implements Serializable {
                             ac.setFechaCobro(abono.getFechaCobro());
                             ac.setBanco(abono.getBanco());
                             ac.setFactura(abono.getFactura());
-                            if(banderaAbono)
-                            {
+                            if (banderaAbono) {
                                 numeroAbono = ac.getIdAbonoCreditoPk();
                                 banderaAbono = false;
                             }
                             ac.setNumeroAbono(numeroAbono);
-                            //System.out.println("Abono: " + ac.toString());
                             if ((sd.getTotalAbonado().setScale(2, RoundingMode.CEILING)).add(ac.getMontoAbono().setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED).compareTo(sd.getSaldoTotal()) == 0) {
                                 if (ifaceCredito.updateStatus(ac.getIdCreditoFk(), CREDITOFINALIZADO) == 1) {
                                     JsfUtil.addSuccessMessage("Se ha liquidado el crédito total  con el folio: " + ac.getIdCreditoFk() + " exitosamente");
@@ -818,13 +781,12 @@ public class BeanAbonarCredito implements Serializable {
                             ac.setBanco(abono.getBanco());
                             ac.setFechaTransferencia(abono.getFechaTransferencia());
                             ac.setEstatusAbono(ABONOREALIZADO);
-                            if(banderaAbono)
-                            {
+                            if (banderaAbono) {
                                 numeroAbono = ac.getIdAbonoCreditoPk();
                                 banderaAbono = false;
                             }
                             ac.setNumeroAbono(numeroAbono);
-                            //System.out.println("Abono: " + ac.toString());
+
                             if ((sd.getTotalAbonado().setScale(2, RoundingMode.CEILING)).add(ac.getMontoAbono().setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED).compareTo(sd.getSaldoTotal()) == 0) {
 
                                 if (ifaceCredito.updateStatus(ac.getIdCreditoFk(), CREDITOFINALIZADO) == 1) {
@@ -893,22 +855,20 @@ public class BeanAbonarCredito implements Serializable {
         }
 
     }
+
     public StreamedContent getProductImage() throws IOException, SQLException {
-        FacesContext context = FacesContext.getCurrentInstance();
         String imageType = "image/jpg";
-        if(data.getFichero()==null)
-        {
+        if (data.getFichero() == null) {
             JsfUtil.addErrorMessageClean("Esta operación no cuenta con comprobante");
             return variable;
-        }
-        else{
+        } else {
             variable = null;
-            System.out.println("Data:" +data.toString());
-             byte[] image = data.getFichero();
-             variable = new DefaultStreamedContent(new ByteArrayInputStream(image), "image/jpg", data.getFolioVenta().toString()+".jpg");
+            byte[] image = data.getFichero();
+
+            variable = new DefaultStreamedContent(new ByteArrayInputStream(image), imageType, data.getFolioVenta().toString() + ".jpg");
             return variable;
         }
-           
+
     }
 
     public void finAbonar(AbonoCredito ac) {
@@ -930,7 +890,7 @@ public class BeanAbonarCredito implements Serializable {
             default:
                 break;
         }
-        generateReport(ac.getIdAbonoCreditoPk().intValue(), nombreReporte,true);
+        generateReport(ac.getIdAbonoCreditoPk().intValue(), nombreReporte, true);
         RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
         abono.reset();
         dataAbonar.reset();
@@ -938,7 +898,6 @@ public class BeanAbonarCredito implements Serializable {
         searchByIdCliente();
 
     }
-
 
     public void pagarCheques() {
         if (!selectedchequesPendientes.isEmpty()) {
@@ -975,7 +934,6 @@ public class BeanAbonarCredito implements Serializable {
 
     }
 
-
     public void backView() {
         setTitle("Historial de Compras");
         setViewEstate("init");
@@ -1009,27 +967,23 @@ public class BeanAbonarCredito implements Serializable {
 
     }
 
-    
-     public void reporteCredito() 
-    {
+    public void reporteCredito() {
         Random random = new Random();
         //Se genera un numero aleatorio para que no traiga el mismo reporte por la cache
         int numberRandom = random.nextInt(999);
         if (cliente != null) {
             setParameterTicketCredito();
-            generateReport(numberRandom, "creditos.jasper",false);
+            generateReport(numberRandom, "creditos.jasper", false);
             RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
-        }else{
+        } else {
             JsfUtil.addErrorMessage("No se puede generar el estado de cuenta.");
         }
 
     }
 
     private void setParameterTicketCredito() {
-        NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
         DecimalFormat df = new DecimalFormat("$#,###.##");
-        Date date = new Date();
-        //modelo.get(1).getIdSucursal()
+
         lstCuentas = ifaceCuentasBancarias.getCuentasByIdSucursalFk(opcaja.getIdSucursalFk());
 
         JRBeanCollectionDataSource collectionCredito = new JRBeanCollectionDataSource(modelo);
@@ -1038,11 +992,10 @@ public class BeanAbonarCredito implements Serializable {
         paramReport.put("creditoDisponible", df.format(cliente.getCreditoDisponible()));
         paramReport.put("creditoUtilizado", df.format(cliente.getUtilizadoTotal()));
         paramReport.put("cliente", cliente.getNombreCompleto());
-        paramReport.put("fecha", TiempoUtil.getFechaDDMMYYYYHHMM(date));
+        paramReport.put("fecha", TiempoUtil.getFechaDDMMYYYYHHMM(context.getFechaSistema()));
         paramReport.put("nombreSucursal", usuarioDominio.getNombreSucursal());
         paramReport.put("lstCredito", collectionCredito);
         paramReport.put("lstCuentas", listaCuentasBancarias);
-        
         paramReport.put("leyenda", "Para cualquier duda o comentario estamos a sus órdenes al teléfono:" + usuarioDominio.getTelefonoSucursal());
 
     }
@@ -1420,6 +1373,5 @@ public class BeanAbonarCredito implements Serializable {
     public void setData(SaldosDeudas data) {
         this.data = data;
     }
-    
 
 }

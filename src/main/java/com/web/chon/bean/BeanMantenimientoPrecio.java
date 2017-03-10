@@ -68,7 +68,6 @@ public class BeanMantenimientoPrecio implements Serializable {
     @PostConstruct
     public void init() {
 
-        listaSucursales = new ArrayList<Sucursal>();
         listaSucursales = ifaceCatSucursales.getSucursales();
         data = new MantenimientoPrecios();
         subproducto = new Subproducto();
@@ -78,8 +77,6 @@ public class BeanMantenimientoPrecio implements Serializable {
 
         /*Validacion de perfil para bloquear la sucursal*/
         data.setIdSucursal(usuarioDominio.getSucId());
-
-        System.out.println("id suc " + data.getIdSucursal());
         
         fechaMercado = new Date();
         

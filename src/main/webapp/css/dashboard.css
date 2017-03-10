@@ -39,10 +39,14 @@ html{
     color: #FACC2E;
 }
 
-.calendario input 
+.calendario input
 {
-    width:85px;
+    width:81px;
+}
+.calendario
+{
     padding-left: 0px !important;
+    padding-right: 0px !important;
 }
 .statusActivo
 {

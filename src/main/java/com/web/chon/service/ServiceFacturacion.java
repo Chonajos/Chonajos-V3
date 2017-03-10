@@ -133,4 +133,9 @@ public class ServiceFacturacion implements IfaceFacturacion {
         return ejb.updateDatosFacturacion(df);
     }
 
+    @Override
+    public ArrayList<DatosFacturacion> getByIdSucursal(BigDecimal idSucursal) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

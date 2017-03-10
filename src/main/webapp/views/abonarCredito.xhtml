@@ -14,12 +14,12 @@
             <p:messages id="messages"   showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:panel  rendered="#{beanAbonarCredito.viewEstate=='init'}" >
                 <div class="container-fluid">
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 ">
                             <h3>#{beanAbonarCredito.title}</h3>
                         </div>
-                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 form-group" align="right">
-                            <p:commandButton id="btnbuscar" value="Buscar" update=":formContent" ajax="true" action="#{beanAbonarCredito.searchByIdCliente()}" />
+                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12" align="right">
+                            <p:commandButton id="btnbuscar" value="Buscar" update=":formContent" ajax="true" action="#{beanAbonarCredito.searchByIdCliente()}" class="primaryButton"/>
                             <p:commandButton id="btnabonar" value="Abonar" ajax="true" disabled="#{beanAbonarCredito.habilitaBotones}" oncomplete="PF('dlg').show();" update =":formContent:dialogw:" icon="ui-icon-triangle-1-e" class="primaryButton"/>
                             <p:commandButton id="btncancelar" value="Cancelar" class="primaryButton" disabled="#{beanAbonarCredito.botonCancelar}" update=":formContent" ajax="true" action="#{beanAbonarCredito.cancelarAbonar()}" icon="ui-icon-trash" />
                             <p:commandButton id="btnactualizar" value="Actualizar" class="primaryButton"  disabled="#{beanAbonarCredito.botonActualizar}" update=":formContent" ajax="true" action="#{beanAbonarCredito.actualizarCreditos()}" icon="ui-icon-person" />
@@ -27,9 +27,9 @@
                     </div>
                 </div>
                 <div class="container-fluid">
-                    <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 alignLeft ">
-                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 alignLeft ">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 "  for="autocompleteCliente" value ="Cliente:" /> 
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-4 col-md-6 col-sm-6 col-xs-12 "  for="autocompleteCliente" value ="Cliente:" /> 
                             <p:autoComplete  placeholder="selecciona un Cliente" id="autocompleteCliente"  required="true" requiredMessage="Ingresa un valor para el campo Cliente." styleClass="autocomplete-input-text-media ui-state-highlight-autocomplete" class="ui-state-highlight-autocomplete"
                                              value="#{beanAbonarCredito.cliente}" completeMethod="#{beanAbonarCredito.autoCompleteCliente}" forceSelection="true" var="cliente"  inputStyle="width: 180px"
                                              itemLabel="#{cliente.nombreCompleto}"
@@ -39,34 +39,30 @@
                             </p:autoComplete>
                             <pe:keyFilter for="autocompleteCliente" regEx="/[a-z0-9-_Ã±\s]/i" />
                         </div>
-                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-3 col-sm-4 col-xs-6 "   for="txtCreditoUtilizado" value ="Crédito Utilizado:" /> 
-                            <p:inputText id="txtCreditoUtilizado"  readonly="true" class=" col-lg-7 col-md-4 col-sm-8 col-xs-6 " value="#{beanAbonarCredito.cliente.utilizadoTotal}">
+                        <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-6 col-md-6 col-sm-6 col-xs-12 "   for="txtCreditoUtilizado" value ="Crédito Utilizado:" /> 
+                            <p:inputText id="txtCreditoUtilizado"  readonly="true" class="col-lg-6 col-md-4 col-sm-6 col-xs-12" value="#{beanAbonarCredito.cliente.utilizadoTotal}">
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </p:inputText>
                         </div>
-                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">    
-                            <p:outputLabel class="col-lg-4 col-md-3 col-sm-4 col-xs-6 alignLeft"   for="txtCreditoDisponible" value ="Crédito Disponible:" /> 
-                            <p:inputText id="txtCreditoDisponible"  readonly="true" class=" col-lg-7 col-md-4 col-sm-8 col-xs-6" value="#{beanAbonarCredito.cliente.creditoDisponible}">
+                        <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 form-group">    
+                            <p:outputLabel class="col-lg-6 col-md-6 col-sm-6 col-xs-12"   for="txtCreditoDisponible" value ="Crédito Disponible:" /> 
+                            <p:inputText id="txtCreditoDisponible"  readonly="true" class="col-lg-6 col-md-4 col-sm-6 col-xs-12" value="#{beanAbonarCredito.cliente.creditoDisponible}">
                                 <f:convertNumber type="currency" currencySymbol="$" />
                             </p:inputText>
                         </div>
-
-
-                    </div>
-                    <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 alignLeft form-group">
-                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 ">
-                            <p:outputLabel class="col-lg-5 col-md-3 col-sm-4 col-xs-6 alignLeft"  for="comboFiltro" value="Prelación de Abono:" /> 
-                            <p:selectOneMenu  style="width: 40% !important" class=" col-lg-5 col-md-8 col-sm-8 col-xs-12"   id="comboFiltro"  value="#{beanAbonarCredito.comboFiltro}">
+                        <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 form-group zeroPadding">
+                            <p:outputLabel class="col-lg-6 col-md-6 col-sm-6 col-xs-12"  for="comboFiltro" value="Prelación de Abono:" /> 
+                            <p:selectOneMenu  style="width: 40% !important" class=" col-lg-6 col-md-6 col-sm-6 col-xs-12"   id="comboFiltro"  value="#{beanAbonarCredito.comboFiltro}">
                                 <f:selectItem  itemLabel="Saldo Atrasado" itemValue="1"/>
                                 <f:selectItem  itemLabel="Pago Requerido" itemValue="2"/>
                                 <f:selectItem  itemLabel="Saldo a Liquidar" itemValue="3"/>
                                 <p:ajax event="change" listener="#{beanAbonarCredito.prepararAbono()}" update=":formContent:table"/>
                             </p:selectOneMenu>
                         </div>
-                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="sucursalFiltro" value ="Sucursal:" /> 
-                            <p:selectOneMenu  style="width: 60% !important"  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanAbonarCredito.filtroIdSucursalFk}">
+                        <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-4 col-md-6 col-sm-6 col-xs-12"  for="sucursalFiltro" value ="Sucursal:" /> 
+                            <p:selectOneMenu  style="width: 50% !important"  id="sucursalFiltro" class=" col-lg-6 col-md-6 col-sm-6 col-xs-12" value="#{beanAbonarCredito.filtroIdSucursalFk}">
                                 <f:selectItem itemLabel="Todas" itemValue="" />
                                 <f:selectItems value="#{beanAbonarCredito.listaSucursales}" var="sucursal" itemLabel="#{sucursal.nombreSucursal}" itemValue="#{sucursal.idSucursalPk}"/>
                                 <p:ajax event="change" update=":formContent" listener="#{beanAbonarCredito.searchByIdCliente()}"/>

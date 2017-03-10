@@ -21,4 +21,6 @@ public interface IfaceFacturacion {
     public int insertarDatosFacturacion(DatosFacturacion df);
     public int updateDatosFacturacion(DatosFacturacion df);
     public int getNextVal();
+    
+    public ArrayList<DatosFacturacion> getByIdSucursal(BigDecimal idSucursal);
 }

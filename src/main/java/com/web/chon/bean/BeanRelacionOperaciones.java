@@ -63,7 +63,7 @@ import org.springframework.stereotype.Component;
  * @author Juan de la Cruz
  */
 @Component
-@Scope("session")
+@Scope("view")
 public class BeanRelacionOperaciones implements Serializable, BeanSimple {
 
     private static final long serialVersionUID = 1L;
@@ -344,7 +344,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
         }
         else{
             variable = null;
-            System.out.println("Data:" +data.toString());
+
              byte[] image = data.getFichero();
              variable = new DefaultStreamedContent(new ByteArrayInputStream(image), imageType, data.getIdVentaPk().toString());
             return variable;

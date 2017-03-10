@@ -257,7 +257,7 @@ public class ServiceNegocioExistencia implements IfaceNegocioExistencia {
         getEjb();
         try {
             ArrayList<ExistenciaProducto> lista = new ArrayList<ExistenciaProducto>();
-            //System.out.println("SerivceNegocioExistencia: getExistencias : "+idSucursal+ " idProvedorFk: "+idProvedorFk);
+
             List<Object[]> lstObject = ejb.getExistenciaByBarCode(idSubProducto, idTipoEmpaqueFk,  idTipoConvenioFk,  idCarro, idSucursalFk);
             for (Object[] obj : lstObject) {
                 ExistenciaProducto expro = new ExistenciaProducto();

@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="./../templates/main.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="content">
+        <p:ajaxStatus onsuccess="PF('statusDialog').hide()" />
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                  closable="false" resizable="false" showHeader="false">
+            <p:graphicImage value="../resources/img/carga.gif" />
+        </p:dialog>
+        <h:form id="formProducto">
+            <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanSubProducto.rutaPDF}"/>
+            <div>
+                <h3>#{beanSubProducto.title}</h3>
+            </div>
+            <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
+            <p:panel rendered="#{beanSubProducto.viewEstate=='init'}" style="border: 0px;" >
+                <div class="form-group" align="right">
+                    <p:commandButton value="Nuevo" class="primaryButton" update=":formProducto" ajax="true" action="#{beanSubProducto.viewNew}" icon="ui-icon-person" onclick="PF('statusDialog').show()"/>
+                    <p:commandButton value="Eliminar" class="primaryButton" update=":formProducto" ajax="true" action="#{beanSubProducto.delete}" icon="ui-icon-trash" onclick="PF('statusDialog').show()"/>
+                </div>
+                <div class="col-lg-10 col-md-10 col-md-12 col-xs-12 col-lg-offset-1 col-md-offset-1">
+                    <p:dataTable var="model" value="#{beanSubProducto.model}" rows="12" scrollable="true"
+                                 paginator="true" selection="#{beanSubProducto.selectedSubProducto}" rowKey="#{model.idSubproductoPk}"
+                                 emptyMessage="No se encontraron Registros.">
+                        <p:column selectionMode="multiple" width="32px; !important" class="alignCenter"/>
+                        <p:column headerText="Id" width="75px; !important" class="alignCenter">
+                            <h:outputText value="#{model.idSubproductoPk}" />
+                        </p:column>
+                        <p:column headerText="Categoría" filterMaxLength="60" filterBy="#{model.nombreCategoria}" filterMatchMode="contains" width="350px; !important" class="alignLeft">
+                            <h:outputText value="#{model.nombreCategoria}" />
+                        </p:column>
+                        <p:column headerText="Nombre de Producto" filterMaxLength="90" filterBy="#{model.nombreSubproducto}" filterMatchMode="contains" width="350px; !important" class="alignLeft">
+                            <h:outputText value="#{model.nombreSubproducto}" />
+                        </p:column>
+                        <p:column headerText="Código" width="70px;" class="alignCenter">
+                            <p:commandButton id="codigo" ajax="true" process="@this" action="#{beanSubProducto.imprimirCodigoBarras()}" 
+                                             icon="ui-icon-print" styleClass="ui-priority-primary" update=":formProducto">
+                                <f:setPropertyActionListener value="#{model}" target="#{beanSubProducto.data}"/>
+                            </p:commandButton>
+                        </p:column>
+                        <p:column headerText="Editar" width="60px; !important" class="alignCenter">
+                            <p:commandButton id="ajax" ajax="true"  action="#{beanSubProducto.searchById}" icon="ui-icon-pencil" styleClass="ui-priority-primary" update=":formProducto" onclick="PF('statusDialog').show()">
+                                <f:setPropertyActionListener value="#{model}" target="#{beanSubProducto.data}"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </div>
+            </p:panel>
+            <p:panel rendered="#{beanSubProducto.viewEstate=='searchById' || beanSubProducto.viewEstate=='new'}">
+                <div class="container-fluid">
+                    <div class="form-group" align="right">
+                        <p:commandButton value="Guardar" class="primaryButton"  update=":formProducto" ajax="true" action="#{beanSubProducto.insert}" rendered="#{beanSubProducto.viewEstate=='new'}" onclick="PF('statusDialog').show()"/>
+                        <p:commandButton value="Actualizar" class="primaryButton"  update=":formProducto" ajax="true" action="#{beanSubProducto.update}" rendered="#{beanSubProducto.viewEstate=='searchById'}" onclick="PF('statusDialog').show()"/>
+                        <p:commandButton value="Atras" class="primaryButton" immediate="true" resetValues="true" update=":formProducto" ajax="true" action="#{beanSubProducto.backView}" onclick="PF('statusDialog').show()"/>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-12"  for="selectProductos" value ="Categoría:"/> 
+                            <h:selectOneMenu id="selectProductos" value="#{beanSubProducto.data.idProductoFk}" required="true" class="col-lg-3 col-md-4 col-sm-6 col-xs-12" requiredMessage="Ingresa un valor para el campo Producto." disabled = "#{beanSubProducto.viewEstate=='searchById'}">
+                                <f:selectItem itemLabel="Seleccione la opción" itemValue="#{null}" noSelectionOption="true" />
+                                <f:selectItems value="#{beanSubProducto.lstProducto}" var="producto" itemLabel="#{producto.nombreProducto}" itemValue="#{producto.idProductoPk}" />
+                            </h:selectOneMenu>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-12"  for="txtNombre" value ="Nombre:" /> 
+                            <p:inputText id="txtNombre" maxlength="45" class="col-lg-3 col-md-4 col-sm-6 col-xs-12" value="#{beanSubProducto.data.nombreSubproducto}" required="true"
+                                         requiredMessage="Ingresa un valor para el campo Nombre."/>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+                        <p:panel id="filefrm" style="border: 1px solid #FFF;">
+                            <h:form>
+                                <p:fileUpload
+                                    fileUploadListener="#{beanSubProducto.handleFileUpload}"
+                                    mode="advanced" fileLimit="1"
+                                    fileLimitMessage="Solo pude subir un archivo" invalidSizeMessage="El tamaño del archivo supera lo permitido 5 MB, favor de verificar."									
+                                    label="Seleccionar" uploadLabel="Subir" cancelLabel="Cancelar"
+                                    dragDropSupport="true"  sizeLimit="5242880" update="@this"
+                                    process=":formProducto" invalidFileMessage ="El formato del archivo no es permitido, favor de seleccionar un archivo con formato JPG o PNG."
+                                    allowTypes="/(\.|\/)(png|jpg|jpeg)$/" >
+                                    <!--<img style="height:50px; width:auto;" src="{beanSubProducto.data.urlImagenSubproducto}" alt="logo" />-->
+                                </p:fileUpload>
+
+
+                            </h:form>
+                        </p:panel>
+<!--                        <p:commandButton id="descargar" resetValues="true" value="Descargar" ajax="false" actionListener="#{beanSubProducto.descarga(beanSubProducto.data)}" disabled="#{beanSubProducto.data.urlImagenSubproducto == null}" >
+                            <p:fileDownload value="#{beanSubProducto.download}" />
+                        </p:commandButton>-->
+                    </div>
+                </div>
+
+
+
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -127,7 +127,7 @@ public class EjbEntradaMercancia implements NegocioEntradaMercancia {
             query.append(" EMA.ID_PROVEDOR_FK =" + idProvedor);
         }
 
-        query.append(" ORDER BY EMA.ID_EM_PK) WHERE ROWNUM < 11 ORDER BY ID_EM_PK");
+        query.append(" ORDER BY EMA.ID_EM_PK DESC) WHERE ROWNUM < 11 ORDER BY ID_EM_PK");
 
         return em.createNativeQuery(query.toString()).getResultList();
 

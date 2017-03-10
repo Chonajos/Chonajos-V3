@@ -171,7 +171,6 @@ public class BeanMantenimientoPrecioMayoreo implements Serializable {
         dataEdit = new ExistenciaProducto();
         dataEdit = (ExistenciaProducto) event.getObject();
 
-        System.out.println("editado " + dataEdit.toString());
         updatePrecio();
         
 

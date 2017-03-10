@@ -108,7 +108,6 @@ public class EjbComprobantesDigitales implements NegocioComprobantes {
 
     @Override
     public List<Object[]> getComprobanteByIdTipoLlave(BigDecimal idTipoFk, BigDecimal idLlave) {
-        System.out.println("Variables: Tipo: "+idTipoFk + " LLave: "+idLlave);
         try {
             Query query = em.createNativeQuery("select * from COMPROBANTES_DIGITALES where ID_LLAVE_FK=? and ID_TIPO_FK=? ");
             query.setParameter(1, idLlave);

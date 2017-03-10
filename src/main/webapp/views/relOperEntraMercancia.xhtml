@@ -329,7 +329,7 @@
                                         </p:column> 
                                         <p:column headerText="Auto-Ajuste" width="60x;" class="alignCenter">
                                             <p:commandButton id="autoAjuste" ajax="true" 
-                                                             disabled="#{model.idStatusFk.intValue() != 1}" 
+                                                             disabled="#{model.idStatusFk.intValue() != 1 || item.numBodegas.intValue() > 1}" 
                                                              oncomplete="PF('dlg3').show();" update =":formContent:dialogoAutoAjustar"
                                                              icon="ui-icon-wrench" styleClass="ui-priority-primary">
                                                 <f:setPropertyActionListener value="#{item}" target="#{beanRelOperEntradaMercancia.dataProductoAutoAjuste}"/>
