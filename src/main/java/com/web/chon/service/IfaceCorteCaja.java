@@ -24,4 +24,11 @@ public interface IfaceCorteCaja {
     public CorteCaja getLastCorteByCajaHistorial(BigDecimal idCajaPk,BigDecimal idCorteFk);
     public ArrayList<CorteCaja> getCortesByFechaCajaUsuario(BigDecimal idCajaFk,BigDecimal idUsuarioFk,String fecha);
     
+    /**
+     * Obtiene el saldo actual de la caja efectivo, cuenta y cheques por medio de un id de caja
+     * @param idCaja
+     * @return 
+     */
+    public ArrayList<CorteCaja> getSaldoCajaByIdCaja(BigDecimal idCaja);
+    
 }

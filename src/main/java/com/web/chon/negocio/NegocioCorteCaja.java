@@ -26,4 +26,12 @@ public interface NegocioCorteCaja {
     public List<Object[]> getLastCorteByCajaHistorial(BigDecimal idCajaPk,BigDecimal idCorteFk);
     public List<Object[]> getCortesByFechaCajaUsuario(BigDecimal idCajaFk,BigDecimal idUsuarioFk,String fecha);
     
+    
+    /**
+     * Obtiene los saldos de las cajas Efectivo,Cheques y Cuentas Bancarias por medio de un id de caja
+     * @param idCaja
+     * @return 
+     */
+    public List<Object[]> getSaldoCajaByIdCaja(BigDecimal idCaja);
+    
 }

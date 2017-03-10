@@ -9,7 +9,6 @@ import com.web.chon.dominio.CorteCaja;
 import com.web.chon.negocio.NegocioCorteCaja;
 import com.web.chon.util.Utilidades;
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -137,11 +136,12 @@ public class ServiceCorteCaja implements IfaceCorteCaja {
         }
         return corte;
     }
-     @Override
-    public CorteCaja getLastCorteByCajaHistorial(BigDecimal idCajaPk,BigDecimal idCorteFk) {
+
+    @Override
+    public CorteCaja getLastCorteByCajaHistorial(BigDecimal idCajaPk, BigDecimal idCorteFk) {
         getEjb();
         List<Object[]> lstObject = new ArrayList<Object[]>();
-        lstObject = ejb.getLastCorteByCajaHistorial(idCajaPk,idCorteFk);
+        lstObject = ejb.getLastCorteByCajaHistorial(idCajaPk, idCorteFk);
         BigDecimal cero = new BigDecimal(0);
         CorteCaja corte = new CorteCaja();
         for (Object[] object : lstObject) {
@@ -190,6 +190,25 @@ public class ServiceCorteCaja implements IfaceCorteCaja {
             lstCortes.add(corte);
         }
         return lstCortes;
+    }
+
+    @Override
+    public ArrayList<CorteCaja> getSaldoCajaByIdCaja(BigDecimal idCaja) {
+        getEjb();
+        ArrayList<CorteCaja> lstCorteCaja = new ArrayList<CorteCaja>();
+        List<Object[]> lstObject = new ArrayList<Object[]>();
+        lstObject = ejb.getSaldoCajaByIdCaja(idCaja);
+        for (Object[] object : lstObject) {
+            CorteCaja corteCaja = new CorteCaja();
+            
+            corteCaja.setIdCajaFk(object[0] == null ? null : new BigDecimal(object[0].toString()));
+            corteCaja.setCantChequesNuevos(object[1] == null ? null : new BigDecimal(object[1].toString()));
+            corteCaja.setMontoChequesNuevos(object[2] == null ? null : new BigDecimal(object[2].toString()));
+            corteCaja.setSaldoNuevo(object[3] == null ? null : new BigDecimal(object[3].toString()));
+           
+            lstCorteCaja.add(corteCaja);
+        }
+        return lstCorteCaja;
     }
 
 }
