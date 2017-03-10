@@ -7,12 +7,14 @@ package com.web.chon.bean;
 
 import com.web.chon.dominio.Caja;
 import com.web.chon.dominio.ComprobantesDigitales;
+import com.web.chon.dominio.CorteCaja;
 import com.web.chon.dominio.CuentaBancaria;
 import com.web.chon.dominio.OperacionesCaja;
 import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceCaja;
 import com.web.chon.service.IfaceComprobantes;
+import com.web.chon.service.IfaceCorteCaja;
 import com.web.chon.service.IfaceCuentasBancarias;
 
 import com.web.chon.service.IfaceOperacionesCaja;
@@ -50,6 +52,8 @@ public class BeanDepositoBancario implements Serializable {
     private IfaceCuentasBancarias ifaceCuentasBancarias;
     @Autowired
     private IfaceComprobantes ifaceComprobantes;
+    @Autowired
+    private IfaceCorteCaja ifaceCorteCaja;
 
     private UsuarioDominio usuario;
     private Caja caja;
@@ -94,55 +98,62 @@ public class BeanDepositoBancario implements Serializable {
     }
 
     public void depositar() throws SQLException {
-        opcajaOrigen.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
-        opcajaOrigen.setMonto(monto);
-        opcajaOrigen.setComentarios(comentarios);
-        opcajaOrigen.setIdConceptoFk(CONCEPTO);
-        opcajaOrigen.setIdTipoOperacionFk(OPERACION);
-        opcajaOrigen.setIdFormaPago(EFECTIVO);
 
-        opcajaOrigen.setIdCuentaDestinoFk(idCuentaDestinoBean);
+        if (validarSaldo(1, monto, caja.getIdCajaPk())) {
 
-        if (caja.getIdCajaPk() != null) {
-            if (ifaceOperacionesCaja.insertaOperacion(opcajaOrigen) == 1) {
-                cd.setIdTipoFk(IMAGEN_TIPO_DEPOSITO);
-                cd.setIdLlaveFk(opcajaOrigen.getIdOperacionesCajaPk());
-                //Primero verificamos que ya exista imagen para ese folio
-                ComprobantesDigitales cdi = new ComprobantesDigitales();
-                cdi = ifaceComprobantes.getComprobanteByIdTipoLlave(cd.getIdTipoFk(), cd.getIdLlaveFk());
-                System.out.println("CDI: " + cdi.toString());
-                if (cdi == null || cdi.getIdComprobantesDigitalesPk() == null) {
-                    cd.setIdComprobantesDigitalesPk(new BigDecimal(ifaceComprobantes.getNextVal()));
-                    if (cd.getFichero() != null) 
-                    {
-                        if (ifaceComprobantes.insertaComprobante(cd) == 1) {
+            opcajaOrigen.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
+            opcajaOrigen.setMonto(monto);
+            opcajaOrigen.setComentarios(comentarios);
+            opcajaOrigen.setIdConceptoFk(CONCEPTO);
+            opcajaOrigen.setIdTipoOperacionFk(OPERACION);
+            opcajaOrigen.setIdFormaPago(EFECTIVO);
 
-                            if (ifaceComprobantes.insertarImagen(cd.getIdComprobantesDigitalesPk(), cd.getFichero()) == 1) {
-                                System.out.println("Se inserto la imagen correctamente");
-                            } else {
-                                JsfUtil.addErrorMessageClean("1.- Ha ocurrido un error al subir la imagen");
+            opcajaOrigen.setIdCuentaDestinoFk(idCuentaDestinoBean);
+
+            if (caja.getIdCajaPk() != null) {
+                if (ifaceOperacionesCaja.insertaOperacion(opcajaOrigen) == 1) {
+                    cd.setIdTipoFk(IMAGEN_TIPO_DEPOSITO);
+                    cd.setIdLlaveFk(opcajaOrigen.getIdOperacionesCajaPk());
+                    //Primero verificamos que ya exista imagen para ese folio
+                    ComprobantesDigitales cdi = new ComprobantesDigitales();
+                    cdi = ifaceComprobantes.getComprobanteByIdTipoLlave(cd.getIdTipoFk(), cd.getIdLlaveFk());
+                    System.out.println("CDI: " + cdi.toString());
+                    if (cdi == null || cdi.getIdComprobantesDigitalesPk() == null) {
+                        cd.setIdComprobantesDigitalesPk(new BigDecimal(ifaceComprobantes.getNextVal()));
+                        if (cd.getFichero() != null) {
+                            if (ifaceComprobantes.insertaComprobante(cd) == 1) {
+
+                                if (ifaceComprobantes.insertarImagen(cd.getIdComprobantesDigitalesPk(), cd.getFichero()) == 1) {
+                                    System.out.println("Se inserto la imagen correctamente");
+                                } else {
+                                    JsfUtil.addErrorMessageClean("1.- Ha ocurrido un error al subir la imagen");
+                                }
+
                             }
 
+                            monto = null;
+                            comentarios = null;
+                            idCuentaDestinoBean = null;
+                            JsfUtil.addSuccessMessageClean("Depósito Registrado Correctamente");
+
+                        } else {
+                            JsfUtil.addErrorMessageClean("Ingresa un comprobante digital");
                         }
-
-                        monto = null;
-                        comentarios = null;
-                        idCuentaDestinoBean = null;
-                        JsfUtil.addSuccessMessageClean("Depósito Registrado Correctamente");
-
                     } else {
-                        JsfUtil.addErrorMessageClean("Ingresa un comprobante digital");
+                        JsfUtil.addErrorMessageClean("Error, ya se ha subido imagen para este número de folio");
                     }
-                } else {
-                    JsfUtil.addErrorMessageClean("Error, ya se ha subido imagen para este número de folio");
-                }
 
+                } else {
+                    JsfUtil.addErrorMessageClean("Ocurrió un error al registrar el depósito");
+                }
             } else {
-                JsfUtil.addErrorMessageClean("Ocurrió un error al registrar el depósito");
+                JsfUtil.addErrorMessageClean("No cuenta con caja");
             }
+
         } else {
-            JsfUtil.addErrorMessageClean("No cuenta con caja");
+            JsfUtil.addErrorMessageClean("Saldo a Depositar es Mayor al Saldo en Caja.");
         }
+
     }
 
     public void handleFileUpload(FileUploadEvent event) throws IOException {
@@ -165,6 +176,34 @@ public class BeanDepositoBancario implements Serializable {
             JsfUtil.addErrorMessageClean("Ocurrio un error al cargar el archivo");
             e.printStackTrace();
         }
+
+    }
+
+    private boolean validarSaldo(int tipoValidar, BigDecimal monto, BigDecimal idCaja) {
+        CorteCaja corteCaja = new CorteCaja();
+        boolean valido = false;
+
+        corteCaja = ifaceCorteCaja.getSaldoCajaByIdCaja(idCaja);
+        switch (tipoValidar) {
+            case 1:
+                if (monto.compareTo(corteCaja.getSaldoNuevo()) <= 0) {
+                    valido = true;
+                } else {
+                    valido = false;
+                }
+                break;
+
+            case 3:
+                if (monto.compareTo(corteCaja.getMontoChequesNuevos()) <= 0) {
+                    valido = true;
+                } else {
+                    valido = false;
+                }
+                break;
+
+        }
+
+        return valido;
 
     }
 

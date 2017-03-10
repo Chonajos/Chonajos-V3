@@ -7,6 +7,7 @@ package com.web.chon.bean;
 
 import com.web.chon.dominio.Caja;
 import com.web.chon.dominio.ConceptosES;
+import com.web.chon.dominio.CorteCaja;
 import com.web.chon.dominio.OperacionesCaja;
 import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.TipoAbono;
@@ -16,6 +17,7 @@ import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.security.service.PlataformaSecurityContext;
 import com.web.chon.service.IfaceCaja;
 import com.web.chon.service.IfaceConceptos;
+import com.web.chon.service.IfaceCorteCaja;
 import com.web.chon.service.IfaceOperacionesCaja;
 import com.web.chon.service.IfaceTipoAbono;
 import com.web.chon.util.JsfUtil;
@@ -45,6 +47,8 @@ public class BeanAjusteCaja implements Serializable {
     private IfaceOperacionesCaja ifaceOperacionesCaja;
     @Autowired
     private IfaceTipoAbono ifaceTipoAbono;
+    @Autowired
+    private IfaceCorteCaja ifaceCorteCaja;
 
     private ArrayList<ConceptosES> listaConceptos;
 
@@ -120,21 +124,63 @@ public class BeanAjusteCaja implements Serializable {
     }
 
     public void ajustar() {
-        opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
-        opcaja.setMonto(monto);
-        comentarios = comentarios + "SISTEMA: Usuario " + usuario.getNombreCompleto();
-        opcaja.setComentarios(comentarios);
-        opcaja.setEntradaSalida(new BigDecimal(filtroES));
-        opcaja.setIdFormaPago(idFormaPagoBean);
-        opcaja.setIdCajaFk(idCajaBean);
-        opcaja.setIdUserFk(idUsuarioCajaBean);
 
-        if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
-            JsfUtil.addSuccessMessageClean("Ajuste de Caja Registrado Correctamente");
-            reset();
+        if ((validarSaldo(idFormaPagoBean.intValue(), monto, idCajaBean) && filtroES == 2) || filtroES == 1) {
+            opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
+            opcaja.setMonto(monto);
+            comentarios = comentarios + "SISTEMA: Usuario " + usuario.getNombreCompleto();
+            opcaja.setComentarios(comentarios);
+            opcaja.setEntradaSalida(new BigDecimal(filtroES));
+            opcaja.setIdFormaPago(idFormaPagoBean);
+            opcaja.setIdCajaFk(idCajaBean);
+            opcaja.setIdUserFk(idUsuarioCajaBean);
+
+            if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
+                JsfUtil.addSuccessMessageClean("Ajuste de Caja Registrado Correctamente");
+                reset();
+            } else {
+                JsfUtil.addErrorMessageClean("Ocurrió un error al reslizar el ajuste de Caja");
+            }
         } else {
-            JsfUtil.addErrorMessageClean("Ocurrió un error al reslizar el ajuste de Caja");
+            JsfUtil.addErrorMessageClean("Ajuste en Caja Mayor al Monto a Ajustar");
         }
+
+    }
+
+    private boolean validarSaldo(int tipoValidar, BigDecimal monto, BigDecimal idCaja) {
+        CorteCaja corteCaja = new CorteCaja();
+        boolean valido = false;
+
+        corteCaja = ifaceCorteCaja.getSaldoCajaByIdCaja(idCaja);
+        switch (tipoValidar) {
+            case 1:
+                if (monto.compareTo(corteCaja.getSaldoNuevo()) <= 0) {
+                    valido = true;
+                } else {
+                    valido = false;
+                }
+                break;
+
+            case 3:
+                if (monto.compareTo(corteCaja.getMontoChequesNuevos()) <= 0) {
+                    valido = true;
+                } else {
+                    valido = false;
+                }
+                break;
+
+            case 2:
+            case 4:
+                if (monto.compareTo(corteCaja.getMontoCuentaNuevo()) <= 0) {
+                    valido = true;
+                } else {
+                    valido = false;
+                }
+                break;
+
+        }
+
+        return valido;
 
     }
 
