@@ -41,7 +41,7 @@
                 <div class="container-fluid">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="conceptoCategoria" value ="Operación:" rendered="#{beanPagoServicios.viewEstate =='init'}" /> 
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="conceptoCategoria" value ="Operación:" rendered="#{beanPagoServicios.viewEstate =='init'}" /> 
                             <p:selectOneMenu style="width: 55% !important"  id="conceptoCategoria" class="col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanPagoServicios.idOperacionBean}" rendered="#{beanPagoServicios.viewEstate =='init'}" required="true">
                                 <f:selectItem itemLabel="selecciona un tipo de gasto" itemValue="" />
                                 <f:selectItems value="#{beanPagoServicios.lstOperaciones}" var="gastito" itemLabel="#{gastito.nombre}" itemValue="#{gastito.idTipoOperacionPk}"/>
@@ -51,33 +51,33 @@
                             </p:selectOneMenu>
                         </div>
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="conceptoFiltro" value ="Concepto:" rendered="#{beanPagoServicios.viewEstate =='init'}" /> 
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="conceptoFiltro" value ="Concepto:" rendered="#{beanPagoServicios.viewEstate =='init'}" /> 
                             <p:selectOneMenu style="width: 55% !important"  id="conceptoFiltro" class="col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanPagoServicios.idConceptoBean}" rendered="#{beanPagoServicios.viewEstate =='init'}" required="true">
                                 <f:selectItem itemLabel="selecciona un servicio" itemValue="" />
                                 <f:selectItems value="#{beanPagoServicios.listaConceptos}" var="conceptito" itemLabel="#{conceptito.nombre}" itemValue="#{conceptito.idConceptoPk}"/>
                             </p:selectOneMenu>
                         </div>
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="comboSucursal" value ="Sucursal:" rendered="#{beanPagoServicios.viewEstate =='init'}" /> 
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="comboSucursal" value ="Sucursal:" rendered="#{beanPagoServicios.viewEstate =='init'}" /> 
                             <p:selectOneMenu style="width: 55% !important"  id="comboSucursal" class="col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanPagoServicios.idSucursalFk}" rendered="#{beanPagoServicios.viewEstate =='init'}" required="true">
 
                                 <f:selectItems value="#{beanPagoServicios.listaSucursales}" var="sucu" itemLabel="#{sucu.nombre}" itemValue="#{sucu.idSucursalFk}"/>
                             </p:selectOneMenu>
                         </div>
                         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 ">
-                            <p:outputLabel  class="col-lg-4 col-md-3 col-sm-4 col-xs-6 alignLeft"  for="txtPrecio" id="labelprecio" value ="Monto:" /> 
-                            <p:inputText id="txtPrecio" maxlength="8" class=" col-lg-6 col-md-4 col-sm-8 col-xs-6" value="#{beanPagoServicios.totalServicio}" required="true">
+                            <p:outputLabel  class="col-lg-4 col-md-3 col-sm-4 col-xs-12"  for="txtPrecio" id="labelprecio" value ="Monto:" /> 
+                            <p:inputText id="txtPrecio" maxlength="8" class=" col-lg-6 col-md-4 col-sm-8 col-xs-12" value="#{beanPagoServicios.totalServicio}" required="true">
                                 <pe:keyFilter regEx="/[0-9 .]/i"/>
                             </p:inputText>
                         </div>
 
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                        <div class="col-lg-3 col-md-8 col-sm-8 col-xs-3">
-                            <p:outputLabel  class="col-lg-6 col-md-3 col-sm-4 col-xs-6 alignLeft"  for="txtComentarios" value ="Comentarios:" /> 
-                            <p:inputTextarea  rows="1" cols="20" id="txtComentarios" maxlength="95" class=" col-lg-6 col-md-4 col-sm-8 col-xs-6" value="#{beanPagoServicios.comentarios}"/>
+                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            <p:outputLabel  class="col-lg-3 col-md-3 col-sm-4 col-xs-12"  for="txtComentarios" value ="Observaciones:" /> 
+                            <p:inputTextarea  rows="1" id="txtComentarios" maxlength="95" class="col-lg-9 col-md-9 col-sm-8 col-xs-12" value="#{beanPagoServicios.comentarios}"/>
                         </div>
-                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 ">
+                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 ">
                             <p:panel id="filefrm" style="border: 1px solid #FFF;">
                                 <h:form>
                                     <p:fileUpload

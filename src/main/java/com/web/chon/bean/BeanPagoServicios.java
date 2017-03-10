@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.web.chon.bean;
 
 import com.web.chon.dominio.Caja;
@@ -17,21 +12,14 @@ import com.web.chon.service.IfaceConceptos;
 import com.web.chon.service.IfaceCorteCaja;
 import com.web.chon.service.IfaceOperacionesCaja;
 import com.web.chon.service.IfaceTiposOperacion;
-import com.web.chon.util.Constantes;
-import com.web.chon.util.FileUtils;
 import com.web.chon.util.JsfUtil;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.servlet.ServletContext;
 import org.apache.commons.io.IOUtils;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
@@ -92,7 +80,6 @@ public class BeanPagoServicios implements Serializable {
 
     private static final BigDecimal CERO = new BigDecimal(0).setScale(2, RoundingMode.CEILING);
 
-
     private byte[] bytes;
 
     @PostConstruct
@@ -115,21 +102,14 @@ public class BeanPagoServicios implements Serializable {
         opcaja.setIdStatusFk(STATUS_PENDIENTE);
 
         //--Maximo Pago--//
-       
-
         listaSucursales = new ArrayList<Caja>();
         listaSucursales = ifaceCaja.getSucursalesByIdCaja(caja.getIdCajaPk());
-        
 
-       
-
-        
     }
-    
-    public void buscaConceptos()
-    {
-        System.out.println("Operacion: "+idOperacionBean);
-          listaConceptos = ifaceConceptos.getConceptosByTipoOperacion(idOperacionBean);
+
+    public void buscaConceptos() {
+        System.out.println("Operacion: " + idOperacionBean);
+        listaConceptos = ifaceConceptos.getConceptosByTipoOperacion(idOperacionBean);
     }
 
     public void handleFileUpload(FileUploadEvent event) throws IOException {
@@ -166,29 +146,58 @@ public class BeanPagoServicios implements Serializable {
         idConceptoBean = null;
     }
 
-    
     public void pagar() {
-        //verificarDinero();
+        if (validarSaldo(1, totalServicio, caja.getIdCajaPk())) {
+            opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
+            opcaja.setMonto(totalServicio);
+            opcaja.setComentarios(comentarios);
+            opcaja.setIdConceptoFk(idConceptoBean);
+            opcaja.setIdTipoOperacionFk(idOperacionBean);
+            opcaja.setIdFormaPago(new BigDecimal(1));
+            opcaja.setIdSucursalFk(idSucursalFk);
 
-        opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
-        opcaja.setMonto(totalServicio);
-        opcaja.setComentarios(comentarios);
-        opcaja.setIdConceptoFk(idConceptoBean);
-        opcaja.setIdTipoOperacionFk(idOperacionBean);
-        opcaja.setIdFormaPago(new BigDecimal(1));
-        opcaja.setIdSucursalFk(idSucursalFk);
+            if (caja.getIdCajaPk() != null) {
+                if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
+                    JsfUtil.addSuccessMessageClean("Pago de servicio registrado correctamente");
+                    reset();
+                } else {
+                    JsfUtil.addErrorMessageClean("Ocurrio un error al registrar el pago de servicio, contactar al administrador");
+                }
 
-        if (caja.getIdCajaPk() != null) {
-            if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
-                JsfUtil.addSuccessMessageClean("Pago de servicio registrado correctamente");
-                reset();
             } else {
-                JsfUtil.addErrorMessageClean("Ocurrio un error al registrar el pago de servicio, contactar al administrador");
+                JsfUtil.addErrorMessageClean("Su usuario no cuenta con caja registrada para realizar el pago de servicios");
             }
-
         } else {
-            JsfUtil.addErrorMessageClean("Su usuario no cuenta con caja registrada para realizar el pago de servicios");
+            JsfUtil.addErrorMessageClean("Gasto Mayor al Saldo en Caja.");
         }
+
+    }
+
+    private boolean validarSaldo(int tipoValidar, BigDecimal monto, BigDecimal idCaja) {
+        CorteCaja corteCaja = new CorteCaja();
+        boolean valido = false;
+
+        corteCaja = ifaceCorteCaja.getSaldoCajaByIdCaja(idCaja);
+        switch (tipoValidar) {
+            case 1:
+                if (monto.compareTo(corteCaja.getSaldoNuevo()) <= 0) {
+                    valido = true;
+                } else {
+                    valido = false;
+                }
+                break;
+
+            case 3:
+                if (monto.compareTo(corteCaja.getMontoChequesNuevos()) <= 0) {
+                    valido = true;
+                } else {
+                    valido = false;
+                }
+                break;
+
+        }
+
+        return valido;
 
     }
 
@@ -280,7 +289,6 @@ public class BeanPagoServicios implements Serializable {
         this.saldoAnterior = saldoAnterior;
     }
 
-    
     public BigDecimal getTotalEntradas() {
         return totalEntradas;
     }
@@ -329,7 +337,6 @@ public class BeanPagoServicios implements Serializable {
         this.corteAnterior = corteAnterior;
     }
 
-    
     public BigDecimal getIdOperacionBean() {
         return idOperacionBean;
     }
