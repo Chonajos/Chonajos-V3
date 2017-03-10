@@ -29,6 +29,6 @@ public interface IfaceCorteCaja {
      * @param idCaja
      * @return 
      */
-    public ArrayList<CorteCaja> getSaldoCajaByIdCaja(BigDecimal idCaja);
+    public CorteCaja getSaldoCajaByIdCaja(BigDecimal idCaja);
     
 }

@@ -240,7 +240,7 @@
                         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 alignLeft">
                             <p:outputLabel class="col-lg-4 col-md-5 col-sm-4 col-xs-12 alignRight"  for="filtroDocumento" value ="Tipo Documento" /> 
                             <p:selectOneMenu  style="width: 50% !important" id="filtroDocumento" class="col-lg-5 col-md-7 col-sm-8 col-xs-12" value="#{beanFacturacion.tipoDocumento}" >
-                                <f:selectItems value="#{beanFacturacion.listaTipoDocumento}" var="documento" itemLabel="#{documento.descripcion}" itemValue="#{documento.codigo}"/>
+                                <f:selectItems value="#{beanFacturacion.listaTipoDocumento}" var="documento" itemLabel="#{documento.descripcion} #{documento.valor} %" itemValue="#{documento.codigo}"/>
                             </p:selectOneMenu>
                         </div>
                         <div class="col-lg-5 col-md-4 col-sm-12 col-xs-12 alignLeft">

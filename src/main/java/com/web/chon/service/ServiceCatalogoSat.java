@@ -45,6 +45,7 @@ NegocioCatalogoSat ejb;
                 c.setCodigo(obj[1] == null ? null : obj[1].toString());
                 c.setDescripcion(obj[2] == null ? null : obj[2].toString());
                 c.setTipo(obj[3] == null ? null : new BigDecimal(obj[3].toString()));
+                c.setValor(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
                 lista.add(c);
 
             }

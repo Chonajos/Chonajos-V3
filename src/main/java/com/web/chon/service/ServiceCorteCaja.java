@@ -193,22 +193,19 @@ public class ServiceCorteCaja implements IfaceCorteCaja {
     }
 
     @Override
-    public ArrayList<CorteCaja> getSaldoCajaByIdCaja(BigDecimal idCaja) {
+    public CorteCaja getSaldoCajaByIdCaja(BigDecimal idCaja) {
         getEjb();
-        ArrayList<CorteCaja> lstCorteCaja = new ArrayList<CorteCaja>();
+        CorteCaja corteCaja = new CorteCaja();
         List<Object[]> lstObject = new ArrayList<Object[]>();
         lstObject = ejb.getSaldoCajaByIdCaja(idCaja);
-        for (Object[] object : lstObject) {
-            CorteCaja corteCaja = new CorteCaja();
-            
+        for (Object[] object : lstObject) 
+        {
             corteCaja.setIdCajaFk(object[0] == null ? null : new BigDecimal(object[0].toString()));
             corteCaja.setCantChequesNuevos(object[1] == null ? null : new BigDecimal(object[1].toString()));
             corteCaja.setMontoChequesNuevos(object[2] == null ? null : new BigDecimal(object[2].toString()));
             corteCaja.setSaldoNuevo(object[3] == null ? null : new BigDecimal(object[3].toString()));
-           
-            lstCorteCaja.add(corteCaja);
         }
-        return lstCorteCaja;
+        return corteCaja;
     }
 
 }

@@ -18,11 +18,22 @@ public class CatalogoSat implements Serializable {
     private String codigo;
     private String descripcion;
     private BigDecimal tipo;
+    private BigDecimal valor;
 
     @Override
     public String toString() {
         return "CatalogoSat{" + "idCatalogoSatPk=" + idCatalogoSatPk + ", codigo=" + codigo + ", descripcion=" + descripcion + ", tipo=" + tipo + '}';
     }
+
+    public BigDecimal getValor() {
+        return valor;
+    }
+
+    public void setValor(BigDecimal valor) {
+        this.valor = valor;
+    }
+
+    
     
     
 

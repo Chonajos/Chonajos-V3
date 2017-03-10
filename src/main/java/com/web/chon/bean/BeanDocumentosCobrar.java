@@ -9,6 +9,7 @@ import com.web.chon.dominio.AbonoDocumentos;
 import com.web.chon.dominio.Caja;
 import com.web.chon.dominio.Cliente;
 import com.web.chon.dominio.CobroCheques;
+import com.web.chon.dominio.CorteCaja;
 import com.web.chon.dominio.CuentaBancaria;
 import com.web.chon.dominio.Documento;
 import com.web.chon.dominio.OperacionesCaja;
@@ -24,6 +25,7 @@ import com.web.chon.service.IfaceCaja;
 import com.web.chon.service.IfaceCatCliente;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceCobroCheques;
+import com.web.chon.service.IfaceCorteCaja;
 import com.web.chon.service.IfaceCuentasBancarias;
 import com.web.chon.service.IfaceDocumentos;
 import com.web.chon.service.IfaceOperacionesCaja;
@@ -100,6 +102,8 @@ public class BeanDocumentosCobrar implements Serializable {
     private IfacePagosBancarios ifacePagosBancarios;
     @Autowired
     private IfaceCuentasBancarias ifaceCuentasBancarias;
+    @Autowired
+    private IfaceCorteCaja ifaceCorteCaja;
 
    
     private ArrayList<Documento> listaDocumentos;
@@ -181,10 +185,12 @@ public class BeanDocumentosCobrar implements Serializable {
     
     private static final BigDecimal CONCEPTO = new BigDecimal(13);
     private static final BigDecimal OPERACION = new BigDecimal(10);
+    private CorteCaja saldoActual;
 
     @PostConstruct
     public void init() {
         fechaInicio = new Date();
+        saldoActual = new CorteCaja();
         fechaFin = new Date();
         dataAbonar = new AbonoDocumentos();
         listaSucursales = new ArrayList<Sucursal>();
@@ -218,7 +224,6 @@ public class BeanDocumentosCobrar implements Serializable {
         opcaja.setIdSucursalFk(idSucursalFk);
         opcaja.setIdConceptoFk(CONCEPTO);
         opcaja.setIdTipoOperacionFk(OPERACION);
-
         opcuenta = new OperacionesCuentas();
         opcuenta.setIdUserFk(usuario.getIdUsuario());
         opcuenta.setIdStatusFk(idStatusCuenta);
@@ -472,8 +477,11 @@ public class BeanDocumentosCobrar implements Serializable {
                 break;
         }
     }
+    
 
-    public void cobrarCheque() {
+    public void cobrarCheque() 
+    {
+        saldoActual=ifaceCorteCaja.getSaldoCajaByIdCaja(opcaja.getIdCajaFk());
         cobroCheque.setIdCobroChequePk(new BigDecimal(ifaceCobroCheques.nextVal()));
         cobroCheque.setImporteDeposito(documentoData.getMonto());
         cobroCheque.setIdDocumentoFk(documentoData.getIdDocumentoPk());
@@ -483,7 +491,8 @@ public class BeanDocumentosCobrar implements Serializable {
             temp.setIdDocumentoPk(cobroCheque.getIdDocumentoFk());
             temp.setIdStatusFk(DOCUMENTOFINALIZADO);
             //si se inserta el cobro del cheque cambiamos el status del documento
-            if (ifaceDocumentos.updateDocumentoById(temp) == 1) {
+            if (ifaceDocumentos.updateDocumentoById(temp) == 1) 
+            {
                 verificarCobro();
 
                 opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
