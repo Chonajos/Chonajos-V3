@@ -14,6 +14,163 @@
                 <h3>#{beanDocumentosCobrar.title}</h3>
             </div>
             <p:panel  rendered="#{beanDocumentosCobrar.viewEstate=='init'}" >
+                
+                <div class="container-fluid">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 alignRight form-group ">
+                            <p:commandButton value="Buscar" update=":formContent:tabla" ajax="true" action="#{beanDocumentosCobrar.buscar()}"/>       
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="sucursalFiltro" value ="Sucursal:" /> 
+                            <p:selectOneMenu style="width: 97% !important"  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanDocumentosCobrar.idSucursalFk}"  disabled="#{beanDocumentosCobrar.usuario.perId != 1}">
+                                <f:selectItem itemLabel="Todas" itemValue="" />
+                                <f:selectItems value="#{beanDocumentosCobrar.listaSucursales}" var="sucursal" itemLabel="#{sucursal.nombreSucursal}" itemValue="#{sucursal.idSucursalPk}"/>
+                            <p:ajax event="change" update=":formContent" listener="#{beanDocumentosCobrar.buscar()}" />
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 alignLeft ">
+                            <p:outputLabel class="col-lg-6 col-md-2 col-sm-4 col-xs-12 alignLeft"  for="autocompleteCliente"
+                                           value ="Cliente:" /> 
+                            <p:autoComplete  placeholder="Seleccione un Cliente" id="autocompleteCliente"  required="false" 
+                                             requiredMessage="Ingresa un valor para el campo Cliente." 
+                                             styleClass="autocomplete-input-text-media ui-state-highlight-autocomplete" 
+                                             class="ui-state-highlight-autocomplete alignLeft"
+                                             value="#{beanDocumentosCobrar.cliente}" completeMethod="#{beanDocumentosCobrar.autoCompleteCliente}" 
+                                             forceSelection="true" var="cliente"  inputStyle="width: 180px"
+                                             itemLabel="#{cliente.nombreCompleto}"
+                                             itemValue="#{cliente.id_cliente}" converter="#{clienteConverter}">
+                            </p:autoComplete>
+                            <pe:keyFilter for="autocompleteCliente" regEx="/[a-z0-9-_Ã±\s]/i" />
+                        </div>
+
+                        <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12 ">
+                            <p:outputLabel for="comboFiltro" value="Fecha de Cobro:"   /> 
+                            <p:selectOneMenu  style="width: 97% !important"  id="comboFiltro"  value="#{beanDocumentosCobrar.filtroFecha}">
+                                <f:selectItem  itemLabel="VENCIDOS" itemValue="1"/>
+                                <f:selectItem  itemLabel="POR VENCER" itemValue="2"/>
+                                <f:selectItem  itemLabel="TODOS" itemValue="3"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12 ">
+                            <p:outputLabel for="comboFiltroStatus" value="Forma de Cobro:"   /> 
+                            <p:selectOneMenu  style="width: 97% !important"  id="comboFormaPago"  value="#{beanDocumentosCobrar.filtroFormaPago}">
+                                <f:selectItem  itemLabel="TODOS" itemValue=""/>
+                                <f:selectItem  itemLabel="NORMAL" itemValue="1"/>
+                                <f:selectItem  itemLabel="DEVUELTO" itemValue="2"/>
+                                <f:selectItem  itemLabel="CONVENIO DE PAGO" itemValue="2"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12 ">
+                            <p:outputLabel for="comboFiltroStatus" value="Estatus:"   /> 
+                            <p:selectOneMenu  style="width: 97% !important"  id="comboFiltroStatus"  value="#{beanDocumentosCobrar.filtroStatus}">
+                                <f:selectItem  itemLabel="TODOS" itemValue=""/>
+                                <f:selectItem  itemLabel="PENDIENTES" itemValue="1"/>
+                                <f:selectItem  itemLabel="FINALIZADOS" itemValue="2"/>
+                            </p:selectOneMenu>
+                        </div>
+
+                    </div>
+                    <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <p:dataTable id="tabla" var="model" value="#{beanDocumentosCobrar.listaDocumentos}" 
+                                     scrollable="true" scrollHeight="300"
+                                     styleClass="ui-datatable-hor-scroll" rowStyleClass="#{model.idStatusFk.intValue() eq 1 ? 'alert-warning': (model.idStatusFk.intValue()  eq 2 ? 'alert-success':(model.idStatusFk.intValue()  eq 3 ? 'alert-danger':' alert-success'))}"
+                                      
+                                     rowKey="#{model.idDocumentoPk}"
+                                     emptyMessage="No se encontraron registros.">
+                            <p:column headerText="Sucursal" width="50px;" class="alignCenter">
+                                <h:outputText value="#{model.nombreSucursalFk}" >     
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Cliente" width="50px;" class="alignCenter">
+                                <h:outputText value="#{model.nombreCliente}" >     
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="Forma de Cobro" width="50px;" class="alignCenter">
+                                <h:outputText value="#{model.nombreFormaCobro}" >     
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="Estatus" width="50px;" class="alignCenter">
+                                <h:outputText value="#{model.nombreStatus}" >     
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="N° Cheque" width="50px;" class="alignCenter">
+                                <h:outputText value="#{model.numeroCheque}" />
+                            </p:column>
+                            <p:column headerText="Banco" width="50px;" class="alignCenter">
+                                <h:outputText value="#{model.banco}" >     
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Librador" width="70px;" class="alignLeft">
+                                <h:outputText value="#{model.librador}">
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="N° Factura" width="50px;" class="alignCenter">
+                                <h:outputText value="#{model.factura}"> 
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="Importe" width="50px;" class="alignRight">
+                                <h:outputText value="#{model.monto}" >
+                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Fecha de Cobro" width="50px;" class="alignCenter">
+                                <h:outputText value="#{model.fechaCobro}" >
+                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Total Abonado" width="50px;" class="alignRight">
+                                <h:outputText value="#{model.totalAbonado}" >
+                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Cobrar" width="30px;" class="alignCenter">
+                                <p:commandButton ajax="true" rendered="#{model.idFormaCobroFk.intValue() == 1}"
+                                                 disabled="#{model.idStatusFk != 1}"           
+                                                 oncomplete="PF('dlg1').show();" update =":formContent:dialogoCobroCheque" icon="ui-icon-triangle-1-e" styleClass="ui-priority-primary" >
+                                    <f:setPropertyActionListener value="#{model}" target="#{beanDocumentosCobrar.documentoData}"/>
+                                </p:commandButton>
+                                <p:commandButton ajax="true"   rendered="#{model.idFormaCobroFk.intValue() == 2 || model.idFormaCobroFk.intValue() == 3}"
+                                                 oncomplete="PF('dlg2').show();" 
+                                                 update =":formContent:dialog2" icon="ui-icon-triangle-1-e" styleClass="ui-priority-primary" >
+                                    <f:setPropertyActionListener value="#{model}" target="#{beanDocumentosCobrar.documentoData}"/>
+                                </p:commandButton>
+                            </p:column>
+                            <p:column headerText="Cambiar Forma de Cobro" width="50px;" class="alignCenter">
+                                <p:commandButton ajax="true"  
+                                                 disabled="#{model.idFormaCobroFk.intValue() != 1 || model.idStatusFk != 1}"             
+                                                 oncomplete="PF('dlg').show();" update =":formContent" icon="ui-icon-triangle-1-e" styleClass="ui-priority-primary" >
+                                    <f:setPropertyActionListener value="#{model}" target="#{beanDocumentosCobrar.documentoData}"/>
+                                </p:commandButton>
+                            </p:column>
+                            <p:columnGroup type="footer">
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                                
+                                <p:column colspan="1" footerText="Total: " style="text-align:right"/>
+                                <p:column colspan="1" class="alignRight">
+                                    <f:facet name="footer">
+                                        <h:outputText value="#{beanDocumentosCobrar.total}" class="alignRight">
+                                            <f:convertNumber type="currency" currencySymbol="$" />
+                                        </h:outputText>
+                                    </f:facet>
+                                </p:column>
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                            </p:columnGroup>
+                        </p:dataTable>
+                    </div>
+
+                </div>
                 <div class="container-fluid">
                     
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
@@ -236,162 +393,6 @@
 
                         </div>
                     </div>
-                </div>
-                <div class="container-fluid">
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                        <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 alignRight form-group ">
-                            <p:commandButton value="Buscar" update=":formContent:tabla" ajax="true" action="#{beanDocumentosCobrar.buscar()}"/>       
-                        </div>
-                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="sucursalFiltro" value ="Sucursal:" /> 
-                            <p:selectOneMenu style="width: 97% !important"  id="sucursalFiltro" class=" col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanDocumentosCobrar.idSucursalFk}"  disabled="#{beanDocumentosCobrar.usuario.perId != 1}">
-                                <f:selectItem itemLabel="Todas" itemValue="" />
-                                <f:selectItems value="#{beanDocumentosCobrar.listaSucursales}" var="sucursal" itemLabel="#{sucursal.nombreSucursal}" itemValue="#{sucursal.idSucursalPk}"/>
-                            <p:ajax event="change" update=":formContent" listener="#{beanDocumentosCobrar.buscar()}" />
-                            </p:selectOneMenu>
-                        </div>
-                        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 alignLeft ">
-                            <p:outputLabel class="col-lg-6 col-md-2 col-sm-4 col-xs-12 alignLeft"  for="autocompleteCliente"
-                                           value ="Cliente:" /> 
-                            <p:autoComplete  placeholder="Seleccione un Cliente" id="autocompleteCliente"  required="false" 
-                                             requiredMessage="Ingresa un valor para el campo Cliente." 
-                                             styleClass="autocomplete-input-text-media ui-state-highlight-autocomplete" 
-                                             class="ui-state-highlight-autocomplete alignLeft"
-                                             value="#{beanDocumentosCobrar.cliente}" completeMethod="#{beanDocumentosCobrar.autoCompleteCliente}" 
-                                             forceSelection="true" var="cliente"  inputStyle="width: 180px"
-                                             itemLabel="#{cliente.nombreCompleto}"
-                                             itemValue="#{cliente.id_cliente}" converter="#{clienteConverter}">
-                            </p:autoComplete>
-                            <pe:keyFilter for="autocompleteCliente" regEx="/[a-z0-9-_Ã±\s]/i" />
-                        </div>
-
-                        <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12 ">
-                            <p:outputLabel for="comboFiltro" value="Fecha de Cobro:"   /> 
-                            <p:selectOneMenu  style="width: 97% !important"  id="comboFiltro"  value="#{beanDocumentosCobrar.filtroFecha}">
-                                <f:selectItem  itemLabel="VENCIDOS" itemValue="1"/>
-                                <f:selectItem  itemLabel="POR VENCER" itemValue="2"/>
-                                <f:selectItem  itemLabel="TODOS" itemValue="3"/>
-                            </p:selectOneMenu>
-                        </div>
-                        <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12 ">
-                            <p:outputLabel for="comboFiltroStatus" value="Forma de Cobro:"   /> 
-                            <p:selectOneMenu  style="width: 97% !important"  id="comboFormaPago"  value="#{beanDocumentosCobrar.filtroFormaPago}">
-                                <f:selectItem  itemLabel="TODOS" itemValue=""/>
-                                <f:selectItem  itemLabel="NORMAL" itemValue="1"/>
-                                <f:selectItem  itemLabel="DEVUELTO" itemValue="2"/>
-                                <f:selectItem  itemLabel="CONVENIO DE PAGO" itemValue="2"/>
-                            </p:selectOneMenu>
-                        </div>
-                        <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12 ">
-                            <p:outputLabel for="comboFiltroStatus" value="Estatus:"   /> 
-                            <p:selectOneMenu  style="width: 97% !important"  id="comboFiltroStatus"  value="#{beanDocumentosCobrar.filtroStatus}">
-                                <f:selectItem  itemLabel="TODOS" itemValue=""/>
-                                <f:selectItem  itemLabel="PENDIENTES" itemValue="1"/>
-                                <f:selectItem  itemLabel="FINALIZADOS" itemValue="2"/>
-                            </p:selectOneMenu>
-                        </div>
-
-                    </div>
-                    <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <p:dataTable id="tabla" var="model" value="#{beanDocumentosCobrar.listaDocumentos}" 
-                                     scrollable="true" scrollHeight="300"
-                                     styleClass="ui-datatable-hor-scroll" rowStyleClass="#{model.idStatusFk.intValue() eq 1 ? 'alert-warning': (model.idStatusFk.intValue()  eq 2 ? 'alert-success':(model.idStatusFk.intValue()  eq 3 ? 'alert-danger':' alert-success'))}"
-                                      
-                                     rowKey="#{model.idDocumentoPk}"
-                                     emptyMessage="No se encontraron registros.">
-                            <p:column headerText="Sucursal" width="50px;" class="alignCenter">
-                                <h:outputText value="#{model.nombreSucursalFk}" >     
-                                </h:outputText>
-                            </p:column>
-                            <p:column headerText="Cliente" width="50px;" class="alignCenter">
-                                <h:outputText value="#{model.nombreCliente}" >     
-                                </h:outputText>
-                            </p:column>
-
-                            <p:column headerText="Forma de Cobro" width="50px;" class="alignCenter">
-                                <h:outputText value="#{model.nombreFormaCobro}" >     
-                                </h:outputText>
-                            </p:column>
-
-                            <p:column headerText="Estatus" width="50px;" class="alignCenter">
-                                <h:outputText value="#{model.nombreStatus}" >     
-                                </h:outputText>
-                            </p:column>
-
-                            <p:column headerText="N° Cheque" width="50px;" class="alignCenter">
-                                <h:outputText value="#{model.numeroCheque}" />
-                            </p:column>
-                            <p:column headerText="Banco" width="50px;" class="alignCenter">
-                                <h:outputText value="#{model.banco}" >     
-                                </h:outputText>
-                            </p:column>
-                            <p:column headerText="Librador" width="70px;" class="alignLeft">
-                                <h:outputText value="#{model.librador}">
-                                </h:outputText>
-                            </p:column>
-                            <p:column headerText="N° Factura" width="50px;" class="alignCenter">
-                                <h:outputText value="#{model.factura}"> 
-                                </h:outputText>
-                            </p:column>
-
-                            <p:column headerText="Importe" width="50px;" class="alignRight">
-                                <h:outputText value="#{model.monto}" >
-                                    <f:convertNumber type="currency" currencySymbol="$" />
-                                </h:outputText>
-                            </p:column>
-                            <p:column headerText="Fecha de Cobro" width="50px;" class="alignCenter">
-                                <h:outputText value="#{model.fechaCobro}" >
-                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
-                                </h:outputText>
-                            </p:column>
-                            <p:column headerText="Total Abonado" width="50px;" class="alignRight">
-                                <h:outputText value="#{model.totalAbonado}" >
-                                    <f:convertNumber type="currency" currencySymbol="$" />
-                                </h:outputText>
-                            </p:column>
-                            <p:column headerText="Cobrar" width="30px;" class="alignCenter">
-                                <p:commandButton ajax="true" rendered="#{model.idFormaCobroFk.intValue() == 1}"
-                                                 disabled="#{model.idStatusFk != 1}"           
-                                                 oncomplete="PF('dlg1').show();" update =":formContent:dialogoCobroCheque" icon="ui-icon-triangle-1-e" styleClass="ui-priority-primary" >
-                                    <f:setPropertyActionListener value="#{model}" target="#{beanDocumentosCobrar.documentoData}"/>
-                                </p:commandButton>
-                                <p:commandButton ajax="true"   rendered="#{model.idFormaCobroFk.intValue() == 2 || model.idFormaCobroFk.intValue() == 3}"
-                                                 oncomplete="PF('dlg2').show();" 
-                                                 update =":formContent:dialog2" icon="ui-icon-triangle-1-e" styleClass="ui-priority-primary" >
-                                    <f:setPropertyActionListener value="#{model}" target="#{beanDocumentosCobrar.documentoData}"/>
-                                </p:commandButton>
-                            </p:column>
-                            <p:column headerText="Cambiar Forma de Cobro" width="50px;" class="alignCenter">
-                                <p:commandButton ajax="true"  
-                                                 disabled="#{model.idFormaCobroFk.intValue() != 1 || model.idStatusFk != 1}"             
-                                                 oncomplete="PF('dlg').show();" update =":formContent" icon="ui-icon-triangle-1-e" styleClass="ui-priority-primary" >
-                                    <f:setPropertyActionListener value="#{model}" target="#{beanDocumentosCobrar.documentoData}"/>
-                                </p:commandButton>
-                            </p:column>
-                            <p:columnGroup type="footer">
-                                <p:column colspan="1" />
-                                <p:column colspan="1" />
-                                <p:column colspan="1" />
-                                <p:column colspan="1" />
-                                <p:column colspan="1" />
-                                <p:column colspan="1" />
-                                
-                                <p:column colspan="1" footerText="Total: " style="text-align:right"/>
-                                <p:column colspan="1" class="alignRight">
-                                    <f:facet name="footer">
-                                        <h:outputText value="#{beanDocumentosCobrar.total}" class="alignRight">
-                                            <f:convertNumber type="currency" currencySymbol="$" />
-                                        </h:outputText>
-                                    </f:facet>
-                                </p:column>
-                                <p:column colspan="1" />
-                                <p:column colspan="1" />
-                                <p:column colspan="1" />
-                                <p:column colspan="1" />
-                            </p:columnGroup>
-                        </p:dataTable>
-                    </div>
-
                 </div>
 
             </p:panel>

@@ -105,7 +105,6 @@ public class BeanDocumentosCobrar implements Serializable {
     @Autowired
     private IfaceCorteCaja ifaceCorteCaja;
 
-   
     private ArrayList<Documento> listaDocumentos;
     private ArrayList<AbonoDocumentos> listaAbonosCheques;
     private ArrayList<CuentaBancaria> listaCuentas;
@@ -154,8 +153,6 @@ public class BeanDocumentosCobrar implements Serializable {
     private static final BigDecimal ENTRADA = new BigDecimal(1);
     private static final BigDecimal SALIDA = new BigDecimal(2);
 
-
-
     //Variables para el pago de Documentos
     private AbonoDocumentos ad;
     private String viewCheque;
@@ -171,18 +168,18 @@ public class BeanDocumentosCobrar implements Serializable {
     private BigDecimal total;
     private ArrayList<Sucursal> listaSucursales;
     private BigDecimal idSucursalFK;
-    
+
     //-------------------------------//
     private static final BigDecimal STATUS_REALIZADA = new BigDecimal(1);
     private static final BigDecimal STATUS_PENDIENTE = new BigDecimal(2);
     private static final BigDecimal STATUS_RECHAZADA = new BigDecimal(3);
     private static final BigDecimal STATUS_CANCELADA = new BigDecimal(4);
-    
+
     private static final BigDecimal EFECTIVO = new BigDecimal(1);
     private static final BigDecimal TRANSFERENCIA = new BigDecimal(2);
     private static final BigDecimal CHEQUE = new BigDecimal(3);
     private static final BigDecimal DEPOSITO = new BigDecimal(4);
-    
+
     private static final BigDecimal CONCEPTO = new BigDecimal(13);
     private static final BigDecimal OPERACION = new BigDecimal(10);
     private CorteCaja saldoActual;
@@ -235,7 +232,6 @@ public class BeanDocumentosCobrar implements Serializable {
         pagoBancario = new PagosBancarios();
         dataAbonar.setIdTipoAbonoFk(new BigDecimal(1));
         total = new BigDecimal(0);
-        
 
     }
 
@@ -275,116 +271,123 @@ public class BeanDocumentosCobrar implements Serializable {
     }
 
     public void abonar() {
-        System.out.println("=============Nuevo Abono==========");
-        dataAbonar.setIdAbonoDocumentoPk(new BigDecimal(ifaceAbonoDocumentos.getNextVal()));
-        dataAbonar.setIdDocumentoFk(documentoData.getIdDocumentoPk());
-        dataAbonar.setIdUsuarioFk(usuario.getIdUsuario());
-        opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
-
-        dataAbonar.setIdClienteFk(documentoData.getIdClienteFk());
-        System.out.println("Nuevo Abono: " + dataAbonar.toString());
-        if (ifaceAbonoDocumentos.insert(dataAbonar) == 1) {
-            //Tenemos que saber lo que llevamos abonado de un documento sumar el nuevo abono y ver si hemos terminado de
-            //abonar y cambiar el estatus a finalizado.
-            BigDecimal totalTemporal = ifaceAbonoDocumentos.getTotalAbonadoByIdDocumento(documentoData.getIdDocumentoPk());
-            System.out.println("Total Abonado: " + totalTemporal);
-            System.out.println("Monto Total: " + documentoData.getMonto());
-            if (totalTemporal.compareTo(documentoData.getMonto()) >= 0) {
-                System.out.println("Ya se liquido la deuda");
-                //cambiar el estaus del Documento
-                documentoData.setIdStatusFk(DOCUMENTOFINALIZADO);
-                ifaceDocumentos.updateDocumentoById(documentoData);
-            }
-            if (dataAbonar.getIdTipoAbonoFk().intValue() == 3) {
-                System.out.println("Ahora insertamos documento por cobrar");
-                Documento d = new Documento();
-                d.setIdDocumentoPk(new BigDecimal(ifaceDocumentos.getNextVal()));
-                d.setComentario("");
-                d.setFechaCobro(dataAbonar.getFechaCobro());
-                d.setIdAbonoDocumentoFk(dataAbonar.getIdAbonoDocumentoPk());
-                d.setIdClienteFk(dataAbonar.getIdClienteFk());
-                d.setIdStatusFk(new BigDecimal(1));
-                d.setIdFormaCobroFk(new BigDecimal(1));
-                d.setIdTipoDocumento(new BigDecimal(1));
-                d.setMonto(dataAbonar.getMontoAbono());
-                d.setNumeroCheque(dataAbonar.getNumeroCheque());
-                d.setFactura(dataAbonar.getNumeroFactura());
-                d.setBanco(dataAbonar.getBanco());
-                d.setLibrador(dataAbonar.getLibrador());
-                d.setFechaCobro(dataAbonar.getFechaCobro());
-                d.setIdDocumentoPadreFk(dataAbonar.getIdDocumentoFk());
-                System.out.println("El nuevo Documento por Entrar será de: " + d.toString());
-                if (ifaceDocumentos.insertarDocumento(d) == 1) {
-                    System.out.println("Se  ingreso correctamente un documento por cobrar");
-
-                } else {
-                    JsfUtil.addErrorMessageClean("Ha ocurrido un error al ingresar el documento por cobrar");
-                }
-
-            }
-
-            //Primero tengo que agregar una operacion en caja de ingreso del tipo de pago
-            verificarAbono();
-            opcaja.setMonto(dataAbonar.getMontoAbono());
-            opcaja.setEntradaSalida(ENTRADA);
-            opcaja.setComentarios("C: "+documentoData.getNombreCliente() +" | NC: "+documentoData.getNumeroCheque());
-            
-            if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
-                if (dataAbonar.getIdTipoAbonoFk().intValue() == 2 || dataAbonar.getIdTipoAbonoFk().intValue() == 4) {
-                    pagoBancario.setIdCajaFk(opcaja.getIdCajaFk());
-                    pagoBancario.setComentarios("");
-                    pagoBancario.setFechaDeposito(dataAbonar.getFechaTransferencia());
-                    pagoBancario.setFechaTranferencia(dataAbonar.getFechaTransferencia());
-                    pagoBancario.setFolioElectronico(dataAbonar.getFolioElectronico());
-                    if (dataAbonar.getIdTipoAbonoFk().intValue() == 2) {
-                        pagoBancario.setIdConceptoFk(CONCEPTO);
-                    } else {
-                        pagoBancario.setIdConceptoFk(CONCEPTO);
-                    }
-
-                    pagoBancario.setIdCuentaFk(idCuentaDestinoBean);
-                    pagoBancario.setIdStatusFk(new BigDecimal(2));
-                    pagoBancario.setIdTipoFk(dataAbonar.getIdTipoAbonoFk());
-                    pagoBancario.setIdTransBancariasPk(new BigDecimal(ifacePagosBancarios.getNextVal()));
-                    pagoBancario.setIdUserFk(usuario.getIdUsuario());
-                    pagoBancario.setMonto(dataAbonar.getMontoAbono());
-                    if (dataAbonar.getReferencia() != null) {
-                        pagoBancario.setReferencia(dataAbonar.getReferencia().toString());
-                    }
-                    pagoBancario.setIdOperacionCajaFk(opcaja.getIdOperacionesCajaPk());
-                    if (ifacePagosBancarios.insertaPagoBancario(pagoBancario) == 1) {
-                        System.out.println("Se ingreso correctamente un deposito bancario");
-                    } else {
-                        System.out.println("Ocurrio un error");
-                    }
-                }
-                JsfUtil.addSuccessMessageClean("Se ha ingresado correctamente en la tabla de documentos por cobrar");
-                //si se ingreso la entrada a continuación se debe generar una salida de cheque por la cantidad del abono.
-                opcaja.setIdConceptoFk(CONCEPTO);
-                opcaja.setIdFormaPago(CHEQUE);
-                opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
-                opcaja.setMonto(dataAbonar.getMontoAbono());
-                opcaja.setEntradaSalida(SALIDA);
-                opcaja.setComentarios("C: "+documentoData.getNombreCliente() +" | NC: "+documentoData.getNumeroCheque());
-            
-                if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
-                    System.out.println("Se registro segundo movimiento");
-                }
-            } else {
-                JsfUtil.addSuccessMessageClean("Se ha ingresado correctamente en la tabla de documentos por cobrar");
-            }
-            JsfUtil.addSuccessMessageClean("Se ingreso abono de documento");
-
+        saldoActual = ifaceCorteCaja.getSaldoCajaByIdCaja(opcaja.getIdCajaFk());
+        System.out.println("*******************************************************");
+        System.out.println(saldoActual.toString());
+        if (saldoActual.getMontoChequesNuevos().compareTo(documentoData.getMonto()) < 0) {
+            JsfUtil.addErrorMessageClean("No cuenta con saldo de Cheques suficiente");
         } else {
-            JsfUtil.addErrorMessageClean("Ocurrió un problema");
+            System.out.println("=============Nuevo Abono==========");
+            dataAbonar.setIdAbonoDocumentoPk(new BigDecimal(ifaceAbonoDocumentos.getNextVal()));
+            dataAbonar.setIdDocumentoFk(documentoData.getIdDocumentoPk());
+            dataAbonar.setIdUsuarioFk(usuario.getIdUsuario());
+            opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
+
+            dataAbonar.setIdClienteFk(documentoData.getIdClienteFk());
+            System.out.println("Nuevo Abono: " + dataAbonar.toString());
+            if (ifaceAbonoDocumentos.insert(dataAbonar) == 1) {
+                //Tenemos que saber lo que llevamos abonado de un documento sumar el nuevo abono y ver si hemos terminado de
+                //abonar y cambiar el estatus a finalizado.
+                BigDecimal totalTemporal = ifaceAbonoDocumentos.getTotalAbonadoByIdDocumento(documentoData.getIdDocumentoPk());
+                System.out.println("Total Abonado: " + totalTemporal);
+                System.out.println("Monto Total: " + documentoData.getMonto());
+                if (totalTemporal.compareTo(documentoData.getMonto()) >= 0) {
+                    System.out.println("Ya se liquido la deuda");
+                    //cambiar el estaus del Documento
+                    documentoData.setIdStatusFk(DOCUMENTOFINALIZADO);
+                    ifaceDocumentos.updateDocumentoById(documentoData);
+                }
+                if (dataAbonar.getIdTipoAbonoFk().intValue() == 3) {
+                    System.out.println("Ahora insertamos documento por cobrar");
+                    Documento d = new Documento();
+                    d.setIdDocumentoPk(new BigDecimal(ifaceDocumentos.getNextVal()));
+                    d.setComentario("");
+                    d.setFechaCobro(dataAbonar.getFechaCobro());
+                    d.setIdAbonoDocumentoFk(dataAbonar.getIdAbonoDocumentoPk());
+                    d.setIdClienteFk(dataAbonar.getIdClienteFk());
+                    d.setIdStatusFk(new BigDecimal(1));
+                    d.setIdFormaCobroFk(new BigDecimal(1));
+                    d.setIdTipoDocumento(new BigDecimal(1));
+                    d.setMonto(dataAbonar.getMontoAbono());
+                    d.setNumeroCheque(dataAbonar.getNumeroCheque());
+                    d.setFactura(dataAbonar.getNumeroFactura());
+                    d.setBanco(dataAbonar.getBanco());
+                    d.setLibrador(dataAbonar.getLibrador());
+                    d.setFechaCobro(dataAbonar.getFechaCobro());
+                    d.setIdDocumentoPadreFk(dataAbonar.getIdDocumentoFk());
+                    System.out.println("El nuevo Documento por Entrar será de: " + d.toString());
+                    if (ifaceDocumentos.insertarDocumento(d) == 1) {
+                        System.out.println("Se  ingreso correctamente un documento por cobrar");
+
+                    } else {
+                        JsfUtil.addErrorMessageClean("Ha ocurrido un error al ingresar el documento por cobrar");
+                    }
+
+                }
+
+                //Primero tengo que agregar una operacion en caja de ingreso del tipo de pago
+                verificarAbono();
+                opcaja.setMonto(dataAbonar.getMontoAbono());
+                opcaja.setEntradaSalida(ENTRADA);
+                opcaja.setComentarios("C: " + documentoData.getNombreCliente() + " | NC: " + documentoData.getNumeroCheque());
+
+                if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
+                    if (dataAbonar.getIdTipoAbonoFk().intValue() == 2 || dataAbonar.getIdTipoAbonoFk().intValue() == 4) {
+                        pagoBancario.setIdCajaFk(opcaja.getIdCajaFk());
+                        pagoBancario.setComentarios("");
+                        pagoBancario.setFechaDeposito(dataAbonar.getFechaTransferencia());
+                        pagoBancario.setFechaTranferencia(dataAbonar.getFechaTransferencia());
+                        pagoBancario.setFolioElectronico(dataAbonar.getFolioElectronico());
+                        if (dataAbonar.getIdTipoAbonoFk().intValue() == 2) {
+                            pagoBancario.setIdConceptoFk(CONCEPTO);
+                        } else {
+                            pagoBancario.setIdConceptoFk(CONCEPTO);
+                        }
+
+                        pagoBancario.setIdCuentaFk(idCuentaDestinoBean);
+                        pagoBancario.setIdStatusFk(new BigDecimal(2));
+                        pagoBancario.setIdTipoFk(dataAbonar.getIdTipoAbonoFk());
+                        pagoBancario.setIdTransBancariasPk(new BigDecimal(ifacePagosBancarios.getNextVal()));
+                        pagoBancario.setIdUserFk(usuario.getIdUsuario());
+                        pagoBancario.setMonto(dataAbonar.getMontoAbono());
+                        if (dataAbonar.getReferencia() != null) {
+                            pagoBancario.setReferencia(dataAbonar.getReferencia().toString());
+                        }
+                        pagoBancario.setIdOperacionCajaFk(opcaja.getIdOperacionesCajaPk());
+                        if (ifacePagosBancarios.insertaPagoBancario(pagoBancario) == 1) {
+                            System.out.println("Se ingreso correctamente un deposito bancario");
+                        } else {
+                            System.out.println("Ocurrio un error");
+                        }
+                    }
+                    JsfUtil.addSuccessMessageClean("Se ha ingresado correctamente en la tabla de documentos por cobrar");
+                    //si se ingreso la entrada a continuación se debe generar una salida de cheque por la cantidad del abono.
+                    opcaja.setIdConceptoFk(CONCEPTO);
+                    opcaja.setIdFormaPago(CHEQUE);
+                    opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
+                    opcaja.setMonto(dataAbonar.getMontoAbono());
+                    opcaja.setEntradaSalida(SALIDA);
+                    opcaja.setComentarios("C: " + documentoData.getNombreCliente() + " | NC: " + documentoData.getNumeroCheque());
+
+                    if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
+                        System.out.println("Se registro segundo movimiento");
+                    }
+                } else {
+                    JsfUtil.addSuccessMessageClean("Se ha ingresado correctamente en la tabla de documentos por cobrar");
+                }
+                JsfUtil.addSuccessMessageClean("Se ingreso abono de documento");
+
+            } else {
+                JsfUtil.addErrorMessageClean("Ocurrió un problema");
+            }
+            dataAbonar.reset();
+            dataAbonar.setIdTipoAbonoFk(new BigDecimal(1));
+            pagoBancario.reset();
+            cobroCheque.reset();
+            cobroCheque.setFechaDeposito(context.getFechaSistema());
+            addView();
+            buscar();
         }
-        dataAbonar.reset();
-        dataAbonar.setIdTipoAbonoFk(new BigDecimal(1));
-        pagoBancario.reset();
-        cobroCheque.reset();
-        cobroCheque.setFechaDeposito(context.getFechaSistema());
-        addView();
-        buscar();
 
     }
 
@@ -403,8 +406,8 @@ public class BeanDocumentosCobrar implements Serializable {
         for (Documento objeto : listaDocumentos) {
             total = total.add(objeto.getMonto(), MathContext.UNLIMITED);
         }
-        System.out.println("Total: "+total);
-        
+        System.out.println("Total: " + total);
+
     }
 
     public ArrayList<Cliente> autoCompleteCliente(String nombreCliente) {
@@ -477,88 +480,89 @@ public class BeanDocumentosCobrar implements Serializable {
                 break;
         }
     }
-    
 
-    public void cobrarCheque() 
-    {
-        saldoActual=ifaceCorteCaja.getSaldoCajaByIdCaja(opcaja.getIdCajaFk());
-        
-        cobroCheque.setIdCobroChequePk(new BigDecimal(ifaceCobroCheques.nextVal()));
-        cobroCheque.setImporteDeposito(documentoData.getMonto());
-        cobroCheque.setIdDocumentoFk(documentoData.getIdDocumentoPk());
-        System.out.println("BEAN: CobroCheque: " + cobroCheque);
-        if (ifaceCobroCheques.insertarDocumento(cobroCheque) == 1) {
-            Documento temp = new Documento();
-            temp.setIdDocumentoPk(cobroCheque.getIdDocumentoFk());
-            temp.setIdStatusFk(DOCUMENTOFINALIZADO);
-            //si se inserta el cobro del cheque cambiamos el status del documento
-            if (ifaceDocumentos.updateDocumentoById(temp) == 1) 
-            {
-                verificarCobro();
-
-                opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
-                opcaja.setMonto(documentoData.getMonto());
-                opcaja.setEntradaSalida(ENTRADA);
-                if (cobroCheque.getIdTipoCobro().intValue() == 1) {
-                    opcaja.setIdConceptoFk(CONCEPTO);
-                    
-                    opcaja.setIdFormaPago(DEPOSITO);
-                } else {
-                    opcaja.setIdConceptoFk(CONCEPTO);
-                    opcaja.setIdFormaPago(EFECTIVO);
-                }
-                opcaja.setComentarios("C: "+documentoData.getNombreCliente() +" | NC: "+documentoData.getNumeroCheque());
-            
-
-                if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
-                    //Generar una salida de dinero por la cantidad de ese cheque.
-                    //para poder cobrar cheques es necesario transferirlos a la caja de Tere.
-
-                    System.out.println("Se registro primer movimiento");
-                    opcaja.setIdConceptoFk(CONCEPTO);
-                    opcaja.setIdFormaPago(CHEQUE);
+    public void cobrarCheque() {
+        saldoActual = ifaceCorteCaja.getSaldoCajaByIdCaja(opcaja.getIdCajaFk());
+        System.out.println("*******************************************************");
+        System.out.println(saldoActual.toString());
+        if (saldoActual.getMontoChequesNuevos().compareTo(documentoData.getMonto()) < 0) {
+            JsfUtil.addErrorMessageClean("No cuenta con saldo de Cheques suficiente");
+        } else {
+            cobroCheque.setIdCobroChequePk(new BigDecimal(ifaceCobroCheques.nextVal()));
+            cobroCheque.setImporteDeposito(documentoData.getMonto());
+            cobroCheque.setIdDocumentoFk(documentoData.getIdDocumentoPk());
+            System.out.println("BEAN: CobroCheque: " + cobroCheque);
+            if (ifaceCobroCheques.insertarDocumento(cobroCheque) == 1) {
+                Documento temp = new Documento();
+                temp.setIdDocumentoPk(cobroCheque.getIdDocumentoFk());
+                temp.setIdStatusFk(DOCUMENTOFINALIZADO);
+                //si se inserta el cobro del cheque cambiamos el status del documento
+                if (ifaceDocumentos.updateDocumentoById(temp) == 1) {
+                    verificarCobro();
 
                     opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
                     opcaja.setMonto(documentoData.getMonto());
-                    opcaja.setEntradaSalida(SALIDA);
-                    opcaja.setComentarios("C: "+documentoData.getNombreCliente() +" | NC: "+documentoData.getNumeroCheque());
-            
-                    if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
-                        System.out.println("Se registro segundo movimiento");
-                    }
-                }
-                System.out.println("Antes del IF: " + cobroCheque.toString());
-                if (cobroCheque.getIdTipoCobro().intValue() == 1) {
-                    System.out.println("Se ejecuta un pago por deposito bancario");
-                    pagoBancario.setIdCajaFk(opcaja.getIdCajaFk());
-                    pagoBancario.setComentarios(cobroCheque.getObservaciones());
-                    pagoBancario.setFechaDeposito(cobroCheque.getFechaDeposito());
-                    //pagoBancario.setFechaTranferencia(dataAbonar.getFechaTransferencia());
-                    pagoBancario.setFolioElectronico(cobroCheque.getFolioFicha());
-                    pagoBancario.setIdConceptoFk(CONCEPTO);
-                    pagoBancario.setIdCuentaFk(idCuentaDestinoBean);
-                    pagoBancario.setIdStatusFk(new BigDecimal(2));
-                    pagoBancario.setIdTipoFk(new BigDecimal(4));
-                    pagoBancario.setIdTransBancariasPk(new BigDecimal(ifacePagosBancarios.getNextVal()));
-                    pagoBancario.setIdUserFk(usuario.getIdUsuario());
-                    pagoBancario.setMonto(cobroCheque.getImporteDeposito());
-                    //pagoBancario.setReferencia(dataAbonar.getReferencia().toString());
-                    pagoBancario.setIdOperacionCajaFk(opcaja.getIdOperacionesCajaPk());
+                    opcaja.setEntradaSalida(ENTRADA);
+                    if (cobroCheque.getIdTipoCobro().intValue() == 1) {
+                        opcaja.setIdConceptoFk(CONCEPTO);
 
-                    if (ifacePagosBancarios.insertaPagoBancario(pagoBancario) == 1) {
-                        System.out.println("Se ingreso correctamente un deposito bancario");
+                        opcaja.setIdFormaPago(DEPOSITO);
                     } else {
-                        System.out.println("Ocurrio un error");
+                        opcaja.setIdConceptoFk(CONCEPTO);
+                        opcaja.setIdFormaPago(EFECTIVO);
                     }
+                    opcaja.setComentarios("C: " + documentoData.getNombreCliente() + " | NC: " + documentoData.getNumeroCheque());
 
+                    if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
+                        //Generar una salida de dinero por la cantidad de ese cheque.
+                        //para poder cobrar cheques es necesario transferirlos a la caja de Tere.
+
+                        System.out.println("Se registro primer movimiento");
+                        opcaja.setIdConceptoFk(CONCEPTO);
+                        opcaja.setIdFormaPago(CHEQUE);
+
+                        opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
+                        opcaja.setMonto(documentoData.getMonto());
+                        opcaja.setEntradaSalida(SALIDA);
+                        opcaja.setComentarios("C: " + documentoData.getNombreCliente() + " | NC: " + documentoData.getNumeroCheque());
+
+                        if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
+                            System.out.println("Se registro segundo movimiento");
+                        }
+                    }
+                    System.out.println("Antes del IF: " + cobroCheque.toString());
+                    if (cobroCheque.getIdTipoCobro().intValue() == 1) {
+                        System.out.println("Se ejecuta un pago por deposito bancario");
+                        pagoBancario.setIdCajaFk(opcaja.getIdCajaFk());
+                        pagoBancario.setComentarios(cobroCheque.getObservaciones());
+                        pagoBancario.setFechaDeposito(cobroCheque.getFechaDeposito());
+                        //pagoBancario.setFechaTranferencia(dataAbonar.getFechaTransferencia());
+                        pagoBancario.setFolioElectronico(cobroCheque.getFolioFicha());
+                        pagoBancario.setIdConceptoFk(CONCEPTO);
+                        pagoBancario.setIdCuentaFk(idCuentaDestinoBean);
+                        pagoBancario.setIdStatusFk(new BigDecimal(2));
+                        pagoBancario.setIdTipoFk(new BigDecimal(4));
+                        pagoBancario.setIdTransBancariasPk(new BigDecimal(ifacePagosBancarios.getNextVal()));
+                        pagoBancario.setIdUserFk(usuario.getIdUsuario());
+                        pagoBancario.setMonto(cobroCheque.getImporteDeposito());
+                        //pagoBancario.setReferencia(dataAbonar.getReferencia().toString());
+                        pagoBancario.setIdOperacionCajaFk(opcaja.getIdOperacionesCajaPk());
+
+                        if (ifacePagosBancarios.insertaPagoBancario(pagoBancario) == 1) {
+                            System.out.println("Se ingreso correctamente un deposito bancario");
+                        } else {
+                            System.out.println("Ocurrio un error");
+                        }
+
+                    }
+                    buscar();
+
+                    System.out.println("Se cambio status del documento");
+                    JsfUtil.addSuccessMessageClean("Se realizó el cobro de cheque exitosamente");
                 }
-                buscar();
-
-                System.out.println("Se cambio status del documento");
-                JsfUtil.addSuccessMessageClean("Se realizó el cobro de cheque exitosamente");
+            } else {
+                JsfUtil.addErrorMessageClean("Ocurrió un problema al cobrar el cheque");
             }
-        } else {
-            JsfUtil.addErrorMessageClean("Ocurrió un problema al cobrar el cheque");
         }
 
     }
@@ -1029,9 +1033,5 @@ public class BeanDocumentosCobrar implements Serializable {
     public void setIdSucursalFK(BigDecimal idSucursalFK) {
         this.idSucursalFK = idSucursalFK;
     }
-    
-    
-
-  
 
 }
