@@ -2,7 +2,7 @@ package com.web.chon.bean;
 
 import com.web.chon.dominio.DatosFacturacion;
 import com.web.chon.dominio.FileDominio;
-import com.web.chon.service.IfaceFacturacion;
+import com.web.chon.service.IfaceDatosFacturacion;
 import com.web.chon.util.Constantes;
 import com.web.chon.util.FileUtils;
 import com.web.chon.util.JsfUtil;
@@ -25,6 +25,7 @@ import org.primefaces.model.UploadedFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import com.web.chon.service.IfaceFacturas;
 
 /**
  * Bean para el catlogo de Razon Social
@@ -37,7 +38,7 @@ public class BeanRazonSocial implements Serializable, BeanSimple {
 
     private static final long serialVersionUID = 1L;
 
-    @Autowired private IfaceFacturacion ifaceFacturacion;
+    @Autowired private IfaceDatosFacturacion ifaceDatosFacturacion;
     
     private ArrayList<DatosFacturacion> model;
     private ArrayList<DatosFacturacion> selectedDatosFacturacion;
@@ -61,7 +62,7 @@ public class BeanRazonSocial implements Serializable, BeanSimple {
     public void init() {
 
         data = new DatosFacturacion();
-        model = ifaceFacturacion.getByIdSucursal(BigDecimal.ZERO);
+        model = ifaceDatosFacturacion.getByIdSucursal(BigDecimal.ZERO);
         selectedDatosFacturacion = new ArrayList<DatosFacturacion>();
 
         setTitle("Catalogo de Razón Social");
@@ -74,7 +75,7 @@ public class BeanRazonSocial implements Serializable, BeanSimple {
         if (!selectedDatosFacturacion.isEmpty()) {
             for (DatosFacturacion datosFacturacion : selectedDatosFacturacion) {
                 try {
-                    if (ifaceFacturacion.deleteDatosFacturacion(datosFacturacion.getIdDatosFacturacionPk().toString()) > 0) {
+                    if (ifaceDatosFacturacion.deleteDatosFacturacion(datosFacturacion.getIdDatosFacturacionPk().toString()) > 0) {
                         JsfUtil.addSuccessMessage("Registro eliminado.");
                     } else {
                         JsfUtil.addErrorMessage("Ocurrio un error al eliminar el registro.");
@@ -94,7 +95,7 @@ public class BeanRazonSocial implements Serializable, BeanSimple {
     public String insert() {
         try {
 
-            if(ifaceFacturacion.insertarDatosFacturacion(data) > 0){
+            if(ifaceDatosFacturacion.insertarDatosFacturacion(data) > 0){
                 JsfUtil.addSuccessMessage("Registro modificado.");
             }else{
                 JsfUtil.addErrorMessage("Ocurrio un error al insertar el registro.");
@@ -112,7 +113,7 @@ public class BeanRazonSocial implements Serializable, BeanSimple {
     public String update() {
 
         try {
-            if (ifaceFacturacion.updateDatosFacturacion(data) > 0) {
+            if (ifaceDatosFacturacion.updateDatosFacturacion(data) > 0) {
                 JsfUtil.addSuccessMessage("Registro modificado.");
             } else {
                 JsfUtil.addErrorMessage("Ocurrio un error al intentar modificar el registro.");

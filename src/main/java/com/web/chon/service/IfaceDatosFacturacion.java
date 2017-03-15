@@ -3,23 +3,27 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.web.chon.negocio;
+package com.web.chon.service;
 
 import com.web.chon.dominio.DatosFacturacion;
+import com.web.chon.dominio.FacturaPDFDomain;
 import java.math.BigDecimal;
-import java.util.List;
-import javax.ejb.Remote;
+import java.util.ArrayList;
 
 /**
  *
  * @author jramirez
  */
-@Remote
-public interface NegocioFacturacion {
-    public List<Object[]> getDatosFacturacionByIdCliente(BigDecimal idClienteFk);
-    public List<Object[]> getDatosFacturacionByIdSucursal(BigDecimal idSucursalFk);
+public interface IfaceDatosFacturacion {
+    
+    public DatosFacturacion getDatosFacturacionByIdCliente(BigDecimal idClienteFk);
+    public ArrayList<DatosFacturacion> getDatosFacturacionByIdSucursal(BigDecimal idSucursalFk);
     public int deleteDatosFacturacion(String idProducto);
     public int insertarDatosFacturacion(DatosFacturacion df);
     public int updateDatosFacturacion(DatosFacturacion df);
     public int getNextVal();
+    public ArrayList<DatosFacturacion> getByIdSucursal(BigDecimal idSucursal);
+    
+    
+    
 }

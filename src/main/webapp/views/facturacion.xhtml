@@ -49,6 +49,7 @@
             </p:dialog>
 
             <p:panel rendered="#{beanFacturacion.viewEstate=='init'}"> 
+                <iframe id="miFrame" name="miFrame"  style="position: absolute;" class="hidden" src="#{beanFacturacion.rutaPDF}"/>
                 <div class="container-fluid">
                     <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 form-group">
                         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 ">
@@ -143,7 +144,7 @@
                                 </h:outputText>
                             </p:column>
                             <p:column headerText="Nombre Cliente" width="200px;" class="alignLeft">
-                                <h:outputText value="#{model.nombreEmisor}">
+                                <h:outputText value="#{model.nombreCliente}">
                                 </h:outputText>
                             </p:column>
 
@@ -159,26 +160,29 @@
                             </p:column>
 
                             <p:column headerText="Descargar XML"  width="60px;" class="alignCenter">
-                                <p:commandButton id="print1" disabled="#{model.idStatusFk.intValue() != 2}"  ajax="true" process="@this" action="#{beanFacturacion.descargarXML()}" 
-                                                 icon="ui-icon-transfer-e-w" styleClass="ui-priority-primary" update=":formContent">
-                                    <f:setPropertyActionListener value="#{model}" target="#{beanFacturacion.data}"/>
+                                <p:commandButton id="print1" disabled="#{model.idStatusFk.intValue() != 1}" 
+                                                 onclick="PrimeFaces.monitorDownload(start, stop);" 
+                                                 ajax="true" process="@this"  
+                                                 icon="ui-icon-transfer-e-w" styleClass="ui-priority-primary" 
+                                                 update=":formContent">
+                                    <p:fileDownload value="#{model.file}" />
                                 </p:commandButton>
                             </p:column>
                             <p:column headerText="Descargar PDF"  width="60px;" class="alignCenter">
-                                <p:commandButton id="print2" disabled="#{model.idStatusFk.intValue() != 2}"  ajax="true" process="@this" action="#{beanFacturacion.descargarPDF()}" 
+                                <p:commandButton id="print2" disabled="#{model.idStatusFk.intValue() != 1}"  ajax="true" process="@this" action="#{beanFacturacion.abreXML()}" 
                                                  icon="ui-icon-transfer-e-w" styleClass="ui-priority-primary" update=":formContent">
                                     <f:setPropertyActionListener value="#{model}" target="#{beanFacturacion.data}"/>
                                 </p:commandButton>
                             </p:column>
                             <p:column headerText="Enviar por email"  width="60px;" class="alignCenter">
-                                <p:commandButton id="print" disabled="#{model.idStatusFk.intValue() != 2}"  ajax="true" process="@this" action="#{beanFacturacion.enviarFactura()}" 
+                                <p:commandButton id="print" disabled="#{model.idStatusFk.intValue() != 1}"  ajax="true" process="@this" action="#{beanFacturacion.enviarFactura()}" 
                                                  icon="ui-icon-transfer-e-w" styleClass="ui-priority-primary" update=":formContent">
                                     <f:setPropertyActionListener value="#{model}" target="#{beanFacturacion.data}"/>
                                     <p:confirm header="Confirmación" message="¿Estás seguro que deseas recibir el gasto?" icon="ui-icon-alert"/>
                                 </p:commandButton>
                             </p:column>
                             <p:column headerText="Cancelar" width="60px;" class="alignCenter">
-                                <p:commandButton id="cancel" disabled="#{model.idStatusFk.intValue() != 2}"  ajax="true" process="@this" action="#{beanFacturacion.cancelarFactura()}" icon="ui-icon-trash" styleClass="ui-priority-primary" update=":formContent">
+                                <p:commandButton id="cancel" disabled="#{model.idStatusFk.intValue() != 1}"  ajax="true" process="@this" action="#{beanFacturacion.cancelarFactura()}" icon="ui-icon-trash" styleClass="ui-priority-primary" update=":formContent">
                                     <f:setPropertyActionListener value="#{model}" target="#{beanFacturacion.data}"/>
                                     <p:confirm header="Confirmación" message="¿Estás seguro de rechazar el gasto?" icon="ui-icon-alert"/>
                                 </p:commandButton>

@@ -8,6 +8,8 @@ package com.web.chon.dominio;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
+import org.primefaces.model.StreamedContent;
 
 /**
  *
@@ -24,6 +26,8 @@ public class FacturaPDFDomain implements Serializable {
     private BigDecimal idTipoLlaveFk;
     
     private byte[] fichero;
+    private String nombreArchivoTimbrado;
+    
     
     private String nombreEstatus;
     private BigDecimal idStatusFk;
@@ -58,12 +62,13 @@ public class FacturaPDFDomain implements Serializable {
     
     private String parametroA;
     private String parametroB;
-    private String fechaEmision;
+    private Date fechaEmision;
     private String lugarEmision;
     
     
     //detail 2
     //Datos de Cliente:
+    private String nombreCliente;
     private String rfcCliente;
     private String calleFiscalCliente;
     private String coloniaCliente;
@@ -106,7 +111,15 @@ public class FacturaPDFDomain implements Serializable {
     private String nSerieCertificadoCSD;
     private String folioFiscal;
     private String nSerieCertificadoSAT;
-    private String fechaCertificacion;
+    private Date fechaCertificacion;
+    private StreamedContent file;
+
+    @Override
+    public String toString() {
+        return "FacturaPDFDomain{" + "idFacturaPk=" + idFacturaPk + ", numeroFactura=" + numeroFactura + ", idUsuarioFk=" + idUsuarioFk + ", idClienteFk=" + idClienteFk + ", idLlaveFk=" + idLlaveFk + ", idTipoLlaveFk=" + idTipoLlaveFk + ", fichero=" + fichero + ", nombreEstatus=" + nombreEstatus + ", idStatusFk=" + idStatusFk + ", comentarios=" + comentarios + ", nombreSucursal=" + nombreSucursal + ", idSucursalFk=" + idSucursalFk + ", nombreEmisor=" + nombreEmisor + ", rfcEmisor=" + rfcEmisor + ", calleEmisor=" + calleEmisor + ", noExteriorEmisor=" + noExteriorEmisor + ", coloniaEmisor=" + coloniaEmisor + ", localidadEmisor=" + localidadEmisor + ", municipioEmisor=" + municipioEmisor + ", estadoEmisor=" + estadoEmisor + ", paisEmisor=" + paisEmisor + ", codigoPostalEmisor=" + codigoPostalEmisor + ", domicilioFiscalEmisor=" + domicilioFiscalEmisor + ", noInteriorEmisor=" + noInteriorEmisor + ", razonSocialEmpresa=" + razonSocialEmpresa + ", domiciloFiscalEmisor=" + domiciloFiscalEmisor + ", ciudadEmisor=" + ciudadEmisor + ", codigoPostalE=" + codigoPostalE + ", parametroA=" + parametroA + ", parametroB=" + parametroB + ", fechaEmision=" + fechaEmision + ", lugarEmision=" + lugarEmision + ", nombreCliente=" + nombreCliente + ", rfcCliente=" + rfcCliente + ", calleFiscalCliente=" + calleFiscalCliente + ", coloniaCliente=" + coloniaCliente + ", domicilioFiscalCliente=" + domicilioFiscalCliente + ", ciudadCliente=" + ciudadCliente + ", codigoPostalCliente=" + codigoPostalCliente + ", telefonoCliente=" + telefonoCliente + ", numeroExteriorCliente=" + numeroExteriorCliente + ", numeroInteriorCliente=" + numeroInteriorCliente + ", municipioCliente=" + municipioCliente + ", estadoCliente=" + estadoCliente + ", localidadCliente=" + localidadCliente + ", paisCliente=" + paisCliente + ", listaProductosMayoreo=" + listaProductosMayoreo + ", listaProductosMenudeo=" + listaProductosMenudeo + ", ventaMenudeo=" + ventaMenudeo + ", ventaMayoreo=" + ventaMayoreo + ", importeLetra=" + importeLetra + ", importe=" + importe + ", descuento=" + descuento + ", iva1=" + iva1 + ", iva2=" + iva2 + ", total=" + total + ", selloDigital=" + selloDigital + ", cadena=" + cadena + ", selloSAT=" + selloSAT + ", cadenaQR=" + cadenaQR + ", formaPago=" + formaPago + ", nCuenta=" + nCuenta + ", metodoPago=" + metodoPago + ", nSerieCertificadoCSD=" + nSerieCertificadoCSD + ", folioFiscal=" + folioFiscal + ", nSerieCertificadoSAT=" + nSerieCertificadoSAT + ", fechaCertificacion=" + fechaCertificacion + '}';
+    }
+    
+    
     
     //========Datos para PDF======//
 
@@ -205,13 +218,7 @@ public class FacturaPDFDomain implements Serializable {
         this.parametroB = parametroB;
     }
 
-    public String getFechaEmision() {
-        return fechaEmision;
-    }
-
-    public void setFechaEmision(String fechaEmision) {
-        this.fechaEmision = fechaEmision;
-    }
+    
 
     public String getLugarEmision() {
         return lugarEmision;
@@ -431,13 +438,7 @@ public class FacturaPDFDomain implements Serializable {
         this.nSerieCertificadoSAT = nSerieCertificadoSAT;
     }
 
-    public String getFechaCertificacion() {
-        return fechaCertificacion;
-    }
-
-    public void setFechaCertificacion(String fechaCertificacion) {
-        this.fechaCertificacion = fechaCertificacion;
-    }
+    
 
     public String getNombreEstatus() {
         return nombreEstatus;
@@ -650,6 +651,48 @@ public class FacturaPDFDomain implements Serializable {
     public void setPaisCliente(String paisCliente) {
         this.paisCliente = paisCliente;
     }
+
+    public Date getFechaEmision() {
+        return fechaEmision;
+    }
+
+    public void setFechaEmision(Date fechaEmision) {
+        this.fechaEmision = fechaEmision;
+    }
+
+    public Date getFechaCertificacion() {
+        return fechaCertificacion;
+    }
+
+    public void setFechaCertificacion(Date fechaCertificacion) {
+        this.fechaCertificacion = fechaCertificacion;
+    }
+
+    public String getNombreCliente() {
+        return nombreCliente;
+    }
+
+    public void setNombreCliente(String nombreCliente) {
+        this.nombreCliente = nombreCliente;
+    }
+
+    public StreamedContent getFile() {
+        return file;
+    }
+
+    public void setFile(StreamedContent file) {
+        this.file = file;
+    }
+
+    public String getNombreArchivoTimbrado() {
+        return nombreArchivoTimbrado;
+    }
+
+    public void setNombreArchivoTimbrado(String nombreArchivoTimbrado) {
+        this.nombreArchivoTimbrado = nombreArchivoTimbrado;
+    }
+    
+    
     
     
     

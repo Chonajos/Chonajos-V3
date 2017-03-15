@@ -22,8 +22,8 @@ import javax.persistence.Query;
  * @author jramirez
  */
 @Stateless(mappedName = "ejbFacturas")
-public class EjbFacturas implements NeogocioFacturas
-{
+public class EjbFacturas implements NeogocioFacturas {
+
     @PersistenceContext(unitName = "persistenceJR")
     EntityManager em;
 
@@ -40,14 +40,15 @@ public class EjbFacturas implements NeogocioFacturas
             query.setParameter(7, factura.getIdTipoLlaveFk());
             query.setParameter(8, factura.getComentarios());
             query.setParameter(9, factura.getIdUsuarioFk());
-            
+
             return query.executeUpdate();
         } catch (Exception ex) {
             Logger.getLogger(EjbFacturas.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
-    
+
     }
+
     public void insertarDocumento(String id, byte[] fichero) throws SQLException {
 
         Query querys = em.createNativeQuery("update FACTURAS SET FICHERO = ? WHERE ID_FACTURA_PK = ?");
@@ -78,12 +79,70 @@ public class EjbFacturas implements NeogocioFacturas
     }
 
     @Override
-    public List<Object[]> getFacturasBy(BigDecimal idClienteFk, BigDecimal idSucursalFk, BigDecimal idFolioVentaFk, String fechaInicio, String fechaFin, BigDecimal idNumeroFacturaFk) {
-         StringBuffer cadena = new StringBuffer("");
-         Query query;
-         
-         
-         query = em.createNativeQuery(cadena.toString());
+    public List<Object[]> getFacturasBy(BigDecimal idClienteFk, BigDecimal idSucursalFk, BigDecimal idFolioVentaFk, String fechaInicio, String fechaFin) {
+        System.out.println("idCliente: " + idClienteFk);
+        System.out.println("idSucursal: " + idSucursalFk);
+        System.out.println("folioVenta: " + idFolioVentaFk);
+        System.out.println("FechaIni: " + fechaInicio);
+        System.out.println("FechaFin: " + fechaFin);
+        Query query;
+        int cont = 0;
+        StringBuffer cadena = new StringBuffer("select fa.ID_FACTURA_PK,fa.ID_NUMERO_FACTURA,fa.FECHA_TIMBRADO,fa.ID_CLIENTE_FK,fa.ID_SUCURSAL_FK,fa.ID_LLAVE_VENTA_FK, fa.OBSERVACIONES,\n"
+                + "fa.FECHA_EMISION,fa.FICHERO,fa.ID_USUARIO_FK,(CLI.NOMBRE||' '||CLI.APELLIDO_PATERNO ||' '||CLI.APELLIDO_MATERNO ) AS CLIENTE,\n"
+                + "suc.NOMBRE_SUCURSAL,fa.ID_STATUS_FK,fa.NOMBRE_FACTURA_TIMBRADA,fa.RFC_EMISOR from FACTURAS fa\n"
+                + "inner join CLIENTE cli on cli.ID_CLIENTE = fa.ID_CLIENTE_FK\n"
+                + "inner join SUCURSAL suc on suc.ID_SUCURSAL_PK = fa.ID_SUCURSAL_FK ");
+
+        if (!fechaInicio.equals("")) {
+            if (cont == 0) {
+                cadena.append(" WHERE ");
+            } else {
+                cadena.append(" AND ");
+            }
+
+            cadena.append(" TO_DATE(TO_CHAR(fa.FECHA_TIMBRADO,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "' ");
+            cont++;
+
+        }
+
+        if (idSucursalFk != null && idSucursalFk.intValue() != 0) {
+            if (cont == 0) {
+                cadena.append(" WHERE ");
+            } else {
+                cadena.append(" AND ");
+            }
+
+            cadena.append(" fa.ID_SUCURSAL_FK = '" + idSucursalFk + "' ");
+            cont++;
+
+        }
+
+        if (idFolioVentaFk != null && idFolioVentaFk.intValue() != 0) {
+            if (cont == 0) {
+                cadena.append(" WHERE ");
+            } else {
+                cadena.append(" AND ");
+            }
+
+            cadena.append(" fa.ID_LLAVE_VENTA_FK = '" + idFolioVentaFk + "' ");
+            cont++;
+        }
+
+        if (idClienteFk != null && idClienteFk.intValue() != 0) {
+            if (cont == 0) {
+                cadena.append(" WHERE ");
+            } else {
+                cadena.append(" AND ");
+            }
+
+            cadena.append(" fa.ID_CLIENTE_FK  = '" + idClienteFk + "' ");
+            cont++;
+        }
+
+        cadena.append(" order by fa.FECHA_TIMBRADO");
+
+        query = em.createNativeQuery(cadena.toString());
+        System.out.println("Query: " + query.toString());
 
         try {
             List<Object[]> lstObject = query.getResultList();
@@ -92,7 +151,7 @@ public class EjbFacturas implements NeogocioFacturas
             System.out.println("Error >" + e.getMessage());
             return null;
         }
-    
+
     }
 
     @Override
@@ -103,7 +162,7 @@ public class EjbFacturas implements NeogocioFacturas
         } catch (Exception ex) {
             return 0;
         }
-    
+
     }
-    
+
 }

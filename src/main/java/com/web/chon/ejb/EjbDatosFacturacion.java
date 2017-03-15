@@ -6,7 +6,6 @@
 package com.web.chon.ejb;
 
 import com.web.chon.dominio.DatosFacturacion;
-import com.web.chon.negocio.NegocioFacturacion;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.logging.Level;
@@ -15,13 +14,14 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import com.web.chon.negocio.NegocioDatosFacturacion;
 
 /**
  *
  * @author jramirez
  */
 @Stateless(mappedName = "ejbDatosFacturacion")
-public class EjbDatosFacturacion implements NegocioFacturacion {
+public class EjbDatosFacturacion implements NegocioDatosFacturacion {
     @PersistenceContext(unitName = "persistenceJR")
     EntityManager em;
 

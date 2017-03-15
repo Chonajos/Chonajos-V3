@@ -6,7 +6,7 @@
 package com.web.chon.service;
 
 import com.web.chon.dominio.DatosFacturacion;
-import com.web.chon.negocio.NegocioFacturacion;
+import com.web.chon.negocio.NegocioDatosFacturacion;
 import com.web.chon.util.Utilidades;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -20,25 +20,19 @@ import org.springframework.stereotype.Service;
  * @author jramirez
  */
 @Service
-public class ServiceFacturacion implements IfaceFacturacion {
-
-    NegocioFacturacion ejb;
+public class ServiceDatosFacturacion implements IfaceDatosFacturacion
+{
+    NegocioDatosFacturacion ejb;
 
     private void getEjb() {
-        if (ejb == null) {
-            try {
-                ejb = (NegocioFacturacion) Utilidades.getEJBRemote("ejbDatosFacturacion", NegocioFacturacion.class.getName());
-            } catch (Exception ex) {
-                Logger.getLogger(ServiceFacturacion.class.getName()).log(Level.SEVERE, null, ex);
+        try {
+            if (ejb == null) {
+                ejb = (NegocioDatosFacturacion) Utilidades.getEJBRemote("ejbDatosFacturacion", NegocioDatosFacturacion.class.getName());
             }
+
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceDatosFacturacion.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    @Override
-    public int getNextVal() {
-        getEjb();
-        return ejb.getNextVal();
-
     }
 
     @Override
@@ -88,7 +82,6 @@ public class ServiceFacturacion implements IfaceFacturacion {
     @Override
     public ArrayList<DatosFacturacion> getDatosFacturacionByIdSucursal(BigDecimal idSucursalFk) {
         getEjb();
-        int i = 1;
         ArrayList<DatosFacturacion> listaDatos = new ArrayList<DatosFacturacion>();
         List<Object[]> lstObject = ejb.getDatosFacturacionByIdSucursal(idSucursalFk);
         for (Object[] obj : lstObject) {
@@ -128,20 +121,22 @@ public class ServiceFacturacion implements IfaceFacturacion {
 
     @Override
     public int deleteDatosFacturacion(String idProducto) {
-        getEjb();
-        return ejb.deleteDatosFacturacion(idProducto);
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public int insertarDatosFacturacion(DatosFacturacion df) {
-        getEjb();
-        return ejb.insertarDatosFacturacion(df);
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public int updateDatosFacturacion(DatosFacturacion df) {
-        getEjb();
-        return ejb.updateDatosFacturacion(df);
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public int getNextVal() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -149,4 +144,5 @@ public class ServiceFacturacion implements IfaceFacturacion {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    
 }

@@ -20,7 +20,7 @@ import com.web.chon.service.IfaceBuscaVenta;
 import com.web.chon.service.IfaceCatCliente;
 import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceCatalogoSat;
-import com.web.chon.service.IfaceFacturacion;
+import com.web.chon.service.IfaceDatosFacturacion;
 import com.web.chon.service.IfaceVentaMayoreo;
 import com.web.chon.util.Constantes;
 import com.web.chon.util.JasperReportUtil;
@@ -86,6 +86,14 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
+import com.web.chon.service.IfaceFacturas;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.sql.SQLException;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import org.primefaces.context.RequestContext;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 /**
  *
@@ -107,9 +115,11 @@ public class BeanFacturacion implements Serializable {
     @Autowired
     private IfaceBuscaVenta ifaceBuscaVenta;
     @Autowired
-    private IfaceFacturacion ifaceFacturacion;
+    private IfaceDatosFacturacion ifaceDatosFacturacion;
     @Autowired
     private IfaceCatalogoSat ifaceCatalogoSat;
+    @Autowired
+    private IfaceFacturas ifaceFacturas;
 
     //--Variables Generales Bean--//
     private String title;
@@ -145,8 +155,10 @@ public class BeanFacturacion implements Serializable {
     private int filtroMostrador;
     private boolean disableBotonBuscarVenta;
     private boolean disableTextFolioVenta;
+    private StreamedContent file;
 
     private ArrayList<VentaProductoMayoreo> selectedProductosVentas;
+    private ArrayList<VentaProductoMayoreo> listaProductosReporte;
 
     //--Variables Para Generar PDF--//
     private String rutaPDF;
@@ -175,7 +187,7 @@ public class BeanFacturacion implements Serializable {
     private static final BigDecimal TIPO_MONEDA = new BigDecimal(3);
     private static final BigDecimal TIPO_DOCUMENTO = new BigDecimal(4);
     private static final BigDecimal CERO = new BigDecimal(0);
-    
+
     //nunca cambia, lo proporciono el pac
     private static String API_KEY = "1e550c937ba7cf3f65a6136ae86add2b";
     private String pathFacturaClienteComprobante;
@@ -186,6 +198,7 @@ public class BeanFacturacion implements Serializable {
 
     @PostConstruct
     public void init() {
+        modelo = new ArrayList<FacturaPDFDomain>();
         banderaImporteParcialidad = "false";
         disableBotonBuscarVenta = false;
         disableTextFolioVenta = false;
@@ -195,7 +208,7 @@ public class BeanFacturacion implements Serializable {
         subTotal = CERO;
         iva = CERO;
         total = CERO;
-
+        listaProductosReporte = new ArrayList<VentaProductoMayoreo>();
         of = new ObjectFactory();
         comp = of.createComprobante();
         idClienteVentaMostradorPk = new BigDecimal(1103);
@@ -223,30 +236,31 @@ public class BeanFacturacion implements Serializable {
         listaFormaPago = ifaceCatalogoSat.getCatalogo(TIPO_FORMA_PAGO);
         listaMonedas = ifaceCatalogoSat.getCatalogo(TIPO_MONEDA);
         listaTipoDocumento = ifaceCatalogoSat.getCatalogo(TIPO_DOCUMENTO);
+        idSucursalFk = new BigDecimal(usuario.getSucId());
+        filtro = 1;
+        verificarCombo();
 
     }
-    public void calcularTotales()
-    {
-        for(CatalogoSat cs:listaTipoDocumento)
-        {
-           
-            if(cs.getIdCatalogoSatPk().intValue()==tipoDocumento.intValue())
-            {
+
+    public void calcularTotales() {
+        for (CatalogoSat cs : listaTipoDocumento) {
+
+            if (cs.getIdCatalogoSatPk().intValue() == tipoDocumento.intValue()) {
                 subTotal = (ventaMayoreo.getTotalVenta().setScale(2, RoundingMode.CEILING)).subtract(descuento.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
-                System.out.println("subTotal : "+subTotal);
+                System.out.println("subTotal : " + subTotal);
                 iva = (cs.getValor().setScale(2, RoundingMode.CEILING)).multiply(subTotal.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
-                System.out.println("Iva:  : "+iva);
+                System.out.println("Iva:  : " + iva);
                 iva = iva.setScale(2, RoundingMode.CEILING).divide(new BigDecimal(100).setScale(2, RoundingMode.CEILING));
-                System.out.println("Iva Dividido:  : "+iva);
-                total =(iva.setScale(2, RoundingMode.CEILING)).add(subTotal.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
-                System.out.println("Total: "+total);
+                System.out.println("Iva Dividido:  : " + iva);
+                total = (iva.setScale(2, RoundingMode.CEILING)).add(subTotal.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
+                System.out.println("Total: " + total);
             }
-                    
+
         }
     }
-    public void agregarDescuento()
-    {
-        
+
+    public void agregarDescuento() {
+
     }
 
     public void agregarProducto() {
@@ -259,19 +273,35 @@ public class BeanFacturacion implements Serializable {
 
     public void buscarDatosCliente() {
         if (filtroMostrador == 2) {
-            datosCliente = ifaceFacturacion.getDatosFacturacionByIdCliente(idClienteVentaMostradorPk);
+            datosCliente = ifaceDatosFacturacion.getDatosFacturacionByIdCliente(idClienteVentaMostradorPk);
 
         } else {
             if (ventaMayoreo != null && ventaMayoreo.getIdClienteFk() != null) {
-                datosCliente = ifaceFacturacion.getDatosFacturacionByIdCliente(ventaMayoreo.getIdClienteFk());
+                datosCliente = ifaceDatosFacturacion.getDatosFacturacionByIdCliente(ventaMayoreo.getIdClienteFk());
 
             }
         }
 
     }
 
+    public StreamedContent getProductImage() throws IOException, SQLException {
+        FacesContext context = FacesContext.getCurrentInstance();
+        System.out.println("Data: " + data.toString());
+        if (data.getFichero() == null) {
+            JsfUtil.addErrorMessageClean("Error al descargar el arvhivo");
+            return file;
+        } else {
+            file = null;
+            byte[] datos = data.getFichero();
+            InputStream stream = new ByteArrayInputStream(datos);
+            file = new DefaultStreamedContent(stream, "xml", "archivo.xml");
+            return file;
+        }
+
+    }
+
     public void buscarDatosEmisor() {
-        listaDatosEmisor = ifaceFacturacion.getDatosFacturacionByIdSucursal(new BigDecimal(usuario.getSucId()));
+        listaDatosEmisor = ifaceDatosFacturacion.getDatosFacturacionByIdSucursal(new BigDecimal(usuario.getSucId()));
     }
 
     public void buscarFolioVenta() {
@@ -338,21 +368,249 @@ public class BeanFacturacion implements Serializable {
     }
 
     public void buscarFacturas() {
+        if (cliente != null && cliente.getId_cliente() != null) {
+            modelo = ifaceFacturas.getFacturasBy(cliente.getId_cliente(), idSucursalFk, folioVenta, TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicio), TiempoUtil.getFechaDDMMYYYY(fechaFiltroFin));
+        } else {
+            modelo = ifaceFacturas.getFacturasBy(null, idSucursalFk, folioVenta, TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicio), TiempoUtil.getFechaDDMMYYYY(fechaFiltroFin));
+
+        }
 
     }
 
-    public void changeViewGenerarFactura() {
+    public void abreXML() {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        //DocumentBuilder builder = factory.newDocumentBuilder();
 
+        try {
+            String rutaTimbradoData = Constantes.PATHLOCALFACTURACION + "Clientes" + File.separatorChar + data.getRfcEmisor() + File.separatorChar + "TIMBRADO" + File.separatorChar + data.getNombreArchivoTimbrado();
+
+            System.out.println("Ruta: " + rutaTimbradoData);
+            File inputFile = new File(rutaTimbradoData);
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(inputFile);
+            doc.getDocumentElement().normalize();
+            System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
+            NodeList nList = doc.getElementsByTagName("cfdi:Comprobante");
+
+            System.out.println("-------------Datos Generales---------------");
+            for (int temp = 0; temp < nList.getLength(); temp++) {
+                Node nNode = nList.item(temp);
+                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element eElement = (Element) nNode;
+                    paramReport.put("LugarExpedicion", eElement.getAttribute("LugarExpedicion"));
+                    System.out.println("LugarExpedicion : " + eElement.getAttribute("LugarExpedicion"));
+                    paramReport.put("formaPago", eElement.getAttribute("metodoDePago"));
+                    System.out.println("Metodo De Pago : " + eElement.getAttribute("metodoDePago"));
+                    paramReport.put("tipoDeComprobante", eElement.getAttribute("tipoDeComprobante"));
+                    System.out.println("Tipo De Comprobante : " + eElement.getAttribute("tipoDeComprobante"));
+                    paramReport.put("total", eElement.getAttribute("total") ==null ? CERO:eElement.getAttribute("total"));
+                    System.out.println("Total : " + eElement.getAttribute("total"));
+                    paramReport.put("Moneda", eElement.getAttribute("Moneda"));
+                    System.out.println("Moneda : " + eElement.getAttribute("Moneda"));
+                    paramReport.put("descuento", eElement.getAttribute("descuento"));
+                    System.out.println("Descuento : " + eElement.getAttribute("descuento"));
+                    System.out.println("subTotal : " + eElement.getAttribute("subTotal"));
+                    paramReport.put("subTotal", eElement.getAttribute("subTotal") ==null ? CERO:eElement.getAttribute("subTotal"));
+                    
+                    
+                    paramReport.put("certificado", eElement.getAttribute("certificado"));
+                    System.out.println("Certificado : " + eElement.getAttribute("certificado"));
+                    paramReport.put("noCertificado", eElement.getAttribute("noCertificado"));
+                    System.out.println("no. Certificado : " + eElement.getAttribute("noCertificado"));
+                    paramReport.put("selloDigital", eElement.getAttribute("sello"));
+                    System.out.println("sello : " + eElement.getAttribute("sello"));
+                    paramReport.put("folio", eElement.getAttribute("folio"));
+                    System.out.println("folio : " + eElement.getAttribute("folio"));
+                    paramReport.put("fecha", eElement.getAttribute("fecha"));
+                    System.out.println("Fecha : " + eElement.getAttribute("fecha"));
+                    paramReport.put("serie", eElement.getAttribute("serie"));
+                    System.out.println("version : " + eElement.getAttribute("serie"));
+                    paramReport.put("version", eElement.getAttribute("version"));
+                    NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
+                    DecimalFormat df = new DecimalFormat("###.##");
+                    NumeroALetra numeroLetra = new NumeroALetra();
+                    BigDecimal temporal = new BigDecimal(eElement.getAttribute("total"));
+                    String totalVentaStr = numeroLetra.Convertir(df.format(temporal), true);
+                    paramReport.put("importeLetra", totalVentaStr);
+
+                }
+            }
+            nList = doc.getElementsByTagName("cfdi:Emisor");
+            System.out.println("--------------Datos de Emisor--------------");
+            for (int temp = 0; temp < nList.getLength(); temp++) {
+                Node nNode = nList.item(temp);
+                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element eElement = (Element) nNode;
+                    paramReport.put("nombreEmisor", eElement.getAttribute("nombre"));
+                    System.out.println("Nombre : " + eElement.getAttribute("nombre"));
+                    paramReport.put("rfcEmisor", eElement.getAttribute("rfc"));
+                    System.out.println("rfc : " + eElement.getAttribute("rfc"));
+
+                }
+            }
+
+            nList = doc.getElementsByTagName("cfdi:DomicilioFiscal");
+            System.out.println("-----------Domicilio Fiscal Emisor-----------------");
+            for (int temp = 0; temp < nList.getLength(); temp++) {
+                Node nNode = nList.item(temp);
+                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element eElement = (Element) nNode;
+                    paramReport.put("codigoPostalEmisor", eElement.getAttribute("codigoPostal"));
+                    System.out.println("Codigo Postal : " + eElement.getAttribute("codigoPostal"));
+                    paramReport.put("estadoEmisor", eElement.getAttribute("estado"));
+                    System.out.println("Estado : " + eElement.getAttribute("estado"));
+                    paramReport.put("municipioEmisor", eElement.getAttribute("municipio"));
+                    System.out.println("Municipio : " + eElement.getAttribute("municipio"));
+                    paramReport.put("localidadEmisor", eElement.getAttribute("localidad"));
+                    System.out.println("Localidad : " + eElement.getAttribute("localidad"));
+                    paramReport.put("coloniaEmisor", eElement.getAttribute("colonia"));
+                    System.out.println("Colonia : " + eElement.getAttribute("colonia"));
+                    paramReport.put("noExteriorEmisor", eElement.getAttribute("noExterior"));
+                    System.out.println("N° Exterior : " + eElement.getAttribute("noExterior"));
+                    paramReport.put("calleEmisor", eElement.getAttribute("calle"));
+                    System.out.println("Calle : " + eElement.getAttribute("calle"));
+
+                }
+            }
+            nList = doc.getElementsByTagName("cfdi:RegimenFiscal");
+            System.out.println("-----------Regimen Fiscal-----------------");
+            for (int temp = 0; temp < nList.getLength(); temp++) {
+                Node nNode = nList.item(temp);
+                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element eElement = (Element) nNode;
+                    System.out.println("Regimen : " + eElement.getAttribute("Regimen"));
+                    paramReport.put("regimen", eElement.getAttribute("Regimen"));
+
+                }
+            }
+            nList = doc.getElementsByTagName("cfdi:Receptor");
+            System.out.println("--------------Datos de Receptor--------------");
+            for (int temp = 0; temp < nList.getLength(); temp++) {
+                Node nNode = nList.item(temp);
+                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element eElement = (Element) nNode;
+                    paramReport.put("nombreReceptor", eElement.getAttribute("nombre"));
+                    System.out.println("Nombre : " + eElement.getAttribute("nombre"));
+                    paramReport.put("rfcReceptor", eElement.getAttribute("rfc"));
+                    System.out.println("rfc : " + eElement.getAttribute("rfc"));
+
+                }
+            }
+
+            nList = doc.getElementsByTagName("cfdi:Domicilio");
+            System.out.println("-----------Domicilio Fiscal Receptor-----------------");
+            for (int temp = 0; temp < nList.getLength(); temp++) {
+                Node nNode = nList.item(temp);
+                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element eElement = (Element) nNode;
+                    paramReport.put("codigoPostalReceptor", eElement.getAttribute("codigoPostal"));
+                    System.out.println("Codigo Postal : " + eElement.getAttribute("codigoPostal"));
+                    paramReport.put("estadoReceptor", eElement.getAttribute("estado"));
+                    System.out.println("Estado : " + eElement.getAttribute("estado"));
+                    paramReport.put("municipioReceptor", eElement.getAttribute("municipio"));
+                    System.out.println("Municipio : " + eElement.getAttribute("municipio"));
+                    paramReport.put("localidadReceptor", eElement.getAttribute("localidad"));
+                    System.out.println("Localidad : " + eElement.getAttribute("localidad"));
+                    paramReport.put("coloniaReceptor", eElement.getAttribute("colonia"));
+                    System.out.println("Colonia : " + eElement.getAttribute("colonia"));
+                    paramReport.put("noExteriorReceptor", eElement.getAttribute("noExterior"));
+                    System.out.println("N° Exterior : " + eElement.getAttribute("noExterior"));
+                    paramReport.put("calleReceptor", eElement.getAttribute("calle"));
+                    System.out.println("Calle : " + eElement.getAttribute("calle"));
+
+                }
+            }
+
+            //nList = doc.getElementsByTagName("cfdi:Concepto");
+            System.out.println("--------------Productos--------------");
+//            for (int temp = 0; temp < nList.getLength(); temp++) {
+//                Node nNode = nList.item(temp);
+//                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+//                    Element eElement = (Element) nNode;
+//                    //paramReport.put("nombreReceptor", eElement.getAttribute("nombre"));
+//                    System.out.println("Importe : " + eElement.getAttribute("importe"));
+//                    System.out.println("Valor Unitario : " + eElement.getAttribute("valorUnitario"));
+//                    System.out.println("Descripcion : " + eElement.getAttribute("descripcion"));
+//                    System.out.println("unidad : " + eElement.getAttribute("unidad"));
+//                    System.out.println("cantidad : " + eElement.getAttribute("cantidad"));
+//
+//                    //paramReport.put("rfcReceptor", eElement.getAttribute("rfc"));
+//                }
+//            }
+            
+            NodeList feeds = doc.getElementsByTagName("cfdi:Conceptos");
+            for (int i = 0; i < feeds.getLength(); i++) 
+            {
+                Node mainNode = feeds.item(i);
+                if (mainNode.getNodeType() == Node.ELEMENT_NODE) 
+                {
+                    Element firstElement = (Element) mainNode;
+                    System.out.println("First element "+ firstElement.getTagName());
+                    NodeList forumidNameList = firstElement.getElementsByTagName("cfdi:Concepto");
+                    for (int j = 0; j < forumidNameList.getLength(); ++j) 
+                    {
+                        Element eElement = (Element) forumidNameList.item(j);
+                        VentaProductoMayoreo vpm = new VentaProductoMayoreo();
+                        vpm.setTotalVenta(new BigDecimal(eElement.getAttribute("importe")));
+                        System.out.println("Importe : " + eElement.getAttribute("importe"));
+                        vpm.setPrecioProducto(new BigDecimal(eElement.getAttribute("valorUnitario")));
+                        System.out.println("Valor Unitario : " + eElement.getAttribute("valorUnitario"));
+                        vpm.setNombreProducto(eElement.getAttribute("descripcion"));
+                        System.out.println("Descripcion : " + eElement.getAttribute("descripcion"));
+                        vpm.setNombreEmpaque(eElement.getAttribute("unidad"));
+                        System.out.println("unidad : " + eElement.getAttribute("unidad"));
+                        vpm.setKilosVendidos(new BigDecimal(eElement.getAttribute("cantidad")));
+                        System.out.println("cantidad : " + eElement.getAttribute("cantidad"));
+                        listaProductosReporte.add(vpm);
+                    }
+                    
+                }
+            }
+            JRBeanCollectionDataSource listaProductos = new JRBeanCollectionDataSource(listaProductosReporte);
+                paramReport.put("lstProductos", listaProductos);
+                nList = doc.getElementsByTagName("tfd:TimbreFiscalDigital");
+                System.out.println("-----------Timbre Fiscal-----------------");
+                for (int temp = 0; temp < nList.getLength(); temp++) {
+                    Node nNode = nList.item(temp);
+                    if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                        Element eElement = (Element) nNode;
+                        paramReport.put("version", eElement.getAttribute("version"));
+                        System.out.println("Version : " + eElement.getAttribute("version"));
+                        paramReport.put("UUID", eElement.getAttribute("UUID"));
+                        System.out.println("UUID : " + eElement.getAttribute("UUID"));
+                        paramReport.put("FechaTimbrado", eElement.getAttribute("FechaTimbrado"));
+                        System.out.println("FechaTimbrado : " + eElement.getAttribute("FechaTimbrado"));
+                        paramReport.put("selloCFD", eElement.getAttribute("selloCFD"));
+                        System.out.println("selloCFD : " + eElement.getAttribute("selloCFD"));
+                        paramReport.put("noCertificadoSAT", eElement.getAttribute("noCertificadoSAT"));
+                        System.out.println("noCertificadoSAT : " + eElement.getAttribute("noCertificadoSAT"));
+                        paramReport.put("selloSAT", eElement.getAttribute("selloSAT"));
+                        System.out.println("selloSAT : " + eElement.getAttribute("selloSAT"));
+
+                    }
+                }
+            }catch (Exception e) {
+         e.printStackTrace();
+      }
+
+        generateReport(data);
+        RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
+        }
+
+    
+
+    public void changeViewGenerarFactura() {
         setViewEstate("generate");
         setTitle("Generar Factura");
+        // calcularTotales();
     }
 
     public void habilitarImporteParcial() {
-        System.out.println("forma de pago: "+formaPago);
-        if (formaPago.equals("02") || formaPago.equals("03")) 
-        {
+        System.out.println("forma de pago: " + formaPago);
+        if (formaPago.equals("02") || formaPago.equals("03")) {
             banderaImporteParcialidad = "true";
-            
+
         } else {
             banderaImporteParcialidad = "false";
         }
@@ -389,13 +647,13 @@ public class BeanFacturacion implements Serializable {
         System.out.println("cancel");
 
     }
-    
+
     public void timbrar() {
         try {
             RespuestaTimbre2 respuesta = new RespuestaTimbre2();
             AdvanswsdlLocator service = new AdvanswsdlLocator();
 
-            URL url = new URL(pathFacturaClienteTimbrado);
+            URL url = new URL(pathFacturaClienteComprobante);
             InputStreamReader in = new InputStreamReader(url.openStream());
 
             String xmlCfdi = IOUtils.toString(in);
@@ -441,83 +699,81 @@ public class BeanFacturacion implements Serializable {
         System.out.println("Fecha: " + comp.getFecha());
         System.out.println("Certificado: " + comp.getCertificado());
         System.out.println("---------------------DATOS DE EMISOR------------------------------");
-        System.out.println("Nombre Emisor: "+comp.getEmisor().getNombre());
-        System.out.println("RFC Emisor: "+comp.getEmisor().getRfc());
+        System.out.println("Nombre Emisor: " + comp.getEmisor().getNombre());
+        System.out.println("RFC Emisor: " + comp.getEmisor().getRfc());
         System.out.println("Domicilo Fiscal Emisor:");
-        System.out.println("    Calle: "+comp.getEmisor().getDomicilioFiscal().getCalle());
-        System.out.println("    Codigo Postal: "+comp.getEmisor().getDomicilioFiscal().getCodigoPostal());
-        System.out.println("    Colonia: "+comp.getEmisor().getDomicilioFiscal().getColonia());
-        System.out.println("    Estado: "+comp.getEmisor().getDomicilioFiscal().getEstado());
-        System.out.println("    Municipio: "+comp.getEmisor().getDomicilioFiscal().getMunicipio());
-        System.out.println("    Localidad: "+comp.getEmisor().getDomicilioFiscal().getLocalidad());
-        System.out.println("    No. Exterior: "+comp.getEmisor().getDomicilioFiscal().getNoExterior());
-        System.out.println("    No. Interior "+comp.getEmisor().getDomicilioFiscal().getNoInterior());
-        System.out.println("    Pais: "+comp.getEmisor().getDomicilioFiscal().getPais());
-        System.out.println("    Referencia: "+comp.getEmisor().getDomicilioFiscal().getReferencia());
-        
-        System.out.println("Expedido en: "+comp.getEmisor().getExpedidoEn());
-        
+        System.out.println("    Calle: " + comp.getEmisor().getDomicilioFiscal().getCalle());
+        System.out.println("    Codigo Postal: " + comp.getEmisor().getDomicilioFiscal().getCodigoPostal());
+        System.out.println("    Colonia: " + comp.getEmisor().getDomicilioFiscal().getColonia());
+        System.out.println("    Estado: " + comp.getEmisor().getDomicilioFiscal().getEstado());
+        System.out.println("    Municipio: " + comp.getEmisor().getDomicilioFiscal().getMunicipio());
+        System.out.println("    Localidad: " + comp.getEmisor().getDomicilioFiscal().getLocalidad());
+        System.out.println("    No. Exterior: " + comp.getEmisor().getDomicilioFiscal().getNoExterior());
+        System.out.println("    No. Interior " + comp.getEmisor().getDomicilioFiscal().getNoInterior());
+        System.out.println("    Pais: " + comp.getEmisor().getDomicilioFiscal().getPais());
+        System.out.println("    Referencia: " + comp.getEmisor().getDomicilioFiscal().getReferencia());
+
+        System.out.println("Expedido en: " + comp.getEmisor().getExpedidoEn());
+
         System.out.println("---------------------DATOS CLIENTE------------------------------");
-        System.out.println("Nombre Receptor: "+comp.getReceptor().getNombre());
-        System.out.println("RFC Receptor: "+comp.getReceptor().getRfc());
+        System.out.println("Nombre Receptor: " + comp.getReceptor().getNombre());
+        System.out.println("RFC Receptor: " + comp.getReceptor().getRfc());
         System.out.println("Domicilo Fiscal Receptor:");
-        System.out.println("    Calle: "+comp.getReceptor().getDomicilio().getCalle());
-        System.out.println("    Codigo Postal: "+comp.getReceptor().getDomicilio().getCodigoPostal());
-        System.out.println("    Colonia: "+comp.getReceptor().getDomicilio().getColonia());
-        System.out.println("    Estado: "+comp.getReceptor().getDomicilio().getEstado());
-        System.out.println("    Municipio: "+comp.getReceptor().getDomicilio().getMunicipio());
-        System.out.println("    Localidad: "+comp.getReceptor().getDomicilio().getLocalidad());
-        System.out.println("    No. Exterior: "+comp.getReceptor().getDomicilio().getNoExterior());
-        System.out.println("    No. Interior "+comp.getReceptor().getDomicilio().getNoInterior());
-        System.out.println("    Pais: "+comp.getReceptor().getDomicilio().getPais());
-        System.out.println("    Referencia: "+comp.getReceptor().getDomicilio().getReferencia());
+        System.out.println("    Calle: " + comp.getReceptor().getDomicilio().getCalle());
+        System.out.println("    Codigo Postal: " + comp.getReceptor().getDomicilio().getCodigoPostal());
+        System.out.println("    Colonia: " + comp.getReceptor().getDomicilio().getColonia());
+        System.out.println("    Estado: " + comp.getReceptor().getDomicilio().getEstado());
+        System.out.println("    Municipio: " + comp.getReceptor().getDomicilio().getMunicipio());
+        System.out.println("    Localidad: " + comp.getReceptor().getDomicilio().getLocalidad());
+        System.out.println("    No. Exterior: " + comp.getReceptor().getDomicilio().getNoExterior());
+        System.out.println("    No. Interior " + comp.getReceptor().getDomicilio().getNoInterior());
+        System.out.println("    Pais: " + comp.getReceptor().getDomicilio().getPais());
+        System.out.println("    Referencia: " + comp.getReceptor().getDomicilio().getReferencia());
     }
-    public void crearFactura() throws Exception
-    {
-        for(DatosFacturacion df:listaDatosEmisor)
-        {
-            if(df.getIdDatosFacturacionPk().intValue()==idEmisorPk.intValue())
-            {
-                datosEmisor.setCalle(df.getCalle()==null ? "":df.getCalle());
-                datosEmisor.setClavePublica(df.getClavePublica()==null ? "":df.getClavePublica());
-                datosEmisor.setCodigoPostal(df.getCodigoPostal()==null ? "":df.getCodigoPostal());
-                datosEmisor.setColonia(df.getColonia()==null ? "":df.getColonia());
-                datosEmisor.setCorreo(df.getCorreo()==null ? "":df.getCorreo());
-                datosEmisor.setEstado(df.getEstado()==null ? "":df.getEstado());
-                datosEmisor.setField(df.getField()==null ? "":df.getField());
-                datosEmisor.setIdClienteFk(df.getIdClienteFk()==null ? null:df.getIdClienteFk());
-                datosEmisor.setIdCodigoPostalFk(df.getIdCodigoPostalFk()==null ? null:df.getIdCodigoPostalFk());
-                datosEmisor.setLocalidad(df.getLocalidad()==null ? "":df.getLocalidad());
-                datosEmisor.setMunicipio(df.getMunicipio()==null ? "":df.getMunicipio());
-                datosEmisor.setNombre(df.getNombre()==null ? "":df.getNombre());
-                datosEmisor.setNumExt(df.getNumExt()==null ? "":df.getNumExt());
-                datosEmisor.setNumInt(df.getNumInt()==null ? "":df.getNumInt());
-                datosEmisor.setPais(df.getPais()==null ? "":df.getPais());
-                datosEmisor.setRazonSocial(df.getRazonSocial()==null ? "":df.getRazonSocial());
-                datosEmisor.setRegimen(df.getRegimen()==null ? "":df.getRegimen());
-                datosEmisor.setRfc(df.getRfc()==null ? "":df.getRfc());
-                datosEmisor.setRuta_certificado(df.getRuta_certificado()==null ? "":df.getRuta_certificado());
-                datosEmisor.setRuta_certificado_cancel(df.getRuta_certificado_cancel()==null ? "":df.getRuta_certificado_cancel());
-                datosEmisor.setRuta_llave_privada(df.getRuta_llave_privada()==null ? "":df.getRuta_llave_privada());
-                datosEmisor.setRuta_llave_privada_cancel(df.getRuta_llave_privada_cancel()==null ? "":df.getRuta_llave_privada_cancel());
-                datosEmisor.setTelefono(df.getTelefono()==null ? "":df.getTelefono());
+
+    public void crearFactura() throws Exception {
+        for (DatosFacturacion df : listaDatosEmisor) {
+            if (df.getIdDatosFacturacionPk().intValue() == idEmisorPk.intValue()) {
+                datosEmisor.setCalle(df.getCalle() == null ? "" : df.getCalle());
+                datosEmisor.setClavePublica(df.getClavePublica() == null ? "" : df.getClavePublica());
+                datosEmisor.setCodigoPostal(df.getCodigoPostal() == null ? "" : df.getCodigoPostal());
+                datosEmisor.setColonia(df.getColonia() == null ? "" : df.getColonia());
+                datosEmisor.setCorreo(df.getCorreo() == null ? "" : df.getCorreo());
+                datosEmisor.setEstado(df.getEstado() == null ? "" : df.getEstado());
+                datosEmisor.setField(df.getField() == null ? "" : df.getField());
+                datosEmisor.setIdClienteFk(df.getIdClienteFk() == null ? null : df.getIdClienteFk());
+                datosEmisor.setIdCodigoPostalFk(df.getIdCodigoPostalFk() == null ? null : df.getIdCodigoPostalFk());
+                datosEmisor.setLocalidad(df.getLocalidad() == null ? "" : df.getLocalidad());
+                datosEmisor.setMunicipio(df.getMunicipio() == null ? "" : df.getMunicipio());
+                datosEmisor.setNombre(df.getNombre() == null ? "" : df.getNombre());
+                datosEmisor.setNumExt(df.getNumExt() == null ? "" : df.getNumExt());
+                datosEmisor.setNumInt(df.getNumInt() == null ? "" : df.getNumInt());
+                datosEmisor.setPais(df.getPais() == null ? "" : df.getPais());
+                datosEmisor.setRazonSocial(df.getRazonSocial() == null ? "" : df.getRazonSocial());
+                datosEmisor.setRegimen(df.getRegimen() == null ? "" : df.getRegimen());
+                datosEmisor.setRfc(df.getRfc() == null ? "" : df.getRfc());
+                datosEmisor.setRuta_certificado(df.getRuta_certificado() == null ? "" : df.getRuta_certificado());
+                datosEmisor.setRuta_certificado_cancel(df.getRuta_certificado_cancel() == null ? "" : df.getRuta_certificado_cancel());
+                datosEmisor.setRuta_llave_privada(df.getRuta_llave_privada() == null ? "" : df.getRuta_llave_privada());
+                datosEmisor.setRuta_llave_privada_cancel(df.getRuta_llave_privada_cancel() == null ? "" : df.getRuta_llave_privada_cancel());
+                datosEmisor.setTelefono(df.getTelefono() == null ? "" : df.getTelefono());
             }
         }
-        pathFacturaClienteComprobante  = Constantes.PATHLOCALFACTURACION + File.separatorChar + "Clientes" + File.separatorChar + datosCliente.getRfc()+ File.separatorChar+"COMPROBANTE" + File.separatorChar + File.separatorChar + datosCliente.getRfc()+"_"+ventaMayoreo.getIdSucursalFk().toString()+"_"+ventaMayoreo.getVentaSucursal().toString()+".xml";
-        
-        pathFacturaClienteTimbrado  = Constantes.PATHLOCALFACTURACION + File.separatorChar + "Clientes" + File.separatorChar + datosCliente.getRfc()+ File.separatorChar+"TIMBRADO" + File.separatorChar + File.separatorChar + datosCliente.getRfc()+"_"+ventaMayoreo.getIdSucursalFk().toString()+"_"+ventaMayoreo.getVentaSucursal().toString()+".xml";
-        
+        pathFacturaClienteComprobante = Constantes.PATHLOCALFACTURACION + "Clientes" + File.separatorChar + datosCliente.getRfc() + File.separatorChar + "COMPROBANTE" + File.separatorChar + datosCliente.getRfc() + "_" + ventaMayoreo.getIdSucursalFk().toString() + "_" + ventaMayoreo.getVentaSucursal().toString() + ".xml";
+
+        pathFacturaClienteTimbrado = Constantes.PATHLOCALFACTURACION + "Clientes" + File.separatorChar + datosCliente.getRfc() + File.separatorChar + "TIMBRADO" + File.separatorChar + datosCliente.getRfc() + "_" + ventaMayoreo.getIdSucursalFk().toString() + "_" + ventaMayoreo.getVentaSucursal().toString() + ".xml";
+
         CFDv32 cfd = new CFDv32(createComprobante(), "mx.bigdata.sat.cfdi.examples");
         //Cargamos el archivo con la llave
-        
+
         PrivateKey key = KeyLoaderFactory.createInstance(KeyLoaderEnumeration.PRIVATE_KEY_LOADER, new FileInputStream(datosEmisor.getRuta_llave_privada()), datosEmisor.getClavePublica()).getKey();
         //Cargamos el archivo con el certificado
-        
+
         System.out.println("Se cargaron exitosamente los archivos");
         X509Certificate cert = KeyLoaderFactory.createInstance(KeyLoaderEnumeration.PUBLIC_KEY_LOADER, new FileInputStream(datosEmisor.getRuta_certificado())).getKey();
-        
+
         mx.bigdata.sat.cfdi.v32.schema.Comprobante sellado = cfd.sellarComprobante(key, cert);
-        
+
         FileOutputStream outFile = new FileOutputStream(pathFacturaClienteComprobante);
         imprimirDatosFactura();
         cfd.validar();
@@ -527,41 +783,35 @@ public class BeanFacturacion implements Serializable {
         cfd.guardar(outFile);
         System.out.println("Se guardo el cdf ");
         System.out.println("cadema original " + cfd.getCadenaOriginal());
-        
-    }
-    
-    
 
-    public  Comprobante createComprobante() 
-    {
+        timbrar();
+
+    }
+
+    public Comprobante createComprobante() {
         //====INICIALIZACIÓN DE LOS DATOS DE COMPROBANTE DIGITAL===//
         comp.setVersion("3.2");
         comp.setSerie("A");
         comp.setFolio(ventaMayoreo.getVentaSucursal().toString());
         comp.setFecha(context.getFechaSistema());
-        for(CatalogoSat cs:listaFormaPago)
-        {
-            
-            if(cs.getCodigo().toString().equals(formaPago))
-            {
+        for (CatalogoSat cs : listaFormaPago) {
+
+            if (cs.getCodigo().toString().equals(formaPago)) {
                 comp.setFormaDePago(cs.getDescripcion());
             }
         }
-        
+
         comp.setSubTotal(subTotal);
         comp.setMetodoDePago(metodoPago);
         comp.setDescuento(descuento);
         comp.setTotal(total);
-        for(CatalogoSat cs:listaTipoDocumento)
-        {
-            
-            if(cs.getIdCatalogoSatPk().equals(tipoDocumento))
-            {
+        for (CatalogoSat cs : listaTipoDocumento) {
+
+            if (cs.getIdCatalogoSatPk().equals(tipoDocumento)) {
                 comp.setTipoDeComprobante(cs.getCodigo());
             }
         }
-        
-        
+
         comp.setLugarExpedicion(datosEmisor.getCodigoPostal());
         comp.setMoneda(moneda);
         comp.setNoCertificado("00001000000404327545");//es el numero del certificado
@@ -569,8 +819,7 @@ public class BeanFacturacion implements Serializable {
         comp.setReceptor(createReceptor(of));
         comp.setConceptos(createConceptos(of));
         comp.setImpuestos(createImpuestos(of));
-        
-        
+
         return comp;
 
     }
@@ -648,11 +897,10 @@ public class BeanFacturacion implements Serializable {
             list.add(c1);
         }
 
-        
         return cps;
     }
 
-    private  Comprobante.Impuestos createImpuestos(ObjectFactory of) {
+    private Comprobante.Impuestos createImpuestos(ObjectFactory of) {
         Comprobante.Impuestos imps = of.createComprobanteImpuestos();
         Comprobante.Impuestos.Traslados trs = of.createComprobanteImpuestosTraslados();
         List<Comprobante.Impuestos.Traslados.Traslado> list = trs.getTraslado();
@@ -720,68 +968,68 @@ public class BeanFacturacion implements Serializable {
     }
 
     private void getTimbrado() throws ParserConfigurationException {
-//        DocumentBuilderFactory factory =DocumentBuilderFactory.newInstance();
-//        DocumentBuilder builder = factory.newDocumentBuilder();
-//        
-//        try {	
-//         File inputFile = new File("input.txt");
-//         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-//         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-//         Document doc = dBuilder.parse(inputFile);
-//         doc.getDocumentElement().normalize();
-//         System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
-//         NodeList nList = doc.getElementsByTagName("student");
-//         
-//         System.out.println("----------------------------");
-//         for (int temp = 0; temp < nList.getLength(); temp++) 
-//         {
-//            Node nNode = nList.item(temp);
-//            System.out.println("\nCurrent Element :" 
-//               + nNode.getNodeName());
-//            if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-//               Element eElement = (Element) nNode;
-//               System.out.println("Student roll no : " 
-//                  + eElement.getAttribute("rollno"));
-//               System.out.println("First Name : " 
-//                  + eElement
-//                  .getElementsByTagName("firstname")
-//                  .item(0)
-//                  .getTextContent());
-//               System.out.println("Last Name : " 
-//               + eElement
-//                  .getElementsByTagName("lastname")
-//                  .item(0)
-//                  .getTextContent());
-//               System.out.println("Nick Name : " 
-//               + eElement
-//                  .getElementsByTagName("nickname")
-//                  .item(0)
-//                  .getTextContent());
-//               System.out.println("Marks : " 
-//               + eElement
-//                  .getElementsByTagName("marks")
-//                  .item(0)
-//                  .getTextContent());
-//            }
-//         }
-//      } catch (Exception e) {
-//         e.printStackTrace();
-//      }
-    }
-    //   private void setParameterTicket(Venta v) {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
 
+        try {
+            File inputFile = new File("input.txt");
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(inputFile);
+            doc.getDocumentElement().normalize();
+            System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
+            NodeList nList = doc.getElementsByTagName("student");
+
+            System.out.println("----------------------------");
+            for (int temp = 0; temp < nList.getLength(); temp++) {
+                Node nNode = nList.item(temp);
+                System.out.println("\nCurrent Element :"
+                        + nNode.getNodeName());
+                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element eElement = (Element) nNode;
+                    System.out.println("Student roll no : "
+                            + eElement.getAttribute("rollno"));
+                    System.out.println("First Name : "
+                            + eElement
+                                    .getElementsByTagName("firstname")
+                                    .item(0)
+                                    .getTextContent());
+                    System.out.println("Last Name : "
+                            + eElement
+                                    .getElementsByTagName("lastname")
+                                    .item(0)
+                                    .getTextContent());
+                    System.out.println("Nick Name : "
+                            + eElement
+                                    .getElementsByTagName("nickname")
+                                    .item(0)
+                                    .getTextContent());
+                    System.out.println("Marks : "
+                            + eElement
+                                    .getElementsByTagName("marks")
+                                    .item(0)
+                                    .getTextContent());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+//      private void setParameterTicket()
+//      {
+//
 //        NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
 //        DecimalFormat df = new DecimalFormat("###.##");
 //        Date date = new Date();
 //        ArrayList<String> productos = new ArrayList<String>();
-//        NumeroALetra numeroLetra = new NumeroALetra();
-//        for (VentaProducto vp : v.getLstVentaProducto()) {
-//            String cantidad = vp.getCantidadEmpaque() + " Kilos ";
-//            productos.add(vp.getNombreProducto().toUpperCase());
-//            productos.add("       " + cantidad + "               " + nf.format(vp.getPrecioProducto()) + "    " + nf.format(vp.getTotal()));
-//        }
-//
-//        String totalVentaStr = numeroLetra.Convertir(df.format(totalVenta), true);
+//        
+////        for (VentaProducto vp : v.getLstVentaProducto()) 
+////        {
+////            String cantidad = vp.getCantidadEmpaque() + " Kilos ";
+////            productos.add(vp.getNombreProducto().toUpperCase());
+////            productos.add("       " + cantidad + "               " + nf.format(vp.getPrecioProducto()) + "    " + nf.format(vp.getTotal()));
+////        }
+
 //
 //        paramReport.put("fechaVenta", TiempoUtil.getFechaDDMMYYYYHHMM(fechaImpresion));
 //        paramReport.put("noVenta", v.getFolio().toString());
@@ -840,33 +1088,34 @@ public class BeanFacturacion implements Serializable {
 //            }
 //            paramReport.put("calendarioPago", calendario);
 //        }
-    //  }
-    public void generateReport() {
-//        JRExporter exporter = null;
-//        try {
-//            ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-//
-//            String temporal = "";
-//            if (servletContext.getRealPath("") == null) {
-//                temporal = Constantes.PATHSERVER;
-//            } else {
-//                temporal = servletContext.getRealPath("");
-//            }
-//            pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "facturas" + File.separatorChar + "ticketCredito.jasper";          
-//            JasperPrint jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport, new JREmptyDataSource());
-//
-//            outputStream = JasperReportUtil.getOutputStreamFromReport(paramReport, getPathFileJasper());
-//            exporter = new JRPdfExporter();
-//            exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
-//            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, outputStream);
-//
-//            byte[] bytes = outputStream.toByteArray();
-//            rutaPDF = UtilUpload.saveFileTemp(bytes, "factura", v.getIdVentaPk().intValue(), idSucursalImpresion.intValue());
-//
-//        } catch (Exception exception) {
-//            System.out.println("Error >" + exception.getMessage());
-//
-//        }
+//    }
+    public void generateReport(FacturaPDFDomain fac) {
+        JRExporter exporter = null;
+        try {
+            ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+
+            String temporal = "";
+            if (servletContext.getRealPath("") == null) {
+                temporal = Constantes.PATHSERVER;
+            } else {
+                temporal = servletContext.getRealPath("");
+            }
+            JasperPrint jp = null;
+            pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "facturas" + File.separatorChar + "factura.jasper";
+            //JasperPrint jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport, new JREmptyDataSource());
+             jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport);
+            outputStream = JasperReportUtil.getOutputStreamFromReport(paramReport, getPathFileJasper());
+            exporter = new JRPdfExporter();
+            exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
+            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, outputStream);
+
+            byte[] bytes = outputStream.toByteArray();
+            rutaPDF = UtilUpload.saveFileTemp(bytes, "factura", 1, 1);
+
+        } catch (Exception exception) {
+            System.out.println("Error >" + exception.getMessage());
+
+        }
     }
 
     public String getRutaPDF() {
@@ -1309,7 +1558,21 @@ public class BeanFacturacion implements Serializable {
         this.pathFacturaClienteTimbrado = pathFacturaClienteTimbrado;
     }
 
-    
+    public StreamedContent getFile() {
+        return file;
+    }
+
+    public void setFile(StreamedContent file) {
+        this.file = file;
+    }
+
+    public ArrayList<VentaProductoMayoreo> getListaProductosReporte() {
+        return listaProductosReporte;
+    }
+
+    public void setListaProductosReporte(ArrayList<VentaProductoMayoreo> listaProductosReporte) {
+        this.listaProductosReporte = listaProductosReporte;
+    }
     
 
 }
