@@ -462,7 +462,7 @@ public class BeanHistorialAbonos implements Serializable {
             cliente = new Cliente();
         }
 
-        lstAbonosCreditos = ifaceAbonoCredito.getHistorialAbonos(cliente.getId_cliente(), idCobradorFk, fechaFiltroInicio, fechaFiltroFin, idTipoAbonoFk, idAbonoPk, idCreditoFk, idSucursalBean, idCajaBean,idSucursalOrigenCredito);
+        lstAbonosCreditos = ifaceAbonoCredito.getHistorialAbonos(cliente.getIdClientePk(), idCobradorFk, fechaFiltroInicio, fechaFiltroFin, idTipoAbonoFk, idAbonoPk, idCreditoFk, idSucursalBean, idCajaBean,idSucursalOrigenCredito);
         generaPadres();
         generaHijos();
         sumaTotal();

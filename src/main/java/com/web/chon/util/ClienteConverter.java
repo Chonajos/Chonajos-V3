@@ -48,7 +48,7 @@ public class ClienteConverter implements Converter {
 
             if (value instanceof Cliente) {
 
-                return String.valueOf(((Cliente) value).getId_cliente());
+                return String.valueOf(((Cliente) value).getIdClientePk());
 
             } else {
 

@@ -392,7 +392,7 @@ public class BeanDocumentosCobrar implements Serializable {
     public void buscar() {
         BigDecimal idCliente = null;
         if (cliente != null) {
-            idCliente = cliente.getId_cliente();
+            idCliente = cliente.getIdClientePk();
         }
         listaDocumentos = ifaceDocumentos.getDocumentos(fechaInicio, fechaFin, idSucursalFk, idCliente, filtroFormaPago, filtroStatus, filtroFecha);
         sumaTotal();

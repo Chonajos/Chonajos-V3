@@ -158,7 +158,7 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
 
         ventaRapida = "0";
         cliente = new Cliente();
-        cliente = ifaceCatCliente.getClienteById(1);
+        cliente = ifaceCatCliente.getClienteById(new BigDecimal(1));
         ventaGeneral = new VentaMayoreo();
         usuario = new Usuario();
         usuarioDominio = context.getUsuarioAutenticado();
@@ -239,7 +239,7 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
         setViewEstate("viewAddProducto");
         idTipoVenta = null;
         permisionToWrite = true;
-        cliente = ifaceCatCliente.getClienteById(1);
+        cliente = ifaceCatCliente.getClienteById(new BigDecimal(1));
         totalProductoTemporal = null;
         TotalVentaGeneral = new BigDecimal(0);
         JsfUtil.addWarnMessage("Venta Cancelada");
@@ -264,7 +264,7 @@ public class BeanVentaMayoreoRapido implements Serializable, BeanSimple {
             BigDecimal idVentaInsert = new BigDecimal(ifaceVentaMayoreo.getNextVal());
             ventaGeneral.setIdVentaMayoreoPk(idVentaInsert);
             ventaGeneral.setIdtipoVentaFk(idTipoVenta);
-            ventaGeneral.setIdClienteFk(cliente.getId_cliente());
+            ventaGeneral.setIdClienteFk(cliente.getIdClientePk());
             ventaGeneral.setIdSucursalFk(idSucu);
             ventaGeneral.setIdVendedorFK(usuario.getIdUsuarioPk());
             ventaGeneral.setIdStatusFk(new BigDecimal(2));

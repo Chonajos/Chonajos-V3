@@ -19,11 +19,11 @@ public interface NegocioCatCliente {
     
     public List<Object[]> getClientes();
 
-    public List<Object[]> getClienteById(int idCliente);
+    public List<Object[]> getClienteById(BigDecimal idCliente);
     
-    public List<Object[]> getClienteCreditoById(int idCliente);       
+    public List<Object[]> getClienteCreditoById(BigDecimal idCliente);       
 
-    public int deleteCliente(int idCliente);
+    public int deleteCliente(BigDecimal idCliente);
 
     public int updateCliente(Cliente clie);
 

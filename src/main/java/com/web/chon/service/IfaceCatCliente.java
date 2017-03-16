@@ -12,11 +12,11 @@ public interface IfaceCatCliente
 {
     public ArrayList<Cliente> getClientes();
     
-    public Cliente getClienteById(int idCliente);
+    public Cliente getClienteById(BigDecimal idCliente);
     
-    public Cliente getClienteCreditoById(int idCliente);
+    public Cliente getClienteCreditoById(BigDecimal idCliente);
     
-    public int deleteCliente(int idCliente);
+    public int deleteCliente(BigDecimal idCliente);
     
     public int updateCliente(Cliente cliente);
     

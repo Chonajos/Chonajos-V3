@@ -81,7 +81,7 @@ public class BeanAltaCredito implements Serializable, BeanSimple {
 
     public void insertaCredito() {
 
-        credito.setIdClienteFk(cliente.getId_cliente());
+        credito.setIdClienteFk(cliente.getIdClientePk());
         //folio de la venta de menudeo (es el folio general no el de sucursal)
         credito.setIdVentaMenudeo(null);
         //Uusuario que realiza la venta

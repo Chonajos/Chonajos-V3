@@ -164,7 +164,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         credito = false;
         date = context.getFechaSistema();
         cliente = new Cliente();
-        cliente = ifaceCatCliente.getClienteById(1);
+        cliente = ifaceCatCliente.getClienteById(new BigDecimal(1));
         ventaGeneral = new VentaMayoreo();
         usuario = new Usuario();
         vendedor = new Usuario();
@@ -309,7 +309,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         setViewEstate("viewAddProducto");
         idTipoVenta = null;
         permisionToWrite = true;
-        cliente = ifaceCatCliente.getClienteById(1);
+        cliente = ifaceCatCliente.getClienteById(new BigDecimal(1));
         totalProductoTemporal = null;
         totalVentaGeneral = new BigDecimal(0);
         JsfUtil.addWarnMessage("Venta Cancelada.");
@@ -370,7 +370,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                     BigDecimal idVentaInsert = new BigDecimal(ifaceVentaMayoreo.getNextVal());
                     ventaGeneral.setIdVentaMayoreoPk(idVentaInsert);
                     ventaGeneral.setIdtipoVentaFk(data.getIdTipoVenta());
-                    ventaGeneral.setIdClienteFk(cliente.getId_cliente());
+                    ventaGeneral.setIdClienteFk(cliente.getIdClientePk());
                     ventaGeneral.setIdSucursalFk(idSucu);
                     ventaGeneral.setIdVendedorFK(vendedor.getIdUsuarioPk());
                     ventaGeneral.setIdUsuarioLogueadoFk(usuario.getIdUsuarioPk());
@@ -769,7 +769,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         //Se agregan los campos que se utiliza en el ticket de credito
         if (!data.getIdTipoVenta().equals(new BigDecimal(1))) {
             
-            paramReport.put("numeroCliente", cliente.getId_cliente().toString());
+            paramReport.put("numeroCliente", cliente.getIdClientePk().toString());
             paramReport.put("fechaPromesaPago", TiempoUtil.getFechaDDMMYYYY(c.getFechaPromesaPago()));
             paramReport.put("beneficiario", "FIDENCIO TORRES REYNOSO");
             paramReport.put("totalCompraDescuento", "$" + df.format(c.getMontoCredito()));
@@ -867,7 +867,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         
         BigDecimal tipoPago = new BigDecimal("1");
         BigDecimal idClienteVenta = new BigDecimal("1");
-        if (cliente.getId_cliente().equals(idClienteVenta)) {
+        if (cliente.getIdClientePk().equals(idClienteVenta)) {
             credito = false;
             data.setIdTipoVenta(tipoPago);
         } else if (cliente.getLimiteCredito() == null) {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.0.1.final using JasperReports Library version 6.0.0  -->
-<!-- 2017-03-15T08:43:36 -->
+<!-- 2017-03-15T09:15:47 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EntradaMayoreoV1" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Error" uuid="df013db5-f76e-44d3-b0df-bcbc46d93160">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
@@ -365,7 +365,7 @@
 	<parameter name="descuento" class="java.lang.String"/>
 	<parameter name="iva1" class="java.lang.String"/>
 	<parameter name="iva2" class="java.lang.String"/>
-	<parameter name="total" class="java.math.BigDecimal"/>
+	<parameter name="total" class="java.lang.String"/>
 	<parameter name="selloDigital" class="java.lang.String"/>
 	<parameter name="cadena" class="java.lang.String"/>
 	<parameter name="selloSAT" class="java.lang.String"/>
@@ -378,7 +378,7 @@
 	<parameter name="nombreReceptor" class="java.lang.String">
 		<parameterDescription><![CDATA[]]></parameterDescription>
 	</parameter>
-	<parameter name="subTotal" class="java.math.BigDecimal"/>
+	<parameter name="subTotal" class="java.lang.String"/>
 	<parameter name="qrCodeString" class="java.lang.String"/>
 	<parameter name="estadoEmisor" class="java.lang.String"/>
 	<parameter name="municipioEmisor" class="java.lang.String"/>
@@ -516,7 +516,7 @@
 				<textFieldExpression><![CDATA[$P{folio}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="357" y="120" width="176" height="16" uuid="7bb60f9c-bddb-44ab-a0e1-8078d3176fcc">
+				<reportElement positionType="Float" x="361" y="105" width="171" height="16" uuid="7bb60f9c-bddb-44ab-a0e1-8078d3176fcc">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -526,7 +526,7 @@
 				<text><![CDATA[Serie de certificado de Emisor:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="356" y="136" width="172" height="16" uuid="2c9a0cac-2c13-4f0d-a5c7-55f42e60f279">
+				<reportElement x="358" y="122" width="172" height="16" uuid="2c9a0cac-2c13-4f0d-a5c7-55f42e60f279">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -918,7 +918,7 @@
 						</jr:columnHeader>
 						<jr:detailCell style="Table 11_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="80" height="28" uuid="33bfc834-38ea-4ea0-9189-d45bbac53a9f"/>
+								<reportElement x="10" y="0" width="70" height="28" uuid="33bfc834-38ea-4ea0-9189-d45bbac53a9f"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{nombreEmpaque}]]></textFieldExpression>
 							</textField>
@@ -935,7 +935,7 @@
 						</jr:columnHeader>
 						<jr:detailCell style="Table 11_TD" height="30">
 							<textField>
-								<reportElement x="2" y="1" width="88" height="26" uuid="2bf60653-8f05-4b5d-aa61-86abbe02668c"/>
+								<reportElement x="2" y="1" width="78" height="26" uuid="2bf60653-8f05-4b5d-aa61-86abbe02668c"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{kilosVendidos}]]></textFieldExpression>
 							</textField>
@@ -952,7 +952,7 @@
 						</jr:columnHeader>
 						<jr:detailCell style="Table 11_TD" height="30">
 							<textField>
-								<reportElement x="2" y="1" width="78" height="26" uuid="8bb59f6e-ef51-4a5a-a0c9-96e898063c95"/>
+								<reportElement x="2" y="1" width="68" height="26" uuid="8bb59f6e-ef51-4a5a-a0c9-96e898063c95"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA["$" +new java.text.DecimalFormat("#,##0.00").format($F{precioProducto})]]></textFieldExpression>
 							</textField>
@@ -969,7 +969,7 @@
 						</jr:columnHeader>
 						<jr:detailCell style="Table 11_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="96" height="28" uuid="b14a95a6-039a-4837-81a8-4fff0cfbcdce"/>
+								<reportElement x="0" y="0" width="90" height="28" uuid="b14a95a6-039a-4837-81a8-4fff0cfbcdce"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA["$" +new java.text.DecimalFormat("#,##0.00").format($F{totalVenta})]]></textFieldExpression>
 							</textField>
@@ -1047,7 +1047,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA["$" +new java.text.DecimalFormat("#,##0.00").format($P{subTotal})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{subTotal}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="438" y="15" width="92" height="15" uuid="d31940dc-823b-44a3-bb64-a3494b10b7c7">
@@ -1097,7 +1097,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA["$" +new java.text.DecimalFormat("#,##0.00").format($P{total})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{total}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="67" y="-3" width="286" height="20" uuid="6555d1d4-b436-4a3d-a63d-87cf5d364353"/>

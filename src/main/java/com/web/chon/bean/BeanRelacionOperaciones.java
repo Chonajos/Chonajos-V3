@@ -304,7 +304,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
 
         if (cliente == null) {
             cliente = new Cliente();
-            cliente.setId_cliente(null);
+            cliente.setIdClientePk(null);
         }
 
         if (subProducto == null) {
@@ -315,7 +315,7 @@ public class BeanRelacionOperaciones implements Serializable, BeanSimple {
         if (fechaFiltroInicio == null || fechaFiltroFin == null) {
             JsfUtil.addErrorMessageClean("Favor de ingresar un rango de fechas");
         } else {
-            listaVentas = ifaceVenta.getVentasByIntervalDate(fechaFiltroInicio, fechaFiltroFin, idSucursal, idStatusVenta, subProducto.getIdSubproductoPk(), idTipoVenta, cliente.getId_cliente());
+            listaVentas = ifaceVenta.getVentasByIntervalDate(fechaFiltroInicio, fechaFiltroFin, idSucursal, idStatusVenta, subProducto.getIdSubproductoPk(), idTipoVenta, cliente.getIdClientePk());
             getTotalVentaByInterval();
         }
     }

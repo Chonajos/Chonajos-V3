@@ -89,6 +89,7 @@ import org.w3c.dom.Element;
 import com.web.chon.service.IfaceFacturas;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.sql.SQLException;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.primefaces.context.RequestContext;
@@ -144,7 +145,7 @@ public class BeanFacturacion implements Serializable {
     private boolean ventaMenudeo;
     private boolean statusButtonFacturar;
     private DatosFacturacion datosEmisor;
-    private DatosFacturacion datosCliente;
+    private Cliente datosCliente;
     private ArrayList<DatosFacturacion> listaDatosEmisor;
     private BigDecimal idEmisorPk;
     private BigDecimal totalVenta;
@@ -193,11 +194,14 @@ public class BeanFacturacion implements Serializable {
     private String pathFacturaClienteComprobante;
     private String pathFacturaClienteTimbrado;
 
+    private FacturaPDFDomain nuevaFactura;
+
     ObjectFactory of;
     Comprobante comp;
 
     @PostConstruct
     public void init() {
+        nuevaFactura = new FacturaPDFDomain();
         modelo = new ArrayList<FacturaPDFDomain>();
         banderaImporteParcialidad = "false";
         disableBotonBuscarVenta = false;
@@ -213,7 +217,7 @@ public class BeanFacturacion implements Serializable {
         comp = of.createComprobante();
         idClienteVentaMostradorPk = new BigDecimal(1103);
         datosEmisor = new DatosFacturacion();
-        datosCliente = new DatosFacturacion();
+        datosCliente = new Cliente();
         usuario = context.getUsuarioAutenticado();
         setTitle("Facturación Electrónica");
         setViewEstate("init");
@@ -271,13 +275,14 @@ public class BeanFacturacion implements Serializable {
 
     }
 
-    public void buscarDatosCliente() {
+    public void buscarDatosCliente() 
+    {
         if (filtroMostrador == 2) {
-            datosCliente = ifaceDatosFacturacion.getDatosFacturacionByIdCliente(idClienteVentaMostradorPk);
-
+             datosCliente= ifaceCatCliente.getClienteById(idClienteVentaMostradorPk);
+            
         } else {
             if (ventaMayoreo != null && ventaMayoreo.getIdClienteFk() != null) {
-                datosCliente = ifaceDatosFacturacion.getDatosFacturacionByIdCliente(ventaMayoreo.getIdClienteFk());
+                datosCliente = ifaceCatCliente.getClienteById(ventaMayoreo.getIdClienteFk());
 
             }
         }
@@ -368,8 +373,8 @@ public class BeanFacturacion implements Serializable {
     }
 
     public void buscarFacturas() {
-        if (cliente != null && cliente.getId_cliente() != null) {
-            modelo = ifaceFacturas.getFacturasBy(cliente.getId_cliente(), idSucursalFk, folioVenta, TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicio), TiempoUtil.getFechaDDMMYYYY(fechaFiltroFin));
+        if (cliente != null && cliente.getIdClientePk()!= null) {
+            modelo = ifaceFacturas.getFacturasBy(cliente.getIdClientePk(), idSucursalFk, folioVenta, TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicio), TiempoUtil.getFechaDDMMYYYY(fechaFiltroFin));
         } else {
             modelo = ifaceFacturas.getFacturasBy(null, idSucursalFk, folioVenta, TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicio), TiempoUtil.getFechaDDMMYYYY(fechaFiltroFin));
 
@@ -404,16 +409,21 @@ public class BeanFacturacion implements Serializable {
                     System.out.println("Metodo De Pago : " + eElement.getAttribute("metodoDePago"));
                     paramReport.put("tipoDeComprobante", eElement.getAttribute("tipoDeComprobante"));
                     System.out.println("Tipo De Comprobante : " + eElement.getAttribute("tipoDeComprobante"));
-                    paramReport.put("total", eElement.getAttribute("total") ==null ? CERO:eElement.getAttribute("total"));
+                    DecimalFormat df = new DecimalFormat("###.##");
+                    BigDecimal totalTemporal = new BigDecimal(eElement.getAttribute("total"));
+                    System.out.println("Total Temporal: " + totalTemporal);
+                    paramReport.put("total", df.format(totalTemporal));
                     System.out.println("Total : " + eElement.getAttribute("total"));
                     paramReport.put("Moneda", eElement.getAttribute("Moneda"));
                     System.out.println("Moneda : " + eElement.getAttribute("Moneda"));
                     paramReport.put("descuento", eElement.getAttribute("descuento"));
                     System.out.println("Descuento : " + eElement.getAttribute("descuento"));
                     System.out.println("subTotal : " + eElement.getAttribute("subTotal"));
-                    paramReport.put("subTotal", eElement.getAttribute("subTotal") ==null ? CERO:eElement.getAttribute("subTotal"));
-                    
-                    
+                    BigDecimal subTotalTemporal = new BigDecimal(eElement.getAttribute("subTotal"));
+
+                    df.format(subTotalTemporal);
+                    paramReport.put("subTotal", df.format(subTotalTemporal));
+
                     paramReport.put("certificado", eElement.getAttribute("certificado"));
                     System.out.println("Certificado : " + eElement.getAttribute("certificado"));
                     paramReport.put("noCertificado", eElement.getAttribute("noCertificado"));
@@ -428,7 +438,7 @@ public class BeanFacturacion implements Serializable {
                     System.out.println("version : " + eElement.getAttribute("serie"));
                     paramReport.put("version", eElement.getAttribute("version"));
                     NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
-                    DecimalFormat df = new DecimalFormat("###.##");
+
                     NumeroALetra numeroLetra = new NumeroALetra();
                     BigDecimal temporal = new BigDecimal(eElement.getAttribute("total"));
                     String totalVentaStr = numeroLetra.Convertir(df.format(temporal), true);
@@ -538,18 +548,15 @@ public class BeanFacturacion implements Serializable {
 //                    //paramReport.put("rfcReceptor", eElement.getAttribute("rfc"));
 //                }
 //            }
-            
+
             NodeList feeds = doc.getElementsByTagName("cfdi:Conceptos");
-            for (int i = 0; i < feeds.getLength(); i++) 
-            {
+            for (int i = 0; i < feeds.getLength(); i++) {
                 Node mainNode = feeds.item(i);
-                if (mainNode.getNodeType() == Node.ELEMENT_NODE) 
-                {
+                if (mainNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element firstElement = (Element) mainNode;
-                    System.out.println("First element "+ firstElement.getTagName());
+                    System.out.println("First element " + firstElement.getTagName());
                     NodeList forumidNameList = firstElement.getElementsByTagName("cfdi:Concepto");
-                    for (int j = 0; j < forumidNameList.getLength(); ++j) 
-                    {
+                    for (int j = 0; j < forumidNameList.getLength(); ++j) {
                         Element eElement = (Element) forumidNameList.item(j);
                         VentaProductoMayoreo vpm = new VentaProductoMayoreo();
                         vpm.setTotalVenta(new BigDecimal(eElement.getAttribute("importe")));
@@ -564,41 +571,39 @@ public class BeanFacturacion implements Serializable {
                         System.out.println("cantidad : " + eElement.getAttribute("cantidad"));
                         listaProductosReporte.add(vpm);
                     }
-                    
+
                 }
             }
             JRBeanCollectionDataSource listaProductos = new JRBeanCollectionDataSource(listaProductosReporte);
-                paramReport.put("lstProductos", listaProductos);
-                nList = doc.getElementsByTagName("tfd:TimbreFiscalDigital");
-                System.out.println("-----------Timbre Fiscal-----------------");
-                for (int temp = 0; temp < nList.getLength(); temp++) {
-                    Node nNode = nList.item(temp);
-                    if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-                        Element eElement = (Element) nNode;
-                        paramReport.put("version", eElement.getAttribute("version"));
-                        System.out.println("Version : " + eElement.getAttribute("version"));
-                        paramReport.put("UUID", eElement.getAttribute("UUID"));
-                        System.out.println("UUID : " + eElement.getAttribute("UUID"));
-                        paramReport.put("FechaTimbrado", eElement.getAttribute("FechaTimbrado"));
-                        System.out.println("FechaTimbrado : " + eElement.getAttribute("FechaTimbrado"));
-                        paramReport.put("selloCFD", eElement.getAttribute("selloCFD"));
-                        System.out.println("selloCFD : " + eElement.getAttribute("selloCFD"));
-                        paramReport.put("noCertificadoSAT", eElement.getAttribute("noCertificadoSAT"));
-                        System.out.println("noCertificadoSAT : " + eElement.getAttribute("noCertificadoSAT"));
-                        paramReport.put("selloSAT", eElement.getAttribute("selloSAT"));
-                        System.out.println("selloSAT : " + eElement.getAttribute("selloSAT"));
+            paramReport.put("lstProductos", listaProductos);
+            nList = doc.getElementsByTagName("tfd:TimbreFiscalDigital");
+            System.out.println("-----------Timbre Fiscal-----------------");
+            for (int temp = 0; temp < nList.getLength(); temp++) {
+                Node nNode = nList.item(temp);
+                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element eElement = (Element) nNode;
+                    paramReport.put("version", eElement.getAttribute("version"));
+                    System.out.println("Version : " + eElement.getAttribute("version"));
+                    paramReport.put("UUID", eElement.getAttribute("UUID"));
+                    System.out.println("UUID : " + eElement.getAttribute("UUID"));
+                    paramReport.put("FechaTimbrado", eElement.getAttribute("FechaTimbrado"));
+                    System.out.println("FechaTimbrado : " + eElement.getAttribute("FechaTimbrado"));
+                    paramReport.put("selloCFD", eElement.getAttribute("selloCFD"));
+                    System.out.println("selloCFD : " + eElement.getAttribute("selloCFD"));
+                    paramReport.put("noCertificadoSAT", eElement.getAttribute("noCertificadoSAT"));
+                    System.out.println("noCertificadoSAT : " + eElement.getAttribute("noCertificadoSAT"));
+                    paramReport.put("selloSAT", eElement.getAttribute("selloSAT"));
+                    System.out.println("selloSAT : " + eElement.getAttribute("selloSAT"));
 
-                    }
                 }
-            }catch (Exception e) {
-         e.printStackTrace();
-      }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         generateReport(data);
         RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
-        }
-
-    
+    }
 
     public void changeViewGenerarFactura() {
         setViewEstate("generate");
@@ -647,34 +652,77 @@ public class BeanFacturacion implements Serializable {
         System.out.println("cancel");
 
     }
+    
+    public void insertarFactura()
+    {
+        nuevaFactura.setIdFacturaPk(new BigDecimal(ifaceFacturas.getNextVal()));
+        nuevaFactura.setNumeroFactura(number);
+        nuevaFactura.setFechaCertificacion(fechaFiltroInicio);
+        nuevaFactura.setIdClienteFk(idStatusFk);
+        nuevaFactura.setIdSucursalFk(new BigDecimal(usuario.getSucId()));
+        nuevaFactura.setIdLlaveFk(idStatusFk);
+        nuevaFactura.setIdTipoLlaveFk(idSucursalFk);
+        nuevaFactura.setComentarios(formaPago);
+        nuevaFactura.setFechaEmision(fechaFiltroFin);
+        //nuevaFactura.setFichero(fichero);
+        nuevaFactura.setIdUsuarioFk(new BigDecimal(1));
+        nuevaFactura.setIdStatusFk(idStatusFk);
+        nuevaFactura.setNombreArchivoTimbrado(pathFacturaClienteTimbrado);
+        nuevaFactura.setRfcEmisor(number);
+        nuevaFactura.setCadena(moneda);
+        if(ifaceFacturas.insert(nuevaFactura)==1)
+        {
+            //Generar PDF
+            JsfUtil.addSuccessMessageClean("Se ha generado la factura exitosamente");
+        }
+        else
+        {
+            JsfUtil.addErrorMessageClean("Ocurrió un error al insertar la factura");
+        }
+        
+    }
 
     public void timbrar() {
+        String xmlPruebasTimbrado = "<?xml version='1.0' encoding='UTF-8'?>\n"
+                + "<cfdi:Comprobante xmlns:cfdi='http://www.sat.gob.mx/cfd/3' xmlns:tfd='http://www.sat.gob.mx/TimbreFiscalDigital' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv32.xsd' version='3.2' serie='A' folio='15861' fecha='2017-03-15T09:33:14' sello='TdH9hapysPLZOLUe2fnsgLpXR8n7Xvh9VJ+yHHqjaYHLHmI6uhJi+N7IfwbVpK0KDIAs6XWQSt4iQzhn+lLiMn92SouG5QQJSA3aylrcs+vUi8hj0uoe2YA6V/XIc0GDfiHuOrEx/Rk3UWLwpJAO9ORSKx0PtYy3ANedvX2cSio=' formaDePago='PAGO EN UNA SOLA EXHIBICION' noCertificado='20001000000200001428' certificado='MIIEYTCCA0mgAwIBAgIUMjAwMDEwMDAwMDAyMDAwMDE0MjgwDQYJKoZIhvcNAQEFBQAwggFcMRowGAYDVQQDDBFBLkMuIDIgZGUgcHJ1ZWJhczEvMC0GA1UECgwmU2VydmljaW8gZGUgQWRtaW5pc3RyYWNpw7NuIFRyaWJ1dGFyaWExODA2BgNVBAsML0FkbWluaXN0cmFjacOzbiBkZSBTZWd1cmlkYWQgZGUgbGEgSW5mb3JtYWNpw7NuMSkwJwYJKoZIhvcNAQkBFhphc2lzbmV0QHBydWViYXMuc2F0LmdvYi5teDEmMCQGA1UECQwdQXYuIEhpZGFsZ28gNzcsIENvbC4gR3VlcnJlcm8xDjAMBgNVBBEMBTA2MzAwMQswCQYDVQQGEwJNWDEZMBcGA1UECAwQRGlzdHJpdG8gRmVkZXJhbDESMBAGA1UEBwwJQ295b2Fjw6FuMTQwMgYJKoZIhvcNAQkCDCVSZXNwb25zYWJsZTogQXJhY2VsaSBHYW5kYXJhIEJhdXRpc3RhMB4XDTEzMDUwNzE2MDEyOVoXDTE3MDUwNzE2MDEyOVowgdsxKTAnBgNVBAMTIEFDQ0VNIFNFUlZJQ0lPUyBFTVBSRVNBUklBTEVTIFNDMSkwJwYDVQQpEyBBQ0NFTSBTRVJWSUNJT1MgRU1QUkVTQVJJQUxFUyBTQzEpMCcGA1UEChMgQUNDRU0gU0VSVklDSU9TIEVNUFJFU0FSSUFMRVMgU0MxJTAjBgNVBC0THEFBQTAxMDEwMUFBQSAvIEhFR1Q3NjEwMDM0UzIxHjAcBgNVBAUTFSAvIEhFR1Q3NjEwMDNNREZOU1IwODERMA8GA1UECxMIcHJvZHVjdG8wgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAKS/beUVy6E3aODaNuLd2S3PXaQre0tGxmYTeUxa55x2t/7919ttgOpKF6hPF5KvlYh4ztqQqP4yEV+HjH7yy/2d/+e7t+J61jTrbdLqT3WD0+s5fCL6JOrF4hqy//EGdfvYftdGRNrZH+dAjWWml2S/hrN9aUxraS5qqO1b7btlAgMBAAGjHTAbMAwGA1UdEwEB/wQCMAAwCwYDVR0PBAQDAgbAMA0GCSqGSIb3DQEBBQUAA4IBAQACPXAWZX2DuKiZVv35RS1WFKgT2ubUO9C+byfZapV6ZzYNOiA4KmpkqHU/bkZHqKjR+R59hoYhVdn+ClUIliZf2ChHh8s0a0vBRNJ3IHfA1akWdzocYZLXjz3m0Er31BY+uS3qWUtPsONGVDyZL6IUBBUlFoecQhP9AO39er8zIbeU2b0MMBJxCt4vbDKFvT9i3V0Puoo+kmmkf15D2rBGR+drd8H8Yg8TDGFKf2zKmRsgT7nIeou6WpfYp570WIvLJQY+fsMp334D05Up5ykYSAxUGa30RdUzA4rxN5hT+W9whWVGD88TD33Nw55uNRUcRO3ZUVHmdWRG+GjhlfsD' subTotal='11040.00' descuento='0' Moneda='MXN' total='11040.00' tipoDeComprobante='egreso' metodoDePago='01' LugarExpedicion='09040'><cfdi:Emisor rfc='AAA010101AAA' nombre='COMERCIALIZADORA Y EXPORTADORA CHONAJOS S DE RL DE CV'><cfdi:DomicilioFiscal calle='AVENIDA TRABAJADORES SOCIALES EJE 5 ZONA V SECCION 5 NAVE 2' noExterior='BODEGA Q 85' colonia='Central de Abasto' localidad='MEXICO' municipio='Iztapalapa' estado='Ciudad de México' pais='MEXICO' codigoPostal='09040'/><cfdi:RegimenFiscal Regimen='REGIMEN GENERAL DE LEY'/></cfdi:Emisor><cfdi:Receptor rfc='VEHC761003U32' nombre='Juan  De la cruz  Sistemas'><cfdi:Domicilio calle='CALLESITA' colonia='Maguey Blanco' municipio='Ixmiquilpan' estado='Hidalgo' pais='MEXICO' codigoPostal='42320'/></cfdi:Receptor><cfdi:Conceptos><cfdi:Concepto cantidad='150' unidad='KILOS' descripcion='Ajo Fancy' valorUnitario='56' importe='8400'/><cfdi:Concepto cantidad='30' unidad='KILOS' descripcion='Ajo CHILENO 6X' valorUnitario='63' importe='1890'/><cfdi:Concepto cantidad='15' unidad='KILOS' descripcion='Morita' valorUnitario='50' importe='750'/></cfdi:Conceptos><cfdi:Impuestos><cfdi:Traslados><cfdi:Traslado impuesto='IVA' tasa='16.00' importe='0'/></cfdi:Traslados></cfdi:Impuestos><cfdi:Complemento><tfd:TimbreFiscalDigital xsi:schemaLocation='http://www.sat.gob.mx/TimbreFiscalDigital http://www.sat.gob.mx/sitio_internet/TimbreFiscalDigital/TimbreFiscalDigital.xsd' version='1.0' UUID='FFFFFFFF-3D6D-180C-2272-6941C55B4D59' FechaTimbrado='2017-03-15T09:33:26' selloCFD='TdH9hapysPLZOLUe2fnsgLpXR8n7Xvh9VJ+yHHqjaYHLHmI6uhJi+N7IfwbVpK0KDIAs6XWQSt4iQzhn+lLiMn92SouG5QQJSA3aylrcs+vUi8hj0uoe2YA6V/XIc0GDfiHuOrEx/Rk3UWLwpJAO9ORSKx0PtYy3ANedvX2cSio=' noCertificadoSAT='30001000000100000801' selloSAT='C0FgUTSh++khoKQ5QTXIql5U/mHgu++H5Niga9ldPt9fB9Y5mqjxMI+QRmQlFGImxVYKVQyiMF4tcpnzMp8Ue5zDNmjYsMk+bjkyZy5jCBaH9AXZAqOGwvbI5y570pUV5WEzltQ3SzUUKdLx3hLh/KOYQwBD4RvefmzOkzMsbMY='/></cfdi:Complemento></cfdi:Comprobante>";
         try {
-            RespuestaTimbre2 respuesta = new RespuestaTimbre2();
-            AdvanswsdlLocator service = new AdvanswsdlLocator();
-
-            URL url = new URL(pathFacturaClienteComprobante);
-            InputStreamReader in = new InputStreamReader(url.openStream());
-
-            String xmlCfdi = IOUtils.toString(in);
-
-            advanswsdl_pkg.AdvanswsdlPortType port = service.getadvanswsdlPort();
-            respuesta = port.timbrar2(API_KEY, xmlCfdi);
-
-            System.out.println("url " + url.openStream());
-            System.out.println("codes:  " + respuesta.getCode());
-            System.out.println("mensajes: " + respuesta.getMessage());
-            System.out.println("subcodes:  " + respuesta.getSubCode());
-            System.out.println("CFDI:  " + respuesta.getCFDI());
-            System.out.println("timbres:  " + respuesta.getCFDI());
-
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(BeanRelOperMayoreo.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(BeanRelOperMayoreo.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex) {
-            Logger.getLogger(BeanRelOperMayoreo.class.getName()).log(Level.SEVERE, null, ex);
+            PrintWriter writer = new PrintWriter(pathFacturaClienteTimbrado, "UTF-8");
+            writer.println(xmlPruebasTimbrado);
+            writer.close();
+            System.out.println("Se Guardo Correctamente el archivo Timbrado");
+        } catch (IOException e) {
+            System.out.println("Error al generar archivo Timbrado");
+           JsfUtil.addErrorMessageClean("Ocurrió un error al generar archivo timbrado");
         }
+
+//        try {
+//            RespuestaTimbre2 respuesta = new RespuestaTimbre2();
+//            AdvanswsdlLocator service = new AdvanswsdlLocator();
+//            pathFacturaClienteComprobante = Constantes.PATHLOCALFACTURACIONINVERTIDA + "Clientes" + File.separatorChar + datosCliente.getRfc() + File.separatorChar + "COMPROBANTE" + File.separatorChar + datosCliente.getRfc() + "_" + ventaMayoreo.getIdSucursalFk().toString() + "_" + ventaMayoreo.getVentaSucursal().toString() + ".xml";
+//
+//            URL url = new URL(pathFacturaClienteComprobante);
+//            
+//            InputStreamReader in = new InputStreamReader(url.openStream());
+//
+//            String xmlCfdi = IOUtils.toString(in);
+//
+//            advanswsdl_pkg.AdvanswsdlPortType port = service.getadvanswsdlPort();
+//            respuesta = port.timbrar2(API_KEY, xmlCfdi);
+//
+//            System.out.println("url " + url.openStream());
+//            System.out.println("codes:  " + respuesta.getCode());
+//            System.out.println("mensajes: " + respuesta.getMessage());
+//            System.out.println("subcodes:  " + respuesta.getSubCode());
+//            System.out.println("CFDI:  " + respuesta.getCFDI());
+//            System.out.println("timbres:  " + respuesta.getCFDI());
+//
+//        } catch (MalformedURLException ex) {
+//            Logger.getLogger(BeanRelOperMayoreo.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (IOException ex) {
+//            Logger.getLogger(BeanRelOperMayoreo.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (Exception ex) {
+//            Logger.getLogger(BeanRelOperMayoreo.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
     public void imprimirDatosFactura() {
@@ -759,7 +807,7 @@ public class BeanFacturacion implements Serializable {
                 datosEmisor.setTelefono(df.getTelefono() == null ? "" : df.getTelefono());
             }
         }
-        pathFacturaClienteComprobante = Constantes.PATHLOCALFACTURACION + "Clientes" + File.separatorChar + datosCliente.getRfc() + File.separatorChar + "COMPROBANTE" + File.separatorChar + datosCliente.getRfc() + "_" + ventaMayoreo.getIdSucursalFk().toString() + "_" + ventaMayoreo.getVentaSucursal().toString() + ".xml";
+        pathFacturaClienteComprobante = Constantes.PATHLOCALFACTURACION + "Clientes" + File.separatorChar + datosCliente.getRfc()+ File.separatorChar + "COMPROBANTE" + File.separatorChar + datosCliente.getRfc() + "_" + ventaMayoreo.getIdSucursalFk().toString() + "_" + ventaMayoreo.getVentaSucursal().toString() + ".xml";
 
         pathFacturaClienteTimbrado = Constantes.PATHLOCALFACTURACION + "Clientes" + File.separatorChar + datosCliente.getRfc() + File.separatorChar + "TIMBRADO" + File.separatorChar + datosCliente.getRfc() + "_" + ventaMayoreo.getIdSucursalFk().toString() + "_" + ventaMayoreo.getVentaSucursal().toString() + ".xml";
 
@@ -783,6 +831,7 @@ public class BeanFacturacion implements Serializable {
         cfd.guardar(outFile);
         System.out.println("Se guardo el cdf ");
         System.out.println("cadema original " + cfd.getCadenaOriginal());
+        nuevaFactura.setCadena(cfd.getCadenaOriginal());
 
         timbrar();
 
@@ -793,7 +842,10 @@ public class BeanFacturacion implements Serializable {
         comp.setVersion("3.2");
         comp.setSerie("A");
         comp.setFolio(ventaMayoreo.getVentaSucursal().toString());
-        comp.setFecha(context.getFechaSistema());
+        context.getFechaSistema();
+        Date f = TiempoUtil.getFechaDDMMYYYYDate(context.getFechaSistema());
+        System.out.println("Fecha de Sistema: " + f);
+        comp.setFecha(f);
         for (CatalogoSat cs : listaFormaPago) {
 
             if (cs.getCodigo().toString().equals(formaPago)) {
@@ -871,10 +923,10 @@ public class BeanFacturacion implements Serializable {
 
         mx.bigdata.sat.cfdi.v32.schema.TUbicacion uf = of.createTUbicacion();
         uf.setCalle(datosCliente.getCalle());
-        uf.setColonia(datosCliente.getColonia());
-        uf.setMunicipio(datosCliente.getMunicipio());
-        uf.setEstado(datosCliente.getEstado());
-        uf.setPais(datosCliente.getPais());
+        uf.setColonia(datosCliente.getNombreColonia());
+        uf.setMunicipio(datosCliente.getNombreMunicipio());
+        uf.setEstado(datosCliente.getNombreEstado());
+        uf.setPais("MEXICO");
         uf.setCodigoPostal(datosCliente.getCodigoPostal());
 
         //NO SON OBLIGATORIOS NO SE OCUPAN POR AHORA
@@ -1103,7 +1155,7 @@ public class BeanFacturacion implements Serializable {
             JasperPrint jp = null;
             pathFileJasper = temporal + File.separatorChar + "resources" + File.separatorChar + "report" + File.separatorChar + "facturas" + File.separatorChar + "factura.jasper";
             //JasperPrint jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport, new JREmptyDataSource());
-             jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport);
+            jp = JasperFillManager.fillReport(getPathFileJasper(), paramReport);
             outputStream = JasperReportUtil.getOutputStreamFromReport(paramReport, getPathFileJasper());
             exporter = new JRPdfExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
@@ -1326,13 +1378,15 @@ public class BeanFacturacion implements Serializable {
         this.datosEmisor = datosEmisor;
     }
 
-    public DatosFacturacion getDatosCliente() {
+    public Cliente getDatosCliente() {
         return datosCliente;
     }
 
-    public void setDatosCliente(DatosFacturacion datosCliente) {
+    public void setDatosCliente(Cliente datosCliente) {
         this.datosCliente = datosCliente;
     }
+
+    
 
     public ArrayList<DatosFacturacion> getListaDatosEmisor() {
         return listaDatosEmisor;
@@ -1573,6 +1627,13 @@ public class BeanFacturacion implements Serializable {
     public void setListaProductosReporte(ArrayList<VentaProductoMayoreo> listaProductosReporte) {
         this.listaProductosReporte = listaProductosReporte;
     }
-    
+
+    public FacturaPDFDomain getNuevaFactura() {
+        return nuevaFactura;
+    }
+
+    public void setNuevaFactura(FacturaPDFDomain nuevaFactura) {
+        this.nuevaFactura = nuevaFactura;
+    }
 
 }

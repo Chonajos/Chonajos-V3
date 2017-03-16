@@ -268,7 +268,7 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
 
         if (cliente == null) {
             cliente = new Cliente();
-            cliente.setId_cliente(null);
+            cliente.setIdClientePk(null);
         }
 
         if (subProducto == null) {
@@ -279,7 +279,7 @@ public class BeanRelOperMayoreo implements Serializable, BeanSimple {
             JsfUtil.addErrorMessageClean("Favor de ingresar un rango de fechas");
         } else {
 
-            listaVentasMayoreo = ifaceVentaMayoreo.getVentasByIntervalDate(fechaFiltroInicio, fechaFiltroFin, idSucursalBean, idStatusBean, idTipoVentaBean, subProducto.getIdSubproductoPk(), cliente.getId_cliente());
+            listaVentasMayoreo = ifaceVentaMayoreo.getVentasByIntervalDate(fechaFiltroInicio, fechaFiltroFin, idSucursalBean, idStatusBean, idTipoVentaBean, subProducto.getIdSubproductoPk(), cliente.getIdClientePk());
             getTotalVentaByInterval();
         }
     }

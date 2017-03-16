@@ -954,8 +954,8 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         ArrayList<String> lstCorreoPara = new ArrayList<String>();
 
         for (Cliente cliente : lstClienteCorreo) {
-            if (cliente.getEmail() != null) {
-                lstCorreoPara.add(cliente.getEmail());
+            if (cliente.getCorreo() != null) {
+                lstCorreoPara.add(cliente.getCorreo());
             }
 
         }

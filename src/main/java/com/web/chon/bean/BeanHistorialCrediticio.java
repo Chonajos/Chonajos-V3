@@ -187,10 +187,10 @@ public class BeanHistorialCrediticio implements Serializable {
         saldoAnterior = CERO;
         totalCargos=CERO;
         totalAbonos=CERO;
-        System.out.println("Cliente: "+cliente.getId_cliente());
+        //System.out.println("Cliente: "+cliente.getIdClientePk());
         
 
-        lstCredito = ifaceCredito.getHistorialCrediticio(cliente.getId_cliente(), TiempoUtil.getFechaDDMMYYYY(fechaInicio), TiempoUtil.getFechaDDMMYYYY(fechaFin));
+        lstCredito = ifaceCredito.getHistorialCrediticio(cliente.getIdClientePk(), TiempoUtil.getFechaDDMMYYYY(fechaInicio), TiempoUtil.getFechaDDMMYYYY(fechaFin));
         for (Credito c : lstCredito) {
             HistorialCrediticio hc = new HistorialCrediticio();
             hc.setFolioCargo(c.getIdCreditoPk());
@@ -198,7 +198,7 @@ public class BeanHistorialCrediticio implements Serializable {
             hc.setImporteCargo(c.getMontoCredito());
             model.add(hc);
         }
-        lstAbonos = ifaceAbonoCredito.getHistorialCrediticio(cliente.getId_cliente(), TiempoUtil.getFechaDDMMYYYY(fechaInicio), TiempoUtil.getFechaDDMMYYYY(fechaFin));
+        lstAbonos = ifaceAbonoCredito.getHistorialCrediticio(cliente.getIdClientePk(), TiempoUtil.getFechaDDMMYYYY(fechaInicio), TiempoUtil.getFechaDDMMYYYY(fechaFin));
 
 //          for (AbonoCredito ac : lstAbonos) 
 //        {
@@ -250,8 +250,8 @@ calculaSaldos();
     public void calculaSaldos()
     {
         saldoActual = CERO;
-        BigDecimal tempAbonos = ifaceAbonoCredito.getTotalAbonos(cliente.getId_cliente(), TiempoUtil.getFechaDDMMYYYY(fechaInicio));
-        BigDecimal tempCargos = ifaceCredito.getTotalCargos(cliente.getId_cliente(), TiempoUtil.getFechaDDMMYYYY(fechaInicio));
+        BigDecimal tempAbonos = ifaceAbonoCredito.getTotalAbonos(cliente.getIdClientePk(), TiempoUtil.getFechaDDMMYYYY(fechaInicio));
+        BigDecimal tempCargos = ifaceCredito.getTotalCargos(cliente.getIdClientePk(), TiempoUtil.getFechaDDMMYYYY(fechaInicio));
         System.out.println("Temp-Cargos: "+tempCargos);
         System.out.println("Temp-Abonos: "+tempAbonos);
         

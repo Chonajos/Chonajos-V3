@@ -287,7 +287,7 @@ public class BeanAbonarCredito implements Serializable {
         paramReport.put("labelSucursal", usuarioDominio.getNombreSucursal());
         paramReport.put("labelEstatus", "Abono Pagado");
         paramReport.put("fecha", TiempoUtil.getFechaDDMMYYYYHHMM(date));
-        paramReport.put("numeroCliente", c.getId_cliente().toString());
+        paramReport.put("numeroCliente", c.getIdClientePk().toString());
         paramReport.put("nombreCliente", c.getNombreCompleto());
         paramReport.put("recibimos", nf.format(ac.getMontoAbono()));
         paramReport.put("totalLetra", totalVentaStr);
@@ -907,7 +907,7 @@ public class BeanAbonarCredito implements Serializable {
                 BigDecimal totalVenta = new BigDecimal(0);
                 if (ifaceAbonoCredito.update(abonoCheque) == 1) {
                     //enseguida buscar si ya se libero el credito de ese abono.
-                    modelo = ifaceCredito.getCreditosActivos(cliente.getId_cliente(), null, filtroIdSucursalFk);
+                    modelo = ifaceCredito.getCreditosActivos(cliente.getIdClientePk(), null, filtroIdSucursalFk);
                     for (SaldosDeudas sd : modelo) {
                         if (sd.getFolioCredito().intValue() == abonoCheque.getIdCreditoFk().intValue()) {
                             totalVenta = sd.getSaldoTotal();
@@ -949,9 +949,9 @@ public class BeanAbonarCredito implements Serializable {
         botonActualizar = true;
         botonCancelar = true;
 
-        cliente = ifaceCatCliente.getCreditoClienteByIdCliente(cliente.getId_cliente());
-        if (cliente != null && cliente.getId_cliente() != null) {
-            modelo = ifaceCredito.getCreditosActivos(cliente.getId_cliente(), null, filtroIdSucursalFk);
+        cliente = ifaceCatCliente.getCreditoClienteByIdCliente(cliente.getIdClientePk());
+        if (cliente != null && cliente.getIdClientePk()!= null) {
+            modelo = ifaceCredito.getCreditosActivos(cliente.getIdClientePk(), null, filtroIdSucursalFk);
             for (SaldosDeudas sd : modelo) {
                 saldoParaLiquidar = saldoParaLiquidar.add(sd.getSaldoLiquidar(), MathContext.UNLIMITED);
             }
