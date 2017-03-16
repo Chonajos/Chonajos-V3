@@ -95,7 +95,9 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.primefaces.context.RequestContext;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
-
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.Path;
 /**
  *
  * @author jramirez
@@ -195,6 +197,7 @@ public class BeanFacturacion implements Serializable {
     private String pathFacturaClienteTimbrado;
 
     private FacturaPDFDomain nuevaFactura;
+    private byte[] bytes;
 
     ObjectFactory of;
     Comprobante comp;
@@ -247,12 +250,33 @@ public class BeanFacturacion implements Serializable {
     }
 
     public void calcularTotales() {
+        BigDecimal importeSinIva = new BigDecimal(0);
+        BigDecimal importeConIva= new BigDecimal(0);
+        descuento = new BigDecimal(100);
         for (CatalogoSat cs : listaTipoDocumento) {
 
             if (cs.getIdCatalogoSatPk().intValue() == tipoDocumento.intValue()) {
-                subTotal = (ventaMayoreo.getTotalVenta().setScale(2, RoundingMode.CEILING)).subtract(descuento.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
+                BigDecimal temp = ventaMayoreo.getTotalVenta().multiply(cs.getValor(), MathContext.UNLIMITED);
+               //impore sin iva
+                importeConIva=ventaMayoreo.getTotalVenta();
+                importeSinIva=ventaMayoreo.getTotalVenta().subtract(temp, MathContext.UNLIMITED);
+                //importe con iva
+                System.out.println("Importe Con Iva: "+importeConIva);
+                System.out.println("Importe Sin Iva: "+importeSinIva);
+                
+                
+                if(cs.getValor().compareTo(new BigDecimal(0))==0)
+                {
+                    subTotal = (importeConIva.setScale(2, RoundingMode.CEILING)).subtract(descuento.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
+                    System.out.println("Subtotal Calculado con IVA");
+                }
+                else
+                {
+                     subTotal = (importeSinIva.setScale(2, RoundingMode.CEILING)).subtract(descuento.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
+                System.out.println("Subtotal Calculado sin IVA");
+                }
                 System.out.println("subTotal : " + subTotal);
-                iva = (cs.getValor().setScale(2, RoundingMode.CEILING)).multiply(subTotal.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
+                iva = (cs.getValor().multiply(new BigDecimal(100), MathContext.UNLIMITED).setScale(2, RoundingMode.CEILING)).multiply(ventaMayoreo.getTotalVenta().subtract(descuento.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED).setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
                 System.out.println("Iva:  : " + iva);
                 iva = iva.setScale(2, RoundingMode.CEILING).divide(new BigDecimal(100).setScale(2, RoundingMode.CEILING));
                 System.out.println("Iva Dividido:  : " + iva);
@@ -353,6 +377,14 @@ public class BeanFacturacion implements Serializable {
             statusButtonFacturar = true;
 
         }
+        BigDecimal totalSinIva = new BigDecimal(0);
+        for(VentaProductoMayoreo vmp:ventaMayoreo.getListaProductos())
+        {
+            BigDecimal iva =vmp.getTotalVenta().multiply(new BigDecimal(0.16), MathContext.UNLIMITED); 
+            vmp.setTotalVentaSinIva(vmp.getTotalVenta().subtract(iva.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED));
+            totalSinIva = totalSinIva.add(vmp.getTotalVentaSinIva(), MathContext.UNLIMITED);
+        }
+        ventaMayoreo.setTotalVentaSinIva(totalSinIva);
         buscarDatosCliente();
     }
 
@@ -379,16 +411,20 @@ public class BeanFacturacion implements Serializable {
             modelo = ifaceFacturas.getFacturasBy(null, idSucursalFk, folioVenta, TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicio), TiempoUtil.getFechaDDMMYYYY(fechaFiltroFin));
 
         }
+        
 
     }
 
     public void abreXML() {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         //DocumentBuilder builder = factory.newDocumentBuilder();
+        System.out.println("===DATA====");
+        
 
         try {
             String rutaTimbradoData = Constantes.PATHLOCALFACTURACION + "Clientes" + File.separatorChar + data.getRfcEmisor() + File.separatorChar + "TIMBRADO" + File.separatorChar + data.getNombreArchivoTimbrado();
-
+            paramReport.put("cadena",data.getCadena());
+            
             System.out.println("Ruta: " + rutaTimbradoData);
             File inputFile = new File(rutaTimbradoData);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -532,22 +568,8 @@ public class BeanFacturacion implements Serializable {
                 }
             }
 
-            //nList = doc.getElementsByTagName("cfdi:Concepto");
+           
             System.out.println("--------------Productos--------------");
-//            for (int temp = 0; temp < nList.getLength(); temp++) {
-//                Node nNode = nList.item(temp);
-//                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-//                    Element eElement = (Element) nNode;
-//                    //paramReport.put("nombreReceptor", eElement.getAttribute("nombre"));
-//                    System.out.println("Importe : " + eElement.getAttribute("importe"));
-//                    System.out.println("Valor Unitario : " + eElement.getAttribute("valorUnitario"));
-//                    System.out.println("Descripcion : " + eElement.getAttribute("descripcion"));
-//                    System.out.println("unidad : " + eElement.getAttribute("unidad"));
-//                    System.out.println("cantidad : " + eElement.getAttribute("cantidad"));
-//
-//                    //paramReport.put("rfcReceptor", eElement.getAttribute("rfc"));
-//                }
-//            }
 
             NodeList feeds = doc.getElementsByTagName("cfdi:Conceptos");
             for (int i = 0; i < feeds.getLength(); i++) {
@@ -576,6 +598,7 @@ public class BeanFacturacion implements Serializable {
             }
             JRBeanCollectionDataSource listaProductos = new JRBeanCollectionDataSource(listaProductosReporte);
             paramReport.put("lstProductos", listaProductos);
+            
             nList = doc.getElementsByTagName("tfd:TimbreFiscalDigital");
             System.out.println("-----------Timbre Fiscal-----------------");
             for (int temp = 0; temp < nList.getLength(); temp++) {
@@ -653,25 +676,34 @@ public class BeanFacturacion implements Serializable {
 
     }
     
-    public void insertarFactura()
+    public void insertarFactura() throws IOException
     {
         nuevaFactura.setIdFacturaPk(new BigDecimal(ifaceFacturas.getNextVal()));
-        nuevaFactura.setNumeroFactura(number);
-        nuevaFactura.setFechaCertificacion(fechaFiltroInicio);
-        nuevaFactura.setIdClienteFk(idStatusFk);
+        nuevaFactura.setNumeroFactura("10A");
+        
+        nuevaFactura.setIdClienteFk(datosCliente.getIdClientePk());
         nuevaFactura.setIdSucursalFk(new BigDecimal(usuario.getSucId()));
-        nuevaFactura.setIdLlaveFk(idStatusFk);
-        nuevaFactura.setIdTipoLlaveFk(idSucursalFk);
-        nuevaFactura.setComentarios(formaPago);
-        nuevaFactura.setFechaEmision(fechaFiltroFin);
+        nuevaFactura.setFechaCertificacion(new Date());
+        nuevaFactura.setComentarios("Pruebas de Factucion");
         //nuevaFactura.setFichero(fichero);
-        nuevaFactura.setIdUsuarioFk(new BigDecimal(1));
-        nuevaFactura.setIdStatusFk(idStatusFk);
-        nuevaFactura.setNombreArchivoTimbrado(pathFacturaClienteTimbrado);
-        nuevaFactura.setRfcEmisor(number);
-        nuevaFactura.setCadena(moneda);
+        nuevaFactura.setIdUsuarioFk(usuario.getIdUsuario());
+        nuevaFactura.setIdStatusFk(new BigDecimal(1));
+        nuevaFactura.setIdTipoLlaveFk(new BigDecimal(1));
+        nuevaFactura.setIdLlaveFk(ventaMayoreo.getIdVentaMayoreoPk());
+        nuevaFactura.setNombreArchivoTimbrado(datosCliente.getRfc() + "_" + ventaMayoreo.getIdSucursalFk().toString() + "_" + ventaMayoreo.getVentaSucursal().toString() + ".xml");
+        nuevaFactura.setRfcEmisor(datosCliente.getRfc());
+        
+        Path path = Paths.get(pathFacturaClienteTimbrado);
+        byte[] data = Files.readAllBytes(path);
+        nuevaFactura.setFichero(data);
+        nuevaFactura.setImporte(ventaMayoreo.getTotalVenta());
+        nuevaFactura.setDescuento(descuento);
+        nuevaFactura.setIva1(iva);
+        
         if(ifaceFacturas.insert(nuevaFactura)==1)
         {
+            //Convertir el archivo a Bytes y Guardarlo
+            
             //Generar PDF
             JsfUtil.addSuccessMessageClean("Se ha generado la factura exitosamente");
         }
@@ -690,6 +722,7 @@ public class BeanFacturacion implements Serializable {
             writer.println(xmlPruebasTimbrado);
             writer.close();
             System.out.println("Se Guardo Correctamente el archivo Timbrado");
+            insertarFactura();
         } catch (IOException e) {
             System.out.println("Error al generar archivo Timbrado");
            JsfUtil.addErrorMessageClean("Ocurrió un error al generar archivo timbrado");

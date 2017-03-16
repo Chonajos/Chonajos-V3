@@ -41,6 +41,7 @@ public class VentaMayoreo implements Serializable {
     private BigDecimal idUsuarioLogueadoFk;
     private String nombreUsuarioLogueado;
     private byte[] fichero;
+    private BigDecimal totalVentaSinIva;
     
 
     @Override
@@ -266,6 +267,15 @@ public class VentaMayoreo implements Serializable {
     public void setFichero(byte[] fichero) {
         this.fichero = fichero;
     }
+
+    public BigDecimal getTotalVentaSinIva() {
+        return totalVentaSinIva;
+    }
+
+    public void setTotalVentaSinIva(BigDecimal totalVentaSinIva) {
+        this.totalVentaSinIva = totalVentaSinIva;
+    }
+    
     
 
 }

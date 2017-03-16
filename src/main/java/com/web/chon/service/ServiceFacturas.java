@@ -14,9 +14,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.stereotype.Service;
 import com.web.chon.negocio.NeogocioFacturas;
-import com.web.chon.util.JsfUtil;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.sql.SQLException;
 import java.util.Date;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -42,7 +42,36 @@ public class ServiceFacturas implements IfaceFacturas {
 
     @Override
     public int insert(FacturaPDFDomain factura) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        getEjb();
+        if (ejb.insert(factura) == 1) 
+        {
+            if (factura.getFichero() != null)
+            {
+                int ba=0;
+                try 
+                {
+                    
+                    byte[] fichero = factura.getFichero();
+                    if (ejb.insertarDocumento(factura.getIdFacturaPk(), fichero) == 1) 
+                    {
+                        ba= 1;
+                    } else 
+                    {
+                        ba= 0;
+                    }
+                } catch (SQLException ex) {
+
+                    Logger.getLogger(ServiceFacturas.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                return ba;
+            } else {
+                return 1;
+            }
+
+        } else {
+            return 0;
+        }
+
     }
 
     @Override
@@ -87,6 +116,12 @@ public class ServiceFacturas implements IfaceFacturas {
             factura.setIdStatusFk(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
             factura.setNombreArchivoTimbrado(obj[13] == null ? null : obj[13].toString());
             factura.setRfcEmisor(obj[14] == null ? null : obj[14].toString());
+            factura.setCadena(obj[15] == null ? null : obj[15].toString());
+            
+            factura.setImporte(obj[16] == null ? null : new BigDecimal(obj[16].toString()));
+            factura.setDescuento(obj[17] == null ? null : new BigDecimal(obj[17].toString()));
+            factura.setIva1(obj[18] == null ? null : new BigDecimal(obj[18].toString()));
+            
             if (factura.getIdStatusFk().intValue() == 1) {
                 factura.setNombreEstatus("EMITIDA");
             } else {
@@ -111,7 +146,8 @@ public class ServiceFacturas implements IfaceFacturas {
 
     @Override
     public int getNextVal() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        getEjb();
+        return ejb.getNextVal();
     }
 
 }
