@@ -13,6 +13,7 @@ import java.math.BigDecimal;
  * @author JesusAlfredo
  */
 public class ConceptosES implements Serializable {
+
     private static final long serialVersionUID = 1L;
     private BigDecimal idConceptoPk;
     private BigDecimal idTipoOperacionFk;
@@ -22,11 +23,20 @@ public class ConceptosES implements Serializable {
     private String nombreStatus;
     private String nombreOperacion;
 
+    public void reset() {
+        idConceptoPk = null;
+        idTipoOperacionFk = null;
+        nombre = null;
+        descripcion = null;
+        idStatusFk = null;
+        String nombreStatus = null;
+        nombreOperacion = null;
+    }
+
     @Override
     public String toString() {
         return "ConceptosES{" + "idConceptoPk=" + idConceptoPk + ", idTipoOperacionFk=" + idTipoOperacionFk + ", nombre=" + nombre + ", descripcion=" + descripcion + ", idStatusFk=" + idStatusFk + ", nombreStatus=" + nombreStatus + ", nombreOperacion=" + nombreOperacion + '}';
     }
-    
 
     public String getNombreStatus() {
         return nombreStatus;
@@ -44,8 +54,6 @@ public class ConceptosES implements Serializable {
         this.nombreOperacion = nombreOperacion;
     }
 
-    
-
     public BigDecimal getIdStatusFk() {
         return idStatusFk;
     }
@@ -53,11 +61,7 @@ public class ConceptosES implements Serializable {
     public void setIdStatusFk(BigDecimal idStatusFk) {
         this.idStatusFk = idStatusFk;
     }
-    
-    
 
-   
-    
     public BigDecimal getIdTipoOperacionFk() {
         return idTipoOperacionFk;
     }
@@ -66,8 +70,6 @@ public class ConceptosES implements Serializable {
         this.idTipoOperacionFk = idTipoOperacionFk;
     }
 
-    
-    
     public BigDecimal getIdConceptoPk() {
         return idConceptoPk;
     }
@@ -91,7 +93,5 @@ public class ConceptosES implements Serializable {
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
-    
-    
-    
+
 }

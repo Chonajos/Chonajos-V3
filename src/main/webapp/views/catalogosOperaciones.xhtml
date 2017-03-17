@@ -16,8 +16,9 @@
                         <h3>#{beanCatalogosOperaciones.title}</h3>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 alignRight ">
-                        <div class="form-group" align="right">
-                            <p:commandButton value="Nuevo" class="primaryButton" update=":formContent" ajax="true" action="#{beanCatalogosOperaciones.changeViewNew()}"  onclick="PF('statusDialog').show()"/>
+                        <div class="form-group">
+                            
+                            <p:commandButton value="Nuevo" class="primaryButton" icon="ui-icon-person" update=":formContent" ajax="true" action="#{beanCatalogosOperaciones.changeViewNew()}"  onclick="PF('statusDialog').show()"/>
                             <p:commandButton value="Guardar" class="primaryButton" update=":formContent" ajax="true" action="#{beanCatalogosOperaciones.insert()}" rendered="#{beanCatalogosOperaciones.viewEstate=='new'}" onclick="PF('statusDialog').show()"/>
                             <p:commandButton value="Actualizar" class="primaryButton" update=":formContent" ajax="true" action="#{beanCatalogosOperaciones.update()}" rendered="#{beanCatalogosOperaciones.viewEstate=='searchById'}" onclick="PF('statusDialog').show()"/>
                             <p:commandButton value="Atras" class="primaryButton" immediate="true" resetValues="true" update=":formContent" ajax="true" action="#{beanCatalogosOperaciones.backView()}" onclick="PF('statusDialog').show()"/>
@@ -74,12 +75,12 @@
                             </div>
                             <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 form-group">
                                 <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-12"  for="txtNombre" value ="Nombre:" /> 
-                                <h:inputText id="txtNombre" maxlength="60" class=" col-lg-9 col-md-4 col-sm-5 col-xs-12" value="#{beanCatalogosOperaciones.data.nombre}" required="true" requiredMessage="Ingresa un valor para el campo Nombre."/>
+                                <p:inputText id="txtNombre" maxlength="60" class=" col-lg-9 col-md-4 col-sm-5 col-xs-12" value="#{beanCatalogosOperaciones.data.nombre}" required="true" requiredMessage="Ingresa un valor para el campo Nombre."/>
 
                             </div>
                             <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 form-group">
                                 <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-12"  for="txtDescripcion" value ="Descripción:" /> 
-                                <p:inputTextarea id="txtDescripcion" maxlength="60" rows="2" cols="23" value="#{beanCatalogosOperaciones.data.descripcion}" required="true" requiredMessage="Ingresa una descripción"/>
+                                <p:inputText id="txtDescripcion" maxlength="60" class=" col-lg-9 col-md-4 col-sm-5 col-xs-12" value="#{beanCatalogosOperaciones.data.descripcion}" required="true" requiredMessage="Ingresa una descripción"/>
                             </div>
                         </div>
                     </div>

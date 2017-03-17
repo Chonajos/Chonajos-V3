@@ -297,7 +297,7 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
         if (idSucursalOrigenCredito != null && !idSucursalOrigenCredito.equals("")) {
             cadena.append(" AND (VM.ID_SUCURSAL_FK = "+idSucursalOrigenCredito+" OR V.ID_SUCURSAL_FK = "+idSucursalOrigenCredito+")");
         }
-
+        cadena.append(" ORDER BY ab.FECHA_ABONO");
         Query query;
         query = em.createNativeQuery(cadena.toString());
         System.out.println("Query: " + query.toString());
