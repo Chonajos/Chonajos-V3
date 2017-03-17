@@ -12,8 +12,8 @@ import java.math.BigDecimal;
  *
  * @author jramirez
  */
-public class DatosFacturacion implements Serializable
-{
+public class DatosFacturacion implements Serializable {
+
     private static final long serialVersionUID = 1L;
     private BigDecimal idDatosFacturacionPk;
     private BigDecimal idClienteFk;
@@ -40,6 +40,9 @@ public class DatosFacturacion implements Serializable
     private String codigoPostal;
     private String nombre;
     private String clavePublica;
+    
+    private BigDecimal idEntidad;
+    private BigDecimal idMunicipio;
 
     public String getClavePublica() {
         return clavePublica;
@@ -48,8 +51,6 @@ public class DatosFacturacion implements Serializable
     public void setClavePublica(String clavePublica) {
         this.clavePublica = clavePublica;
     }
-    
-    
 
     public String getNombre() {
         return nombre;
@@ -58,8 +59,6 @@ public class DatosFacturacion implements Serializable
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-    
-    
 
     public String getCodigoPostal() {
         return codigoPostal;
@@ -68,7 +67,6 @@ public class DatosFacturacion implements Serializable
     public void setCodigoPostal(String codigoPostal) {
         this.codigoPostal = codigoPostal;
     }
-    
 
     public String getMunicipio() {
         return municipio;
@@ -93,7 +91,6 @@ public class DatosFacturacion implements Serializable
     public void setEstado(String estado) {
         this.estado = estado;
     }
-    
 
     public BigDecimal getIdDatosFacturacionPk() {
         return idDatosFacturacionPk;
@@ -246,9 +243,53 @@ public class DatosFacturacion implements Serializable
     public void setRuta_certificado_cancel(String ruta_certificado_cancel) {
         this.ruta_certificado_cancel = ruta_certificado_cancel;
     }
+
+    public BigDecimal getIdEntidad() {
+        return idEntidad;
+    }
+
+    public void setIdEntidad(BigDecimal idEntidad) {
+        this.idEntidad = idEntidad;
+    }
+
+    public BigDecimal getIdMunicipio() {
+        return idMunicipio;
+    }
+
+    public void setIdMunicipio(BigDecimal idMunicipio) {
+        this.idMunicipio = idMunicipio;
+    }
     
     
-    
-    
-    
+
+    public void reset() {
+
+        idDatosFacturacionPk = null;
+        idClienteFk = null;
+        idSucursalFk = null;
+        razonSocial = null;
+        rfc = null;
+        calle = null;
+        numInt = null;
+        numExt = null;
+        pais = null;
+        localidad = null;
+        idCodigoPostalFk = null;
+        telefono = null;
+        correo = null;
+        regimen = null;
+        field = null;
+        ruta_llave_privada = null;
+        ruta_certificado = null;
+        ruta_llave_privada_cancel = null;
+        ruta_certificado_cancel = null;
+        municipio = null;
+        colonia = null;
+        estado = null;
+        codigoPostal = null;
+        nombre = null;
+        clavePublica = null;
+
+    }
+
 }

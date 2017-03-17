@@ -13,92 +13,184 @@
                   closable="false" resizable="false" showHeader="false">
             <p:graphicImage value="../resources/img/carga.gif" />
         </p:dialog>
-        <h:form id="formProducto">
-            <iframe id="miFrame" name="miFrame" style="position: absolute;" class="hidden" src="#{beanSubProducto.rutaPDF}"/>
+        <h:form id="formCatRazon">
             <div>
-                <h3>#{beanSubProducto.title}</h3>
+                <h3>#{beanRazonSocial.title}</h3>
             </div>
             <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
-            <p:panel rendered="#{beanSubProducto.viewEstate=='init'}" style="border: 0px;" >
+            <p:panel rendered="#{beanRazonSocial.viewEstate=='init'}" style="border: 0px;" >
                 <div class="form-group" align="right">
-                    <p:commandButton value="Nuevo" class="primaryButton" update=":formProducto" ajax="true" action="#{beanSubProducto.viewNew}" icon="ui-icon-person" onclick="PF('statusDialog').show()"/>
-                    <p:commandButton value="Eliminar" class="primaryButton" update=":formProducto" ajax="true" action="#{beanSubProducto.delete}" icon="ui-icon-trash" onclick="PF('statusDialog').show()"/>
+                    <p:commandButton value="Nuevo" class="primaryButton" update=":formCatRazon" ajax="true" action="#{beanRazonSocial.viewNew}" icon="ui-icon-person" onclick="PF('statusDialog').show()"/>
+                    <p:commandButton value="Eliminar" class="primaryButton" update=":formCatRazon" ajax="true" action="#{beanRazonSocial.delete}" icon="ui-icon-trash" onclick="PF('statusDialog').show()"/>
                 </div>
                 <div class="col-lg-10 col-md-10 col-md-12 col-xs-12 col-lg-offset-1 col-md-offset-1">
-                    <p:dataTable var="model" value="#{beanSubProducto.model}" rows="12" scrollable="true"
-                                 paginator="true" selection="#{beanSubProducto.selectedSubProducto}" rowKey="#{model.idSubproductoPk}"
+                    <p:dataTable var="model" value="#{beanRazonSocial.model}" rows="12" scrollable="true"
+                                 paginator="true" selection="#{beanRazonSocial.selectedDatosFacturacion}" rowKey="#{model.idDatosFacturacionPk}"
                                  emptyMessage="No se encontraron Registros.">
                         <p:column selectionMode="multiple" width="32px; !important" class="alignCenter"/>
                         <p:column headerText="Id" width="75px; !important" class="alignCenter">
-                            <h:outputText value="#{model.idSubproductoPk}" />
+                            <h:outputText value="#{model.idDatosFacturacionPk}" />
                         </p:column>
-                        <p:column headerText="Categoría" filterMaxLength="60" filterBy="#{model.nombreCategoria}" filterMatchMode="contains" width="350px; !important" class="alignLeft">
-                            <h:outputText value="#{model.nombreCategoria}" />
+                        <p:column headerText="Razón Social" filterMaxLength="60" filterBy="#{model.razonSocial}" filterMatchMode="contains" width="550px; !important" class="alignLeft">
+                            <h:outputText value="#{model.razonSocial}" />
                         </p:column>
-                        <p:column headerText="Nombre de Producto" filterMaxLength="90" filterBy="#{model.nombreSubproducto}" filterMatchMode="contains" width="350px; !important" class="alignLeft">
-                            <h:outputText value="#{model.nombreSubproducto}" />
-                        </p:column>
-                        <p:column headerText="Código" width="70px;" class="alignCenter">
-                            <p:commandButton id="codigo" ajax="true" process="@this" action="#{beanSubProducto.imprimirCodigoBarras()}" 
-                                             icon="ui-icon-print" styleClass="ui-priority-primary" update=":formProducto">
-                                <f:setPropertyActionListener value="#{model}" target="#{beanSubProducto.data}"/>
-                            </p:commandButton>
+                        <p:column headerText="RFC" filterMaxLength="90" filterBy="#{model.rfc}" filterMatchMode="contains" width="120px; !important" class="alignLeft">
+                            <h:outputText value="#{model.rfc}" />
                         </p:column>
                         <p:column headerText="Editar" width="60px; !important" class="alignCenter">
-                            <p:commandButton id="ajax" ajax="true"  action="#{beanSubProducto.searchById}" icon="ui-icon-pencil" styleClass="ui-priority-primary" update=":formProducto" onclick="PF('statusDialog').show()">
-                                <f:setPropertyActionListener value="#{model}" target="#{beanSubProducto.data}"/>
+                            <p:commandButton id="ajax" ajax="true"  action="#{beanRazonSocial.searchById}" icon="ui-icon-pencil" styleClass="ui-priority-primary" update=":formCatRazon" onclick="PF('statusDialog').show()">
+                                <f:setPropertyActionListener value="#{model}" target="#{beanRazonSocial.data}"/>
                             </p:commandButton>
                         </p:column>
                     </p:dataTable>
                 </div>
             </p:panel>
-            <p:panel rendered="#{beanSubProducto.viewEstate=='searchById' || beanSubProducto.viewEstate=='new'}">
+            <p:panel rendered="#{beanRazonSocial.viewEstate=='searchById' || beanRazonSocial.viewEstate=='new'}">
                 <div class="container-fluid">
                     <div class="form-group" align="right">
-                        <p:commandButton value="Guardar" class="primaryButton"  update=":formProducto" ajax="true" action="#{beanSubProducto.insert}" rendered="#{beanSubProducto.viewEstate=='new'}" onclick="PF('statusDialog').show()"/>
-                        <p:commandButton value="Actualizar" class="primaryButton"  update=":formProducto" ajax="true" action="#{beanSubProducto.update}" rendered="#{beanSubProducto.viewEstate=='searchById'}" onclick="PF('statusDialog').show()"/>
-                        <p:commandButton value="Atras" class="primaryButton" immediate="true" resetValues="true" update=":formProducto" ajax="true" action="#{beanSubProducto.backView}" onclick="PF('statusDialog').show()"/>
+                        <p:commandButton value="Guardar" class="primaryButton"  update=":formCatRazon" ajax="false" actionListener="#{beanRazonSocial.insert}" rendered="#{beanRazonSocial.viewEstate=='new'}" onclick="PF('statusDialog').show()"/>
+                        <p:commandButton value="Actualizar" class="primaryButton"  update=":formCatRazon" ajax="true" action="#{beanRazonSocial.update}" rendered="#{beanRazonSocial.viewEstate=='searchById'}" onclick="PF('statusDialog').show()"/>
+                        <p:commandButton value="Atras" class="primaryButton" immediate="true" resetValues="true" update=":formCatRazon" ajax="true" action="#{beanRazonSocial.backView}" onclick="PF('statusDialog').show()"/>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-12"  for="selectProductos" value ="Categoría:"/> 
-                            <h:selectOneMenu id="selectProductos" value="#{beanSubProducto.data.idProductoFk}" required="true" class="col-lg-3 col-md-4 col-sm-6 col-xs-12" requiredMessage="Ingresa un valor para el campo Producto." disabled = "#{beanSubProducto.viewEstate=='searchById'}">
-                                <f:selectItem itemLabel="Seleccione la opción" itemValue="#{null}" noSelectionOption="true" />
-                                <f:selectItems value="#{beanSubProducto.lstProducto}" var="producto" itemLabel="#{producto.nombreProducto}" itemValue="#{producto.idProductoPk}" />
-                            </h:selectOneMenu>
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-2 col-md-3 col-sm-4 col-xs-12"  for="razonSocial" value ="Razón Social:"/> 
+                            <p:inputText id="razonSocial" maxlength="200" class="col-lg-9 col-md-9 col-sm-8 col-xs-12" value="#{beanRazonSocial.data.razonSocial}" required="true"
+                                         requiredMessage="Ingresa un valor para el campo Razón Social."/>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-12"  for="txtRFC" value ="RFC:" /> 
+                            <p:inputText id="txtRFC" maxlength="14" class="col-lg-9 col-md-9 col-sm-8 col-xs-12" value="#{beanRazonSocial.data.rfc}" required="true"
+                                         requiredMessage="Ingresa un valor para el campo RFC."/>
+                        </div>
+
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-12"  for="txtCalle" value ="Calle:"/> 
+                            <p:inputText id="txtCalle" maxlength="100" class="col-lg-9 col-md-9 col-sm-8 col-xs-12" value="#{beanRazonSocial.data.calle}" required="true"
+                                         requiredMessage="Ingresa un valor para el campo Calle."/>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-6 col-md-6 col-sm-6 col-xs-12"  for="txtNumExt" value ="Numero Exterior:" /> 
+                            <p:inputText id="txtNumExt" maxlength="15" class="col-lg-6 col-md-6 col-sm-6 col-xs-12" value="#{beanRazonSocial.data.numExt}"
+                                         requiredMessage="Ingresa un valor para el campo Numero Exterior."/>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-6 col-md-6 col-sm-6 col-xs-12"  for="txtNumInt" value ="Numero Interior:"/> 
+                            <p:inputText id="txtNumInt" maxlength="15" class="col-lg-6 col-md-6 col-sm-6 col-xs-12" value="#{beanRazonSocial.data.numInt}"
+                                         requiredMessage="Ingresa un valor para el campo Numero Interior."/>
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-12"  for="txtPais" value ="Pais:" /> 
+                            <p:inputText id="txtPais" maxlength="20" class=" col-lg-9 col-md-9 col-sm-8 col-xs-12" value="#{beanRazonSocial.data.pais}" />
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 form-group">
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                <p:outputLabel  for="selectEstado" class="col-lg-12 col-md-12 col-sm-12 col-xs-12" value ="Estado:" /> 
+                            </div>
+                            <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12 paddingZero">
+                                <p:selectOneMenu  id="selectEstado" style="width:100% !important;" value="#{beanRazonSocial.data.idEntidad}">
+                                    <f:selectItem itemLabel="Selecciona un Estado" itemValue="" />
+                                    <f:selectItems value="#{beanRazonSocial.lstEntidades}" var="entidad" itemLabel="#{entidad.nombreEntidad}" itemValue="#{entidad.idEntidadPk}"/>
+                                    <p:ajax event="change" resetValues="true" update=":formCatRazon:selectMunicipio :formCatRazon:selectColonia :formCatRazon:txtCP" listener="#{beanRazonSocial.buscaMunicipios()}" />
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 form-group">
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                <p:outputLabel for="selectMunicipio" class="col-lg-12 col-md-12 col-sm-12 col-xs-12" value ="Municipio:" /> 
+                            </div>
+                            <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12 paddingZero">
+                                <p:selectOneMenu  id="selectMunicipio" style="width:100% !important;" value="#{beanRazonSocial.data.idMunicipio}">
+                                    <f:selectItem itemLabel="Selecciona un Municipio" itemValue="" />
+                                    <f:selectItems  value="#{beanRazonSocial.lstMunicipios}" var="municipio" itemLabel="#{municipio.nombreMunicipio}" itemValue="#{municipio.idMunicipioPk}"/>
+                                    <p:ajax event="change" resetValues="true" update=":formCatRazon:selectColonia :formCatRazon:txtCP" listener="#{beanRazonSocial.buscaColoniasMun()}" />
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 form-group">
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                <p:outputLabel for="selectColonia" class="col-lg-12 col-md-12 col-sm-12 col-xs-12" value ="Colonia:" /> 
+                            </div>
+                            <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12 paddingZero">
+                                <p:selectOneMenu  id="selectColonia" style="width:100% !important;" value="#{beanRazonSocial.data.idCodigoPostalFk}">
+                                    <f:selectItem itemLabel="Selecciona un Colonia" itemValue="" />
+                                    <f:selectItems value="#{beanRazonSocial.lstCodigosPostales}" var="colonia" itemLabel="#{colonia.nombreColonia}" itemValue="#{colonia.id_cp}"/>
+                                    <p:ajax event="change" resetValues="true" update=":formCatRazon:txtCP" listener="#{beanRazonSocial.ActualizaCodigoPostal()}"/>     
+                                </p:selectOneMenu>
+                            </div>
+                        </div>  
+                        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 form-group">
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 paddingZero">
+                                <p:outputLabel class="col-lg-12 col-md-12 col-sm-12 col-xs-12"  for="txtCP" value ="Código Postal:" /> 
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 paddingZero">
+                                <p:inputText id="txtCP" maxlength="5" class="col-lg-6 col-md-6 col-sm-12 col-xs-12" value="#{beanRazonSocial.data.codigoPostal}" >
+                                    <p:ajax event="blur" update=":formCatRazon:selectEstado :formCatRazon:selectMunicipio :formCatRazon:selectColonia" listener="#{beanRazonSocial.buscaColonias()}"/>
+                                    <pe:keyFilter regEx="/[0-9_]/i"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-2 col-md-3 col-sm-4 col-xs-12"  for="txtLocalidad" value ="Localidad:" /> 
+                            <p:inputText id="txtLocalidad" maxlength="50" class="col-lg-6 col-md-4 col-sm-6 col-xs-12" value="#{beanRazonSocial.data.localidad}"
+                                         requiredMessage="Ingresa un valor para el campo Localidad."/>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 form-group">
+                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-12"  for="txtClavePrivada" value ="Clave Privada:"/> 
+                            <p:inputText id="txtClavePrivada" maxlength="20" class="col-lg-3 col-md-4 col-sm-6 col-xs-12" value="#{beanRazonSocial.data.clavePublica}" required="true"
+                                         requiredMessage="Ingresa un valor para el campo Clave Privada."/>
                         </div>
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
-                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-4 col-xs-12"  for="txtNombre" value ="Nombre:" /> 
-                            <p:inputText id="txtNombre" maxlength="45" class="col-lg-3 col-md-4 col-sm-6 col-xs-12" value="#{beanSubProducto.data.nombreSubproducto}" required="true"
-                                         requiredMessage="Ingresa un valor para el campo Nombre."/>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                                <h:form class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+                                   
+                                </h:form>
+                            </div>
+                         
+                            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 form-group">
+                                <p:outputLabel class="col-lg-6 col-md-6 col-sm-4 col-xs-12" value ="Llave Privada:"/> 
+                                <h:form class="col-lg-6 col-md-6 col-sm-4 col-xs-12">
+                                    <p:fileUpload id="fileUpload" fileUploadListener="#{beanRazonSocial.preparaArchivos}" label="Subir" invalidFileMessage="Archivo invalido." mode="advanced" skinSimple="true"
+                                                  auto="true" sizeLimit="5000000" allowTypes="/(\.)(key)$/" onstart="PF('statusDialog').show();">
+                                        <p:outputLabel value="#{beanRazonSocial.data.ruta_llave_privada}"/>
+                                        <f:attribute name="item" value="1" />
+                                    </p:fileUpload>
+                                </h:form>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 form-group">
+                                <p:outputLabel class="col-lg-6 col-md-6 col-sm-4 col-xs-12" value ="Certificado:"/> 
+                                <h:form class="col-lg-6 col-md-6 col-sm-4 col-xs-12">
+                                    <p:fileUpload id="fileUpload" fileUploadListener="#{beanRazonSocial.preparaArchivos}" label="Subir" invalidFileMessage="Archivo invalido." mode="advanced" skinSimple="true"
+                                                  auto="true" sizeLimit="5000000" allowTypes="/(\.)(cer)$/" onstart="PF('statusDialog').show();">
+                                        <p:outputLabel value="#{beanRazonSocial.data.ruta_certificado}"/>
+                                        <f:attribute name="item" value="2" />
+                                    </p:fileUpload>
+                                </h:form>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 form-group">
+                                <p:outputLabel class="col-lg-6 col-md-6 col-sm-4 col-xs-12" value ="Llave Privada en Formato PEM:"/> 
+
+                                <h:form class="col-lg-6 col-md-6 col-sm-4 col-xs-12">
+                                    <p:fileUpload id="fileUpload" fileUploadListener="#{beanRazonSocial.preparaArchivos}" label="Subir"  invalidFileMessage="Archivo invalido." mode="advanced" skinSimple="true"
+                                                  auto="true" sizeLimit="5000000" allowTypes="/(\.)(pem)$/" onstart="PF('statusDialog').show();">
+                                        <p:outputLabel value="#{beanRazonSocial.data.ruta_llave_privada_cancel}"/>
+                                        <f:attribute name="item" value="3" />
+                                    </p:fileUpload>
+                                </h:form>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 form-group">
+                                <p:outputLabel class="col-lg-6 col-md-6 col-sm-4 col-xs-12" value ="Certificado en Formato PEM:"/> 
+                                <h:form class="col-lg-6 col-md-6 col-sm-4 col-xs-12">
+                                    <p:fileUpload id="fileUpload" fileUploadListener="#{beanRazonSocial.preparaArchivos}" label="Subir"  invalidFileMessage="Archivo invalido." mode="advanced" skinSimple="true"
+                                                  auto="true" sizeLimit="5000000" allowTypes="/(\.)(pem)$/" onstart="PF('statusDialog').show();">
+                                        <p:outputLabel value="#{beanRazonSocial.data.ruta_certificado_cancel}"/>
+                                        <f:attribute name="item" value="4" />
+                                    </p:fileUpload>
+                                </h:form>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-                        <p:panel id="filefrm" style="border: 1px solid #FFF;">
-                            <h:form>
-                                <p:fileUpload
-                                    fileUploadListener="#{beanSubProducto.handleFileUpload}"
-                                    mode="advanced" fileLimit="1"
-                                    fileLimitMessage="Solo pude subir un archivo" invalidSizeMessage="El tamaño del archivo supera lo permitido 5 MB, favor de verificar."									
-                                    label="Seleccionar" uploadLabel="Subir" cancelLabel="Cancelar"
-                                    dragDropSupport="true"  sizeLimit="5242880" update="@this"
-                                    process=":formProducto" invalidFileMessage ="El formato del archivo no es permitido, favor de seleccionar un archivo con formato JPG o PNG."
-                                    allowTypes="/(\.|\/)(png|jpg|jpeg)$/" >
-                                    <!--<img style="height:50px; width:auto;" src="{beanSubProducto.data.urlImagenSubproducto}" alt="logo" />-->
-                                </p:fileUpload>
-
-
-                            </h:form>
-                        </p:panel>
-<!--                        <p:commandButton id="descargar" resetValues="true" value="Descargar" ajax="false" actionListener="#{beanSubProducto.descarga(beanSubProducto.data)}" disabled="#{beanSubProducto.data.urlImagenSubproducto == null}" >
-                            <p:fileDownload value="#{beanSubProducto.download}" />
-                        </p:commandButton>-->
                     </div>
                 </div>
-
-
-
             </p:panel>
         </h:form>
     </ui:define>

@@ -118,8 +118,7 @@ public class BeanRegistroEntrada implements Serializable, BeanSimple {
                     JsfUtil.addErrorMessageClean("Ocurrio un problema al registrar la Entrada");
                 }
             }
-        } else if (latitud == null || longitud == null) 
-        {
+        } else if (latitud == null || longitud == null) {
             data.setLatitudSalida(0);
             data.setLongitudSalida(0);
             if (ifaceRegEntSal.updateSalidabyIdReg(data) != 0) {
