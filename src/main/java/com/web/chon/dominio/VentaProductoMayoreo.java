@@ -37,12 +37,22 @@ public class VentaProductoMayoreo implements Serializable {
     private BigDecimal precioSinInteres;
     private BigDecimal folioCarro;
     private BigDecimal totalVentaSinIva;
+    private BigDecimal precioProductoSinIva;
 
 
     public VentaProductoMayoreo()
     {
         
     }
+
+    public BigDecimal getPrecioProductoSinIva() {
+        return precioProductoSinIva;
+    }
+
+    public void setPrecioProductoSinIva(BigDecimal precioProductoSinIva) {
+        this.precioProductoSinIva = precioProductoSinIva;
+    }
+    
     
 
     

@@ -115,7 +115,7 @@ public class ServiceFacturas implements IfaceFacturas {
             factura.setNombreSucursal(obj[11] == null ? null : obj[11].toString());
             factura.setIdStatusFk(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
             factura.setNombreArchivoTimbrado(obj[13] == null ? null : obj[13].toString());
-            factura.setRfcEmisor(obj[14] == null ? null : obj[14].toString());
+            factura.setRfcCliente(obj[14] == null ? null : obj[14].toString());
             factura.setCadena(obj[15] == null ? null : obj[15].toString());
             
             factura.setImporte(obj[16] == null ? null : new BigDecimal(obj[16].toString()));
@@ -134,7 +134,7 @@ public class ServiceFacturas implements IfaceFacturas {
             } else {
                 byte[] datos = factura.getFichero();
                 InputStream stream = new ByteArrayInputStream(datos);
-                file = new DefaultStreamedContent(stream, "xml", "archivo.xml");
+                file = new DefaultStreamedContent(stream, "xml",""+factura.getRfcCliente()+"_"+factura.getNumeroFactura()+ ".xml");
                 factura.setFile(file);
             }
 
