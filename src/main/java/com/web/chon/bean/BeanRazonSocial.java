@@ -126,6 +126,8 @@ public class BeanRazonSocial implements Serializable, BeanSimple {
 
                 if (ifaceDatosFacturacion.insertarDatosFacturacion(data) > 0) {
                     JsfUtil.addSuccessMessage("Registro Insertado.");
+                    backView();
+                    model = ifaceDatosFacturacion.getAll();
                 } else {
                     JsfUtil.addErrorMessage("Ocurrio un Error al Insertar el Registro.");
                 }
@@ -144,10 +146,19 @@ public class BeanRazonSocial implements Serializable, BeanSimple {
     public String update() {
 
         try {
-            if (ifaceDatosFacturacion.updateDatosFacturacion(data) > 0) {
-                JsfUtil.addSuccessMessage("Registro modificado.");
-            } else {
-                JsfUtil.addErrorMessage("Ocurrio un error al intentar modificar el registro.");
+            if (data.getRfc() != null && !data.getRfc().equals("")) {
+
+                data.setRuta_llave_privada(handleFileUpload(keyFile, data.getRfc()));
+                data.setRuta_certificado(handleFileUpload(cerFile, data.getRfc()));
+                data.setRuta_llave_privada_cancel(handleFileUpload(keyPemFile, data.getRfc()));
+                data.setRuta_certificado_cancel(handleFileUpload(cerPemFile, data.getRfc()));
+                if (ifaceDatosFacturacion.updateDatosFacturacion(data) > 0) {
+                    JsfUtil.addSuccessMessage("Registro modificado.");
+                    backView();
+                    model = ifaceDatosFacturacion.getAll();
+                } else {
+                    JsfUtil.addErrorMessage("Ocurrio un error al intentar modificar el registro.");
+                }
             }
         } catch (Exception ex) {
             JsfUtil.addErrorMessage("Ocurrio un error al intentar modificar el registro." + ex.getMessage());
@@ -281,10 +292,9 @@ public class BeanRazonSocial implements Serializable, BeanSimple {
     public void buscaColonias() {
 
         lstCodigosPostales = ifaceCatCodigosPostales.getCodigoPostalById(data.getCodigoPostal());
-        System.out.println("data " + data.getCodigoPostal());
 
         if (lstCodigosPostales.isEmpty()) {
-            System.out.println("data 1" + data.getCodigoPostal());
+
             int idEntidad = data.getIdEntidad() == null ? 0 : data.getIdEntidad().intValue();
 
             lstEntidades = ifaceCatEntidad.getEntidades();
@@ -297,11 +307,8 @@ public class BeanRazonSocial implements Serializable, BeanSimple {
             lstCodigosPostales = ifaceCatCodigosPostales.getCodigoPostalById("");
 
         } else {
-            System.out.println("data 2 " + data.getCodigoPostal());
             data.setIdEntidad(new BigDecimal(lstCodigosPostales.get(0).getIdEntidad()));
-
             int idEntidad = data.getIdEntidad() == null ? 0 : data.getIdEntidad().intValue();
-
             data.setIdMunicipio(new BigDecimal(lstCodigosPostales.get(0).getIdMunicipio()));
 
             if (data.getCodigoPostal().equals("")) {
