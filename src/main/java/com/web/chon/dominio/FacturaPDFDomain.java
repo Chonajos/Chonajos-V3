@@ -92,9 +92,9 @@ public class FacturaPDFDomain implements Serializable {
     
     //Detail 4
     private String importeLetra;
-    private String importe;
-    private String descuento;
-    private String iva1;
+    private BigDecimal importe;
+    private BigDecimal descuento;
+    private BigDecimal iva1;
     private String iva2;
     private String total;
     
@@ -116,9 +116,9 @@ public class FacturaPDFDomain implements Serializable {
 
     @Override
     public String toString() {
-        return "FacturaPDFDomain{" + "idFacturaPk=" + idFacturaPk + ", numeroFactura=" + numeroFactura + ", idUsuarioFk=" + idUsuarioFk + ", idClienteFk=" + idClienteFk + ", idLlaveFk=" + idLlaveFk + ", idTipoLlaveFk=" + idTipoLlaveFk + ", fichero=" + fichero + ", nombreEstatus=" + nombreEstatus + ", idStatusFk=" + idStatusFk + ", comentarios=" + comentarios + ", nombreSucursal=" + nombreSucursal + ", idSucursalFk=" + idSucursalFk + ", nombreEmisor=" + nombreEmisor + ", rfcEmisor=" + rfcEmisor + ", calleEmisor=" + calleEmisor + ", noExteriorEmisor=" + noExteriorEmisor + ", coloniaEmisor=" + coloniaEmisor + ", localidadEmisor=" + localidadEmisor + ", municipioEmisor=" + municipioEmisor + ", estadoEmisor=" + estadoEmisor + ", paisEmisor=" + paisEmisor + ", codigoPostalEmisor=" + codigoPostalEmisor + ", domicilioFiscalEmisor=" + domicilioFiscalEmisor + ", noInteriorEmisor=" + noInteriorEmisor + ", razonSocialEmpresa=" + razonSocialEmpresa + ", domiciloFiscalEmisor=" + domiciloFiscalEmisor + ", ciudadEmisor=" + ciudadEmisor + ", codigoPostalE=" + codigoPostalE + ", parametroA=" + parametroA + ", parametroB=" + parametroB + ", fechaEmision=" + fechaEmision + ", lugarEmision=" + lugarEmision + ", nombreCliente=" + nombreCliente + ", rfcCliente=" + rfcCliente + ", calleFiscalCliente=" + calleFiscalCliente + ", coloniaCliente=" + coloniaCliente + ", domicilioFiscalCliente=" + domicilioFiscalCliente + ", ciudadCliente=" + ciudadCliente + ", codigoPostalCliente=" + codigoPostalCliente + ", telefonoCliente=" + telefonoCliente + ", numeroExteriorCliente=" + numeroExteriorCliente + ", numeroInteriorCliente=" + numeroInteriorCliente + ", municipioCliente=" + municipioCliente + ", estadoCliente=" + estadoCliente + ", localidadCliente=" + localidadCliente + ", paisCliente=" + paisCliente + ", listaProductosMayoreo=" + listaProductosMayoreo + ", listaProductosMenudeo=" + listaProductosMenudeo + ", ventaMenudeo=" + ventaMenudeo + ", ventaMayoreo=" + ventaMayoreo + ", importeLetra=" + importeLetra + ", importe=" + importe + ", descuento=" + descuento + ", iva1=" + iva1 + ", iva2=" + iva2 + ", total=" + total + ", selloDigital=" + selloDigital + ", cadena=" + cadena + ", selloSAT=" + selloSAT + ", cadenaQR=" + cadenaQR + ", formaPago=" + formaPago + ", nCuenta=" + nCuenta + ", metodoPago=" + metodoPago + ", nSerieCertificadoCSD=" + nSerieCertificadoCSD + ", folioFiscal=" + folioFiscal + ", nSerieCertificadoSAT=" + nSerieCertificadoSAT + ", fechaCertificacion=" + fechaCertificacion + '}';
+        return "FacturaPDFDomain{" + "idFacturaPk=" + idFacturaPk + ", numeroFactura=" + numeroFactura + ", idUsuarioFk=" + idUsuarioFk + ", idClienteFk=" + idClienteFk + ", idLlaveFk=" + idLlaveFk + ", idTipoLlaveFk=" + idTipoLlaveFk + ", fichero=" + fichero + ", nombreArchivoTimbrado=" + nombreArchivoTimbrado + ", nombreEstatus=" + nombreEstatus + ", idStatusFk=" + idStatusFk + ", comentarios=" + comentarios + ", nombreSucursal=" + nombreSucursal + ", idSucursalFk=" + idSucursalFk + ", nombreEmisor=" + nombreEmisor + ", rfcEmisor=" + rfcEmisor + ", calleEmisor=" + calleEmisor + ", noExteriorEmisor=" + noExteriorEmisor + ", coloniaEmisor=" + coloniaEmisor + ", localidadEmisor=" + localidadEmisor + ", municipioEmisor=" + municipioEmisor + ", estadoEmisor=" + estadoEmisor + ", paisEmisor=" + paisEmisor + ", codigoPostalEmisor=" + codigoPostalEmisor + ", domicilioFiscalEmisor=" + domicilioFiscalEmisor + ", noInteriorEmisor=" + noInteriorEmisor + ", razonSocialEmpresa=" + razonSocialEmpresa + ", domiciloFiscalEmisor=" + domiciloFiscalEmisor + ", ciudadEmisor=" + ciudadEmisor + ", codigoPostalE=" + codigoPostalE + ", parametroA=" + parametroA + ", parametroB=" + parametroB + ", fechaEmision=" + fechaEmision + ", lugarEmision=" + lugarEmision + ", nombreCliente=" + nombreCliente + ", rfcCliente=" + rfcCliente + ", calleFiscalCliente=" + calleFiscalCliente + ", coloniaCliente=" + coloniaCliente + ", domicilioFiscalCliente=" + domicilioFiscalCliente + ", ciudadCliente=" + ciudadCliente + ", codigoPostalCliente=" + codigoPostalCliente + ", telefonoCliente=" + telefonoCliente + ", numeroExteriorCliente=" + numeroExteriorCliente + ", numeroInteriorCliente=" + numeroInteriorCliente + ", municipioCliente=" + municipioCliente + ", estadoCliente=" + estadoCliente + ", localidadCliente=" + localidadCliente + ", paisCliente=" + paisCliente + ", listaProductosMayoreo=" + listaProductosMayoreo + ", listaProductosMenudeo=" + listaProductosMenudeo + ", ventaMenudeo=" + ventaMenudeo + ", ventaMayoreo=" + ventaMayoreo + ", importeLetra=" + importeLetra + ", importe=" + importe + ", descuento=" + descuento + ", iva1=" + iva1 + ", iva2=" + iva2 + ", total=" + total + ", selloDigital=" + selloDigital + ", cadena=" + cadena + ", selloSAT=" + selloSAT + ", cadenaQR=" + cadenaQR + ", formaPago=" + formaPago + ", nCuenta=" + nCuenta + ", metodoPago=" + metodoPago + ", nSerieCertificadoCSD=" + nSerieCertificadoCSD + ", folioFiscal=" + folioFiscal + ", nSerieCertificadoSAT=" + nSerieCertificadoSAT + ", fechaCertificacion=" + fechaCertificacion + ", file=" + file + '}';
     }
-    
+
     
     
     //========Datos para PDF======//
@@ -318,29 +318,32 @@ public class FacturaPDFDomain implements Serializable {
         this.importeLetra = importeLetra;
     }
 
-    public String getImporte() {
+    public BigDecimal getImporte() {
         return importe;
     }
 
-    public void setImporte(String importe) {
+    public void setImporte(BigDecimal importe) {
         this.importe = importe;
     }
 
-    public String getDescuento() {
+    public BigDecimal getDescuento() {
         return descuento;
     }
 
-    public void setDescuento(String descuento) {
+    public void setDescuento(BigDecimal descuento) {
         this.descuento = descuento;
     }
 
-    public String getIva1() {
+    public BigDecimal getIva1() {
         return iva1;
     }
 
-    public void setIva1(String iva1) {
+    public void setIva1(BigDecimal iva1) {
         this.iva1 = iva1;
     }
+
+    
+   
 
     public String getIva2() {
         return iva2;

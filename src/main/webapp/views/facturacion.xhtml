@@ -343,28 +343,33 @@
                                 <p:column headerText="Empaque" width="150px;" class="alignLeft">
                                     <h:outputText value="#{model1.nombreEmpaque}" />
                                 </p:column>
-                                <p:column headerText="Cantidad Empaque" width="85px;" class="alignCenter">
+                                <p:column headerText="Cantidad Empaque" width="85px;" class="alignRight">
                                     <h:outputText value="#{model1.cantidadEmpaque}" />
                                 </p:column>
-                                <p:column headerText="Kilos" width="85px;" class="alignCenter">
+                                <p:column headerText="Kilos" width="85px;" class="alignRight">
                                     <h:outputText value="#{model1.kilosVendidos}" />
                                 </p:column>
-                                <p:column headerText="Precio de venta" width="60px;" class="alignCenter">
+                                <p:column headerText="Precio de venta" width="60px;" class="alignRight">
                                     <h:outputText value="#{model1.precioProducto}">
                                         <f:convertNumber pattern="$#,##0.00"/>
                                     </h:outputText>
                                 </p:column>
-                                <p:column headerText="Total" width="90px;" class="alignCenter">
+                                <p:column headerText="Importe Sin IVa" width="90px;" class="alignRight">
+                                    <h:outputText value="$#{model1.totalVentaSinIva}">
+                                        <f:convertNumber pattern="#,##0.00"/>
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="Importe " width="90px;" class="alignRight">
                                     <h:outputText value="$#{model1.totalVenta}">
                                         <f:convertNumber pattern="#,##0.00"/>
                                     </h:outputText>
                                 </p:column>
                                 <p:columnGroup type="footer">
                                     <p:row>
-                                        <p:column colspan="5" style="text-align:right" footerText="Importe: " />
-                                        <p:column colspan="1">
+                                        <p:column colspan="5" style="text-align:right;background-color:white"  footerText="Importe: " />
+                                        <p:column colspan="1" style="background-color:white" class="alignRight">
                                             <f:facet name="footer">
-                                                <h:outputText value="#{beanFacturacion.ventaMayoreo.totalVenta}">
+                                                <h:outputText value="#{beanFacturacion.ventaMayoreo.totalVentaSinIva}">
                                                     <f:convertNumber for="totalVenta" pattern="$#,##0.00"/>
                                                 </h:outputText>
                                             </f:facet>
@@ -372,8 +377,8 @@
 
                                     </p:row>
                                     <p:row>
-                                        <p:column colspan="5" style="text-align:right" footerText="Descuento:" />
-                                        <p:column colspan="1">
+                                        <p:column colspan="5" style="text-align:right;background-color:white" footerText="Descuento:" />
+                                        <p:column colspan="1" style="background-color:white" class="alignRight">
                                             <f:facet name="footer">
                                                 <h:outputText value="#{beanFacturacion.descuento}">
                                                     <f:convertNumber for="totalVenta" pattern="$#,##0.00"/>
@@ -383,8 +388,8 @@
 
                                     </p:row>
                                     <p:row>
-                                        <p:column colspan="5" style="text-align:right" footerText="SubTotal: " />
-                                        <p:column colspan="1">
+                                        <p:column colspan="5" style="text-align:right;background-color:white" footerText="SubTotal: " />
+                                        <p:column colspan="1" style="background-color:white" class="alignRight">
                                             <f:facet name="footer">
                                                 <h:outputText value="#{beanFacturacion.subTotal}">
                                                     <f:convertNumber for="totalVenta" pattern="$#,##0.00"/>
@@ -394,8 +399,8 @@
 
                                     </p:row>
                                     <p:row>
-                                        <p:column colspan="5" style="text-align:right" footerText="IVA: " />
-                                        <p:column colspan="1">
+                                        <p:column colspan="5" style="text-align:right;background-color:white" footerText="IVA: " />
+                                        <p:column colspan="1" style="background-color:white" class="alignRight">
                                             <f:facet name="footer">
                                                 <h:outputText value="#{beanFacturacion.iva}">
                                                     <f:convertNumber for="totalVenta" pattern="$#,##0.00"/>
@@ -404,10 +409,10 @@
                                         </p:column>
                                     </p:row>
                                     <p:row>
-                                        <p:column colspan="5" style="text-align:right" footerText="TOTAL: " />
-                                        <p:column colspan="1">
+                                        <p:column colspan="5" style="text-align:right;background-color:white" footerText="TOTAL: " />
+                                        <p:column colspan="1" style="background-color:white" class="alignRight">
                                             <f:facet name="footer">
-                                                <h:outputText value="#{beanFacturacion.total}">
+                                                <h:outputText  value="#{beanFacturacion.total}">
                                                     <f:convertNumber for="totalVenta" pattern="$#,##0.00"/>
                                                 </h:outputText>
                                             </f:facet>
