@@ -61,7 +61,7 @@
                             <p:autoComplete  placeholder="Seleccione un Cliente" id="autocompleteCliente"  required="true" requiredMessage="Ingresa un valor para el campo Cliente." styleClass="autocomplete-input-text-media ui-state-highlight-autocomplete" class="ui-state-highlight-autocomplete"
                                              value="#{beanVenta.cliente}" completeMethod="#{beanVenta.autoCompleteCliente}" forceSelection="true" var="cliente"  inputStyle="width: 179px"
                                              itemLabel="#{cliente.nombreCompleto}"
-                                             itemValue="#{cliente.id_cliente}" converter="#{clienteConverter}">
+                                             itemValue="#{cliente.idClientePk}" converter="#{clienteConverter}">
                                 <p:ajax event="itemSelect" update=":formContent" listener="#{beanVenta.validaCreditoCliente}" />
                                 <p:ajax event="change" update=":formContent" listener="#{beanVenta.validaCreditoCliente}" />
                             </p:autoComplete>

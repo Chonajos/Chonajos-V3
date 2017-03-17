@@ -337,7 +337,7 @@ public class BeanFacturacion implements Serializable {
             file = null;
             byte[] datos = data.getFichero();
             InputStream stream = new ByteArrayInputStream(datos);
-            file = new DefaultStreamedContent(stream, "xml", data.getRfcCliente()+"_"+data.getFolioFiscal()+".xml");
+            file = new DefaultStreamedContent(stream, "xml", data.getRfcCliente() + "_" + data.getFolioFiscal() + ".xml");
             return file;
         }
 
@@ -348,6 +348,8 @@ public class BeanFacturacion implements Serializable {
     }
 
     public void buscarFolioVenta() {
+        ventaMayoreo = new VentaMayoreo();
+        datosCliente = new Cliente();
         totalVenta = new BigDecimal(0);
 
         ventaMayoreo = ifaceVentaMayoreo.getVentaMayoreoByFolioidSucursalFk(folioVentaG, new BigDecimal(usuario.getSucId()));
@@ -428,12 +430,12 @@ public class BeanFacturacion implements Serializable {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         //DocumentBuilder builder = factory.newDocumentBuilder();
         System.out.println("===DATA====");
-        System.out.println("DATA: "+data.toString());
+        System.out.println("DATA: " + data.toString());
 
         try {
-            String rutaTimbradoData = Constantes.PATHLOCALFACTURACION + "Clientes" + File.separatorChar + data.getRfcEmisor() + File.separatorChar + "TIMBRADO" + File.separatorChar + data.getNombreArchivoTimbrado();
+            String rutaTimbradoData = Constantes.PATHLOCALFACTURACION + "Clientes" + File.separatorChar + data.getRfcCliente() + File.separatorChar + "TIMBRADO" + File.separatorChar + data.getNombreArchivoTimbrado();
             paramReport.put("cadena", data.getCadena());
-           
+
             paramReport.put("iva1", data.getIva1().toString());
 
             System.out.println("Ruta: " + rutaTimbradoData);
@@ -452,10 +454,10 @@ public class BeanFacturacion implements Serializable {
                     Element eElement = (Element) nNode;
                     paramReport.put("LugarExpedicion", eElement.getAttribute("LugarExpedicion"));
                     System.out.println("LugarExpedicion : " + eElement.getAttribute("LugarExpedicion"));
-                    
+
                     paramReport.put("NumCtaPago", eElement.getAttribute("NumCtaPago"));
                     System.out.println("NumCtaPago : " + eElement.getAttribute("NumCtaPago"));
-                    
+
                     paramReport.put("formaPago", eElement.getAttribute("metodoDePago"));
                     System.out.println("Metodo De Pago : " + eElement.getAttribute("metodoDePago"));
                     paramReport.put("tipoDeComprobante", eElement.getAttribute("tipoDeComprobante"));
@@ -646,6 +648,8 @@ public class BeanFacturacion implements Serializable {
     }
 
     public void changeViewGenerarFactura() {
+        datosCliente = new Cliente();
+        ventaMayoreo = new VentaMayoreo();
         setViewEstate("generate");
         setTitle("Generar Factura");
         // calcularTotales();
@@ -660,6 +664,7 @@ public class BeanFacturacion implements Serializable {
             banderaImporteParcialidad = "false";
         }
     }
+
     public void habilitarNumcuenta() {
         System.out.println("Método de pago: " + metodoPago);
         if (!metodoPago.equals("01")) {
@@ -706,7 +711,7 @@ public class BeanFacturacion implements Serializable {
 
     public void insertarFactura() throws IOException {
         nuevaFactura.setIdFacturaPk(new BigDecimal(ifaceFacturas.getNextVal()));
-        nuevaFactura.setNumeroFactura("10A");
+        nuevaFactura.setNumeroFactura(ventaMayoreo.getVentaSucursal().toString());
 
         nuevaFactura.setIdClienteFk(datosCliente.getIdClientePk());
         nuevaFactura.setIdSucursalFk(new BigDecimal(usuario.getSucId()));
@@ -863,6 +868,7 @@ public class BeanFacturacion implements Serializable {
                 datosEmisor.setRuta_llave_privada(df.getRuta_llave_privada() == null ? "" : Constantes.PATHLOCALFACTURACION + "Empresas" + File.separatorChar + df.getRfc() + File.separatorChar + df.getRuta_llave_privada());
                 datosEmisor.setRuta_llave_privada_cancel(df.getRuta_llave_privada_cancel() == null ? "" : df.getRuta_llave_privada_cancel());
                 datosEmisor.setTelefono(df.getTelefono() == null ? "" : df.getTelefono());
+
             }
         }
         pathFacturaClienteComprobante = Constantes.PATHLOCALFACTURACION + "Clientes" + File.separatorChar + datosCliente.getRfc() + File.separatorChar + "COMPROBANTE" + File.separatorChar + datosCliente.getRfc() + "_" + ventaMayoreo.getIdSucursalFk().toString() + "_" + ventaMayoreo.getVentaSucursal().toString() + ".xml";
@@ -876,6 +882,10 @@ public class BeanFacturacion implements Serializable {
         System.out.println("Ruta Certificado: " + datosEmisor.getRuta_certificado());
         PrivateKey key = KeyLoaderFactory.createInstance(KeyLoaderEnumeration.PRIVATE_KEY_LOADER, new FileInputStream(datosEmisor.getRuta_llave_privada()), datosEmisor.getClavePublica()).getKey();
         //Cargamos el archivo con el certificado
+        String[] ce;
+        System.out.println("***************");
+        ce = datosEmisor.getRuta_certificado().split("\\.");
+        comp.setNoCertificado(ce[0]);//es el numero del certificado
 
         System.out.println("Se cargaron exitosamente los archivos");
         X509Certificate cert = KeyLoaderFactory.createInstance(KeyLoaderEnumeration.PUBLIC_KEY_LOADER, new FileInputStream(datosEmisor.getRuta_certificado())).getKey();
@@ -898,6 +908,8 @@ public class BeanFacturacion implements Serializable {
 //            
 //            JsfUtil.addErrorMessageClean("Ocurrió un problema al generar la factura, contactar a adminsitrador "+" Mensaje: "+e.getMessage());
 //        }
+        datosCliente = new Cliente();
+        ventaMayoreo = new VentaMayoreo();
 
     }
 
@@ -931,10 +943,8 @@ public class BeanFacturacion implements Serializable {
         comp.setLugarExpedicion(datosEmisor.getCodigoPostal());
         comp.setMoneda(moneda);
         //datosEmisor.getRuta_certificado()
-        String[] cert;
-        cert = datosEmisor.getRuta_certificado().split("\\.");
-        comp.setNoCertificado(cert[0]);//es el numero del certificado
-        comp.setNumCtaPago(numeroCuenta==null ? "":numeroCuenta.toString());
+
+        comp.setNumCtaPago(numeroCuenta == null ? null : numeroCuenta.toString());
         comp.setEmisor(createEmisor(of));
         comp.setReceptor(createReceptor(of));
         comp.setConceptos(createConceptos(of));
@@ -999,8 +1009,8 @@ public class BeanFacturacion implements Serializable {
         uf.setCodigoPostal(datosCliente.getCodigoPostal());
 
         //NO SON OBLIGATORIOS NO SE OCUPAN POR AHORA
-    uf.setNoExterior(datosCliente.getNumExterior()); 
-    uf.setNoInterior(datosCliente.getNumInterior()); 
+        uf.setNoExterior(datosCliente.getNumExterior());
+        uf.setNoInterior(datosCliente.getNumInterior());
         receptor.setDomicilio(uf);
         return receptor;
     }
@@ -1645,8 +1655,5 @@ public class BeanFacturacion implements Serializable {
     public void setBanderanumCuenta(String banderanumCuenta) {
         this.banderanumCuenta = banderanumCuenta;
     }
-    
-    
 
-    
 }

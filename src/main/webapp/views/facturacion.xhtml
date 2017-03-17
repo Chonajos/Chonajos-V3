@@ -75,8 +75,8 @@
                             <p:autoComplete  placeholder="Seleccione un Cliente" id="autocompleteCliente"  styleClass="autocomplete-input-text-media ui-state-highlight-autocomplete" class="ui-state-highlight-autocomplete"
                                              value="#{beanFacturacion.cliente}" completeMethod="#{beanFacturacion.autoCompleteCliente}" forceSelection="true" var="cliente"  inputStyle="width: 179px"
                                              itemLabel="#{cliente.nombreCompleto}"
-                                             itemValue="#{cliente.id_cliente}" converter="#{clienteConverter}">
-                            </p:autoComplete>
+                                             itemValue="#{cliente.idClientePk}" converter="#{clienteConverter}">
+                            </p:autoComplete> 
                             <pe:keyFilter for="autocompleteCliente" regEx="/[a-z0-9-_Ã±\s]/i" />
                         </div>
                     </div>

@@ -60,7 +60,7 @@
                             <p:autoComplete  placeholder="Seleccione un Cliente" id="autocompleteCliente"  required="false" requiredMessage="Ingresa un valor para el campo Cliente." styleClass="autocomplete-input-text-media"
                                              value="#{beanVentaMayoreoRapido.cliente}" completeMethod="#{beanVentaMayoreoRapido.autoCompleteCliente}" forceSelection="true" var="cliente"  inputStyle="width: 200px"
                                              itemLabel="#{cliente.nombreCompleto}"
-                                             itemValue="#{cliente.id_cliente}" converter="#{clienteConverter}">
+                                             itemValue="#{cliente.idClientePk}" converter="#{clienteConverter}">
                                 
                             </p:autoComplete>
                             <pe:keyFilter for="autocompleteCliente" regEx="/[a-z0-9-_Ã±\s]/i" />
