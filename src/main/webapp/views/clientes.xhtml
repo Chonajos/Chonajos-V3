@@ -179,14 +179,7 @@
                                     <pe:keyFilter regEx="/[0-9-a-z_ñ]/i"/> 
                                 </p:inputText>
                             </div>
-                            <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 form-group" rendered="#{beanCatCliente.banderaTipoCliente=='pf'}">
-                                <p:outputLabel class="col-lg-12 col-md-2 col-sm-3 col-xs-12"  for="txtCURP" value ="CURP del Cliente" rendered="#{beanCatCliente.banderaTipoCliente=='pf'}" /> 
-                                <p:inputText id="txtCURP" maxlength="13" class=" col-lg-12 col-md-2 col-sm-3 col-xs-12" 
-                                             value="#{beanCatCliente.data.rfc}" 
-                                             disabled="#{beanCatCliente.permissionToWrite}" rendered="#{beanCatCliente.banderaTipoCliente=='pf'}">                                   
-                                    <pe:keyFilter regEx="/[0-9-a-z]/i"/> 
-                                </p:inputText>
-                            </div>
+                            
                         </div>
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                             <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 form-group">

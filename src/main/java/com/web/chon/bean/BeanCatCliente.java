@@ -90,6 +90,8 @@ public class BeanCatCliente implements BeanSimple {
 
         lista_entidades = ifaceCatEntidad.getEntidades();
         lista_entidades_2 = ifaceCatEntidad.getEntidades();
+        data.setPais("MEXICO");
+        data.setIdStatusFk(new BigDecimal(1));
     }
 
     public void changeView() {
@@ -201,19 +203,19 @@ public class BeanCatCliente implements BeanSimple {
     }
 
     public void buscaMunicipios(int edit) {
-//        int idEstado = (data.getEstado_id() == null || data.getEstado_id() == "") ? 0 : Integer.parseInt(data.getEstado_id());
-//        if (data.getEstado_id() != null) {
-//            lista_municipios = ifaceCatMunicipio.getMunicipios(idEstado);
-//        } else {
-//            lista_municipios = null;
-//        }
-//
-//        if (edit != 1) {
-//            data.setMunicipio(null);
-//            data.setMunicipioFiscal(null);
-//        }
-//
-//        buscaColoniasMun(1);
+        //int idEstado = (data.getIdEntidadFk() == null || data.getIdEntidadFk() == "") ? 0 : Integer.parseInt(data.getIdEntidadFk());
+        
+        if (data.getIdEntidadFk() != null) {
+            lista_municipios = ifaceCatMunicipio.getMunicipios(data.getIdEntidadFk() ==null ? 0:  data.getIdEntidadFk().intValue() );
+        } else {
+            lista_municipios = null;
+        }
+
+        if (edit != 1) {
+            data.setIdMunicipioFk(null);
+        }
+
+        buscaColoniasMun(1);
     }
 
 //    public void buscaMunicipios2() {
@@ -223,38 +225,38 @@ public class BeanCatCliente implements BeanSimple {
 //    }
     public void buscaColonias() {
 
-//        lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalById(data.getCodigoPostal());
-//
-//        if (lista_codigos_postales.isEmpty()) {
-//
-//            lista_entidades = ifaceCatEntidad.getEntidades();
-//            lista_municipios = ifaceCatMunicipio.getMunicipios(Integer.parseInt(data.getEstado_id()));
-//            data.setEstado_id(null);
-//            data.setMunicipio(null);
-//            lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalById("");
-//            //data.setID_CP(-1);
-//        } else {
-//
-//            data.setEstado_id(Integer.toString(lista_codigos_postales.get(0).getIdEntidad()));
-//            data.setMunicipio(Integer.toString(lista_codigos_postales.get(0).getIdMunicipio()));
-//            data.setID_CP(new BigDecimal(lista_codigos_postales.get(0).getId_cp()));
-//            lista_municipios = ifaceCatMunicipio.getMunicipios(Integer.parseInt(data.getEstado_id()));
-//        }
+        lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalById(data.getCodigoPostal());
+
+        if (lista_codigos_postales.isEmpty()) {
+
+            lista_entidades = ifaceCatEntidad.getEntidades();
+            lista_municipios = ifaceCatMunicipio.getMunicipios(data.getIdEntidadFk().intValue());
+            data.setIdEntidadFk(null);
+            data.setIdMunicipioFk(null);
+            lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalById("");
+            //data.setID_CP(-1);
+        } else {
+
+            data.setIdEntidadFk(new BigDecimal(lista_codigos_postales.get(0).getIdEntidad()));
+            data.setIdMunicipioFk(new BigDecimal(lista_codigos_postales.get(0).getIdMunicipio()));
+            data.setIdCodigoPostalFk(new BigDecimal(lista_codigos_postales.get(0).getId_cp()));
+            lista_municipios = ifaceCatMunicipio.getMunicipios(data.getIdEntidadFk().intValue());
+        }
 
     }
 
     public void buscaColoniasMun(int edit) {
-//        int idMunicipio = (data.getMunicipio() == null || data.getMunicipio() == "") ? 0 : Integer.parseInt(data.getMunicipio());
-//
-//        if (data.getMunicipio() != null) {
-//            lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalByIdMun(idMunicipio);
-//        } else {
-//            lista_codigos_postales = null;
-//        }
-//
-//        if (edit != 1) {
-//            data.setCodigoPostal(null);
-//        }
+        //int idMunicipio = (data.getMunicipio() == null || data.getMunicipio() == "") ? 0 : Integer.parseInt(data.getMunicipio());
+
+        if (data.getIdMunicipioFk() != null) {
+            lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalByIdMun(data.getIdMunicipioFk()==null ? 0: data.getIdMunicipioFk().intValue());
+        } else {
+            lista_codigos_postales = null;
+        }
+
+        if (edit != 1) {
+            data.setCodigoPostal(null);
+        }
     }
 
     public void buscaMotivos() {
@@ -262,11 +264,11 @@ public class BeanCatCliente implements BeanSimple {
     }
 
     public void ActualizaCodigoPostal() {
-//        for (int i = 0; i < lista_codigos_postales.size(); i++) {
-//            if (lista_codigos_postales.get(i).getId_cp() == data.getID_CP().intValue()) {
-//                data.setCodigoPostal(lista_codigos_postales.get(i).getNumeropostal());
-//            }
-//        }
+        for (int i = 0; i < lista_codigos_postales.size(); i++) {
+            if (lista_codigos_postales.get(i).getId_cp() == data.getIdColoniaFk().intValue()) {
+                data.setCodigoPostal(lista_codigos_postales.get(i).getNumeropostal());
+            }
+        }
 
     }
 

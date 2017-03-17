@@ -73,7 +73,7 @@ public class EjbCatCliente implements NegocioCatCliente {
     public int updateCliente(Cliente clie) {
         try {
             System.out.println("Cliente a modificar :" + clie.toString());
-            Query query = em.createNativeQuery("UPDATE CLIENTE SET NOMBRE = ?,APELLIDO_PATERNO = ?,APELLIDO_MATERNO = ?,EMPRESA = ?,CALLE = ?,SEXO = ?,TELEFONO_CELULAR = ?,TELEFONO_FIJO = ?,EXTENSION = ?,NUM_INT = ?,NUM_EXT = ?,ID_CP = ?,NEXTEL = ?,RAZON = ?,RFC = ?,STATUS = ?,MONTO_CREDITO = ?,TIPO_PERSONA = ?,LOCALIDAD = ?,PAIS = ?,CORREO = ?  WHERE ID_CLIENTE = ? ");
+            Query query = em.createNativeQuery("UPDATE CLIENTE SET NOMBRE = ?,APELLIDO_PATERNO = ?,APELLIDO_MATERNO = ?,EMPRESA = ?,CALLE = ?,SEXO = ?,TELEFONO_CELULAR = ?,TELEFONO_FIJO = ?,EXTENSION = ?,NUM_INT = ?,NUM_EXT = ?,ID_CP = ?,NEXTEL = ?,RAZON = ?,RFC = ?,STATUS = ?,DIAS_CREDITO= ?,MONTO_CREDITO = ?,TIPO_PERSONA = ?,LOCALIDAD = ?,PAIS = ?,CORREO = ?  WHERE ID_CLIENTE = ? ");
             query.setParameter(1, clie.getNombre());
             query.setParameter(2, clie.getPaterno());
             query.setParameter(3, clie.getMaterno());
@@ -116,7 +116,7 @@ public class EjbCatCliente implements NegocioCatCliente {
         //System.out.println("EJB_INSERTA_CLIENTE");
         try {
             //System.out.println("insert : " + clie.toString());
-            Query query = em.createNativeQuery("INSERT INTO CLIENTE (ID_CLIENTE,NOMBRE,APELLIDO_PATERNO,APELLIDO_MATERNO,EMPRESA,CALLE,SEXO,TELEFONO_CELULAR,TELEFONO_FIJO,EXTENSION,NUM_INT,NUM_EXT,ID_CP,NEXTEL,RAZON,RFC,STATUS,FECHA_ALTA,MONTO_CREDITO,TIPO_PERSONA,LOCALIDAD,PAIS,CORREO) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,sysdate,?,?,?,?,?,?)");
+            Query query = em.createNativeQuery("INSERT INTO CLIENTE (ID_CLIENTE,NOMBRE,APELLIDO_PATERNO,APELLIDO_MATERNO,EMPRESA,CALLE,SEXO,TELEFONO_CELULAR,TELEFONO_FIJO,EXTENSION,NUM_INT,NUM_EXT,ID_CP,NEXTEL,RAZON,RFC,STATUS,FECHA_ALTA,DIAS_CREDITO,MONTO_CREDITO,TIPO_PERSONA,LOCALIDAD,PAIS,CORREO) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,sysdate,?,?,?,?,?,?)");
             query.setParameter(1, clie.getIdClientePk());
             query.setParameter(2, clie.getNombre());
             query.setParameter(3, clie.getPaterno());
