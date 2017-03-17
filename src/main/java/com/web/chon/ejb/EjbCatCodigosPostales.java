@@ -1,4 +1,3 @@
-
 package com.web.chon.ejb;
 
 import com.web.chon.negocio.NegocioCatCodigosPostales;
@@ -14,63 +13,57 @@ import javax.persistence.Query;
  *
  * @author freddy
  */
-
 @Stateless(mappedName = "ejbCatCodigosPostales")
-public class EjbCatCodigosPostales implements NegocioCatCodigosPostales{
-    
+public class EjbCatCodigosPostales implements NegocioCatCodigosPostales {
+
     @PersistenceContext(unitName = "persistenceJR")
     EntityManager em;
 
     @Override
-    public List<Object[]> getCodigosByCP(String cp) 
-    {
+    public List<Object[]> getCodigosByCP(String cp) {
         try {
 
             System.out.println("EJB_GET_CODIGOS_POSTALES");
-            Query query = em.createNativeQuery("select cp.id_pk,cp.CODIGO_POSTAL,cp.NOMBRE_COLONIA,m.ID_MUNICIPIO_PK,m.NOMBRE_MUNICIPIO,e.ID_ENTIDAD_PK,e.NOMBRE_ENTIDAD\n" +
-"from CODIGOS_POSTALES cp\n" +
-"INNER JOIN municipios m\n" +
-"on cp.ID_MUNICIPIO_FK=m.ID_MUNICIPIO_PK\n" +
-"INNER JOIN entidad e\n" +
-"on m.ID_ENTIDAD_FK=e.ID_ENTIDAD_PK\n" +
-"where cp.CODIGO_POSTAL=?");
+            Query query = em.createNativeQuery("select cp.id_pk,cp.CODIGO_POSTAL,cp.NOMBRE_COLONIA,m.ID_MUNICIPIO_PK,m.NOMBRE_MUNICIPIO,e.ID_ENTIDAD_PK,e.NOMBRE_ENTIDAD "
+                    + "from CODIGOS_POSTALES cp "
+                    + "INNER JOIN municipios m "
+                    + "on cp.ID_MUNICIPIO_FK=m.ID_MUNICIPIO_PK "
+                    + "INNER JOIN entidad e "
+                    + "on m.ID_ENTIDAD_FK=e.ID_ENTIDAD_PK "
+                    + "where cp.CODIGO_POSTAL=?");
             query.setParameter(1, cp);
             List<Object[]> resultList = null;
             resultList = query.getResultList();
             return resultList;
-        } catch (Exception ex) 
-        {
+        } catch (Exception ex) {
             Logger.getLogger(EjbCatCodigosPostales.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
-       
+
     }
 
     @Override
-    public List<Object[]> getCodigosByIdMun(int idMun) 
-    {
-        
-         try {
+    public List<Object[]> getCodigosByIdMun(int idMun) {
+
+        try {
 
             System.out.println("EJB_GET_CODIGOS_POSTALES");
-            Query query = em.createNativeQuery("select cp.id_pk,cp.CODIGO_POSTAL,cp.NOMBRE_COLONIA,m.ID_MUNICIPIO_PK,m.NOMBRE_MUNICIPIO,e.ID_ENTIDAD_PK,e.NOMBRE_ENTIDAD\n" +
-"from CODIGOS_POSTALES cp\n" +
-"INNER JOIN municipios m\n" +
-"on cp.ID_MUNICIPIO_FK=m.ID_MUNICIPIO_PK\n" +
-"INNER JOIN entidad e\n" +
-"on m.ID_ENTIDAD_FK=e.ID_ENTIDAD_PK\n" +
-"where cp.ID_MUNICIPIO_FK=?");
+            Query query = em.createNativeQuery("select cp.id_pk,cp.CODIGO_POSTAL,cp.NOMBRE_COLONIA,m.ID_MUNICIPIO_PK,m.NOMBRE_MUNICIPIO,e.ID_ENTIDAD_PK,e.NOMBRE_ENTIDAD\n"
+                    + "from CODIGOS_POSTALES cp\n"
+                    + "INNER JOIN municipios m\n"
+                    + "on cp.ID_MUNICIPIO_FK=m.ID_MUNICIPIO_PK\n"
+                    + "INNER JOIN entidad e\n"
+                    + "on m.ID_ENTIDAD_FK=e.ID_ENTIDAD_PK\n"
+                    + "where cp.ID_MUNICIPIO_FK=?");
             query.setParameter(1, idMun);
             List<Object[]> resultList = null;
             resultList = query.getResultList();
             return resultList;
-        } catch (Exception ex) 
-        {
+        } catch (Exception ex) {
             Logger.getLogger(EjbCatCodigosPostales.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
-    
+
     }
 
-    
 }

@@ -16,10 +16,12 @@ import javax.ejb.Remote;
  */
 @Remote
 public interface NegocioDatosFacturacion {
-    public List<Object[]> getDatosFacturacionByIdCliente(BigDecimal idClienteFk);
-    public List<Object[]> getDatosFacturacionByIdSucursal(BigDecimal idSucursalFk);
-    public int deleteDatosFacturacion(String idProducto);
-    public int insertarDatosFacturacion(DatosFacturacion df);
-    public int updateDatosFacturacion(DatosFacturacion df);
+    
+    public List<Object[]> getByIdCliente(BigDecimal idClienteFk);
+    public List<Object[]> getByIdSucursal(BigDecimal idSucursalFk);
+    public int delete(BigDecimal idDatosFacturacion);
+    public int insert(DatosFacturacion df);
+    public int update(DatosFacturacion df);
     public int getNextVal();
+    public List<Object[]> getAll();
 }
