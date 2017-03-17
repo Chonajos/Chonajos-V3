@@ -197,7 +197,7 @@ public class BeanRazonSocial implements Serializable, BeanSimple {
         if (file != null) {
             fileName = file.getFileName().trim();
 
-            path = Constantes.PATHLOCALFACTURACION + File.separatorChar + rfc;
+            path = Constantes.PATHSERVERFACTURACION + File.separatorChar + rfc;
 
             if (existFileOnFolder(fileName)) {
                 JsfUtil.addErrorMessage("Archivo existente, seleccione otro.");
