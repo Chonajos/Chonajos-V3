@@ -83,7 +83,7 @@ public class BeanCatalogosOperaciones implements Serializable {
     public void backView()
     {
         
-        data = new ConceptosES();
+        data.reset();
         setTitle("Catalógo de Operaciones");
         setViewEstate("init");
     }
