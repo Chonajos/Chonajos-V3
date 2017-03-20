@@ -47,7 +47,7 @@
                             <p:commandButton value="Agregar" id="btnAgregar" update=":formContent" ajax="true" class="primaryButton" action="#{beanVentaMayoreo.addProducto()}" rendered="#{beanVentaMayoreo.viewEstate =='viewAddProducto'}" onclick="PF('statusDialog').show()">
                             </p:commandButton>
 
-                            <p:commandButton value="Vender" update=":formContent" ajax="true" class="primaryButton" action="#{beanVentaMayoreo.inserts()}"  immediate="true" resetValues="true" rendered="#{beanVentaMayoreo.viewEstate =='viewAddProducto'}" onclick="PF('statusDialog').show()">
+                            <p:commandButton value="Vender" update=":formContent" ajax="true" class="primaryButton" action="#{beanVentaMayoreo.insert()}"  immediate="true" resetValues="true" rendered="#{beanVentaMayoreo.viewEstate =='viewAddProducto'}" onclick="PF('statusDialog').show()">
                                 <p:confirm header="Confirmación" message="¿Estás seguro de finalizar la venta?" icon="ui-icon-alert" />
                             </p:commandButton>
                             <p:commandButton value="Cancelar" id="cancelarVenta" ajax="true" update="formContent"   action="#{beanVentaMayoreo.cancelarPedido()}" immediate="true" resetValues="true" rendered="#{beanVentaMayoreo.viewEstate =='viewAddProducto'}" onclick="PF('statusDialog').show()">
