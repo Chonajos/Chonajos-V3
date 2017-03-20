@@ -19,8 +19,8 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +37,8 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
     private IfaceVentaMayoreoProducto ifaceVentaMayoreoProducto;
     @Autowired
     private IfaceComprobantes ifaceComprobantes;
+    
+    private static final Logger logger = LoggerFactory.getLogger(ServiceVentaMayoreo.class);
 
     private void getEjb() {
         try {
@@ -44,8 +46,8 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
                 ejb = (NegocioVentaMayoreo) Utilidades.getEJBRemote("ejbVentaMayoreo", NegocioVentaMayoreo.class.getName());
             }
 
-        } catch (Exception ex) {
-            Logger.getLogger(ServiceVentaMayoreo.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            logger.error("Error > "+e.getMessage());
         }
     }
 
@@ -263,8 +265,7 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
 
             return lstPrincipal;
         } catch (Exception ex) {
-
-            System.out.println("Error >" + ex.getMessage());
+            logger.error("Error >"+ex.getMessage());
             return null;
         }
 
@@ -338,8 +339,7 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
 
             return lstCarroDetalle;
         } catch (Exception ex) {
-
-            System.out.println("Error >" + ex.getMessage());
+            logger.error("Error >"+ex.getMessage());
             return null;
         }
     }

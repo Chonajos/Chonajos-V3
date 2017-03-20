@@ -14,8 +14,8 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
@@ -26,6 +26,8 @@ import org.springframework.stereotype.Service;
 public class ServiceVentaMayoreoProducto implements IfaceVentaMayoreoProducto {
 
     NegocioVentaMayoreoProducto ejb;
+    
+    private static final Logger logger = LoggerFactory.getLogger(ServiceVentaMayoreoProducto.class);
 
     private void getEjb() {
         try {
@@ -33,8 +35,9 @@ public class ServiceVentaMayoreoProducto implements IfaceVentaMayoreoProducto {
                 ejb = (NegocioVentaMayoreoProducto) Utilidades.getEJBRemote("ejbVentaMayoreoProducto", NegocioVentaMayoreoProducto.class.getName());
             }
 
-        } catch (Exception ex) {
-            Logger.getLogger(ServiceVentaMayoreoProducto.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            logger.error("Error > "+e.getMessage());
+
         }
     }
 
@@ -88,8 +91,8 @@ public class ServiceVentaMayoreoProducto implements IfaceVentaMayoreoProducto {
                 lstProductos.add(producto);
             }
             return lstProductos;
-        } catch (Exception ex) {
-            Logger.getLogger(ServiceVentaMayoreoProducto.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            logger.error("Error > "+e.getMessage());
             return null;
 
         }
@@ -109,8 +112,8 @@ public class ServiceVentaMayoreoProducto implements IfaceVentaMayoreoProducto {
                 lstVentas.add(producto);
             }
             return lstVentas;
-        } catch (Exception ex) {
-            Logger.getLogger(ServiceVentaMayoreoProducto.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            logger.error("Error > "+e.getMessage());
             return null;
 
         }
@@ -142,8 +145,8 @@ public class ServiceVentaMayoreoProducto implements IfaceVentaMayoreoProducto {
                 lstMayoreoProductoEntradaProducto.add(dominio);
             }
             return lstMayoreoProductoEntradaProducto;
-        } catch (Exception ex) {
-            Logger.getLogger(ServiceVentaMayoreoProducto.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            logger.error("Error > "+e.getMessage());
             return null;
 
         }

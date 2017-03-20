@@ -8,8 +8,8 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
@@ -22,12 +22,14 @@ import org.springframework.stereotype.Service;
 public class ServiceVentaProducto implements IfaceVentaProducto {
 
     NegocioVentaProducto ejb;
+    
+    private static final Logger logger = LoggerFactory.getLogger(ServiceVentaProducto.class);
 
     private void getEjb() {
         try {
             ejb = (NegocioVentaProducto) Utilidades.getEJBRemote("ejbVentaProducto", NegocioVentaProducto.class.getName());
-        } catch (Exception ex) {
-            Logger.getLogger(ServiceVentaProducto.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            logger.error("Error > "+e.getMessage());
         }
     }
 
@@ -36,7 +38,6 @@ public class ServiceVentaProducto implements IfaceVentaProducto {
         if (ejb == null) {
             getEjb();
         }
-        System.out.println("" + ventaProducto.toString());
         return ejb.insertarVentaProducto(ventaProducto, idVenta);
     }
 
@@ -62,8 +63,8 @@ public class ServiceVentaProducto implements IfaceVentaProducto {
             }
 
             return lstProductos;
-        } catch (Exception ex) {
-            Logger.getLogger(ServiceVentaProducto.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            logger.error("Error > "+e.getMessage());
             return null;
 
         }
@@ -106,8 +107,8 @@ public class ServiceVentaProducto implements IfaceVentaProducto {
             }
 
             return lstProductos;
-        } catch (Exception ex) {
-            Logger.getLogger(ServiceVentaProducto.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            logger.error("Error > "+e.getMessage());
             return null;
 
         }

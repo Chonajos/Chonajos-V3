@@ -127,7 +127,7 @@ public class BeanRazonSocial implements Serializable, BeanSimple {
                 if (ifaceDatosFacturacion.insertarDatosFacturacion(data) > 0) {
                     JsfUtil.addSuccessMessage("Registro Insertado.");
                     backView();
-                    model = ifaceDatosFacturacion.getAll();
+                    init();
                 } else {
                     JsfUtil.addErrorMessage("Ocurrio un Error al Insertar el Registro.");
                 }
@@ -155,7 +155,6 @@ public class BeanRazonSocial implements Serializable, BeanSimple {
                 if (ifaceDatosFacturacion.updateDatosFacturacion(data) > 0) {
                     JsfUtil.addSuccessMessage("Registro modificado.");
                     backView();
-                    model = ifaceDatosFacturacion.getAll();
                 } else {
                     JsfUtil.addErrorMessage("Ocurrio un error al intentar modificar el registro.");
                 }
@@ -351,20 +350,22 @@ public class BeanRazonSocial implements Serializable, BeanSimple {
     }
 
     public void viewNew() {
-        data = new DatosFacturacion();
+        data.reset();
         setTitle("Alta de Razón Social");
         setViewEstate("new");
     }
 
     public void backView() {
-        data = new DatosFacturacion();
-
+        data.reset();
         keyFile = null;
         cerFile = null;
         keyPemFile = null;
         cerPemFile = null;
         setTitle("Catalogo de Razón Social");
         setViewEstate("init");
+
+        model.clear();
+        model = ifaceDatosFacturacion.getAll();
     }
 
     public ArrayList<DatosFacturacion> getModel() {

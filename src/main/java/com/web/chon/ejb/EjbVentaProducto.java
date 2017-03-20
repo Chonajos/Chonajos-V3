@@ -4,8 +4,8 @@ import com.web.chon.dominio.VentaProducto;
 import com.web.chon.negocio.NegocioVentaProducto;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -23,6 +23,8 @@ public class EjbVentaProducto implements NegocioVentaProducto {
     @PersistenceContext(unitName = "persistenceJR")
     EntityManager em;
 
+    private static final Logger logger = LoggerFactory.getLogger(EjbVentaProducto.class);
+
     @Override
     public List<Object[]> getVentaProductoByIdVenta(BigDecimal idVenta) {
         try {
@@ -35,8 +37,8 @@ public class EjbVentaProducto implements NegocioVentaProducto {
 
             return resultList;
 
-        } catch (Exception ex) {
-            Logger.getLogger(EjbVentaProducto.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            logger.error("Error > " + e.getMessage());
             return null;
         }
 
@@ -71,8 +73,8 @@ public class EjbVentaProducto implements NegocioVentaProducto {
 
             return resultList;
 
-        } catch (Exception ex) {
-            Logger.getLogger(EjbVentaProducto.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            logger.error("Error > " + e.getMessage());
             return null;
         }
     }
@@ -105,8 +107,8 @@ public class EjbVentaProducto implements NegocioVentaProducto {
 
             return query.getResultList();
 
-        } catch (Exception ex) {
-            System.out.println("error > " + ex.getMessage());
+        } catch (Exception e) {
+            logger.error("Error > " + e.getMessage());
             return null;
         }
     }

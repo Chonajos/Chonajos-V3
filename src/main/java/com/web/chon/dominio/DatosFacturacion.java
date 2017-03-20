@@ -40,7 +40,7 @@ public class DatosFacturacion implements Serializable {
     private String codigoPostal;
     private String nombre;
     private String clavePublica;
-    
+
     private BigDecimal idEntidad;
     private BigDecimal idMunicipio;
 
@@ -259,8 +259,6 @@ public class DatosFacturacion implements Serializable {
     public void setIdMunicipio(BigDecimal idMunicipio) {
         this.idMunicipio = idMunicipio;
     }
-    
-    
 
     public void reset() {
 
@@ -289,6 +287,8 @@ public class DatosFacturacion implements Serializable {
         codigoPostal = null;
         nombre = null;
         clavePublica = null;
+        idEntidad = null;
+        idMunicipio = null;
 
     }
 

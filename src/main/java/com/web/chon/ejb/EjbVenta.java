@@ -49,8 +49,6 @@ public class EjbVenta implements NegocioVenta {
         Query query;
         int cont = 0;
 
-        System.out.println("idTipoVenta " + idTipoVenta);
-
         StringBuffer cadena = new StringBuffer("SELECT ven.ID_VENTA_PK,ven.ID_CLIENTE_FK, "
                 + "  ven.ID_VENDEDOR_FK, ven.FECHA_VENTA,ven.STATUS_FK, "
                 + "  USU.ID_SUCURSAL_FK, "
@@ -132,7 +130,6 @@ public class EjbVenta implements NegocioVenta {
         }
 
         cadena.append(" ORDER BY ven.ID_VENTA_PK");
-        System.out.println("query [] " + cadena.toString());
 
         query = em.createNativeQuery(cadena.toString());
 
@@ -140,7 +137,7 @@ public class EjbVenta implements NegocioVenta {
             List<Object[]> lstObject = query.getResultList();
             return lstObject;
         } catch (Exception e) {
-            System.out.println("Error >" + e.getMessage());
+            Logger.getLogger(EjbBuscaVenta.class.getName()).log(Level.SEVERE, null, e);
             return null;
         }
 
@@ -154,16 +151,14 @@ public class EjbVenta implements NegocioVenta {
 
             return Integer.parseInt(query.getSingleResult().toString());
         } catch (Exception e) {
-            System.out.println("Error >" + e.getMessage());
+            Logger.getLogger(EjbBuscaVenta.class.getName()).log(Level.SEVERE, null, e);
             return 1;
         }
     }
 
     @Override
     public int cancelarVenta(int idVenta, int idUsuario, String comentarios) {
-        System.out.println("idVenta: " + idVenta);
-        System.out.println("idUsuario: " + idUsuario);
-        System.out.println("comentarios: " + comentarios);
+
         try {
             Query query = em.createNativeQuery("UPDATE VENTA SET STATUS_FK= ?,ID_CANCEL_USER_FK=?,COMENTARIOS_CANCEL=?,FECHA_CANCELACION=sysdate WHERE ID_VENTA_PK = ? ");
             query.setParameter(1, 4);

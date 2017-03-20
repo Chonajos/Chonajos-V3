@@ -3,7 +3,6 @@ package com.web.chon.bean;
 import com.web.chon.dominio.Cliente;
 import com.web.chon.dominio.Credito;
 import com.web.chon.dominio.ExistenciaMenudeo;
-import com.web.chon.dominio.ExistenciaProducto;
 import com.web.chon.dominio.MantenimientoPrecios;
 import com.web.chon.dominio.Subproducto;
 import com.web.chon.dominio.TipoEmpaque;
@@ -283,8 +282,7 @@ public class BeanVenta implements Serializable, BeanSimple {
         }
         variableInicial = true;
 
-        searchById();
-
+//        searchById();
     }
 
     public ArrayList<Subproducto> autoComplete(String nombreProducto) {
@@ -300,7 +298,8 @@ public class BeanVenta implements Serializable, BeanSimple {
     }
 
     public ArrayList<Usuario> autoCompleteVendedor(String nombreUsuario) {
-        lstUsuario = ifaceCatUsuario.getUsuarioByNombreCompleto(nombreUsuario.toUpperCase(), idSucu);
+//        idSucu
+        lstUsuario = ifaceCatUsuario.getUsuarioByNombreCompleto(nombreUsuario.toUpperCase(), 0);
         return lstUsuario;
 
     }
@@ -354,7 +353,7 @@ public class BeanVenta implements Serializable, BeanSimple {
 
                 venta.setIdVentaPk(new BigDecimal(idVenta));
                 venta.setIdClienteFk(cliente.getIdClientePk());
-                
+
                 venta.setIdVendedorFk(vendedor.getIdUsuarioPk());
                 venta.setIdUsuarioLogueadoFk(usuario.getIdUsuarioPk());
                 venta.setIdSucursal(idSucu);
@@ -363,11 +362,11 @@ public class BeanVenta implements Serializable, BeanSimple {
                 int ventaInsertada = ifaceVenta.insertarVenta(venta, folioVenta);
                 int productoInsertado = 0;
                 if (ventaInsertada != 0) {
-                    logger.error("Se inserto la venta");
+                    logger.info("Se inserto la venta");
                     for (VentaProducto producto : lstVenta) {
                         if (restarExistencias(producto)) {
                             productoInsertado = ifaceVentaProducto.insertarVentaProducto(producto, idVenta);
-                            logger.error("Se inserto los productos de las ventas");
+                            logger.info("Se inserto los productos de las ventas");
 
                         } else {
                             JsfUtil.addErrorMessage("Error al Realizar la Venta, favor de cancelar la venta y volver a realizarla. Si los problemas persisten contactar al administrado.");
@@ -382,7 +381,7 @@ public class BeanVenta implements Serializable, BeanSimple {
                                 logger.info("Se inserto el credito");
                                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info!", "La venta se realizo correctamente."));
                             } else {
-                                logger.info("No se pudo insertar el credito");
+                                logger.error("No se pudo insertar el credito");
                                 JsfUtil.addErrorMessage("Error al Realizar la Venta, favor de cancelar la venta y volver a realizarla. Si los problemas persisten contactar al administrado.");
                             }
                         }
@@ -391,7 +390,9 @@ public class BeanVenta implements Serializable, BeanSimple {
                     setParameterTicket(idVenta, folioVenta);
 
                     generateReport(idVenta, folioVenta);
+                    data.setIdTipoVentaFk(new BigDecimal("1"));
                     init();
+                    
 
                     lstVenta.clear();
                     totalVenta = new BigDecimal(0);
@@ -475,7 +476,7 @@ public class BeanVenta implements Serializable, BeanSimple {
 
         if (data.getPrecioProducto() != null) {
             if (data.getPrecioProducto().intValue() < min.intValue() || data.getPrecioProducto().intValue() > max.intValue()) {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "El precio de venta esta fuera de valores permitidos: Mínimo:" + min + " Máximo: " + max));
+                JsfUtil.addErrorMessage( "Error!", "El precio de venta esta fuera de valores permitidos: Mínimo:" + min + " Máximo: " + max);
                 //Verifica si hay existencias disponibles y si hay repetidos
             } else if (verificaExistencia(1) && !addRepetidos()) {
 
@@ -796,7 +797,7 @@ public class BeanVenta implements Serializable, BeanSimple {
 
             facesContext.responseComplete();
         } catch (Exception e) {
-            System.out.println("Error >" + e.getMessage());
+            logger.error("Error >" + e.getMessage());
         }
     }
 
@@ -851,23 +852,26 @@ public class BeanVenta implements Serializable, BeanSimple {
         BigDecimal tipoPago = new BigDecimal("1");
         BigDecimal idClienteVenta = new BigDecimal("1");
 
-        if (cliente.getIdClientePk().equals(idClienteVenta)) {
-            credito = false;
-            data.setIdTipoVentaFk(tipoPago);
-        } else if (cliente.getLimiteCredito() == null) {
-            JsfUtil.addWarnMessage("El Cliente no tiene Crédito.");
-            data.setIdTipoVentaFk(tipoPago);
-            credito = false;
-        } else if (cliente.getCreditoDisponible().compareTo(new BigDecimal("0")) == 1) {
-            credito = true;
-        } else {
-            JsfUtil.addWarnMessage("El cliente no tiene credito disponible :" + cliente.getCreditoDisponible());
-            data.setIdTipoVentaFk(tipoPago);
-            credito = false;
+        if (cliente.getIdClientePk() != null) {
+            if (cliente.getIdClientePk().equals(idClienteVenta)) {
+                credito = false;
+                data.setIdTipoVentaFk(tipoPago);
+            } else if (cliente.getLimiteCredito() == null) {
+                JsfUtil.addWarnMessage("El Cliente no tiene Crédito.");
+                data.setIdTipoVentaFk(tipoPago);
+                credito = false;
+            } else if (cliente.getCreditoDisponible().compareTo(new BigDecimal("0")) == 1) {
+                credito = true;
+            } else {
+                JsfUtil.addWarnMessage("El cliente no tiene credito disponible :" + cliente.getCreditoDisponible());
+                data.setIdTipoVentaFk(tipoPago);
+                credito = false;
+            }
         }
         calculaPrecioProducto();
 
     }
+
 
     public void validaPrecioMinimoMaximo(AjaxBehaviorEvent event) {
         InputText input = (InputText) event.getSource();
@@ -1301,6 +1305,5 @@ public class BeanVenta implements Serializable, BeanSimple {
     public void setVendedor(Usuario vendedor) {
         this.vendedor = vendedor;
     }
-    
 
 }

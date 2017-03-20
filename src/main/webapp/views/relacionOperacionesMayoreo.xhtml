@@ -181,13 +181,14 @@
                                     <p:confirm header="Confirmación" message="¿Estás seguro de cancelar la venta?" icon="ui-icon-alert"/>
                                 </p:commandButton>
                             </p:column>
-                            <p:column headerText="imagen" width="60px;"  class="alignCenter">
-                                <p:commandButton icon="ui-icon-image" id="openDialogLink" disabled="#{model.fichero ==null}" update=":formContent:imagen"  onclick="PF('dlg').show();" >
-                                    <f:setPropertyActionListener value="#{model}" target="#{beanRelOperMayoreo.data}"/>
+<!--                            <p:column headerText="imagen" width="60px;"  class="alignCenter">
+                                <p:commandButton icon="ui-icon-image" id="openDialogLink" disabled="{model.fichero ==null}" update=":formContent:imagen"  onclick="PF('dlg').show();" >
+                                    <f:setPropertyActionListener value="{model}" target="{beanRelOperMayoreo.data}"/>
                                 </p:commandButton>
-                            </p:column>
+                            </p:column>-->
                             <p:columnGroup type="footer">
                                 <p:column colspan="1"/>
+                                <p:column colspan="1" />
                                 <p:column colspan="1" />
                                 <p:column colspan="1" />
                                 <p:column colspan="1" />

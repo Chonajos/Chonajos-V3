@@ -20,7 +20,7 @@
             <p:messages id="messages" showIcon="false" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:panel rendered="#{beanRazonSocial.viewEstate=='init'}" style="border: 0px;" >
                 <div class="form-group" align="right">
-                    <p:commandButton value="Nuevo" class="primaryButton" update=":formCatRazon" ajax="true" action="#{beanRazonSocial.viewNew}" icon="ui-icon-person" onclick="PF('statusDialog').show()"/>
+                    <p:commandButton value="Nuevo" resetValues="true" class="primaryButton" update=":formCatRazon" ajax="true" action="#{beanRazonSocial.viewNew}" icon="ui-icon-person" onclick="PF('statusDialog').show()"/>
                     <p:commandButton value="Eliminar" class="primaryButton" update=":formCatRazon" ajax="true" action="#{beanRazonSocial.delete}" icon="ui-icon-trash" onclick="PF('statusDialog').show()"/>
                 </div>
                 <div class="col-lg-10 col-md-10 col-md-12 col-xs-12 col-lg-offset-1 col-md-offset-1">

@@ -2,6 +2,7 @@ package com.web.chon.util;
 
 import com.web.chon.dominio.Usuario;
 import com.web.chon.service.IfaceCatUsuario;
+import java.math.BigDecimal;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -18,17 +19,19 @@ public class UsuarioConverter implements Converter {
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
+        BigDecimal idUsuario = validarNumero(value);
 
-        if (value != null && !value.equals("null") && value.trim().length() > 0) {
+        if (value != null && !value.equals("null") && value.trim().length() > 0 ) {
 
             try {
-                Object object = ifaceCatUsuario.getUsuariosById(Integer.parseInt(value));
+                Object object = ifaceCatUsuario.getUsuariosById(idUsuario.intValue());
 
                 return object;
 
             } catch (Exception e) {
+                System.out.println("value "+value);
 
-                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error" + e.getStackTrace(), "******ss****" + e.getStackTrace()));
+                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error" + e.getMessage(), "******ss****" + e.getStackTrace()));
             }
         } else {
 
@@ -56,6 +59,18 @@ public class UsuarioConverter implements Converter {
 
             return null;
 
+        }
+    }
+    
+     private BigDecimal validarNumero(String value) {
+        try {
+
+            BigDecimal monto = new BigDecimal(value);
+
+            return monto;
+
+        } catch (NumberFormatException e) {
+            return new BigDecimal("0");
         }
     }
 

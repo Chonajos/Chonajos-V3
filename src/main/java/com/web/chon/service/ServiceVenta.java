@@ -10,8 +10,8 @@ import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +29,8 @@ public class ServiceVenta implements IfaceVenta {
     private IfaceVentaProducto ifaceVentaProducto;
     @Autowired
     private IfaceComprobantes ifaceComprobantes;
+    
+    private static final Logger logger = LoggerFactory.getLogger(ServiceVenta.class);
 
     private void getEjb() {
         try {
@@ -36,8 +38,8 @@ public class ServiceVenta implements IfaceVenta {
                 ejb = (NegocioVenta) Utilidades.getEJBRemote("ejbVenta", NegocioVenta.class.getName());
             }
 
-        } catch (Exception ex) {
-            Logger.getLogger(ServiceVenta.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            logger.error("Error > "+e.getMessage());
         }
     }
 

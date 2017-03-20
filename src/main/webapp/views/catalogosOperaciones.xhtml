@@ -17,6 +17,7 @@
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 alignRight ">
                         <div class="form-group" align="right">
+                            <p:commandButton value="Nuevo" class="primaryButton"  ajax="true" action="#{beanProducto.viewNew}" icon="ui-icon-person" onclick="PF('statusDialog').show()" />
                             <p:commandButton value="Nuevo" class="primaryButton" update=":formContent" ajax="true" action="#{beanCatalogosOperaciones.changeViewNew()}"  onclick="PF('statusDialog').show()"/>
                             <p:commandButton value="Guardar" class="primaryButton" update=":formContent" ajax="true" action="#{beanCatalogosOperaciones.insert()}" rendered="#{beanCatalogosOperaciones.viewEstate=='new'}" onclick="PF('statusDialog').show()"/>
                             <p:commandButton value="Actualizar" class="primaryButton" update=":formContent" ajax="true" action="#{beanCatalogosOperaciones.update()}" rendered="#{beanCatalogosOperaciones.viewEstate=='searchById'}" onclick="PF('statusDialog').show()"/>

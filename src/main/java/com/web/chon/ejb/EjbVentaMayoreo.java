@@ -5,12 +5,12 @@ import com.web.chon.dominio.VentaMayoreo;
 import com.web.chon.negocio.NegocioVentaMayoreo;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.logging.Level;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import org.jboss.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -21,6 +21,8 @@ public class EjbVentaMayoreo implements NegocioVentaMayoreo {
 
     @PersistenceContext(unitName = "persistenceJR")
     EntityManager em;
+    
+    private static final Logger logger = LoggerFactory.getLogger(EjbVentaMayoreo.class);
 
     @Override
     public int insertarVenta(VentaMayoreo venta) {
@@ -129,11 +131,10 @@ public class EjbVentaMayoreo implements NegocioVentaMayoreo {
         query = em.createNativeQuery(cadena.toString());
 
         try {
-            System.out.println("" + cadena.toString());
             List<Object[]> lstObject = query.getResultList();
             return lstObject;
         } catch (Exception e) {
-            System.out.println("Error >" + e.getMessage());
+            logger.error("Error >" + e.getMessage());
             return null;
         }
 
@@ -157,9 +158,8 @@ public class EjbVentaMayoreo implements NegocioVentaMayoreo {
 
             return query.executeUpdate();
 
-        } catch (Exception ex) {
-            System.out.println("Error >" + ex.getMessage());
-            Logger.getLogger(EjbVentaMayoreo.class).log(Logger.Level.FATAL, ex);
+        } catch (Exception e) {
+            logger.error("Error >" + e.getMessage());
             return 0;
 
         }
@@ -167,9 +167,6 @@ public class EjbVentaMayoreo implements NegocioVentaMayoreo {
 
     @Override
     public int cancelarVentaMayoreo(BigDecimal idVenta, BigDecimal idUsuario, String comentarios) {
-        System.out.println("idVenta: " + idVenta);
-        System.out.println("idUsuario: " + idUsuario);
-        System.out.println("comentarios: " + comentarios);
         try {
             Query query = em.createNativeQuery("UPDATE VENTA_MAYOREO SET ID_STATUS_FK= ?,ID_USER_CANCEL_FK=?,COMENTARIOS_CANCEL=?,FECHA_CANCELACION=sysdate WHERE ID_VENTA_MAYOREO_PK = ? ");
             query.setParameter(1, 4);
@@ -178,9 +175,8 @@ public class EjbVentaMayoreo implements NegocioVentaMayoreo {
             query.setParameter(4, idVenta);
             return query.executeUpdate();
 
-        } catch (Exception ex) {
-
-            java.util.logging.Logger.getLogger(EjbBuscaVenta.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            logger.error("Error >" + e.getMessage());
             return 0;
         }
 
@@ -204,8 +200,8 @@ public class EjbVentaMayoreo implements NegocioVentaMayoreo {
             query.setParameter(1, idFolio);
             query.setParameter(2, idSucursal);
             return query.getResultList();
-        } catch (Exception ex) {
-            java.util.logging.Logger.getLogger(EjbVentaMayoreo.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            logger.error("Error >" + e.getMessage());
             return null;
         }
 
@@ -236,8 +232,8 @@ public class EjbVentaMayoreo implements NegocioVentaMayoreo {
             Query query = em.createNativeQuery(txtQuery.toString());
 
             return query.getResultList();
-        } catch (Exception ex) {
-            java.util.logging.Logger.getLogger(EjbVentaMayoreo.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            logger.error("Error >" + e.getMessage());
             return null;
         }
 
@@ -268,8 +264,8 @@ public class EjbVentaMayoreo implements NegocioVentaMayoreo {
             Query query = em.createNativeQuery(txtQuery.toString());
 
             return query.getResultList();
-        } catch (Exception ex) {
-            java.util.logging.Logger.getLogger(EjbVentaMayoreo.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            logger.error("Error >" + e.getMessage());
             return null;
         }
     }
@@ -297,9 +293,8 @@ public class EjbVentaMayoreo implements NegocioVentaMayoreo {
 
             return query.getResultList();
 
-        } catch (Exception ex) {
-            System.out.println("error > " + ex.getMessage().toString());
-            ex.getStackTrace();
+        } catch (Exception e) {
+            logger.error("Error >" + e.getMessage());
             return null;
         }
     }

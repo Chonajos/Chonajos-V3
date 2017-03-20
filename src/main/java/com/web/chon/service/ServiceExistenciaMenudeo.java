@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.web.chon.service;
 
 import com.web.chon.dominio.ExistenciaMenudeo;
@@ -12,8 +7,8 @@ import com.web.chon.util.Utilidades;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
@@ -24,6 +19,8 @@ import org.springframework.stereotype.Service;
 public class ServiceExistenciaMenudeo implements IfaceExistenciaMenudeo {
 
     NegocioExistenciaMenudeo ejb;
+    
+    private static final Logger logger = LoggerFactory.getLogger(ServiceExistenciaMenudeo.class);
 
     private void getEjb() {
         try {
@@ -31,8 +28,8 @@ public class ServiceExistenciaMenudeo implements IfaceExistenciaMenudeo {
                 ejb = (NegocioExistenciaMenudeo) Utilidades.getEJBRemote("ejbExistenciaMenudeo", NegocioExistenciaMenudeo.class.getName());
             }
 
-        } catch (Exception ex) {
-            Logger.getLogger(ServiceExistenciaMenudeo.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            logger.error("Error > "+e.getMessage());
         }
     }
 
@@ -129,8 +126,8 @@ public class ServiceExistenciaMenudeo implements IfaceExistenciaMenudeo {
         try {
             return ejb.getNextVal();
 
-        } catch (Exception ex) {
-            Logger.getLogger(ServiceExistenciaMenudeo.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            logger.error("Error > "+e.getMessage());
             return 0;
         }
 
