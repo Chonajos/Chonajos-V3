@@ -94,6 +94,7 @@ public class BeanHistorialAbonos implements Serializable {
     private UsuarioDominio usuarioDominio;
 
     private BigDecimal total;
+    private BigDecimal idTipo;
     private BigDecimal idAbonoPk;
     private BigDecimal idCajaBean;
     private BigDecimal idCreditoFk;
@@ -811,5 +812,15 @@ public class BeanHistorialAbonos implements Serializable {
     public void setIdSucursalOrigenCredito(BigDecimal idSucursalOrigenCredito) {
         this.idSucursalOrigenCredito = idSucursalOrigenCredito;
     }
+
+    public BigDecimal getIdTipo() {
+        return idTipo;
+    }
+
+    public void setIdTipo(BigDecimal idTipo) {
+        this.idTipo = idTipo;
+    }
+    
+    
     
 }

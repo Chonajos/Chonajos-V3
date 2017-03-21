@@ -4,8 +4,8 @@ import com.web.chon.dominio.AbonoCredito;
 import com.web.chon.negocio.NegocioAbonoCredito;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -20,6 +20,8 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
 
     @PersistenceContext(unitName = "persistenceJR")
     EntityManager em;
+    
+    private static final Logger logger = LoggerFactory.getLogger(EjbAbonoCredito.class);
 
     @Override
     public int insert(AbonoCredito abonoCredito) {
@@ -51,7 +53,7 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
             return query.executeUpdate();
 
         } catch (Exception ex) {
-            Logger.getLogger(EjbAbonoCredito.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Error > "+ex.getMessage());
             return 0;
         }
     }
@@ -70,7 +72,7 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
             return query.executeUpdate();
 
         } catch (Exception ex) {
-            Logger.getLogger(EjbAbonoCredito.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Error > "+ex.getMessage());
             return 0;
         }
     }
@@ -86,7 +88,7 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
             return query.executeUpdate();
 
         } catch (Exception ex) {
-            Logger.getLogger(EjbAbonoCredito.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Error > "+ex.getMessage());
             return 0;
         }
     }
@@ -102,7 +104,7 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
             return resultList;
 
         } catch (Exception ex) {
-            Logger.getLogger(EjbAbonoCredito.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Error > "+ex.getMessage());
             return null;
         }
     }
@@ -119,7 +121,7 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
             return resultList;
 
         } catch (Exception ex) {
-            Logger.getLogger(EjbAbonoCredito.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Error > "+ex.getMessage());
             return null;
         }
     }
@@ -140,7 +142,7 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
             return resultList;
 
         } catch (Exception ex) {
-            Logger.getLogger(EjbAbonoCredito.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Error > "+ex.getMessage());
             return null;
         }
     }
@@ -181,7 +183,7 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
             List<Object[]> lstObject = query.getResultList();
             return lstObject;
         } catch (Exception e) {
-            System.out.println("Error >" + e.getMessage());
+            logger.error("Error > "+e.getMessage());
             return null;
         }
 
@@ -201,7 +203,7 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
             return resultList;
 
         } catch (Exception ex) {
-            Logger.getLogger(EjbAbonoCredito.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Error > "+ex.getMessage());
             return null;
         }
 
@@ -221,7 +223,7 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
             return resultList;
 
         } catch (Exception ex) {
-            Logger.getLogger(EjbAbonoCredito.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Error > "+ex.getMessage());
             return null;
         }
 
@@ -242,7 +244,7 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
             return resultList;
 
         } catch (Exception ex) {
-            Logger.getLogger(EjbAbonoCredito.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Error > "+ex.getMessage());
             return null;
         }
     }
@@ -266,32 +268,31 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
                 + "LEFT JOIN VENTA_MAYOREO VM ON VM.ID_VENTA_MAYOREO_PK =cre.ID_VENTA_MAYOREO "
                 + "LEFT JOIN VENTA V ON V.ID_VENTA_PK = cre.ID_VENTA_MENUDEO "
                 + "LEFT JOIN SUCURSAL SVM ON SVM.ID_SUCURSAL_PK = VM.ID_SUCURSAL_FK "
-                + "LEFT JOIN SUCURSAL SV ON SV.ID_SUCURSAL_PK = V.ID_SUCURSAL_FK "
+                + "LEFT JOIN SUCURSAL SV  ON SV.ID_SUCURSAL_PK = V.ID_SUCURSAL_FK "
                 + "WHERE  TO_DATE(TO_CHAR(ab.FECHA_ABONO,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + fechaInicio + " ' AND '" + fechaFin + "'");
 
-        if (idSucursalFk != null && !idSucursalFk.equals("")) {
-            cadena.append(" and sucu.ID_SUCURSAL_PK =" + idSucursalFk + "");
+        if (idSucursalFk != null) {
+            cadena.append(" and sucu.ID_SUCURSAL_PK =").append(idSucursalFk);
         }
 //        
 //        if (idCajaFk != null && !idCajaFk.equals("")) {
 //            cadena.append(" and cli.ID_CLIENTE =" + idClienteFk + "");
 //        }
-        System.out.println("*************");
-        System.out.println("ID-CLIENTE: " + idClienteFk);
-        if (idClienteFk != null && !idClienteFk.equals("")) {
-            cadena.append(" AND cli.ID_CLIENTE =" + idClienteFk + "");
+   
+        if (idClienteFk != null) {
+            cadena.append(" AND cli.ID_CLIENTE =").append(idClienteFk);
         }
-        if (idCajeroFk != null && !idCajeroFk.equals("")) {
-            cadena.append(" AND ab.ID_USUARIO_FK =" + idCajeroFk + "");
+        if (idCajeroFk != null) {
+            cadena.append(" AND ab.ID_USUARIO_FK =").append(idCajeroFk);
         }
-        if (idCreditoFk != null && !idCreditoFk.equals("")) {
-            cadena.append(" AND ab.ID_CREDITO_FK =" + idCreditoFk + "");
+        if (idCreditoFk != null) {
+            cadena.append(" AND ab.ID_CREDITO_FK =").append(idCreditoFk);
         }
-        if (idTipoPagoFk != null && !idTipoPagoFk.equals("")) {
-            cadena.append(" AND ab.TIPO_ABONO_FK =" + idTipoPagoFk + "");
+        if (idTipoPagoFk != null) {
+            cadena.append(" AND ab.TIPO_ABONO_FK =").append(idTipoPagoFk);
         }
-        if (idAbonoPk != null && !idAbonoPk.equals("")) {
-            cadena.append(" AND ab.ID_ABONO_CREDITO_PK =" + idAbonoPk + "");
+        if (idAbonoPk != null) {
+            cadena.append(" AND ab.ID_ABONO_CREDITO_PK =").append(idAbonoPk);
         }
 
         /**
@@ -302,7 +303,7 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
 
         } else ///SOLO QUEDARIA ESTE IF CUANDO SE ARREGLE LA SUCURSAL Q85KILO
             if (idSucursalOrigenCredito != null && !idSucursalOrigenCredito.equals("")) {
-            cadena.append(" AND (VM.ID_SUCURSAL_FK = " + idSucursalOrigenCredito + " OR V.ID_SUCURSAL_FK = " + idSucursalOrigenCredito + ")");
+            cadena.append(" AND (VM.ID_SUCURSAL_FK = ").append(idSucursalOrigenCredito).append( " OR V.ID_SUCURSAL_FK = " ).append(idSucursalOrigenCredito).append(")");
         }
 
         cadena.append(" ORDER BY ab.FECHA_ABONO");
@@ -348,7 +349,7 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
             return resultList;
 
         } catch (Exception ex) {
-            Logger.getLogger(EjbAbonoCredito.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Error > "+ex.getMessage());
             return null;
         }
 
