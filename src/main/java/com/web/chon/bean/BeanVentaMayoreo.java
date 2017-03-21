@@ -142,7 +142,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     private final BigDecimal DIAS_PLAZO = new BigDecimal("7");
     private final BigDecimal ZERO = new BigDecimal(0);
     private final BigDecimal INTERES_VENTA = new BigDecimal("0.60");
-    private final BigDecimal PORCENTAJE_RANGO_VENTA = new BigDecimal("0.20");
+    private final BigDecimal PORCENTAJE_RANGO_VENTA = new BigDecimal("0.15");
 
     private int folioCredito = 0;
 
@@ -167,46 +167,50 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
         credito = false;
         date = context.getFechaSistema();
+        
+        ventaGeneral = new VentaMayoreo();
         cliente = new Cliente();
         cliente = ifaceCatCliente.getClienteById(new BigDecimal(1));
-        ventaGeneral = new VentaMayoreo();
-        usuario = new Usuario();
-        vendedor = new Usuario();
+        
         usuarioDominio = context.getUsuarioAutenticado();
-        idSucu = new BigDecimal(usuarioDominio.getSucId());
 
+        usuario = new Usuario();
         usuario.setIdUsuarioPk(usuarioDominio.getIdUsuario());
-        usuario.setIdSucursal(idSucu.intValue());
+        usuario.setIdSucursal(usuarioDominio.getSucId());
         usuario.setIdRolFk(new BigDecimal(usuarioDominio.getPerId()));
         usuario.setNombreUsuario(usuarioDominio.getUsuNombre());
         usuario.setApaternoUsuario(usuarioDominio.getUsuPaterno());
         usuario.setAmaternoUsuario(usuarioDominio.getUsuMaterno());
 
+        vendedor = new Usuario();
         vendedor.setIdUsuarioPk(usuario.getIdUsuarioPk());
         vendedor.setNombreUsuario(usuario.getNombreUsuario());
         vendedor.setApaternoUsuario(usuario.getApaternoUsuario());
         vendedor.setAmaternoUsuario(usuario.getAmaternoUsuario());
-
-        totalVentaGeneral = new BigDecimal(0);
+        
         data = new VentaProductoMayoreo();
-        setTitle("Venta Mayoreo");
-        setViewEstate("viewAddProducto");
-        lstTipoVenta = ifaceTipoVenta.getAll();
-        lstVenta = new ArrayList<VentaProductoMayoreo>();
-        permisionToWrite = true;
-        totalProductoTemporal = null;
-
-        data.setIdTipoVenta(new BigDecimal("1"));
         data.setTipoPago(new BigDecimal(7));
+        data.setIdTipoVenta(new BigDecimal("1"));
+
+        permisionToWrite = true;
+        permisionToEdit = false;
+        
         max = new BigDecimal(0);
         min = new BigDecimal(0);
+        totalProductoTemporal = null;
         descuento = new BigDecimal(0);
         dejaACuenta = new BigDecimal(0);
+        totalVentaGeneral = new BigDecimal(0);
         totalVentaDescuento = new BigDecimal(0);
-        permisionToEdit = false;
-
-        lstExistencias = new ArrayList<ExistenciaProducto>();
+        idSucu = new BigDecimal(usuarioDominio.getSucId());
+        
+        lstTipoVenta = ifaceTipoVenta.getAll();
         selectedExistencia = new ExistenciaProducto();
+        lstVenta = new ArrayList<VentaProductoMayoreo>();
+        lstExistencias = new ArrayList<ExistenciaProducto>();
+        
+        setTitle("Venta Mayoreo");
+        setViewEstate("viewAddProducto");
 
     }
 
@@ -229,13 +233,13 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                     idTipoConvenioFk = new BigDecimal(segArray[4]);
                     lstExistencias = ifaceNegocioExistencia.getExistenciaByBarCode(idSubpProducto, idTipoempaqueFk, idTipoConvenioFk, idCarro, idSucursalfk);
                     if (lstExistencias.size() == 1) {
-                        selectedExistencia = new ExistenciaProducto();
+
                         selectedExistencia = lstExistencias.get(0);
                         habilitarBotones();
                         RequestContext.getCurrentInstance().update("formContent:modelo2");
                         RequestContext.getCurrentInstance().update("formContent:autocompleteProducto");
                     } else if (lstExistencias.size() > 1) {
-                        selectedExistencia = new ExistenciaProducto();
+
                         habilitarBotones();
                         RequestContext.getCurrentInstance().update("formContent:modelo2");
                         RequestContext.getCurrentInstance().update("formContent:autocompleteProducto");
@@ -253,13 +257,13 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
                     idTipoConvenioFk = new BigDecimal(diaArray[4]);
                     lstExistencias = ifaceNegocioExistencia.getExistenciaByBarCode(idSubpProducto, idTipoempaqueFk, idTipoConvenioFk, idCarro, idSucursalfk);
                     if (lstExistencias.size() == 1) {
-                        selectedExistencia = new ExistenciaProducto();
+
                         selectedExistencia = lstExistencias.get(0);
                         habilitarBotones();
                         RequestContext.getCurrentInstance().update("formContent:modelo2");
                         RequestContext.getCurrentInstance().update("formContent:autocompleteProducto");
                     } else if (lstExistencias.size() > 1) {
-                        selectedExistencia = new ExistenciaProducto();
+
                         habilitarBotones();
                         RequestContext.getCurrentInstance().update("formContent:modelo2");
                         RequestContext.getCurrentInstance().update("formContent:autocompleteProducto");
@@ -413,7 +417,6 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
                         setParameterTicket(ventaGeneral.getVentaSucursal().intValue(), ventaGeneral.getVentaSucursal().intValue());
                         generateReport(ventaGeneral.getVentaSucursal().intValue());
-                        selectedExistencia = new ExistenciaProducto();
                         lstExistencias = new ArrayList<ExistenciaProducto>();
                         lstVenta = new ArrayList<VentaProductoMayoreo>();
                         data.reset();
@@ -465,13 +468,10 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
             lstExistencias = ifaceNegocioExistencia.getExistencias(idSucu, null, null, idproductito, null, null, null, null, new BigDecimal(1));
             if (lstExistencias.size() == 1) {
 
-                selectedExistencia = new ExistenciaProducto();
                 selectedExistencia = lstExistencias.get(0);
 
                 habilitarBotones();
-            } else {
-                selectedExistencia = new ExistenciaProducto();
-            }
+            } 
             if (lstExistencias.isEmpty()) {
                 JsfUtil.addWarnMessage("No se encontraron existencias de este producto.");
             }
@@ -480,7 +480,7 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
             data.setCantidadEmpaque(null);
             data.setPrecioProducto(null);
             data.setKilosVendidos(null);
-            selectedExistencia = new ExistenciaProducto();
+
             permisionToWrite = true;
 
             lstExistencias.clear();

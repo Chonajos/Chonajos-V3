@@ -147,10 +147,6 @@
                                 <h:outputText value="#{model.nombreSucursal}">
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="Origen Crédito" sortBy="#{model.nombreSucursalOrigenVenta}" width="150px;" class="alignLeft">
-                                <h:outputText value="#{model.nombreSucursalOrigenVenta}">
-                                </h:outputText>
-                            </p:column>
                             <!--                            <p:column headerText="Folio Crédito" width="60px;" class="alignCenter">
                                                             <h:outputText value="{model.idCreditoFk}" />
                                                         </p:column>-->
@@ -190,7 +186,6 @@
                                 <p:column colspan="1" />
                                 <p:column colspan="1" />
                                 <p:column colspan="1" />
-                                <p:column colspan="1" />
                                 <p:column colspan="1" footerText="Total: " style="text-align:right"/>
                                 <p:column colspan="1" class="alignRight">
                                     <f:facet name="footer">
@@ -211,7 +206,11 @@
                                                  styleClass="ui-datatable-hor-scroll" 
                                                  emptyMessage="No se encontraron Registros" 
                                                  rendered="#{beanHistorialAbonos.viewEstate =='init'}">
-
+                                        
+                                        <p:column headerText="Origen Crédito" sortBy="#{mode.nombreSucursalOrigenVenta}" width="150px;" class="alignLeft">
+                                            <h:outputText value="#{mode.nombreSucursalOrigenVenta}">
+                                            </h:outputText>
+                                        </p:column>
                                         <p:column headerText="Folio Abono" width="60px;" class="alignCenter">
                                             <h:outputText value="#{mode.idAbonoCreditoPk}" />
                                         </p:column>

@@ -294,13 +294,21 @@ public class EjbAbonoCredito implements NegocioAbonoCredito {
             cadena.append(" AND ab.ID_ABONO_CREDITO_PK =" + idAbonoPk + "");
         }
 
-        if (idSucursalOrigenCredito != null && !idSucursalOrigenCredito.equals("")) {
-            cadena.append(" AND (VM.ID_SUCURSAL_FK = "+idSucursalOrigenCredito+" OR V.ID_SUCURSAL_FK = "+idSucursalOrigenCredito+")");
+        /**
+         * QUITAR ESTA CONDICION CUANDO SE SOLUCIONE LO DE LA SUCURSAL KILO Q85 SE DEBE DE DIVIDIR EN MAYOREO Y MENUDEO FIXME
+         */
+        if (idSucursalOrigenCredito != null && idSucursalOrigenCredito.equals(new BigDecimal(2))) {
+            cadena.append(" AND V.ID_SUCURSAL_FK =1");
+
+        } else ///SOLO QUEDARIA ESTE IF CUANDO SE ARREGLE LA SUCURSAL Q85KILO
+            if (idSucursalOrigenCredito != null && !idSucursalOrigenCredito.equals("")) {
+            cadena.append(" AND (VM.ID_SUCURSAL_FK = " + idSucursalOrigenCredito + " OR V.ID_SUCURSAL_FK = " + idSucursalOrigenCredito + ")");
         }
+
         cadena.append(" ORDER BY ab.FECHA_ABONO");
         Query query;
         query = em.createNativeQuery(cadena.toString());
-        System.out.println("Query: " + query.toString());
+        
         try {
             List<Object[]> lstObject = query.getResultList();
             return lstObject;
