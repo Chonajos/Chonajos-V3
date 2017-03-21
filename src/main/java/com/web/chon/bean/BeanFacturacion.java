@@ -11,6 +11,7 @@ import com.web.chon.dominio.CatalogoSat;
 import com.web.chon.dominio.Cliente;
 import com.web.chon.dominio.DatosFacturacion;
 import com.web.chon.dominio.FacturaPDFDomain;
+import com.web.chon.dominio.ProductoFacturado;
 import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.dominio.VentaMayoreo;
@@ -87,6 +88,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 import com.web.chon.service.IfaceFacturas;
+import com.web.chon.service.IfaceProductoFacturado;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -125,6 +127,8 @@ public class BeanFacturacion implements Serializable {
     private IfaceCatalogoSat ifaceCatalogoSat;
     @Autowired
     private IfaceFacturas ifaceFacturas;
+    @Autowired
+    private IfaceProductoFacturado ifaceProductoFacturado;
 
     //--Variables Generales Bean--//
     private String title;
@@ -187,6 +191,7 @@ public class BeanFacturacion implements Serializable {
     private ArrayList<CatalogoSat> listaFormaPago;
     private ArrayList<CatalogoSat> listaTipoDocumento;
     private ArrayList<CatalogoSat> listaMonedas;
+    private ArrayList<ProductoFacturado> lstProductosFacturado;
 
     private static final BigDecimal TIPO_METODO_PAGO = new BigDecimal(2);
     private static final BigDecimal TIPO_FORMA_PAGO = new BigDecimal(1);
@@ -205,6 +210,7 @@ public class BeanFacturacion implements Serializable {
     ObjectFactory of;
     Comprobante comp;
     private BigDecimal numeroCuenta;
+    
 
     @PostConstruct
     public void init() {
@@ -254,6 +260,35 @@ public class BeanFacturacion implements Serializable {
         verificarCombo();
         buscarFacturas();
 
+    }
+    
+    public void calculaParcialidad()
+    {
+        
+        //condiciones
+        /*
+        1.- No debe exceder el importe total de la venta
+        2.- No negativos
+        3.- Calcular total de kilos por producto en base al monto máximo
+        4.- Traer de la tabla los productos facturados de esa venta y restarlos.
+        */
+        lstProductosFacturado = new ArrayList<ProductoFacturado>();
+        lstProductosFacturado = ifaceProductoFacturado.getByIdTipoFolioFk(ventaMayoreo.getIdtipoVentaFk(),ventaMayoreo.getVentaSucursal());
+        for(ProductoFacturado pf:lstProductosFacturado)
+        {
+            for(VentaProductoMayoreo vp: ventaMayoreo.getListaProductos())
+            {
+                BigDecimal kilosTemporal = new BigDecimal(0);
+                BigDecimal importeTemporal = new BigDecimal(0);
+                BigDecimal cantidadTemporal = new BigDecimal(0);
+                
+                if(pf.getIdLlaveFk().intValue()==vp.getIdVentaMayProdPk().intValue())
+                {
+                    kilosTemporal = vp.getKilosVendidos().subtract(pf.getKilos(), MathContext.UNLIMITED);
+                }
+            }
+            
+        }
     }
 
     public void calcularTotales() {
@@ -902,7 +937,8 @@ public class BeanFacturacion implements Serializable {
         System.out.println("Se guardo el cdf ");
         System.out.println("cadema original " + cfd.getCadenaOriginal());
         nuevaFactura.setCadena(cfd.getCadenaOriginal());
-
+        outFile.close();
+        
         timbrar();
 //        } catch (Exception e) {
 //            
@@ -1655,5 +1691,14 @@ public class BeanFacturacion implements Serializable {
     public void setBanderanumCuenta(String banderanumCuenta) {
         this.banderanumCuenta = banderanumCuenta;
     }
+
+    public ArrayList<ProductoFacturado> getLstProductosFacturado() {
+        return lstProductosFacturado;
+    }
+
+    public void setLstProductosFacturado(ArrayList<ProductoFacturado> lstProductosFacturado) {
+        this.lstProductosFacturado = lstProductosFacturado;
+    }
+    
 
 }
