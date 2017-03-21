@@ -98,9 +98,10 @@ public class BeanSubProducto implements Serializable, BeanSimple {
 
         data = new Subproducto();
         model = new ArrayList<Subproducto>();
-        lstProducto = new ArrayList<Producto>();
+        
         selectedSubProducto = new ArrayList<Subproducto>();
         lstProducto = ifaceProducto.getProductos();
+        System.out.println("init");
         model = ifaceSubProducto.getSubProductos();
         setTitle("Catalogo de Productos");
         setViewEstate("init");
@@ -126,6 +127,7 @@ public class BeanSubProducto implements Serializable, BeanSimple {
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Warning!", "Elija un registro a eliminar."));
         }
+        
         return "producto";
     }
 

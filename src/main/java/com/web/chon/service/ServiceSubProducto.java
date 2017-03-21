@@ -31,7 +31,7 @@ public class ServiceSubProducto implements IfaceSubProducto {
         try {
             ArrayList<Subproducto> lstSubProducto = new ArrayList<Subproducto>();
             ejb = (NegocioSubProducto) Utilidades.getEJBRemote("ejbSubProducto", NegocioSubProducto.class.getName());
-
+            
             List<Object[]> lstObject = ejb.getSubProductos();
 
             for (Object[] obj : lstObject) {
@@ -82,7 +82,9 @@ public class ServiceSubProducto implements IfaceSubProducto {
 
     @Override
     public int deleteSubProducto(String idSubProducto) {
-        return ejb.deleteSubProducto(idSubProducto);
+        int value  = ejb.deleteSubProducto(idSubProducto);
+        System.out.println("value "+value);
+        return value;
     }
 
     @Override

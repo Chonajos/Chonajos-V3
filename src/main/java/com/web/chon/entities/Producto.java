@@ -41,7 +41,7 @@ public class Producto implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_PRODUCTO_PK")
-    private BigDecimal idProductoPk;
+    private String idProductoPk;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 120)
@@ -60,20 +60,20 @@ public class Producto implements Serializable {
     public Producto() {
     }
 
-    public Producto(BigDecimal idProductoPk) {
+    public Producto(String idProductoPk) {
         this.idProductoPk = idProductoPk;
     }
 
-    public Producto(BigDecimal idProductoPk, String nombreProducto) {
+    public Producto(String idProductoPk, String nombreProducto) {
         this.idProductoPk = idProductoPk;
         this.nombreProducto = nombreProducto;
     }
 
-    public BigDecimal getIdProductoPk() {
+    public String getIdProductoPk() {
         return idProductoPk;
     }
 
-    public void setIdProductoPk(BigDecimal idProductoPk) {
+    public void setIdProductoPk(String idProductoPk) {
         this.idProductoPk = idProductoPk;
     }
 

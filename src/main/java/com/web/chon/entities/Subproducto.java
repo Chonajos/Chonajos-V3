@@ -34,9 +34,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Subproducto.findByIdSubproductoPk", query = "SELECT s FROM Subproducto s WHERE s.idSubproductoPk = :idSubproductoPk"),
     @NamedQuery(name = "Subproducto.findByNombreSubproducto", query = "SELECT s FROM Subproducto s WHERE s.nombreSubproducto = :nombreSubproducto"),
     @NamedQuery(name = "Subproducto.findByDescripcionSubproducto", query = "SELECT s FROM Subproducto s WHERE s.descripcionSubproducto = :descripcionSubproducto"),
-    @NamedQuery(name = "Subproducto.findByUrlImagenSubproducto", query = "SELECT s FROM Subproducto s WHERE s.urlImagenSubproducto = :urlImagenSubproducto"),
-    @NamedQuery(name = "Subproducto.findByPrecioMinimo", query = "SELECT s FROM Subproducto s WHERE s.precioMinimo = :precioMinimo"),
-    @NamedQuery(name = "Subproducto.findByPrecioMaximo", query = "SELECT s FROM Subproducto s WHERE s.precioMaximo = :precioMaximo")})
+    @NamedQuery(name = "Subproducto.findByUrlImagenSubproducto", query = "SELECT s FROM Subproducto s WHERE s.urlImagenSubproducto = :urlImagenSubproducto"),})
 public class Subproducto implements Serializable {
 
     @Lob
@@ -49,7 +47,7 @@ public class Subproducto implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_SUBPRODUCTO_PK")
-    private BigDecimal idSubproductoPk;
+    private String idSubproductoPk;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 120)
@@ -61,10 +59,6 @@ public class Subproducto implements Serializable {
     @Size(max = 255)
     @Column(name = "URL_IMAGEN_SUBPRODUCTO")
     private String urlImagenSubproducto;
-    @Column(name = "PRECIO_MINIMO")
-    private BigInteger precioMinimo;
-    @Column(name = "PRECIO_MAXIMO")
-    private BigInteger precioMaximo;
     @JoinColumn(name = "ID_PRODUCTO_FK", referencedColumnName = "ID_PRODUCTO_PK")
     @ManyToOne
     private Producto idProductoFk;
@@ -72,20 +66,20 @@ public class Subproducto implements Serializable {
     public Subproducto() {
     }
 
-    public Subproducto(BigDecimal idSubproductoPk) {
+    public Subproducto(String idSubproductoPk) {
         this.idSubproductoPk = idSubproductoPk;
     }
 
-    public Subproducto(BigDecimal idSubproductoPk, String nombreSubproducto) {
+    public Subproducto(String idSubproductoPk, String nombreSubproducto) {
         this.idSubproductoPk = idSubproductoPk;
         this.nombreSubproducto = nombreSubproducto;
     }
 
-    public BigDecimal getIdSubproductoPk() {
+    public String getIdSubproductoPk() {
         return idSubproductoPk;
     }
 
-    public void setIdSubproductoPk(BigDecimal idSubproductoPk) {
+    public void setIdSubproductoPk(String idSubproductoPk) {
         this.idSubproductoPk = idSubproductoPk;
     }
 
@@ -111,22 +105,6 @@ public class Subproducto implements Serializable {
 
     public void setUrlImagenSubproducto(String urlImagenSubproducto) {
         this.urlImagenSubproducto = urlImagenSubproducto;
-    }
-
-    public BigInteger getPrecioMinimo() {
-        return precioMinimo;
-    }
-
-    public void setPrecioMinimo(BigInteger precioMinimo) {
-        this.precioMinimo = precioMinimo;
-    }
-
-    public BigInteger getPrecioMaximo() {
-        return precioMaximo;
-    }
-
-    public void setPrecioMaximo(BigInteger precioMaximo) {
-        this.precioMaximo = precioMaximo;
     }
 
     public Producto getIdProductoFk() {
