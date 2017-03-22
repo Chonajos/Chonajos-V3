@@ -210,7 +210,6 @@ public class BeanFacturacion implements Serializable {
     ObjectFactory of;
     Comprobante comp;
     private BigDecimal numeroCuenta;
-    
 
     @PostConstruct
     public void init() {
@@ -261,34 +260,120 @@ public class BeanFacturacion implements Serializable {
         buscarFacturas();
 
     }
-    
-    public void calculaParcialidad()
-    {
-        
+
+    public int verificarMontoParicalidad() {
+        BigDecimal t = new BigDecimal(0);
+        if (importeParcialidad.compareTo(t) < 1) {
+            return 0;
+        }
+        for (VentaProductoMayoreo p : ventaMayoreo.getListaProductos()) {
+            t = t.add(p.getTotalVenta(), MathContext.UNLIMITED);
+        }
+        if (importeParcialidad.compareTo(t) > 0) {
+            return 0;
+        } else {
+            return 1;
+        }
+    }
+
+    public void calculaParcialidad() {
+        buscarFolioVenta();
+        if (verificarMontoParicalidad() == 1) {
+            System.out.println("Calcular Parcialidad");
+            BigDecimal temporalParcialidad = importeParcialidad;
+            ArrayList<VentaProductoMayoreo> lstTemporalProductosFacturar = new ArrayList<VentaProductoMayoreo>();
+            for (VentaProductoMayoreo producto : ventaMayoreo.getListaProductos()) {
+                if (temporalParcialidad.compareTo(new BigDecimal(0)) > 0) {
+                    if (temporalParcialidad.compareTo(producto.getTotalVenta()) >= 0) {
+                        //el importe de la parcilidad es mayor al de ese producto
+                        System.out.println("Total Venta: " + producto.getTotalVenta());
+                        System.out.println("Temporal Parcialidad: " + temporalParcialidad);
+                        temporalParcialidad = temporalParcialidad.subtract(producto.getTotalVenta(), MathContext.UNLIMITED);
+                        System.out.println("Temporal Parcialidad: " + temporalParcialidad);
+                        producto.setKilosVendidos(producto.getKilosVendidos());
+                        producto.setTotalVenta(producto.getTotalVenta());
+                        lstTemporalProductosFacturar.add(producto);
+
+                    } else {
+                        /*
+                xkilos = xImporte
+                x      = temporalParcialidad;
+                
+                         */
+                        BigDecimal kilosT = new BigDecimal(0);
+                        BigDecimal division = new BigDecimal(0);
+
+                        kilosT = temporalParcialidad.setScale(2, RoundingMode.CEILING).multiply(producto.getKilosVendidos().setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
+                        kilosT.setScale(2, RoundingMode.CEILING);
+                        System.out.println("KilosT: " + kilosT);
+                        System.out.println("Producto: " + producto.getTotalVenta());
+                        division = (kilosT).divide(producto.getTotalVenta(), 2, RoundingMode.CEILING);
+                        producto.setKilosVendidos(division);
+                        producto.setTotalVenta(temporalParcialidad);
+                        lstTemporalProductosFacturar.add(producto);
+
+                        temporalParcialidad = temporalParcialidad.subtract(producto.getTotalVenta(), MathContext.UNLIMITED);
+
+                        //el importe de la parcialidad es menor
+                        //recalcular todo :S 
+                    }
+                }
+
+            }
+            ventaMayoreo.getListaProductos().clear();
+            ventaMayoreo.setListaProductos(lstTemporalProductosFacturar);
+
+            System.out.println("Importe Parcialidad: " + importeParcialidad);
+            ventaMayoreo.setTotalVenta(importeParcialidad);
+            calcularTotales();
+        } else {
+            JsfUtil.addErrorMessageClean("El monto de la parcialidad supera el monto a liquidar de la venta, o el monto debe ser mayor a cero");
+        }
+    }
+
+    public void calculaKilosPorFacturar() {
         //condiciones
         /*
         1.- No debe exceder el importe total de la venta
         2.- No negativos
         3.- Calcular total de kilos por producto en base al monto máximo
         4.- Traer de la tabla los productos facturados de esa venta y restarlos.
-        */
+         */
         lstProductosFacturado = new ArrayList<ProductoFacturado>();
-        lstProductosFacturado = ifaceProductoFacturado.getByIdTipoFolioFk(ventaMayoreo.getIdtipoVentaFk(),ventaMayoreo.getVentaSucursal());
-        for(ProductoFacturado pf:lstProductosFacturado)
+        lstProductosFacturado = ifaceProductoFacturado.getByIdTipoFolioFk(ventaMayoreo.getIdtipoVentaFk(), ventaMayoreo.getVentaSucursal());
+        BigDecimal importeTemporalTotal = new BigDecimal(0);
+        for (ProductoFacturado pf : lstProductosFacturado) 
         {
-            for(VentaProductoMayoreo vp: ventaMayoreo.getListaProductos())
-            {
-                BigDecimal kilosTemporal = new BigDecimal(0);
-                BigDecimal importeTemporal = new BigDecimal(0);
-                BigDecimal cantidadTemporal = new BigDecimal(0);
-                
-                if(pf.getIdLlaveFk().intValue()==vp.getIdVentaMayProdPk().intValue())
-                {
+            BigDecimal kilosTemporal;
+            BigDecimal importeTemporal;
+
+            for (VentaProductoMayoreo vp : ventaMayoreo.getListaProductos()) {
+
+                //BigDecimal importeTemporal = new BigDecimal(0);
+                //BigDecimal cantidadTemporal = new BigDecimal(0);
+                if (pf.getIdLlaveFk().intValue() == vp.getIdVentaMayProdPk().intValue()) {
+
                     kilosTemporal = vp.getKilosVendidos().subtract(pf.getKilos(), MathContext.UNLIMITED);
+                    importeTemporal = vp.getTotalVenta().subtract(pf.getImporte(), MathContext.UNLIMITED);
+                    System.out.println("Kilos Totales de Venta: " + vp.getKilosVendidos());
+                    System.out.println("Kilos Facturados: " + pf.getKilos());
+                    System.out.println("Kilos por Facturar: " + kilosTemporal);
+
+                    System.out.println("Importe Total de la Venta: " + vp.getTotalVenta());
+                    System.out.println("Importe Facturado: " + pf.getImporte());
+                    System.out.println("Importe por Facturar: " + importeTemporal);
+                    System.out.println("===============================================");
+                    vp.setKilosVendidos(kilosTemporal);
+                    vp.setTotalVentaSinIva(importeTemporal);
+                    vp.setTotalVenta(importeTemporal);
+                    importeTemporalTotal = importeTemporalTotal.add(importeTemporal, MathContext.UNLIMITED);
+                    //importeTemporal = vp.getTotalVenta().subtract(pf.getImporte(), MathContext.UNLIMITED);
                 }
             }
-            
+
         }
+        ventaMayoreo.setTotalVenta(importeTemporalTotal);
+        System.out.println("Total de Venta: -----" + importeTemporalTotal);
     }
 
     public void calcularTotales() {
@@ -296,17 +381,23 @@ public class BeanFacturacion implements Serializable {
         BigDecimal importeSinIva = new BigDecimal(0);
         BigDecimal importeConIva = new BigDecimal(0);
 
+        ArrayList<VentaProductoMayoreo> lstproductosTemporal = new ArrayList<VentaProductoMayoreo>();
         for (CatalogoSat cs : listaTipoDocumento) {
 
             if (cs.getIdCatalogoSatPk().intValue() == tipoDocumento.intValue()) {
                 BigDecimal totalSinIvaFOR = new BigDecimal(0);
                 for (VentaProductoMayoreo vmp : ventaMayoreo.getListaProductos()) {
-                    BigDecimal iva = vmp.getTotalVenta().multiply(cs.getValor(), MathContext.UNLIMITED);
-                    vmp.setTotalVentaSinIva(vmp.getTotalVenta().subtract(iva.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED));
-                    vmp.setPrecioProductoSinIva(vmp.getTotalVentaSinIva().setScale(2, RoundingMode.CEILING).divide(vmp.getKilosVendidos().setScale(2, RoundingMode.CEILING)));
-
-                    totalSinIvaFOR = totalSinIvaFOR.add(vmp.getTotalVentaSinIva(), MathContext.UNLIMITED);
+                    if (vmp.getKilosVendidos().compareTo(new BigDecimal(0)) > 0) 
+                    {
+                        BigDecimal iva = vmp.getTotalVenta().multiply(cs.getValor(), MathContext.UNLIMITED);
+                        vmp.setTotalVentaSinIva(vmp.getTotalVenta().subtract(iva.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED));
+                        vmp.setPrecioProductoSinIva(vmp.getTotalVentaSinIva().setScale(2, RoundingMode.CEILING).divide(vmp.getKilosVendidos(), 2, RoundingMode.CEILING));
+                        totalSinIvaFOR = totalSinIvaFOR.add(vmp.getTotalVentaSinIva(), MathContext.UNLIMITED);
+                        lstproductosTemporal.add(vmp);
+                    }
                 }
+                ventaMayoreo.getListaProductos().clear();
+                ventaMayoreo.setListaProductos(lstproductosTemporal);
                 ventaMayoreo.setTotalVentaSinIva(totalSinIvaFOR);
                 //impore sin iva
                 importeConIva = ventaMayoreo.getTotalVenta();
@@ -328,7 +419,8 @@ public class BeanFacturacion implements Serializable {
                 System.out.println("subTotal : " + subTotal);
                 iva = (cs.getValor().multiply(new BigDecimal(100), MathContext.UNLIMITED).setScale(2, RoundingMode.CEILING)).multiply(ventaMayoreo.getTotalVenta().subtract(descuento.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED).setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
                 System.out.println("Iva:  : " + iva);
-                iva = iva.setScale(2, RoundingMode.CEILING).divide(new BigDecimal(100).setScale(2, RoundingMode.CEILING));
+
+                iva = iva.setScale(2, RoundingMode.CEILING).divide(new BigDecimal(100), 2, RoundingMode.CEILING);
                 System.out.println("Iva Dividido:  : " + iva);
                 total = (iva.setScale(2, RoundingMode.CEILING)).add(subTotal.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
                 System.out.println("Total: " + total);
@@ -431,6 +523,7 @@ public class BeanFacturacion implements Serializable {
         }
 
         buscarDatosCliente();
+        calculaKilosPorFacturar();
         calcularTotales();
     }
 
@@ -744,7 +837,7 @@ public class BeanFacturacion implements Serializable {
 
     }
 
-    public void insertarFactura() throws IOException {
+    public int insertarFactura() throws IOException {
         nuevaFactura.setIdFacturaPk(new BigDecimal(ifaceFacturas.getNextVal()));
         nuevaFactura.setNumeroFactura(ventaMayoreo.getVentaSucursal().toString());
 
@@ -769,33 +862,45 @@ public class BeanFacturacion implements Serializable {
 
         if (ifaceFacturas.insert(nuevaFactura) == 1) {
             //Convertir el archivo a Bytes y Guardarlo
+            for (VentaProductoMayoreo vmp : ventaMayoreo.getListaProductos()) {
+                ProductoFacturado pf = new ProductoFacturado();
+                pf.setCantidad(new BigDecimal(0));
+                pf.setIdFacturaFk(nuevaFactura.getIdFacturaPk());
+                pf.setIdLlaveFk(vmp.getIdVentaMayProdPk());
+                pf.setIdProductoFacturadoPk(new BigDecimal(ifaceProductoFacturado.getNextVal()));
+                pf.setIdTipoLlaveFk(ventaMayoreo.getIdtipoVentaFk());
+                pf.setImporte(vmp.getTotalVenta());
+                pf.setKilos(vmp.getKilosVendidos());
+
+                ifaceProductoFacturado.insert(pf);
+
+            }
 
             //Generar PDF
             JsfUtil.addSuccessMessageClean("Se ha generado la factura exitosamente");
+            return 1;
         } else {
+
             JsfUtil.addErrorMessageClean("Ocurrió un error al insertar la factura");
+            return 0;
         }
 
     }
 
-    public void timbrar() {
-        //String xmlPruebasTimbrado = "<?xml version='1.0' encoding='UTF-8'?>\n"
-        //        + "<cfdi:Comprobante xmlns:cfdi='http://www.sat.gob.mx/cfd/3' xmlns:tfd='http://www.sat.gob.mx/TimbreFiscalDigital' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv32.xsd' version='3.2' serie='A' folio='15861' fecha='2017-03-15T09:33:14' sello='TdH9hapysPLZOLUe2fnsgLpXR8n7Xvh9VJ+yHHqjaYHLHmI6uhJi+N7IfwbVpK0KDIAs6XWQSt4iQzhn+lLiMn92SouG5QQJSA3aylrcs+vUi8hj0uoe2YA6V/XIc0GDfiHuOrEx/Rk3UWLwpJAO9ORSKx0PtYy3ANedvX2cSio=' formaDePago='PAGO EN UNA SOLA EXHIBICION' noCertificado='20001000000200001428' certificado='MIIEYTCCA0mgAwIBAgIUMjAwMDEwMDAwMDAyMDAwMDE0MjgwDQYJKoZIhvcNAQEFBQAwggFcMRowGAYDVQQDDBFBLkMuIDIgZGUgcHJ1ZWJhczEvMC0GA1UECgwmU2VydmljaW8gZGUgQWRtaW5pc3RyYWNpw7NuIFRyaWJ1dGFyaWExODA2BgNVBAsML0FkbWluaXN0cmFjacOzbiBkZSBTZWd1cmlkYWQgZGUgbGEgSW5mb3JtYWNpw7NuMSkwJwYJKoZIhvcNAQkBFhphc2lzbmV0QHBydWViYXMuc2F0LmdvYi5teDEmMCQGA1UECQwdQXYuIEhpZGFsZ28gNzcsIENvbC4gR3VlcnJlcm8xDjAMBgNVBBEMBTA2MzAwMQswCQYDVQQGEwJNWDEZMBcGA1UECAwQRGlzdHJpdG8gRmVkZXJhbDESMBAGA1UEBwwJQ295b2Fjw6FuMTQwMgYJKoZIhvcNAQkCDCVSZXNwb25zYWJsZTogQXJhY2VsaSBHYW5kYXJhIEJhdXRpc3RhMB4XDTEzMDUwNzE2MDEyOVoXDTE3MDUwNzE2MDEyOVowgdsxKTAnBgNVBAMTIEFDQ0VNIFNFUlZJQ0lPUyBFTVBSRVNBUklBTEVTIFNDMSkwJwYDVQQpEyBBQ0NFTSBTRVJWSUNJT1MgRU1QUkVTQVJJQUxFUyBTQzEpMCcGA1UEChMgQUNDRU0gU0VSVklDSU9TIEVNUFJFU0FSSUFMRVMgU0MxJTAjBgNVBC0THEFBQTAxMDEwMUFBQSAvIEhFR1Q3NjEwMDM0UzIxHjAcBgNVBAUTFSAvIEhFR1Q3NjEwMDNNREZOU1IwODERMA8GA1UECxMIcHJvZHVjdG8wgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAKS/beUVy6E3aODaNuLd2S3PXaQre0tGxmYTeUxa55x2t/7919ttgOpKF6hPF5KvlYh4ztqQqP4yEV+HjH7yy/2d/+e7t+J61jTrbdLqT3WD0+s5fCL6JOrF4hqy//EGdfvYftdGRNrZH+dAjWWml2S/hrN9aUxraS5qqO1b7btlAgMBAAGjHTAbMAwGA1UdEwEB/wQCMAAwCwYDVR0PBAQDAgbAMA0GCSqGSIb3DQEBBQUAA4IBAQACPXAWZX2DuKiZVv35RS1WFKgT2ubUO9C+byfZapV6ZzYNOiA4KmpkqHU/bkZHqKjR+R59hoYhVdn+ClUIliZf2ChHh8s0a0vBRNJ3IHfA1akWdzocYZLXjz3m0Er31BY+uS3qWUtPsONGVDyZL6IUBBUlFoecQhP9AO39er8zIbeU2b0MMBJxCt4vbDKFvT9i3V0Puoo+kmmkf15D2rBGR+drd8H8Yg8TDGFKf2zKmRsgT7nIeou6WpfYp570WIvLJQY+fsMp334D05Up5ykYSAxUGa30RdUzA4rxN5hT+W9whWVGD88TD33Nw55uNRUcRO3ZUVHmdWRG+GjhlfsD' subTotal='11040.00' descuento='0' Moneda='MXN' total='11040.00' tipoDeComprobante='egreso' metodoDePago='01' LugarExpedicion='09040'><cfdi:Emisor rfc='AAA010101AAA' nombre='COMERCIALIZADORA Y EXPORTADORA CHONAJOS S DE RL DE CV'><cfdi:DomicilioFiscal calle='AVENIDA TRABAJADORES SOCIALES EJE 5 ZONA V SECCION 5 NAVE 2' noExterior='BODEGA Q 85' colonia='Central de Abasto' localidad='MEXICO' municipio='Iztapalapa' estado='Ciudad de México' pais='MEXICO' codigoPostal='09040'/><cfdi:RegimenFiscal Regimen='REGIMEN GENERAL DE LEY'/></cfdi:Emisor><cfdi:Receptor rfc='VEHC761003U32' nombre='Juan  De la cruz  Sistemas'><cfdi:Domicilio calle='CALLESITA' colonia='Maguey Blanco' municipio='Ixmiquilpan' estado='Hidalgo' pais='MEXICO' codigoPostal='42320'/></cfdi:Receptor><cfdi:Conceptos><cfdi:Concepto cantidad='150' unidad='KILOS' descripcion='Ajo Fancy' valorUnitario='56' importe='8400'/><cfdi:Concepto cantidad='30' unidad='KILOS' descripcion='Ajo CHILENO 6X' valorUnitario='63' importe='1890'/><cfdi:Concepto cantidad='15' unidad='KILOS' descripcion='Morita' valorUnitario='50' importe='750'/></cfdi:Conceptos><cfdi:Impuestos><cfdi:Traslados><cfdi:Traslado impuesto='IVA' tasa='16.00' importe='0'/></cfdi:Traslados></cfdi:Impuestos><cfdi:Complemento><tfd:TimbreFiscalDigital xsi:schemaLocation='http://www.sat.gob.mx/TimbreFiscalDigital http://www.sat.gob.mx/sitio_internet/TimbreFiscalDigital/TimbreFiscalDigital.xsd' version='1.0' UUID='FFFFFFFF-3D6D-180C-2272-6941C55B4D59' FechaTimbrado='2017-03-15T09:33:26' selloCFD='TdH9hapysPLZOLUe2fnsgLpXR8n7Xvh9VJ+yHHqjaYHLHmI6uhJi+N7IfwbVpK0KDIAs6XWQSt4iQzhn+lLiMn92SouG5QQJSA3aylrcs+vUi8hj0uoe2YA6V/XIc0GDfiHuOrEx/Rk3UWLwpJAO9ORSKx0PtYy3ANedvX2cSio=' noCertificadoSAT='30001000000100000801' selloSAT='C0FgUTSh++khoKQ5QTXIql5U/mHgu++H5Niga9ldPt9fB9Y5mqjxMI+QRmQlFGImxVYKVQyiMF4tcpnzMp8Ue5zDNmjYsMk+bjkyZy5jCBaH9AXZAqOGwvbI5y570pUV5WEzltQ3SzUUKdLx3hLh/KOYQwBD4RvefmzOkzMsbMY='/></cfdi:Complemento></cfdi:Comprobante>";
+    public int timbrar() {
+        int bandera = 0;
+//        String xmlPruebasTimbrado = "<?xml version='1.0' encoding='UTF-8'?>\n"
+//                + "<cfdi:Comprobante xmlns:cfdi='http://www.sat.gob.mx/cfd/3' xmlns:tfd='http://www.sat.gob.mx/TimbreFiscalDigital' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv32.xsd' version='3.2' serie='A' folio='15861' fecha='2017-03-15T09:33:14' sello='TdH9hapysPLZOLUe2fnsgLpXR8n7Xvh9VJ+yHHqjaYHLHmI6uhJi+N7IfwbVpK0KDIAs6XWQSt4iQzhn+lLiMn92SouG5QQJSA3aylrcs+vUi8hj0uoe2YA6V/XIc0GDfiHuOrEx/Rk3UWLwpJAO9ORSKx0PtYy3ANedvX2cSio=' formaDePago='PAGO EN UNA SOLA EXHIBICION' noCertificado='20001000000200001428' certificado='MIIEYTCCA0mgAwIBAgIUMjAwMDEwMDAwMDAyMDAwMDE0MjgwDQYJKoZIhvcNAQEFBQAwggFcMRowGAYDVQQDDBFBLkMuIDIgZGUgcHJ1ZWJhczEvMC0GA1UECgwmU2VydmljaW8gZGUgQWRtaW5pc3RyYWNpw7NuIFRyaWJ1dGFyaWExODA2BgNVBAsML0FkbWluaXN0cmFjacOzbiBkZSBTZWd1cmlkYWQgZGUgbGEgSW5mb3JtYWNpw7NuMSkwJwYJKoZIhvcNAQkBFhphc2lzbmV0QHBydWViYXMuc2F0LmdvYi5teDEmMCQGA1UECQwdQXYuIEhpZGFsZ28gNzcsIENvbC4gR3VlcnJlcm8xDjAMBgNVBBEMBTA2MzAwMQswCQYDVQQGEwJNWDEZMBcGA1UECAwQRGlzdHJpdG8gRmVkZXJhbDESMBAGA1UEBwwJQ295b2Fjw6FuMTQwMgYJKoZIhvcNAQkCDCVSZXNwb25zYWJsZTogQXJhY2VsaSBHYW5kYXJhIEJhdXRpc3RhMB4XDTEzMDUwNzE2MDEyOVoXDTE3MDUwNzE2MDEyOVowgdsxKTAnBgNVBAMTIEFDQ0VNIFNFUlZJQ0lPUyBFTVBSRVNBUklBTEVTIFNDMSkwJwYDVQQpEyBBQ0NFTSBTRVJWSUNJT1MgRU1QUkVTQVJJQUxFUyBTQzEpMCcGA1UEChMgQUNDRU0gU0VSVklDSU9TIEVNUFJFU0FSSUFMRVMgU0MxJTAjBgNVBC0THEFBQTAxMDEwMUFBQSAvIEhFR1Q3NjEwMDM0UzIxHjAcBgNVBAUTFSAvIEhFR1Q3NjEwMDNNREZOU1IwODERMA8GA1UECxMIcHJvZHVjdG8wgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAKS/beUVy6E3aODaNuLd2S3PXaQre0tGxmYTeUxa55x2t/7919ttgOpKF6hPF5KvlYh4ztqQqP4yEV+HjH7yy/2d/+e7t+J61jTrbdLqT3WD0+s5fCL6JOrF4hqy//EGdfvYftdGRNrZH+dAjWWml2S/hrN9aUxraS5qqO1b7btlAgMBAAGjHTAbMAwGA1UdEwEB/wQCMAAwCwYDVR0PBAQDAgbAMA0GCSqGSIb3DQEBBQUAA4IBAQACPXAWZX2DuKiZVv35RS1WFKgT2ubUO9C+byfZapV6ZzYNOiA4KmpkqHU/bkZHqKjR+R59hoYhVdn+ClUIliZf2ChHh8s0a0vBRNJ3IHfA1akWdzocYZLXjz3m0Er31BY+uS3qWUtPsONGVDyZL6IUBBUlFoecQhP9AO39er8zIbeU2b0MMBJxCt4vbDKFvT9i3V0Puoo+kmmkf15D2rBGR+drd8H8Yg8TDGFKf2zKmRsgT7nIeou6WpfYp570WIvLJQY+fsMp334D05Up5ykYSAxUGa30RdUzA4rxN5hT+W9whWVGD88TD33Nw55uNRUcRO3ZUVHmdWRG+GjhlfsD' subTotal='11040.00' descuento='0' Moneda='MXN' total='11040.00' tipoDeComprobante='egreso' metodoDePago='01' LugarExpedicion='09040'><cfdi:Emisor rfc='AAA010101AAA' nombre='COMERCIALIZADORA Y EXPORTADORA CHONAJOS S DE RL DE CV'><cfdi:DomicilioFiscal calle='AVENIDA TRABAJADORES SOCIALES EJE 5 ZONA V SECCION 5 NAVE 2' noExterior='BODEGA Q 85' colonia='Central de Abasto' localidad='MEXICO' municipio='Iztapalapa' estado='Ciudad de México' pais='MEXICO' codigoPostal='09040'/><cfdi:RegimenFiscal Regimen='REGIMEN GENERAL DE LEY'/></cfdi:Emisor><cfdi:Receptor rfc='VEHC761003U32' nombre='Juan  De la cruz  Sistemas'><cfdi:Domicilio calle='CALLESITA' colonia='Maguey Blanco' municipio='Ixmiquilpan' estado='Hidalgo' pais='MEXICO' codigoPostal='42320'/></cfdi:Receptor><cfdi:Conceptos><cfdi:Concepto cantidad='150' unidad='KILOS' descripcion='Ajo Fancy' valorUnitario='56' importe='8400'/><cfdi:Concepto cantidad='30' unidad='KILOS' descripcion='Ajo CHILENO 6X' valorUnitario='63' importe='1890'/><cfdi:Concepto cantidad='15' unidad='KILOS' descripcion='Morita' valorUnitario='50' importe='750'/></cfdi:Conceptos><cfdi:Impuestos><cfdi:Traslados><cfdi:Traslado impuesto='IVA' tasa='16.00' importe='0'/></cfdi:Traslados></cfdi:Impuestos><cfdi:Complemento><tfd:TimbreFiscalDigital xsi:schemaLocation='http://www.sat.gob.mx/TimbreFiscalDigital http://www.sat.gob.mx/sitio_internet/TimbreFiscalDigital/TimbreFiscalDigital.xsd' version='1.0' UUID='FFFFFFFF-3D6D-180C-2272-6941C55B4D59' FechaTimbrado='2017-03-15T09:33:26' selloCFD='TdH9hapysPLZOLUe2fnsgLpXR8n7Xvh9VJ+yHHqjaYHLHmI6uhJi+N7IfwbVpK0KDIAs6XWQSt4iQzhn+lLiMn92SouG5QQJSA3aylrcs+vUi8hj0uoe2YA6V/XIc0GDfiHuOrEx/Rk3UWLwpJAO9ORSKx0PtYy3ANedvX2cSio=' noCertificadoSAT='30001000000100000801' selloSAT='C0FgUTSh++khoKQ5QTXIql5U/mHgu++H5Niga9ldPt9fB9Y5mqjxMI+QRmQlFGImxVYKVQyiMF4tcpnzMp8Ue5zDNmjYsMk+bjkyZy5jCBaH9AXZAqOGwvbI5y570pUV5WEzltQ3SzUUKdLx3hLh/KOYQwBD4RvefmzOkzMsbMY='/></cfdi:Complemento></cfdi:Comprobante>";
 
         try {
             RespuestaTimbre2 respuesta = new RespuestaTimbre2();
             AdvanswsdlLocator service = new AdvanswsdlLocator();
             pathFacturaClienteComprobante = Constantes.PATHLOCALFACTURACIONINVERTIDA + "Clientes" + File.separatorChar + datosCliente.getRfc() + File.separatorChar + "COMPROBANTE" + File.separatorChar + datosCliente.getRfc() + "_" + ventaMayoreo.getIdSucursalFk().toString() + "_" + ventaMayoreo.getVentaSucursal().toString() + ".xml";
-
             URL url = new URL(pathFacturaClienteComprobante);
-
             InputStreamReader in = new InputStreamReader(url.openStream());
-
             String xmlCfdi = IOUtils.toString(in);
-
             advanswsdl_pkg.AdvanswsdlPortType port = service.getadvanswsdlPort();
             respuesta = port.timbrar2(API_KEY, xmlCfdi);
-
             System.out.println("url " + url.openStream());
             System.out.println("codes:  " + respuesta.getCode());
             System.out.println("mensajes: " + respuesta.getMessage());
@@ -807,19 +912,26 @@ public class BeanFacturacion implements Serializable {
                 writer.println(respuesta.getCFDI());
                 writer.close();
                 System.out.println("Se Guardo Correctamente el archivo Timbrado");
-                insertarFactura();
+                if (insertarFactura() == 1) {
+                    bandera = 1;
+                }
             } catch (IOException e) {
                 System.out.println("Error al generar archivo Timbrado");
                 JsfUtil.addErrorMessageClean("Ocurrió un error al generar archivo timbrado");
+                bandera = 0;
             }
 
         } catch (MalformedURLException ex) {
             Logger.getLogger(BeanRelOperMayoreo.class.getName()).log(Level.SEVERE, null, ex);
+            bandera = 0;
         } catch (IOException ex) {
             Logger.getLogger(BeanRelOperMayoreo.class.getName()).log(Level.SEVERE, null, ex);
+            bandera = 0;
         } catch (Exception ex) {
             Logger.getLogger(BeanRelOperMayoreo.class.getName()).log(Level.SEVERE, null, ex);
+            bandera = 0;
         }
+        return bandera;
     }
 
     public void imprimirDatosFactura() {
@@ -938,14 +1050,18 @@ public class BeanFacturacion implements Serializable {
         System.out.println("cadema original " + cfd.getCadenaOriginal());
         nuevaFactura.setCadena(cfd.getCadenaOriginal());
         outFile.close();
-        
-        timbrar();
+
+        if (timbrar() == 1) {
+
+        }
 //        } catch (Exception e) {
 //            
 //            JsfUtil.addErrorMessageClean("Ocurrió un problema al generar la factura, contactar a adminsitrador "+" Mensaje: "+e.getMessage());
 //        }
         datosCliente = new Cliente();
         ventaMayoreo = new VentaMayoreo();
+        importeParcialidad = null;
+        formaPago = "01";
 
     }
 
@@ -1699,6 +1815,5 @@ public class BeanFacturacion implements Serializable {
     public void setLstProductosFacturado(ArrayList<ProductoFacturado> lstProductosFacturado) {
         this.lstProductosFacturado = lstProductosFacturado;
     }
-    
 
 }

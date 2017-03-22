@@ -22,7 +22,7 @@ public interface NegocioProductoFacturado {
     public int getNextVal();
     public List<Object[]> getByIdFacturaFk(BigDecimal idFacturaFk);
     public List<Object[]> getByIdPk(BigDecimal idPk);
-    public List<Object[]> getByIdVentaFk(BigDecimal idTipoFk,BigDecimal idVentaFk);
+    public List<Object[]> getByIdTipoFolioFk(BigDecimal idTipoFk,BigDecimal idVentaFk);
     
     
 }

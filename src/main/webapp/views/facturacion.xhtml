@@ -12,6 +12,10 @@
 
         <h:form id="formContent">
             <div class="container-fluid">
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Si" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 ">
                         <h3>#{beanFacturacion.title}</h3>
@@ -28,7 +32,9 @@
                             </p:selectOneMenu>
                             <p:commandButton value="Atrás" onclick="PF('statusDialog').show()" update=":formContent"  rendered="#{beanFacturacion.viewEstate=='generate' || beanFacturacion.viewEstate=='generateVentaMostrador'}" ajax="true" disabled="false" action="#{beanFacturacion.backView()}"/>
 
-                            <p:commandButton value="Generar Factura" rendered="#{beanFacturacion.viewEstate=='generate'|| beanFacturacion.viewEstate=='generateVentaMostrador'}"  onclick="PF('statusDialog').show()"  update=":formContent" ajax="true" disabled="false" action="#{beanFacturacion.crearFactura()}"/>
+                            <p:commandButton value="Generar Factura" rendered="#{beanFacturacion.viewEstate=='generate'|| beanFacturacion.viewEstate=='generateVentaMostrador'}"  onclick="PF('statusDialog').show()"  update=":formContent" ajax="true" disabled="false" action="#{beanFacturacion.crearFactura()}">
+                                <p:confirm header="Confirmación" message="Estas seguro de generar la factura?" icon="ui-icon-alert" />
+                            </p:commandButton> 
                             <p:commandButton value="Nueva Factura" rendered="#{beanFacturacion.viewEstate=='init'}"  onclick="PF('statusDialog').show()" update=":formContent" ajax="true" disabled="false" action="#{beanFacturacion.changeViewGenerarFactura()}"/>
                         </div>
                     </div>

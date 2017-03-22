@@ -10,6 +10,7 @@ import com.web.chon.negocio.NegocioProductoFacturado;
 import com.web.chon.util.Utilidades;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.stereotype.Service;
@@ -69,7 +70,26 @@ public class ServiceProductoFacturado implements IfaceProductoFacturado {
 
     @Override
     public ArrayList<ProductoFacturado> getByIdTipoFolioFk(BigDecimal idTipoFk, BigDecimal idVentaFk) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       getEjb();
+
+        List<Object[]> lstObject = new ArrayList<Object[]>();
+        ArrayList<ProductoFacturado> lstProductoFacturado = new ArrayList<ProductoFacturado>();
+        lstObject = ejb.getByIdTipoFolioFk(idTipoFk, idVentaFk);
+        
+        for (Object[] obj : lstObject) {
+            ProductoFacturado dominio = new ProductoFacturado();
+            //dominio.setIdProductoFacturadoPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+            dominio.setIdTipoLlaveFk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+            dominio.setIdLlaveFk(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
+            //dominio.setIdFacturaFk(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
+            dominio.setImporte(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
+            dominio.setCantidad(obj[3] == null ? null : new BigDecimal(obj[3].toString()));
+            dominio.setKilos(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
+        
+            lstProductoFacturado.add(dominio);
+        }
+        return lstProductoFacturado;
+    
     }
 
     

@@ -20,11 +20,24 @@ public class ProductoFacturado implements Serializable {
     private BigDecimal importe;
     private BigDecimal cantidad;
     private BigDecimal kilos;
+    private BigDecimal idFacturaFk;
 
     @Override
     public String toString() {
-        return "ProductoFacturado{" + "idProductoFacturadoPk=" + idProductoFacturadoPk + ", idTipoLlaveFk=" + idTipoLlaveFk + ", idLlaveFk=" + idLlaveFk + ", importe=" + importe + ", cantidad=" + cantidad + ", kilos=" + kilos + '}';
+        return "ProductoFacturado{" + "idProductoFacturadoPk=" + idProductoFacturadoPk + ", idTipoLlaveFk=" + idTipoLlaveFk + ", idLlaveFk=" + idLlaveFk + ", importe=" + importe + ", cantidad=" + cantidad + ", kilos=" + kilos + ", idFacturaFk=" + idFacturaFk + '}';
     }
+    
+    
+
+    public BigDecimal getIdFacturaFk() {
+        return idFacturaFk;
+    }
+
+    public void setIdFacturaFk(BigDecimal idFacturaFk) {
+        this.idFacturaFk = idFacturaFk;
+    }
+
+    
     
     
 
