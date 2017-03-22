@@ -342,37 +342,44 @@ public class BeanFacturacion implements Serializable {
         lstProductosFacturado = new ArrayList<ProductoFacturado>();
         lstProductosFacturado = ifaceProductoFacturado.getByIdTipoFolioFk(ventaMayoreo.getIdtipoVentaFk(), ventaMayoreo.getVentaSucursal());
         BigDecimal importeTemporalTotal = new BigDecimal(0);
-        for (ProductoFacturado pf : lstProductosFacturado) 
+        if (!lstProductosFacturado.isEmpty()) 
         {
-            BigDecimal kilosTemporal;
-            BigDecimal importeTemporal;
+            for (ProductoFacturado pf : lstProductosFacturado) {
+                BigDecimal kilosTemporal;
+                BigDecimal importeTemporal;
 
-            for (VentaProductoMayoreo vp : ventaMayoreo.getListaProductos()) {
+                for (VentaProductoMayoreo vp : ventaMayoreo.getListaProductos()) {
 
-                //BigDecimal importeTemporal = new BigDecimal(0);
-                //BigDecimal cantidadTemporal = new BigDecimal(0);
-                if (pf.getIdLlaveFk().intValue() == vp.getIdVentaMayProdPk().intValue()) {
+                    //BigDecimal importeTemporal = new BigDecimal(0);
+                    //BigDecimal cantidadTemporal = new BigDecimal(0);
+                    if (pf.getIdLlaveFk().intValue() == vp.getIdVentaMayProdPk().intValue()) {
 
-                    kilosTemporal = vp.getKilosVendidos().subtract(pf.getKilos(), MathContext.UNLIMITED);
-                    importeTemporal = vp.getTotalVenta().subtract(pf.getImporte(), MathContext.UNLIMITED);
-                    System.out.println("Kilos Totales de Venta: " + vp.getKilosVendidos());
-                    System.out.println("Kilos Facturados: " + pf.getKilos());
-                    System.out.println("Kilos por Facturar: " + kilosTemporal);
+                        kilosTemporal = vp.getKilosVendidos().subtract(pf.getKilos(), MathContext.UNLIMITED);
+                        importeTemporal = vp.getTotalVenta().subtract(pf.getImporte(), MathContext.UNLIMITED);
+                        System.out.println("Kilos Totales de Venta: " + vp.getKilosVendidos());
+                        System.out.println("Kilos Facturados: " + pf.getKilos());
+                        System.out.println("Kilos por Facturar: " + kilosTemporal);
 
-                    System.out.println("Importe Total de la Venta: " + vp.getTotalVenta());
-                    System.out.println("Importe Facturado: " + pf.getImporte());
-                    System.out.println("Importe por Facturar: " + importeTemporal);
-                    System.out.println("===============================================");
-                    vp.setKilosVendidos(kilosTemporal);
-                    vp.setTotalVentaSinIva(importeTemporal);
-                    vp.setTotalVenta(importeTemporal);
-                    importeTemporalTotal = importeTemporalTotal.add(importeTemporal, MathContext.UNLIMITED);
-                    //importeTemporal = vp.getTotalVenta().subtract(pf.getImporte(), MathContext.UNLIMITED);
+                        System.out.println("Importe Total de la Venta: " + vp.getTotalVenta());
+                        System.out.println("Importe Facturado: " + pf.getImporte());
+                        System.out.println("Importe por Facturar: " + importeTemporal);
+                        System.out.println("===============================================");
+                        vp.setKilosVendidos(kilosTemporal);
+                        vp.setTotalVentaSinIva(importeTemporal);
+                        vp.setTotalVenta(importeTemporal);
+                        importeTemporalTotal = importeTemporalTotal.add(importeTemporal, MathContext.UNLIMITED);
+                        //importeTemporal = vp.getTotalVenta().subtract(pf.getImporte(), MathContext.UNLIMITED);
+                    }
                 }
-            }
 
-        }
+            }
         ventaMayoreo.setTotalVenta(importeTemporalTotal);
+        }//fin if lista vacia
+        else
+        {
+            
+        }
+      
         System.out.println("Total de Venta: -----" + importeTemporalTotal);
     }
 
@@ -387,8 +394,7 @@ public class BeanFacturacion implements Serializable {
             if (cs.getIdCatalogoSatPk().intValue() == tipoDocumento.intValue()) {
                 BigDecimal totalSinIvaFOR = new BigDecimal(0);
                 for (VentaProductoMayoreo vmp : ventaMayoreo.getListaProductos()) {
-                    if (vmp.getKilosVendidos().compareTo(new BigDecimal(0)) > 0) 
-                    {
+                    if (vmp.getKilosVendidos().compareTo(new BigDecimal(0)) > 0) {
                         BigDecimal iva = vmp.getTotalVenta().multiply(cs.getValor(), MathContext.UNLIMITED);
                         vmp.setTotalVentaSinIva(vmp.getTotalVenta().subtract(iva.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED));
                         vmp.setPrecioProductoSinIva(vmp.getTotalVentaSinIva().setScale(2, RoundingMode.CEILING).divide(vmp.getKilosVendidos(), 2, RoundingMode.CEILING));
