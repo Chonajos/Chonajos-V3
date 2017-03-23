@@ -15,10 +15,11 @@ public class Constantes
     public static String PATHSERVERVIDEO="/home/servidorapl/videosProducto";
     public static String PATHLOCAL="";
     
-    public static String PATHLOCALFACTURACION= "/home/jramirez/SIV/Facturas/";
+//    public static String PATHLOCALFACTURACION= "/home/jramirez/SIV/Facturas/";
    // public static String PATHLOCALFACTURACION= "C:/Users/Juan/SIV/Facturas/";
-    public static String PATHLOCALFACTURACIONINVERTIDA= "file:////home/jramirez/SIV/Facturas/";
+//    public static String PATHLOCALFACTURACIONINVERTIDA= "file:////home/jramirez/SIV/Facturas/";
+    public static String PATHLOCALFACTURACIONINVERTIDA= "file:////home/servidorapl/SIV/Facturas/";
    // public static String PATHLOCALFACTURACIONINVERTIDA= "file:////C:/Users/Juan/SIV/Facturas/";
-    public static String PATHSERVERFACTURACION="/home/servidorapl/SIV/Facturas/";
+    public static String PATHLOCALFACTURACION="/home/servidorapl/SIV/Facturas/";
     
 }

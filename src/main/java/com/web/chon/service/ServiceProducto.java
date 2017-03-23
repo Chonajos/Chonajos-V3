@@ -54,7 +54,6 @@ public class ServiceProducto implements IfaceProducto {
     @Override
     public int deleteProducto(String idProducto) {
         try {
-            System.out.println("service string delete");
             return ejb.deleteProducto(idProducto);
         } catch (Exception ex) {
             Logger.getLogger(ServiceProducto.class.getName()).log(Level.SEVERE, null, ex);
