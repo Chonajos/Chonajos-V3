@@ -94,6 +94,7 @@
                                 <f:selectItem itemLabel="Día" itemValue="1"/>
                                 <f:selectItem itemLabel="Mes" itemValue="2"/>
 
+
                                 <p:ajax event="change" update=":formContent:calendarInicio :formContent:calendarFin " listener="#{beanFacturacion.verificarCombo()}"/>
                             </p:selectOneMenu>
                         </div>
@@ -222,21 +223,63 @@
             <p:panel  rendered="#{beanFacturacion.viewEstate=='generate' || beanFacturacion.viewEstate=='generateVentaMostrador'}"> 
                 <div class="container-fluid">
                     <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 form-group">
-                        <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
-                            <p:outputLabel  class="col-lg-7 col-md-3 col-sm-4 col-xs-6 alignLeft"  for="folioVentaG" id="labelfolioVentaG" value ="Folio Venta:" /> 
-                            <p:inputText id="folioVentaG" maxlength="8" disabled="#{beanFacturacion.disableTextFolioVenta}" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanFacturacion.folioVentaG}" required="false">
-                                <pe:keyFilter regEx="/[0-9 .]/i"/>
-                            </p:inputText>
-                        </div>
-                        <div class="col-lg-1 col-md-12 col-sm-12 col-xs-12 ">
-                            <p:commandButton value="Buscar" disabled="#{beanFacturacion.disableBotonBuscarVenta}" rendered="#{beanFacturacion.viewEstate=='generate' || beanFacturacion.viewEstate=='generateVentaMostrador' }"  onclick="PF('statusDialog').show()"  update=":formContent" ajax="true"  action="#{beanFacturacion.buscarFolioVenta()}"/>
-                        </div>
+                        <p:fragment rendered="#{beanFacturacion.viewEstate=='generate'}">
+                            <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
+                                <p:outputLabel  class="col-lg-7 col-md-3 col-sm-4 col-xs-6 alignLeft" rendered="#{beanFacturacion.viewEstate=='generate'}" for="folioVentaG" id="labelfolioVentaG" value ="Folio Venta:" /> 
+                                <p:inputText id="folioVentaG" maxlength="8" rendered="#{beanFacturacion.viewEstate=='generate'}" disabled="#{beanFacturacion.disableTextFolioVenta}" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanFacturacion.folioVentaG}" required="false">
+                                    <pe:keyFilter regEx="/[0-9 .]/i"/>
+                                </p:inputText>
+                            </div>
+                            <div class="col-lg-1 col-md-12 col-sm-12 col-xs-12 ">
+                                <p:commandButton value="Buscar" disabled="#{beanFacturacion.disableBotonBuscarVenta}" rendered="#{beanFacturacion.viewEstate=='generate'}"  onclick="PF('statusDialog').show()"  update=":formContent" ajax="true"  action="#{beanFacturacion.buscarFolioVenta()}"/>
+                            </div>
+                        </p:fragment>
+                        <p:fragment rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}">
+
+                            <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12 alignLeft">
+                                <p:outputLabel class="col-lg-5 col-md-5 col-sm-4 col-xs-12 alignRight"  for="comboFechasPublico" value ="Fechas:"  rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}" /> 
+                                <p:selectOneMenu  style="width: 55% !important" id="comboFechasPublico" class="col-lg-9 col-md-7 col-sm-8 col-xs-12" value="#{beanFacturacion.filtroPublico}"  rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}" >
+                                    <f:selectItem itemLabel="Selecciona" itemValue="-1" />
+                                    <f:selectItem itemLabel="Día" itemValue="1"/>
+                                    <f:selectItem itemLabel="Semana" itemValue="3"/>
+                                    <f:selectItem itemLabel="Mes" itemValue="2"/>
+                                    <p:ajax event="change" update=":formContent" listener="#{beanFacturacion.verificarComboPublico()}"/>
+                                </p:selectOneMenu>
+                            </div>
+
+                            <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12 form-group">
+                                <p:outputLabel class="col-lg-3 col-md-4 col-sm-4 col-xs-12 alignRight "  
+                                               for="calendarInicioPublico" value ="Inicio:" 
+                                               rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}" /> 
+                                <p:calendar disabled="#{beanFacturacion.enableCalendarPublico}" id="calendarInicioPublico" 
+                                            class="col-lg-9 col-md-8 col-sm-8 col-xs-12 
+                                            calendario alignLeft" navigator="true" placeholder="dd/mm/yyyy"
+                                            value="#{beanFacturacion.fechaFiltroInicioPublico}" locale="es" pattern="dd/MM/yyyy" 
+                                            readonlyInput="true" showOn="button"  rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}" >
+                                </p:calendar>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12" rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}">
+                                <p:outputLabel class="col-lg-3 col-md-4 col-sm-4 col-xs-12 alignRight "  
+                                               for="calendarFinPublico" value ="Fin:" 
+                                               rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}" /> 
+                                <p:calendar disabled="#{beanFacturacion.enableCalendarPublico}" id="calendarFinPublico" 
+                                            class="col-lg-9 col-md-8 col-sm-8 col-xs-12 
+                                            calendario alignLeft" navigator="true" placeholder="dd/mm/yyyy"
+                                            value="#{beanFacturacion.fechaFiltroFinPublico}" locale="es" pattern="dd/MM/yyyy" 
+                                            readonlyInput="true" showOn="button"  rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}" >
+                                </p:calendar>
+                            </div>
+                            <div class="col-lg-1 col-md-12 col-sm-12 col-xs-12 ">
+                                <p:commandButton value="Buscar" rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}"  onclick="PF('statusDialog').show()"  update=":formContent" ajax="true"  action="#{beanFacturacion.buscaVentasNoFacturadas()}"/>
+                            </div>
+                        </p:fragment>
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-5 col-md-4 col-sm-4 col-xs-12 alignRight"  for="comboRFCEmisor" value ="RFC Emisor: "  /> 
                             <p:selectOneMenu  style="width: 55% !important"   id="comboRFCEmisor" class="col-lg-7 col-md-8 col-sm-8 col-xs-12" value="#{beanFacturacion.idEmisorPk}" >
                                 <f:selectItems value="#{beanFacturacion.listaDatosEmisor}" var="emi" itemLabel="#{emi.rfc}" itemValue="#{emi.idDatosFacturacionPk}"/>
                             </p:selectOneMenu>
                         </div>
+
                         <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12 alignLeft">
                             <p:outputLabel class="col-lg-6 col-md-5 col-sm-4 col-xs-12 alignRight"  for="filtroMoneda" value ="Moneda:" /> 
                             <p:selectOneMenu  style="width: 50% !important" id="filtroMoneda" class="col-lg-5 col-md-7 col-sm-8 col-xs-12" value="#{beanFacturacion.moneda}" >
@@ -326,7 +369,13 @@
                     <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 form-group">
                         <h4>Datos de la Venta</h4>
                         <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 form-group alignRight">
-                            <p:commandButton value="Agregar Otro Producto" onclick="PF('statusDialog').show()" update=":formContent"  rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}" ajax="true" disabled="false" action="#{beanFacturacion.agregarProducto()}"/>
+                            <!--<p:commandButton value="Agregar Otro Producto" onclick="PF('statusDialog').show()" update=":formContent"  rendered="{beanFacturacion.viewEstate=='generateVentaMostrador'}" ajax="true" disabled="false" action="{beanFacturacion.agregarProducto()}"/>-->
+                            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 form-group alignRight">
+                                <p:outputLabel class="col-lg-8 col-md-2 col-sm-3 col-xs-12"  rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}"  for="txtImportePublico" value ="Importe Venta Público: " /> 
+                                <p:inputText id="txtImportePublico"  class=" col-lg-4 col-md-2 col-sm-3 col-xs-12" rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}" value="#{beanFacturacion.importeVentaPublico}">
+                                    <p:ajax event="blur" update=":formContent" listener ="#{beanFacturacion.calculaImportePublico()}"/>
+                                </p:inputText>
+                            </div>
                             <p:commandButton value="Agregar Descuento" onclick="PF('statusDialog').show()" update=":formContent"  rendered="#{beanFacturacion.viewEstate=='generate'}" ajax="true" disabled="false" action="#{beanFacturacion.agregarDescuento()}"/>
                             <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 form-group alignRight">
                                 <p:outputLabel class="col-lg-8 col-md-2 col-sm-3 col-xs-12"  rendered="#{beanFacturacion.banderaImporteParcialidad=='true'}" for="txtParcialidad" value ="Importe Parcialidad: " /> 
@@ -436,9 +485,9 @@
                                 </p:columnGroup>
                             </p:dataTable>
 
-                            <p:dataTable var="model2" rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}" id="tablaMostrador" editable="true" value="#{beanFacturacion.ventaMayoreo.listaProductos}" 
-                                         styleClass="ui-datatable-hor-scroll"  
-
+                            <p:dataTable var="model2" rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}" id="tablaMostrador" editable="true" value="#{beanFacturacion.listaVentaPublico}" 
+                                         rows="10"
+                                         paginator="true" styleClass="ui-datatable-hor-scroll" 
                                          selection="#{beanFacturacion.selectedProductosVentas}" rowKey="#{model2.idVentaMayProdPk}"
                                          emptyMessage="No se encontraron Productos.">
                                 <p:ajax event="rowEdit" listener="#{beanFacturacion.onRowEdit}" update=":formContent:tablaMostrador" />
@@ -446,6 +495,9 @@
 
                                 <p:column selectionMode="multiple"  width="15px;" class="alignCenter"/>
 
+                                <p:column headerText="Folio" width="50px;" class="alignCenter">
+                                    <h:outputText value="#{model2.folioVenta}" />
+                                </p:column>
                                 <p:column headerText="Producto" width="150px;" class="alignLeft">
                                     <h:outputText value="#{model2.nombreProducto}" />
                                 </p:column>

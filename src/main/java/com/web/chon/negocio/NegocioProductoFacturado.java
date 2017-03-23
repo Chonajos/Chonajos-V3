@@ -23,6 +23,7 @@ public interface NegocioProductoFacturado {
     public List<Object[]> getByIdFacturaFk(BigDecimal idFacturaFk);
     public List<Object[]> getByIdPk(BigDecimal idPk);
     public List<Object[]> getByIdTipoFolioFk(BigDecimal idTipoFk,BigDecimal idVentaFk);
+    public List<Object[]> getProductosNoFacturados(BigDecimal idTipoFk,BigDecimal idSucursalFk,String fechaInicio,String fechaFin);
     
     
 }

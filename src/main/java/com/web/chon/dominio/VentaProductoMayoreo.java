@@ -29,6 +29,7 @@ public class VentaProductoMayoreo implements Serializable {
     private String nombreEmpaque;
     private BigDecimal idExistenciaFk;
     private BigDecimal idBodegaFk;
+    private BigDecimal folioVenta;
 
     //Variables para credito
     private BigDecimal idTipoVenta;
@@ -243,6 +244,14 @@ public class VentaProductoMayoreo implements Serializable {
 
     public void setTotalVentaSinIva(BigDecimal totalVentaSinIva) {
         this.totalVentaSinIva = totalVentaSinIva;
+    }
+
+    public BigDecimal getFolioVenta() {
+        return folioVenta;
+    }
+
+    public void setFolioVenta(BigDecimal folioVenta) {
+        this.folioVenta = folioVenta;
     }
     
 

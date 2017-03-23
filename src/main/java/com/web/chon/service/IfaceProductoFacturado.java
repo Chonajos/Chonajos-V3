@@ -6,6 +6,7 @@
 package com.web.chon.service;
 
 import com.web.chon.dominio.ProductoFacturado;
+import com.web.chon.dominio.VentaProductoMayoreo;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
@@ -21,4 +22,5 @@ public interface IfaceProductoFacturado {
     public ArrayList<ProductoFacturado> getByIdFacturaFk(BigDecimal idFacturaFk);
     public ProductoFacturado getByIdPk(BigDecimal idPk);
     public ArrayList<ProductoFacturado> getByIdTipoFolioFk(BigDecimal idTipoFk,BigDecimal idVentaFk);
+    public ArrayList<VentaProductoMayoreo>  getProductosNoFacturados(BigDecimal idTipoFk,BigDecimal idSucursalFk,String fechaInicio,String fechaFin);
 }

@@ -6,6 +6,7 @@
 package com.web.chon.service;
 
 import com.web.chon.dominio.ProductoFacturado;
+import com.web.chon.dominio.VentaProductoMayoreo;
 import com.web.chon.negocio.NegocioProductoFacturado;
 import com.web.chon.util.Utilidades;
 import java.math.BigDecimal;
@@ -89,6 +90,32 @@ public class ServiceProductoFacturado implements IfaceProductoFacturado {
             lstProductoFacturado.add(dominio);
         }
         return lstProductoFacturado;
+    
+    }
+
+    @Override
+    public ArrayList<VentaProductoMayoreo> getProductosNoFacturados(BigDecimal idTipoFk, BigDecimal idSucursalFk, String fechaInicio, String fechaFin) {
+        getEjb();
+
+        List<Object[]> lstObject = new ArrayList<Object[]>();
+        ArrayList<VentaProductoMayoreo> lstProductoNoFacturado = new ArrayList<VentaProductoMayoreo>();
+        lstObject = ejb.getProductosNoFacturados( idTipoFk,  idSucursalFk,  fechaInicio,  fechaFin);
+        
+        for (Object[] obj : lstObject) {
+            VentaProductoMayoreo dominio = new VentaProductoMayoreo();
+            dominio.setIdVentaMayProdPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+            dominio.setIdVentaMayoreoFk(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
+            dominio.setFolioVenta(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
+            dominio.setNombreProducto(obj[3] == null ? null : obj[3].toString());
+            dominio.setNombreEmpaque(obj[4] == null ? null : obj[4].toString());
+            dominio.setCantidadEmpaque(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
+            dominio.setKilosVendidos(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
+            dominio.setPrecioProducto(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
+            dominio.setTotalVenta(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
+           
+            lstProductoNoFacturado.add(dominio);
+        }
+        return lstProductoNoFacturado;
     
     }
 

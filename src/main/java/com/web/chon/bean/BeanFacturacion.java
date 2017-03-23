@@ -134,11 +134,18 @@ public class BeanFacturacion implements Serializable {
     private String title;
     private String viewEstate;
     private UsuarioDominio usuario;
-    private int filtro;
     private int tipoFactura;
+
+    private int filtro;
     private Date fechaFiltroInicio;
     private Date fechaFiltroFin;
     private boolean enableCalendar;
+
+    private int filtroPublico;
+    private Date fechaFiltroInicioPublico;
+    private Date fechaFiltroFinPublico;
+    private boolean enableCalendarPublico;
+
     private BigDecimal idStatusFk;
     private ArrayList<Cliente> lstCliente;
     private Cliente cliente;
@@ -167,6 +174,7 @@ public class BeanFacturacion implements Serializable {
     private StreamedContent file;
 
     private ArrayList<VentaProductoMayoreo> selectedProductosVentas;
+    private ArrayList<VentaProductoMayoreo> listaVentaPublico;
     private ArrayList<VentaProductoMayoreo> listaProductosReporte;
 
     //--Variables Para Generar PDF--//
@@ -210,6 +218,7 @@ public class BeanFacturacion implements Serializable {
     ObjectFactory of;
     Comprobante comp;
     private BigDecimal numeroCuenta;
+    private BigDecimal importeVentaPublico;
 
     @PostConstruct
     public void init() {
@@ -258,28 +267,77 @@ public class BeanFacturacion implements Serializable {
         tipoDocumento = new BigDecimal(17);
         verificarCombo();
         buscarFacturas();
+        selectedProductosVentas = new ArrayList<VentaProductoMayoreo>();
 
     }
-
-    public int verificarMontoParicalidad() {
-        BigDecimal t = new BigDecimal(0);
-        if (importeParcialidad.compareTo(t) < 1) {
-            return 0;
+    public int verificarImportePublico()
+    {
+        //funcion para verificar los productos seleccionados y su monto, por si se edita un producto 
+        //o se deselecciona 
+        BigDecimal temporal = new BigDecimal(0);
+        for (VentaProductoMayoreo producto : selectedProductosVentas) {
+            temporal = temporal.add(producto.getTotalVenta(), MathContext.UNLIMITED);
+            
         }
-        for (VentaProductoMayoreo p : ventaMayoreo.getListaProductos()) {
-            t = t.add(p.getTotalVenta(), MathContext.UNLIMITED);
-        }
-        if (importeParcialidad.compareTo(t) > 0) {
-            return 0;
-        } else {
+        if(importeVentaPublico.compareTo(temporal)==0)
+        {
             return 1;
         }
+        else
+        {
+            return 0;
+        }
+    }
+
+    public void calculaImportePublico() {
+        System.out.println("Calcular Importe Público");
+        selectedProductosVentas.clear();
+        BigDecimal importePublicoTemporal = importeVentaPublico;
+        for (VentaProductoMayoreo producto : listaVentaPublico) {
+            if (importePublicoTemporal.compareTo(new BigDecimal(0)) > 0) { // si el importe es mayor que cero
+                if (importePublicoTemporal.compareTo(producto.getTotalVenta()) >= 0) {
+                    /*El importe de la parcilidad es mayor al de ese producto
+                    agregar el producto a la lista de seleccionados
+                     */
+                    System.out.println("Total Venta por Producto: " + producto.getTotalVenta());
+                    System.out.println("Temporal importe Publico: " + importePublicoTemporal);
+                    importePublicoTemporal = importePublicoTemporal.subtract(producto.getTotalVenta(), MathContext.UNLIMITED);
+                    System.out.println("Temporal importe Publico: " + importePublicoTemporal);
+                    producto.setKilosVendidos(producto.getKilosVendidos());
+                    producto.setTotalVenta(producto.getTotalVenta());
+                    selectedProductosVentas.add(producto);
+                }
+                else
+                {
+                    /*
+                    
+                    xkilos = xImporte
+                    x      = importePublicoTemporal;
+                    */
+                    BigDecimal kilosT = new BigDecimal(0);
+                    BigDecimal division = new BigDecimal(0);
+
+                    kilosT = importePublicoTemporal.setScale(2, RoundingMode.CEILING).multiply(producto.getKilosVendidos().setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
+                    kilosT.setScale(2, RoundingMode.CEILING);
+                    System.out.println("KilosT: " + kilosT);
+                    System.out.println("Producto: " + producto.getTotalVenta());
+                    division = (kilosT).divide(producto.getTotalVenta(), 2, RoundingMode.CEILING);
+                    producto.setKilosVendidos(division);
+                    producto.setTotalVenta(importePublicoTemporal);
+                    selectedProductosVentas.add(producto);
+
+                    importePublicoTemporal = importePublicoTemporal.subtract(producto.getTotalVenta(), MathContext.UNLIMITED);
+                }
+            }
+        }//fin for
+        System.out.println("Total Publico Temporal: "+importePublicoTemporal);
+        
     }
 
     public void calculaParcialidad() {
         buscarFolioVenta();
         if (verificarMontoParicalidad() == 1) {
-            System.out.println("Calcular Parcialidad");
+
             BigDecimal temporalParcialidad = importeParcialidad;
             ArrayList<VentaProductoMayoreo> lstTemporalProductosFacturar = new ArrayList<VentaProductoMayoreo>();
             for (VentaProductoMayoreo producto : ventaMayoreo.getListaProductos()) {
@@ -331,6 +389,29 @@ public class BeanFacturacion implements Serializable {
         }
     }
 
+    public void buscaVentasNoFacturadas() {
+        System.out.println("Entro a Ventas no facturadas");
+        listaVentaPublico = ifaceProductoFacturado.getProductosNoFacturados(new BigDecimal(1), idSucursalFk, TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicioPublico), TiempoUtil.getFechaDDMMYYYY(fechaFiltroFinPublico));
+        for (VentaProductoMayoreo p : listaVentaPublico) {
+            System.out.println("p: " + p.toString());
+        }
+    }
+
+    public int verificarMontoParicalidad() {
+        BigDecimal t = new BigDecimal(0);
+        if (importeParcialidad.compareTo(t) < 1) {
+            return 0;
+        }
+        for (VentaProductoMayoreo p : ventaMayoreo.getListaProductos()) {
+            t = t.add(p.getTotalVenta(), MathContext.UNLIMITED);
+        }
+        if (importeParcialidad.compareTo(t) > 0) {
+            return 0;
+        } else {
+            return 1;
+        }
+    }
+
     public void calculaKilosPorFacturar() {
         //condiciones
         /*
@@ -342,8 +423,7 @@ public class BeanFacturacion implements Serializable {
         lstProductosFacturado = new ArrayList<ProductoFacturado>();
         lstProductosFacturado = ifaceProductoFacturado.getByIdTipoFolioFk(ventaMayoreo.getIdtipoVentaFk(), ventaMayoreo.getVentaSucursal());
         BigDecimal importeTemporalTotal = new BigDecimal(0);
-        if (!lstProductosFacturado.isEmpty()) 
-        {
+        if (!lstProductosFacturado.isEmpty()) {
             for (ProductoFacturado pf : lstProductosFacturado) {
                 BigDecimal kilosTemporal;
                 BigDecimal importeTemporal;
@@ -373,13 +453,12 @@ public class BeanFacturacion implements Serializable {
                 }
 
             }
-        ventaMayoreo.setTotalVenta(importeTemporalTotal);
+            ventaMayoreo.setTotalVenta(importeTemporalTotal);
         }//fin if lista vacia
-        else
-        {
-            
+        else {
+
         }
-      
+
         System.out.println("Total de Venta: -----" + importeTemporalTotal);
     }
 
@@ -444,6 +523,8 @@ public class BeanFacturacion implements Serializable {
     }
 
     public void removeProductoSugerido() {
+        listaVentaPublico.remove(dataRemove);
+        
 
     }
 
@@ -833,9 +914,12 @@ public class BeanFacturacion implements Serializable {
 
     public void onRowEdit(RowEditEvent event) {
         dataEdit = new VentaProductoMayoreo();
+        
         dataEdit = (VentaProductoMayoreo) event.getObject();
+        dataEdit.setTotalVenta(dataEdit.getPrecioProducto().multiply(dataEdit.getKilosVendidos(), MathContext.UNLIMITED));
 
         System.out.println("editado " + dataEdit.toString());
+        calculaImportePublico();
     }
 
     public void onRowCancel(RowEditEvent event) {
@@ -1224,6 +1308,7 @@ public class BeanFacturacion implements Serializable {
     }
 
     public void verificarCombo() {
+
         if (filtro == -1) {
             //se habilitan los calendarios.
             //fechaFiltroInicio = null;
@@ -1242,8 +1327,6 @@ public class BeanFacturacion implements Serializable {
 
                     break;
                 case 3:
-                    fechaFiltroInicio = TiempoUtil.getDayOneYear(new Date());
-                    fechaFiltroFin = TiempoUtil.getDayEndYear(new Date());
 
                     break;
                 default:
@@ -1254,6 +1337,50 @@ public class BeanFacturacion implements Serializable {
             }
             enableCalendar = true;
         }
+
+    }
+
+    public void verificarComboPublico() {
+
+        if (filtroPublico == -1) {
+            //se habilitan los calendarios.
+            //fechaFiltroInicio = null;
+            //fechaFiltroFin = null;
+            enableCalendarPublico = false;
+        } else {
+            switch (filtroPublico) {
+                case 1:
+                    fechaFiltroInicioPublico = new Date();
+                    fechaFiltroFinPublico = new Date();
+                    System.out.println("1");
+                    break;
+                case 2:
+                    fechaFiltroInicioPublico = TiempoUtil.getDayOneOfMonth(new Date());
+                    fechaFiltroFinPublico = TiempoUtil.getDayEndOfMonth(new Date());
+                    System.out.println("2");
+                    break;
+                case 3:
+                    List<String> listaFechas = TiempoUtil.getintervalWeekDDMMYYYYbyDay(new Date());
+                    for (String item : listaFechas) {
+                        System.out.println(item);
+                    }
+
+                    fechaFiltroInicioPublico = new Date(listaFechas.get(0));
+
+                    fechaFiltroFinPublico = new Date(listaFechas.get(6));
+                    //fechaFiltroFin = TiempoUtil.getDayEndYear(new Date());
+                    System.out.println("3");
+                    break;
+                default:
+                    fechaFiltroFinPublico = null;
+                    fechaFiltroInicioPublico = null;
+
+                    break;
+            }
+            enableCalendarPublico = true;
+        }
+
+        // buscaVentasNoFacturadas();
     }
 
     private void getTimbrado() throws ParserConfigurationException {
@@ -1820,6 +1947,54 @@ public class BeanFacturacion implements Serializable {
 
     public void setLstProductosFacturado(ArrayList<ProductoFacturado> lstProductosFacturado) {
         this.lstProductosFacturado = lstProductosFacturado;
+    }
+
+    public ArrayList<VentaProductoMayoreo> getListaVentaPublico() {
+        return listaVentaPublico;
+    }
+
+    public void setListaVentaPublico(ArrayList<VentaProductoMayoreo> listaVentaPublico) {
+        this.listaVentaPublico = listaVentaPublico;
+    }
+
+    public int getFiltroPublico() {
+        return filtroPublico;
+    }
+
+    public void setFiltroPublico(int filtroPublico) {
+        this.filtroPublico = filtroPublico;
+    }
+
+    public Date getFechaFiltroInicioPublico() {
+        return fechaFiltroInicioPublico;
+    }
+
+    public void setFechaFiltroInicioPublico(Date fechaFiltroInicioPublico) {
+        this.fechaFiltroInicioPublico = fechaFiltroInicioPublico;
+    }
+
+    public Date getFechaFiltroFinPublico() {
+        return fechaFiltroFinPublico;
+    }
+
+    public void setFechaFiltroFinPublico(Date fechaFiltroFinPublico) {
+        this.fechaFiltroFinPublico = fechaFiltroFinPublico;
+    }
+
+    public boolean isEnableCalendarPublico() {
+        return enableCalendarPublico;
+    }
+
+    public void setEnableCalendarPublico(boolean enableCalendarPublico) {
+        this.enableCalendarPublico = enableCalendarPublico;
+    }
+
+    public BigDecimal getImporteVentaPublico() {
+        return importeVentaPublico;
+    }
+
+    public void setImporteVentaPublico(BigDecimal importeVentaPublico) {
+        this.importeVentaPublico = importeVentaPublico;
     }
 
 }

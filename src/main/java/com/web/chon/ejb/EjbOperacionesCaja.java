@@ -12,10 +12,7 @@ import javax.persistence.Query;
 import com.web.chon.negocio.NegocioOperacionesCaja;
 import java.sql.SQLException;
 
-/**
- *
- * @author JesusAlfredo
- */
+
 @Stateless(mappedName = "ejbOperacionesCaja")
 public class EjbOperacionesCaja implements NegocioOperacionesCaja {
 
@@ -98,14 +95,14 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
     public List<Object[]> getOperacionByIdOperacionPK(BigDecimal idOperacionPk) {
         System.out.println("idOperacionPk: " + idOperacionPk);
         //System.out.println("getOperacionByIdOperacionPK : " + idOperacionPk);
-        Query query = em.createNativeQuery("SELECT * FROM OPERACIONES_CAJA WHERE ID_OPERACIONES_CAJA_PK = ?");
+        Query query = em.createNativeQuery("SELECT OPC.ID_OPERACIONES_CAJA_PK,OPC.ID_CORTE_CAJA_FK,OPC.ID_CAJA_FK,OPC.ID_CAJA_DESTINO_FK,OPC.ID_CONCEPTO_FK,OPC.FECHA,OPC.ID_STATUS_FK,OPC.ID_USER_FK,OPC.COMENTARIOS,OPC.MONTO,OPC.E_S,OPC.ID_CUENTA_DESTINO_FK,OPC.ID_SUCURSAL_FK,OPC.ID_FORM_PAGO_FK,OPC.ID_TIPO_OPERACION_FK,OPC.FICHERO FROM OPERACIONES_CAJA OPC WHERE ID_OPERACIONES_CAJA_PK = ?");
         query.setParameter(1, idOperacionPk);
         return query.getResultList();
     }
 
     @Override
     public List<Object[]> getOperacionesBy(BigDecimal idCajaFk, BigDecimal idOperacionFk, BigDecimal idConceptoFk, String fechaInicio, String fechaFin, BigDecimal idStatusFk, BigDecimal idUserFk, BigDecimal idCorte, BigDecimal inout, BigDecimal idFormaPago) {
-        StringBuffer cadena = new StringBuffer("select opc.*,cj.NOMBRE,con.NOMBRE "
+        StringBuffer cadena = new StringBuffer("select OPC.ID_OPERACIONES_CAJA_PK,OPC.ID_CORTE_CAJA_FK,OPC.ID_CAJA_FK,OPC.ID_CAJA_DESTINO_FK,OPC.ID_CONCEPTO_FK,OPC.FECHA,OPC.ID_STATUS_FK,OPC.ID_USER_FK,OPC.COMENTARIOS,OPC.MONTO,OPC.E_S,OPC.ID_CUENTA_DESTINO_FK,OPC.ID_SUCURSAL_FK,OPC.ID_FORM_PAGO_FK,OPC.ID_TIPO_OPERACION_FK,OPC.FICHERO,cj.NOMBRE,con.NOMBRE "
                 + "as concepto,tio.NOMBRE as Operacion,u.NOMBRE_USUARIO,sucu.NOMBRE_SUCURSAL,ta.NOMBRE_ABONO from OPERACIONES_CAJA opc\n"
                 + "inner join caja cj on cj.ID_CAJA_PK = opc.ID_CAJA_FK\n"
                 + "inner join CONCEPTOS con on con.ID_CONCEPTOS_PK = opc.ID_CONCEPTO_FK\n"
@@ -147,7 +144,7 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
 
     @Override
     public List<Object[]> getTransferenciasEntrantes(BigDecimal idCajaFk) {
-        Query query = em.createNativeQuery("select opc.*,cj1.NOMBRE,con.NOMBRE as concepto,tio.NOMBRE as Operacion,u.NOMBRE_USUARIO from OPERACIONES_CAJA opc\n"
+        Query query = em.createNativeQuery("select OPC.ID_OPERACIONES_CAJA_PK,OPC.ID_CORTE_CAJA_FK,OPC.ID_CAJA_FK,OPC.ID_CAJA_DESTINO_FK,OPC.ID_CONCEPTO_FK,OPC.FECHA,OPC.ID_STATUS_FK,OPC.ID_USER_FK,OPC.COMENTARIOS,OPC.MONTO,OPC.E_S,OPC.ID_CUENTA_DESTINO_FK,OPC.ID_SUCURSAL_FK,OPC.ID_FORM_PAGO_FK,OPC.ID_TIPO_OPERACION_FK,OPC.FICHERO,cj1.NOMBRE,con.NOMBRE as concepto,tio.NOMBRE as Operacion,u.NOMBRE_USUARIO from OPERACIONES_CAJA opc\n"
                 + "inner join caja cj on cj.ID_CAJA_PK = opc.ID_CAJA_DESTINO_FK\n"
                 + "inner join caja cj1 on cj1.ID_CAJA_PK = opc.ID_CAJA_FK\n"
                 + "inner join CONCEPTOS con on con.ID_CONCEPTOS_PK = opc.ID_CONCEPTO_FK\n"
@@ -197,7 +194,7 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
 
     @Override
     public List<Object[]> getOperaciones(BigDecimal idCajaFk, BigDecimal idUserFk) {
-        Query query = em.createNativeQuery("select opc.* from operaciones_caja opc\n"
+        Query query = em.createNativeQuery("select OPC.ID_OPERACIONES_CAJA_PK,OPC.ID_CORTE_CAJA_FK,OPC.ID_CAJA_FK,OPC.ID_CAJA_DESTINO_FK,OPC.ID_CONCEPTO_FK,OPC.FECHA,OPC.ID_STATUS_FK,OPC.ID_USER_FK,OPC.COMENTARIOS,OPC.MONTO,OPC.E_S,OPC.ID_CUENTA_DESTINO_FK,OPC.ID_SUCURSAL_FK,OPC.ID_FORM_PAGO_FK,OPC.ID_TIPO_OPERACION_FK,OPC.FICHERO from operaciones_caja opc\n"
                 + "inner join usuario u on u.ID_USUARIO_PK = opc.ID_USER_FK\n"
                 + "inner join CONCEPTOS con on con.ID_CONCEPTOS_PK = opc.ID_CONCEPTO_FK\n"
                 + "inner join TIPOS_OPERACION tio on tio.ID_TIPO_OPERACION_PK = con.ID_TIPO_OPERACION_FK\n"
@@ -213,7 +210,7 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
 
     @Override
     public List<Object[]> getCheques(BigDecimal idCajaFk, BigDecimal idUserFk, BigDecimal idINOUT) {
-        Query query = em.createNativeQuery("select * from OPERACIONES_CAJA opc where opc.ID_CONCEPTO_FK = 12\n"
+        Query query = em.createNativeQuery("select OPC.ID_OPERACIONES_CAJA_PK,OPC.ID_CORTE_CAJA_FK,OPC.ID_CAJA_FK,OPC.ID_CAJA_DESTINO_FK,OPC.ID_CONCEPTO_FK,OPC.FECHA,OPC.ID_STATUS_FK,OPC.ID_USER_FK,OPC.COMENTARIOS,OPC.MONTO,OPC.E_S,OPC.ID_CUENTA_DESTINO_FK,OPC.ID_SUCURSAL_FK,OPC.ID_FORM_PAGO_FK,OPC.ID_TIPO_OPERACION_FK,OPC.FICHERO from OPERACIONES_CAJA opc where opc.ID_CONCEPTO_FK = 12\n"
                 + "and opc.ID_CAJA_FK = ? and opc.ID_USER_FK = ? and opc.ID_CORTE_CAJA_FK is null and opc.E_S=?");
         query.setParameter(1, idCajaFk);
         query.setParameter(2, idUserFk);
@@ -351,12 +348,7 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
 
     }
 
-    /**
-     *
-     * @param id
-     * @param fichero
-     * @throws SQLException
-     */
+    
     @Override
     public void insertarDocumento(BigDecimal id, byte[] fichero) throws SQLException {
 

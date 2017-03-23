@@ -125,6 +125,7 @@ public class BeanCatCliente implements BeanSimple {
     @Override
     public String insert() {
         data.setIdClientePk(new BigDecimal(ifaceCatCliente.getNextVal()));
+        data.setIdStatusFk(new BigDecimal(1));
 
         if (ifaceCatCliente.insertCliente(data) == 1) {
             JsfUtil.addSuccessMessageClean("Cliente Agregado con Éxito");
