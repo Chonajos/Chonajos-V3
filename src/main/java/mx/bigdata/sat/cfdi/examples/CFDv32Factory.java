@@ -45,7 +45,7 @@ public final class CFDv32Factory {
         comp.setTipoDeComprobante("ingreso");
         comp.setLugarExpedicion("09040");
         comp.setMoneda("MXN");
-        comp.setNoCertificado("00001000000404327545");//es el numero del certificado
+        comp.setNoCertificado("20001000000200001428");//es el numero del certificado
         comp.setEmisor(createEmisor(of));
         comp.setReceptor(createReceptor(of));
         comp.setConceptos(createConceptos(of));

@@ -30,19 +30,19 @@ import java.nio.charset.Charset;
 import java.security.PrivateKey;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
-import java.util.HashMap;
+//import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.DatatypeConverter;
 
-import mx.bigdata.sat.cfdi.schema.Comprobante;
-import mx.bigdata.sat.cfdi.CFDv3;
+//import mx.bigdata.sat.cfdi.schema.Comprobante;
+//import mx.bigdata.sat.cfdi.CFDv3;
 import mx.bigdata.sat.security.KeyLoaderEnumeration;
 import mx.bigdata.sat.security.factory.KeyLoaderFactory;
-import org.apache.xmlbeans.XmlOptions;
-import org.bouncycastle.openssl.PKCS8Generator;
-import org.bouncycastle.util.io.pem.PemObject;
-import org.bouncycastle.util.io.pem.PemWriter;
+//import org.apache.xmlbeans.XmlOptions;
+//import org.bouncycastle.openssl.PKCS8Generator;
+//import org.bouncycastle.util.io.pem.PemObject;
+//import org.bouncycastle.util.io.pem.PemWriter;
 import sun.misc.BASE64Encoder;
 
 public final class Main {
@@ -58,17 +58,17 @@ public final class Main {
         X509Certificate cert = KeyLoaderFactory.createInstance(KeyLoaderEnumeration.PUBLIC_KEY_LOADER, new FileInputStream("C:/Users/Juan/Downloads/AAA010101AAA/CSD01_AAA010101AAA.cer")).getKey();
 
         ////Se genera el archivo key.pem aun no se genera correctamente
-        PrivateKey keys = KeyLoaderFactory.createInstance(KeyLoaderEnumeration.PRIVATE_KEY_LOADER, new FileInputStream("C:/Users/Juan/Downloads/AAA010101AAA/CSD01_AAA010101AAA.key"), "12345678a").getKey();
-        PemFile(keys, "RSA PUBLIC KEY");
+//        PrivateKey keys = KeyLoaderFactory.createInstance(KeyLoaderEnumeration.PRIVATE_KEY_LOADER, new FileInputStream("C:/Users/Juan/Downloads/AAA010101AAA/CSD01_AAA010101AAA.key"), "12345678a").getKey();
+//        PemFile(keys, "RSA PUBLIC KEY");
 
-        PKCS8Generator encryptorBuilder = new PKCS8Generator(keys);
-        write("C:/Users/Juan/AAA010101AAAKEY1.pem");
+//        PKCS8Generator encryptorBuilder = new PKCS8Generator(keys);
+//        write("C:/Users/Juan/AAA010101AAAKEY1.pem");
 
-        //El archivo si se genera correctamente
-        X509Certificate certs = KeyLoaderFactory.createInstance(KeyLoaderEnumeration.PUBLIC_KEY_LOADER, new FileInputStream("C:/Users/Juan/Downloads/AAA010101AAA/CSD01_AAA010101AAA.cer")).getKey();
-        FileWriter fw = new FileWriter("C:/Users/Juan/AAA010101AAACER1.pem");
-        fw.write(certToString(certs));
-        fw.close();
+//        //El archivo si se genera correctamente
+//        X509Certificate certs = KeyLoaderFactory.createInstance(KeyLoaderEnumeration.PUBLIC_KEY_LOADER, new FileInputStream("C:/Users/Juan/Downloads/AAA010101AAA/CSD01_AAA010101AAA.cer")).getKey();
+//        FileWriter fw = new FileWriter("C:/Users/Juan/AAA010101AAACER1.pem");
+//        fw.write(certToString(certs));
+//        fw.close();
 
         mx.bigdata.sat.cfdi.v32.schema.Comprobante sellado = cfd.sellarComprobante(key, cert);
         sellado.setSello(" chonajos proyect 32");
@@ -84,11 +84,11 @@ public final class Main {
 
     }
 
-    private static PemObject pemObject;
-    private static PemWriter pemWriter;
+//    private static PemObject pemObject;
+//    private static PemWriter pemWriter;
 
     public static void PemFile(PrivateKey key, String description) {
-        pemObject = new PemObject(description, key.getEncoded());
+//        pemObject = new PemObject(description, key.getEncoded());
         String strKeyPem = new String(key.getEncoded(), Charset.defaultCharset());
         System.out.println("strKeyPem "+strKeyPem);
     }
@@ -107,14 +107,14 @@ public final class Main {
     }
 
     public static void write(String filename) throws FileNotFoundException, IOException {
-        pemWriter = new PemWriter(new OutputStreamWriter(new FileOutputStream(filename)));
-
-        try {
-            pemWriter.writeObject(pemObject);
-        } finally {
-            pemWriter.close();
-            System.out.println("fileName " + filename);
-        }
+//        pemWriter = new PemWriter(new OutputStreamWriter(new FileOutputStream(filename)));
+//
+//        try {
+//            pemWriter.writeObject(pemObject);
+//        } finally {
+//            pemWriter.close();
+//            System.out.println("fileName " + filename);
+//        }
 
     }
 
