@@ -100,9 +100,9 @@ public class ServiceAnalisisMercado implements IfaceAnalisisMercado {
                 case 1:
 
                     rangoFechaInicio = TiempoUtil.getintervalWeekDDMMYYYYbyDay(fechaInicio);
-                    fechaInicio = TiempoUtil.fechaTextoDiaMesAnio(rangoFechaInicio.get(0));
+                    fechaInicio = TiempoUtil.getFechaDDMMYYYY(rangoFechaInicio.get(0));
                     rangoFechaFin = TiempoUtil.getintervalWeekDDMMYYYYbyDay(fechaFin);
-                    fechaFin = TiempoUtil.fechaTextoDiaMesAnio(rangoFechaFin.get(6));
+                    fechaFin = TiempoUtil.getFechaDDMMYYYY(rangoFechaFin.get(6));
                     fechaFin = TiempoUtil.sumarRestarDias(fechaFin, numRegistros);
 
                     //se crea la lista por fechas
@@ -161,9 +161,9 @@ public class ServiceAnalisisMercado implements IfaceAnalisisMercado {
 
                     fechaInicio = TiempoUtil.sumarRestarDias(fechaInicio, -numRegistros);
                     rangoFechaInicio = TiempoUtil.getintervalWeekDDMMYYYYbyDay(fechaInicio);
-                    fechaInicio = TiempoUtil.fechaTextoDiaMesAnio(rangoFechaInicio.get(0));
+                    fechaInicio = TiempoUtil.getFechaDDMMYYYY(rangoFechaInicio.get(0));
                     rangoFechaFin = TiempoUtil.getintervalWeekDDMMYYYYbyDay(fechaFin);
-                    fechaFin = TiempoUtil.fechaTextoDiaMesAnio(rangoFechaFin.get(6));
+                    fechaFin = TiempoUtil.getFechaDDMMYYYY(rangoFechaFin.get(6));
                     fechaFin = TiempoUtil.sumarRestarDias(fechaFin, -7);
 
                     Date anioAnteriorInicio = fechaInicio;
@@ -171,8 +171,8 @@ public class ServiceAnalisisMercado implements IfaceAnalisisMercado {
 
                     while (fechaInicio.before(fechaFin)) {
 
-                        anioAnteriorInicio = TiempoUtil.fechaTextoDiaMesAnio(rangoFechaInicio.get(0));
-                        anioAnteriorFin = TiempoUtil.fechaTextoDiaMesAnio(rangoFechaInicio.get(6));
+                        anioAnteriorInicio = TiempoUtil.getFechaDDMMYYYY(rangoFechaInicio.get(0));
+                        anioAnteriorFin = TiempoUtil.getFechaDDMMYYYY(rangoFechaInicio.get(6));
 
                         anioAnteriorInicio = TiempoUtil.sumarRestarAnios(anioAnteriorInicio, -1);
                         anioAnteriorFin = TiempoUtil.sumarRestarAnios(anioAnteriorFin, -1);
@@ -227,7 +227,7 @@ public class ServiceAnalisisMercado implements IfaceAnalisisMercado {
                         fechaAnterior = TiempoUtil.obtenerFecgaInicioMesFinMesPorMes(i, fechaInicioAnterior);
 //                        fechaAnteriorRemanente = TiempoUtil.getintervalWeekDDMMYYYYbyDay(TiempoUtil.fechaTextoDiaMesAnio(fechaAnterior.get(1)));
 
-                        diasMes = TiempoUtil.obtenerUltimoDiaMes(TiempoUtil.fechaTextoDiaMesAnio(fechaActual.get(0)));
+                        diasMes = TiempoUtil.obtenerUltimoDiaMes(TiempoUtil.getFechaDDMMYYYY(fechaActual.get(0)));
 
                         lstObjectMonth = ejb.getEntradaProductoByFiltroMonth(fechaActual.get(0), fechaActual.get(1), idProducto);
                         lstObjectMonthAnterior = ejb.getEntradaProductoByFiltroMonth(fechaAnterior.get(0), fechaAnterior.get(1), idProducto);

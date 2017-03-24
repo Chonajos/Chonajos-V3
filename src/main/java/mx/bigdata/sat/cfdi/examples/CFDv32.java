@@ -68,23 +68,7 @@ public final class CFDv32 implements CFDI {
   private static final String XSLT = "/xslt/cadenaoriginal_3_2.xslt";
   private static final String[] XSD = new String[] {
       "/xsd/v32/cfdv32.xsd",
-      "/xsd/v3/TimbreFiscalDigital.xsd", 
-      "/xsd/common/TuristaPasajeroExtranjero/TuristaPasajeroExtranjero.xsd",
-      "/xsd/common/detallista/detallista.xsd",
-      "/xsd/common/divisas/divisas.xsd",
-      "/xsd/common/donat/donat11.xsd",
-      "/xsd/common/ecb/ecb.xsd",
-      "/xsd/common/ecc/ecc.xsd",
-      "/xsd/common/iedu/iedu.xsd",
-      "/xsd/common/implocal/implocal.xsd",
-      "/xsd/common/leyendasFisc/leyendasFisc.xsd",
-      "/xsd/common/pfic/pfic.xsd",
-      "/xsd/common/psgcfdsp/psgcfdsp.xsd",
-      "/xsd/common/psgecfd/psgecfd.xsd",
-      "/xsd/common/terceros/terceros11.xsd",
-      "/xsd/common/ventavehiculos/ventavehiculos.xsd",
-      "/xsd/common/nomina/nomina11.xsd",
-      "/xsd/common/nomina12/nomina12.xsd"
+      "/xsd/v3/TimbreFiscalDigital.xsd"
   };
   
     

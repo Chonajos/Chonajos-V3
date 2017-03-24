@@ -102,7 +102,7 @@
                             <p:outputLabel class="col-lg-5 col-md-4 col-sm-4 col-xs-12 alignRight "  
                                            for="calendarInicio" value ="Fecha Inicio:" 
                                            rendered="#{beanFacturacion.viewEstate =='init'}"/> 
-                            <p:calendar disabled="#{beanFacturacion.enableCalendar}" id="calendarInicio" 
+                            <p:calendar id="calendarInicio" 
                                         class="col-lg-7 col-md-8 col-sm-8 col-xs-12 
                                         calendario alignLeft" navigator="true" placeholder="dd/mm/yyyy"
                                         value="#{beanFacturacion.fechaFiltroInicio}" locale="es" pattern="dd/MM/yyyy" 
@@ -113,7 +113,7 @@
                             <p:outputLabel class="col-lg-5 col-md-4 col-sm-4 col-xs-12 alignRight "  
                                            for="calendarFin" value ="Fecha Fin:" 
                                            rendered="#{beanFacturacion.viewEstate =='init'}"/> 
-                            <p:calendar disabled="#{beanFacturacion.enableCalendar}" id="calendarFin" 
+                            <p:calendar  id="calendarFin" 
                                         class="col-lg-7 col-md-8 col-sm-8 col-xs-12 
                                         calendario alignLeft" navigator="true" placeholder="dd/mm/yyyy"
                                         value="#{beanFacturacion.fechaFiltroFin}" locale="es" pattern="dd/MM/yyyy" 
@@ -239,9 +239,9 @@
                             <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12 alignLeft">
                                 <p:outputLabel class="col-lg-5 col-md-5 col-sm-4 col-xs-12 alignRight"  for="comboFechasPublico" value ="Fechas:"  rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}" /> 
                                 <p:selectOneMenu  style="width: 55% !important" id="comboFechasPublico" class="col-lg-9 col-md-7 col-sm-8 col-xs-12" value="#{beanFacturacion.filtroPublico}"  rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}" >
-                                    <f:selectItem itemLabel="Selecciona" itemValue="-1" />
-                                    <f:selectItem itemLabel="Día" itemValue="1"/>
+                                    <f:selectItem itemLabel="Selecciona" itemValue="-1"/>
                                     <f:selectItem itemLabel="Semana" itemValue="3"/>
+                                    <f:selectItem itemLabel="Día" itemValue="1"/>
                                     <f:selectItem itemLabel="Mes" itemValue="2"/>
                                     <p:ajax event="change" update=":formContent" listener="#{beanFacturacion.verificarComboPublico()}"/>
                                 </p:selectOneMenu>
@@ -251,7 +251,7 @@
                                 <p:outputLabel class="col-lg-3 col-md-4 col-sm-4 col-xs-12 alignRight "  
                                                for="calendarInicioPublico" value ="Inicio:" 
                                                rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}" /> 
-                                <p:calendar disabled="#{beanFacturacion.enableCalendarPublico}" id="calendarInicioPublico" 
+                                <p:calendar  id="calendarInicioPublico" 
                                             class="col-lg-9 col-md-8 col-sm-8 col-xs-12 
                                             calendario alignLeft" navigator="true" placeholder="dd/mm/yyyy"
                                             value="#{beanFacturacion.fechaFiltroInicioPublico}" locale="es" pattern="dd/MM/yyyy" 
@@ -262,7 +262,7 @@
                                 <p:outputLabel class="col-lg-3 col-md-4 col-sm-4 col-xs-12 alignRight "  
                                                for="calendarFinPublico" value ="Fin:" 
                                                rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}" /> 
-                                <p:calendar disabled="#{beanFacturacion.enableCalendarPublico}" id="calendarFinPublico" 
+                                <p:calendar  id="calendarFinPublico" 
                                             class="col-lg-9 col-md-8 col-sm-8 col-xs-12 
                                             calendario alignLeft" navigator="true" placeholder="dd/mm/yyyy"
                                             value="#{beanFacturacion.fechaFiltroFinPublico}" locale="es" pattern="dd/MM/yyyy" 
@@ -280,7 +280,7 @@
                             </p:selectOneMenu>
                         </div>
 
-                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12 alignLeft">
+                        <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12 alignLeft">
                             <p:outputLabel class="col-lg-6 col-md-5 col-sm-4 col-xs-12 alignRight"  for="filtroMoneda" value ="Moneda:" /> 
                             <p:selectOneMenu  style="width: 50% !important" id="filtroMoneda" class="col-lg-5 col-md-7 col-sm-8 col-xs-12" value="#{beanFacturacion.moneda}" >
                                 <f:selectItems value="#{beanFacturacion.listaMonedas}" var="monedas" itemLabel="#{monedas.descripcion}" itemValue="#{monedas.codigo}"/>
@@ -319,50 +319,59 @@
                     <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 form-group">
 
                         <h4>Datos del Cliente</h4>
-                        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 form-group">
-                            <p:outputLabel class="col-lg-6 col-md-2 col-sm-3 col-xs-12"  for="txtNombreCli" value ="Nombre Cliente:" /> 
-                            <p:inputText id="txtNombreCli" readonly="true" class=" col-lg-6 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.nombre}" />
+                        
+                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 "  for="autocompleteCliente2" value ="Cliente:" /> 
+                            <p:autoComplete  placeholder="Seleccione un Cliente" id="autocompleteCliente2"  required="true" requiredMessage="Ingresa un valor para el campo Cliente." styleClass="autocomplete-input-text-media ui-state-highlight-autocomplete" class="ui-state-highlight-autocomplete"
+                                             value="#{beanFacturacion.datosCliente}" completeMethod="#{beanFacturacion.autoCompleteCliente}" forceSelection="true" var="cliente"  inputStyle="width: 179px"
+                                             itemLabel="#{cliente.nombreCompleto}"
+                                             itemValue="#{cliente.idClientePk}" converter="#{clienteConverter}">
+                                <p:ajax event="itemSelect" update=":formContent" listener="#{beanFacturacion.buscarDatosCliente(3)}" />
+                                <p:ajax event="change" update=":formContent"  listener="#{beanFacturacion.buscarDatosCliente(3)}"/>
+                            </p:autoComplete>
+
+                            <pe:keyFilter for="autocompleteCliente" regEx="/[a-z0-9-_Ã±\s]/i" />
                         </div>
                         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-6 col-md-2 col-sm-3 col-xs-12"  for="txtRazonCli" value ="Razón Social:" /> 
-                            <p:inputText id="txtRazonCli" readonly="true" class=" col-lg-6 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.nombre}" />
+                            <p:inputText id="txtRazonCli" required="true" class=" col-lg-6 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.nombre}" />
                         </div>
                         <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-3 col-md-2 col-sm-3 col-xs-12"  for="txtRfcCli" value ="RFC:" /> 
-                            <p:inputText id="txtRfcCli" readonly="true" class=" col-lg-9 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.rfc}" />
+                            <p:inputText id="txtRfcCli" required="true" class=" col-lg-9 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.rfc}" />
                         </div>
                         <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-8 col-md-2 col-sm-3 col-xs-12"  for="txtCodigoPCli" value ="Codigo Postal" /> 
-                            <p:inputText id="txtCodigoPCli" readonly="true" class=" col-lg-4 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.codigoPostal}" />
+                            <p:inputText id="txtCodigoPCli" required="true" class=" col-lg-4 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.codigoPostal}" />
                         </div>
                         <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-4 col-md-2 col-sm-3 col-xs-12"  for="txtCalleCli" value ="Calle:" /> 
-                            <p:inputText id="txtCalleCli" readonly="true" class=" col-lg-8 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.calle}" />
+                            <p:inputText id="txtCalleCli" required="true" class=" col-lg-8 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.calle}" />
                         </div>
 
                         <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-5 col-md-2 col-sm-3 col-xs-12"  for="txtColoniaCli" value ="Colonia:" /> 
-                            <p:inputText id="txtColoniaCli" readonly="true" class=" col-lg-7 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.nombreColonia}" />
+                            <p:inputText id="txtColoniaCli" required="true" class=" col-lg-7 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.nombreColonia}" />
                         </div>
                         <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-5 col-md-2 col-sm-3 col-xs-12"  for="txtMunicipioCli" value ="Municipio: " /> 
-                            <p:inputText id="txtMunicipioCli" readonly="true" class=" col-lg-7 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.nombreMunicipio}" />
+                            <p:inputText id="txtMunicipioCli" required="true" class=" col-lg-7 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.nombreMunicipio}" />
                         </div>
                         <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-4 col-md-2 col-sm-3 col-xs-12"  for="txtEstadoCli" value ="Estado: " /> 
-                            <p:inputText id="txtEstadoCli" readonly="true" class=" col-lg-8 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.nombreEstado}" />
+                            <p:inputText id="txtEstadoCli" required="true" class=" col-lg-8 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.nombreEstado}" />
                         </div>
                         <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-4 col-md-2 col-sm-3 col-xs-12"  for="txtPaisCli" value ="País: " /> 
-                            <p:inputText id="txtPaisCli" readonly="true" class=" col-lg-8 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.pais}" />
+                            <p:inputText id="txtPaisCli" required="true" class=" col-lg-8 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.pais}" />
                         </div>
                         <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-10 col-md-2 col-sm-3 col-xs-12"  for="txtNoExtCli" value ="No. Exterior" /> 
-                            <p:inputText id="txtNoExtCli" readonly="true" class=" col-lg-2 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.numExterior}" />
+                            <p:inputText id="txtNoExtCli" required="true" class=" col-lg-2 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.numExterior}" />
                         </div>
                         <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 form-group">
                             <p:outputLabel class="col-lg-10 col-md-2 col-sm-3 col-xs-12"  for="txtNoIntCli" value ="No. Interior" /> 
-                            <p:inputText id="txtNoIntCli" readonly="true" class=" col-lg-2 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.numInterior}" />
+                            <p:inputText id="txtNoIntCli" required="true" class=" col-lg-2 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.numInterior}" />
                         </div>
 
                     </div>
@@ -556,76 +565,76 @@
                                 </p:column>
                                 <p:columnGroup type="footer">
                                     <p:row>
-                                        <p:column colspan="1" />
-                                        <p:column colspan="5" style="text-align:right" footerText="Importe: " />
-                                        <p:column colspan="1">
+                                        <p:column colspan="1" style="text-align:right;background-color:white" />
+                                        <p:column colspan="6" style="text-align:right;background-color:white"  footerText="Importe: " />
+                                        <p:column colspan="1" style="background-color:white">
                                             <f:facet name="footer">
                                                 <h:outputText value="#{beanFacturacion.ventaMayoreo.totalVenta}">
                                                     <f:convertNumber for="totalVenta" pattern="$#,##0.00"/>
                                                 </h:outputText>
                                             </f:facet>
                                         </p:column>
-                                        <p:column colspan="1" />
-                                        <p:column colspan="1" />
+                                        <p:column colspan="1" style="text-align:right;background-color:white"/>
+                                        <p:column colspan="1" style="text-align:right;background-color:white"/>
 
                                     </p:row>
                                     <p:row>
 
-                                        <p:column colspan="1" />
-                                        <p:column colspan="5" style="text-align:right" footerText="Descuento:" />
-                                        <p:column colspan="1">
+                                        <p:column colspan="1" style="text-align:right;background-color:white"/>
+                                        <p:column colspan="6" style="text-align:right;background-color:white" footerText="Descuento:" />
+                                        <p:column colspan="1" style="background-color:white">
                                             <f:facet name="footer">
                                                 <h:outputText value="#{beanFacturacion.descuento}">
                                                     <f:convertNumber for="totalVenta" pattern="$#,##0.00"/>
                                                 </h:outputText>
                                             </f:facet>
                                         </p:column>
-                                        <p:column colspan="1" />
-                                        <p:column colspan="1" />
+                                        <p:column colspan="1" style="text-align:right;background-color:white"/>
+                                        <p:column colspan="1" style="text-align:right;background-color:white"/>
 
                                     </p:row>
                                     <p:row>
 
-                                        <p:column colspan="1" />
-                                        <p:column colspan="5" style="text-align:right" footerText="SubTotal: " />
-                                        <p:column colspan="1">
-                                            <f:facet name="footer">
+                                        <p:column colspan="1" style="text-align:right;background-color:white"/>
+                                        <p:column colspan="6" style="text-align:right;background-color:white" footerText="SubTotal: " />
+                                        <p:column colspan="1" style="background-color:white">
+                                            <f:facet name="footer" >
                                                 <h:outputText value="#{beanFacturacion.subTotal}">
                                                     <f:convertNumber for="totalVenta" pattern="$#,##0.00"/>
                                                 </h:outputText>
                                             </f:facet>
                                         </p:column>
-                                        <p:column colspan="1" />
-                                        <p:column colspan="1" />
+                                        <p:column colspan="1" style="text-align:right;background-color:white"/>
+                                        <p:column colspan="1" style="text-align:right;background-color:white"/>
 
                                     </p:row>
                                     <p:row>
 
-                                        <p:column colspan="1" />
-                                        <p:column colspan="5" style="text-align:right" footerText="IVA: " />
-                                        <p:column colspan="1">
+                                        <p:column colspan="1" style="text-align:right;background-color:white"/>
+                                        <p:column colspan="6" style="text-align:right;background-color:white" footerText="IVA: " />
+                                        <p:column colspan="1" style="background-color:white">
                                             <f:facet name="footer">
                                                 <h:outputText value="#{beanFacturacion.iva}">
                                                     <f:convertNumber for="totalVenta" pattern="$#,##0.00"/>
                                                 </h:outputText>
                                             </f:facet>
                                         </p:column>
-                                        <p:column colspan="1" />
-                                        <p:column colspan="1" />
+                                        <p:column colspan="1" style="text-align:right;background-color:white"/>
+                                        <p:column colspan="1" style="text-align:right;background-color:white"/>
                                     </p:row>
                                     <p:row>
 
-                                        <p:column colspan="1" />
-                                        <p:column colspan="5" style="text-align:right" footerText="TOTAL: " />
-                                        <p:column colspan="1">
+                                        <p:column colspan="1" style="text-align:right;background-color:white"/>
+                                        <p:column colspan="6" style="text-align:right;background-color:white" footerText="TOTAL: " />
+                                        <p:column colspan="1" style="background-color:white">
                                             <f:facet name="footer">
                                                 <h:outputText value="#{beanFacturacion.total}">
                                                     <f:convertNumber for="totalVenta" pattern="$#,##0.00"/>
                                                 </h:outputText>
                                             </f:facet>
                                         </p:column>
-                                        <p:column colspan="1" />
-                                        <p:column colspan="1" />
+                                        <p:column colspan="1" style="text-align:right;background-color:white"/>
+                                        <p:column colspan="1" style="text-align:right;background-color:white"/>
                                     </p:row>
                                 </p:columnGroup>
                             </p:dataTable>

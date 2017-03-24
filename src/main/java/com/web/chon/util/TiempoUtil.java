@@ -62,7 +62,7 @@ public class TiempoUtil {
             return null;
         }
         String convertido = formatoFechaDiaUnoMesAnio.format(fecha);
-        return fechaTextoDiaMesAnio(convertido);
+        return getFechaDDMMYYYY(convertido);
 
     }
 
@@ -72,7 +72,7 @@ public class TiempoUtil {
      * @param fechaString
      * @return
      */
-    public static Date fechaTextoDiaMesAnio(String fechaString) {
+    public static Date getFechaDDMMYYYY(String fechaString) {
 
         try {
             return formatoFechaDiaMesAnio.parse(fechaString);
@@ -322,7 +322,7 @@ public class TiempoUtil {
         }
 
         String convertido = formatoFechaDiaMesAnio.format(fecha);
-        return fechaTextoDiaMesAnio(convertido);
+        return getFechaDDMMYYYY(convertido);
 
     }
 
@@ -424,7 +424,7 @@ public class TiempoUtil {
         DateFormat formatoEneroDiaUno = new SimpleDateFormat("01/" + month + "/yyyy");
 
         fechas.add(formatoEneroDiaUno.format(fecha));
-        fechas.add(getFechaDDMMYYYY(sumarRestarDias(sumarRestarMeses(fechaTextoDiaMesAnio(formatoEneroDiaUno.format(fecha)), 1), -1)));
+        fechas.add(getFechaDDMMYYYY(sumarRestarDias(sumarRestarMeses(getFechaDDMMYYYY(formatoEneroDiaUno.format(fecha)), 1), -1)));
 
         return fechas;
     }

@@ -168,7 +168,7 @@ public class ServiceCredito implements IfaceCredito {
             //---En este Ciclo for obtenemos todas las fechas de pago y los montos del credito---//
             for (int i = 0; i < var; i++) {
                 Date auxiliar = fechaVenta;
-                auxiliar = TiempoUtil.fechaTextoDiaMesAnio(TiempoUtil.getFechaDDMMYYYY(TiempoUtil.sumarRestarDias(fechaVenta, numeroAsumar)));
+                auxiliar = TiempoUtil.getFechaDDMMYYYY(TiempoUtil.getFechaDDMMYYYY(TiempoUtil.sumarRestarDias(fechaVenta, numeroAsumar)));
                 fechas_pagos.add(auxiliar);
                 pagos_por_fecha.add(credito.getMontoAbonar().multiply(new BigDecimal(i + 1), MathContext.UNLIMITED));
                 fechaVenta = auxiliar;
@@ -322,7 +322,7 @@ public class ServiceCredito implements IfaceCredito {
                 ArrayList<BigDecimal> pagos_por_fecha = new ArrayList<BigDecimal>();
                 for (int i = 0; i < var; i++) {
                     Date auxiliar = fechaVenta;
-                    auxiliar = TiempoUtil.fechaTextoDiaMesAnio(TiempoUtil.getFechaDDMMYYYY(TiempoUtil.sumarRestarDias(fechaVenta, numeroAsumar)));
+                    auxiliar = TiempoUtil.getFechaDDMMYYYY(TiempoUtil.getFechaDDMMYYYY(TiempoUtil.sumarRestarDias(fechaVenta, numeroAsumar)));
                     fechas_pagos.add(auxiliar);
                     pagos_por_fecha.add(dominio.getMontoAbonar().multiply(new BigDecimal(i + 1), MathContext.UNLIMITED));
                     fechaVenta = auxiliar;

@@ -32,11 +32,9 @@ import com.web.chon.util.UtilUpload;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -49,9 +47,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -61,7 +57,6 @@ import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.xml.parsers.ParserConfigurationException;
-import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRExporter;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -74,14 +69,11 @@ import org.springframework.stereotype.Component;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import mx.bigdata.sat.cfdi.examples.CFDv32;
-import mx.bigdata.sat.cfdi.examples.CFDv32Factory;
 import mx.bigdata.sat.cfdi.v32.schema.Comprobante;
 import mx.bigdata.sat.cfdi.v32.schema.ObjectFactory;
 import mx.bigdata.sat.security.KeyLoaderEnumeration;
 import mx.bigdata.sat.security.factory.KeyLoaderFactory;
 import org.apache.commons.io.IOUtils;
-import org.bouncycastle.openssl.PKCS8Generator;
-import org.bouncycastle.util.io.pem.PemWriter;
 import org.primefaces.event.RowEditEvent;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -237,7 +229,7 @@ public class BeanFacturacion implements Serializable {
         listaProductosReporte = new ArrayList<VentaProductoMayoreo>();
         of = new ObjectFactory();
         comp = of.createComprobante();
-        idClienteVentaMostradorPk = new BigDecimal(1103);
+        idClienteVentaMostradorPk = new BigDecimal(1);
         datosEmisor = new DatosFacturacion();
         datosCliente = new Cliente();
         usuario = context.getUsuarioAutenticado();
@@ -268,23 +260,21 @@ public class BeanFacturacion implements Serializable {
         verificarCombo();
         buscarFacturas();
         selectedProductosVentas = new ArrayList<VentaProductoMayoreo>();
+        filtroPublico = 3;
 
     }
-    public int verificarImportePublico()
-    {
+
+    public int verificarImportePublico() {
         //funcion para verificar los productos seleccionados y su monto, por si se edita un producto 
         //o se deselecciona 
         BigDecimal temporal = new BigDecimal(0);
         for (VentaProductoMayoreo producto : selectedProductosVentas) {
             temporal = temporal.add(producto.getTotalVenta(), MathContext.UNLIMITED);
-            
+
         }
-        if(importeVentaPublico.compareTo(temporal)==0)
-        {
+        if (importeVentaPublico.compareTo(temporal) == 0) {
             return 1;
-        }
-        else
-        {
+        } else {
             return 0;
         }
     }
@@ -306,14 +296,12 @@ public class BeanFacturacion implements Serializable {
                     producto.setKilosVendidos(producto.getKilosVendidos());
                     producto.setTotalVenta(producto.getTotalVenta());
                     selectedProductosVentas.add(producto);
-                }
-                else
-                {
+                } else {
                     /*
                     
                     xkilos = xImporte
                     x      = importePublicoTemporal;
-                    */
+                     */
                     BigDecimal kilosT = new BigDecimal(0);
                     BigDecimal division = new BigDecimal(0);
 
@@ -330,8 +318,8 @@ public class BeanFacturacion implements Serializable {
                 }
             }
         }//fin for
-        System.out.println("Total Publico Temporal: "+importePublicoTemporal);
-        
+        System.out.println("Total Publico Temporal: " + importePublicoTemporal);
+
     }
 
     public void calculaParcialidad() {
@@ -524,19 +512,31 @@ public class BeanFacturacion implements Serializable {
 
     public void removeProductoSugerido() {
         listaVentaPublico.remove(dataRemove);
-        
 
     }
 
-    public void buscarDatosCliente() {
-        if (filtroMostrador == 2) {
-            datosCliente = ifaceCatCliente.getClienteById(idClienteVentaMostradorPk);
-
-        } else {
-            if (ventaMayoreo != null && ventaMayoreo.getIdClienteFk() != null) {
-                datosCliente = ifaceCatCliente.getClienteById(ventaMayoreo.getIdClienteFk());
-
-            }
+    public void buscarDatosCliente(int v) {
+        System.out.println("VVVVVVV: " + v);
+        switch (v) {
+            case 1:
+                if (ventaMayoreo != null && ventaMayoreo.getIdClienteFk() != null) {
+                    datosCliente = new Cliente();
+                    datosCliente = ifaceCatCliente.getClienteById(ventaMayoreo.getIdClienteFk());
+                }
+                break;
+            case 2:
+                datosCliente = new Cliente();
+                datosCliente = ifaceCatCliente.getClienteById(idClienteVentaMostradorPk);
+                break;
+            case 3:
+                if (datosCliente != null && datosCliente.getIdClientePk() != null) 
+                {
+                    datosCliente = ifaceCatCliente.getClienteById(datosCliente.getIdClientePk());
+                }
+                break;
+            default:
+                JsfUtil.addErrorMessageClean("Ocurrio un error al buscar los datos del cliente");
+                break;
         }
 
     }
@@ -609,7 +609,7 @@ public class BeanFacturacion implements Serializable {
 
         }
 
-        buscarDatosCliente();
+        buscarDatosCliente(1);
         calculaKilosPorFacturar();
         calcularTotales();
     }
@@ -862,6 +862,99 @@ public class BeanFacturacion implements Serializable {
         RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
     }
 
+    public String verificarDatos() {
+        /* 1.- Verificar Datos de Empresa;
+           2.- Verificar Datos de Cliente;
+           3.- Verificar Productos de Facturación; (que no este vacia la lista)
+        
+         */
+        boolean bandera = false;
+        String mensaje = "";
+        for (DatosFacturacion empresa : listaDatosEmisor) {
+            if (empresa.getIdDatosFacturacionPk().intValue() == idEmisorPk.intValue()) {
+
+                if (empresa.getCalle() == null) {
+                    bandera = true;
+                    mensaje += " Falta Calle Emisor,";
+                }
+                if (empresa.getClavePublica() == null) {
+                    bandera = true;
+                    mensaje += " Falta Clave Publica Emisor,";
+                }
+                if (empresa.getCodigoPostal() == null) {
+                    bandera = true;
+                    mensaje += " Falta Codigo Postal Emisor,";
+                }
+                if (empresa.getEstado() == null) {
+                    bandera = true;
+                    mensaje += " Falta Estado Emisor ,";
+                }
+                if (empresa.getLocalidad() == null) {
+                    bandera = true;
+                    mensaje += " Falta Localidad Emisor,";
+                }
+                if (empresa.getMunicipio() == null) {
+                    bandera = true;
+                    mensaje += " Falta Municipio Emisor,";
+                }
+                if (empresa.getNumExt() == null) {
+                    bandera = true;
+                    mensaje += "Falta Número Exterior Emisor,";
+                }
+//                if (empresa.getNumInt() == null) {
+//                    bandera = true;
+//                    mensaje += "Falta Número Interior Emisor,";
+//                }
+                if (empresa.getPais() == null) {
+                    bandera = true;
+                    mensaje += "Falta Pais Emisor,";
+                }
+                if (empresa.getRazonSocial() == null) {
+                    bandera = true;
+                    mensaje += "Falta Razón Social Emisor,";
+                }
+                if (empresa.getRegimen() == null) {
+                    bandera = true;
+                    mensaje += "Falta Regimen Emisor,";
+                }
+                if (empresa.getRfc() == null) {
+                    bandera = true;
+                    mensaje += " Falta RCF Emisor,";
+                }
+                if (empresa.getRuta_certificado() == null) {
+                    bandera = true;
+                    mensaje += " Falta Certificado .cer Emisor,";
+                }
+                if (empresa.getRuta_llave_privada() == null) {
+                    bandera = true;
+                    mensaje += "  Falta Llave Privada .key Emisor, ";
+                }//fin if
+            }
+        }//fin for
+
+        //Verificando Datos de Cliente
+        //Verificar Venta:
+        System.out.println("---------------------------------------");
+        System.out.println(ventaMayoreo.toString());
+        System.out.println(ventaMayoreo.getListaProductos());
+        System.out.println("Tamaño: " + ventaMayoreo.getListaProductos().size());
+        System.out.println("----------------------------------------");
+        if (ventaMayoreo == null || ventaMayoreo.getIdVentaMayoreoPk() == null) {
+            mensaje += "  Ese folio de venta no existe.";
+        }
+        if (ventaMayoreo.getListaProductos() == null || ventaMayoreo.getListaProductos().isEmpty() || ventaMayoreo.getListaProductos().size() == 0) {
+            mensaje += "  Ese folio de venta ya se encuentra facturado totalmente";
+            System.out.println("Entro a validacion");
+        }
+        System.out.println("Total: " + total);
+        if (total.setScale(2, RoundingMode.CEILING).compareTo(new BigDecimal(0).setScale(2, RoundingMode.CEILING)) < 1) {
+            mensaje += "  El total de la factura es igual o menor que cero";
+        }
+        System.out.println("Mensaje: " + mensaje);
+        return mensaje;
+
+    }
+
     public void changeViewGenerarFactura() {
         datosCliente = new Cliente();
         ventaMayoreo = new VentaMayoreo();
@@ -908,13 +1001,15 @@ public class BeanFacturacion implements Serializable {
             disableBotonBuscarVenta = true;
             disableTextFolioVenta = true;
         }
-        buscarDatosCliente();
+        buscarDatosCliente(2);
+        verificarComboPublico();
+        buscaVentasNoFacturadas();
 
     }
 
     public void onRowEdit(RowEditEvent event) {
         dataEdit = new VentaProductoMayoreo();
-        
+
         dataEdit = (VentaProductoMayoreo) event.getObject();
         dataEdit.setTotalVenta(dataEdit.getPrecioProducto().multiply(dataEdit.getKilosVendidos(), MathContext.UNLIMITED));
 
@@ -1079,79 +1174,98 @@ public class BeanFacturacion implements Serializable {
     }
 
     public void crearFactura() throws Exception {
-//        try {
-        for (DatosFacturacion df : listaDatosEmisor) {
-            if (df.getIdDatosFacturacionPk().intValue() == idEmisorPk.intValue()) {
-                datosEmisor.setCalle(df.getCalle() == null ? "" : df.getCalle());
-                datosEmisor.setClavePublica(df.getClavePublica() == null ? "" : df.getClavePublica());
-                datosEmisor.setCodigoPostal(df.getCodigoPostal() == null ? "" : df.getCodigoPostal());
-                datosEmisor.setColonia(df.getColonia() == null ? "" : df.getColonia());
-                datosEmisor.setCorreo(df.getCorreo() == null ? "" : df.getCorreo());
-                datosEmisor.setEstado(df.getEstado() == null ? "" : df.getEstado());
-                datosEmisor.setField(df.getField() == null ? "" : df.getField());
-                datosEmisor.setIdClienteFk(df.getIdClienteFk() == null ? null : df.getIdClienteFk());
-                datosEmisor.setIdCodigoPostalFk(df.getIdCodigoPostalFk() == null ? null : df.getIdCodigoPostalFk());
-                datosEmisor.setLocalidad(df.getLocalidad() == null ? "" : df.getLocalidad());
-                datosEmisor.setMunicipio(df.getMunicipio() == null ? "" : df.getMunicipio());
-                datosEmisor.setNombre(df.getNombre() == null ? "" : df.getNombre());
-                datosEmisor.setNumExt(df.getNumExt() == null ? "" : df.getNumExt());
-                datosEmisor.setNumInt(df.getNumInt() == null ? "" : df.getNumInt());
-                datosEmisor.setPais(df.getPais() == null ? "" : df.getPais());
-                datosEmisor.setRazonSocial(df.getRazonSocial() == null ? "" : df.getRazonSocial());
-                datosEmisor.setRegimen(df.getRegimen() == null ? "" : df.getRegimen());
-                datosEmisor.setRfc(df.getRfc() == null ? "" : df.getRfc());
-                datosEmisor.setRuta_certificado(df.getRuta_certificado() == null ? "" : Constantes.PATHLOCALFACTURACION + "Empresas" + File.separatorChar + df.getRfc() + File.separatorChar + df.getRuta_certificado());
-                datosEmisor.setRuta_certificado_cancel(df.getRuta_certificado_cancel() == null ? "" : df.getRuta_certificado_cancel());
-                datosEmisor.setRuta_llave_privada(df.getRuta_llave_privada() == null ? "" : Constantes.PATHLOCALFACTURACION + "Empresas" + File.separatorChar + df.getRfc() + File.separatorChar + df.getRuta_llave_privada());
-                datosEmisor.setRuta_llave_privada_cancel(df.getRuta_llave_privada_cancel() == null ? "" : df.getRuta_llave_privada_cancel());
-                datosEmisor.setTelefono(df.getTelefono() == null ? "" : df.getTelefono());
+        String men = verificarDatos();
+        System.out.println("MensajeBean: " + men);
+        if (men.equals("")) {
+            for (DatosFacturacion df : listaDatosEmisor) {
+                if (df.getIdDatosFacturacionPk().intValue() == idEmisorPk.intValue()) {
+                    datosEmisor.setCalle(df.getCalle() == null ? "" : df.getCalle());
+                    datosEmisor.setClavePublica(df.getClavePublica() == null ? "" : df.getClavePublica());
+                    datosEmisor.setCodigoPostal(df.getCodigoPostal() == null ? "" : df.getCodigoPostal());
+                    datosEmisor.setColonia(df.getColonia() == null ? "" : df.getColonia());
+                    datosEmisor.setCorreo(df.getCorreo() == null ? "" : df.getCorreo());
+                    datosEmisor.setEstado(df.getEstado() == null ? "" : df.getEstado());
+                    datosEmisor.setField(df.getField() == null ? "" : df.getField());
+                    datosEmisor.setIdClienteFk(df.getIdClienteFk() == null ? null : df.getIdClienteFk());
+                    datosEmisor.setIdCodigoPostalFk(df.getIdCodigoPostalFk() == null ? null : df.getIdCodigoPostalFk());
+                    datosEmisor.setLocalidad(df.getLocalidad() == null ? "" : df.getLocalidad());
+                    datosEmisor.setMunicipio(df.getMunicipio() == null ? "" : df.getMunicipio());
+                    datosEmisor.setNombre(df.getNombre() == null ? "" : df.getNombre());
+                    datosEmisor.setNumExt(df.getNumExt() == null ? "" : df.getNumExt());
+                    datosEmisor.setNumInt(df.getNumInt() == null ? "" : df.getNumInt());
+                    datosEmisor.setPais(df.getPais() == null ? "" : df.getPais());
+                    datosEmisor.setRazonSocial(df.getRazonSocial() == null ? "" : df.getRazonSocial());
+                    datosEmisor.setRegimen(df.getRegimen() == null ? "" : df.getRegimen());
+                    datosEmisor.setRfc(df.getRfc() == null ? "" : df.getRfc());
+                    datosEmisor.setRuta_certificado(df.getRuta_certificado() == null ? "" : Constantes.PATHLOCALFACTURACION + "Empresas" + File.separatorChar + df.getRfc() + File.separatorChar + df.getRuta_certificado());
+                    datosEmisor.setRuta_certificado_cancel(df.getRuta_certificado_cancel() == null ? "" : df.getRuta_certificado_cancel());
+                    datosEmisor.setRuta_llave_privada(df.getRuta_llave_privada() == null ? "" : Constantes.PATHLOCALFACTURACION + "Empresas" + File.separatorChar + df.getRfc() + File.separatorChar + df.getRuta_llave_privada());
+                    datosEmisor.setRuta_llave_privada_cancel(df.getRuta_llave_privada_cancel() == null ? "" : df.getRuta_llave_privada_cancel());
+                    datosEmisor.setTelefono(df.getTelefono() == null ? "" : df.getTelefono());
 
+                }
             }
+
+            String pathRFC = Constantes.PATHLOCALFACTURACION + "Clientes" + File.separatorChar + datosCliente.getRfc();
+
+            File folderClienteRFC = new File(pathRFC);
+            File folderClienteComprobante = new File(pathRFC + File.separatorChar + "COMPROBANTE");
+            File folderClienteTimbrado = new File(pathRFC + File.separatorChar + "TIMBRADO");
+
+            if (!folderClienteRFC.exists()) {
+                folderClienteRFC.mkdirs();
+            }
+            if (!folderClienteComprobante.exists()) {
+                folderClienteComprobante.mkdirs();
+            }
+            if (!folderClienteTimbrado.exists()) {
+                folderClienteTimbrado.mkdirs();
+            }
+
+            pathFacturaClienteComprobante = Constantes.PATHLOCALFACTURACION + "Clientes" + File.separatorChar + datosCliente.getRfc() + File.separatorChar + "COMPROBANTE" + File.separatorChar + datosCliente.getRfc() + "_" + ventaMayoreo.getIdSucursalFk().toString() + "_" + ventaMayoreo.getVentaSucursal().toString() + ".xml";
+            pathFacturaClienteTimbrado = Constantes.PATHLOCALFACTURACION + "Clientes" + File.separatorChar + datosCliente.getRfc() + File.separatorChar + "TIMBRADO" + File.separatorChar + datosCliente.getRfc() + "_" + ventaMayoreo.getIdSucursalFk().toString() + "_" + ventaMayoreo.getVentaSucursal().toString() + ".xml";
+
+            CFDv32 cfd = new CFDv32(createComprobante(), "mx.bigdata.sat.cfdi.examples");
+            //Cargamos el archivo con la llave
+
+            System.out.println("Ruta llave: " + datosEmisor.getRuta_llave_privada());
+            System.out.println("Ruta Certificado: " + datosEmisor.getRuta_certificado());
+            PrivateKey key = KeyLoaderFactory.createInstance(KeyLoaderEnumeration.PRIVATE_KEY_LOADER, new FileInputStream(datosEmisor.getRuta_llave_privada()), datosEmisor.getClavePublica()).getKey();
+            //Cargamos el archivo con el certificado
+            String[] ce;
+            System.out.println("***************");
+            ce = datosEmisor.getRuta_certificado().split("\\.");
+            comp.setNoCertificado(ce[0]);//es el numero del certificado
+
+            System.out.println("Se cargaron exitosamente los archivos");
+            X509Certificate cert = KeyLoaderFactory.createInstance(KeyLoaderEnumeration.PUBLIC_KEY_LOADER, new FileInputStream(datosEmisor.getRuta_certificado())).getKey();
+
+            mx.bigdata.sat.cfdi.v32.schema.Comprobante sellado = cfd.sellarComprobante(key, cert);
+
+            FileOutputStream outFile = new FileOutputStream(pathFacturaClienteComprobante);
+            imprimirDatosFactura();
+            cfd.validar();
+//        System.out.println("Se valido el cdf ");
+            cfd.verificar();
+            System.out.println("Se verifico el cfd ");
+            cfd.guardar(outFile);
+            System.out.println("Se guardo el cdf ");
+            System.out.println("cadema original " + cfd.getCadenaOriginal());
+            nuevaFactura.setCadena(cfd.getCadenaOriginal());
+            outFile.close();
+
+            if (timbrar() == 1) {
+                datosCliente = new Cliente();
+                ventaMayoreo = new VentaMayoreo();
+                importeParcialidad = null;
+                formaPago = "01";
+                subTotal = null;
+                total = null;
+            }
+        }//fin if validaciones
+        else {
+            JsfUtil.addErrorMessageClean("Error: " + men);
         }
-        pathFacturaClienteComprobante = Constantes.PATHLOCALFACTURACION + "Clientes" + File.separatorChar + datosCliente.getRfc() + File.separatorChar + "COMPROBANTE" + File.separatorChar + datosCliente.getRfc() + "_" + ventaMayoreo.getIdSucursalFk().toString() + "_" + ventaMayoreo.getVentaSucursal().toString() + ".xml";
-
-        pathFacturaClienteTimbrado = Constantes.PATHLOCALFACTURACION + "Clientes" + File.separatorChar + datosCliente.getRfc() + File.separatorChar + "TIMBRADO" + File.separatorChar + datosCliente.getRfc() + "_" + ventaMayoreo.getIdSucursalFk().toString() + "_" + ventaMayoreo.getVentaSucursal().toString() + ".xml";
-
-        CFDv32 cfd = new CFDv32(createComprobante(), "mx.bigdata.sat.cfdi.examples");
-        //Cargamos el archivo con la llave
-
-        System.out.println("Ruta llave: " + datosEmisor.getRuta_llave_privada());
-        System.out.println("Ruta Certificado: " + datosEmisor.getRuta_certificado());
-        PrivateKey key = KeyLoaderFactory.createInstance(KeyLoaderEnumeration.PRIVATE_KEY_LOADER, new FileInputStream(datosEmisor.getRuta_llave_privada()), datosEmisor.getClavePublica()).getKey();
-        //Cargamos el archivo con el certificado
-        String[] ce;
-        System.out.println("***************");
-        ce = datosEmisor.getRuta_certificado().split("\\.");
-        comp.setNoCertificado(ce[0]);//es el numero del certificado
-
-        System.out.println("Se cargaron exitosamente los archivos");
-        X509Certificate cert = KeyLoaderFactory.createInstance(KeyLoaderEnumeration.PUBLIC_KEY_LOADER, new FileInputStream(datosEmisor.getRuta_certificado())).getKey();
-
-        mx.bigdata.sat.cfdi.v32.schema.Comprobante sellado = cfd.sellarComprobante(key, cert);
-
-        FileOutputStream outFile = new FileOutputStream(pathFacturaClienteComprobante);
-        imprimirDatosFactura();
-        cfd.validar();
-        System.out.println("Se valido el cdf ");
-        cfd.verificar();
-        System.out.println("Se verifico el cfd ");
-        cfd.guardar(outFile);
-        System.out.println("Se guardo el cdf ");
-        System.out.println("cadema original " + cfd.getCadenaOriginal());
-        nuevaFactura.setCadena(cfd.getCadenaOriginal());
-        outFile.close();
-
-        if (timbrar() == 1) {
-
-        }
-//        } catch (Exception e) {
-//            
-//            JsfUtil.addErrorMessageClean("Ocurrió un problema al generar la factura, contactar a adminsitrador "+" Mensaje: "+e.getMessage());
-//        }
-        datosCliente = new Cliente();
-        ventaMayoreo = new VentaMayoreo();
-        importeParcialidad = null;
-        formaPago = "01";
 
     }
 
@@ -1280,7 +1394,13 @@ public class BeanFacturacion implements Serializable {
         Comprobante.Impuestos.Traslados.Traslado t1 = of.createComprobanteImpuestosTrasladosTraslado();
         t1.setImporte(iva);
         t1.setImpuesto("IVA");
-        t1.setTasa(new BigDecimal("16.00"));
+
+        for (CatalogoSat cs : listaTipoDocumento) {
+            if (cs.getIdCatalogoSatPk().intValue() == tipoDocumento.intValue()) {
+                t1.setTasa((cs.getValor().multiply(new BigDecimal(100), MathContext.UNLIMITED)).setScale(2, RoundingMode.CEILING));
+            }
+        }
+
         list.add(t1);
 //        Comprobante.Impuestos.Traslados.Traslado t2 = of.createComprobanteImpuestosTrasladosTraslado();
 //        t2.setImporte(new BigDecimal("22.07"));
@@ -1365,9 +1485,10 @@ public class BeanFacturacion implements Serializable {
                         System.out.println(item);
                     }
 
-                    fechaFiltroInicioPublico = new Date(listaFechas.get(0));
+                    fechaFiltroInicioPublico = TiempoUtil.getFechaDDMMYYYY(listaFechas.get(0));
+                    
 
-                    fechaFiltroFinPublico = new Date(listaFechas.get(6));
+                    fechaFiltroFinPublico = TiempoUtil.getFechaDDMMYYYY(listaFechas.get(6));
                     //fechaFiltroFin = TiempoUtil.getDayEndYear(new Date());
                     System.out.println("3");
                     break;
