@@ -1276,12 +1276,14 @@ public class BeanFacturacion implements Serializable {
         comp.setFolio(ventaMayoreo.getVentaSucursal().toString());
         context.getFechaSistema();
         Date f = TiempoUtil.getFechaDDMMYYYYDate(context.getFechaSistema());
+        
         System.out.println("Fecha de Sistema: " + f);
-        comp.setFecha(f);
+        comp.setFecha(context.getFechaSistema());
         for (CatalogoSat cs : listaFormaPago) {
 
             if (cs.getCodigo().toString().equals(formaPago)) {
                 comp.setFormaDePago(cs.getDescripcion());
+                paramReport.put("nombreFormaPago", cs.getDescripcion());
             }
         }
 
