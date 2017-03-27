@@ -56,7 +56,6 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
-import javax.xml.parsers.ParserConfigurationException;
 import net.sf.jasperreports.engine.JRExporter;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -280,7 +279,7 @@ public class BeanFacturacion implements Serializable {
     }
 
     public void calculaImportePublico() {
-        System.out.println("Calcular Importe Público");
+       // System.out.println("Calcular Importe Público");
         selectedProductosVentas.clear();
         BigDecimal importePublicoTemporal = importeVentaPublico;
         for (VentaProductoMayoreo producto : listaVentaPublico) {
@@ -289,10 +288,9 @@ public class BeanFacturacion implements Serializable {
                     /*El importe de la parcilidad es mayor al de ese producto
                     agregar el producto a la lista de seleccionados
                      */
-                    System.out.println("Total Venta por Producto: " + producto.getTotalVenta());
-                    System.out.println("Temporal importe Publico: " + importePublicoTemporal);
+                   //System.out.println("Temporal importe Publico: " + importePublicoTemporal);
                     importePublicoTemporal = importePublicoTemporal.subtract(producto.getTotalVenta(), MathContext.UNLIMITED);
-                    System.out.println("Temporal importe Publico: " + importePublicoTemporal);
+                   // System.out.println("Temporal importe Publico: " + importePublicoTemporal);
                     producto.setKilosVendidos(producto.getKilosVendidos());
                     producto.setTotalVenta(producto.getTotalVenta());
                     selectedProductosVentas.add(producto);
@@ -307,8 +305,8 @@ public class BeanFacturacion implements Serializable {
 
                     kilosT = importePublicoTemporal.setScale(2, RoundingMode.CEILING).multiply(producto.getKilosVendidos().setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
                     kilosT.setScale(2, RoundingMode.CEILING);
-                    System.out.println("KilosT: " + kilosT);
-                    System.out.println("Producto: " + producto.getTotalVenta());
+                   // System.out.println("KilosT: " + kilosT);
+                   // System.out.println("Producto: " + producto.getTotalVenta());
                     division = (kilosT).divide(producto.getTotalVenta(), 2, RoundingMode.CEILING);
                     producto.setKilosVendidos(division);
                     producto.setTotalVenta(importePublicoTemporal);
@@ -318,7 +316,7 @@ public class BeanFacturacion implements Serializable {
                 }
             }
         }//fin for
-        System.out.println("Total Publico Temporal: " + importePublicoTemporal);
+        //System.out.println("Total Publico Temporal: " + importePublicoTemporal);
 
     }
 
@@ -332,10 +330,10 @@ public class BeanFacturacion implements Serializable {
                 if (temporalParcialidad.compareTo(new BigDecimal(0)) > 0) {
                     if (temporalParcialidad.compareTo(producto.getTotalVenta()) >= 0) {
                         //el importe de la parcilidad es mayor al de ese producto
-                        System.out.println("Total Venta: " + producto.getTotalVenta());
-                        System.out.println("Temporal Parcialidad: " + temporalParcialidad);
+                      //  System.out.println("Total Venta: " + producto.getTotalVenta());
+                       // System.out.println("Temporal Parcialidad: " + temporalParcialidad);
                         temporalParcialidad = temporalParcialidad.subtract(producto.getTotalVenta(), MathContext.UNLIMITED);
-                        System.out.println("Temporal Parcialidad: " + temporalParcialidad);
+                       // System.out.println("Temporal Parcialidad: " + temporalParcialidad);
                         producto.setKilosVendidos(producto.getKilosVendidos());
                         producto.setTotalVenta(producto.getTotalVenta());
                         lstTemporalProductosFacturar.add(producto);
@@ -351,8 +349,8 @@ public class BeanFacturacion implements Serializable {
 
                         kilosT = temporalParcialidad.setScale(2, RoundingMode.CEILING).multiply(producto.getKilosVendidos().setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
                         kilosT.setScale(2, RoundingMode.CEILING);
-                        System.out.println("KilosT: " + kilosT);
-                        System.out.println("Producto: " + producto.getTotalVenta());
+                       // System.out.println("KilosT: " + kilosT);
+                       // System.out.println("Producto: " + producto.getTotalVenta());
                         division = (kilosT).divide(producto.getTotalVenta(), 2, RoundingMode.CEILING);
                         producto.setKilosVendidos(division);
                         producto.setTotalVenta(temporalParcialidad);
@@ -369,7 +367,7 @@ public class BeanFacturacion implements Serializable {
             ventaMayoreo.getListaProductos().clear();
             ventaMayoreo.setListaProductos(lstTemporalProductosFacturar);
 
-            System.out.println("Importe Parcialidad: " + importeParcialidad);
+            //System.out.println("Importe Parcialidad: " + importeParcialidad);
             ventaMayoreo.setTotalVenta(importeParcialidad);
             calcularTotales();
         } else {
@@ -378,11 +376,9 @@ public class BeanFacturacion implements Serializable {
     }
 
     public void buscaVentasNoFacturadas() {
-        System.out.println("Entro a Ventas no facturadas");
+        //System.out.println("Entro a Ventas no facturadas");
         listaVentaPublico = ifaceProductoFacturado.getProductosNoFacturados(new BigDecimal(1), idSucursalFk, TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicioPublico), TiempoUtil.getFechaDDMMYYYY(fechaFiltroFinPublico));
-        for (VentaProductoMayoreo p : listaVentaPublico) {
-            System.out.println("p: " + p.toString());
-        }
+        
     }
 
     public int verificarMontoParicalidad() {
@@ -424,14 +420,14 @@ public class BeanFacturacion implements Serializable {
 
                         kilosTemporal = vp.getKilosVendidos().subtract(pf.getKilos(), MathContext.UNLIMITED);
                         importeTemporal = vp.getTotalVenta().subtract(pf.getImporte(), MathContext.UNLIMITED);
-                        System.out.println("Kilos Totales de Venta: " + vp.getKilosVendidos());
-                        System.out.println("Kilos Facturados: " + pf.getKilos());
-                        System.out.println("Kilos por Facturar: " + kilosTemporal);
-
-                        System.out.println("Importe Total de la Venta: " + vp.getTotalVenta());
-                        System.out.println("Importe Facturado: " + pf.getImporte());
-                        System.out.println("Importe por Facturar: " + importeTemporal);
-                        System.out.println("===============================================");
+//                        System.out.println("Kilos Totales de Venta: " + vp.getKilosVendidos());
+//                        System.out.println("Kilos Facturados: " + pf.getKilos());
+//                        System.out.println("Kilos por Facturar: " + kilosTemporal);
+//
+//                        System.out.println("Importe Total de la Venta: " + vp.getTotalVenta());
+//                        System.out.println("Importe Facturado: " + pf.getImporte());
+//                        System.out.println("Importe por Facturar: " + importeTemporal);
+//                        System.out.println("===============================================");
                         vp.setKilosVendidos(kilosTemporal);
                         vp.setTotalVentaSinIva(importeTemporal);
                         vp.setTotalVenta(importeTemporal);
@@ -447,7 +443,7 @@ public class BeanFacturacion implements Serializable {
 
         }
 
-        System.out.println("Total de Venta: -----" + importeTemporalTotal);
+        //System.out.println("Total de Venta: -----" + importeTemporalTotal);
     }
 
     public void calcularTotales() {
@@ -476,27 +472,27 @@ public class BeanFacturacion implements Serializable {
                 importeConIva = ventaMayoreo.getTotalVenta();
                 importeSinIva = ventaMayoreo.getTotalVentaSinIva();
                 //importe con iva
-                System.out.println("Importe Con Iva: " + importeConIva);
-                System.out.println("Importe Sin Iva: " + importeSinIva);
+//                System.out.println("Importe Con Iva: " + importeConIva);
+//                System.out.println("Importe Sin Iva: " + importeSinIva);
 
                 if (cs.getValor().compareTo(new BigDecimal(0)) == 0) {
                     //se va a usar un IVA de 0 %
 
                     subTotal = (importeConIva.setScale(2, RoundingMode.CEILING)).subtract(descuento.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
-                    System.out.println("Subtotal Calculado con IVA");
+                    //System.out.println("Subtotal Calculado con IVA");
                 } else {
                     //se va a usar un IVA de 16 %
                     subTotal = (importeSinIva.setScale(2, RoundingMode.CEILING)).subtract(descuento.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
-                    System.out.println("Subtotal Calculado sin IVA");
+                    //System.out.println("Subtotal Calculado sin IVA");
                 }
-                System.out.println("subTotal : " + subTotal);
+                //System.out.println("subTotal : " + subTotal);
                 iva = (cs.getValor().multiply(new BigDecimal(100), MathContext.UNLIMITED).setScale(2, RoundingMode.CEILING)).multiply(ventaMayoreo.getTotalVenta().subtract(descuento.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED).setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
-                System.out.println("Iva:  : " + iva);
+               // System.out.println("Iva:  : " + iva);
 
                 iva = iva.setScale(2, RoundingMode.CEILING).divide(new BigDecimal(100), 2, RoundingMode.CEILING);
-                System.out.println("Iva Dividido:  : " + iva);
+               // System.out.println("Iva Dividido:  : " + iva);
                 total = (iva.setScale(2, RoundingMode.CEILING)).add(subTotal.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
-                System.out.println("Total: " + total);
+               // System.out.println("Total: " + total);
             }
 
         }
@@ -516,7 +512,7 @@ public class BeanFacturacion implements Serializable {
     }
 
     public void buscarDatosCliente(int v) {
-        System.out.println("VVVVVVV: " + v);
+      
         switch (v) {
             case 1:
                 if (ventaMayoreo != null && ventaMayoreo.getIdClienteFk() != null) {
@@ -542,7 +538,7 @@ public class BeanFacturacion implements Serializable {
 
     public StreamedContent getProductImage() throws IOException, SQLException {
         FacesContext context = FacesContext.getCurrentInstance();
-        System.out.println("Data: " + data.toString());
+       
         if (data.getFichero() == null) {
             JsfUtil.addErrorMessageClean("Error al descargar el arvhivo");
             return file;
@@ -643,89 +639,72 @@ public class BeanFacturacion implements Serializable {
     public void abreXML() {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         //DocumentBuilder builder = factory.newDocumentBuilder();
-        System.out.println("===DATA====");
-        System.out.println("DATA: " + data.toString());
-
+       
         try {
             String rutaTimbradoData = Constantes.PATHLOCALFACTURACION + "Clientes" + File.separatorChar + data.getRfcCliente() + File.separatorChar + "TIMBRADO" + File.separatorChar + data.getNombreArchivoTimbrado();
             paramReport.put("cadena", data.getCadena());
-            BigDecimal totalTemporal= new BigDecimal(0);
-            String folioQR ="";
-            String rfcReceptorQR ="";
+            BigDecimal totalTemporal = new BigDecimal(0);
+            String folioQR = "";
+            String rfcReceptorQR = "";
             paramReport.put("iva1", data.getIva1());
-            System.out.println("Ruta: " + rutaTimbradoData);
             File inputFile = new File(rutaTimbradoData);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(inputFile);
             doc.getDocumentElement().normalize();
-            System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
             NodeList nList = doc.getElementsByTagName("cfdi:Comprobante");
-
-            System.out.println("-------------Datos Generales---------------");
             for (int temp = 0; temp < nList.getLength(); temp++) {
                 Node nNode = nList.item(temp);
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element eElement = (Element) nNode;
                     paramReport.put("LugarExpedicion", eElement.getAttribute("LugarExpedicion"));
-                    System.out.println("LugarExpedicion : " + eElement.getAttribute("LugarExpedicion"));
-
                     paramReport.put("NumCtaPago", eElement.getAttribute("NumCtaPago"));
-                    System.out.println("NumCtaPago : " + eElement.getAttribute("NumCtaPago"));
-
                     paramReport.put("formaPago", eElement.getAttribute("metodoDePago"));
                     String fp = eElement.getAttribute("metodoDePago");
-                    
-                                 
-//                    for (CatalogoSat cs : listaFormaPago) {
-//                        System.out.println("CS: "+cs.getCodigo());
-//                        System.out.println("FP: "+fp);
-//                        if (cs.getCodigo().equals(fp)) {
-//                            comp.setFormaDePago(cs.getDescripcion());
-//                            paramReport.put("nombreFormaPago", cs.getDescripcion());
-//                        }
-//                    }
-                    for(CatalogoSat cs: listaMetodosPago)
-                    {
-                         if (cs.getCodigo().equals(fp)) {
+
+                    for (CatalogoSat cs : listaFormaPago) {
+                        if (cs.getCodigo().equals(fp)) {
                             comp.setFormaDePago(cs.getDescripcion());
                             paramReport.put("nombreFormaPago", cs.getDescripcion());
                         }
-                        
                     }
-                    System.out.println("Metodo De Pago : " + eElement.getAttribute("metodoDePago"));
-                    paramReport.put("tipoDeComprobante", eElement.getAttribute("tipoDeComprobante"));
-                    System.out.println("Tipo De Comprobante : " + eElement.getAttribute("tipoDeComprobante"));
+                    for (CatalogoSat cs : listaMetodosPago) {
+                        if (cs.getCodigo().equals(fp)) {
+                            comp.setFormaDePago(cs.getDescripcion());
+                            paramReport.put("nombreFormaPago", cs.getDescripcion());
+                        }
 
-                    totalTemporal= new BigDecimal(eElement.getAttribute("total"));
-                    System.out.println("Total Temporal: " + totalTemporal);
+                    }
+                    
+                    paramReport.put("tipoDeComprobante", eElement.getAttribute("tipoDeComprobante"));
+                    
+                    
+                    totalTemporal = new BigDecimal(eElement.getAttribute("total"));
+                    
                     paramReport.put("total", totalTemporal);
                     paramReport.put("labelIva", "0%");
                     //$P{labelIva}
-                    System.out.println("Total : " + eElement.getAttribute("total"));
+                    
                     paramReport.put("Moneda", eElement.getAttribute("Moneda"));
-                    System.out.println("Moneda : " + eElement.getAttribute("Moneda"));
                     BigDecimal descuento = new BigDecimal(eElement.getAttribute("descuento"));
                     paramReport.put("descuento", descuento);
-                    System.out.println("Descuento : " + eElement.getAttribute("descuento"));
-                    System.out.println("subTotal : " + eElement.getAttribute("subTotal"));
-                    BigDecimal subTotalTemporal = new BigDecimal(eElement.getAttribute("subTotal"));
+                   BigDecimal subTotalTemporal = new BigDecimal(eElement.getAttribute("subTotal"));
                     paramReport.put("subTotal", subTotalTemporal);
 
                     paramReport.put("certificado", eElement.getAttribute("certificado"));
-                    System.out.println("Certificado : " + eElement.getAttribute("certificado"));
+                    //System.out.println("Certificado : " + eElement.getAttribute("certificado"));
                     paramReport.put("noCertificado", eElement.getAttribute("noCertificado"));
-                    System.out.println("no. Certificado : " + eElement.getAttribute("noCertificado"));
+                    //System.out.println("no. Certificado : " + eElement.getAttribute("noCertificado"));
                     paramReport.put("selloDigital", eElement.getAttribute("sello"));
-                    System.out.println("sello : " + eElement.getAttribute("sello"));
-                    paramReport.put("folio", eElement.getAttribute("folio"));
+                    //System.out.println("sello : " + eElement.getAttribute("sello"));
                     
-                       folioQR     =eElement.getAttribute("folio");
-                    System.out.println("folio : " + eElement.getAttribute("folio"));
+
+                   // folioQR = eElement.getAttribute("uuid");
+                    //System.out.println("folio : " + eElement.getAttribute("folio"));
                     paramReport.put("fecha", eElement.getAttribute("fecha"));
-                    System.out.println("Fecha : " + eElement.getAttribute("fecha"));
+                    //System.out.println("Fecha : " + eElement.getAttribute("fecha"));
                     paramReport.put("serie", eElement.getAttribute("serie"));
-                    System.out.println("version : " + eElement.getAttribute("serie"));
+                    //System.out.println("version : " + eElement.getAttribute("serie"));
                     paramReport.put("version", eElement.getAttribute("version"));
                     NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
                     DecimalFormat df = new DecimalFormat("###.##");
@@ -737,116 +716,115 @@ public class BeanFacturacion implements Serializable {
                 }
             }
             nList = doc.getElementsByTagName("cfdi:Emisor");
-            System.out.println("--------------Datos de Emisor--------------");
-            String rfcEmisor="";
+            
+            String rfcEmisor = "";
             for (int temp = 0; temp < nList.getLength(); temp++) {
                 Node nNode = nList.item(temp);
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element eElement = (Element) nNode;
                     paramReport.put("nombreEmisor", eElement.getAttribute("nombre"));
-                    System.out.println("Nombre : " + eElement.getAttribute("nombre"));
-                    rfcEmisor=eElement.getAttribute("rfc");
+                    //System.out.println("Nombre : " + eElement.getAttribute("nombre"));
+                    rfcEmisor = eElement.getAttribute("rfc");
                     paramReport.put("rfcEmisor", eElement.getAttribute("rfc"));
-                    System.out.println("rfc : " + eElement.getAttribute("rfc"));
+                    //System.out.println("rfc : " + eElement.getAttribute("rfc"));
 
                 }
             }
 
             nList = doc.getElementsByTagName("cfdi:DomicilioFiscal");
-            System.out.println("-----------Domicilio Fiscal Emisor-----------------");
+            
             for (int temp = 0; temp < nList.getLength(); temp++) {
                 Node nNode = nList.item(temp);
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element eElement = (Element) nNode;
                     paramReport.put("codigoPostalEmisor", eElement.getAttribute("codigoPostal"));
-                    System.out.println("Codigo Postal : " + eElement.getAttribute("codigoPostal"));
+                    //System.out.println("Codigo Postal : " + eElement.getAttribute("codigoPostal"));
                     paramReport.put("estadoEmisor", eElement.getAttribute("estado"));
-                    System.out.println("Estado : " + eElement.getAttribute("estado"));
+                    //System.out.println("Estado : " + eElement.getAttribute("estado"));
                     paramReport.put("municipioEmisor", eElement.getAttribute("municipio"));
-                    System.out.println("Municipio : " + eElement.getAttribute("municipio"));
+                    //System.out.println("Municipio : " + eElement.getAttribute("municipio"));
                     paramReport.put("localidadEmisor", eElement.getAttribute("localidad"));
-                    System.out.println("Localidad : " + eElement.getAttribute("localidad"));
+                    //System.out.println("Localidad : " + eElement.getAttribute("localidad"));
                     paramReport.put("coloniaEmisor", eElement.getAttribute("colonia"));
-                    System.out.println("Colonia : " + eElement.getAttribute("colonia"));
+                   // System.out.println("Colonia : " + eElement.getAttribute("colonia"));
                     paramReport.put("noExteriorEmisor", eElement.getAttribute("noExterior"));
-                    System.out.println("N° Exterior : " + eElement.getAttribute("noExterior"));
+                   // System.out.println("N° Exterior : " + eElement.getAttribute("noExterior"));
                     paramReport.put("calleEmisor", eElement.getAttribute("calle"));
-                    System.out.println("Calle : " + eElement.getAttribute("calle"));
+                   // System.out.println("Calle : " + eElement.getAttribute("calle"));
 
                 }
             }
             nList = doc.getElementsByTagName("cfdi:RegimenFiscal");
-            System.out.println("-----------Regimen Fiscal-----------------");
+          
             for (int temp = 0; temp < nList.getLength(); temp++) {
                 Node nNode = nList.item(temp);
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element eElement = (Element) nNode;
-                    System.out.println("Regimen : " + eElement.getAttribute("Regimen"));
+                    //System.out.println("Regimen : " + eElement.getAttribute("Regimen"));
                     paramReport.put("regimen", eElement.getAttribute("Regimen"));
 
                 }
             }
             nList = doc.getElementsByTagName("cfdi:Receptor");
-            System.out.println("--------------Datos de Receptor--------------");
             for (int temp = 0; temp < nList.getLength(); temp++) {
                 Node nNode = nList.item(temp);
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element eElement = (Element) nNode;
                     paramReport.put("nombreReceptor", eElement.getAttribute("nombre"));
-                    System.out.println("Nombre : " + eElement.getAttribute("nombre"));
+                    //System.out.println("Nombre : " + eElement.getAttribute("nombre"));
                     paramReport.put("rfcReceptor", eElement.getAttribute("rfc"));
-                    rfcReceptorQR =eElement.getAttribute("rfc");
-                    System.out.println("rfc : " + eElement.getAttribute("rfc"));
+                    rfcReceptorQR = eElement.getAttribute("rfc");
+                    //System.out.println("rfc : " + eElement.getAttribute("rfc"));
 
                 }
             }
 
             nList = doc.getElementsByTagName("cfdi:Domicilio");
-            System.out.println("-----------Domicilio Fiscal Receptor-----------------");
+           
             for (int temp = 0; temp < nList.getLength(); temp++) {
                 Node nNode = nList.item(temp);
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element eElement = (Element) nNode;
                     paramReport.put("codigoPostalReceptor", eElement.getAttribute("codigoPostal"));
-                    System.out.println("Codigo Postal : " + eElement.getAttribute("codigoPostal"));
+                    //System.out.println("Codigo Postal : " + eElement.getAttribute("codigoPostal"));
                     paramReport.put("estadoReceptor", eElement.getAttribute("estado"));
-                    System.out.println("Estado : " + eElement.getAttribute("estado"));
+                    //System.out.println("Estado : " + eElement.getAttribute("estado"));
                     paramReport.put("municipioReceptor", eElement.getAttribute("municipio"));
-                    System.out.println("Municipio : " + eElement.getAttribute("municipio"));
+                    //System.out.println("Municipio : " + eElement.getAttribute("municipio"));
                     paramReport.put("localidadReceptor", eElement.getAttribute("localidad"));
-                    System.out.println("Localidad : " + eElement.getAttribute("localidad"));
+                    //System.out.println("Localidad : " + eElement.getAttribute("localidad"));
                     paramReport.put("coloniaReceptor", eElement.getAttribute("colonia"));
-                    System.out.println("Colonia : " + eElement.getAttribute("colonia"));
+                    //System.out.println("Colonia : " + eElement.getAttribute("colonia"));
                     paramReport.put("noExteriorReceptor", eElement.getAttribute("noExterior"));
-                    System.out.println("N° Exterior : " + eElement.getAttribute("noExterior"));
+                    //System.out.println("N° Exterior : " + eElement.getAttribute("noExterior"));
                     paramReport.put("calleReceptor", eElement.getAttribute("calle"));
-                    System.out.println("Calle : " + eElement.getAttribute("calle"));
+                    //System.out.println("Calle : " + eElement.getAttribute("calle"));
 
                 }
             }
 
-            System.out.println("--------------Productos--------------");
+           
 
             NodeList feeds = doc.getElementsByTagName("cfdi:Conceptos");
             for (int i = 0; i < feeds.getLength(); i++) {
                 Node mainNode = feeds.item(i);
                 if (mainNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element firstElement = (Element) mainNode;
-                    System.out.println("First element " + firstElement.getTagName());
+                    //System.out.println("First element " + firstElement.getTagName());
                     NodeList forumidNameList = firstElement.getElementsByTagName("cfdi:Concepto");
                     for (int j = 0; j < forumidNameList.getLength(); ++j) {
                         Element eElement = (Element) forumidNameList.item(j);
                         VentaProductoMayoreo vpm = new VentaProductoMayoreo();
                         vpm.setTotalVenta(new BigDecimal(eElement.getAttribute("importe")));
-                        System.out.println("Importe : " + eElement.getAttribute("importe"));
+                        //System.out.println("Importe : " + eElement.getAttribute("importe"));
                         vpm.setPrecioProducto(new BigDecimal(eElement.getAttribute("valorUnitario")));
-                        System.out.println("Valor Unitario : " + eElement.getAttribute("valorUnitario"));
+                       // System.out.println("Valor Unitario : " + eElement.getAttribute("valorUnitario"));
                         vpm.setNombreProducto(eElement.getAttribute("descripcion"));
-                        System.out.println("Descripcion : " + eElement.getAttribute("descripcion"));
+                        //System.out.println("Descripcion : " + eElement.getAttribute("descripcion"));
                         vpm.setNombreEmpaque(eElement.getAttribute("unidad"));
-                        System.out.println("unidad : " + eElement.getAttribute("unidad"));
+                        //System.out.println("unidad : " + eElement.getAttribute("unidad"));
                         vpm.setKilosVendidos(new BigDecimal(eElement.getAttribute("cantidad")));
-                        System.out.println("cantidad : " + eElement.getAttribute("cantidad"));
+                       // System.out.println("cantidad : " + eElement.getAttribute("cantidad"));
                         listaProductosReporte.add(vpm);
                     }
 
@@ -856,43 +834,53 @@ public class BeanFacturacion implements Serializable {
             paramReport.put("lstProductos", listaProductos);
 
             nList = doc.getElementsByTagName("tfd:TimbreFiscalDigital");
-            System.out.println("-----------Timbre Fiscal-----------------");
+            //System.out.println("-----------Timbre Fiscal-----------------");
             for (int temp = 0; temp < nList.getLength(); temp++) {
                 Node nNode = nList.item(temp);
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element eElement = (Element) nNode;
                     paramReport.put("version", eElement.getAttribute("version"));
-                    System.out.println("Version : " + eElement.getAttribute("version"));
+                    //System.out.println("Version : " + eElement.getAttribute("version"));
+                    folioQR = eElement.getAttribute("UUID");
+                    paramReport.put("folio", eElement.getAttribute("UUID"));
                     paramReport.put("UUID", eElement.getAttribute("UUID"));
-                    System.out.println("UUID : " + eElement.getAttribute("UUID"));
+                    //System.out.println("UUID : " + eElement.getAttribute("UUID"));
                     paramReport.put("FechaTimbrado", eElement.getAttribute("FechaTimbrado"));
-                    System.out.println("FechaTimbrado : " + eElement.getAttribute("FechaTimbrado"));
+                    //System.out.println("FechaTimbrado : " + eElement.getAttribute("FechaTimbrado"));
                     paramReport.put("selloCFD", eElement.getAttribute("selloCFD"));
-                    System.out.println("selloCFD : " + eElement.getAttribute("selloCFD"));
+                    //System.out.println("selloCFD : " + eElement.getAttribute("selloCFD"));
                     paramReport.put("noCertificadoSAT", eElement.getAttribute("noCertificadoSAT"));
-                    System.out.println("noCertificadoSAT : " + eElement.getAttribute("noCertificadoSAT"));
+                    //System.out.println("noCertificadoSAT : " + eElement.getAttribute("noCertificadoSAT"));
                     paramReport.put("selloSAT", eElement.getAttribute("selloSAT"));
-                    System.out.println("selloSAT : " + eElement.getAttribute("selloSAT"));
+                    //System.out.println("selloSAT : " + eElement.getAttribute("selloSAT"));
 
                 }
             }
-           String tQR= totalTemporal.toString();
-            System.out.println("TQR: "+tQR);
+            String c= totalTemporal.toString();
+            String[] parts = c.split("\\.");
+            String parte1 = parts[0];
+            String parte2 = parts[1];
+
+            String q = "";
+            String q2="";
+            int cantidadCeros1 = 10 - parte1.length();
+            while (cantidadCeros1 > 0) {
+                q = q+"0";
+                cantidadCeros1 = cantidadCeros1 - 1;
+            }
+            q = q + parte1;
+            int cantidadCeros2 = 6 - parte2.length();
+             while (cantidadCeros2 > 0) {
+                q2 = q2+"0";
+                cantidadCeros2 = cantidadCeros2 - 1;
+            }
+            q2 = parte2+q2 ;
+            String totalQRCombinado= q+"."+q2;
             
-           String q="";
-           int cantidadCeros = 10-tQR.length();
-            System.out.println("Cantidad de Ceros: "+cantidadCeros);
-           while(cantidadCeros>0)
-           {
-              q = q+"0";
-              cantidadCeros = cantidadCeros-1;
-           }
-           q = q+tQR;
-            System.out.println("====================================================================0");
-            String cadenaQR= "?re="+rfcEmisor+"&rr="+rfcReceptorQR+"&&tt="+q+"&id="+folioQR+"";
-            System.out.println("CADENA QR: "+cadenaQR);
+            String cadenaQR = "?re=" + rfcEmisor + "&rr=" + rfcReceptorQR + "&&tt=" + totalQRCombinado + "&id=" + folioQR + "";
+            
             paramReport.put("cadenaQR", cadenaQR);
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -976,23 +964,23 @@ public class BeanFacturacion implements Serializable {
 
         //Verificando Datos de Cliente
         //Verificar Venta:
-        System.out.println("---------------------------------------");
-        System.out.println(ventaMayoreo.toString());
-        System.out.println(ventaMayoreo.getListaProductos());
-        System.out.println("Tamaño: " + ventaMayoreo.getListaProductos().size());
-        System.out.println("----------------------------------------");
+//        System.out.println("---------------------------------------");
+//        System.out.println(ventaMayoreo.toString());
+//        System.out.println(ventaMayoreo.getListaProductos());
+//        System.out.println("Tamaño: " + ventaMayoreo.getListaProductos().size());
+//        System.out.println("----------------------------------------");
         if (ventaMayoreo == null || ventaMayoreo.getIdVentaMayoreoPk() == null) {
             mensaje += "  Ese folio de venta no existe.";
         }
         if (ventaMayoreo.getListaProductos() == null || ventaMayoreo.getListaProductos().isEmpty() || ventaMayoreo.getListaProductos().size() == 0) {
             mensaje += "  Ese folio de venta ya se encuentra facturado totalmente";
-            System.out.println("Entro a validacion");
+            //System.out.println("Entro a validacion");
         }
-        System.out.println("Total: " + total);
+        //System.out.println("Total: " + total);
         if (total.setScale(2, RoundingMode.CEILING).compareTo(new BigDecimal(0).setScale(2, RoundingMode.CEILING)) < 1) {
             mensaje += "  El total de la factura es igual o menor que cero";
         }
-        System.out.println("Mensaje: " + mensaje);
+        //System.out.println("Mensaje: " + mensaje);
         return mensaje;
 
     }
@@ -1006,7 +994,7 @@ public class BeanFacturacion implements Serializable {
     }
 
     public void habilitarImporteParcial() {
-        System.out.println("forma de pago: " + formaPago);
+        //System.out.println("forma de pago: " + formaPago);
         if (formaPago.equals("02") || formaPago.equals("03")) {
             banderaImporteParcialidad = "true";
 
@@ -1016,7 +1004,7 @@ public class BeanFacturacion implements Serializable {
     }
 
     public void habilitarNumcuenta() {
-        System.out.println("Método de pago: " + metodoPago);
+        //System.out.println("Método de pago: " + metodoPago);
         if (!metodoPago.equals("01")) {
             banderanumCuenta = "true";
 
@@ -1055,12 +1043,12 @@ public class BeanFacturacion implements Serializable {
         dataEdit = (VentaProductoMayoreo) event.getObject();
         dataEdit.setTotalVenta(dataEdit.getPrecioProducto().multiply(dataEdit.getKilosVendidos(), MathContext.UNLIMITED));
 
-        System.out.println("editado " + dataEdit.toString());
+        //System.out.println("editado " + dataEdit.toString());
         calculaImportePublico();
     }
 
     public void onRowCancel(RowEditEvent event) {
-        System.out.println("cancel");
+        //System.out.println("cancel");
 
     }
 
@@ -1128,22 +1116,22 @@ public class BeanFacturacion implements Serializable {
             String xmlCfdi = IOUtils.toString(in);
             advanswsdl_pkg.AdvanswsdlPortType port = service.getadvanswsdlPort();
             respuesta = port.timbrar2(API_KEY, xmlCfdi);
-            System.out.println("url " + url.openStream());
-            System.out.println("codes:  " + respuesta.getCode());
-            System.out.println("mensajes: " + respuesta.getMessage());
-            System.out.println("subcodes:  " + respuesta.getSubCode());
-            System.out.println("CFDI:  " + respuesta.getCFDI());
-            System.out.println("timbres:  " + respuesta.getCFDI());
+//            System.out.println("url " + url.openStream());
+//            System.out.println("codes:  " + respuesta.getCode());
+//            System.out.println("mensajes: " + respuesta.getMessage());
+//            System.out.println("subcodes:  " + respuesta.getSubCode());
+//            System.out.println("CFDI:  " + respuesta.getCFDI());
+//            System.out.println("timbres:  " + respuesta.getCFDI());
             try {
                 PrintWriter writer = new PrintWriter(pathFacturaClienteTimbrado, "UTF-8");
                 writer.println(respuesta.getCFDI());
                 writer.close();
-                System.out.println("Se Guardo Correctamente el archivo Timbrado");
+                //System.out.println("Se Guardo Correctamente el archivo Timbrado");
                 if (insertarFactura() == 1) {
                     bandera = 1;
                 }
             } catch (IOException e) {
-                System.out.println("Error al generar archivo Timbrado");
+                //System.out.println("Error al generar archivo Timbrado");
                 JsfUtil.addErrorMessageClean("Ocurrió un error al generar archivo timbrado");
                 bandera = 0;
             }
@@ -1162,62 +1150,63 @@ public class BeanFacturacion implements Serializable {
     }
 
     public void imprimirDatosFactura() {
-        System.out.println("Certificado: " + comp.getCertificado());
-        System.out.println("Condiciones de Pago: " + comp.getCondicionesDePago());
-        System.out.println("Folio: " + comp.getFolio());
-        System.out.println("Folio Fiscal Origen: " + comp.getFolioFiscalOrig());
-        System.out.println("Forma de Pago: " + comp.getFormaDePago());
-        System.out.println("Lugar de Expedicion: " + comp.getLugarExpedicion());
-        System.out.println("Metodo de Pago: " + comp.getMetodoDePago());
-        System.out.println("Moneda: " + comp.getMoneda());
-        System.out.println("Motivo Descuento: " + comp.getMotivoDescuento());
-        System.out.println("No Certificado: " + comp.getNoCertificado());
-        System.out.println("Num Cta Pago: " + comp.getNumCtaPago());
-        System.out.println("Sello: " + comp.getSello());
-        System.out.println("Serie: " + comp.getSerie());
-        System.out.println("Folio Fiscal Origen: " + comp.getSerieFolioFiscalOrig());
-        System.out.println("Tipo Cambio: " + comp.getTipoCambio());
-        System.out.println("Tipo Comprobante: " + comp.getTipoDeComprobante());
-        System.out.println("Version: " + comp.getVersion());
-        System.out.println("Descuento: " + comp.getDescuento());
-        System.out.println("Fecha: " + comp.getFecha());
-        System.out.println("Certificado: " + comp.getCertificado());
-        System.out.println("---------------------DATOS DE EMISOR------------------------------");
-        System.out.println("Nombre Emisor: " + comp.getEmisor().getNombre());
-        System.out.println("RFC Emisor: " + comp.getEmisor().getRfc());
-        System.out.println("Domicilo Fiscal Emisor:");
-        System.out.println("    Calle: " + comp.getEmisor().getDomicilioFiscal().getCalle());
-        System.out.println("    Codigo Postal: " + comp.getEmisor().getDomicilioFiscal().getCodigoPostal());
-        System.out.println("    Colonia: " + comp.getEmisor().getDomicilioFiscal().getColonia());
-        System.out.println("    Estado: " + comp.getEmisor().getDomicilioFiscal().getEstado());
-        System.out.println("    Municipio: " + comp.getEmisor().getDomicilioFiscal().getMunicipio());
-        System.out.println("    Localidad: " + comp.getEmisor().getDomicilioFiscal().getLocalidad());
-        System.out.println("    No. Exterior: " + comp.getEmisor().getDomicilioFiscal().getNoExterior());
-        System.out.println("    No. Interior " + comp.getEmisor().getDomicilioFiscal().getNoInterior());
-        System.out.println("    Pais: " + comp.getEmisor().getDomicilioFiscal().getPais());
-        System.out.println("    Referencia: " + comp.getEmisor().getDomicilioFiscal().getReferencia());
-
-        System.out.println("Expedido en: " + comp.getEmisor().getExpedidoEn());
-
-        System.out.println("---------------------DATOS CLIENTE------------------------------");
-        System.out.println("Nombre Receptor: " + comp.getReceptor().getNombre());
-        System.out.println("RFC Receptor: " + comp.getReceptor().getRfc());
-        System.out.println("Domicilo Fiscal Receptor:");
-        System.out.println("    Calle: " + comp.getReceptor().getDomicilio().getCalle());
-        System.out.println("    Codigo Postal: " + comp.getReceptor().getDomicilio().getCodigoPostal());
-        System.out.println("    Colonia: " + comp.getReceptor().getDomicilio().getColonia());
-        System.out.println("    Estado: " + comp.getReceptor().getDomicilio().getEstado());
-        System.out.println("    Municipio: " + comp.getReceptor().getDomicilio().getMunicipio());
-        System.out.println("    Localidad: " + comp.getReceptor().getDomicilio().getLocalidad());
-        System.out.println("    No. Exterior: " + comp.getReceptor().getDomicilio().getNoExterior());
-        System.out.println("    No. Interior " + comp.getReceptor().getDomicilio().getNoInterior());
-        System.out.println("    Pais: " + comp.getReceptor().getDomicilio().getPais());
-        System.out.println("    Referencia: " + comp.getReceptor().getDomicilio().getReferencia());
+//        System.out.println("Certificado: " + comp.getCertificado());
+//        System.out.println("Condiciones de Pago: " + comp.getCondicionesDePago());
+//        System.out.println("Folio: " + comp.getFolio());
+//        System.out.println("Folio Fiscal Origen: " + comp.getFolioFiscalOrig());
+//        System.out.println("Forma de Pago: " + comp.getFormaDePago());
+//        System.out.println("Lugar de Expedicion: " + comp.getLugarExpedicion());
+//        System.out.println("Metodo de Pago: " + comp.getMetodoDePago());
+//        System.out.println("Moneda: " + comp.getMoneda());
+//        System.out.println("Motivo Descuento: " + comp.getMotivoDescuento());
+//        System.out.println("No Certificado: " + comp.getNoCertificado());
+//        System.out.println("Num Cta Pago: " + comp.getNumCtaPago());
+//        System.out.println("Sello: " + comp.getSello());
+//        System.out.println("Serie: " + comp.getSerie());
+//        System.out.println("Folio Fiscal Origen: " + comp.getSerieFolioFiscalOrig());
+//        System.out.println("Tipo Cambio: " + comp.getTipoCambio());
+//        System.out.println("Tipo Comprobante: " + comp.getTipoDeComprobante());
+//        System.out.println("Version: " + comp.getVersion());
+//        System.out.println("Descuento: " + comp.getDescuento());
+//        System.out.println("Fecha: " + comp.getFecha());
+//        System.out.println("Certificado: " + comp.getCertificado());
+//        System.out.println("---------------------DATOS DE EMISOR------------------------------");
+//        System.out.println("Nombre Emisor: " + comp.getEmisor().getNombre());
+//        System.out.println("RFC Emisor: " + comp.getEmisor().getRfc());
+//        System.out.println("Domicilo Fiscal Emisor:");
+//        System.out.println("    Calle: " + comp.getEmisor().getDomicilioFiscal().getCalle());
+//        System.out.println("    Codigo Postal: " + comp.getEmisor().getDomicilioFiscal().getCodigoPostal());
+//        System.out.println("    Colonia: " + comp.getEmisor().getDomicilioFiscal().getColonia());
+//        System.out.println("    Estado: " + comp.getEmisor().getDomicilioFiscal().getEstado());
+//        System.out.println("    Municipio: " + comp.getEmisor().getDomicilioFiscal().getMunicipio());
+//        System.out.println("    Localidad: " + comp.getEmisor().getDomicilioFiscal().getLocalidad());
+//        System.out.println("    No. Exterior: " + comp.getEmisor().getDomicilioFiscal().getNoExterior());
+//        System.out.println("    No. Interior " + comp.getEmisor().getDomicilioFiscal().getNoInterior());
+//        System.out.println("    Pais: " + comp.getEmisor().getDomicilioFiscal().getPais());
+//        System.out.println("    Referencia: " + comp.getEmisor().getDomicilioFiscal().getReferencia());
+//
+//        System.out.println("Expedido en: " + comp.getEmisor().getExpedidoEn());
+//
+//        System.out.println("---------------------DATOS CLIENTE------------------------------");
+//        System.out.println("Nombre Receptor: " + comp.getReceptor().getNombre());
+//        System.out.println("RFC Receptor: " + comp.getReceptor().getRfc());
+//        System.out.println("Domicilo Fiscal Receptor:");
+//        System.out.println("    Calle: " + comp.getReceptor().getDomicilio().getCalle());
+//        System.out.println("    Codigo Postal: " + comp.getReceptor().getDomicilio().getCodigoPostal());
+//        System.out.println("    Colonia: " + comp.getReceptor().getDomicilio().getColonia());
+//        System.out.println("    Estado: " + comp.getReceptor().getDomicilio().getEstado());
+//        System.out.println("    Municipio: " + comp.getReceptor().getDomicilio().getMunicipio());
+//        System.out.println("    Localidad: " + comp.getReceptor().getDomicilio().getLocalidad());
+//        System.out.println("    No. Exterior: " + comp.getReceptor().getDomicilio().getNoExterior());
+//        System.out.println("    No. Interior " + comp.getReceptor().getDomicilio().getNoInterior());
+//        System.out.println("    Pais: " + comp.getReceptor().getDomicilio().getPais());
+//        System.out.println("    Referencia: " + comp.getReceptor().getDomicilio().getReferencia());
+//   
     }
 
     public void crearFactura() throws Exception {
         String men = verificarDatos();
-        System.out.println("MensajeBean: " + men);
+        //System.out.println("MensajeBean: " + men);
         if (men.equals("")) {
             for (DatosFacturacion df : listaDatosEmisor) {
                 if (df.getIdDatosFacturacionPk().intValue() == idEmisorPk.intValue()) {
@@ -1270,16 +1259,16 @@ public class BeanFacturacion implements Serializable {
             CFDv32 cfd = new CFDv32(createComprobante(), "mx.bigdata.sat.cfdi.examples");
             //Cargamos el archivo con la llave
 
-            System.out.println("Ruta llave: " + datosEmisor.getRuta_llave_privada());
-            System.out.println("Ruta Certificado: " + datosEmisor.getRuta_certificado());
+            //System.out.println("Ruta llave: " + datosEmisor.getRuta_llave_privada());
+            //System.out.println("Ruta Certificado: " + datosEmisor.getRuta_certificado());
             PrivateKey key = KeyLoaderFactory.createInstance(KeyLoaderEnumeration.PRIVATE_KEY_LOADER, new FileInputStream(datosEmisor.getRuta_llave_privada()), datosEmisor.getClavePublica()).getKey();
             //Cargamos el archivo con el certificado
             String[] ce;
-            System.out.println("***************");
+            //System.out.println("***************");
             ce = datosEmisor.getRuta_certificado().split("\\.");
             comp.setNoCertificado(ce[0]);//es el numero del certificado
 
-            System.out.println("Se cargaron exitosamente los archivos");
+           // System.out.println("Se cargaron exitosamente los archivos");
             X509Certificate cert = KeyLoaderFactory.createInstance(KeyLoaderEnumeration.PUBLIC_KEY_LOADER, new FileInputStream(datosEmisor.getRuta_certificado())).getKey();
 
             mx.bigdata.sat.cfdi.v32.schema.Comprobante sellado = cfd.sellarComprobante(key, cert);
@@ -1287,12 +1276,12 @@ public class BeanFacturacion implements Serializable {
             FileOutputStream outFile = new FileOutputStream(pathFacturaClienteComprobante);
             imprimirDatosFactura();
             cfd.validar();
-//        System.out.println("Se valido el cdf ");
+//        //System.out.println("Se valido el cdf ");
             cfd.verificar();
-            System.out.println("Se verifico el cfd ");
+           // System.out.println("Se verifico el cfd ");
             cfd.guardar(outFile);
-            System.out.println("Se guardo el cdf ");
-            System.out.println("cadema original " + cfd.getCadenaOriginal());
+           // System.out.println("Se guardo el cdf ");
+           // System.out.println("cadema original " + cfd.getCadenaOriginal());
             nuevaFactura.setCadena(cfd.getCadenaOriginal());
             outFile.close();
 
@@ -1319,7 +1308,7 @@ public class BeanFacturacion implements Serializable {
         context.getFechaSistema();
         Date f = TiempoUtil.getFechaDDMMYYYYDate(context.getFechaSistema());
 
-        System.out.println("Fecha de Sistema: " + f);
+        //System.out.println("Fecha de Sistema: " + f);
         comp.setFecha(context.getFechaSistema());
         for (CatalogoSat cs : listaFormaPago) {
 
@@ -1516,24 +1505,24 @@ public class BeanFacturacion implements Serializable {
                 case 1:
                     fechaFiltroInicioPublico = new Date();
                     fechaFiltroFinPublico = new Date();
-                    System.out.println("1");
+                    //System.out.println("1");
                     break;
                 case 2:
                     fechaFiltroInicioPublico = TiempoUtil.getDayOneOfMonth(new Date());
                     fechaFiltroFinPublico = TiempoUtil.getDayEndOfMonth(new Date());
-                    System.out.println("2");
+                   // System.out.println("2");
                     break;
                 case 3:
                     List<String> listaFechas = TiempoUtil.getintervalWeekDDMMYYYYbyDay(new Date());
                     for (String item : listaFechas) {
-                        System.out.println(item);
+                      //  System.out.println(item);
                     }
 
                     fechaFiltroInicioPublico = TiempoUtil.getFechaDDMMYYYY(listaFechas.get(0));
 
                     fechaFiltroFinPublico = TiempoUtil.getFechaDDMMYYYY(listaFechas.get(6));
                     //fechaFiltroFin = TiempoUtil.getDayEndYear(new Date());
-                    System.out.println("3");
+                    //System.out.println("3");
                     break;
                 default:
                     fechaFiltroFinPublico = null;
@@ -1547,55 +1536,7 @@ public class BeanFacturacion implements Serializable {
         // buscaVentasNoFacturadas();
     }
 
-    private void getTimbrado() throws ParserConfigurationException {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-
-        try {
-            File inputFile = new File("input.txt");
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.parse(inputFile);
-            doc.getDocumentElement().normalize();
-            System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
-            NodeList nList = doc.getElementsByTagName("student");
-
-            System.out.println("----------------------------");
-            for (int temp = 0; temp < nList.getLength(); temp++) {
-                Node nNode = nList.item(temp);
-                System.out.println("\nCurrent Element :"
-                        + nNode.getNodeName());
-                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-                    Element eElement = (Element) nNode;
-                    System.out.println("Student roll no : "
-                            + eElement.getAttribute("rollno"));
-                    System.out.println("First Name : "
-                            + eElement
-                                    .getElementsByTagName("firstname")
-                                    .item(0)
-                                    .getTextContent());
-                    System.out.println("Last Name : "
-                            + eElement
-                                    .getElementsByTagName("lastname")
-                                    .item(0)
-                                    .getTextContent());
-                    System.out.println("Nick Name : "
-                            + eElement
-                                    .getElementsByTagName("nickname")
-                                    .item(0)
-                                    .getTextContent());
-                    System.out.println("Marks : "
-                            + eElement
-                                    .getElementsByTagName("marks")
-                                    .item(0)
-                                    .getTextContent());
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
+    
     public void generateReport(FacturaPDFDomain fac, BigDecimal idSucu, BigDecimal random) {
         JRExporter exporter = null;
         try {

@@ -29,7 +29,7 @@ public class EjbFacturas implements NeogocioFacturas {
 
     @Override
     public int insert(FacturaPDFDomain factura) {
-        System.out.println("Factura: "+factura.toString());
+       
         try {
             Query query = em.createNativeQuery("INSERT INTO FACTURAS "
                     + "(ID_FACTURA_PK,ID_NUMERO_FACTURA,FECHA_TIMBRADO,ID_CLIENTE_FK,"
@@ -87,11 +87,11 @@ public class EjbFacturas implements NeogocioFacturas {
 
     @Override
     public List<Object[]> getFacturasBy(BigDecimal idClienteFk, BigDecimal idSucursalFk, BigDecimal idFolioVentaFk, String fechaInicio, String fechaFin) {
-        System.out.println("idCliente: " + idClienteFk);
-        System.out.println("idSucursal: " + idSucursalFk);
-        System.out.println("folioVenta: " + idFolioVentaFk);
-        System.out.println("FechaIni: " + fechaInicio);
-        System.out.println("FechaFin: " + fechaFin);
+//        System.out.println("idCliente: " + idClienteFk);
+//        System.out.println("idSucursal: " + idSucursalFk);
+//        System.out.println("folioVenta: " + idFolioVentaFk);
+//        System.out.println("FechaIni: " + fechaInicio);
+//        System.out.println("FechaFin: " + fechaFin);
         Query query;
         int cont = 0;
         StringBuffer cadena = new StringBuffer("select fa.ID_FACTURA_PK,fa.ID_NUMERO_FACTURA,fa.FECHA_TIMBRADO,fa.ID_CLIENTE_FK,fa.ID_SUCURSAL_FK,fa.ID_LLAVE_VENTA_FK, fa.OBSERVACIONES,\n"
@@ -149,7 +149,7 @@ public class EjbFacturas implements NeogocioFacturas {
         cadena.append(" order by fa.FECHA_TIMBRADO");
 
         query = em.createNativeQuery(cadena.toString());
-        System.out.println("Query: " + query.toString());
+        //System.out.println("Query: " + query.toString());
 
         try {
             List<Object[]> lstObject = query.getResultList();
