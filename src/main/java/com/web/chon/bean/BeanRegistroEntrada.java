@@ -60,14 +60,19 @@ public class BeanRegistroEntrada implements Serializable, BeanSimple {
         data = new RegistroEntradaSalida();
         data.setIdUsuarioFk(usuario.getIdUsuarioPk());
         data.setIdSucursalFk(new BigDecimal(usuario.getIdSucursal()));
+
+        isEntrada();
+
+    }
+
+    private void isEntrada() {
+
         fechaTemporal = context.getFechaSistema();
         ArrayList<RegistroEntradaSalida> lista = new ArrayList<RegistroEntradaSalida>();
-
         lista = ifaceRegEntSal.getUsuarioByIdUsuario(data.getIdUsuarioFk(), fechaTemporal);
 
         if (lista == null || lista.isEmpty()) {
 
-            //data.setFechaEntrada(user.getFechaEntrada());
             //Ya tiene la entrada Registrada
             bandera = true;
             permissionToEntrada = false;
@@ -79,12 +84,7 @@ public class BeanRegistroEntrada implements Serializable, BeanSimple {
             bandera = false;
             permissionToEntrada = true;
             permisionToSalida = false;
-
-            //nueva entrada
         }
-
-//        latitud=19.367365;
-//        longitud=-99.096502;
     }
 
     @Override
@@ -94,6 +94,7 @@ public class BeanRegistroEntrada implements Serializable, BeanSimple {
 
     @Override
     public String insert() {
+        isEntrada();
         if (bandera) {
             if (latitud == null || longitud == null) {
                 data.setLatitudSalida(0);

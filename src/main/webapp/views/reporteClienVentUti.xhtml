@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="./../templates/main.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content">
+        <div>
+            <h3>#{beanReporteClienteVenta.title}</h3>
+        </div>
+        <p:ajaxStatus onsuccess="PF('statusDialog').hide()" />
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                  closable="false" resizable="false" showHeader="false">
+            <p:graphicImage value="../resources/img/carga.gif" />
+        </p:dialog>
+        <h:form id="formContent">
+            <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
+            <p:panel>
+                <div class="container-fluid">
+
+                    <div class="form-group" align="right">
+                        <p:commandButton value="Buscar" resetValues="true" update=":formContent" action="#{beanReporteClienteVenta.searchById()}"  onclick="PF('statusDialog').show()"/>
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12 form-group">
+                        <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 "  for="autocompleteCliente" value ="Cliente:" /> 
+                        <p:autoComplete  placeholder="Seleccione un Cliente" id="autocompleteCliente"  required="true" requiredMessage="Ingresa un valor para el campo Cliente." styleClass="autocomplete-input-text-media ui-state-highlight-autocomplete" class="ui-state-highlight-autocomplete"
+                                         value="#{beanReporteClienteVenta.data}" completeMethod="#{beanReporteClienteVenta.autoCompleteCliente}" forceSelection="true" var="cliente"  inputStyle="width: 180px"
+                                         itemLabel="#{cliente.nombreCompleto.trim()}"
+                                         itemValue="#{cliente.idClientePk}" converter="#{clienteConverter}">
+                            <p:ajax event="itemSelect"/>
+                            <p:ajax event="change"/>
+                        </p:autoComplete>
+                        <pe:keyFilter for="autocompleteCliente" regEx="/[a-z0-9-_Ã±\s]/i" />
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12 form-group">
+                        <p:outputLabel value="Dias de Recuperación: #{beanReporteClienteVenta.diasRecuperacion}" />
+                    </div>
+                    <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <!--<p:chart style="height:500px;" type="line" responsive="true" rendered ="{beanReporteClienteVenta.chartLine != null}" model="{beanReporteClienteVenta.chartLine}"/>-->
+                        <p:chart style="height:500px;" type="bar"  responsive="true" rendered ="#{beanReporteClienteVenta.chartBar != null}" model="#{beanReporteClienteVenta.chartBar}" />
+                    </div>
+                </div>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>
