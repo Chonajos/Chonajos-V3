@@ -649,9 +649,10 @@ public class BeanFacturacion implements Serializable {
         try {
             String rutaTimbradoData = Constantes.PATHLOCALFACTURACION + "Clientes" + File.separatorChar + data.getRfcCliente() + File.separatorChar + "TIMBRADO" + File.separatorChar + data.getNombreArchivoTimbrado();
             paramReport.put("cadena", data.getCadena());
-
+            BigDecimal totalTemporal= new BigDecimal(0);
+            String folioQR ="";
+            String rfcReceptorQR ="";
             paramReport.put("iva1", data.getIva1());
-
             System.out.println("Ruta: " + rutaTimbradoData);
             File inputFile = new File(rutaTimbradoData);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -696,7 +697,7 @@ public class BeanFacturacion implements Serializable {
                     paramReport.put("tipoDeComprobante", eElement.getAttribute("tipoDeComprobante"));
                     System.out.println("Tipo De Comprobante : " + eElement.getAttribute("tipoDeComprobante"));
 
-                    BigDecimal totalTemporal = new BigDecimal(eElement.getAttribute("total"));
+                    totalTemporal= new BigDecimal(eElement.getAttribute("total"));
                     System.out.println("Total Temporal: " + totalTemporal);
                     paramReport.put("total", totalTemporal);
                     paramReport.put("labelIva", "0%");
@@ -718,7 +719,8 @@ public class BeanFacturacion implements Serializable {
                     paramReport.put("selloDigital", eElement.getAttribute("sello"));
                     System.out.println("sello : " + eElement.getAttribute("sello"));
                     paramReport.put("folio", eElement.getAttribute("folio"));
-                    String folioQR =eElement.getAttribute("folio");
+                    
+                       folioQR     =eElement.getAttribute("folio");
                     System.out.println("folio : " + eElement.getAttribute("folio"));
                     paramReport.put("fecha", eElement.getAttribute("fecha"));
                     System.out.println("Fecha : " + eElement.getAttribute("fecha"));
@@ -736,7 +738,7 @@ public class BeanFacturacion implements Serializable {
             }
             nList = doc.getElementsByTagName("cfdi:Emisor");
             System.out.println("--------------Datos de Emisor--------------");
-            String rfcEmisor;
+            String rfcEmisor="";
             for (int temp = 0; temp < nList.getLength(); temp++) {
                 Node nNode = nList.item(temp);
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
@@ -793,6 +795,7 @@ public class BeanFacturacion implements Serializable {
                     paramReport.put("nombreReceptor", eElement.getAttribute("nombre"));
                     System.out.println("Nombre : " + eElement.getAttribute("nombre"));
                     paramReport.put("rfcReceptor", eElement.getAttribute("rfc"));
+                    rfcReceptorQR =eElement.getAttribute("rfc");
                     System.out.println("rfc : " + eElement.getAttribute("rfc"));
 
                 }
@@ -873,7 +876,23 @@ public class BeanFacturacion implements Serializable {
 
                 }
             }
-            String cadenaQR= "?re="+rfcEmisor+ "id="+folioQR+"";  
+           String tQR= totalTemporal.toString();
+            System.out.println("TQR: "+tQR);
+            
+           String q="";
+           int cantidadCeros = 10-tQR.length();
+            System.out.println("Cantidad de Ceros: "+cantidadCeros);
+           while(cantidadCeros>0)
+           {
+              q = q+"0";
+              cantidadCeros = cantidadCeros-1;
+           }
+           q = q+tQR;
+            System.out.println("====================================================================0");
+            String cadenaQR= "?re="+rfcEmisor+"&rr="+rfcReceptorQR+"&&tt="+q+"&id="+folioQR+"";
+            System.out.println("CADENA QR: "+cadenaQR);
+            paramReport.put("cadenaQR", cadenaQR);
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
