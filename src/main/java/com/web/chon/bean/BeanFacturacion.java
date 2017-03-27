@@ -529,8 +529,7 @@ public class BeanFacturacion implements Serializable {
                 datosCliente = ifaceCatCliente.getClienteById(idClienteVentaMostradorPk);
                 break;
             case 3:
-                if (datosCliente != null && datosCliente.getIdClientePk() != null) 
-                {
+                if (datosCliente != null && datosCliente.getIdClientePk() != null) {
                     datosCliente = ifaceCatCliente.getClienteById(datosCliente.getIdClientePk());
                 }
                 break;
@@ -651,7 +650,7 @@ public class BeanFacturacion implements Serializable {
             String rutaTimbradoData = Constantes.PATHLOCALFACTURACION + "Clientes" + File.separatorChar + data.getRfcCliente() + File.separatorChar + "TIMBRADO" + File.separatorChar + data.getNombreArchivoTimbrado();
             paramReport.put("cadena", data.getCadena());
 
-            paramReport.put("iva1", data.getIva1().toString());
+            paramReport.put("iva1", data.getIva1());
 
             System.out.println("Ruta: " + rutaTimbradoData);
             File inputFile = new File(rutaTimbradoData);
@@ -674,23 +673,43 @@ public class BeanFacturacion implements Serializable {
                     System.out.println("NumCtaPago : " + eElement.getAttribute("NumCtaPago"));
 
                     paramReport.put("formaPago", eElement.getAttribute("metodoDePago"));
+                    String fp = eElement.getAttribute("metodoDePago");
+                    
+                                 
+//                    for (CatalogoSat cs : listaFormaPago) {
+//                        System.out.println("CS: "+cs.getCodigo());
+//                        System.out.println("FP: "+fp);
+//                        if (cs.getCodigo().equals(fp)) {
+//                            comp.setFormaDePago(cs.getDescripcion());
+//                            paramReport.put("nombreFormaPago", cs.getDescripcion());
+//                        }
+//                    }
+                    for(CatalogoSat cs: listaMetodosPago)
+                    {
+                         if (cs.getCodigo().equals(fp)) {
+                            comp.setFormaDePago(cs.getDescripcion());
+                            paramReport.put("nombreFormaPago", cs.getDescripcion());
+                        }
+                        
+                    }
                     System.out.println("Metodo De Pago : " + eElement.getAttribute("metodoDePago"));
                     paramReport.put("tipoDeComprobante", eElement.getAttribute("tipoDeComprobante"));
                     System.out.println("Tipo De Comprobante : " + eElement.getAttribute("tipoDeComprobante"));
-                    DecimalFormat df = new DecimalFormat("###.##");
+
                     BigDecimal totalTemporal = new BigDecimal(eElement.getAttribute("total"));
                     System.out.println("Total Temporal: " + totalTemporal);
-                    paramReport.put("total", df.format(totalTemporal));
+                    paramReport.put("total", totalTemporal);
+                    paramReport.put("labelIva", "0%");
+                    //$P{labelIva}
                     System.out.println("Total : " + eElement.getAttribute("total"));
                     paramReport.put("Moneda", eElement.getAttribute("Moneda"));
                     System.out.println("Moneda : " + eElement.getAttribute("Moneda"));
-                    paramReport.put("descuento", eElement.getAttribute("descuento"));
+                    BigDecimal descuento = new BigDecimal(eElement.getAttribute("descuento"));
+                    paramReport.put("descuento", descuento);
                     System.out.println("Descuento : " + eElement.getAttribute("descuento"));
                     System.out.println("subTotal : " + eElement.getAttribute("subTotal"));
                     BigDecimal subTotalTemporal = new BigDecimal(eElement.getAttribute("subTotal"));
-
-                    df.format(subTotalTemporal);
-                    paramReport.put("subTotal", df.format(subTotalTemporal));
+                    paramReport.put("subTotal", subTotalTemporal);
 
                     paramReport.put("certificado", eElement.getAttribute("certificado"));
                     System.out.println("Certificado : " + eElement.getAttribute("certificado"));
@@ -699,6 +718,7 @@ public class BeanFacturacion implements Serializable {
                     paramReport.put("selloDigital", eElement.getAttribute("sello"));
                     System.out.println("sello : " + eElement.getAttribute("sello"));
                     paramReport.put("folio", eElement.getAttribute("folio"));
+                    String folioQR =eElement.getAttribute("folio");
                     System.out.println("folio : " + eElement.getAttribute("folio"));
                     paramReport.put("fecha", eElement.getAttribute("fecha"));
                     System.out.println("Fecha : " + eElement.getAttribute("fecha"));
@@ -706,7 +726,7 @@ public class BeanFacturacion implements Serializable {
                     System.out.println("version : " + eElement.getAttribute("serie"));
                     paramReport.put("version", eElement.getAttribute("version"));
                     NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
-
+                    DecimalFormat df = new DecimalFormat("###.##");
                     NumeroALetra numeroLetra = new NumeroALetra();
                     BigDecimal temporal = new BigDecimal(eElement.getAttribute("total"));
                     String totalVentaStr = numeroLetra.Convertir(df.format(temporal), true);
@@ -716,12 +736,14 @@ public class BeanFacturacion implements Serializable {
             }
             nList = doc.getElementsByTagName("cfdi:Emisor");
             System.out.println("--------------Datos de Emisor--------------");
+            String rfcEmisor;
             for (int temp = 0; temp < nList.getLength(); temp++) {
                 Node nNode = nList.item(temp);
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element eElement = (Element) nNode;
                     paramReport.put("nombreEmisor", eElement.getAttribute("nombre"));
                     System.out.println("Nombre : " + eElement.getAttribute("nombre"));
+                    rfcEmisor=eElement.getAttribute("rfc");
                     paramReport.put("rfcEmisor", eElement.getAttribute("rfc"));
                     System.out.println("rfc : " + eElement.getAttribute("rfc"));
 
@@ -851,6 +873,7 @@ public class BeanFacturacion implements Serializable {
 
                 }
             }
+            String cadenaQR= "?re="+rfcEmisor+ "id="+folioQR+"";  
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1276,7 +1299,7 @@ public class BeanFacturacion implements Serializable {
         comp.setFolio(ventaMayoreo.getVentaSucursal().toString());
         context.getFechaSistema();
         Date f = TiempoUtil.getFechaDDMMYYYYDate(context.getFechaSistema());
-        
+
         System.out.println("Fecha de Sistema: " + f);
         comp.setFecha(context.getFechaSistema());
         for (CatalogoSat cs : listaFormaPago) {
@@ -1488,7 +1511,6 @@ public class BeanFacturacion implements Serializable {
                     }
 
                     fechaFiltroInicioPublico = TiempoUtil.getFechaDDMMYYYY(listaFechas.get(0));
-                    
 
                     fechaFiltroFinPublico = TiempoUtil.getFechaDDMMYYYY(listaFechas.get(6));
                     //fechaFiltroFin = TiempoUtil.getDayEndYear(new Date());

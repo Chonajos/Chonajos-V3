@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.0.1.final using JasperReports Library version 6.0.0  -->
-<!-- 2017-03-24T14:57:51 -->
+<!-- 2017-03-27T07:47:08 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EntradaMayoreoV1" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Error" uuid="df013db5-f76e-44d3-b0df-bcbc46d93160">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
@@ -362,10 +362,10 @@
 	<parameter name="telefonoCliente" class="java.lang.String"/>
 	<parameter name="importeLetra" class="java.lang.String"/>
 	<parameter name="importe" class="java.lang.String"/>
-	<parameter name="descuento" class="java.lang.String"/>
-	<parameter name="iva1" class="java.lang.String"/>
+	<parameter name="descuento" class="java.math.BigDecimal"/>
+	<parameter name="iva1" class="java.math.BigDecimal"/>
 	<parameter name="iva2" class="java.lang.String"/>
-	<parameter name="total" class="java.lang.String"/>
+	<parameter name="total" class="java.math.BigDecimal"/>
 	<parameter name="selloDigital" class="java.lang.String"/>
 	<parameter name="cadena" class="java.lang.String"/>
 	<parameter name="selloSAT" class="java.lang.String"/>
@@ -378,7 +378,7 @@
 	<parameter name="nombreReceptor" class="java.lang.String">
 		<parameterDescription><![CDATA[]]></parameterDescription>
 	</parameter>
-	<parameter name="subTotal" class="java.lang.String"/>
+	<parameter name="subTotal" class="java.math.BigDecimal"/>
 	<parameter name="qrCodeString" class="java.lang.String"/>
 	<parameter name="estadoEmisor" class="java.lang.String"/>
 	<parameter name="municipioEmisor" class="java.lang.String"/>
@@ -397,6 +397,7 @@
 	<parameter name="lstProductos" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
 	<parameter name="NumCtaPago" class="java.lang.String"/>
 	<parameter name="nombreFormaPago" class="java.lang.String"/>
+	<parameter name="labelIva" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT SYSDATE FROM DUAL]]>
 	</queryString>
@@ -999,7 +1000,7 @@
 				</jr:table>
 			</componentElement>
 		</band>
-		<band height="93">
+		<band height="86">
 			<staticText>
 				<reportElement x="378" y="0" width="60" height="15" uuid="08a34e67-da4e-4956-a699-9a5f0f2f0c2c">
 					<property name="local_mesure_unitheight" value="pixel"/>
@@ -1019,14 +1020,14 @@
 				<text><![CDATA[DESCUENTO:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="378" y="30" width="60" height="15" uuid="5f041cf3-57d3-4218-b8d2-d865668d8d71">
+				<reportElement x="372" y="30" width="33" height="15" uuid="5f041cf3-57d3-4218-b8d2-d865668d8d71">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
-				<text><![CDATA[IVA:]]></text>
+				<text><![CDATA[IVA]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="379" y="71" width="59" height="15" uuid="f692052f-e505-469f-8912-b7461ba8075c">
@@ -1042,7 +1043,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$P{iva1}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["$" +new java.text.DecimalFormat("#,##0.00").format($P{iva1})]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="438" y="0" width="92" height="15" uuid="6df19664-b3bc-4de1-9e65-acdf1fa3fa6e">
@@ -1050,7 +1051,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$P{subTotal}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["$" +new java.text.DecimalFormat("#,##0.00").format($P{subTotal})]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="438" y="15" width="92" height="15" uuid="d31940dc-823b-44a3-bb64-a3494b10b7c7">
@@ -1058,20 +1059,20 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$P{descuento}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["$" +new java.text.DecimalFormat("#,##0.00").format($P{descuento})]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="110" y="22" width="90" height="16" uuid="320b88be-3ec1-44b2-9aa4-0b6d0a22b34e">
+				<reportElement x="90" y="22" width="90" height="16" uuid="320b88be-3ec1-44b2-9aa4-0b6d0a22b34e">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="11"/>
 				</textElement>
-				<text><![CDATA[Forma de Pago:]]></text>
+				<text><![CDATA[Método de Pago]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="200" y="22" width="30" height="16" uuid="51a3f793-e04c-445d-9ace-ff38ad7d6f60">
+				<reportElement x="181" y="22" width="30" height="16" uuid="51a3f793-e04c-445d-9ace-ff38ad7d6f60">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -1114,7 +1115,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$P{total}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["$" +new java.text.DecimalFormat("#,##0.00").format($P{total})]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="67" y="-3" width="286" height="20" uuid="6555d1d4-b436-4a3d-a63d-87cf5d364353"/>
@@ -1127,10 +1128,24 @@
 				<textFieldExpression><![CDATA[$P{NumCtaPago}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="231" y="22" width="127" height="16" uuid="9eb650f7-2992-4e1e-9698-0ca40a2948ee"/>
+				<reportElement x="212" y="22" width="146" height="16" uuid="9eb650f7-2992-4e1e-9698-0ca40a2948ee"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{nombreFormaPago}]]></textFieldExpression>
 			</textField>
+			<textField>
+				<reportElement x="405" y="30" width="33" height="15" uuid="b63d78ba-0cd8-4111-9410-ca552bcb5201">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{labelIva}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="10" y="12" width="70" height="65" uuid="8de24548-0cc1-44cf-aa85-13dc956764b6"/>
+				<imageExpression><![CDATA[com.google.zxing.client.j2se.MatrixToImageWriter.toBufferedImage(
+    new com.google.zxing.qrcode.QRCodeWriter().encode(
+            "contenido", com.google.zxing.BarcodeFormat.QR_CODE, 200, 200))]]></imageExpression>
+			</image>
 		</band>
 		<band height="189">
 			<staticText>
