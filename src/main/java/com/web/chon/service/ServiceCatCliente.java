@@ -1,6 +1,7 @@
 package com.web.chon.service;
 
 import com.web.chon.dominio.Cliente;
+import com.web.chon.dominio.ReporteClienteVentas;
 import com.web.chon.negocio.NegocioCatCliente;
 import com.web.chon.util.Utilidades;
 import java.math.BigDecimal;
@@ -116,8 +117,6 @@ public class ServiceCatCliente implements IfaceCatCliente {
 
     }
 
-    
-
     @Override
     public int deleteCliente(BigDecimal idCliente) {
         getEjb();
@@ -126,7 +125,7 @@ public class ServiceCatCliente implements IfaceCatCliente {
 
     @Override
     public int updateCliente(Cliente cliente) {
-getEjb();
+        getEjb();
         return ejb.updateCliente(cliente);
     }
 
@@ -297,6 +296,41 @@ getEjb();
 
             }
             return lstCliente;
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceCatCliente.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+
+        }
+    }
+
+    @Override
+    public ArrayList<ReporteClienteVentas> getReporteClienteVentasUtilidad(BigDecimal idCliente, String fechaInicio, String fechaFin) {
+        getEjb();
+        try {
+            ArrayList<ReporteClienteVentas> lstReporteClienteVentas = new ArrayList<ReporteClienteVentas>();
+            ejb = (NegocioCatCliente) Utilidades.getEJBRemote("ejbCatCliente", NegocioCatCliente.class.getName());
+            List<Object[]> lstObject = ejb.getReporteClienteVentasUtilidad(idCliente, fechaInicio, fechaFin);
+
+            for (Object[] obj : lstObject) {
+
+                ReporteClienteVentas reporteClienteVentas = new ReporteClienteVentas();
+
+                reporteClienteVentas.setIdClientePk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+                reporteClienteVentas.setTotalMenudeoContado(obj[1] == null ? new BigDecimal("0") : new BigDecimal(obj[1].toString()));
+                reporteClienteVentas.setTotalMenudeoCredito(obj[2] == null ? new BigDecimal("0") : new BigDecimal(obj[2].toString()));
+                reporteClienteVentas.setUtilidadMenudeo(obj[3] == null ? new BigDecimal("0") : new BigDecimal(obj[3].toString()));
+                reporteClienteVentas.setTotalMayoreoContado(obj[4] == null ? new BigDecimal("0") : new BigDecimal(obj[4].toString()));
+                reporteClienteVentas.setTotalMayoreoCredito(obj[5] == null ? new BigDecimal("0") : new BigDecimal(obj[5].toString()));
+                reporteClienteVentas.setUtilidadMayoreoCosto(obj[6] == null ? new BigDecimal("0") : new BigDecimal(obj[6].toString()));
+                reporteClienteVentas.setUtilidadMayoreoComision(obj[7] == null ? new BigDecimal("0") : new BigDecimal(obj[7].toString()));
+                reporteClienteVentas.setUtilidadMayoreoPacto(obj[8] == null ? new BigDecimal("0") : new BigDecimal(obj[8].toString()));
+                reporteClienteVentas.setDiasRecuperacion(obj[9] == null ? new BigDecimal("0") : new BigDecimal(obj[9].toString()));
+                reporteClienteVentas.setRecuperacion(obj[10] == null ? new BigDecimal("0") : new BigDecimal(obj[10].toString()));
+
+                lstReporteClienteVentas.add(reporteClienteVentas);
+            }
+
+            return lstReporteClienteVentas;
         } catch (Exception ex) {
             Logger.getLogger(ServiceCatCliente.class.getName()).log(Level.SEVERE, null, ex);
             return null;

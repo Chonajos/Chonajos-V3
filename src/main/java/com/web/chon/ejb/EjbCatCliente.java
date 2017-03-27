@@ -4,10 +4,9 @@ import com.web.chon.dominio.Cliente;
 import com.web.chon.negocio.NegocioCatCliente;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.Stateless;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -22,17 +21,18 @@ public class EjbCatCliente implements NegocioCatCliente {
     @PersistenceContext(unitName = "persistenceJR")
     EntityManager em;
 
+    private final static Logger logger = LoggerFactory.getLogger(EjbCatCliente.class);
+
     @Override
     public List<Object[]> getClientes() {
-        try 
-        {
+        try {
             Query query = em.createNativeQuery("SELECT CLI.ID_CLIENTE,CLI.NOMBRE,CLI.APELLIDO_PATERNO,CLI.APELLIDO_MATERNO,CLI.EMPRESA,CLI.CALLE,CLI.SEXO,CLI.TELEFONO_CELULAR,CLI.TELEFONO_FIJO,CLI.EXTENSION,CLI.NUM_INT,CLI.NUM_EXT,CLI.ID_CP,CLI.NEXTEL,CLI.RAZON,CLI.RFC,CLI.STATUS,CLI.FECHA_ALTA,CLI.DIAS_CREDITO,CLI.MONTO_CREDITO,CLI.TIPO_PERSONA,CLI.LOCALIDAD,CLI.PAIS,CLI.CORREO ,CP.CODIGO_POSTAL,CP.NOMBRE_COLONIA,MUN.NOMBRE_MUNICIPIO,EN.NOMBRE_ENTIDAD,CP.ID_PK, MUN.ID_MUNICIPIO_PK,EN.ID_ENTIDAD_PK FROM CLIENTE CLI LEFT JOIN CODIGOS_POSTALES CP ON CP.ID_PK = CLI.ID_CP LEFT JOIN MUNICIPIOS MUN ON MUN.ID_MUNICIPIO_PK = CP.ID_MUNICIPIO_FK LEFT JOIN ENTIDAD EN ON EN.ID_ENTIDAD_PK = MUN.ID_ENTIDAD_FK ORDER BY CLI.NOMBRE ASC");
             List<Object[]> resultList = null;
-            System.out.println("Query: "+query.toString());
+            System.out.println("Query: " + query.toString());
             resultList = query.getResultList();
             return resultList;
         } catch (Exception ex) {
-            Logger.getLogger(EjbCatCliente.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Error > " + ex.getMessage());
             return null;
         }
     }
@@ -47,7 +47,7 @@ public class EjbCatCliente implements NegocioCatCliente {
             return query.getResultList();
 
         } catch (Exception ex) {
-            Logger.getLogger(EjbCatCliente.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Error > " + ex.getMessage());
             return null;
         }
     }
@@ -64,7 +64,7 @@ public class EjbCatCliente implements NegocioCatCliente {
             return query.executeUpdate();
 
         } catch (Exception ex) {
-            Logger.getLogger(EjbCatCliente.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Error > " + ex.getMessage());
             return 0;
         }
     }
@@ -101,10 +101,7 @@ public class EjbCatCliente implements NegocioCatCliente {
             return query.executeUpdate();
 
         } catch (Exception ex) {
-
-            
-            System.out.println("error >> " + ex.getMessage().toString());
-            Logger.getLogger(EjbCatCliente.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Error > " + ex.getMessage());
             return 0;
         }
 
@@ -142,7 +139,7 @@ public class EjbCatCliente implements NegocioCatCliente {
             query.setParameter(23, clie.getCorreo());
             return query.executeUpdate();
         } catch (Exception ex) {
-            Logger.getLogger(EjbCatCliente.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Error > " + ex.getMessage());
             return 0;
         }
 
@@ -188,8 +185,7 @@ public class EjbCatCliente implements NegocioCatCliente {
             return query.getResultList();
 
         } catch (Exception ex) {
-            //System.out.println("error query :" + ex.toString());
-            Logger.getLogger(EjbCatCliente.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Error > " + ex.getMessage());
             return null;
         }
     }
@@ -209,8 +205,7 @@ public class EjbCatCliente implements NegocioCatCliente {
             return query.getResultList();
 
         } catch (Exception ex) {
-
-            Logger.getLogger(EjbCatCliente.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Error > " + ex.getMessage());
             return null;
         }
     }
@@ -225,13 +220,13 @@ public class EjbCatCliente implements NegocioCatCliente {
             resultList = query.getResultList();
             return resultList;
         } catch (Exception ex) {
-            Logger.getLogger(EjbCatCliente.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Error > " + ex.getMessage());
             return null;
         }
     }
 
     @Override
-    public List<Object[]> getClienteByIdSubProducto(String idSubProducto,BigDecimal idSucursal) {
+    public List<Object[]> getClienteByIdSubProducto(String idSubProducto, BigDecimal idSucursal) {
         try {
 
             Query query = em.createNativeQuery("SELECT CL.NOMBRE ||' '|| CL.APELLIDO_PATERNO ||' '||CL.APELLIDO_MATERNO AS NOMBRE_CLIENTE ,CO.CORREO,SUM(VMP.CANTIDAD_EMPAQUE) AS TOTAL_EMPAQUE "
@@ -241,20 +236,65 @@ public class EjbCatCliente implements NegocioCatCliente {
                     + "INNER JOIN VENTAMAYOREOPRODUCTO VMP ON VMP.ID_VENTA_MAYOREO_FK = VM.ID_VENTA_MAYOREO_PK "
                     + "WHERE  VMP.ID_SUBPRODUCTO_FK = ? AND VM.ID_SUCURSAL_FK = ? AND VM.ID_STATUS_FK != 4 AND CL.STATUS !=2 "
                     + "GROUP BY CL.NOMBRE ||' '|| CL.APELLIDO_PATERNO ||' '||CL.APELLIDO_MATERNO ,CO.CORREO ORDER BY TOTAL_EMPAQUE DESC");
-            
+
             query.setParameter(1, idSubProducto);
             query.setParameter(2, idSucursal);
-            
+
             List<Object[]> resultList = null;
             resultList = query.getResultList();
 
             return resultList;
         } catch (Exception ex) {
-            Logger.getLogger(EjbCatCliente.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Error > " + ex.getMessage());
             return null;
         }
     }
 
-    
+    @Override
+    public List<Object[]> getReporteClienteVentasUtilidad(BigDecimal idCliente, String fechaInicio, String fechaFin) {
+        try {
+            Query query = em.createNativeQuery("SELECT CLI.ID_CLIENTE, "
+                    + "NVL(SUM(VP.CANTIDAD_EMPAQUE*VP.PRECIO_PRODUCTO),0) AS TOTAL_MENUDEO_CONTADO, "
+                    + "NVL(SUM(VPC.CANTIDAD_EMPAQUE*VPC.PRECIO_PRODUCTO),0) AS TOTAL_MENUDEO_CREDITO, "
+                    + "(SELECT NVL(SUM(VP1.CANTIDAD_EMPAQUE*VP1.PRECIO_PRODUCTO),0)- NVL(SUM(VP1.CANTIDAD_EMPAQUE*MTP.COSTOREAL),0) FROM VENTA V1 "
+                    + "INNER JOIN VENTA_PRODUCTO VP1 ON V1.ID_VENTA_PK = VP1.ID_VENTA_FK "
+                    + "INNER JOIN MANTENIMIENTO_PRECIO MTP ON MTP.ID_SUBPRODUCTO_FK = VP1.ID_SUBPRODUCTO_FK "
+                    + "WHERE V1.ID_CLIENTE_FK = CLI.ID_CLIENTE AND MTP.ID_SUCURSAL_FK = V1.ID_SUCURSAL_FK AND V1.STATUS_FK != 4) AS UTILIDAD_MENUDEO, "
+                    + "(SELECT NVL(SUM(VMP.KILOS_VENDIDOS*VMP.PRECIO_PRODUCTO),0)  FROM VENTA_MAYOREO VM "
+                    + "  LEFT JOIN VENTAMAYOREOPRODUCTO VMP ON VMP.ID_VENTA_MAYOREO_FK = VM.ID_VENTA_MAYOREO_PK "
+                    + "  WHERE VM.ID_STATUS_FK != 4 AND VM.ID_TIPO_VENTA_FK = 1 AND VM.ID_CLIENTE_FK = CLI.ID_CLIENTE) AS TOTAL_MAYOREO_CONTADO, "
+                    + "(SELECT NVL(SUM(VMPC.KILOS_VENDIDOS*VMPC.PRECIO_PRODUCTO),0)  FROM VENTA_MAYOREO VM "
+                    + "  LEFT JOIN VENTAMAYOREOPRODUCTO VMPC ON VMPC.ID_VENTA_MAYOREO_FK = VM.ID_VENTA_MAYOREO_PK "
+                    + "  WHERE VM.ID_STATUS_FK != 4 AND VM.ID_TIPO_VENTA_FK = 2 AND VM.ID_CLIENTE_FK = CLI.ID_CLIENTE) AS TOTAL_MAYOREO_CREDITO, "
+                    + "(SELECT NVL(SUM(VMP.KILOS_VENDIDOS*VMP.PRECIO_PRODUCTO),0)-SUM(VMP.CANTIDAD_EMPAQUE*EXP.KILOSPROMPROD*EXP.CONVENIO) FROM VENTA_MAYOREO VM "
+                    + "  LEFT JOIN VENTAMAYOREOPRODUCTO VMP ON VMP.ID_VENTA_MAYOREO_FK = VM.ID_VENTA_MAYOREO_PK "
+                    + "  LEFT JOIN EXISTENCIA_PRODUCTO EXP ON EXP.ID_EXP_PK = VMP.ID_EXISTENCIA_FK "
+                    + "  WHERE VM.ID_STATUS_FK != 4  AND VM.ID_CLIENTE_FK = CLI.ID_CLIENTE AND EXP.ID_TIPO_CONVENIO_FK = 1) AS UTILIDAD_MAYOREO_COSTO, "
+                    + "(SELECT NVL(SUM((VMP.KILOS_VENDIDOS*VMP.PRECIO_PRODUCTO)*EXP.CONVENIO/100),0) FROM VENTA_MAYOREO VM "
+                    + "  LEFT JOIN VENTAMAYOREOPRODUCTO VMP ON VMP.ID_VENTA_MAYOREO_FK = VM.ID_VENTA_MAYOREO_PK "
+                    + "  LEFT JOIN EXISTENCIA_PRODUCTO EXP ON EXP.ID_EXP_PK = VMP.ID_EXISTENCIA_FK "
+                    + "  WHERE VM.ID_STATUS_FK != 4  AND VM.ID_CLIENTE_FK = CLI.ID_CLIENTE AND EXP.ID_TIPO_CONVENIO_FK = 2) AS UTILIDAD_MAYOREO_COMISION "
+                    + ",(SELECT NVL(SUM(VMP.KILOS_VENDIDOS*EXP.CONVENIO),0) FROM VENTA_MAYOREO VM "
+                    + "  LEFT JOIN VENTAMAYOREOPRODUCTO VMP ON VMP.ID_VENTA_MAYOREO_FK = VM.ID_VENTA_MAYOREO_PK "
+                    + "  LEFT JOIN EXISTENCIA_PRODUCTO EXP ON EXP.ID_EXP_PK = VMP.ID_EXISTENCIA_FK "
+                    + "  WHERE VM.ID_STATUS_FK != 4  AND VM.ID_CLIENTE_FK = CLI.ID_CLIENTE AND EXP.ID_TIPO_CONVENIO_FK = 3) AS UTILIDAD_MAYOREO_PACTO "
+                    + ",(SELECT NVL(AVG(CR.FECHA_FIN_CREDITO-CR.FECHA_INICIO_CREDITO),0) FROM CREDITO CR WHERE CR.ESTATUS_CREDITO !=1 AND CR.ID_CLIENTE_FK = CLI.ID_CLIENTE) AS DIAS_RECUPERACION "
+                    + ",(SELECT NVL(SUM(ABC.MONTO_ABONO),0)  FROM ABONO_CREDITO ABC "
+                    + "INNER JOIN CREDITO CR ON CR.ID_CREDITO_PK = ABC.ID_CREDITO_FK WHERE ABC.ESTATUS = 1 AND CR.ID_CLIENTE_FK = CLI.ID_CLIENTE ) AS RECUPERACION "
+                    + "FROM CLIENTE CLI "
+                    + "LEFT JOIN VENTA V  ON V.ID_CLIENTE_FK =CLI.ID_CLIENTE "
+                    + "LEFT JOIN VENTA_PRODUCTO VP ON VP.ID_VENTA_FK = V.ID_VENTA_PK AND V.STATUS_FK != 4 AND V.TIPO_VENTA = 1 "
+                    + "LEFT JOIN VENTA_PRODUCTO VPC ON VPC.ID_VENTA_FK = V.ID_VENTA_PK AND V.STATUS_FK != 4 AND V.TIPO_VENTA = 2 "
+                    + "WHERE CLI.ID_CLIENTE = ? GROUP BY CLI.ID_CLIENTE;");
+
+            query.setParameter(1, idCliente);
+
+            return query.getResultList();
+        } catch (Exception ex) {
+            logger.error("Error > " + ex.getMessage());
+            return null;
+
+        }
+    }
 
 }
