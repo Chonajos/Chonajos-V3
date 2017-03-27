@@ -28,7 +28,7 @@ public class EjbDatosFacturacion implements NegocioDatosFacturacion {
 
     @Override
     public List<Object[]> getByIdCliente(BigDecimal idClienteFk) {
-        System.out.println("IDCLIENTE: " + idClienteFk);
+        //System.out.println("IDCLIENTE: " + idClienteFk);
         try {
             Query query = em.createNativeQuery("select df.ID_DATOS_FACTURACION_PK,df.ID_CLIENTE_FK,df.ID_SUCURSAL_FK,df.RAZON_SOCIAL ,df.RFC,df.CALLE,df.NUM_INT,df.NUM_EXT "
                     + ",df.PAIS,df.LOCALIDAD,df.ID_CP_FISCAL,df.TELEFONO,df.CORREO,df.REGIMEN "
@@ -42,7 +42,7 @@ public class EjbDatosFacturacion implements NegocioDatosFacturacion {
                     + "where df.ID_CLIENTE_FK = ?");
             List<Object[]> resultList = null;
             query.setParameter(1, idClienteFk);
-            System.out.println("Query: " + query.toString());
+            //System.out.println("Query: " + query.toString());
             resultList = query.getResultList();
             return resultList;
         } catch (Exception ex) {
