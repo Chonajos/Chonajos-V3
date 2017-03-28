@@ -285,7 +285,7 @@ public class EjbCatCliente implements NegocioCatCliente {
                     + "LEFT JOIN VENTA V  ON V.ID_CLIENTE_FK =CLI.ID_CLIENTE "
                     + "LEFT JOIN VENTA_PRODUCTO VP ON VP.ID_VENTA_FK = V.ID_VENTA_PK AND V.STATUS_FK != 4 AND V.TIPO_VENTA = 1 "
                     + "LEFT JOIN VENTA_PRODUCTO VPC ON VPC.ID_VENTA_FK = V.ID_VENTA_PK AND V.STATUS_FK != 4 AND V.TIPO_VENTA = 2 "
-                    + "WHERE CLI.ID_CLIENTE = ? GROUP BY CLI.ID_CLIENTE;");
+                    + "WHERE CLI.ID_CLIENTE = ? GROUP BY CLI.ID_CLIENTE");
 
             query.setParameter(1, idCliente);
 

@@ -1,26 +1,25 @@
 package com.web.chon.bean;
 
-import com.web.chon.dominio.BajaClientes;
+import com.web.chon.dominio.AnalisisMercado;
 import com.web.chon.dominio.Cliente;
-import com.web.chon.dominio.CodigoPostal;
-import com.web.chon.dominio.Correos;
 import com.web.chon.dominio.Entidad;
 import com.web.chon.dominio.Motivos;
 import com.web.chon.dominio.Municipios;
-import com.web.chon.service.IfaceBajaCliente;
+import com.web.chon.dominio.ReporteClienteVentas;
 import com.web.chon.service.IfaceCatCliente;
-import com.web.chon.service.IfaceCatCodigosPostales;
-import com.web.chon.service.IfaceCatCorreos;
-import com.web.chon.service.IfaceCatEntidad;
-import com.web.chon.service.IfaceCatMotivos;
-import com.web.chon.service.IfaceCatMunicipio;
 import com.web.chon.util.JsfUtil;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
+import org.primefaces.model.chart.Axis;
+import org.primefaces.model.chart.AxisType;
+import org.primefaces.model.chart.BarChartModel;
+import org.primefaces.model.chart.CategoryAxis;
+import org.primefaces.model.chart.ChartSeries;
+import org.primefaces.model.chart.LineChartModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -35,242 +34,227 @@ public class BeanReporteClienteVenta implements BeanSimple {
 
     @Autowired
     private IfaceCatCliente ifaceCatCliente;
-    @Autowired
-    private IfaceCatEntidad ifaceCatEntidad;
-    @Autowired
-    private IfaceCatMunicipio ifaceCatMunicipio;
-    @Autowired
-    private IfaceCatCodigosPostales ifaceCatCodigosPostales;
-    @Autowired
-    private IfaceCatCorreos ifaceCatCorreos;
-    @Autowired
-    private IfaceCatMotivos ifaceCatMotivos;
-    @Autowired
-    private IfaceBajaCliente ifaceBajaCliente;
 
-    private ArrayList<CodigoPostal> lista_codigos_postales;
-    private ArrayList<CodigoPostal> lista_codigos_postales_2;
-    private ArrayList<Cliente> model;
-    private ArrayList<Entidad> lista_entidades;
-    private ArrayList<Municipios> lista_municipios;
-    private ArrayList<Entidad> lista_entidades_2;
-    private ArrayList<Municipios> lista_municipios_2;
-    private int selectedEntidad;
-    private ArrayList<Cliente> selectedCliente;
+    private ArrayList<Cliente> lstCliente;
+    private ArrayList<ReporteClienteVentas> model;
+
     private String title;
     private String viewEstate;
     private Cliente data;
-    private boolean permissionToWrite;
-    private boolean permissionToWriteStatus;
 
-    private boolean permissionToEdit;
-    private int estado;
-    private int estado_fis;
+    private BarChartModel chartBar;
+    private LineChartModel chartLine;
 
-    private ArrayList<Motivos> lista_motivos;
-    private BajaClientes bajaCliente;
-    private String banderaTipoCliente;
+    private boolean charLine;
+    private BigDecimal maxChartValue;
+    private BigDecimal diasRecuperacion;
 
     @PostConstruct
     public void init() {
 
-        banderaTipoCliente = "pf";
         data = new Cliente();
-        model = new ArrayList<Cliente>();
-        bajaCliente = new BajaClientes();
-        permissionToWrite = false;
-        permissionToEdit = true;
-        lista_entidades = new ArrayList<Entidad>();
-        lista_entidades_2 = new ArrayList<Entidad>();
-        selectedCliente = new ArrayList<Cliente>();
-        selectedEntidad = 1;
-        model = ifaceCatCliente.getClientes();
-        setTitle("Catálogo de Clientes");
+        model = new ArrayList<ReporteClienteVentas>();
+        
+        diasRecuperacion = new BigDecimal(0);
+
+        charLine = false;
+        setTitle("Reporte de Ventas del Cliente.");
         setViewEstate("init");
 
-        lista_entidades = ifaceCatEntidad.getEntidades();
-        lista_entidades_2 = ifaceCatEntidad.getEntidades();
-        data.setPais("MEXICO");
-        data.setIdStatusFk(new BigDecimal(1));
     }
 
-    public void changeView() {
-        System.out.println("Entro a Metodo:" + data.getTipoPersona());
-        if (data.getTipoPersona().equals("1")) {
-            banderaTipoCliente = "pf";
+    public void generateChartLine() {
+        
+        diasRecuperacion = new BigDecimal(0);
 
-        } else {
-            banderaTipoCliente = "pm";
+        chartLine = initChartLine();
+        chartLine.setSeriesColors("0404B4,088A08,81BEF7,D0F5A9");
+        chartLine.setTitle(data.getNombreCompleto());
+        chartLine.setLegendPosition("ne");
+        chartLine.setZoom(true);
+        chartLine.setAnimate(true);
+        chartLine.setShowPointLabels(true);
+        chartLine.setBreakOnNull(true);
+        chartLine.setDatatipFormat("%2$d");
+        chartLine.setLegendCols(6);
+        chartLine.setStacked(true);
+//        chartLine.getAxes().put(AxisType.X, new CategoryAxis("Fecha"));
+        chartLine.getAxis(AxisType.X).setTickAngle(90);
+
+        Axis yAxis = chartLine.getAxis(AxisType.Y);
+//        yAxis.setLabel("Toneladas");
+        yAxis.setMin(0);
+        yAxis.setTickInterval("100000");
+//        yAxis.setMax(maxChartValue);
+    }
+
+    private LineChartModel initChartLine() {
+
+        LineChartModel lineChartModel = new LineChartModel();
+
+        ChartSeries ventaTotal = new ChartSeries();
+        ChartSeries totalContado = new ChartSeries();
+        ChartSeries totalCredito = new ChartSeries();
+        ChartSeries utilidad = new ChartSeries();
+
+        ventaTotal.setLabel("Venta");
+        totalContado.setLabel("Contado");
+        totalCredito.setLabel("Crédito");
+        utilidad.setLabel("Utilidad");
+
+        ventaTotal.set("Venta", model.get(0).getTotalMayoreoContado().add(model.get(0).getTotalMayoreoCredito()).add(model.get(0).getTotalMenudeoContado().add(model.get(0).getTotalMenudeoCredito())));
+        totalContado.set("Contado", model.get(0).getTotalMayoreoContado().add(model.get(0).getTotalMenudeoContado()));
+        totalCredito.set("Crédito", model.get(0).getTotalMayoreoCredito().add(model.get(0).getTotalMenudeoCredito()));
+        utilidad.set("Utilidad", model.get(0).getUtilidadMenudeo().add(model.get(0).getUtilidadMayoreoPacto()).add(model.get(0).getUtilidadMayoreoCosto().add(model.get(0).getUtilidadMayoreoComision())));
+
+        lineChartModel.addSeries(ventaTotal);
+        lineChartModel.addSeries(totalContado);
+        lineChartModel.addSeries(totalCredito);
+        lineChartModel.addSeries(utilidad);
+
+        return lineChartModel;
+    }
+
+    public void generateChartBar() {
+
+        chartBar = initChartBar();
+        chartBar.setSeriesColors("0404B4,088A08,81BEF7,D0F5A9,FA3030");
+        chartBar.setTitle(data.getNombreCompleto());
+        chartBar.setLegendPosition("ne");
+        chartBar.setZoom(true);
+        chartBar.setAnimate(true);
+//        chartBar.setDatatipFormat("%#.$d");
+        chartBar.setShowPointLabels(true);
+//        chartBar.setDatatipFormat("%2$d");
+        chartBar.setLegendCols(6);
+        chartBar.setStacked(false);
+//        chartBar.getAxes().put(AxisType.X, new CategoryAxis("Fecha"));
+        chartBar.getAxis(AxisType.X).setTickAngle(90);
+
+        Axis yAxis = chartBar.getAxis(AxisType.Y);
+
+//        yAxis.setLabel("Toneladas");
+        yAxis.setMin(0);
+        int interval = 50;
+        int iMaxChartValue = 0;
+
+        iMaxChartValue = maxChartValue.intValue();
+        
+        if(iMaxChartValue <= 1000000000 && iMaxChartValue >= 100000000){
+            interval = 50000000;
+        }else if(iMaxChartValue <= 100000000 && iMaxChartValue >= 10000000){
+            interval = 5000000;
+        }else if(iMaxChartValue <= 10000000 && iMaxChartValue >= 1000000){
+            interval = 500000;
         }
+        else if(iMaxChartValue <= 1000000 && iMaxChartValue >= 100000){
+            interval = 50000;
+        }
+        else if(iMaxChartValue <= 100000 && iMaxChartValue >= 10000){
+            interval = 5000;
+        }
+        else if(iMaxChartValue <= 10000 && iMaxChartValue >= 1000){
+            interval = 500;
+        }
+        
+        yAxis.setTickInterval(Integer.toString(interval));
+        yAxis.setMax(maxChartValue.add(new BigDecimal(interval)));
+    }
+
+    private BarChartModel initChartBar() {
+
+        BarChartModel barChartModel = new BarChartModel();
+
+        maxChartValue = new BigDecimal(0);
+        
+        BigDecimal porcentaje = new BigDecimal(0);
+        BigDecimal cien = new BigDecimal(100);
+        BigDecimal bVenta = new BigDecimal(0);
+        BigDecimal bContado = new BigDecimal(0);
+        BigDecimal bCredito = new BigDecimal(0);
+        BigDecimal bUtilidad = new BigDecimal(0);
+        BigDecimal bRecuperacion = new BigDecimal(0);
+
+        ChartSeries ventaTotal = new ChartSeries();
+        ChartSeries totalContado = new ChartSeries();
+        ChartSeries totalCredito = new ChartSeries();
+        ChartSeries utilidad = new ChartSeries();
+        ChartSeries recuperacion = new ChartSeries();
+
+        bVenta = model.get(0).getTotalMayoreoContado().add(model.get(0).getTotalMayoreoCredito()).add(model.get(0).getTotalMenudeoContado().add(model.get(0).getTotalMenudeoCredito()));
+        bContado = model.get(0).getTotalMayoreoContado().add(model.get(0).getTotalMenudeoContado());
+        bCredito = model.get(0).getTotalMayoreoCredito().add(model.get(0).getTotalMenudeoCredito());
+        bUtilidad = model.get(0).getUtilidadMenudeo().add(model.get(0).getUtilidadMayoreoPacto()).add(model.get(0).getUtilidadMayoreoCosto().add(model.get(0).getUtilidadMayoreoComision()));
+        bRecuperacion = model.get(0).getRecuperacion();
+        
+        ventaTotal.setLabel("Venta");
+        totalContado.setLabel("Contado");
+        totalCredito.setLabel("Crédito");
+        utilidad.setLabel("Utilidad");
+        recuperacion.setLabel("Recuperación");
+        
+        
+        
+        
+        
+        diasRecuperacion =model.get(0).getDiasRecuperacion().setScale(2,RoundingMode.DOWN);
+        
+        porcentaje = bVenta.multiply(cien).divide(bVenta,2,RoundingMode.CEILING);
+        ventaTotal.set("Venta", bVenta);
+        porcentaje = bVenta.multiply(cien).divide(bVenta,2,RoundingMode.CEILING);
+        totalContado.set("Contado", bContado);
+        porcentaje = bVenta.multiply(cien).divide(bVenta,2,RoundingMode.CEILING);
+        totalCredito.set("Crédito", bCredito);
+        porcentaje = bVenta.multiply(cien).divide(bVenta,2,RoundingMode.CEILING);
+        utilidad.set("Utilidad", bUtilidad);
+        porcentaje = bVenta.multiply(cien).divide(bVenta,2,RoundingMode.CEILING);
+        recuperacion.set("Recuperacón",bRecuperacion);
+
+        maxChartValue = bVenta;
+        barChartModel.addSeries(ventaTotal);
+        barChartModel.addSeries(totalContado);
+        barChartModel.addSeries(totalCredito);
+        barChartModel.addSeries(utilidad);
+        barChartModel.addSeries(recuperacion);
+
+        return barChartModel;
+    }
+
+    @Override
+    public void searchById() {
+        model = ifaceCatCliente.getReporteClienteVentasUtilidad(data.getIdClientePk(), null, null);
+        if (model != null && !model.isEmpty()) {
+            generateChartLine();
+            generateChartBar();
+        } else {
+            JsfUtil.addWarnMessage("No se Encontraron Registros.");
+        }
+
+    }
+
+    public ArrayList<Cliente> autoCompleteCliente(String nombreCliente) {
+        lstCliente = ifaceCatCliente.getClienteByNombreCompleto(nombreCliente.toUpperCase());
+        return lstCliente;
+
     }
 
     @Override
     public String delete() {
-        try {
-            if (ifaceBajaCliente.insertCliente(bajaCliente) == 0) {
-
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "El cliente :" + data.getNombre() + " ya está en baja."));
-            } else {
-                data.setIdStatusFk(new BigDecimal(2));
-                ifaceCatCliente.updateCliente(data);
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "El cliente se ha dado de baja correctamente"));
-            }
-        } catch (Exception ex) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Ocurrio un error al intentar eliminar el registro :" + data.getNombre() + "."));
-        }
-
-        return "clientes";
+        return "";
     }
 
     @Override
     public String insert() {
-        data.setIdClientePk(new BigDecimal(ifaceCatCliente.getNextVal()));
-        data.setIdStatusFk(new BigDecimal(1));
-
-        if (ifaceCatCliente.insertCliente(data) == 1) {
-            JsfUtil.addSuccessMessageClean("Cliente Agregado con Éxito");
-        } else {
-            JsfUtil.addErrorMessageClean("Ocurrió un error al registrar cliente");
-        }
-        backView();
-        return "clientes";
-
+        return "";
     }
 
     public void backView() {
-        setTitle("Catalogo de Clientes");
         setViewEstate("init");
-        data = new Cliente();
-        selectedCliente = null;
-
     }
-
 
     @Override
     public String update() {
-        if (ifaceCatCliente.updateCliente(data) == 1){
-            JsfUtil.addSuccessMessageClean("Cliente Actualizado con Éxito");
-        } else {
-            JsfUtil.addErrorMessageClean("Ocurrió un error al Actualizar cliente");
-        }
-
-        backView();
-        return "clientes";
-
-    }
-
-    @Override
-    public void searchById()
-    {
-        buscaMunicipios(1);
-        setTitle("Editar Cliente");
-        setViewEstate("searchById");
-        permissionToWrite = false;
-        permissionToEdit = true;
-        if (data.getIdStatusFk().intValue() == 2) {
-            permissionToWriteStatus = false;
-        } else {
-            permissionToWriteStatus = true;
-        }
-
-    }
-
-    public void viewDetails() {
-        buscaMunicipios(1);
-
-        setTitle("Detalles de Cliente");
-        setViewEstate("viewDetails");
-        permissionToWrite = true;
-        permissionToEdit = false;
-    }
-
-    public void viewDelete() {
-        setTitle("Baja de Clientes");
-        setViewEstate("deleteCliente");
-        permissionToWrite = true;
-        permissionToEdit = false;
-        buscaMotivos();
-        bajaCliente.setId_baja_cliente(data.getIdClientePk());
-    }
-
-    public void viewNew() {
-
-        data = new Cliente();
-        data.setTipoPersona("1");
-        setTitle("Alta de Clientes");
-        setViewEstate("new");
-        permissionToWrite = false;
-        selectedCliente = null;
-    }
-
-    public void buscaMunicipios(int edit) {
-        //int idEstado = (data.getIdEntidadFk() == null || data.getIdEntidadFk() == "") ? 0 : Integer.parseInt(data.getIdEntidadFk());
-        
-        if (data.getIdEntidadFk() != null) {
-            lista_municipios = ifaceCatMunicipio.getMunicipios(data.getIdEntidadFk() ==null ? 0:  data.getIdEntidadFk().intValue() );
-        } else {
-            lista_municipios = null;
-        }
-
-        if (edit != 1) {
-            data.setIdMunicipioFk(null);
-        }
-
-        buscaColoniasMun(1);
-    }
-
-//    public void buscaMunicipios2() {
-//
-//        lista_municipios_2 = ifaceCatMunicipio.getMunicipios(Integer.parseInt(data.getEstadoFiscal()));
-//        buscaColonias2();
-//    }
-    public void buscaColonias() {
-
-        lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalById(data.getCodigoPostal());
-
-        if (lista_codigos_postales.isEmpty()) {
-
-            lista_entidades = ifaceCatEntidad.getEntidades();
-            lista_municipios = ifaceCatMunicipio.getMunicipios(data.getIdEntidadFk().intValue());
-            data.setIdEntidadFk(null);
-            data.setIdMunicipioFk(null);
-            lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalById("");
-            //data.setID_CP(-1);
-        } else {
-
-            data.setIdEntidadFk(new BigDecimal(lista_codigos_postales.get(0).getIdEntidad()));
-            data.setIdMunicipioFk(new BigDecimal(lista_codigos_postales.get(0).getIdMunicipio()));
-            data.setIdCodigoPostalFk(new BigDecimal(lista_codigos_postales.get(0).getId_cp()));
-            lista_municipios = ifaceCatMunicipio.getMunicipios(data.getIdEntidadFk().intValue());
-        }
-
-    }
-
-    public void buscaColoniasMun(int edit) {
-        //int idMunicipio = (data.getMunicipio() == null || data.getMunicipio() == "") ? 0 : Integer.parseInt(data.getMunicipio());
-
-        if (data.getIdMunicipioFk() != null) {
-            lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalByIdMun(data.getIdMunicipioFk()==null ? 0: data.getIdMunicipioFk().intValue());
-        } else {
-            lista_codigos_postales = null;
-        }
-
-        if (edit != 1) {
-            data.setCodigoPostal(null);
-        }
-    }
-
-    public void buscaMotivos() {
-        lista_motivos = ifaceCatMotivos.getMotivos();
-    }
-
-    public void ActualizaCodigoPostal() {
-        for (int i = 0; i < lista_codigos_postales.size(); i++) {
-            if (lista_codigos_postales.get(i).getId_cp() == data.getIdColoniaFk().intValue()) {
-                data.setCodigoPostal(lista_codigos_postales.get(i).getNumeropostal());
-            }
-        }
-
+        return "";
     }
 
     public Cliente getCliente() {
@@ -297,20 +281,12 @@ public class BeanReporteClienteVenta implements BeanSimple {
         this.viewEstate = viewEstate;
     }
 
-    public ArrayList<Cliente> getModel() {
+    public ArrayList<ReporteClienteVentas> getModel() {
         return model;
     }
 
-    public void setModel(ArrayList<Cliente> model) {
+    public void setModel(ArrayList<ReporteClienteVentas> model) {
         this.model = model;
-    }
-
-    public ArrayList<Cliente> getSelectedCliente() {
-        return selectedCliente;
-    }
-
-    public void setSelectedCliente(ArrayList<Cliente> selectedCliente) {
-        this.selectedCliente = selectedCliente;
     }
 
     public Cliente getData() {
@@ -321,165 +297,46 @@ public class BeanReporteClienteVenta implements BeanSimple {
         this.data = data;
     }
 
-    public int getSelectedEntidad() {
-        return selectedEntidad;
+    public BarChartModel getChartBar() {
+        return chartBar;
     }
 
-    public void setSelectedEntidad(int selectedEntidad) {
-        this.selectedEntidad = selectedEntidad;
+    public void setChartBar(BarChartModel chartBar) {
+        this.chartBar = chartBar;
     }
 
-    public ArrayList<Municipios> getLista_municipios() {
-        return lista_municipios;
+    public LineChartModel getChartLine() {
+        return chartLine;
     }
 
-    public void setLista_municipios(ArrayList<Municipios> lista_municipios) {
-        this.lista_municipios = lista_municipios;
+    public void setChartLine(LineChartModel chartLine) {
+        this.chartLine = chartLine;
     }
 
-    public ArrayList<Entidad> getLista_entidades_2() {
-        return lista_entidades_2;
+    public ArrayList<Cliente> getLstCliente() {
+        return lstCliente;
     }
 
-    public void setLista_entidades_2(ArrayList<Entidad> lista_entidades_2) {
-        this.lista_entidades_2 = lista_entidades_2;
+    public void setLstCliente(ArrayList<Cliente> lstCliente) {
+        this.lstCliente = lstCliente;
     }
 
-    public ArrayList<Municipios> getLista_municipios_2() {
-        return lista_municipios_2;
+    public boolean isCharLine() {
+        return charLine;
     }
 
-    public void setLista_municipios_2(ArrayList<Municipios> lista_municipios_2) {
-        this.lista_municipios_2 = lista_municipios_2;
+    public void setCharLine(boolean charLine) {
+        this.charLine = charLine;
     }
 
-    public ArrayList<CodigoPostal> getLista_codigos_postales() {
-        return lista_codigos_postales;
+    public BigDecimal getDiasRecuperacion() {
+        return diasRecuperacion;
     }
 
-    public void setLista_codigos_postales(ArrayList<CodigoPostal> lista_codigos_postales) {
-        this.lista_codigos_postales = lista_codigos_postales;
+    public void setDiasRecuperacion(BigDecimal diasRecuperacion) {
+        this.diasRecuperacion = diasRecuperacion;
     }
-
-    public ArrayList<Entidad> getLista_entidades() {
-        return lista_entidades;
-    }
-
-    public void setLista_entidades(ArrayList<Entidad> lista_entidades) {
-        this.lista_entidades = lista_entidades;
-    }
-
-    public int getEstado() {
-        return estado;
-    }
-
-    public void setEstado(int estado) {
-        this.estado = estado;
-    }
-
-    public int getEstado_fis() {
-        return estado_fis;
-    }
-
-    public void setEstado_fis(int estado_fis) {
-        this.estado_fis = estado_fis;
-    }
-
-    public IfaceCatCliente getIfaceCatCliente() {
-        return ifaceCatCliente;
-    }
-
-    public void setIfaceCatCliente(IfaceCatCliente ifaceCatCliente) {
-        this.ifaceCatCliente = ifaceCatCliente;
-    }
-
-    public IfaceCatEntidad getIfaceCatEntidad() {
-        return ifaceCatEntidad;
-    }
-
-    public void setIfaceCatEntidad(IfaceCatEntidad ifaceCatEntidad) {
-        this.ifaceCatEntidad = ifaceCatEntidad;
-    }
-
-    public IfaceCatMunicipio getIfaceCatMunicipio() {
-        return ifaceCatMunicipio;
-    }
-
-    public void setIfaceCatMunicipio(IfaceCatMunicipio ifaceCatMunicipio) {
-        this.ifaceCatMunicipio = ifaceCatMunicipio;
-    }
-
-    public IfaceCatCodigosPostales getIfaceCatCodigosPostales() {
-        return ifaceCatCodigosPostales;
-    }
-
-    public void setIfaceCatCodigosPostales(IfaceCatCodigosPostales ifaceCatCodigosPostales) {
-        this.ifaceCatCodigosPostales = ifaceCatCodigosPostales;
-    }
-
-    public ArrayList<CodigoPostal> getLista_codigos_postales_2() {
-        return lista_codigos_postales_2;
-    }
-
-    public void setLista_codigos_postales_2(ArrayList<CodigoPostal> lista_codigos_postales_2) {
-        this.lista_codigos_postales_2 = lista_codigos_postales_2;
-    }
-
     
-    public boolean isPermissionToWrite() {
-        return permissionToWrite;
-    }
-
-    public void setPermissionToWrite(boolean permissionToWrite) {
-        this.permissionToWrite = permissionToWrite;
-    }
-
-    public boolean isPermissionToEdit() {
-        return permissionToEdit;
-    }
-
-    public void setPermissionToEdit(boolean permissionToEdit) {
-        this.permissionToEdit = permissionToEdit;
-    }
-
-    public ArrayList<Motivos> getLista_motivos() {
-        return lista_motivos;
-    }
-
-    public void setLista_motivos(ArrayList<Motivos> lista_motivos) {
-        this.lista_motivos = lista_motivos;
-    }
-
-    public IfaceBajaCliente getIfaceBajaCliente() {
-        return ifaceBajaCliente;
-    }
-
-    public void setIfaceBajaCliente(IfaceBajaCliente ifaceBajaCliente) {
-        this.ifaceBajaCliente = ifaceBajaCliente;
-    }
-
-    public BajaClientes getBajaCliente() {
-        return bajaCliente;
-    }
-
-    public void setBajaCliente(BajaClientes bajaCliente) {
-        this.bajaCliente = bajaCliente;
-    }
-
-    public boolean isPermissionToWriteStatus() {
-        return permissionToWriteStatus;
-    }
-
-    public void setPermissionToWriteStatus(boolean permissionToWriteStatus) {
-        this.permissionToWriteStatus = permissionToWriteStatus;
-    }
-
-    public String getBanderaTipoCliente() {
-        return banderaTipoCliente;
-    }
-
-    public void setBanderaTipoCliente(String banderaTipoCliente) {
-        this.banderaTipoCliente = banderaTipoCliente;
-    }
+    
 
 }
