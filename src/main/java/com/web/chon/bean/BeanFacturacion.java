@@ -278,7 +278,8 @@ public class BeanFacturacion implements Serializable {
         }
     }
 
-    public void calculaImportePublico() {
+    public void calculaImportePublico() 
+    {
        // System.out.println("Calcular Importe Público");
         selectedProductosVentas.clear();
         BigDecimal importePublicoTemporal = importeVentaPublico;
@@ -296,7 +297,6 @@ public class BeanFacturacion implements Serializable {
                     selectedProductosVentas.add(producto);
                 } else {
                     /*
-                    
                     xkilos = xImporte
                     x      = importePublicoTemporal;
                      */
@@ -317,6 +317,14 @@ public class BeanFacturacion implements Serializable {
             }
         }//fin for
         //System.out.println("Total Publico Temporal: " + importePublicoTemporal);
+        BigDecimal t = new BigDecimal(0);
+        for(VentaProductoMayoreo vpm:selectedProductosVentas)
+        {
+            t = t.add(vpm.getTotalVenta(), MathContext.UNLIMITED);
+        }
+        
+        ventaMayoreo.setTotalVenta(t);
+        ventaMayoreo.setListaProductos(selectedProductosVentas);
 
     }
 

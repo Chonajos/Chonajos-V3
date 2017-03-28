@@ -125,7 +125,7 @@ public class EjbAbonoDocumento implements NegocioAbonoDocumento{
     public BigDecimal getTotalAbonadoByIdDocumento(BigDecimal idDocumentoFk) {
        Query query = em.createNativeQuery("select NVL(sum(ad.MONTO_ABONO),0) as total_abonado from ABONO_DOCUMENTOS ad where ad.ID_DOCUMENTO_FK=?");
        query.setParameter(1, idDocumentoFk);
-       return new BigDecimal(Integer.parseInt(query.getSingleResult().toString()));
+       return new BigDecimal(query.getSingleResult().toString());
     
     }
       

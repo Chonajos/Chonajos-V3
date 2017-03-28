@@ -16,7 +16,7 @@
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 alignRight ">
                         <div class="form-group" align="right">
-                            <p:commandButton value="Buscar" update=":formContent:tabla" ajax="true" onclick="PF('statusDialog').show()" action="#{beanDocumentosCobrar.buscar()}"/>  
+                            <p:commandButton value="Buscar" update=":formContent" ajax="true" onclick="PF('statusDialog').show()" action="#{beanDocumentosCobrar.buscar()}"/>  
                         </div>
                     </div>
                 </div>
@@ -117,7 +117,7 @@
                                 </h:outputText>
                             </p:column>
 
-                            <p:column headerText="N° Cheque" width="50px;" class="alignLeft">
+                            <p:column headerText="N° Cheque" width="40px;" class="alignLeft">
                                 <h:outputText value="#{model.numeroCheque}" />
                             </p:column>
                             <p:column headerText="Banco" width="50px;" class="alignLeft">
@@ -133,7 +133,7 @@
                                 </h:outputText>
                             </p:column>
 
-                            <p:column headerText="Importe" width="50px;" class="alignRight">
+                            <p:column headerText="Importe" width="60px;" class="alignRight">
                                 <h:outputText value="#{model.monto}" >
                                     <f:convertNumber type="currency" currencySymbol="$" />
                                 </h:outputText>
@@ -168,6 +168,7 @@
                                 </p:commandButton>
                             </p:column>
                             <p:columnGroup type="footer">
+                                <p:column colspan="1" />
                                 <p:column colspan="1" />
                                 <p:column colspan="1" />
                                 <p:column colspan="1" />
