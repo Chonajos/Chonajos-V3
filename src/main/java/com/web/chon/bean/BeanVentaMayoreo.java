@@ -160,20 +160,15 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
     private BigDecimal idCarro;
     private BigDecimal idSucursalfk;
 
-    private Date date;
+   
 
     @PostConstruct
     public void init() {
-
         credito = false;
-        date = context.getFechaSistema();
-        
         ventaGeneral = new VentaMayoreo();
         cliente = new Cliente();
         cliente = ifaceCatCliente.getClienteById(new BigDecimal(1));
-        
         usuarioDominio = context.getUsuarioAutenticado();
-
         usuario = new Usuario();
         usuario.setIdUsuarioPk(usuarioDominio.getIdUsuario());
         usuario.setIdSucursal(usuarioDominio.getSucId());
@@ -769,13 +764,13 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
             paramReport.put("foliCredito", Integer.toString(folioCredito));
 
             //Imprime el calendario de pagos
-            Date dateTemp = date;
+            Date dateTemp = context.getFechaSistema();
             ArrayList calendario = new ArrayList();
             String montoAbono = df.format(c.getMontoCredito().divide(c.getNumeroPagos() == null ? BigDecimal.ZERO : c.getNumeroPagos(), 2, RoundingMode.UP));
             String item = "N. Pago   Fecha de Pago   Monto";
             calendario.add(item);
             if (dejaACuenta.intValue() > 0) {
-                item = "    0            " + TiempoUtil.getFechaDDMMYYYY(date) + "    $" + df.format(dejaACuenta);
+                item = "    0            " + TiempoUtil.getFechaDDMMYYYY(context.getFechaSistema()) + "    $" + df.format(dejaACuenta);
                 calendario.add(item);
 
                 paramReport.put("msgAcuenta", "Favor de pasar a caja para su pago inicial de: $" + df.format(dejaACuenta));
@@ -1076,7 +1071,8 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
 
     private boolean insertaCredito(VentaMayoreo venta) {
         c = new Credito();
-        Date fechaActual = date;
+        Date fechaActual = context.getFechaSistema();
+        
         Date fechaPromesaPago = TiempoUtil.sumarRestarDias(fechaActual, data.getTipoPago().intValue());
 
         c.setIdClienteFk(venta.getIdClienteFk());

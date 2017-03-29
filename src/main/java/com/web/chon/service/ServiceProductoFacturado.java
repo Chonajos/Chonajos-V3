@@ -112,6 +112,7 @@ public class ServiceProductoFacturado implements IfaceProductoFacturado {
             dominio.setKilosVendidos(obj[6] == null ? null : new BigDecimal(obj[6].toString()));
             dominio.setPrecioProducto(obj[7] == null ? null : new BigDecimal(obj[7].toString()));
             dominio.setTotalVenta(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
+            dominio.setIdTipoVenta(idTipoFk);
            
             lstProductoNoFacturado.add(dominio);
         }

@@ -279,7 +279,7 @@ public class BeanFacturacion implements Serializable {
     }
 
     public void calculaImportePublico() {
-       // System.out.println("Calcular Importe Público");
+        // System.out.println("Calcular Importe Público");
         selectedProductosVentas.clear();
         BigDecimal importePublicoTemporal = importeVentaPublico;
         for (VentaProductoMayoreo producto : listaVentaPublico) {
@@ -288,15 +288,14 @@ public class BeanFacturacion implements Serializable {
                     /*El importe de la parcilidad es mayor al de ese producto
                     agregar el producto a la lista de seleccionados
                      */
-                   //System.out.println("Temporal importe Publico: " + importePublicoTemporal);
+                    //System.out.println("Temporal importe Publico: " + importePublicoTemporal);
                     importePublicoTemporal = importePublicoTemporal.subtract(producto.getTotalVenta(), MathContext.UNLIMITED);
-                   // System.out.println("Temporal importe Publico: " + importePublicoTemporal);
+                    // System.out.println("Temporal importe Publico: " + importePublicoTemporal);
                     producto.setKilosVendidos(producto.getKilosVendidos());
                     producto.setTotalVenta(producto.getTotalVenta());
                     selectedProductosVentas.add(producto);
                 } else {
                     /*
-                    
                     xkilos = xImporte
                     x      = importePublicoTemporal;
                      */
@@ -305,8 +304,8 @@ public class BeanFacturacion implements Serializable {
 
                     kilosT = importePublicoTemporal.setScale(2, RoundingMode.CEILING).multiply(producto.getKilosVendidos().setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
                     kilosT.setScale(2, RoundingMode.CEILING);
-                   // System.out.println("KilosT: " + kilosT);
-                   // System.out.println("Producto: " + producto.getTotalVenta());
+                    // System.out.println("KilosT: " + kilosT);
+                    // System.out.println("Producto: " + producto.getTotalVenta());
                     division = (kilosT).divide(producto.getTotalVenta(), 2, RoundingMode.CEILING);
                     producto.setKilosVendidos(division);
                     producto.setTotalVenta(importePublicoTemporal);
@@ -317,7 +316,20 @@ public class BeanFacturacion implements Serializable {
             }
         }//fin for
         //System.out.println("Total Publico Temporal: " + importePublicoTemporal);
+        BigDecimal t = new BigDecimal(0);
+        for (VentaProductoMayoreo vpm : selectedProductosVentas) {
+            t = t.add(vpm.getTotalVenta(), MathContext.UNLIMITED);
+        }
 
+        ventaMayoreo.setTotalVenta(t);
+        ventaMayoreo.setListaProductos(selectedProductosVentas);
+
+        calcularTotales();
+        if (selectedProductosVentas != null && selectedProductosVentas.isEmpty()) {
+            statusButtonFacturar = true;
+        } else {
+            statusButtonFacturar = false;
+        }
     }
 
     public void calculaParcialidad() {
@@ -330,10 +342,10 @@ public class BeanFacturacion implements Serializable {
                 if (temporalParcialidad.compareTo(new BigDecimal(0)) > 0) {
                     if (temporalParcialidad.compareTo(producto.getTotalVenta()) >= 0) {
                         //el importe de la parcilidad es mayor al de ese producto
-                      //  System.out.println("Total Venta: " + producto.getTotalVenta());
-                       // System.out.println("Temporal Parcialidad: " + temporalParcialidad);
+                        //  System.out.println("Total Venta: " + producto.getTotalVenta());
+                        // System.out.println("Temporal Parcialidad: " + temporalParcialidad);
                         temporalParcialidad = temporalParcialidad.subtract(producto.getTotalVenta(), MathContext.UNLIMITED);
-                       // System.out.println("Temporal Parcialidad: " + temporalParcialidad);
+                        // System.out.println("Temporal Parcialidad: " + temporalParcialidad);
                         producto.setKilosVendidos(producto.getKilosVendidos());
                         producto.setTotalVenta(producto.getTotalVenta());
                         lstTemporalProductosFacturar.add(producto);
@@ -349,8 +361,8 @@ public class BeanFacturacion implements Serializable {
 
                         kilosT = temporalParcialidad.setScale(2, RoundingMode.CEILING).multiply(producto.getKilosVendidos().setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
                         kilosT.setScale(2, RoundingMode.CEILING);
-                       // System.out.println("KilosT: " + kilosT);
-                       // System.out.println("Producto: " + producto.getTotalVenta());
+                        // System.out.println("KilosT: " + kilosT);
+                        // System.out.println("Producto: " + producto.getTotalVenta());
                         division = (kilosT).divide(producto.getTotalVenta(), 2, RoundingMode.CEILING);
                         producto.setKilosVendidos(division);
                         producto.setTotalVenta(temporalParcialidad);
@@ -378,7 +390,7 @@ public class BeanFacturacion implements Serializable {
     public void buscaVentasNoFacturadas() {
         //System.out.println("Entro a Ventas no facturadas");
         listaVentaPublico = ifaceProductoFacturado.getProductosNoFacturados(new BigDecimal(1), idSucursalFk, TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicioPublico), TiempoUtil.getFechaDDMMYYYY(fechaFiltroFinPublico));
-        
+
     }
 
     public int verificarMontoParicalidad() {
@@ -457,8 +469,10 @@ public class BeanFacturacion implements Serializable {
             if (cs.getIdCatalogoSatPk().intValue() == tipoDocumento.intValue()) {
                 BigDecimal totalSinIvaFOR = new BigDecimal(0);
                 for (VentaProductoMayoreo vmp : ventaMayoreo.getListaProductos()) {
+
                     if (vmp.getKilosVendidos().compareTo(new BigDecimal(0)) > 0) {
                         BigDecimal iva = vmp.getTotalVenta().multiply(cs.getValor(), MathContext.UNLIMITED);
+
                         vmp.setTotalVentaSinIva(vmp.getTotalVenta().subtract(iva.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED));
                         vmp.setPrecioProductoSinIva(vmp.getTotalVentaSinIva().setScale(2, RoundingMode.CEILING).divide(vmp.getKilosVendidos(), 2, RoundingMode.CEILING));
                         totalSinIvaFOR = totalSinIvaFOR.add(vmp.getTotalVentaSinIva(), MathContext.UNLIMITED);
@@ -467,6 +481,11 @@ public class BeanFacturacion implements Serializable {
                 }
                 ventaMayoreo.getListaProductos().clear();
                 ventaMayoreo.setListaProductos(lstproductosTemporal);
+                selectedProductosVentas.clear();
+                for (VentaProductoMayoreo p : ventaMayoreo.getListaProductos()) {
+                    selectedProductosVentas.add(p);
+                }
+
                 ventaMayoreo.setTotalVentaSinIva(totalSinIvaFOR);
                 //impore sin iva
                 importeConIva = ventaMayoreo.getTotalVenta();
@@ -487,12 +506,12 @@ public class BeanFacturacion implements Serializable {
                 }
                 //System.out.println("subTotal : " + subTotal);
                 iva = (cs.getValor().multiply(new BigDecimal(100), MathContext.UNLIMITED).setScale(2, RoundingMode.CEILING)).multiply(ventaMayoreo.getTotalVenta().subtract(descuento.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED).setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
-               // System.out.println("Iva:  : " + iva);
+                // System.out.println("Iva:  : " + iva);
 
                 iva = iva.setScale(2, RoundingMode.CEILING).divide(new BigDecimal(100), 2, RoundingMode.CEILING);
-               // System.out.println("Iva Dividido:  : " + iva);
+                // System.out.println("Iva Dividido:  : " + iva);
                 total = (iva.setScale(2, RoundingMode.CEILING)).add(subTotal.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
-               // System.out.println("Total: " + total);
+                // System.out.println("Total: " + total);
             }
 
         }
@@ -512,7 +531,7 @@ public class BeanFacturacion implements Serializable {
     }
 
     public void buscarDatosCliente(int v) {
-      
+
         switch (v) {
             case 1:
                 if (ventaMayoreo != null && ventaMayoreo.getIdClienteFk() != null) {
@@ -538,7 +557,7 @@ public class BeanFacturacion implements Serializable {
 
     public StreamedContent getProductImage() throws IOException, SQLException {
         FacesContext context = FacesContext.getCurrentInstance();
-       
+
         if (data.getFichero() == null) {
             JsfUtil.addErrorMessageClean("Error al descargar el arvhivo");
             return file;
@@ -562,13 +581,15 @@ public class BeanFacturacion implements Serializable {
         totalVenta = new BigDecimal(0);
 
         ventaMayoreo = ifaceVentaMayoreo.getVentaMayoreoByFolioidSucursalFk(folioVentaG, new BigDecimal(usuario.getSucId()));
-        ventaMayoreo.setIdtipoVentaFk(new BigDecimal(1));
+        //ventaMayoreo.setIdtipoVentaFk(new BigDecimal(1));
+        ventaMayoreo.setBanderaVentaMenudeo(false);
         ventaMenudeo = false;
         //SE HACE LA BUSQUEDA A MENUDEO
         if (ventaMayoreo == null || ventaMayoreo.getIdVentaMayoreoPk() == null) {
             ventaMayoreo = ifaceBuscaVenta.getVentaByfolioAndIdSuc(folioVentaG, usuario.getSucId());
             ventaMenudeo = true;
-            ventaMayoreo.setIdtipoVentaFk(new BigDecimal(2));
+            ventaMayoreo.setBanderaVentaMenudeo(true);
+            //ventaMayoreo.setIdtipoVentaFk(new BigDecimal(2));
 
         }
 
@@ -581,6 +602,7 @@ public class BeanFacturacion implements Serializable {
                 case 1:
                     statusButtonFacturar = true;
                     JsfUtil.addErrorMessageClean("No puedes facturar la venta, no ha sido pagada");
+
                     break;
                 case 2:
                     statusButtonFacturar = false;
@@ -592,6 +614,7 @@ public class BeanFacturacion implements Serializable {
                 case 4:
                     statusButtonFacturar = true;
                     JsfUtil.addErrorMessageClean("No puedes facturar una venta cancelada");
+
                     break;
                 default:
                     statusButtonFacturar = true;
@@ -599,9 +622,18 @@ public class BeanFacturacion implements Serializable {
                     break;
             }
         } else {
-            JsfUtil.addWarnMessageClean("No puedes cobrar una venta de crédito, ir a la sección abonar crédito, subir imagen");
-            statusButtonFacturar = true;
+            JsfUtil.addWarnMessageClean("Venta de Cŕedito");
+            statusButtonFacturar = false;
 
+        }
+        for (VentaProductoMayoreo vpm : ventaMayoreo.getListaProductos()) {
+            vpm.setIdTipoVenta(new BigDecimal(1));
+        }
+        if (ventaMayoreo.isBanderaVentaMenudeo()) {
+            for (VentaProductoMayoreo vpm : ventaMayoreo.getListaProductos()) {
+                vpm.setKilosVendidos(vpm.getCantidadEmpaque());
+                vpm.setIdTipoVenta(new BigDecimal(2));
+            }
         }
 
         buscarDatosCliente(1);
@@ -639,7 +671,7 @@ public class BeanFacturacion implements Serializable {
     public void abreXML() {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         //DocumentBuilder builder = factory.newDocumentBuilder();
-       
+
         try {
             String rutaTimbradoData = Constantes.PATHLOCALFACTURACION + "Clientes" + File.separatorChar + data.getRfcCliente() + File.separatorChar + "TIMBRADO" + File.separatorChar + data.getNombreArchivoTimbrado();
             paramReport.put("cadena", data.getCadena());
@@ -675,20 +707,19 @@ public class BeanFacturacion implements Serializable {
                         }
 
                     }
-                    
+
                     paramReport.put("tipoDeComprobante", eElement.getAttribute("tipoDeComprobante"));
-                    
-                    
+
                     totalTemporal = new BigDecimal(eElement.getAttribute("total"));
-                    
+
                     paramReport.put("total", totalTemporal);
                     paramReport.put("labelIva", "0%");
                     //$P{labelIva}
-                    
+
                     paramReport.put("Moneda", eElement.getAttribute("Moneda"));
                     BigDecimal descuento = new BigDecimal(eElement.getAttribute("descuento"));
                     paramReport.put("descuento", descuento);
-                   BigDecimal subTotalTemporal = new BigDecimal(eElement.getAttribute("subTotal"));
+                    BigDecimal subTotalTemporal = new BigDecimal(eElement.getAttribute("subTotal"));
                     paramReport.put("subTotal", subTotalTemporal);
 
                     paramReport.put("certificado", eElement.getAttribute("certificado"));
@@ -697,9 +728,8 @@ public class BeanFacturacion implements Serializable {
                     //System.out.println("no. Certificado : " + eElement.getAttribute("noCertificado"));
                     paramReport.put("selloDigital", eElement.getAttribute("sello"));
                     //System.out.println("sello : " + eElement.getAttribute("sello"));
-                    
 
-                   // folioQR = eElement.getAttribute("uuid");
+                    // folioQR = eElement.getAttribute("uuid");
                     //System.out.println("folio : " + eElement.getAttribute("folio"));
                     paramReport.put("fecha", eElement.getAttribute("fecha"));
                     //System.out.println("Fecha : " + eElement.getAttribute("fecha"));
@@ -716,7 +746,7 @@ public class BeanFacturacion implements Serializable {
                 }
             }
             nList = doc.getElementsByTagName("cfdi:Emisor");
-            
+
             String rfcEmisor = "";
             for (int temp = 0; temp < nList.getLength(); temp++) {
                 Node nNode = nList.item(temp);
@@ -732,7 +762,7 @@ public class BeanFacturacion implements Serializable {
             }
 
             nList = doc.getElementsByTagName("cfdi:DomicilioFiscal");
-            
+
             for (int temp = 0; temp < nList.getLength(); temp++) {
                 Node nNode = nList.item(temp);
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
@@ -746,16 +776,16 @@ public class BeanFacturacion implements Serializable {
                     paramReport.put("localidadEmisor", eElement.getAttribute("localidad"));
                     //System.out.println("Localidad : " + eElement.getAttribute("localidad"));
                     paramReport.put("coloniaEmisor", eElement.getAttribute("colonia"));
-                   // System.out.println("Colonia : " + eElement.getAttribute("colonia"));
+                    // System.out.println("Colonia : " + eElement.getAttribute("colonia"));
                     paramReport.put("noExteriorEmisor", eElement.getAttribute("noExterior"));
-                   // System.out.println("N° Exterior : " + eElement.getAttribute("noExterior"));
+                    // System.out.println("N° Exterior : " + eElement.getAttribute("noExterior"));
                     paramReport.put("calleEmisor", eElement.getAttribute("calle"));
-                   // System.out.println("Calle : " + eElement.getAttribute("calle"));
+                    // System.out.println("Calle : " + eElement.getAttribute("calle"));
 
                 }
             }
             nList = doc.getElementsByTagName("cfdi:RegimenFiscal");
-          
+
             for (int temp = 0; temp < nList.getLength(); temp++) {
                 Node nNode = nList.item(temp);
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
@@ -780,7 +810,7 @@ public class BeanFacturacion implements Serializable {
             }
 
             nList = doc.getElementsByTagName("cfdi:Domicilio");
-           
+
             for (int temp = 0; temp < nList.getLength(); temp++) {
                 Node nNode = nList.item(temp);
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
@@ -803,8 +833,6 @@ public class BeanFacturacion implements Serializable {
                 }
             }
 
-           
-
             NodeList feeds = doc.getElementsByTagName("cfdi:Conceptos");
             for (int i = 0; i < feeds.getLength(); i++) {
                 Node mainNode = feeds.item(i);
@@ -818,13 +846,13 @@ public class BeanFacturacion implements Serializable {
                         vpm.setTotalVenta(new BigDecimal(eElement.getAttribute("importe")));
                         //System.out.println("Importe : " + eElement.getAttribute("importe"));
                         vpm.setPrecioProducto(new BigDecimal(eElement.getAttribute("valorUnitario")));
-                       // System.out.println("Valor Unitario : " + eElement.getAttribute("valorUnitario"));
+                        // System.out.println("Valor Unitario : " + eElement.getAttribute("valorUnitario"));
                         vpm.setNombreProducto(eElement.getAttribute("descripcion"));
                         //System.out.println("Descripcion : " + eElement.getAttribute("descripcion"));
                         vpm.setNombreEmpaque(eElement.getAttribute("unidad"));
                         //System.out.println("unidad : " + eElement.getAttribute("unidad"));
                         vpm.setKilosVendidos(new BigDecimal(eElement.getAttribute("cantidad")));
-                       // System.out.println("cantidad : " + eElement.getAttribute("cantidad"));
+                        // System.out.println("cantidad : " + eElement.getAttribute("cantidad"));
                         listaProductosReporte.add(vpm);
                     }
 
@@ -856,29 +884,29 @@ public class BeanFacturacion implements Serializable {
 
                 }
             }
-            String c= totalTemporal.toString();
+            String c = totalTemporal.toString();
             String[] parts = c.split("\\.");
             String parte1 = parts[0];
             String parte2 = parts[1];
 
             String q = "";
-            String q2="";
+            String q2 = "";
             int cantidadCeros1 = 10 - parte1.length();
             while (cantidadCeros1 > 0) {
-                q = q+"0";
+                q = q + "0";
                 cantidadCeros1 = cantidadCeros1 - 1;
             }
             q = q + parte1;
             int cantidadCeros2 = 6 - parte2.length();
-             while (cantidadCeros2 > 0) {
-                q2 = q2+"0";
+            while (cantidadCeros2 > 0) {
+                q2 = q2 + "0";
                 cantidadCeros2 = cantidadCeros2 - 1;
             }
-            q2 = parte2+q2 ;
-            String totalQRCombinado= q+"."+q2;
-            
-            String cadenaQR = "?re=" + rfcEmisor + "&rr=" + rfcReceptorQR + "&&tt=" + totalQRCombinado + "&id=" + folioQR + "";
-            
+            q2 = parte2 + q2;
+            String totalQRCombinado = q + "." + q2;
+
+            String cadenaQR = "?re=" + rfcEmisor + "&rr=" + rfcReceptorQR + "&tt=" + totalQRCombinado + "&id=" + folioQR + "";
+
             paramReport.put("cadenaQR", cadenaQR);
 
         } catch (Exception e) {
@@ -969,6 +997,12 @@ public class BeanFacturacion implements Serializable {
 //        System.out.println(ventaMayoreo.getListaProductos());
 //        System.out.println("Tamaño: " + ventaMayoreo.getListaProductos().size());
 //        System.out.println("----------------------------------------");
+        if (selectedProductosVentas != null && !selectedProductosVentas.isEmpty()) {
+            ventaMayoreo.setIdVentaMayoreoPk(selectedProductosVentas.get(0).getFolioVenta());
+            ventaMayoreo.setVentaSucursal(selectedProductosVentas.get(0).getFolioVenta());
+            ventaMayoreo.setIdSucursalFk(new BigDecimal(usuario.getSucId()));
+        }
+
         if (ventaMayoreo == null || ventaMayoreo.getIdVentaMayoreoPk() == null) {
             mensaje += "  Ese folio de venta no existe.";
         }
@@ -986,6 +1020,7 @@ public class BeanFacturacion implements Serializable {
     }
 
     public void changeViewGenerarFactura() {
+        statusButtonFacturar = true;
         datosCliente = new Cliente();
         ventaMayoreo = new VentaMayoreo();
         setViewEstate("generate");
@@ -1022,6 +1057,8 @@ public class BeanFacturacion implements Serializable {
     }
 
     public void changeViewMostrador() {
+        ventaMayoreo = new VentaMayoreo();
+        statusButtonFacturar = true;
         if (filtroMostrador == 1) {
             setViewEstate("generate");
             disableBotonBuscarVenta = false;
@@ -1054,7 +1091,8 @@ public class BeanFacturacion implements Serializable {
 
     public int insertarFactura() throws IOException {
         nuevaFactura.setIdFacturaPk(new BigDecimal(ifaceFacturas.getNextVal()));
-        nuevaFactura.setNumeroFactura(ventaMayoreo.getVentaSucursal().toString());
+        int n = ifaceFacturas.getLastNumeroFactura() + 1;
+        nuevaFactura.setNumeroFactura(Integer.toString(n));
 
         nuevaFactura.setIdClienteFk(datosCliente.getIdClientePk());
         nuevaFactura.setIdSucursalFk(new BigDecimal(usuario.getSucId()));
@@ -1063,7 +1101,13 @@ public class BeanFacturacion implements Serializable {
         //nuevaFactura.setFichero(fichero);
         nuevaFactura.setIdUsuarioFk(usuario.getIdUsuario());
         nuevaFactura.setIdStatusFk(new BigDecimal(1));
-        nuevaFactura.setIdTipoLlaveFk(new BigDecimal(1));
+
+        if (ventaMayoreo.isBanderaVentaMenudeo()) {
+            nuevaFactura.setIdTipoLlaveFk(new BigDecimal(1));
+        } else {
+            nuevaFactura.setIdTipoLlaveFk(new BigDecimal(2));
+
+        }
         nuevaFactura.setIdLlaveFk(ventaMayoreo.getIdVentaMayoreoPk());
         nuevaFactura.setNombreArchivoTimbrado(datosCliente.getRfc() + "_" + ventaMayoreo.getIdSucursalFk().toString() + "_" + ventaMayoreo.getVentaSucursal().toString() + ".xml");
         nuevaFactura.setRfcEmisor(datosCliente.getRfc());
@@ -1077,13 +1121,16 @@ public class BeanFacturacion implements Serializable {
 
         if (ifaceFacturas.insert(nuevaFactura) == 1) {
             //Convertir el archivo a Bytes y Guardarlo
+            if (selectedProductosVentas != null && !selectedProductosVentas.isEmpty()) {
+
+            }
             for (VentaProductoMayoreo vmp : ventaMayoreo.getListaProductos()) {
                 ProductoFacturado pf = new ProductoFacturado();
                 pf.setCantidad(new BigDecimal(0));
                 pf.setIdFacturaFk(nuevaFactura.getIdFacturaPk());
+                pf.setIdTipoLlaveFk(vmp.getIdTipoVenta());
                 pf.setIdLlaveFk(vmp.getIdVentaMayProdPk());
                 pf.setIdProductoFacturadoPk(new BigDecimal(ifaceProductoFacturado.getNextVal()));
-                pf.setIdTipoLlaveFk(ventaMayoreo.getIdtipoVentaFk());
                 pf.setImporte(vmp.getTotalVenta());
                 pf.setKilos(vmp.getKilosVendidos());
 
@@ -1233,7 +1280,6 @@ public class BeanFacturacion implements Serializable {
                     datosEmisor.setRuta_llave_privada(df.getRuta_llave_privada() == null ? "" : Constantes.PATHLOCALFACTURACION + "Empresas" + File.separatorChar + df.getRfc() + File.separatorChar + df.getRuta_llave_privada());
                     datosEmisor.setRuta_llave_privada_cancel(df.getRuta_llave_privada_cancel() == null ? "" : df.getRuta_llave_privada_cancel());
                     datosEmisor.setTelefono(df.getTelefono() == null ? "" : df.getTelefono());
-
                 }
             }
 
@@ -1268,7 +1314,7 @@ public class BeanFacturacion implements Serializable {
             ce = datosEmisor.getRuta_certificado().split("\\.");
             comp.setNoCertificado(ce[0]);//es el numero del certificado
 
-           // System.out.println("Se cargaron exitosamente los archivos");
+            // System.out.println("Se cargaron exitosamente los archivos");
             X509Certificate cert = KeyLoaderFactory.createInstance(KeyLoaderEnumeration.PUBLIC_KEY_LOADER, new FileInputStream(datosEmisor.getRuta_certificado())).getKey();
 
             mx.bigdata.sat.cfdi.v32.schema.Comprobante sellado = cfd.sellarComprobante(key, cert);
@@ -1278,16 +1324,20 @@ public class BeanFacturacion implements Serializable {
             cfd.validar();
 //        //System.out.println("Se valido el cdf ");
             cfd.verificar();
-           // System.out.println("Se verifico el cfd ");
+            // System.out.println("Se verifico el cfd ");
             cfd.guardar(outFile);
-           // System.out.println("Se guardo el cdf ");
-           // System.out.println("cadema original " + cfd.getCadenaOriginal());
+            // System.out.println("Se guardo el cdf ");
+            // System.out.println("cadema original " + cfd.getCadenaOriginal());
+
             nuevaFactura.setCadena(cfd.getCadenaOriginal());
             outFile.close();
 
             if (timbrar() == 1) {
                 datosCliente = new Cliente();
                 ventaMayoreo = new VentaMayoreo();
+                if (selectedProductosVentas != null) {
+                    selectedProductosVentas.clear();
+                }
                 importeParcialidad = null;
                 formaPago = "01";
                 subTotal = null;
@@ -1407,6 +1457,9 @@ public class BeanFacturacion implements Serializable {
     private Comprobante.Conceptos createConceptos(ObjectFactory of) {
         Comprobante.Conceptos cps = of.createComprobanteConceptos();
         List<Comprobante.Conceptos.Concepto> list = cps.getConcepto();
+        if (selectedProductosVentas != null && !selectedProductosVentas.isEmpty()) {
+            ventaMayoreo.setListaProductos(selectedProductosVentas);
+        }
         for (VentaProductoMayoreo producto : ventaMayoreo.getListaProductos()) {
             Comprobante.Conceptos.Concepto c1 = of.createComprobanteConceptosConcepto();
             c1.setCantidad(producto.getKilosVendidos());
@@ -1510,12 +1563,12 @@ public class BeanFacturacion implements Serializable {
                 case 2:
                     fechaFiltroInicioPublico = TiempoUtil.getDayOneOfMonth(new Date());
                     fechaFiltroFinPublico = TiempoUtil.getDayEndOfMonth(new Date());
-                   // System.out.println("2");
+                    // System.out.println("2");
                     break;
                 case 3:
                     List<String> listaFechas = TiempoUtil.getintervalWeekDDMMYYYYbyDay(new Date());
                     for (String item : listaFechas) {
-                      //  System.out.println(item);
+                        //  System.out.println(item);
                     }
 
                     fechaFiltroInicioPublico = TiempoUtil.getFechaDDMMYYYY(listaFechas.get(0));
@@ -1536,7 +1589,6 @@ public class BeanFacturacion implements Serializable {
         // buscaVentasNoFacturadas();
     }
 
-    
     public void generateReport(FacturaPDFDomain fac, BigDecimal idSucu, BigDecimal random) {
         JRExporter exporter = null;
         try {

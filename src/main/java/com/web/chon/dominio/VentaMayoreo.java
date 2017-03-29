@@ -42,6 +42,7 @@ public class VentaMayoreo implements Serializable {
     private String nombreUsuarioLogueado;
     private byte[] fichero;
     private BigDecimal totalVentaSinIva;
+    private boolean banderaVentaMenudeo;
     
 
     @Override
@@ -275,6 +276,15 @@ public class VentaMayoreo implements Serializable {
     public void setTotalVentaSinIva(BigDecimal totalVentaSinIva) {
         this.totalVentaSinIva = totalVentaSinIva;
     }
+
+    public boolean isBanderaVentaMenudeo() {
+        return banderaVentaMenudeo;
+    }
+
+    public void setBanderaVentaMenudeo(boolean banderaVentaMenudeo) {
+        this.banderaVentaMenudeo = banderaVentaMenudeo;
+    }
+    
     
     
 

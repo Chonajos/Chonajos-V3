@@ -19,7 +19,6 @@ import com.web.chon.dominio.Sucursal;
 import com.web.chon.dominio.TipoAbono;
 import com.web.chon.dominio.UsuarioDominio;
 import com.web.chon.security.service.PlataformaSecurityContext;
-import com.web.chon.service.IfaceAbonoCredito;
 import com.web.chon.service.IfaceAbonoDocumentos;
 import com.web.chon.service.IfaceCaja;
 import com.web.chon.service.IfaceCatCliente;
@@ -232,6 +231,7 @@ public class BeanDocumentosCobrar implements Serializable {
         pagoBancario = new PagosBancarios();
         dataAbonar.setIdTipoAbonoFk(new BigDecimal(1));
         total = new BigDecimal(0);
+        buscar();
 
     }
 
