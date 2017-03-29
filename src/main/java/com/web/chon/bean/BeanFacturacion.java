@@ -655,7 +655,7 @@ public class BeanFacturacion implements Serializable {
     public void cancelarFactura() {
         try {
 //            String UUID = "FFFFFFFF-3861-A0BE-2044-76E36DDD09E0";
-            
+
             String pathCancelar = Constantes.PATHLOCALFACTURACION+"Empresas"+File.separatorChar+data.getRfcEmisor()+File.separatorChar;
             //
             Path pathKey = Paths.get(pathCancelar+data.getKeyCancelar());
@@ -683,22 +683,24 @@ public class BeanFacturacion implements Serializable {
             System.out.println("mensajes: " + respuesta.getMessage());
             System.out.println("subcodes:  " + respuesta.getSubCode());
             System.out.println("Acuse:  " + respuesta.getAcuse());
-            
-            
+
             data.setIdStatusFk(new BigDecimal(2));
-            if(ifaceFacturas.update(data)==1)
+            if (ifaceFacturas.update(data.getIdFacturaPk(),data.getIdStatusFk()) >= 1) 
             {
-                if(ifaceProductoFacturado.deleteByIdFacturaFk(data.getIdFacturaPk())==1)
-                {
+                System.out.println("Entro aqui");
+                if (ifaceProductoFacturado.deleteByIdFacturaFk(data.getIdFacturaPk()) >= 1) {
                     JsfUtil.addSuccessMessageClean("Se ha cancelado la factura con éxito");
-                }
-                else
-                {
+                    buscarFacturas();
+                     System.out.println("Entro aqui 2");
+                } else {
                     JsfUtil.addErrorMessageClean("Ha ocurrido un error al cancelar la factura");
+                     System.out.println("Entro aqui 3");
                 }
             }
-            
-            
+            else
+            {
+                 JsfUtil.addErrorMessageClean("Se cancelo la factura, error al actualizar estatus");
+            }
 
         } catch (IOException ex) {
             Logger.getLogger(BeanFacturacion.class.getName()).log(Level.SEVERE, null, ex);
@@ -1225,7 +1227,7 @@ public class BeanFacturacion implements Serializable {
 //            System.out.println("subcodes:  " + respuesta.getSubCode());
 //            System.out.println("CFDI:  " + respuesta.getCFDI());
 //            System.out.println("timbres:  " + respuesta.getCFDI());
-              nuevaFactura.setUuid(respuesta.getCFDI());
+            nuevaFactura.setUuid(respuesta.getCFDI());
 
             try {
                 PrintWriter writer = new PrintWriter(pathFacturaClienteTimbrado, "UTF-8");

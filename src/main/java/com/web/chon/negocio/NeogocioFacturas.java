@@ -18,7 +18,7 @@ import javax.ejb.Remote;
 public interface NeogocioFacturas {
     public int insert(FacturaPDFDomain factura);
     public int delete(FacturaPDFDomain factura);
-    public int update(FacturaPDFDomain factura);
+    public int update(BigDecimal  idFacturaFk,BigDecimal idStatusFk);
     public List<Object[]> getFacturaByIdPk(BigDecimal idFacturaPk);
     public List<Object[]> getFacturaByIdNumeroFac(BigDecimal idFacturaPk);
     public List<Object[]> getFacturasBy(BigDecimal idClienteFk,BigDecimal idSucursalFk,BigDecimal idFolioVentaFk,String fechaInicio,String fechaFin);

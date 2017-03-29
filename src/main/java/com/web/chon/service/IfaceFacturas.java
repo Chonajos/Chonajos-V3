@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public interface IfaceFacturas {
     public int insert(FacturaPDFDomain factura);
     public int delete(FacturaPDFDomain factura);
-    public int update(FacturaPDFDomain factura);
+    public int update(BigDecimal  idFacturaFk,BigDecimal idStatusFk);
     public FacturaPDFDomain getFacturaByIdPk(BigDecimal idFacturaPk);
     public FacturaPDFDomain getFacturaByIdNumeroFac(BigDecimal idFacturaPk);
     public ArrayList<FacturaPDFDomain> getFacturasBy(BigDecimal idClienteFk,BigDecimal idSucursalFk,BigDecimal idFolioVentaFk,String fechaInicio,String fechaFin);

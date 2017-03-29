@@ -74,15 +74,18 @@ public class EjbFacturas implements NeogocioFacturas {
     }
 
     @Override
-    public int update(FacturaPDFDomain factura) {
+    public int update(BigDecimal  idFacturaFk,BigDecimal idStatusFk) {
+        System.out.println("Entro a Update Facturas: Data: "+idFacturaFk +"idStatus: "+idStatusFk);
+            
         try {
-            System.out.println("Data: "+factura.toString());
             Query query = em.createNativeQuery("UPDATE  FACTURAS SET ID_STATUS_FK = ? WHERE ID_FACTURA_PK = ? ");
-            query.setParameter(1, factura.getIdStatusFk());
-            query.setParameter(2, factura.getIdFacturaPk());
+            
+            query.setParameter(1, idStatusFk);
+            query.setParameter(2, idFacturaFk);
             System.out.println("Query: "+query.toString());
             return query.executeUpdate();
         } catch (Exception ex) {
+            System.out.println("Error: >"+ex.getMessage());
             Logger.getLogger(EjbFacturas.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }

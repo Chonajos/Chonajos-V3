@@ -44,21 +44,16 @@ public class ServiceFacturas implements IfaceFacturas {
     @Override
     public int insert(FacturaPDFDomain factura) {
         getEjb();
-        if (ejb.insert(factura) == 1) 
-        {
-            if (factura.getFichero() != null)
-            {
-                int ba=0;
-                try 
-                {
-                    
+        if (ejb.insert(factura) == 1) {
+            if (factura.getFichero() != null) {
+                int ba = 0;
+                try {
+
                     byte[] fichero = factura.getFichero();
-                    if (ejb.insertarDocumento(factura.getIdFacturaPk(), fichero) == 1) 
-                    {
-                        ba= 1;
-                    } else 
-                    {
-                        ba= 0;
+                    if (ejb.insertarDocumento(factura.getIdFacturaPk(), fichero) == 1) {
+                        ba = 1;
+                    } else {
+                        ba = 0;
                     }
                 } catch (SQLException ex) {
 
@@ -81,10 +76,15 @@ public class ServiceFacturas implements IfaceFacturas {
     }
 
     @Override
-    public int update(FacturaPDFDomain factura) {
-        getEjb();
-        return ejb.update(factura);
-    
+    public int update(BigDecimal  idFacturaFk,BigDecimal idStatusFk) {
+ ;
+        try {
+            getEjb();
+            return ejb.update(idFacturaFk,idStatusFk);
+        } catch (Exception e) {
+            System.out.println("Error Service: " + e.getMessage());
+            return 0;
+        }
     }
 
     @Override
@@ -106,7 +106,7 @@ public class ServiceFacturas implements IfaceFacturas {
             FacturaPDFDomain factura = new FacturaPDFDomain();
             factura.setIdFacturaPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
             String nombreFactura = obj[1] == null ? null : obj[1].toString();
-            factura.setNumeroFactura("B-"+nombreFactura);
+            factura.setNumeroFactura("B-" + nombreFactura);
             factura.setFechaCertificacion(obj[2] == null ? null : (Date) obj[2]);
             factura.setIdClienteFk(obj[3] == null ? null : new BigDecimal(obj[3].toString()));
             factura.setIdSucursalFk(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
@@ -120,24 +120,23 @@ public class ServiceFacturas implements IfaceFacturas {
             factura.setIdStatusFk(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
             factura.setNombreArchivoTimbrado(obj[13] == null ? null : obj[13].toString());
             factura.setRfcEmisor(obj[14] == null ? null : obj[14].toString());
-            
-            byte [] cad = (byte[]) obj[15];
+
+            byte[] cad = (byte[]) obj[15];
             String cadena = new String(cad);
             factura.setCadena(cadena);
             //factura.setRfcEmisor(cadena);
-            
+
             factura.setImporte(obj[16] == null ? null : new BigDecimal(obj[16].toString()));
             factura.setDescuento(obj[17] == null ? null : new BigDecimal(obj[17].toString()));
             factura.setIva1(obj[18] == null ? null : new BigDecimal(obj[18].toString()));
             factura.setUuid(obj[19] == null ? null : obj[19].toString());
-            
+
             //para cancelar
             factura.setCertificadoCancelar(obj[20] == null ? null : obj[20].toString());
             factura.setKeyCancelar(obj[21] == null ? null : obj[21].toString());
-            
+
             factura.setRfcCliente(obj[22] == null ? null : obj[22].toString());
-            
-            
+
             if (factura.getIdStatusFk().intValue() == 1) {
                 factura.setNombreEstatus("EMITIDA");
             } else {
@@ -150,7 +149,7 @@ public class ServiceFacturas implements IfaceFacturas {
             } else {
                 byte[] datos = factura.getFichero();
                 InputStream stream = new ByteArrayInputStream(datos);
-                file = new DefaultStreamedContent(stream, "xml",""+factura.getRfcCliente()+"_"+factura.getNumeroFactura()+ ".xml");
+                file = new DefaultStreamedContent(stream, "xml", "" + factura.getRfcCliente() + "_" + factura.getNumeroFactura() + ".xml");
                 factura.setFile(file);
             }
 

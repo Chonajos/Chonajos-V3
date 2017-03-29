@@ -191,9 +191,9 @@
                                 </p:commandButton>
                             </p:column>
                             <p:column headerText="Cancelar" width="60px;" class="alignCenter">
-                                <p:commandButton id="cancel"   ajax="true" process="@this" action="#{beanFacturacion.cancelarFactura()}" icon="ui-icon-trash" styleClass="ui-priority-primary" update=":formContent">
+                                <p:commandButton id="cancel"   ajax="true"  action="#{beanFacturacion.cancelarFactura()}" icon="ui-icon-trash" styleClass="ui-priority-primary" update=":formContent">
                                     <f:setPropertyActionListener value="#{model}" target="#{beanFacturacion.data}"/>
-                                    <p:confirm header="Confirmación" message="¿Estás seguro de rechazar el gasto?" icon="ui-icon-alert"/>
+                                    <p:confirm header="Confirmación" message="¿Estás seguro de cancelar la factura?" icon="ui-icon-alert"/>
                                 </p:commandButton>
                             </p:column>
                             <p:columnGroup type="footer">
@@ -209,6 +209,7 @@
                                         </h:outputText>
                                     </f:facet>
                                 </p:column>
+                                <p:column colspan="1" />
                                 <p:column colspan="1" />
                                 <p:column colspan="1" />
                                 <p:column colspan="1" />
