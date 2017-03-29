@@ -116,6 +116,8 @@ public class ServiceFacturas implements IfaceFacturas {
             factura.setIdStatusFk(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
             factura.setNombreArchivoTimbrado(obj[13] == null ? null : obj[13].toString());
             factura.setRfcCliente(obj[14] == null ? null : obj[14].toString());
+            
+            
             factura.setCadena(obj[15] == null ? null : obj[15].toString());
             
             factura.setImporte(obj[16] == null ? null : new BigDecimal(obj[16].toString()));
@@ -148,6 +150,12 @@ public class ServiceFacturas implements IfaceFacturas {
     public int getNextVal() {
         getEjb();
         return ejb.getNextVal();
+    }
+
+    @Override
+    public int getLastNumeroFactura() {
+        getEjb();
+        return ejb.getLastNumeroFactura();
     }
 
 }

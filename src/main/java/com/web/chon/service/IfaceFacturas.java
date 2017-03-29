@@ -21,4 +21,5 @@ public interface IfaceFacturas {
     public FacturaPDFDomain getFacturaByIdNumeroFac(BigDecimal idFacturaPk);
     public ArrayList<FacturaPDFDomain> getFacturasBy(BigDecimal idClienteFk,BigDecimal idSucursalFk,BigDecimal idFolioVentaFk,String fechaInicio,String fechaFin);
     public int getNextVal();
+    public int getLastNumeroFactura();
 }

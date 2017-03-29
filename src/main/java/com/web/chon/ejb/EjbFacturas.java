@@ -50,7 +50,10 @@ public class EjbFacturas implements NeogocioFacturas {
             query.setParameter(10, factura.getIdStatusFk());
             query.setParameter(11, factura.getNombreArchivoTimbrado());
             query.setParameter(12, factura.getRfcEmisor());
-            query.setParameter(13, factura.getCadena());
+            
+            byte[] cad = factura.getCadena().getBytes();
+            query.setParameter(13, cad);
+            
             query.setParameter(14, factura.getImporte());
             query.setParameter(15, factura.getDescuento());
             query.setParameter(16, factura.getIva1());
@@ -178,6 +181,12 @@ public class EjbFacturas implements NeogocioFacturas {
         querys.setParameter(1, fichero);
         querys.setParameter(2, id);
         return querys.executeUpdate();
+    }
+     @Override
+    public int getLastNumeroFactura() {
+        Query query = em.createNativeQuery("select nvl(MAX(ID_NUMERO_FACTURA),0) as NUMERO from FACTURAS ");
+        return Integer.parseInt(query.getSingleResult().toString());
+
     }
 
 }
