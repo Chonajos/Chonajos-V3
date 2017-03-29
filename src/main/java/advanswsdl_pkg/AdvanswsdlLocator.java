@@ -22,8 +22,10 @@ public class AdvanswsdlLocator extends org.apache.axis.client.Service implements
     }
 
     // Use to get a proxy class for advanswsdlPort
-//    private java.lang.String advanswsdlPort_address = "https://app.advans.mx:443/ws/awscfdi.php";
-      private java.lang.String advanswsdlPort_address = "https://dev.advans.mx:443/ws/awscfdi.php";
+    //PRODUCCIÓN
+    private java.lang.String advanswsdlPort_address = "https://app.advans.mx/ws/awscfdi.php?wsdl";
+      //PRUEBAS
+    //private java.lang.String advanswsdlPort_address = "https://dev.advans.mx:443/ws/awscfdi.php";
     
 
     public java.lang.String getadvanswsdlPortAddress() {

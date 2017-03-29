@@ -198,8 +198,11 @@ public class BeanFacturacion implements Serializable {
     private static final BigDecimal TIPO_DOCUMENTO = new BigDecimal(4);
     private static final BigDecimal CERO = new BigDecimal(0);
 
-    //nunca cambia, lo proporciono el pac
-    private static String API_KEY = "1e550c937ba7cf3f65a6136ae86add2b";
+    //nunca cambia, lo proporciono el pac PRUEBAS
+    
+    //private static String API_KEY = "1e550c937ba7cf3f65a6136ae86add2b";
+    
+    private static String API_KEY = "7ecfe40342406c370e09029125103ac3";
     private String pathFacturaClienteComprobante;
     private String pathFacturaClienteTimbrado;
 
