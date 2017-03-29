@@ -17,6 +17,7 @@ import com.web.chon.negocio.NeogocioFacturas;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Date;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -116,9 +117,9 @@ public class ServiceFacturas implements IfaceFacturas {
             factura.setIdStatusFk(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
             factura.setNombreArchivoTimbrado(obj[13] == null ? null : obj[13].toString());
             factura.setRfcCliente(obj[14] == null ? null : obj[14].toString());
-            
-            
-            factura.setCadena(obj[15] == null ? null : obj[15].toString());
+            byte [] cad = (byte[]) obj[15];
+            String cadena = new String(cad);
+            factura.setCadena(cadena);
             
             factura.setImporte(obj[16] == null ? null : new BigDecimal(obj[16].toString()));
             factura.setDescuento(obj[17] == null ? null : new BigDecimal(obj[17].toString()));

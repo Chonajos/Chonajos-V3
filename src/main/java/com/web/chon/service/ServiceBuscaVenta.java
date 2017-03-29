@@ -240,6 +240,7 @@ public class ServiceBuscaVenta implements IfaceBuscaVenta {
                 venta.setNombreCliente(obj[0] == null ? "" : obj[0].toString());
                 venta.setNombreVendedor(obj[1] == null ? "" : obj[1].toString());
                 venta.setIdVentaMayoreoPk(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
+               
                 producto.setNombreProducto(obj[3] == null ? "" : obj[3].toString());
                 producto.setNombreEmpaque(obj[4] == null ? "" : obj[4].toString());
                 producto.setCantidadEmpaque(obj[5] == null ? null : new BigDecimal(obj[5].toString()));
@@ -257,6 +258,7 @@ public class ServiceBuscaVenta implements IfaceBuscaVenta {
 //                venta.setNombreSucursal(obj[13] == null ? "" : obj[13].toString());
 //                venta.setFolioSucursal(new BigDecimal(obj[14] == null ? "0" : obj[14].toString()));
                 venta.setIdClienteFk(obj[15] == null ? null : new BigDecimal(obj[15].toString()));
+                producto.setIdVentaMayProdPk(obj[3] == null ? null : new BigDecimal(obj[3].toString()));
                 venta.setVentaSucursal(folioVenta);
 
                 lstVenta.add(producto);

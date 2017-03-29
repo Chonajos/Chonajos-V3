@@ -325,7 +325,7 @@ public class BeanFacturacion implements Serializable {
         ventaMayoreo.setListaProductos(selectedProductosVentas);
 
         calcularTotales();
-        if (selectedProductosVentas.isEmpty()) {
+        if (selectedProductosVentas != null && selectedProductosVentas.isEmpty()) {
             statusButtonFacturar = true;
         } else {
             statusButtonFacturar = false;
@@ -627,15 +627,14 @@ public class BeanFacturacion implements Serializable {
 
         }
         for (VentaProductoMayoreo vpm : ventaMayoreo.getListaProductos()) {
-                vpm.setIdTipoVenta(new BigDecimal(1));
-            }
+            vpm.setIdTipoVenta(new BigDecimal(1));
+        }
         if (ventaMayoreo.isBanderaVentaMenudeo()) {
             for (VentaProductoMayoreo vpm : ventaMayoreo.getListaProductos()) {
                 vpm.setKilosVendidos(vpm.getCantidadEmpaque());
                 vpm.setIdTipoVenta(new BigDecimal(2));
             }
         }
-        
 
         buscarDatosCliente(1);
         calculaKilosPorFacturar();
@@ -669,8 +668,7 @@ public class BeanFacturacion implements Serializable {
 
     }
 
-    public void abreXML()
-    {
+    public void abreXML() {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         //DocumentBuilder builder = factory.newDocumentBuilder();
 
@@ -999,7 +997,7 @@ public class BeanFacturacion implements Serializable {
 //        System.out.println(ventaMayoreo.getListaProductos());
 //        System.out.println("Tamaño: " + ventaMayoreo.getListaProductos().size());
 //        System.out.println("----------------------------------------");
-        if (!selectedProductosVentas.isEmpty()) {
+        if (selectedProductosVentas != null && !selectedProductosVentas.isEmpty()) {
             ventaMayoreo.setIdVentaMayoreoPk(selectedProductosVentas.get(0).getFolioVenta());
             ventaMayoreo.setVentaSucursal(selectedProductosVentas.get(0).getFolioVenta());
             ventaMayoreo.setIdSucursalFk(new BigDecimal(usuario.getSucId()));
@@ -1121,23 +1119,18 @@ public class BeanFacturacion implements Serializable {
         nuevaFactura.setDescuento(descuento);
         nuevaFactura.setIva1(iva);
 
-        if (ifaceFacturas.insert(nuevaFactura) == 1) 
-        {
+        if (ifaceFacturas.insert(nuevaFactura) == 1) {
             //Convertir el archivo a Bytes y Guardarlo
-            if(!selectedProductosVentas.isEmpty())
-                {
-                    
-                }
+            if (selectedProductosVentas != null && !selectedProductosVentas.isEmpty()) {
+
+            }
             for (VentaProductoMayoreo vmp : ventaMayoreo.getListaProductos()) {
                 ProductoFacturado pf = new ProductoFacturado();
                 pf.setCantidad(new BigDecimal(0));
                 pf.setIdFacturaFk(nuevaFactura.getIdFacturaPk());
                 pf.setIdTipoLlaveFk(vmp.getIdTipoVenta());
-                
-                
                 pf.setIdLlaveFk(vmp.getIdVentaMayProdPk());
                 pf.setIdProductoFacturadoPk(new BigDecimal(ifaceProductoFacturado.getNextVal()));
-                
                 pf.setImporte(vmp.getTotalVenta());
                 pf.setKilos(vmp.getKilosVendidos());
 
@@ -1335,14 +1328,16 @@ public class BeanFacturacion implements Serializable {
             cfd.guardar(outFile);
             // System.out.println("Se guardo el cdf ");
             // System.out.println("cadema original " + cfd.getCadenaOriginal());
-            
+
             nuevaFactura.setCadena(cfd.getCadenaOriginal());
             outFile.close();
 
             if (timbrar() == 1) {
                 datosCliente = new Cliente();
                 ventaMayoreo = new VentaMayoreo();
-                selectedProductosVentas.clear();
+                if (selectedProductosVentas != null) {
+                    selectedProductosVentas.clear();
+                }
                 importeParcialidad = null;
                 formaPago = "01";
                 subTotal = null;
@@ -1462,7 +1457,7 @@ public class BeanFacturacion implements Serializable {
     private Comprobante.Conceptos createConceptos(ObjectFactory of) {
         Comprobante.Conceptos cps = of.createComprobanteConceptos();
         List<Comprobante.Conceptos.Concepto> list = cps.getConcepto();
-        if (!selectedProductosVentas.isEmpty()) {
+        if (selectedProductosVentas != null && !selectedProductosVentas.isEmpty()) {
             ventaMayoreo.setListaProductos(selectedProductosVentas);
         }
         for (VentaProductoMayoreo producto : ventaMayoreo.getListaProductos()) {
