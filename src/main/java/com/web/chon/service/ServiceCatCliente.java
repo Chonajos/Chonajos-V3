@@ -6,6 +6,7 @@ import com.web.chon.negocio.NegocioCatCliente;
 import com.web.chon.util.Utilidades;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -219,6 +220,8 @@ public class ServiceCatCliente implements IfaceCatCliente {
                 cliente.setLimiteCredito(obj[2] == null ? new BigDecimal("0") : new BigDecimal(obj[2].toString()));
                 cliente.setUtilizadoTotal(obj[3] == null ? new BigDecimal("0") : new BigDecimal(obj[3].toString()));
                 cliente.setUtilizadoDocumentos(obj[4] == null ? new BigDecimal("0") : new BigDecimal(obj[4].toString()));
+                cliente.setPromedioRecuperacionTres(obj[5] == null ? new BigDecimal("0") : new BigDecimal(obj[5].toString()).setScale(2,RoundingMode.CEILING));
+                cliente.setPromedioRecuperacion(obj[6] == null ? new BigDecimal("0") : new BigDecimal(obj[6].toString()).setScale(2,RoundingMode.CEILING));
                 cliente.setCreditoDisponible((cliente.getLimiteCredito().subtract(cliente.getUtilizadoTotal(), MathContext.UNLIMITED)).subtract(cliente.getUtilizadoDocumentos(), MathContext.UNLIMITED));
 
             }

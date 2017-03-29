@@ -112,6 +112,7 @@ public class EjbCatCliente implements NegocioCatCliente {
 
         //System.out.println("EJB_INSERTA_CLIENTE");
         try {
+            
             //System.out.println("insert : " + clie.toString());
             Query query = em.createNativeQuery("INSERT INTO CLIENTE (ID_CLIENTE,NOMBRE,APELLIDO_PATERNO,APELLIDO_MATERNO,EMPRESA,CALLE,SEXO,TELEFONO_CELULAR,TELEFONO_FIJO,EXTENSION,NUM_INT,NUM_EXT,ID_CP,NEXTEL,RAZON,RFC,STATUS,FECHA_ALTA,DIAS_CREDITO,MONTO_CREDITO,TIPO_PERSONA,LOCALIDAD,PAIS,CORREO) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,sysdate,?,?,?,?,?,?)");
             query.setParameter(1, clie.getIdClientePk());
@@ -194,14 +195,19 @@ public class EjbCatCliente implements NegocioCatCliente {
     public List<Object[]> getCreditoClienteByIdCliente(BigDecimal idCliente) {
         try {
 
-            Query query = em.createNativeQuery("select c.ID_CLIENTE, TRIM(c.NOMBRE) ||' '|| TRIM(c.APELLIDO_PATERNO) ||' '|| TRIM(c.APELLIDO_MATERNO) AS NOMBRE_COMPLETO,NVL(c.MONTO_CREDITO,0) "
+            Query query = em.createNativeQuery("SELECT C.ID_CLIENTE, TRIM(C.NOMBRE) ||' '|| TRIM(C.APELLIDO_PATERNO) ||' '|| TRIM(C.APELLIDO_MATERNO) AS NOMBRE_COMPLETO,NVL(C.MONTO_CREDITO,0) "
                     + "AS MONTO_CREDITO, "
-                    + "NVL((SELECT SUM(CRE.MONTO_CREDITO) FROM CREDITO CRE WHERE CRE.ID_CLIENTE_FK =c.ID_CLIENTE AND CRE.ESTATUS_CREDITO = 1 ),0) "
+                    + "NVL((SELECT SUM(CRE.MONTO_CREDITO) FROM CREDITO CRE WHERE CRE.ID_CLIENTE_FK = C.ID_CLIENTE AND CRE.ESTATUS_CREDITO = 1 ),0) "
                     + "AS CREDITO_UTILIZADO, "
-                    + "(select sum(dc.monto) as DOCUMENTOS from DOCUMENTOS_COBRAR dc where dc.ID_STATUS_FK=1 and dc.ID_CLIENTE_FK=c.ID_CLIENTE) as Documentos "
-                    + "FROM CLIENTE c "
-                    + "WHERE c.ID_CLIENTE = ? AND c.STATUS =1");
+                    + "NVL((SELECT SUM(DC.MONTO) AS DOCUMENTOS FROM DOCUMENTOS_COBRAR DC WHERE DC.ID_STATUS_FK=1 AND DC.ID_CLIENTE_FK=C.ID_CLIENTE),0) AS Documentos , "
+                    + "(SELECT AVG(T1.DIFERENCIA) FROM(SELECT CR.FECHA_INICIO_CREDITO,NVL(CR.FECHA_FIN_CREDITO,SYSDATE)-CR.FECHA_INICIO_CREDITO AS DIFERENCIA FROM CREDITO CR "
+                    + "WHERE ID_CLIENTE_FK = ? ORDER BY CR.FECHA_INICIO_CREDITO DESC) T1 WHERE ROWNUM <=3 ) AS PROMEDIO_RECUPERACION_3, "
+                    + "(SELECT AVG(NVL(CR.FECHA_FIN_CREDITO,SYSDATE)-CR.FECHA_INICIO_CREDITO) AS DIFERENCIA FROM CREDITO CR "
+                    + "WHERE ID_CLIENTE_FK = C.ID_CLIENTE) AS PROMEDIO_RECUPERACION "
+                    + "FROM CLIENTE C "
+                    + "WHERE C.ID_CLIENTE = ? AND C.STATUS =1");
             query.setParameter(1, idCliente);
+            query.setParameter(2, idCliente);
             return query.getResultList();
 
         } catch (Exception ex) {

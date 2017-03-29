@@ -64,6 +64,9 @@ public class Cliente implements Serializable {
     private BigDecimal creditoDisponible;
     private BigDecimal utilizadoDocumentos;
     
+    private BigDecimal promedioRecuperacionTres;
+    private BigDecimal promedioRecuperacion;
+    
    
     
    
@@ -373,9 +376,20 @@ public class Cliente implements Serializable {
         this.idColoniaFk = idColoniaFk;
     }
 
-    
-    
+    public BigDecimal getPromedioRecuperacionTres() {
+        return promedioRecuperacionTres;
+    }
 
-   
+    public void setPromedioRecuperacionTres(BigDecimal promedioRecuperacionTres) {
+        this.promedioRecuperacionTres = promedioRecuperacionTres;
+    }
+
+    public BigDecimal getPromedioRecuperacion() {
+        return promedioRecuperacion;
+    }
+
+    public void setPromedioRecuperacion(BigDecimal promedioRecuperacion) {
+        this.promedioRecuperacion = promedioRecuperacion;
+    }
 
 }
