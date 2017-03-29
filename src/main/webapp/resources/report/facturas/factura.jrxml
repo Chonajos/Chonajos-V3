@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2017-03-28T12:00:25 -->
+<!-- 2017-03-29T10:04:43 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EntradaMayoreoV1" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Error" uuid="df013db5-f76e-44d3-b0df-bcbc46d93160">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
@@ -1147,37 +1147,41 @@
 				</jr:QRCode>
 			</componentElement>
 		</band>
-		<band height="189">
+		<band height="52">
 			<staticText>
-				<reportElement mode="Opaque" x="10" y="0" width="534" height="20" forecolor="#FFFFFF" backcolor="#CC3333" uuid="765af246-c599-42d8-9f97-504662d96611"/>
+				<reportElement mode="Opaque" x="5" y="0" width="534" height="20" forecolor="#FFFFFF" backcolor="#CC3333" uuid="765af246-c599-42d8-9f97-504662d96611"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<text><![CDATA[SELLO DIGITAL]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="10" y="24" width="534" height="25" isPrintWhenDetailOverflows="true" uuid="40f275e8-a23f-41a8-adce-71f588997ecf"/>
+				<reportElement x="5" y="20" width="534" height="30" isPrintWhenDetailOverflows="true" uuid="40f275e8-a23f-41a8-adce-71f588997ecf"/>
 				<textFieldExpression><![CDATA[$P{selloDigital}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement mode="Opaque" x="10" y="54" width="534" height="20" forecolor="#FFFFFF" backcolor="#CC3333" uuid="5f6535e5-d8de-4bae-bfdc-82a4c2c1f668"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle"/>
-				<text><![CDATA[CADENA ORIGINAL DEL COMPLEMENTO DE CERTIFICACIÓN DIGITAL DEL SAT]]></text>
-			</staticText>
+		</band>
+		<band height="85">
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="10" y="74" width="533" height="55" isPrintWhenDetailOverflows="true" uuid="f3386a19-1e2a-42b5-a154-6aa1277f81d1"/>
+				<reportElement x="4" y="30" width="533" height="50" isPrintWhenDetailOverflows="true" uuid="f3386a19-1e2a-42b5-a154-6aa1277f81d1"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{cadena}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement mode="Opaque" x="9" y="130" width="534" height="20" forecolor="#FFFFFF" backcolor="#CC3333" uuid="074ee649-c11e-4919-887c-cfff5ab54522"/>
+				<reportElement mode="Opaque" x="4" y="10" width="534" height="20" forecolor="#FFFFFF" backcolor="#CC3333" uuid="5f6535e5-d8de-4bae-bfdc-82a4c2c1f668"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<text><![CDATA[CADENA ORIGINAL DEL COMPLEMENTO DE CERTIFICACIÓN DIGITAL DEL SAT]]></text>
+			</staticText>
+		</band>
+		<band height="55">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="4" y="21" width="533" height="30" isPrintWhenDetailOverflows="true" uuid="0ce47c95-ece5-4277-ba29-fe6479f7a9d1"/>
+				<textFieldExpression><![CDATA[$P{selloSAT}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="4" y="1" width="534" height="20" forecolor="#FFFFFF" backcolor="#CC3333" uuid="074ee649-c11e-4919-887c-cfff5ab54522"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<text><![CDATA[SELLO DEL SAT]]></text>
 			</staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="9" y="150" width="533" height="30" isPrintWhenDetailOverflows="true" uuid="0ce47c95-ece5-4277-ba29-fe6479f7a9d1"/>
-				<textFieldExpression><![CDATA[$P{selloSAT}]]></textFieldExpression>
-			</textField>
 		</band>
 		<band height="26">
 			<staticText>
