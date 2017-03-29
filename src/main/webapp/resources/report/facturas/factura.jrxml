@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2017-03-27T08:13:06 -->
+<!-- 2017-03-28T12:00:25 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EntradaMayoreoV1" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Error" uuid="df013db5-f76e-44d3-b0df-bcbc46d93160">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
@@ -1153,8 +1153,8 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<text><![CDATA[SELLO DIGITAL]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="10" y="24" width="534" height="25" uuid="40f275e8-a23f-41a8-adce-71f588997ecf"/>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="10" y="24" width="534" height="25" isPrintWhenDetailOverflows="true" uuid="40f275e8-a23f-41a8-adce-71f588997ecf"/>
 				<textFieldExpression><![CDATA[$P{selloDigital}]]></textFieldExpression>
 			</textField>
 			<staticText>
@@ -1162,8 +1162,8 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<text><![CDATA[CADENA ORIGINAL DEL COMPLEMENTO DE CERTIFICACIÓN DIGITAL DEL SAT]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="10" y="74" width="533" height="55" uuid="f3386a19-1e2a-42b5-a154-6aa1277f81d1"/>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="10" y="74" width="533" height="55" isPrintWhenDetailOverflows="true" uuid="f3386a19-1e2a-42b5-a154-6aa1277f81d1"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
@@ -1174,8 +1174,8 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<text><![CDATA[SELLO DEL SAT]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="9" y="150" width="533" height="30" uuid="0ce47c95-ece5-4277-ba29-fe6479f7a9d1"/>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="9" y="150" width="533" height="30" isPrintWhenDetailOverflows="true" uuid="0ce47c95-ece5-4277-ba29-fe6479f7a9d1"/>
 				<textFieldExpression><![CDATA[$P{selloSAT}]]></textFieldExpression>
 			</textField>
 		</band>

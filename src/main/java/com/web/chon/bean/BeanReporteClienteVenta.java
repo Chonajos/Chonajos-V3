@@ -48,14 +48,16 @@ public class BeanReporteClienteVenta implements BeanSimple {
     private boolean charLine;
     private BigDecimal maxChartValue;
     private BigDecimal diasRecuperacion;
+    private BigDecimal diasRecuperacionTres;
 
     @PostConstruct
     public void init() {
 
         data = new Cliente();
         model = new ArrayList<ReporteClienteVentas>();
-        
+
         diasRecuperacion = new BigDecimal(0);
+        diasRecuperacionTres = new BigDecimal(0);
 
         charLine = false;
         setTitle("Reporte de Ventas del Cliente.");
@@ -64,8 +66,9 @@ public class BeanReporteClienteVenta implements BeanSimple {
     }
 
     public void generateChartLine() {
-        
+
         diasRecuperacion = new BigDecimal(0);
+        diasRecuperacionTres = new BigDecimal(0);
 
         chartLine = initChartLine();
         chartLine.setSeriesColors("0404B4,088A08,81BEF7,D0F5A9");
@@ -126,6 +129,7 @@ public class BeanReporteClienteVenta implements BeanSimple {
 //        chartBar.setDatatipFormat("%#.$d");
         chartBar.setShowPointLabels(true);
 //        chartBar.setDatatipFormat("%2$d");
+
         chartBar.setLegendCols(6);
         chartBar.setStacked(false);
 //        chartBar.getAxes().put(AxisType.X, new CategoryAxis("Fecha"));
@@ -135,28 +139,34 @@ public class BeanReporteClienteVenta implements BeanSimple {
 
 //        yAxis.setLabel("Toneladas");
         yAxis.setMin(0);
+
+//        yAxis.setTickFormat("${:,.2f}");
+//        yAxis.setTickFormat("$%,d.%02d");
+//yAxis.setTickFormat("%d");
+
+
+        
+//        yAxis.setMin(-1);
+
         int interval = 50;
         int iMaxChartValue = 0;
 
         iMaxChartValue = maxChartValue.intValue();
-        
-        if(iMaxChartValue <= 1000000000 && iMaxChartValue >= 100000000){
+
+        if (iMaxChartValue <= 1000000000 && iMaxChartValue >= 100000000) {
             interval = 50000000;
-        }else if(iMaxChartValue <= 100000000 && iMaxChartValue >= 10000000){
+        } else if (iMaxChartValue <= 100000000 && iMaxChartValue >= 10000000) {
             interval = 5000000;
-        }else if(iMaxChartValue <= 10000000 && iMaxChartValue >= 1000000){
+        } else if (iMaxChartValue <= 10000000 && iMaxChartValue >= 1000000) {
             interval = 500000;
-        }
-        else if(iMaxChartValue <= 1000000 && iMaxChartValue >= 100000){
+        } else if (iMaxChartValue <= 1000000 && iMaxChartValue >= 100000) {
             interval = 50000;
-        }
-        else if(iMaxChartValue <= 100000 && iMaxChartValue >= 10000){
+        } else if (iMaxChartValue <= 100000 && iMaxChartValue >= 10000) {
             interval = 5000;
-        }
-        else if(iMaxChartValue <= 10000 && iMaxChartValue >= 1000){
+        } else if (iMaxChartValue <= 10000 && iMaxChartValue >= 1000) {
             interval = 500;
         }
-        
+
         yAxis.setTickInterval(Integer.toString(interval));
         yAxis.setMax(maxChartValue.add(new BigDecimal(interval)));
     }
@@ -166,7 +176,7 @@ public class BeanReporteClienteVenta implements BeanSimple {
         BarChartModel barChartModel = new BarChartModel();
 
         maxChartValue = new BigDecimal(0);
-        
+
         BigDecimal porcentaje = new BigDecimal(0);
         BigDecimal cien = new BigDecimal(100);
         BigDecimal bVenta = new BigDecimal(0);
@@ -186,29 +196,28 @@ public class BeanReporteClienteVenta implements BeanSimple {
         bCredito = model.get(0).getTotalMayoreoCredito().add(model.get(0).getTotalMenudeoCredito());
         bUtilidad = model.get(0).getUtilidadMenudeo().add(model.get(0).getUtilidadMayoreoPacto()).add(model.get(0).getUtilidadMayoreoCosto().add(model.get(0).getUtilidadMayoreoComision()));
         bRecuperacion = model.get(0).getRecuperacion();
-        
+
         ventaTotal.setLabel("Venta");
         totalContado.setLabel("Contado");
         totalCredito.setLabel("Crédito");
         utilidad.setLabel("Utilidad");
         recuperacion.setLabel("Recuperación");
-        
-        
-        
-        
-        
-        diasRecuperacion =model.get(0).getDiasRecuperacion().setScale(2,RoundingMode.DOWN);
-        
-        porcentaje = bVenta.multiply(cien).divide(bVenta,2,RoundingMode.CEILING);
+
+        diasRecuperacion = model.get(0).getDiasRecuperacion().setScale(2, RoundingMode.DOWN);
+        diasRecuperacionTres = data.getPromedioRecuperacionTres();
+//        System.out.println("data.getPromedioRecuperacionTres() "+diasRecuperacionTres);
+//        System.out.println("data.getPromedioRecuperacion() "+data.getPromedioRecuperacion());
+
+        porcentaje = bVenta.multiply(cien).divide(bVenta, 2, RoundingMode.CEILING);
         ventaTotal.set("Venta", bVenta);
-        porcentaje = bVenta.multiply(cien).divide(bVenta,2,RoundingMode.CEILING);
+        porcentaje = bVenta.multiply(cien).divide(bVenta, 2, RoundingMode.CEILING);
         totalContado.set("Contado", bContado);
-        porcentaje = bVenta.multiply(cien).divide(bVenta,2,RoundingMode.CEILING);
+        porcentaje = bVenta.multiply(cien).divide(bVenta, 2, RoundingMode.CEILING);
         totalCredito.set("Crédito", bCredito);
-        porcentaje = bVenta.multiply(cien).divide(bVenta,2,RoundingMode.CEILING);
+        porcentaje = bVenta.multiply(cien).divide(bVenta, 2, RoundingMode.CEILING);
         utilidad.set("Utilidad", bUtilidad);
-        porcentaje = bVenta.multiply(cien).divide(bVenta,2,RoundingMode.CEILING);
-        recuperacion.set("Recuperacón",bRecuperacion);
+        porcentaje = bVenta.multiply(cien).divide(bVenta, 2, RoundingMode.CEILING);
+        recuperacion.set("Recuperacón", bRecuperacion);
 
         maxChartValue = bVenta;
         barChartModel.addSeries(ventaTotal);
@@ -336,7 +345,13 @@ public class BeanReporteClienteVenta implements BeanSimple {
     public void setDiasRecuperacion(BigDecimal diasRecuperacion) {
         this.diasRecuperacion = diasRecuperacion;
     }
-    
-    
+
+    public BigDecimal getDiasRecuperacionTres() {
+        return diasRecuperacionTres;
+    }
+
+    public void setDiasRecuperacionTres(BigDecimal diasRecuperacionTres) {
+        this.diasRecuperacionTres = diasRecuperacionTres;
+    }
 
 }
