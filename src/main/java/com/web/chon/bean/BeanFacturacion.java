@@ -201,8 +201,8 @@ public class BeanFacturacion implements Serializable {
     private static final BigDecimal CERO = new BigDecimal(0);
 
     //nunca cambia, lo proporciono el pac PRUEBAS
-    //private static String API_KEY = "1e550c937ba7cf3f65a6136ae86add2b";
-    private static String API_KEY = "7ecfe40342406c370e09029125103ac3";
+    private static String API_KEY = "1e550c937ba7cf3f65a6136ae86add2b";
+    //private static String API_KEY = "7ecfe40342406c370e09029125103ac3";
     private String pathFacturaClienteComprobante;
     private String pathFacturaClienteTimbrado;
 
@@ -656,16 +656,39 @@ public class BeanFacturacion implements Serializable {
         try {
 //            String UUID = "FFFFFFFF-3861-A0BE-2044-76E36DDD09E0";
 
-            String pathCancelar = Constantes.PATHLOCALFACTURACION+"Empresas"+File.separatorChar+data.getRfcEmisor()+File.separatorChar;
+            try {
+                String rutaTimbradoData = Constantes.PATHLOCALFACTURACION + "Clientes" + File.separatorChar + data.getRfcCliente() + File.separatorChar + "TIMBRADO" + File.separatorChar + data.getNombreArchivoTimbrado();
+                File inputFile = new File(rutaTimbradoData);
+                DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+                Document doc = dBuilder.parse(inputFile);
+                doc.getDocumentElement().normalize();
+                NodeList nList = doc.getElementsByTagName("cfdi:Comprobante");
+                for (int temp = 0; temp < nList.getLength(); temp++) {
+                    Node nNode = nList.item(temp);
+                    if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                        Element eElement = (Element) nNode;
+                        paramReport.put("version", eElement.getAttribute("version"));
+                        //System.out.println("Version : " + eElement.getAttribute("version"));
+                        data.setUuid(eElement.getAttribute("UUID"));
+                    }
+                }
+                
+            } catch (Exception e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+            System.out.println("DAta: "+data.toString());
+
+            String pathCancelar = Constantes.PATHLOCALFACTURACION + "Empresas" + File.separatorChar + data.getRfcEmisor() + File.separatorChar;
             //
-            Path pathKey = Paths.get(pathCancelar+data.getKeyCancelar());
-            System.out.println("PathKey: "+pathKey);
+            Path pathKey = Paths.get(pathCancelar + data.getKeyCancelar());
+            System.out.println("PathKey: " + pathKey);
             byte[] keyPem = Files.readAllBytes(pathKey);
             String strKeyPem = new String(keyPem, Charset.defaultCharset());
             System.out.println("keypem " + strKeyPem);
 
-            Path pathCert = Paths.get(pathCancelar+data.getCertificadoCancelar());
-            System.out.println("pathCert: "+pathCert);
+            Path pathCert = Paths.get(pathCancelar + data.getCertificadoCancelar());
+            System.out.println("pathCert: " + pathCert);
             byte[] cerPem = Files.readAllBytes(pathCert);
             String strCerPem = new String(cerPem, Charset.defaultCharset());
             System.out.println("CERpem " + strCerPem);
@@ -677,7 +700,7 @@ public class BeanFacturacion implements Serializable {
 
             advanswsdl_pkg.AdvanswsdlPortType port = service.getadvanswsdlPort();
             System.out.println("Antes de Cancelar");
-           respuesta = port.cancelar(API_KEY, data.getRfcEmisor(), data.getUuid(), strKeyPem, strCerPem);
+            respuesta = port.cancelar(API_KEY, data.getRfcEmisor(), data.getUuid(), strKeyPem, strCerPem);
             System.out.println("despues de cancelar");
             System.out.println("codes:  " + respuesta.getCode());
             System.out.println("mensajes: " + respuesta.getMessage());
@@ -685,21 +708,18 @@ public class BeanFacturacion implements Serializable {
             System.out.println("Acuse:  " + respuesta.getAcuse());
 
             data.setIdStatusFk(new BigDecimal(2));
-            if (ifaceFacturas.update(data.getIdFacturaPk(),data.getIdStatusFk()) >= 1) 
-            {
+            if (ifaceFacturas.update(data.getIdFacturaPk(), data.getIdStatusFk()) >= 1) {
                 System.out.println("Entro aqui");
                 if (ifaceProductoFacturado.deleteByIdFacturaFk(data.getIdFacturaPk()) >= 1) {
                     JsfUtil.addSuccessMessageClean("Se ha cancelado la factura con éxito");
                     buscarFacturas();
-                     System.out.println("Entro aqui 2");
+                    System.out.println("Entro aqui 2");
                 } else {
                     JsfUtil.addErrorMessageClean("Ha ocurrido un error al cancelar la factura");
-                     System.out.println("Entro aqui 3");
+                    System.out.println("Entro aqui 3");
                 }
-            }
-            else
-            {
-                 JsfUtil.addErrorMessageClean("Se cancelo la factura, error al actualizar estatus");
+            } else {
+                JsfUtil.addErrorMessageClean("Se cancelo la factura, error al actualizar estatus");
             }
 
         } catch (IOException ex) {
@@ -921,6 +941,7 @@ public class BeanFacturacion implements Serializable {
 
             nList = doc.getElementsByTagName("tfd:TimbreFiscalDigital");
             //System.out.println("-----------Timbre Fiscal-----------------");
+
             for (int temp = 0; temp < nList.getLength(); temp++) {
                 Node nNode = nList.item(temp);
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
@@ -1169,6 +1190,7 @@ public class BeanFacturacion implements Serializable {
         nuevaFactura.setIdLlaveFk(ventaMayoreo.getIdVentaMayoreoPk());
         nuevaFactura.setNombreArchivoTimbrado(datosCliente.getRfc() + "_" + ventaMayoreo.getIdSucursalFk().toString() + "_" + ventaMayoreo.getVentaSucursal().toString() + ".xml");
         nuevaFactura.setRfcEmisor(datosEmisor.getRfc());
+        nuevaFactura.setRfcCliente(datosCliente.getRfc());
 
         Path path = Paths.get(pathFacturaClienteTimbrado);
         byte[] data = Files.readAllBytes(path);
@@ -1227,7 +1249,7 @@ public class BeanFacturacion implements Serializable {
 //            System.out.println("subcodes:  " + respuesta.getSubCode());
 //            System.out.println("CFDI:  " + respuesta.getCFDI());
 //            System.out.println("timbres:  " + respuesta.getCFDI());
-            nuevaFactura.setUuid(respuesta.getCFDI());
+            
 
             try {
                 PrintWriter writer = new PrintWriter(pathFacturaClienteTimbrado, "UTF-8");

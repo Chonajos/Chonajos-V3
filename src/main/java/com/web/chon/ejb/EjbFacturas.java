@@ -29,13 +29,14 @@ public class EjbFacturas implements NeogocioFacturas {
 
     @Override
     public int insert(FacturaPDFDomain factura) {
+        System.out.println("==================================================factura: "+factura.toString());
 
         try {
             Query query = em.createNativeQuery("INSERT INTO FACTURAS "
                     + "(ID_FACTURA_PK,ID_NUMERO_FACTURA,FECHA_TIMBRADO,ID_CLIENTE_FK,"
                     + "ID_SUCURSAL_FK,ID_LLAVE_VENTA_FK,\n"
                     + "ID_TIPO_LLAVE_FK,OBSERVACIONES,FECHA_EMISION,ID_USUARIO_FK,ID_STATUS_FK,NOMBRE_FACTURA_TIMBRADA,\n"
-                    + "RFC_EMISOR,CADENA_ORIGINAL,IMPORTE,DESCUENTO,IVA,UUID,RFC_CLIENTE) values (?,?,?,?,?,?,?,?,sysdate,?,?,?,?,?,?,?,?,?,?)");
+                    + "RFC_EMISOR,CADENA_ORIGINAL,IMPORTE,DESCUENTO,IVA,RFC_CLIENTE) values (?,?,?,?,?,?,?,?,sysdate,?,?,?,?,?,?,?,?,?)");
             query.setParameter(1, factura.getIdFacturaPk());
             query.setParameter(2, factura.getNumeroFactura());
             query.setParameter(3, factura.getFechaCertificacion());
@@ -57,8 +58,7 @@ public class EjbFacturas implements NeogocioFacturas {
             query.setParameter(14, factura.getImporte());
             query.setParameter(15, factura.getDescuento());
             query.setParameter(16, factura.getIva1());
-            query.setParameter(17, factura.getUuid());
-            query.setParameter(18, factura.getRfcCliente());
+            query.setParameter(17, factura.getRfcCliente());
 
             return query.executeUpdate();
         } catch (Exception ex) {
