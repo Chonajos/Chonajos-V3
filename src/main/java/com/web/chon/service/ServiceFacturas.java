@@ -119,10 +119,12 @@ public class ServiceFacturas implements IfaceFacturas {
             factura.setNombreSucursal(obj[11] == null ? null : obj[11].toString());
             factura.setIdStatusFk(obj[12] == null ? null : new BigDecimal(obj[12].toString()));
             factura.setNombreArchivoTimbrado(obj[13] == null ? null : obj[13].toString());
-            factura.setRfcCliente(obj[14] == null ? null : obj[14].toString());
+            factura.setRfcEmisor(obj[14] == null ? null : obj[14].toString());
+            
             byte [] cad = (byte[]) obj[15];
             String cadena = new String(cad);
             factura.setCadena(cadena);
+            //factura.setRfcEmisor(cadena);
             
             factura.setImporte(obj[16] == null ? null : new BigDecimal(obj[16].toString()));
             factura.setDescuento(obj[17] == null ? null : new BigDecimal(obj[17].toString()));
@@ -132,6 +134,8 @@ public class ServiceFacturas implements IfaceFacturas {
             //para cancelar
             factura.setCertificadoCancelar(obj[20] == null ? null : obj[20].toString());
             factura.setKeyCancelar(obj[21] == null ? null : obj[21].toString());
+            
+            factura.setRfcCliente(obj[22] == null ? null : obj[22].toString());
             
             
             if (factura.getIdStatusFk().intValue() == 1) {
