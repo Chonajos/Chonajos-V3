@@ -113,6 +113,11 @@ public class FacturaPDFDomain implements Serializable {
     private String nSerieCertificadoSAT;
     private Date fechaCertificacion;
     private StreamedContent file;
+    
+    private String keyCancelar;
+    private String certificadoCancelar;
+    
+    private String uuid;
 
     @Override
     public String toString() {
@@ -693,6 +698,30 @@ public class FacturaPDFDomain implements Serializable {
 
     public void setNombreArchivoTimbrado(String nombreArchivoTimbrado) {
         this.nombreArchivoTimbrado = nombreArchivoTimbrado;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public String getKeyCancelar() {
+        return keyCancelar;
+    }
+
+    public void setKeyCancelar(String keyCancelar) {
+        this.keyCancelar = keyCancelar;
+    }
+
+    public String getCertificadoCancelar() {
+        return certificadoCancelar;
+    }
+
+    public void setCertificadoCancelar(String certificadoCancelar) {
+        this.certificadoCancelar = certificadoCancelar;
     }
     
     

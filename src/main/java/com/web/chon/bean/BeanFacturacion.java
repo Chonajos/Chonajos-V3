@@ -6,6 +6,7 @@
 package com.web.chon.bean;
 
 import advanswsdl_pkg.AdvanswsdlLocator;
+import advanswsdl_pkg.RespuestaCancelacion;
 import advanswsdl_pkg.RespuestaTimbre2;
 import com.web.chon.dominio.CatalogoSat;
 import com.web.chon.dominio.Cliente;
@@ -83,6 +84,7 @@ import com.web.chon.service.IfaceProductoFacturado;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
 import java.sql.SQLException;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.primefaces.context.RequestContext;
@@ -199,9 +201,7 @@ public class BeanFacturacion implements Serializable {
     private static final BigDecimal CERO = new BigDecimal(0);
 
     //nunca cambia, lo proporciono el pac PRUEBAS
-    
     //private static String API_KEY = "1e550c937ba7cf3f65a6136ae86add2b";
-    
     private static String API_KEY = "7ecfe40342406c370e09029125103ac3";
     private String pathFacturaClienteComprobante;
     private String pathFacturaClienteTimbrado;
@@ -653,6 +653,58 @@ public class BeanFacturacion implements Serializable {
     }
 
     public void cancelarFactura() {
+        try {
+//            String UUID = "FFFFFFFF-3861-A0BE-2044-76E36DDD09E0";
+            
+            String pathCancelar = Constantes.PATHLOCALFACTURACION+"Empresas"+File.separatorChar+data.getRfcEmisor()+File.separatorChar;
+            //
+            Path pathKey = Paths.get(pathCancelar+data.getKeyCancelar());
+            System.out.println("PathKey: "+pathKey);
+            byte[] keyPem = Files.readAllBytes(pathKey);
+            String strKeyPem = new String(keyPem, Charset.defaultCharset());
+            System.out.println("keypem " + strKeyPem);
+
+            Path pathCert = Paths.get(pathCancelar+data.getCertificadoCancelar());
+            System.out.println("pathCert: "+pathCert);
+            byte[] cerPem = Files.readAllBytes(pathCert);
+            String strCerPem = new String(cerPem, Charset.defaultCharset());
+            System.out.println("CERpem " + strCerPem);
+
+            RespuestaCancelacion respuesta = new RespuestaCancelacion();
+            AdvanswsdlLocator service = new AdvanswsdlLocator();
+
+            System.out.println("se acrgaron variable");
+
+            advanswsdl_pkg.AdvanswsdlPortType port = service.getadvanswsdlPort();
+            System.out.println("Antes de Cancelar");
+           respuesta = port.cancelar(API_KEY, data.getRfcEmisor(), data.getUuid(), strKeyPem, strCerPem);
+            System.out.println("despues de cancelar");
+            System.out.println("codes:  " + respuesta.getCode());
+            System.out.println("mensajes: " + respuesta.getMessage());
+            System.out.println("subcodes:  " + respuesta.getSubCode());
+            System.out.println("Acuse:  " + respuesta.getAcuse());
+            
+            
+            data.setIdStatusFk(new BigDecimal(2));
+            if(ifaceFacturas.update(data)==1)
+            {
+                if(ifaceProductoFacturado.deleteByIdFacturaFk(data.getIdFacturaPk())==1)
+                {
+                    JsfUtil.addSuccessMessageClean("Se ha cancelado la factura con éxito");
+                }
+                else
+                {
+                    JsfUtil.addErrorMessageClean("Ha ocurrido un error al cancelar la factura");
+                }
+            }
+            
+            
+
+        } catch (IOException ex) {
+            Logger.getLogger(BeanFacturacion.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(BeanFacturacion.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }
 
@@ -678,6 +730,7 @@ public class BeanFacturacion implements Serializable {
         try {
             String rutaTimbradoData = Constantes.PATHLOCALFACTURACION + "Clientes" + File.separatorChar + data.getRfcCliente() + File.separatorChar + "TIMBRADO" + File.separatorChar + data.getNombreArchivoTimbrado();
             paramReport.put("cadena", data.getCadena());
+            paramReport.put("numeroFactura", data.getNumeroFactura());
             BigDecimal totalTemporal = new BigDecimal(0);
             String folioQR = "";
             String rfcReceptorQR = "";
@@ -1113,7 +1166,7 @@ public class BeanFacturacion implements Serializable {
         }
         nuevaFactura.setIdLlaveFk(ventaMayoreo.getIdVentaMayoreoPk());
         nuevaFactura.setNombreArchivoTimbrado(datosCliente.getRfc() + "_" + ventaMayoreo.getIdSucursalFk().toString() + "_" + ventaMayoreo.getVentaSucursal().toString() + ".xml");
-        nuevaFactura.setRfcEmisor(datosCliente.getRfc());
+        nuevaFactura.setRfcEmisor(datosEmisor.getRfc());
 
         Path path = Paths.get(pathFacturaClienteTimbrado);
         byte[] data = Files.readAllBytes(path);
@@ -1172,6 +1225,8 @@ public class BeanFacturacion implements Serializable {
 //            System.out.println("subcodes:  " + respuesta.getSubCode());
 //            System.out.println("CFDI:  " + respuesta.getCFDI());
 //            System.out.println("timbres:  " + respuesta.getCFDI());
+              nuevaFactura.setUuid(respuesta.getCFDI());
+
             try {
                 PrintWriter writer = new PrintWriter(pathFacturaClienteTimbrado, "UTF-8");
                 writer.println(respuesta.getCFDI());
@@ -1254,7 +1309,7 @@ public class BeanFacturacion implements Serializable {
 //   
     }
 
-    public void crearFactura() throws Exception {
+    public String crearFactura() throws Exception {
         String men = verificarDatos();
         //System.out.println("MensajeBean: " + men);
         if (men.equals("")) {
@@ -1346,9 +1401,11 @@ public class BeanFacturacion implements Serializable {
                 subTotal = null;
                 total = null;
             }
+            return "facturacion";
         }//fin if validaciones
         else {
             JsfUtil.addErrorMessageClean("Error: " + men);
+            return null;
         }
 
     }

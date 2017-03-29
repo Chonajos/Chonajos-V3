@@ -120,5 +120,12 @@ public class ServiceProductoFacturado implements IfaceProductoFacturado {
     
     }
 
+    @Override
+    public int deleteByIdFacturaFk(BigDecimal idFacturaFk) {
+        getEjb();
+        return ejb.deleteByIdFacturaFk(idFacturaFk);
+    
+    }
+
     
 }

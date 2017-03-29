@@ -140,6 +140,9 @@
                                      emptyMessage="No se encontraron Registros" 
                                      rendered="#{beanFacturacion.viewEstate =='init'}">
 
+                            <p:column headerText="N° Factura" width="60px;" class="alignCenter">
+                                <h:outputText value="#{model.numeroFactura}"/>
+                            </p:column>
                             <p:column headerText="Sucursal" width="100px;" class="alignCenter">
                                 <h:outputText value="#{model.nombreSucursal}" />
                             </p:column>
@@ -188,7 +191,7 @@
                                 </p:commandButton>
                             </p:column>
                             <p:column headerText="Cancelar" width="60px;" class="alignCenter">
-                                <p:commandButton id="cancel" disabled="true"  ajax="true" process="@this" action="#{beanFacturacion.cancelarFactura()}" icon="ui-icon-trash" styleClass="ui-priority-primary" update=":formContent">
+                                <p:commandButton id="cancel"   ajax="true" process="@this" action="#{beanFacturacion.cancelarFactura()}" icon="ui-icon-trash" styleClass="ui-priority-primary" update=":formContent">
                                     <f:setPropertyActionListener value="#{model}" target="#{beanFacturacion.data}"/>
                                     <p:confirm header="Confirmación" message="¿Estás seguro de rechazar el gasto?" icon="ui-icon-alert"/>
                                 </p:commandButton>

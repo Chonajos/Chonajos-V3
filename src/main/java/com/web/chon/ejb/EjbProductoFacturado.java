@@ -141,4 +141,19 @@ public class EjbProductoFacturado implements NegocioProductoFacturado {
         }
 
     }
+
+    @Override
+    public int deleteByIdFacturaFk(BigDecimal idFacturaFk) {
+       System.out.println("IdFacturaPk: " + idFacturaFk);
+        try {
+
+            Query query = em.createNativeQuery("DELETE  PRODUCTO_FACTURADO WHERE ID_FACTURA_FK=?");
+            query.setParameter(1, idFacturaFk);
+            return query.executeUpdate();
+        } catch (Exception ex) {
+            logger.error("Error > " + ex.getMessage());
+            return 0;
+        }
+    
+    }
 }

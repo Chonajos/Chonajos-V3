@@ -82,7 +82,9 @@ public class ServiceFacturas implements IfaceFacturas {
 
     @Override
     public int update(FacturaPDFDomain factura) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        getEjb();
+        return ejb.update(factura);
+    
     }
 
     @Override
@@ -103,7 +105,8 @@ public class ServiceFacturas implements IfaceFacturas {
         for (Object[] obj : lstObject) {
             FacturaPDFDomain factura = new FacturaPDFDomain();
             factura.setIdFacturaPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
-            factura.setNumeroFactura(obj[1] == null ? null : obj[1].toString());
+            String nombreFactura = obj[1] == null ? null : obj[1].toString();
+            factura.setNumeroFactura("B-"+nombreFactura);
             factura.setFechaCertificacion(obj[2] == null ? null : (Date) obj[2]);
             factura.setIdClienteFk(obj[3] == null ? null : new BigDecimal(obj[3].toString()));
             factura.setIdSucursalFk(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
@@ -124,6 +127,12 @@ public class ServiceFacturas implements IfaceFacturas {
             factura.setImporte(obj[16] == null ? null : new BigDecimal(obj[16].toString()));
             factura.setDescuento(obj[17] == null ? null : new BigDecimal(obj[17].toString()));
             factura.setIva1(obj[18] == null ? null : new BigDecimal(obj[18].toString()));
+            factura.setUuid(obj[19] == null ? null : obj[19].toString());
+            
+            //para cancelar
+            factura.setCertificadoCancelar(obj[20] == null ? null : obj[20].toString());
+            factura.setKeyCancelar(obj[21] == null ? null : obj[21].toString());
+            
             
             if (factura.getIdStatusFk().intValue() == 1) {
                 factura.setNombreEstatus("EMITIDA");

@@ -18,6 +18,7 @@ public interface IfaceProductoFacturado {
     public int insert(ProductoFacturado pf);
     public int update(ProductoFacturado pf);
     public int delete(ProductoFacturado pf);
+    public int deleteByIdFacturaFk(BigDecimal idFacturaFk);
     public int getNextVal();
     public ArrayList<ProductoFacturado> getByIdFacturaFk(BigDecimal idFacturaFk);
     public ProductoFacturado getByIdPk(BigDecimal idPk);

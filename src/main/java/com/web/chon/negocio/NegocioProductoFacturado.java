@@ -24,6 +24,6 @@ public interface NegocioProductoFacturado {
     public List<Object[]> getByIdPk(BigDecimal idPk);
     public List<Object[]> getByIdTipoFolioFk(BigDecimal idTipoFk,BigDecimal idVentaFk);
     public List<Object[]> getProductosNoFacturados(BigDecimal idTipoFk,BigDecimal idSucursalFk,String fechaInicio,String fechaFin);
-    
+    public int deleteByIdFacturaFk(BigDecimal idFacturaFk);
     
 }
