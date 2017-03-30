@@ -102,7 +102,7 @@ public class EjbFacturas implements NeogocioFacturas {
     }
 
     @Override
-    public List<Object[]> getFacturasBy(BigDecimal idClienteFk, BigDecimal idSucursalFk, BigDecimal idFolioVentaFk, String fechaInicio, String fechaFin) {
+    public List<Object[]> getFacturasBy(BigDecimal idClienteFk, BigDecimal idSucursalFk, BigDecimal folioFactura, String fechaInicio, String fechaFin, BigDecimal idStatusFk) {
 //        System.out.println("idCliente: " + idClienteFk);
 //        System.out.println("idSucursal: " + idSucursalFk);
 //        System.out.println("folioVenta: " + idFolioVentaFk);
@@ -145,14 +145,14 @@ public class EjbFacturas implements NeogocioFacturas {
 
         }
 
-        if (idFolioVentaFk != null && idFolioVentaFk.intValue() != 0) {
+        if (folioFactura != null && folioFactura.intValue() != 0) {
             if (cont == 0) {
                 cadena.append(" WHERE ");
             } else {
                 cadena.append(" AND ");
             }
 
-            cadena.append(" fa.ID_LLAVE_VENTA_FK = '" + idFolioVentaFk + "' ");
+            cadena.append(" fa.ID_NUMERO_FACTURA = '" + folioFactura + "' ");
             cont++;
         }
 
@@ -164,6 +164,16 @@ public class EjbFacturas implements NeogocioFacturas {
             }
 
             cadena.append(" fa.ID_CLIENTE_FK  = '" + idClienteFk + "' ");
+            cont++;
+        }
+        if (idStatusFk != null && idStatusFk.intValue() != 0) {
+            if (cont == 0) {
+                cadena.append(" WHERE ");
+            } else {
+                cadena.append(" AND ");
+            }
+
+            cadena.append(" fa.ID_STATUS_FK  = '" + idStatusFk + "' ");
             cont++;
         }
 

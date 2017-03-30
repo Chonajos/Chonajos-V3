@@ -135,9 +135,9 @@
                             <p:column style="width:20px">
                                 <p:rowToggler />
                             </p:column>
-                            <!--                            <p:column headerText="Folio Abono" width="60px;" class="alignCenter">
-                                                            <h:outputText value="{model.idAbonoCreditoPk}" />
-                                                        </p:column>-->
+                            <p:column headerText="Folio Abono" width="60px;" class="alignCenter">
+                                <h:outputText value="#{model.idAbonoCreditoPk}" />
+                            </p:column>
 
                             <p:column headerText="Cliente" width="150px;" sortBy="#{model.nombreCliente}" class="alignLeft">
                                 <h:outputText value="#{model.nombreCliente}">
@@ -206,7 +206,7 @@
                                                  styleClass="ui-datatable-hor-scroll" 
                                                  emptyMessage="No se encontraron Registros" 
                                                  rendered="#{beanHistorialAbonos.viewEstate =='init'}">
-                                        
+
                                         <p:column headerText="Origen Crédito" sortBy="#{mode.nombreSucursalOrigenVenta}" width="150px;" class="alignLeft">
                                             <h:outputText value="#{mode.nombreSucursalOrigenVenta}">
                                             </h:outputText>

@@ -663,21 +663,20 @@ public class BeanFacturacion implements Serializable {
                 DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
                 Document doc = dBuilder.parse(inputFile);
                 doc.getDocumentElement().normalize();
-                NodeList nList = doc.getElementsByTagName("cfdi:Comprobante");
+                NodeList nList = doc.getElementsByTagName("tfd:TimbreFiscaldigital");
                 for (int temp = 0; temp < nList.getLength(); temp++) {
                     Node nNode = nList.item(temp);
                     if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                         Element eElement = (Element) nNode;
-                        paramReport.put("version", eElement.getAttribute("version"));
                         //System.out.println("Version : " + eElement.getAttribute("version"));
                         data.setUuid(eElement.getAttribute("UUID"));
                     }
                 }
-                
+
             } catch (Exception e) {
                 System.out.println("Error: " + e.getMessage());
             }
-            System.out.println("DAta: "+data.toString());
+            System.out.println("DAta: " + data.toString());
 
             String pathCancelar = Constantes.PATHLOCALFACTURACION + "Empresas" + File.separatorChar + data.getRfcEmisor() + File.separatorChar;
             //
@@ -737,9 +736,9 @@ public class BeanFacturacion implements Serializable {
     public void buscarFacturas() {
         modelo.clear();
         if (cliente != null && cliente.getIdClientePk() != null) {
-            modelo = ifaceFacturas.getFacturasBy(cliente.getIdClientePk(), idSucursalFk, folioVenta, TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicio), TiempoUtil.getFechaDDMMYYYY(fechaFiltroFin));
+            modelo = ifaceFacturas.getFacturasBy(cliente.getIdClientePk(), idSucursalFk, folioFactura, TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicio), TiempoUtil.getFechaDDMMYYYY(fechaFiltroFin), idStatusFk);
         } else {
-            modelo = ifaceFacturas.getFacturasBy(null, idSucursalFk, folioVenta, TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicio), TiempoUtil.getFechaDDMMYYYY(fechaFiltroFin));
+            modelo = ifaceFacturas.getFacturasBy(null, idSucursalFk, folioFactura, TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicio), TiempoUtil.getFechaDDMMYYYY(fechaFiltroFin), idStatusFk);
 
         }
 
@@ -1213,11 +1212,8 @@ public class BeanFacturacion implements Serializable {
                 pf.setIdProductoFacturadoPk(new BigDecimal(ifaceProductoFacturado.getNextVal()));
                 pf.setImporte(vmp.getTotalVenta());
                 pf.setKilos(vmp.getKilosVendidos());
-
                 ifaceProductoFacturado.insert(pf);
-
             }
-
             //Generar PDF
             JsfUtil.addSuccessMessageClean("Se ha generado la factura exitosamente");
             return 1;
@@ -1243,26 +1239,25 @@ public class BeanFacturacion implements Serializable {
             String xmlCfdi = IOUtils.toString(in);
             advanswsdl_pkg.AdvanswsdlPortType port = service.getadvanswsdlPort();
             respuesta = port.timbrar2(API_KEY, xmlCfdi);
-//            System.out.println("url " + url.openStream());
-//            System.out.println("codes:  " + respuesta.getCode());
-//            System.out.println("mensajes: " + respuesta.getMessage());
-//            System.out.println("subcodes:  " + respuesta.getSubCode());
-//            System.out.println("CFDI:  " + respuesta.getCFDI());
-//            System.out.println("timbres:  " + respuesta.getCFDI());
-            
+            if (respuesta.getCode().equals(200)) {
+                //Solictud de timbrado procesada.
 
-            try {
-                PrintWriter writer = new PrintWriter(pathFacturaClienteTimbrado, "UTF-8");
-                writer.println(respuesta.getCFDI());
-                writer.close();
-                //System.out.println("Se Guardo Correctamente el archivo Timbrado");
-                if (insertarFactura() == 1) {
-                    bandera = 1;
+                try {
+                    PrintWriter writer = new PrintWriter(pathFacturaClienteTimbrado, "UTF-8");
+                    writer.println(respuesta.getCFDI());
+                    writer.close();
+                    //System.out.println("Se Guardo Correctamente el archivo Timbrado");
+                    if (insertarFactura() == 1) {
+                        bandera = 1;
+                    }
+                } catch (IOException e) {
+                    //System.out.println("Error al generar archivo Timbrado");
+                    JsfUtil.addErrorMessageClean("Ocurrió un error al generar archivo timbrado");
+                    bandera = 0;
                 }
-            } catch (IOException e) {
-                //System.out.println("Error al generar archivo Timbrado");
-                JsfUtil.addErrorMessageClean("Ocurrió un error al generar archivo timbrado");
-                bandera = 0;
+            } else {
+                JsfUtil.addErrorMessageClean("Error: " + respuesta.getMessage());
+                bandera =0;
             }
 
         } catch (MalformedURLException ex) {
@@ -1414,10 +1409,12 @@ public class BeanFacturacion implements Serializable {
             nuevaFactura.setCadena(cfd.getCadenaOriginal());
             outFile.close();
 
-            if (timbrar() == 1) {
+            if (timbrar() == 1)
+            {
                 datosCliente = new Cliente();
                 ventaMayoreo = new VentaMayoreo();
-                if (selectedProductosVentas != null) {
+                if (selectedProductosVentas != null) 
+                {
                     selectedProductosVentas.clear();
                 }
                 importeParcialidad = null;
@@ -1425,6 +1422,7 @@ public class BeanFacturacion implements Serializable {
                 subTotal = null;
                 total = null;
             }
+            
             return "facturacion";
         }//fin if validaciones
         else {

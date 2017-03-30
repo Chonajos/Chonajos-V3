@@ -127,5 +127,34 @@ public class ServiceProductoFacturado implements IfaceProductoFacturado {
     
     }
 
+    @Override
+    public ArrayList<VentaProductoMayoreo> getProductosNoFacturadosAbonos(BigDecimal idTipoFk, BigDecimal folioAbono) {
+         getEjb();
+
+        List<Object[]> lstObject = new ArrayList<Object[]>();
+        ArrayList<VentaProductoMayoreo> lstProductoNoFacturado = new ArrayList<VentaProductoMayoreo>();
+        lstObject = ejb.getProductosNoFacturadosAbonos( idTipoFk,  folioAbono);
+        
+        for (Object[] obj : lstObject) {
+            VentaProductoMayoreo dominio = new VentaProductoMayoreo();
+            dominio.setIdVentaMayProdPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+            //dominio.setIdVentaMayoreoFk(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
+            //dominio.setFolioVenta(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
+            dominio.setNombreProducto(obj[1] == null ? null : obj[3].toString());
+            dominio.setNombreEmpaque(obj[2] == null ? null : obj[4].toString());
+            dominio.setCantidadEmpaque(obj[3] == null ? null : new BigDecimal(obj[5].toString()));
+            dominio.setKilosVendidos(obj[4] == null ? null : new BigDecimal(obj[6].toString()));
+            dominio.setPrecioProducto(obj[5] == null ? null : new BigDecimal(obj[7].toString()));
+            dominio.setTotalVenta(obj[6] == null ? null : new BigDecimal(obj[8].toString()));
+            dominio.setIdTipoVenta(idTipoFk);
+           
+            lstProductoNoFacturado.add(dominio);
+        }
+        return lstProductoNoFacturado;
+    
+    
+    
+    }
+
     
 }

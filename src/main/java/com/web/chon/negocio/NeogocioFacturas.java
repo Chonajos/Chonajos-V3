@@ -21,7 +21,7 @@ public interface NeogocioFacturas {
     public int update(BigDecimal  idFacturaFk,BigDecimal idStatusFk);
     public List<Object[]> getFacturaByIdPk(BigDecimal idFacturaPk);
     public List<Object[]> getFacturaByIdNumeroFac(BigDecimal idFacturaPk);
-    public List<Object[]> getFacturasBy(BigDecimal idClienteFk,BigDecimal idSucursalFk,BigDecimal idFolioVentaFk,String fechaInicio,String fechaFin);
+    public List<Object[]> getFacturasBy(BigDecimal idClienteFk,BigDecimal idSucursalFk,BigDecimal folioFactura,String fechaInicio,String fechaFin,BigDecimal idStatusFk);
     public int getNextVal();
     public int getLastNumeroFactura();
     public int insertarDocumento(BigDecimal id, byte[] fichero) throws SQLException;

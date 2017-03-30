@@ -156,4 +156,45 @@ public class EjbProductoFacturado implements NegocioProductoFacturado {
         }
     
     }
+    @Override
+    public List<Object[]> getProductosNoFacturadosAbonos(BigDecimal idTipoFk, BigDecimal folioAbono) {
+        try {
+            System.out.println("IdTipoVenta: "+idTipoFk);
+            System.out.println("folioAbono: "+folioAbono);
+            StringBuffer cadena = new StringBuffer("");
+            Query query;
+            if (idTipoFk.intValue() == 1) 
+            {//mayoreo
+                cadena = new StringBuffer("SELECT * FROM(select \n" +
+"vmp.ID_V_M_P_PK,sub.NOMBRE_SUBPRODUCTO,te.NOMBRE_EMPAQUE,\n" +
+"vmp.CANTIDAD_EMPAQUE,vmp.KILOS_VENDIDOS,vmp.PRECIO_PRODUCTO,vmp.TOTAL_VENTA\n" +
+"from ABONO_CREDITO ac inner join\n" +
+"CREDITO cre on cre.ID_CREDITO_PK = ac.ID_CREDITO_FK \n" +
+"inner join VENTA_MAYOREO vm on vm.ID_VENTA_MAYOREO_PK = cre.ID_VENTA_MAYOREO\n" +
+"inner join VENTAMAYOREOPRODUCTO vmp on vmp.ID_VENTA_MAYOREO_FK = vm.ID_VENTA_MAYOREO_PK\n" +
+"inner join SUBPRODUCTO sub on sub.ID_SUBPRODUCTO_PK = vmp.ID_SUBPRODUCTO_FK\n" +
+"inner join TIPO_EMPAQUE te on te.ID_TIPO_EMPAQUE_PK = vmp.ID_TIPO_EMPAQUE_FK\n" +
+"where ac.NUMERO_ABONO = "+folioAbono+ " ) T1\n" +
+"WHERE NOT EXISTS (SELECT * FROM PRODUCTO_FACTURADO PF \n" +
+"WHERE PF.ID_LLAVE_FK=T1.ID_V_M_P_PK and  PF.ID_TIPO_LLAVE_FK="+idTipoFk+ " ) ");
+            query = em.createNativeQuery(cadena.toString());
+            } else {
+                cadena = new StringBuffer("");
+                query = em.createNativeQuery(cadena.toString());
+            }
+
+            
+            List<Object[]> resultList = null;
+            System.out.println("Query: "+query.toString());
+            resultList = query.getResultList();
+
+            return resultList;
+
+        } catch (Exception ex) {
+            logger.error("Error > " + ex.getMessage());
+            return null;
+        }
+
+    }
+
 }

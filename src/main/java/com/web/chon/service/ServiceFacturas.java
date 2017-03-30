@@ -98,10 +98,10 @@ public class ServiceFacturas implements IfaceFacturas {
     }
 
     @Override
-    public ArrayList<FacturaPDFDomain> getFacturasBy(BigDecimal idClienteFk, BigDecimal idSucursalFk, BigDecimal idFolioVentaFk, String fechaInicio, String fechaFin) {
+    public ArrayList<FacturaPDFDomain> getFacturasBy(BigDecimal idClienteFk, BigDecimal idSucursalFk, BigDecimal folioFactura, String fechaInicio, String fechaFin,BigDecimal idStatusFk) {
         getEjb();
         ArrayList<FacturaPDFDomain> listaDatos = new ArrayList<FacturaPDFDomain>();
-        List<Object[]> lstObject = ejb.getFacturasBy(idClienteFk, idSucursalFk, idFolioVentaFk, fechaInicio, fechaFin);
+        List<Object[]> lstObject = ejb.getFacturasBy(idClienteFk, idSucursalFk, folioFactura, fechaInicio, fechaFin,idStatusFk);
         for (Object[] obj : lstObject) {
             FacturaPDFDomain factura = new FacturaPDFDomain();
             factura.setIdFacturaPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));

@@ -24,4 +24,5 @@ public interface IfaceProductoFacturado {
     public ProductoFacturado getByIdPk(BigDecimal idPk);
     public ArrayList<ProductoFacturado> getByIdTipoFolioFk(BigDecimal idTipoFk,BigDecimal idVentaFk);
     public ArrayList<VentaProductoMayoreo>  getProductosNoFacturados(BigDecimal idTipoFk,BigDecimal idSucursalFk,String fechaInicio,String fechaFin);
+    public ArrayList<VentaProductoMayoreo>  getProductosNoFacturadosAbonos(BigDecimal idTipoFk, BigDecimal folioAbono);
 }

@@ -19,7 +19,7 @@ public interface IfaceFacturas {
     public int update(BigDecimal  idFacturaFk,BigDecimal idStatusFk);
     public FacturaPDFDomain getFacturaByIdPk(BigDecimal idFacturaPk);
     public FacturaPDFDomain getFacturaByIdNumeroFac(BigDecimal idFacturaPk);
-    public ArrayList<FacturaPDFDomain> getFacturasBy(BigDecimal idClienteFk,BigDecimal idSucursalFk,BigDecimal idFolioVentaFk,String fechaInicio,String fechaFin);
+    public ArrayList<FacturaPDFDomain> getFacturasBy(BigDecimal idClienteFk,BigDecimal idSucursalFk,BigDecimal idFolioVentaFk,String fechaInicio,String fechaFin,BigDecimal idStatusFk);
     public int getNextVal();
     public int getLastNumeroFactura();
 }

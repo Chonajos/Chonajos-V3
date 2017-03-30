@@ -17,16 +17,17 @@
                     <p:commandButton value="No" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
                 </p:confirmDialog>
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 ">
+                    <div class="col-lg-5 col-md-6 col-sm-12 col-xs-12 ">
                         <h3>#{beanFacturacion.title}</h3>
                     </div>
-                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 alignRight ">
+                    <div class="col-lg-7 col-md-6 col-sm-12 col-xs-12 alignRight ">
                         <div class="form-group" align="right">
                             <p:commandButton value="Consultar" onclick="PF('statusDialog').show()" update=":formContent" rendered="#{beanFacturacion.viewEstate=='init'}" ajax="true" disabled="false" action="#{beanFacturacion.buscarFacturas()}"/>
                             <p:outputLabel class="col-lg-3 col-md-5 col-sm-4 col-xs-12 alignRight" rendered="#{beanFacturacion.viewEstate=='generate' || beanFacturacion.viewEstate=='generateVentaMostrador'}"  for="selectFiltro" value ="Tipo de Factura:" /> 
                             <p:selectOneMenu  style="width: 30% !important" id="selectTipoFactura" rendered="#{beanFacturacion.viewEstate=='generate' || beanFacturacion.viewEstate=='generateVentaMostrador'}" class="col-lg-5 col-md-7 col-sm-8 col-xs-12" value="#{beanFacturacion.filtroMostrador}" >
                                 <f:selectItem itemLabel="Factura  sobre Venta" itemValue="1"/>
                                 <f:selectItem itemLabel="Factura sobre Venta General" itemValue="2"/>
+                                 <f:selectItem itemLabel="Factura sobre Abono de Cŕedito" itemValue="3"/>
                                 <p:ajax event="change" update=":formContent" listener="#{beanFacturacion.changeViewMostrador()}"/>
                             </p:selectOneMenu>
                             <p:commandButton value="Atrás" onclick="PF('statusDialog').show()" update=":formContent"  rendered="#{beanFacturacion.viewEstate=='generate' || beanFacturacion.viewEstate=='generateVentaMostrador'}" ajax="true" disabled="false" action="#{beanFacturacion.backView()}" immediate="true"/>
@@ -63,12 +64,7 @@
                                 <pe:keyFilter regEx="/[0-9 .]/i"/>
                             </p:inputText>
                         </div>
-                        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 ">
-                            <p:outputLabel  class="col-lg-5 col-md-3 col-sm-4 col-xs-6 alignLeft"  for="txtFolioVenta" id="labelFolioVenta" value ="Folio Venta:" /> 
-                            <p:inputText id="txtFolioVenta" maxlength="8" class=" col-lg-4 col-md-4 col-sm-8 col-xs-6" value="#{beanFacturacion.folioVenta}" required="false">
-                                <pe:keyFilter regEx="/[0-9 .]/i"/>
-                            </p:inputText>
-                        </div>
+                        
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignRight"  for="comboSucursal" value ="Sucursal:" rendered="#{beanFacturacion.viewEstate =='init'}" /> 
                             <p:selectOneMenu  style="width: 65% !important"   id="comboSucursal" class="col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanFacturacion.idSucursalFk}" rendered="#{beanRelacionGastos.viewEstate =='init'}" >
