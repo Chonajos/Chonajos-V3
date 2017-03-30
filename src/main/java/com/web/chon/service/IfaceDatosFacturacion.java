@@ -17,6 +17,8 @@ public interface IfaceDatosFacturacion {
     public int updateDatosFacturacion(DatosFacturacion df);
     public int getNextVal();
     public ArrayList<DatosFacturacion> getByIdSucursal(BigDecimal idSucursal);
+    public DatosFacturacion getByRfc(String rfc);
+    
     
     /**
      * Obtine todas las razones sociales

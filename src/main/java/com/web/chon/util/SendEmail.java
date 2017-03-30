@@ -82,11 +82,11 @@ public class SendEmail {
             BodyPart texto = new MimeBodyPart();
             texto.setText(mensaje);
 
-            BodyPart adjunto = new MimeBodyPart();
-
             //Se preparan los archivos adjuntos
             if (lstFileDataSource != null) {
                 for (FileDataSource fileDataSource : lstFileDataSource) {
+                    BodyPart adjunto = new MimeBodyPart();
+                    
                     adjunto.setDataHandler(new DataHandler(fileDataSource));
                     adjunto.setFileName(fileDataSource.getName());
                     multiParte.addBodyPart(adjunto);

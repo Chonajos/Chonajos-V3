@@ -117,21 +117,21 @@ public class ServiceDatosFacturacion implements IfaceDatosFacturacion {
     @Override
     public int deleteDatosFacturacion(BigDecimal idDatosFacturacion) {
         getEjb();
-        
+
         return ejb.delete(idDatosFacturacion);
     }
 
     @Override
     public int insertarDatosFacturacion(DatosFacturacion df) {
         getEjb();
-        
+
         return ejb.insert(df);
     }
 
     @Override
     public int updateDatosFacturacion(DatosFacturacion df) {
         getEjb();
-        
+
         return ejb.update(df);
     }
 
@@ -188,6 +188,46 @@ public class ServiceDatosFacturacion implements IfaceDatosFacturacion {
         }
 
         return lstDatosFacturacion;
+    }
+
+    @Override
+    public DatosFacturacion getByRfc(String rfc) {
+        getEjb();
+        List<Object[]> lstObject = ejb.getByRfc(rfc);
+        DatosFacturacion df = new DatosFacturacion();
+        for (Object[] obj : lstObject) {
+
+            df.setIdDatosFacturacionPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+            df.setIdClienteFk(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
+            df.setIdSucursalFk(obj[2] == null ? null : new BigDecimal(obj[2].toString()));
+            df.setRazonSocial(obj[3] == null ? null : obj[3].toString());
+            df.setRfc(obj[4] == null ? null : obj[4].toString());
+            df.setCalle(obj[5] == null ? null : obj[5].toString());
+            df.setNumInt(obj[6] == null ? null : obj[6].toString());
+            df.setNumExt(obj[7] == null ? null : obj[7].toString());
+            df.setPais(obj[8] == null ? null : obj[8].toString());
+            df.setLocalidad(obj[9] == null ? null : obj[9].toString());
+            df.setIdCodigoPostalFk(obj[10] == null ? null : new BigDecimal(obj[10].toString()));
+
+            df.setTelefono(obj[11] == null ? null : obj[11].toString());
+            df.setCorreo(obj[12] == null ? null : obj[12].toString());
+            df.setRegimen(obj[13] == null ? null : obj[13].toString());
+            df.setField(obj[14] == null ? null : obj[14].toString());
+            df.setRuta_llave_privada(obj[15] == null ? null : obj[15].toString());
+            df.setRuta_certificado(obj[16] == null ? null : obj[16].toString());
+            df.setRuta_llave_privada_cancel(obj[17] == null ? null : obj[17].toString());
+            df.setRuta_certificado_cancel(obj[18] == null ? null : obj[18].toString());
+            df.setClavePublica(obj[19] == null ? null : obj[19].toString());
+            df.setCodigoPostal(obj[20] == null ? null : obj[20].toString());
+            if (df.getCodigoPostal().length() < 5) {
+                df.setCodigoPostal("0" + df.getCodigoPostal());
+            }
+            df.setColonia(obj[21] == null ? null : obj[21].toString());
+            df.setMunicipio(obj[22] == null ? null : obj[22].toString());
+            df.setEstado(obj[23] == null ? null : obj[23].toString());
+
+        }
+        return df;
     }
 
 }

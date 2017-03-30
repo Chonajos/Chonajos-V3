@@ -81,6 +81,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 import com.web.chon.service.IfaceFacturas;
 import com.web.chon.service.IfaceProductoFacturado;
+import com.web.chon.util.SendEmail;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -94,6 +95,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.Path;
 import java.util.Random;
+import javax.activation.FileDataSource;
 
 /**
  *
@@ -213,6 +215,8 @@ public class BeanFacturacion implements Serializable {
     Comprobante comp;
     private BigDecimal numeroCuenta;
     private BigDecimal importeVentaPublico;
+
+    private String correo;
 
     @PostConstruct
     public void init() {
@@ -582,8 +586,7 @@ public class BeanFacturacion implements Serializable {
         ventaMayoreo = new VentaMayoreo();
         datosCliente = new Cliente();
         totalVenta = new BigDecimal(0);
-        if (filtroMostrador == 1) 
-        {
+        if (filtroMostrador == 1) {
             ventaMayoreo = ifaceVentaMayoreo.getVentaMayoreoByFolioidSucursalFk(folioVentaG, new BigDecimal(usuario.getSucId()));
             //ventaMayoreo.setIdtipoVentaFk(new BigDecimal(1));
             ventaMayoreo.setBanderaVentaMenudeo(false);
@@ -735,6 +738,36 @@ public class BeanFacturacion implements Serializable {
     }
 
     public void enviarFactura() {
+
+        abreXML();
+        String filePathPDF = Constantes.PATHLOCALFACTURACION + "Clientes" + File.separatorChar + data.getRfcCliente() + File.separatorChar + "TIMBRADO" + File.separatorChar + data.getNombreArchivoTimbrado();
+        String filePathXML = rutaPDF;
+
+        String mensaje = "Gracias por comprar en chonajos;\n"
+                + "adjuntamos archivos digitales de su factura.\n\n"
+                + "Saludos";
+
+        String asunto = "Factura";
+
+        ArrayList<String> lstCorreoPara = new ArrayList<String>();
+
+        if (correo != null) {
+            String correos[] = correo.split(";");
+            for (int i = 0; i >= correos.length; i++) {
+                lstCorreoPara.add(correos[i]);
+            }
+
+        }
+
+        FileDataSource pdf = new FileDataSource(filePathPDF);
+        FileDataSource xml = new FileDataSource(filePathXML);
+
+        ArrayList<FileDataSource> lstFileDataSource = new ArrayList<FileDataSource>();
+
+        lstFileDataSource.add(xml);
+        lstFileDataSource.add(pdf);
+
+        SendEmail.sendAdjunto(asunto, mensaje, lstFileDataSource, "juancruzh91@gmail.com", lstCorreoPara);
 
     }
 
@@ -1582,16 +1615,6 @@ public class BeanFacturacion implements Serializable {
         return imps;
     }
 
-    public void generarFactura() {
-        /* Aqui va todo el codigo de Juan para generar la factura
-        hasta la inserción en la base de datos.
-         */
-    }
-
-    private void setParameters() {
-        //paramReport.put("razonSocialEmpresa",);
-    }
-
     public ArrayList<Cliente> autoCompleteCliente(String nombreCliente) {
         lstCliente = ifaceCatCliente.getClienteByNombreCompleto(nombreCliente.toUpperCase());
         return lstCliente;
@@ -1701,6 +1724,23 @@ public class BeanFacturacion implements Serializable {
             System.out.println("Error >" + exception.getMessage());
 
         }
+    }
+
+    public void getCorreoCliente() {
+        Cliente c = ifaceCatCliente.getClienteById(data.getIdClienteFk());
+        DatosFacturacion df = ifaceDatosFacturacion.getByRfc(data.getRfcEmisor());
+
+        if (c != null && c.getCorreo() != null) {
+            correo = c.getCorreo();
+        }
+        
+       if(df != null && df.getCorreo() != null){
+           if(correo != null && !correo.isEmpty()){
+               correo+=";"+df.getCorreo();
+           }else{
+               correo=df.getCorreo();
+           }
+       }
     }
 
     public String getRutaPDF() {
@@ -2237,6 +2277,14 @@ public class BeanFacturacion implements Serializable {
 
     public void setImporteVentaPublico(BigDecimal importeVentaPublico) {
         this.importeVentaPublico = importeVentaPublico;
+    }
+
+    public String getCorreo() {
+        return correo;
+    }
+
+    public void setCorreo(String correo) {
+        this.correo = correo;
     }
 
 }

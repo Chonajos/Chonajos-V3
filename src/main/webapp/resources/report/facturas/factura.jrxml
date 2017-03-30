@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2017-03-29T10:04:43 -->
+<!-- 2017-03-29T12:05:15 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EntradaMayoreoV1" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Error" uuid="df013db5-f76e-44d3-b0df-bcbc46d93160">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
@@ -398,6 +398,7 @@
 	<parameter name="NumCtaPago" class="java.lang.String"/>
 	<parameter name="nombreFormaPago" class="java.lang.String"/>
 	<parameter name="labelIva" class="java.lang.String"/>
+	<parameter name="numeroFactura" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT SYSDATE FROM DUAL]]>
 	</queryString>
@@ -497,9 +498,9 @@
 				<text><![CDATA[FACTURA ELECTRÓNICA (CFDI)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="480" y="61" width="52" height="14" uuid="93ff5edf-9e9c-41c4-8284-7c4c39a9c4b8"/>
+				<reportElement x="405" y="61" width="56" height="14" uuid="93ff5edf-9e9c-41c4-8284-7c4c39a9c4b8"/>
 				<textElement textAlignment="Right"/>
-				<text><![CDATA[FACTURA]]></text>
+				<text><![CDATA[FACTURA:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="466" y="75" width="66" height="14" uuid="eb6ce59f-a92a-4273-a357-debb90e54922">
@@ -880,6 +881,10 @@
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{tipoDeComprobante}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="466" y="60" width="67" height="15" uuid="0e9915fb-56a4-4c9e-920b-3034890311b0"/>
+				<textFieldExpression><![CDATA[$P{numeroFactura}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>

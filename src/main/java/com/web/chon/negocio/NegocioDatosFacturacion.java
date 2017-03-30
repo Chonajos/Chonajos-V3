@@ -24,4 +24,6 @@ public interface NegocioDatosFacturacion {
     public int update(DatosFacturacion df);
     public int getNextVal();
     public List<Object[]> getAll();
+    public List<Object[]> getByRfc(String rfc);
+    
 }

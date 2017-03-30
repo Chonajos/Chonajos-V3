@@ -117,7 +117,6 @@ public class EjbDatosFacturacion implements NegocioDatosFacturacion {
             query.setParameter(19, df.getRuta_certificado_cancel());
             query.setParameter(20, df.getClavePublica());
 
-
             return query.executeUpdate();
         } catch (Exception ex) {
             Logger.getLogger(EjbDatosFacturacion.class.getName()).log(Level.SEVERE, null, ex);
@@ -128,13 +127,13 @@ public class EjbDatosFacturacion implements NegocioDatosFacturacion {
 
     @Override
     public int update(DatosFacturacion df) {
-         try {
+        try {
 
             Query query = em.createNativeQuery("UPDATE DATOS_FACTURACION SET ID_SUCURSAL_FK = ?,RAZON_SOCIAL = ?,RFC = ?,CALLE = ? "
                     + ",NUM_INT = ?,NUM_EXT = ?,PAIS = ?,LOCALIDAD = ?,ID_CP_FISCAL = ?,TELEFONO = ?,CORREO = ?,REGIMEN = ?,FIELD = ?, "
                     + "RUTA_LLAVE_PRIVADA = ?,RUTA_CERTIFICADO = ?,RUTA_LLAVE_PRIVADA_CANCEL = ?,RUTA_CERTIFICADO_CANCEL = ?,CLAVE_PUBLICA = ? "
                     + "WHERE ID_DATOS_FACTURACION_PK = ?");
-                    
+
             query.setParameter(1, df.getIdSucursalFk());
             query.setParameter(2, df.getRazonSocial());
             query.setParameter(3, df.getRfc());
@@ -152,10 +151,10 @@ public class EjbDatosFacturacion implements NegocioDatosFacturacion {
             query.setParameter(15, df.getRuta_certificado());
             query.setParameter(16, df.getRuta_llave_privada_cancel());
             query.setParameter(17, df.getRuta_certificado_cancel());
-            
+
             query.setParameter(18, df.getClavePublica());
             query.setParameter(19, df.getIdDatosFacturacionPk());
-            
+
             return query.executeUpdate();
         } catch (Exception ex) {
             Logger.getLogger(EjbDatosFacturacion.class.getName()).log(Level.SEVERE, null, ex);
@@ -185,7 +184,31 @@ public class EjbDatosFacturacion implements NegocioDatosFacturacion {
                     + "INNER JOIN CODIGOS_POSTALES CP ON CP.ID_PK = DF.ID_CP_FISCAL "
                     + "INNER JOIN MUNICIPIOS mun ON mun.ID_MUNICIPIO_PK = CP.ID_MUNICIPIO_FK "
                     + "INNER JOIN ENTIDAD EN ON EN.ID_ENTIDAD_PK = mun.ID_ENTIDAD_FK");
-            
+
+            List<Object[]> resultList = null;
+
+            resultList = query.getResultList();
+            return resultList;
+        } catch (Exception ex) {
+            Logger.getLogger(EjbDatosFacturacion.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
+    @Override
+    public List<Object[]> getByRfc(String rfc) {
+        try {
+            Query query = em.createNativeQuery("SELECT DF.ID_DATOS_FACTURACION_PK,DF.ID_SUCURSAL_FK,DF.RAZON_SOCIAL ,DF.RFC,DF.CALLE,DF.NUM_INT,DF.NUM_EXT "
+                    + ",DF.PAIS,DF.LOCALIDAD,DF.ID_CP_FISCAL,DF.TELEFONO,DF.CORREO,DF.REGIMEN "
+                    + ",DF.FIELD,DF.RUTA_LLAVE_PRIVADA, "
+                    + "DF.RUTA_CERTIFICADO,DF.RUTA_LLAVE_PRIVADA_CANCEL,DF.RUTA_CERTIFICADO_CANCEL,DF.CLAVE_PUBLICA, "
+                    + "CP.CODIGO_POSTAL,CP.NOMBRE_COLONIA,mun.NOMBRE_MUNICIPIO, EN.NOMBRE_ENTIDAD,mun.ID_MUNICIPIO_PK,mun.ID_ENTIDAD_FK FROM DATOS_FACTURACION DF "
+                    + "INNER JOIN CODIGOS_POSTALES CP ON CP.ID_PK = DF.ID_CP_FISCAL "
+                    + "INNER JOIN MUNICIPIOS mun ON mun.ID_MUNICIPIO_PK = CP.ID_MUNICIPIO_FK "
+                    + "INNER JOIN ENTIDAD EN ON EN.ID_ENTIDAD_PK = mun.ID_ENTIDAD_FK WHERE RFC=?");
+
+            query.setParameter(1, rfc);
+
             List<Object[]> resultList = null;
 
             resultList = query.getResultList();
