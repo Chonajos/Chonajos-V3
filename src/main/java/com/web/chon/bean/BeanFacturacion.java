@@ -582,66 +582,71 @@ public class BeanFacturacion implements Serializable {
         ventaMayoreo = new VentaMayoreo();
         datosCliente = new Cliente();
         totalVenta = new BigDecimal(0);
+        if (filtroMostrador == 1) 
+        {
+            ventaMayoreo = ifaceVentaMayoreo.getVentaMayoreoByFolioidSucursalFk(folioVentaG, new BigDecimal(usuario.getSucId()));
+            //ventaMayoreo.setIdtipoVentaFk(new BigDecimal(1));
+            ventaMayoreo.setBanderaVentaMenudeo(false);
+            ventaMenudeo = false;
+            //SE HACE LA BUSQUEDA A MENUDEO
+            if (ventaMayoreo == null || ventaMayoreo.getIdVentaMayoreoPk() == null) {
+                ventaMayoreo = ifaceBuscaVenta.getVentaByfolioAndIdSuc(folioVentaG, usuario.getSucId());
+                ventaMenudeo = true;
+                ventaMayoreo.setBanderaVentaMenudeo(true);
+                //ventaMayoreo.setIdtipoVentaFk(new BigDecimal(2));
 
-        ventaMayoreo = ifaceVentaMayoreo.getVentaMayoreoByFolioidSucursalFk(folioVentaG, new BigDecimal(usuario.getSucId()));
-        //ventaMayoreo.setIdtipoVentaFk(new BigDecimal(1));
-        ventaMayoreo.setBanderaVentaMenudeo(false);
-        ventaMenudeo = false;
-        //SE HACE LA BUSQUEDA A MENUDEO
-        if (ventaMayoreo == null || ventaMayoreo.getIdVentaMayoreoPk() == null) {
-            ventaMayoreo = ifaceBuscaVenta.getVentaByfolioAndIdSuc(folioVentaG, usuario.getSucId());
-            ventaMenudeo = true;
-            ventaMayoreo.setBanderaVentaMenudeo(true);
-            //ventaMayoreo.setIdtipoVentaFk(new BigDecimal(2));
-
-        }
-
-        if (ventaMayoreo == null || ventaMayoreo.getIdVentaMayoreoPk() == null) {
-            JsfUtil.addErrorMessageClean("No se encontró ese folio, podría ser de otra sucursal.");
-        } else if (ventaMayoreo.getIdtipoVentaFk().intValue() == 1) {
-            statusButtonFacturar = true;
-
-            switch (ventaMayoreo.getIdStatusFk().intValue()) {
-                case 1:
-                    statusButtonFacturar = true;
-                    JsfUtil.addErrorMessageClean("No puedes facturar la venta, no ha sido pagada");
-
-                    break;
-                case 2:
-                    statusButtonFacturar = false;
-
-                    break;
-                case 3:
-                    statusButtonFacturar = false;
-                    break;
-                case 4:
-                    statusButtonFacturar = true;
-                    JsfUtil.addErrorMessageClean("No puedes facturar una venta cancelada");
-
-                    break;
-                default:
-                    statusButtonFacturar = true;
-                    JsfUtil.addErrorMessageClean("Ha ocurrido un error, contactar al administrador.");
-                    break;
             }
-        } else {
-            JsfUtil.addWarnMessageClean("Venta de Cŕedito");
-            statusButtonFacturar = false;
 
-        }
-        for (VentaProductoMayoreo vpm : ventaMayoreo.getListaProductos()) {
-            vpm.setIdTipoVenta(new BigDecimal(1));
-        }
-        if (ventaMayoreo.isBanderaVentaMenudeo()) {
+            if (ventaMayoreo == null || ventaMayoreo.getIdVentaMayoreoPk() == null) {
+                JsfUtil.addErrorMessageClean("No se encontró ese folio, podría ser de otra sucursal.");
+            } else if (ventaMayoreo.getIdtipoVentaFk().intValue() == 1) {
+                statusButtonFacturar = true;
+
+                switch (ventaMayoreo.getIdStatusFk().intValue()) {
+                    case 1:
+                        statusButtonFacturar = true;
+                        JsfUtil.addErrorMessageClean("No puedes facturar la venta, no ha sido pagada");
+
+                        break;
+                    case 2:
+                        statusButtonFacturar = false;
+
+                        break;
+                    case 3:
+                        statusButtonFacturar = false;
+                        break;
+                    case 4:
+                        statusButtonFacturar = true;
+                        JsfUtil.addErrorMessageClean("No puedes facturar una venta cancelada");
+
+                        break;
+                    default:
+                        statusButtonFacturar = true;
+                        JsfUtil.addErrorMessageClean("Ha ocurrido un error, contactar al administrador.");
+                        break;
+                }
+            } else {
+                JsfUtil.addWarnMessageClean("Venta de Cŕedito");
+                statusButtonFacturar = false;
+
+            }
             for (VentaProductoMayoreo vpm : ventaMayoreo.getListaProductos()) {
-                vpm.setKilosVendidos(vpm.getCantidadEmpaque());
-                vpm.setIdTipoVenta(new BigDecimal(2));
+                vpm.setIdTipoVenta(new BigDecimal(1));
             }
-        }
+            if (ventaMayoreo.isBanderaVentaMenudeo()) {
+                for (VentaProductoMayoreo vpm : ventaMayoreo.getListaProductos()) {
+                    vpm.setKilosVendidos(vpm.getCantidadEmpaque());
+                    vpm.setIdTipoVenta(new BigDecimal(2));
+                }
+            }
 
-        buscarDatosCliente(1);
-        calculaKilosPorFacturar();
-        calcularTotales();
+            buscarDatosCliente(1);
+            calculaKilosPorFacturar();
+            calcularTotales();
+        } else {
+            //buscar productos de ventas de credito no facturados
+            ventaMayoreo.setListaProductos(ifaceProductoFacturado.getProductosNoFacturadosAbonos(new BigDecimal(1), folioVentaG));
+        }
     }
 
     public void descargarXML() {
@@ -1257,7 +1262,7 @@ public class BeanFacturacion implements Serializable {
                 }
             } else {
                 JsfUtil.addErrorMessageClean("Error: " + respuesta.getMessage());
-                bandera =0;
+                bandera = 0;
             }
 
         } catch (MalformedURLException ex) {
@@ -1409,12 +1414,10 @@ public class BeanFacturacion implements Serializable {
             nuevaFactura.setCadena(cfd.getCadenaOriginal());
             outFile.close();
 
-            if (timbrar() == 1)
-            {
+            if (timbrar() == 1) {
                 datosCliente = new Cliente();
                 ventaMayoreo = new VentaMayoreo();
-                if (selectedProductosVentas != null) 
-                {
+                if (selectedProductosVentas != null) {
                     selectedProductosVentas.clear();
                 }
                 importeParcialidad = null;
@@ -1422,7 +1425,7 @@ public class BeanFacturacion implements Serializable {
                 subTotal = null;
                 total = null;
             }
-            
+
             return "facturacion";
         }//fin if validaciones
         else {

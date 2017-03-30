@@ -27,7 +27,7 @@
                             <p:selectOneMenu  style="width: 30% !important" id="selectTipoFactura" rendered="#{beanFacturacion.viewEstate=='generate' || beanFacturacion.viewEstate=='generateVentaMostrador'}" class="col-lg-5 col-md-7 col-sm-8 col-xs-12" value="#{beanFacturacion.filtroMostrador}" >
                                 <f:selectItem itemLabel="Factura  sobre Venta" itemValue="1"/>
                                 <f:selectItem itemLabel="Factura sobre Venta General" itemValue="2"/>
-                                 <f:selectItem itemLabel="Factura sobre Abono de Cŕedito" itemValue="3"/>
+                                <f:selectItem itemLabel="Factura sobre Abono de Cŕedito" itemValue="3"/>
                                 <p:ajax event="change" update=":formContent" listener="#{beanFacturacion.changeViewMostrador()}"/>
                             </p:selectOneMenu>
                             <p:commandButton value="Atrás" onclick="PF('statusDialog').show()" update=":formContent"  rendered="#{beanFacturacion.viewEstate=='generate' || beanFacturacion.viewEstate=='generateVentaMostrador'}" ajax="true" disabled="false" action="#{beanFacturacion.backView()}" immediate="true"/>
@@ -64,7 +64,7 @@
                                 <pe:keyFilter regEx="/[0-9 .]/i"/>
                             </p:inputText>
                         </div>
-                        
+
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignRight"  for="comboSucursal" value ="Sucursal:" rendered="#{beanFacturacion.viewEstate =='init'}" /> 
                             <p:selectOneMenu  style="width: 65% !important"   id="comboSucursal" class="col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanFacturacion.idSucursalFk}" rendered="#{beanRelacionGastos.viewEstate =='init'}" >
@@ -366,18 +366,22 @@
                             </div>
                             <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
                                 <p:outputLabel class="col-lg-10 col-md-2 col-sm-3 col-xs-12"  for="txtNoExtCli" value ="No. Exterior" /> 
-                                <p:inputText id="txtNoExtCli" required="true" class=" col-lg-2 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.numExterior}" />
+                                <p:inputText id="txtNoExtCli" required="true" class=" col-lg-2 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.numExterior}">
+                                    <pe:keyFilter regEx="/[0-9_]/i"/>
+                                </p:inputText>
                             </div>
                             <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
                                 <p:outputLabel class="col-lg-10 col-md-2 col-sm-3 col-xs-12"  for="txtNoIntCli" value ="No. Interior" /> 
-                                <p:inputText id="txtNoIntCli" required="true" class=" col-lg-2 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.numInterior}" />
+                                <p:inputText id="txtNoIntCli" required="true" class=" col-lg-2 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.numInterior}">
+                            <pe:keyFilter regEx="/[0-9_]/i"/>
+                                </p:inputText>
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 ">
                         <h4>Datos de la Venta</h4>
                         <div class="col-lg-4 col-md-3 col-sm-12 col-xs-12  alignRight">
-                            
+
                         </div>
                         <div class="col-lg-8 col-md-3 col-sm-12 col-xs-12  alignRight">
                             <div class="form-group" align="right">
@@ -392,22 +396,19 @@
                                     <p:outputLabel class="col-lg-8 col-md-2 col-sm-3 col-xs-12"  rendered="#{beanFacturacion.banderanumCuenta=='true'}" for="txtNumCuenta" value ="Número de Cuenta: " /> 
                                     <p:inputText id="txtNumCuenta"  class=" col-lg-4 col-md-2 col-sm-3 col-xs-12" rendered="#{beanFacturacion.banderanumCuenta=='true'}" value="#{beanFacturacion.numeroCuenta}" />
                                 </div>
-                                
+
                                 <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12  alignRight">
                                     <p:outputLabel class="col-lg-8 col-md-2 col-sm-3 col-xs-12"  rendered="#{beanFacturacion.banderaImporteParcialidad=='true'}" for="txtParcialidad" value ="Importe Parcialidad: " /> 
                                     <p:inputText id="txtParcialidad"  class=" col-lg-4 col-md-2 col-sm-3 col-xs-12" rendered="#{beanFacturacion.banderaImporteParcialidad=='true'}" value="#{beanFacturacion.importeParcialidad}">
                                         <p:ajax event="blur" update="formContent:tablaProductos" listener ="#{beanFacturacion.calculaParcialidad()}"/>
                                     </p:inputText>
                                 </div>
-<!--                                <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12  alignRight">
-                                 <p:commandButton value="Agregar Descuento" onclick="PF('statusDialog').show()" update=":formContent"  rendered="{beanFacturacion.viewEstate=='generate'}" ajax="true" disabled="false" action="{beanFacturacion.agregarDescuento()}"/>
-                                
-                                </div>-->
+                                <!--                                <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12  alignRight">
+                                                                 <p:commandButton value="Agregar Descuento" onclick="PF('statusDialog').show()" update=":formContent"  rendered="{beanFacturacion.viewEstate=='generate'}" ajax="true" disabled="false" action="{beanFacturacion.agregarDescuento()}"/>
+                                                                
+                                                                </div>-->
                             </div>
-
                         </div>
-
-
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                             <p:dataTable var="model1"  id="tablaProductos"
                                          rendered="#{beanFacturacion.viewEstate=='generate'}"
@@ -569,8 +570,8 @@
                                         <f:convertNumber pattern="#,##0.00"/>
                                     </h:outputText>
                                 </p:column>
-                                
-                                 <p:column headerText="Importe Sin IVa" width="90px;" class="alignRight">
+
+                                <p:column headerText="Importe Sin IVa" width="90px;" class="alignRight">
                                     <h:outputText value="$#{model2.totalVentaSinIva}">
                                         <f:convertNumber pattern="#,##0.00"/>
                                     </h:outputText>
@@ -598,7 +599,7 @@
                                         </p:column>
                                         <p:column colspan="1" style="text-align:right;background-color:white"/>
                                         <p:column colspan="1" style="text-align:right;background-color:white" />
-                                       
+
 
                                     </p:row>
                                     <p:row>
@@ -623,7 +624,7 @@
                                         <p:column colspan="1" style="text-align:right;background-color:white" />
                                         <p:column colspan="1" style="text-align:right;background-color:white" />
                                         <p:column colspan="6" style="text-align:right;background-color:white" footerText="SubTotal: " />
-                                        
+
                                         <p:column colspan="1" style="background-color:white">
                                             <f:facet name="footer" >
                                                 <h:outputText value="#{beanFacturacion.subTotal}">

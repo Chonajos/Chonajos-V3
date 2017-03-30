@@ -106,8 +106,8 @@ public class EjbProductoFacturado implements NegocioProductoFacturado {
     @Override
     public List<Object[]> getProductosNoFacturados(BigDecimal idTipoFk, BigDecimal idSucursalFk, String fechaInicio, String fechaFin) {
         try {
-            System.out.println("IdTipoVenta: "+idTipoFk);
-            System.out.println("idSucursal: "+idSucursalFk);
+            System.out.println("IdTipoVenta: " + idTipoFk);
+            System.out.println("idSucursal: " + idSucursalFk);
             StringBuffer cadena = new StringBuffer("");
             Query query;
             if (idTipoFk.intValue() == 1) {//mayoreo
@@ -117,10 +117,10 @@ public class EjbProductoFacturado implements NegocioProductoFacturado {
                         + "VMP.ID_VENTA_MAYOREO_FK = VM.ID_VENTA_MAYOREO_PK\n"
                         + "INNER JOIN SUBPRODUCTO SUB ON SUB.ID_SUBPRODUCTO_PK=VMP.ID_SUBPRODUCTO_FK\n"
                         + "INNER JOIN TIPO_EMPAQUE TE ON TE.ID_TIPO_EMPAQUE_PK = VMP.ID_TIPO_EMPAQUE_FK\n"
-                        + "WHERE (VM.ID_STATUS_FK=2 or VM.ID_STATUS_FK=3) and vm.ID_TIPO_VENTA_FK=1  AND VM.ID_SUCURSAL_FK = "+idSucursalFk+ " \n"
-                        + "AND TO_DATE(TO_CHAR(VM.FECHA_VENTA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '"+fechaInicio+"' AND '"+fechaFin+"') T1\n"
-                        + "WHERE NOT EXISTS (SELECT * FROM PRODUCTO_FACTURADO PF WHERE PF.ID_LLAVE_FK=T1.ID_V_M_P_PK and PF.ID_TIPO_LLAVE_FK="+idTipoFk+ ")");
-            query = em.createNativeQuery(cadena.toString());
+                        + "WHERE (VM.ID_STATUS_FK=2 or VM.ID_STATUS_FK=3) and vm.ID_TIPO_VENTA_FK=1  AND VM.ID_SUCURSAL_FK = " + idSucursalFk + " \n"
+                        + "AND TO_DATE(TO_CHAR(VM.FECHA_VENTA,'dd/mm/yyyy'),'dd/mm/yyyy') BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "') T1\n"
+                        + "WHERE NOT EXISTS (SELECT * FROM PRODUCTO_FACTURADO PF WHERE PF.ID_LLAVE_FK=T1.ID_V_M_P_PK and PF.ID_TIPO_LLAVE_FK=" + idTipoFk + ")");
+                query = em.createNativeQuery(cadena.toString());
 //            query.setParameter(1, idSucursalFk);
 //            query.setParameter(2, idTipoFk);
             } else {
@@ -128,9 +128,8 @@ public class EjbProductoFacturado implements NegocioProductoFacturado {
                 query = em.createNativeQuery(cadena.toString());
             }
 
-            
             List<Object[]> resultList = null;
-            System.out.println("Query: "+query.toString());
+            System.out.println("Query: " + query.toString());
             resultList = query.getResultList();
 
             return resultList;
@@ -144,7 +143,7 @@ public class EjbProductoFacturado implements NegocioProductoFacturado {
 
     @Override
     public int deleteByIdFacturaFk(BigDecimal idFacturaFk) {
-       System.out.println("IdFacturaPk: " + idFacturaFk);
+        System.out.println("IdFacturaPk: " + idFacturaFk);
         try {
 
             Query query = em.createNativeQuery("DELETE  PRODUCTO_FACTURADO WHERE ID_FACTURA_FK=?");
@@ -154,38 +153,48 @@ public class EjbProductoFacturado implements NegocioProductoFacturado {
             logger.error("Error > " + ex.getMessage());
             return 0;
         }
-    
+
     }
+
     @Override
     public List<Object[]> getProductosNoFacturadosAbonos(BigDecimal idTipoFk, BigDecimal folioAbono) {
         try {
-            System.out.println("IdTipoVenta: "+idTipoFk);
-            System.out.println("folioAbono: "+folioAbono);
+            System.out.println("IdTipoVenta: " + idTipoFk);
+            System.out.println("folioAbono: " + folioAbono);
             StringBuffer cadena = new StringBuffer("");
             Query query;
-            if (idTipoFk.intValue() == 1) 
-            {//mayoreo
-                cadena = new StringBuffer("SELECT * FROM(select \n" +
-"vmp.ID_V_M_P_PK,sub.NOMBRE_SUBPRODUCTO,te.NOMBRE_EMPAQUE,\n" +
-"vmp.CANTIDAD_EMPAQUE,vmp.KILOS_VENDIDOS,vmp.PRECIO_PRODUCTO,vmp.TOTAL_VENTA\n" +
-"from ABONO_CREDITO ac inner join\n" +
-"CREDITO cre on cre.ID_CREDITO_PK = ac.ID_CREDITO_FK \n" +
-"inner join VENTA_MAYOREO vm on vm.ID_VENTA_MAYOREO_PK = cre.ID_VENTA_MAYOREO\n" +
-"inner join VENTAMAYOREOPRODUCTO vmp on vmp.ID_VENTA_MAYOREO_FK = vm.ID_VENTA_MAYOREO_PK\n" +
-"inner join SUBPRODUCTO sub on sub.ID_SUBPRODUCTO_PK = vmp.ID_SUBPRODUCTO_FK\n" +
-"inner join TIPO_EMPAQUE te on te.ID_TIPO_EMPAQUE_PK = vmp.ID_TIPO_EMPAQUE_FK\n" +
-"where ac.NUMERO_ABONO = "+folioAbono+ " ) T1\n" +
-"WHERE NOT EXISTS (SELECT * FROM PRODUCTO_FACTURADO PF \n" +
-"WHERE PF.ID_LLAVE_FK=T1.ID_V_M_P_PK and  PF.ID_TIPO_LLAVE_FK="+idTipoFk+ " ) ");
-            query = em.createNativeQuery(cadena.toString());
-            } else {
-                cadena = new StringBuffer("");
+            if (idTipoFk.intValue() == 1) {//mayoreo
+                cadena = new StringBuffer("SELECT * FROM(select \n"
+                        + "vmp.ID_V_M_P_PK,sub.NOMBRE_SUBPRODUCTO,te.NOMBRE_EMPAQUE,\n"
+                        + "vmp.CANTIDAD_EMPAQUE,vmp.KILOS_VENDIDOS,vmp.PRECIO_PRODUCTO,vmp.TOTAL_VENTA\n"
+                        + "from ABONO_CREDITO ac inner join\n"
+                        + "CREDITO cre on cre.ID_CREDITO_PK = ac.ID_CREDITO_FK \n"
+                        + "inner join VENTA_MAYOREO vm on vm.ID_VENTA_MAYOREO_PK = cre.ID_VENTA_MAYOREO\n"
+                        + "inner join VENTAMAYOREOPRODUCTO vmp on vmp.ID_VENTA_MAYOREO_FK = vm.ID_VENTA_MAYOREO_PK\n"
+                        + "inner join SUBPRODUCTO sub on sub.ID_SUBPRODUCTO_PK = vmp.ID_SUBPRODUCTO_FK\n"
+                        + "inner join TIPO_EMPAQUE te on te.ID_TIPO_EMPAQUE_PK = vmp.ID_TIPO_EMPAQUE_FK\n"
+                        + "where ac.NUMERO_ABONO = " + folioAbono + " ) T1\n"
+                        + "WHERE NOT EXISTS (SELECT * FROM PRODUCTO_FACTURADO PF \n"
+                        + "WHERE PF.ID_LLAVE_FK=T1.ID_V_M_P_PK and  PF.ID_TIPO_LLAVE_FK=" + idTipoFk + " ) ");
+                query = em.createNativeQuery(cadena.toString());
+            } else {//Menudeo
+                cadena = new StringBuffer("SELECT * FROM(select \n"
+                        + "vp.ID_VENTA_PRODUCTO_PK,sub2.NOMBRE_SUBPRODUCTO,te2.NOMBRE_EMPAQUE,\n"
+                        + "vp.CANTIDAD_EMPAQUE,vp.KILOS_VENDIDOS,vp.PRECIO_PRODUCTO,vp.TOTAL_VENTA\n"
+                        + "from ABONO_CREDITO ac inner join\n"
+                        + "CREDITO cre on cre.ID_CREDITO_PK = ac.ID_CREDITO_FK \n"
+                        + "inner join venta v on v.ID_VENTA_PK = cre.ID_VENTA_MENUDEO\n"
+                        + "inner join VENTA_PRODUCTO vp on vp.ID_VENTA_FK = v.ID_VENTA_PK\n"
+                        + "inner join SUBPRODUCTO sub2 on sub2.ID_SUBPRODUCTO_PK = vp.ID_SUBPRODUCTO_FK\n"
+                        + "inner join TIPO_EMPAQUE te2 on te2.ID_TIPO_EMPAQUE_PK = vp.ID_TIPO_EMPAQUE_FK\n"
+                        + "where ac.NUMERO_ABONO = " + folioAbono + " and cre.ESTATUS_CREDITO=2) T1\n"
+                        + "WHERE NOT EXISTS (SELECT * FROM PRODUCTO_FACTURADO PF \n"
+                        + "WHERE PF.ID_LLAVE_FK=T1.ID_VENTA_PRODUCTO_PK and PF.ID_TIPO_LLAVE_FK=" + idTipoFk + ")");
                 query = em.createNativeQuery(cadena.toString());
             }
 
-            
             List<Object[]> resultList = null;
-            System.out.println("Query: "+query.toString());
+            System.out.println("Query: " + query.toString());
             resultList = query.getResultList();
 
             return resultList;
