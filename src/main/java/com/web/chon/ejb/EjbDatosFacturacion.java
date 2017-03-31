@@ -63,7 +63,7 @@ public class EjbDatosFacturacion implements NegocioDatosFacturacion {
                     + "inner join CODIGOS_POSTALES cp on cp.ID_PK = df.ID_CP_FISCAL "
                     + "inner join MUNICIPIOS mun on mun.ID_MUNICIPIO_PK = cp.ID_MUNICIPIO_FK "
                     + "inner join entidad en on en.ID_ENTIDAD_PK = mun.ID_ENTIDAD_FK "
-                    + "where df.ID_SUCURSAL_FK = ?");
+                    + "");
             List<Object[]> resultList = null;
 
             query.setParameter(1, idSucursalFk);
