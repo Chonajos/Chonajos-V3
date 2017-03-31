@@ -739,35 +739,53 @@ public class BeanFacturacion implements Serializable {
 
     public void enviarFactura() {
 
-        abreXML();
-        String filePathPDF = Constantes.PATHLOCALFACTURACION + "Clientes" + File.separatorChar + data.getRfcCliente() + File.separatorChar + "TIMBRADO" + File.separatorChar + data.getNombreArchivoTimbrado();
-        String filePathXML = rutaPDF;
+        System.out.println("data " + data.toString());
+
+        ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+        String temporal = "";
+        if (servletContext.getRealPath("") == null) {
+            temporal = Constantes.PATHSERVER;
+        } else {
+            temporal = servletContext.getRealPath("");
+        }
+
+        abreXML(0);
+        String filePathXML = Constantes.PATHLOCALFACTURACION + "Clientes" + File.separatorChar + data.getRfcCliente() + File.separatorChar + "TIMBRADO" + File.separatorChar + data.getNombreArchivoTimbrado();
+        String filePathPDF = temporal + File.separatorChar + rutaPDF;
 
         String mensaje = "Gracias por comprar en chonajos;\n"
                 + "adjuntamos archivos digitales de su factura.\n\n"
                 + "Saludos";
 
         String asunto = "Factura";
+        System.out.println("filePathPDF " + filePathPDF);
+        System.out.println("filePathXML " + filePathXML);
 
         ArrayList<String> lstCorreoPara = new ArrayList<String>();
 
         if (correo != null) {
             String correos[] = correo.split(";");
-            for (int i = 0; i >= correos.length; i++) {
+            System.out.println("correo lengt " + correo.length());
+            for (int i = 0; i <= correos.length - 1; i++) {
+                System.out.println("correo " + correos[i]);
                 lstCorreoPara.add(correos[i]);
             }
 
         }
 
-        FileDataSource pdf = new FileDataSource(filePathPDF);
-        FileDataSource xml = new FileDataSource(filePathXML);
+        if (lstCorreoPara != null && !lstCorreoPara.isEmpty()) {
+            FileDataSource pdf = new FileDataSource(filePathPDF);
+            FileDataSource xml = new FileDataSource(filePathXML);
 
-        ArrayList<FileDataSource> lstFileDataSource = new ArrayList<FileDataSource>();
+            ArrayList<FileDataSource> lstFileDataSource = new ArrayList<FileDataSource>();
 
-        lstFileDataSource.add(xml);
-        lstFileDataSource.add(pdf);
+            lstFileDataSource.add(xml);
+            lstFileDataSource.add(pdf);
 
-        SendEmail.sendAdjunto(asunto, mensaje, lstFileDataSource, "juancruzh91@gmail.com", lstCorreoPara);
+            SendEmail.sendAdjunto(asunto, mensaje, lstFileDataSource, "juancruzh91@gmail.com", lstCorreoPara);
+        } else {
+            JsfUtil.addErrorMessage("No se a especificado un Correo.");
+        }
 
     }
 
@@ -782,8 +800,9 @@ public class BeanFacturacion implements Serializable {
 
     }
 
-    public void abreXML() {
+    public void abreXML(int imprime) {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        System.out.println("//////////DATA: " + data.toString());
         //DocumentBuilder builder = factory.newDocumentBuilder();
 
         try {
@@ -1033,7 +1052,9 @@ public class BeanFacturacion implements Serializable {
         int numberRandom = random.nextInt(999);
 
         generateReport(data, usuario.getIdUsuario(), new BigDecimal(numberRandom));
-        RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
+        if (imprime == 1) {
+            RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
+        }
     }
 
     public String verificarDatos() {
@@ -1733,14 +1754,14 @@ public class BeanFacturacion implements Serializable {
         if (c != null && c.getCorreo() != null) {
             correo = c.getCorreo();
         }
-        
-       if(df != null && df.getCorreo() != null){
-           if(correo != null && !correo.isEmpty()){
-               correo+=";"+df.getCorreo();
-           }else{
-               correo=df.getCorreo();
-           }
-       }
+
+        if (df != null && df.getCorreo() != null) {
+            if (correo != null && !correo.isEmpty()) {
+                correo += ";" + df.getCorreo();
+            } else {
+                correo = df.getCorreo();
+            }
+        }
     }
 
     public String getRutaPDF() {

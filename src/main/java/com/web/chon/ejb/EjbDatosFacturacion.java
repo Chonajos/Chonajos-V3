@@ -198,7 +198,7 @@ public class EjbDatosFacturacion implements NegocioDatosFacturacion {
     @Override
     public List<Object[]> getByRfc(String rfc) {
         try {
-            Query query = em.createNativeQuery("SELECT DF.ID_DATOS_FACTURACION_PK,DF.ID_SUCURSAL_FK,DF.RAZON_SOCIAL ,DF.RFC,DF.CALLE,DF.NUM_INT,DF.NUM_EXT "
+            Query query = em.createNativeQuery("SELECT DF.ID_DATOS_FACTURACION_PK,ID_CLIENTE_FK,DF.ID_SUCURSAL_FK,DF.RAZON_SOCIAL ,DF.RFC,DF.CALLE,DF.NUM_INT,DF.NUM_EXT "
                     + ",DF.PAIS,DF.LOCALIDAD,DF.ID_CP_FISCAL,DF.TELEFONO,DF.CORREO,DF.REGIMEN "
                     + ",DF.FIELD,DF.RUTA_LLAVE_PRIVADA, "
                     + "DF.RUTA_CERTIFICADO,DF.RUTA_LLAVE_PRIVADA_CANCEL,DF.RUTA_CERTIFICADO_CANCEL,DF.CLAVE_PUBLICA, "

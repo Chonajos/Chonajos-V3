@@ -174,17 +174,17 @@
                                 </p:commandButton>
                             </p:column>
                             <p:column headerText="Imprimir PDF"  width="60px;" class="alignCenter">
-                                <p:commandButton id="print2" disabled="#{model.idStatusFk.intValue() != 1}"  ajax="true" process="@this" action="#{beanFacturacion.abreXML()}" 
+                                <p:commandButton id="print2" disabled="#{model.idStatusFk.intValue() != 1}"  ajax="true" process="@this" action="#{beanFacturacion.abreXML(1)}" 
                                                  icon="ui-icon-print" styleClass="ui-priority-primary" update=":formContent">
                                     <f:setPropertyActionListener value="#{model}" target="#{beanFacturacion.data}"/>
                                 </p:commandButton>
                             </p:column>
                             <p:column headerText="Enviar por email"  width="60px;" class="alignCenter">
-                                <p:commandButton id="print" disabled="true"  ajax="true" process="@this" action="#{beanFacturacion.getCorreoCliente()}" 
-                                                 icon="ui-icon-transfer-e-w" styleClass="ui-priority-primary" update=":formContent" onclick="PF('dialogw').show();">
+                                <p:commandButton id="print" disabled="#{model.idStatusFk.intValue() != 1}"  ajax="true" action="#{beanFacturacion.getCorreoCliente()}" 
+                                                 icon="ui-icon-transfer-e-w" styleClass="ui-priority-primary" update =":formContent:dialogw:"  oncomplete="PF('dlg').show();">
+                                    
                                     <f:setPropertyActionListener value="#{model}" target="#{beanFacturacion.data}"/>
-                                    <p:confirm header="Confirmación" message="¿Estás seguro que deseas recibir el gasto?" icon="ui-icon-alert"/>
-                                </p:commandButton>
+                                     </p:commandButton>
                             </p:column>
                             <p:column headerText="Cancelar" width="60px;" class="alignCenter">
                                 <p:commandButton id="cancel"   ajax="true"  action="#{beanFacturacion.cancelarFactura()}" icon="ui-icon-trash" styleClass="ui-priority-primary" update=":formContent">
@@ -682,7 +682,7 @@
                         <p:inputText id="txtCorreo" maxlength="120" value="#{beanFacturacion.correo}"/>
                     </div>
                     <f:facet name="footer">
-                        <p:commandButton value="Registrar" update=":formContent" action="#{beanFacturacion.enviarFactura()}" oncomplete="PF('dialogw').hide();"/>
+                        <p:commandButton value="Enviar" update=":formContent" action="#{beanFacturacion.enviarFactura()}" oncomplete="PF('dialogw').hide();"/>
                     </f:facet> 
                 </h:panelGrid>
             </p:dialog>
