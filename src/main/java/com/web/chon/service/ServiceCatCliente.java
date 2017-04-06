@@ -220,8 +220,8 @@ public class ServiceCatCliente implements IfaceCatCliente {
                 cliente.setLimiteCredito(obj[2] == null ? new BigDecimal("0") : new BigDecimal(obj[2].toString()));
                 cliente.setUtilizadoTotal(obj[3] == null ? new BigDecimal("0") : new BigDecimal(obj[3].toString()));
                 cliente.setUtilizadoDocumentos(obj[4] == null ? new BigDecimal("0") : new BigDecimal(obj[4].toString()));
-                cliente.setPromedioRecuperacionTres(obj[5] == null ? new BigDecimal("0") : new BigDecimal(obj[5].toString()).setScale(2,RoundingMode.CEILING));
-                cliente.setPromedioRecuperacion(obj[6] == null ? new BigDecimal("0") : new BigDecimal(obj[6].toString()).setScale(2,RoundingMode.CEILING));
+                cliente.setPromedioRecuperacionTres(obj[5] == null ? new BigDecimal("0") : new BigDecimal(obj[5].toString()).setScale(2, RoundingMode.CEILING));
+                cliente.setPromedioRecuperacion(obj[6] == null ? new BigDecimal("0") : new BigDecimal(obj[6].toString()).setScale(2, RoundingMode.CEILING));
                 cliente.setCreditoDisponible((cliente.getLimiteCredito().subtract(cliente.getUtilizadoTotal(), MathContext.UNLIMITED)).subtract(cliente.getUtilizadoDocumentos(), MathContext.UNLIMITED));
 
             }
@@ -334,6 +334,30 @@ public class ServiceCatCliente implements IfaceCatCliente {
             }
 
             return lstReporteClienteVentas;
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceCatCliente.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+
+        }
+    }
+
+    @Override
+    public Cliente getClienteByIdAbono(BigDecimal folioAbono) {
+        getEjb();
+        try {
+            Cliente cliente = new Cliente();
+            
+            List<Object[]> lstObject = ejb.getClienteByIdAbono(folioAbono);
+
+            for (Object[] obj : lstObject) {
+                cliente.setIdClientePk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+                cliente.setNombreCompleto(obj[1] == null ? "" : obj[1].toString());
+                cliente.setUtilizadoTotal(obj[2] == null ? new BigDecimal(0) : new BigDecimal(obj[2].toString()));
+                cliente.setRfc(obj[3] == null ? "" : obj[3].toString());
+
+            }
+
+            return cliente;
         } catch (Exception ex) {
             Logger.getLogger(ServiceCatCliente.class.getName()).log(Level.SEVERE, null, ex);
             return null;

@@ -27,14 +27,14 @@
                             <p:selectOneMenu  style="width: 30% !important" id="selectTipoFactura" rendered="#{beanFacturacion.viewEstate=='generate' || beanFacturacion.viewEstate=='generateVentaMostrador'}" class="col-lg-5 col-md-7 col-sm-8 col-xs-12" value="#{beanFacturacion.filtroMostrador}" >
                                 <f:selectItem itemLabel="Factura  sobre Venta" itemValue="1"/>
                                 <f:selectItem itemLabel="Factura sobre Venta General" itemValue="2"/>
-                               
+                                <f:selectItem itemLabel="Factura sobre Folio Crédito" itemValue="3"/>
+
                                 <p:ajax event="change" update=":formContent" listener="#{beanFacturacion.changeViewMostrador()}"/>
                             </p:selectOneMenu>
-                            <p:commandButton value="Atrás" onclick="PF('statusDialog').show()" update=":formContent"  rendered="#{beanFacturacion.viewEstate=='generate' || beanFacturacion.viewEstate=='generateVentaMostrador'}" ajax="true" disabled="false" action="#{beanFacturacion.backView()}" immediate="true"/>
-
-                            <p:commandButton value="Generar Factura" rendered="#{beanFacturacion.viewEstate=='generate'|| beanFacturacion.viewEstate=='generateVentaMostrador'}"  onclick="PF('statusDialog').show()"  update=":formContent" ajax="true" disabled="#{beanFacturacion.statusButtonFacturar}" action="#{beanFacturacion.crearFactura()}">
-                                <p:confirm header="Confirmación" message="Estas seguro de generar la factura?" icon="ui-icon-alert" />
+                            <p:commandButton value="Generar" class="primaryButton" rendered="#{beanFacturacion.viewEstate=='generate'|| beanFacturacion.viewEstate=='generateVentaMostrador'}"  onclick="PF('statusDialog').show()"  update=":formContent" ajax="true" disabled="#{beanFacturacion.statusButtonFacturar}" action="#{beanFacturacion.crearFactura()}">
+                                <p:confirm header="Confirmación" class="primaryButton" message="Estas seguro de generar la factura?" icon="ui-icon-alert" />
                             </p:commandButton> 
+                            <p:commandButton value="Atrás" onclick="PF('statusDialog').show()" update=":formContent"  rendered="#{beanFacturacion.viewEstate=='generate' || beanFacturacion.viewEstate=='generateVentaMostrador'}" ajax="true" disabled="false" action="#{beanFacturacion.backView()}" immediate="true"/>
                             <p:commandButton value="Nueva Factura" rendered="#{beanFacturacion.viewEstate=='init'}"  onclick="PF('statusDialog').show()" update=":formContent" ajax="true" disabled="false" action="#{beanFacturacion.changeViewGenerarFactura()}"/>
                         </div>
                     </div>
@@ -181,11 +181,11 @@
                                 </p:commandButton>
                             </p:column>
                             <p:column headerText="Enviar por email"  width="60px;" class="alignCenter">
-                                <p:commandButton id="print" disabled="#{model.idStatusFk.intValue() != 1}"  ajax="true" action="#{beanFacturacion.getCorreoCliente()}" 
+                                <p:commandButton id="print" disabled="#{model.idStatusFk.intValue() != 1}"  ajax="true" action="#{beanFacturacion.getCorreoCliente(model.getIdClienteFk(),model.getRfcEmisor(),1)}" 
                                                  icon="ui-icon-transfer-e-w" styleClass="ui-priority-primary" update =":formContent:dialogw:"  oncomplete="PF('dlg').show();">
-                                    
+
                                     <f:setPropertyActionListener value="#{model}" target="#{beanFacturacion.data}"/>
-                                     </p:commandButton>
+                                </p:commandButton>
                             </p:column>
                             <p:column headerText="Cancelar" width="60px;" class="alignCenter">
                                 <p:commandButton id="cancel"   ajax="true"  action="#{beanFacturacion.cancelarFactura()}" icon="ui-icon-trash" styleClass="ui-priority-primary" update=":formContent">
@@ -225,7 +225,7 @@
                     <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 form-group">
                         <p:fragment rendered="#{beanFacturacion.viewEstate=='generate'}">
                             <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
-                                <p:outputLabel  class="col-lg-7 col-md-3 col-sm-4 col-xs-6 alignLeft" rendered="#{beanFacturacion.viewEstate=='generate'}" for="folioVentaG" id="labelfolioVentaG" value ="Folio Venta:" /> 
+                                <p:outputLabel  class="col-lg-7 col-md-3 col-sm-4 col-xs-6 alignLeft" rendered="#{beanFacturacion.viewEstate=='generate'}" for="folioVentaG" id="labelfolioVentaG" value ="Folio:" /> 
                                 <p:inputText id="folioVentaG" maxlength="8" rendered="#{beanFacturacion.viewEstate=='generate'}" disabled="#{beanFacturacion.disableTextFolioVenta}" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanFacturacion.folioVentaG}" required="false">
                                     <pe:keyFilter regEx="/[0-9 .]/i"/>
                                 </p:inputText>
@@ -322,10 +322,10 @@
                                 <p:outputLabel class="col-lg-3 col-md-4 col-sm-4 col-xs-12 "  for="autocompleteCliente2" value ="Cliente:" /> 
                                 <p:autoComplete  placeholder="Seleccione un Cliente" id="autocompleteCliente2"  required="true" requiredMessage="Ingresa un valor para el campo Cliente." styleClass="autocomplete-input-text-media ui-state-highlight-autocomplete" class="ui-state-highlight-autocomplete"
                                                  value="#{beanFacturacion.datosCliente}" completeMethod="#{beanFacturacion.autoCompleteCliente}" forceSelection="true" var="cliente"  inputStyle="width: 179px"
-                                                 itemLabel="#{cliente.nombreCompleto}"
+                                                 itemLabel="#{cliente.nombreCompleto.trim()}"
                                                  itemValue="#{cliente.idClientePk}" converter="#{clienteConverter}">
-                                    <p:ajax event="itemSelect" update=":formContent" listener="#{beanFacturacion.buscarDatosCliente(3)}" />
-                                    <p:ajax event="change" update=":formContent"  listener="#{beanFacturacion.buscarDatosCliente(3)}"/>
+                                    <p:ajax event="itemSelect" update=":formContent:txtRazonCli :formContent:txtRfcCli :formContent:txtCodigoPCli :formContent:txtCodigoPCli :formContent:txtCalleCli :formContent:txtColoniaCli :formContent:txtPaisCli :formContent:txtNoExtCli :formContent:txtNoIntCli :formContent:txtenviarCorreo :formContent:txtEstadoCli :formContent:txtMunicipioCli" listener="#{beanFacturacion.buscarDatosCliente(3)}" />
+                                    <p:ajax event="change" update=":formContent:txtRazonCli :formContent:txtRfcCli :formContent:txtCodigoPCli :formContent:txtCodigoPCli :formContent:txtCalleCli :formContent:txtColoniaCli :formContent:txtPaisCli :formContent:txtNoExtCli :formContent:txtNoIntCli :formContent:txtenviarCorreo :formContent:txtEstadoCli :formContent:txtMunicipioCli"  listener="#{beanFacturacion.buscarDatosCliente(3)}"/>                                                                                                              
                                 </p:autoComplete>
 
                                 <pe:keyFilter for="autocompleteCliente" regEx="/[a-z0-9-_Ã±\s]/i" />
@@ -376,6 +376,11 @@
                                 <p:inputText id="txtNoIntCli" required="true" class=" col-lg-2 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.numInterior}">
                                     <pe:keyFilter regEx="/[0-9_]/i"/>
                                 </p:inputText>
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <p:outputLabel class="col-lg-1 col-md-2 col-sm-4 col-xs-12" for="txtenviarCorreo" value ="Correo: " /> 
+                                <p:inputText id="txtenviarCorreo"  class="col-lg-6 col-md-6 col-sm-8 col-xs-12"  value="#{beanFacturacion.correo}" title="Separa los correos con ;"/>
+                                <p:tooltip id="toltip" for="txtenviarCorreo" showEffect="clip" hideEffect="explode" />
                             </div>
                         </div>
                     </div>
@@ -674,16 +679,16 @@
                     </div>
                 </div>
             </p:panel>
-            <p:dialog  id="dialogw" header="Registrar Abono" widgetVar="dlg" resizable="false">
+            <p:dialog  id="dialogw" header="Reenviar Correo" widgetVar="dlg" resizable="false">
                 <h:panelGrid>
                     <div>
                         <h:outputLabel for="txtCorreo" value="Correos:" />
                     </div>
                     <div>
-                        <p:inputText id="txtCorreo" maxlength="120" value="#{beanFacturacion.correo}"/>
+                        <p:inputText id="txtCorreo" maxlength="120" value="#{beanFacturacion.rCorreo}"/>
                     </div>
                     <f:facet name="footer">
-                        <p:commandButton value="Enviar" update=":formContent" action="#{beanFacturacion.enviarFactura()}" oncomplete="PF('dialogw').hide();"/>
+                        <p:commandButton value="Enviar" update=":formContent" action="#{beanFacturacion.enviarFactura()}"/>
                     </f:facet> 
                 </h:panelGrid>
             </p:dialog>

@@ -52,5 +52,12 @@ public interface IfaceCatCliente
      */
     public ArrayList<ReporteClienteVentas> getReporteClienteVentasUtilidad(BigDecimal idCliente,String fechaInicio,String fechaFin);
     
+    /**
+     * Obtiene los datos del cliente por medio del folio del abono
+     * @param folioAbono
+     * @return 
+     */
+    public Cliente getClienteByIdAbono(BigDecimal folioAbono);
+    
     
 }

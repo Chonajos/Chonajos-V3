@@ -145,10 +145,9 @@ public class BeanCatCliente implements BeanSimple {
 
     }
 
-
     @Override
     public String update() {
-        if (ifaceCatCliente.updateCliente(data) == 1){
+        if (ifaceCatCliente.updateCliente(data) == 1) {
             JsfUtil.addSuccessMessageClean("Cliente Actualizado con Éxito");
         } else {
             JsfUtil.addErrorMessageClean("Ocurrió un error al Actualizar cliente");
@@ -160,8 +159,7 @@ public class BeanCatCliente implements BeanSimple {
     }
 
     @Override
-    public void searchById()
-    {
+    public void searchById() {
         buscaMunicipios(1);
         setTitle("Editar Cliente");
         setViewEstate("searchById");
@@ -171,6 +169,12 @@ public class BeanCatCliente implements BeanSimple {
             permissionToWriteStatus = false;
         } else {
             permissionToWriteStatus = true;
+        }
+
+        if (data.getTipoPersona().equals("2")) {
+            banderaTipoCliente = "pm";
+        } else {
+            banderaTipoCliente = "pf";
         }
 
     }
@@ -205,9 +209,9 @@ public class BeanCatCliente implements BeanSimple {
 
     public void buscaMunicipios(int edit) {
         //int idEstado = (data.getIdEntidadFk() == null || data.getIdEntidadFk() == "") ? 0 : Integer.parseInt(data.getIdEntidadFk());
-        
+
         if (data.getIdEntidadFk() != null) {
-            lista_municipios = ifaceCatMunicipio.getMunicipios(data.getIdEntidadFk() ==null ? 0:  data.getIdEntidadFk().intValue() );
+            lista_municipios = ifaceCatMunicipio.getMunicipios(data.getIdEntidadFk() == null ? 0 : data.getIdEntidadFk().intValue());
         } else {
             lista_municipios = null;
         }
@@ -250,7 +254,7 @@ public class BeanCatCliente implements BeanSimple {
         //int idMunicipio = (data.getMunicipio() == null || data.getMunicipio() == "") ? 0 : Integer.parseInt(data.getMunicipio());
 
         if (data.getIdMunicipioFk() != null) {
-            lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalByIdMun(data.getIdMunicipioFk()==null ? 0: data.getIdMunicipioFk().intValue());
+            lista_codigos_postales = ifaceCatCodigosPostales.getCodigoPostalByIdMun(data.getIdMunicipioFk() == null ? 0 : data.getIdMunicipioFk().intValue());
         } else {
             lista_codigos_postales = null;
         }
@@ -425,7 +429,6 @@ public class BeanCatCliente implements BeanSimple {
         this.lista_codigos_postales_2 = lista_codigos_postales_2;
     }
 
-    
     public boolean isPermissionToWrite() {
         return permissionToWrite;
     }

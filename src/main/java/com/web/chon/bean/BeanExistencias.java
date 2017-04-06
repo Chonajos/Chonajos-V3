@@ -400,6 +400,5 @@ public class BeanExistencias implements Serializable {
     public void setUsuario(UsuarioDominio usuario) {
         this.usuario = usuario;
     }
-
-    
 }
+    

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-11-26T10:28:24 -->
+<!-- 2017-03-31T12:26:57 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4" pageWidth="595" pageHeight="300" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b83fc071-b107-4978-bb9a-d30bc7aaf313">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -15,7 +15,7 @@
 		<band height="260" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<componentElement>
-				<reportElement positionType="FixRelativeToBottom" x="35" y="100" width="385" height="130" uuid="72361199-9bfd-42f5-b5ed-6a8eea41cb82">
+				<reportElement positionType="FixRelativeToBottom" x="2" y="67" width="485" height="163" uuid="72361199-9bfd-42f5-b5ed-6a8eea41cb82">
 					<property name="com.jaspersoft.studio.unit.barHeight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.barWidth" value="pixel"/>
 				</reportElement>
@@ -23,38 +23,33 @@
 					<jr:codeExpression><![CDATA[$P{codigo}]]></jr:codeExpression>
 				</jr:barbecue>
 			</componentElement>
-			<staticText>
-				<reportElement x="340" y="5" width="50" height="28" uuid="66c83e63-4a81-4aba-b087-b8db94694aaf"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="19" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Q85]]></text>
-			</staticText>
 			<textField>
-				<reportElement x="200" y="0" width="100" height="33" uuid="c9aa5f88-5f72-445b-b9c2-d7563c0bac78"/>
+				<reportElement x="275" y="0" width="100" height="23" uuid="c9aa5f88-5f72-445b-b9c2-d7563c0bac78"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="22" isBold="true"/>
+					<font size="18" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{carro}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="33" width="390" height="30" uuid="4e3789f2-32ac-4dce-91ef-bed90421fef7"/>
+				<reportElement x="0" y="22" width="487" height="23" uuid="4e3789f2-32ac-4dce-91ef-bed90421fef7"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="22" isBold="true"/>
+					<font size="18" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{producto}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="63" width="400" height="37" uuid="5edc1654-2c77-4ab2-8ff2-77dbda7e168e"/>
+				<reportElement x="0" y="44" width="487" height="23" uuid="5edc1654-2c77-4ab2-8ff2-77dbda7e168e"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="22" isBold="true"/>
+					<font size="18" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{empaque}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="110" y="0" width="90" height="33" uuid="a1bd3545-1dcc-489b-a295-054f0510dbd8"/>
+				<reportElement x="185" y="0" width="90" height="22" uuid="a1bd3545-1dcc-489b-a295-054f0510dbd8">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="22" isBold="true"/>
+					<font size="16" isBold="true"/>
 				</textElement>
 				<text><![CDATA[CARRO:]]></text>
 			</staticText>

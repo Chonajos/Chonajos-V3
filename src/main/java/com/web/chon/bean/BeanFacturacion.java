@@ -85,6 +85,7 @@ import com.web.chon.util.SendEmail;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -202,9 +203,10 @@ public class BeanFacturacion implements Serializable {
     private static final BigDecimal TIPO_DOCUMENTO = new BigDecimal(4);
     private static final BigDecimal CERO = new BigDecimal(0);
 
-    //nunca cambia, lo proporciono el pac PRUEBAS
-    private static String API_KEY = "1e550c937ba7cf3f65a6136ae86add2b";
-    //private static String API_KEY = "7ecfe40342406c370e09029125103ac3";
+    //llave pac PRUEBAS
+//    private static String API_KEY = "1e550c937ba7cf3f65a6136ae86add2b";
+    //llave pac productivo
+    private static String API_KEY = "7ecfe40342406c370e09029125103ac3";
     private String pathFacturaClienteComprobante;
     private String pathFacturaClienteTimbrado;
 
@@ -217,6 +219,7 @@ public class BeanFacturacion implements Serializable {
     private BigDecimal importeVentaPublico;
 
     private String correo;
+    private String rCorreo;
 
     @PostConstruct
     public void init() {
@@ -286,18 +289,21 @@ public class BeanFacturacion implements Serializable {
     }
 
     public void calculaImportePublico() {
-        // System.out.println("Calcular Importe Público");
+
         selectedProductosVentas.clear();
+        if (importeVentaPublico == null) {
+            importeVentaPublico = new BigDecimal(0);
+        }
+
         BigDecimal importePublicoTemporal = importeVentaPublico;
+        System.out.println("importeVentaPublico importe " + importeVentaPublico);
         for (VentaProductoMayoreo producto : listaVentaPublico) {
             if (importePublicoTemporal.compareTo(new BigDecimal(0)) > 0) { // si el importe es mayor que cero
                 if (importePublicoTemporal.compareTo(producto.getTotalVenta()) >= 0) {
                     /*El importe de la parcilidad es mayor al de ese producto
                     agregar el producto a la lista de seleccionados
                      */
-                    //System.out.println("Temporal importe Publico: " + importePublicoTemporal);
                     importePublicoTemporal = importePublicoTemporal.subtract(producto.getTotalVenta(), MathContext.UNLIMITED);
-                    // System.out.println("Temporal importe Publico: " + importePublicoTemporal);
                     producto.setKilosVendidos(producto.getKilosVendidos());
                     producto.setTotalVenta(producto.getTotalVenta());
                     selectedProductosVentas.add(producto);
@@ -311,8 +317,7 @@ public class BeanFacturacion implements Serializable {
 
                     kilosT = importePublicoTemporal.setScale(2, RoundingMode.CEILING).multiply(producto.getKilosVendidos().setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
                     kilosT.setScale(2, RoundingMode.CEILING);
-                    // System.out.println("KilosT: " + kilosT);
-                    // System.out.println("Producto: " + producto.getTotalVenta());
+
                     division = (kilosT).divide(producto.getTotalVenta(), 2, RoundingMode.CEILING);
                     producto.setKilosVendidos(division);
                     producto.setTotalVenta(importePublicoTemporal);
@@ -322,7 +327,7 @@ public class BeanFacturacion implements Serializable {
                 }
             }
         }//fin for
-        //System.out.println("Total Publico Temporal: " + importePublicoTemporal);
+
         BigDecimal t = new BigDecimal(0);
         for (VentaProductoMayoreo vpm : selectedProductosVentas) {
             t = t.add(vpm.getTotalVenta(), MathContext.UNLIMITED);
@@ -349,10 +354,8 @@ public class BeanFacturacion implements Serializable {
                 if (temporalParcialidad.compareTo(new BigDecimal(0)) > 0) {
                     if (temporalParcialidad.compareTo(producto.getTotalVenta()) >= 0) {
                         //el importe de la parcilidad es mayor al de ese producto
-                        //  System.out.println("Total Venta: " + producto.getTotalVenta());
-                        // System.out.println("Temporal Parcialidad: " + temporalParcialidad);
+
                         temporalParcialidad = temporalParcialidad.subtract(producto.getTotalVenta(), MathContext.UNLIMITED);
-                        // System.out.println("Temporal Parcialidad: " + temporalParcialidad);
                         producto.setKilosVendidos(producto.getKilosVendidos());
                         producto.setTotalVenta(producto.getTotalVenta());
                         lstTemporalProductosFacturar.add(producto);
@@ -377,8 +380,6 @@ public class BeanFacturacion implements Serializable {
 
                         temporalParcialidad = temporalParcialidad.subtract(producto.getTotalVenta(), MathContext.UNLIMITED);
 
-                        //el importe de la parcialidad es menor
-                        //recalcular todo :S 
                     }
                 }
 
@@ -395,7 +396,6 @@ public class BeanFacturacion implements Serializable {
     }
 
     public void buscaVentasNoFacturadas() {
-        //System.out.println("Entro a Ventas no facturadas");
         listaVentaPublico = ifaceProductoFacturado.getProductosNoFacturados(new BigDecimal(1), idSucursalFk, TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicioPublico), TiempoUtil.getFechaDDMMYYYY(fechaFiltroFinPublico));
 
     }
@@ -433,20 +433,11 @@ public class BeanFacturacion implements Serializable {
 
                 for (VentaProductoMayoreo vp : ventaMayoreo.getListaProductos()) {
 
-                    //BigDecimal importeTemporal = new BigDecimal(0);
-                    //BigDecimal cantidadTemporal = new BigDecimal(0);
                     if (pf.getIdLlaveFk().intValue() == vp.getIdVentaMayProdPk().intValue()) {
 
                         kilosTemporal = vp.getKilosVendidos().subtract(pf.getKilos(), MathContext.UNLIMITED);
                         importeTemporal = vp.getTotalVenta().subtract(pf.getImporte(), MathContext.UNLIMITED);
-//                        System.out.println("Kilos Totales de Venta: " + vp.getKilosVendidos());
-//                        System.out.println("Kilos Facturados: " + pf.getKilos());
-//                        System.out.println("Kilos por Facturar: " + kilosTemporal);
-//
-//                        System.out.println("Importe Total de la Venta: " + vp.getTotalVenta());
-//                        System.out.println("Importe Facturado: " + pf.getImporte());
-//                        System.out.println("Importe por Facturar: " + importeTemporal);
-//                        System.out.println("===============================================");
+
                         vp.setKilosVendidos(kilosTemporal);
                         vp.setTotalVentaSinIva(importeTemporal);
                         vp.setTotalVenta(importeTemporal);
@@ -469,23 +460,29 @@ public class BeanFacturacion implements Serializable {
 
         BigDecimal importeSinIva = new BigDecimal(0);
         BigDecimal importeConIva = new BigDecimal(0);
+        subTotal = CERO;
+        total = CERO;
+        ventaMayoreo.setTotalVenta(CERO);
 
         ArrayList<VentaProductoMayoreo> lstproductosTemporal = new ArrayList<VentaProductoMayoreo>();
         for (CatalogoSat cs : listaTipoDocumento) {
 
             if (cs.getIdCatalogoSatPk().intValue() == tipoDocumento.intValue()) {
                 BigDecimal totalSinIvaFOR = new BigDecimal(0);
+
                 for (VentaProductoMayoreo vmp : ventaMayoreo.getListaProductos()) {
+
+                    ventaMayoreo.setTotalVenta(ventaMayoreo.getTotalVenta().add(vmp.getTotalVenta()));
 
                     if (vmp.getKilosVendidos().compareTo(new BigDecimal(0)) > 0) {
                         BigDecimal iva = vmp.getTotalVenta().multiply(cs.getValor(), MathContext.UNLIMITED);
-
                         vmp.setTotalVentaSinIva(vmp.getTotalVenta().subtract(iva.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED));
                         vmp.setPrecioProductoSinIva(vmp.getTotalVentaSinIva().setScale(2, RoundingMode.CEILING).divide(vmp.getKilosVendidos(), 2, RoundingMode.CEILING));
                         totalSinIvaFOR = totalSinIvaFOR.add(vmp.getTotalVentaSinIva(), MathContext.UNLIMITED);
                         lstproductosTemporal.add(vmp);
                     }
                 }
+
                 ventaMayoreo.getListaProductos().clear();
                 ventaMayoreo.setListaProductos(lstproductosTemporal);
                 selectedProductosVentas.clear();
@@ -498,18 +495,13 @@ public class BeanFacturacion implements Serializable {
                 importeConIva = ventaMayoreo.getTotalVenta();
                 importeSinIva = ventaMayoreo.getTotalVentaSinIva();
                 //importe con iva
-//                System.out.println("Importe Con Iva: " + importeConIva);
-//                System.out.println("Importe Sin Iva: " + importeSinIva);
 
                 if (cs.getValor().compareTo(new BigDecimal(0)) == 0) {
                     //se va a usar un IVA de 0 %
-
                     subTotal = (importeConIva.setScale(2, RoundingMode.CEILING)).subtract(descuento.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
-                    //System.out.println("Subtotal Calculado con IVA");
                 } else {
                     //se va a usar un IVA de 16 %
                     subTotal = (importeSinIva.setScale(2, RoundingMode.CEILING)).subtract(descuento.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
-                    //System.out.println("Subtotal Calculado sin IVA");
                 }
                 //System.out.println("subTotal : " + subTotal);
                 iva = (cs.getValor().multiply(new BigDecimal(100), MathContext.UNLIMITED).setScale(2, RoundingMode.CEILING)).multiply(ventaMayoreo.getTotalVenta().subtract(descuento.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED).setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
@@ -518,18 +510,9 @@ public class BeanFacturacion implements Serializable {
                 iva = iva.setScale(2, RoundingMode.CEILING).divide(new BigDecimal(100), 2, RoundingMode.CEILING);
                 // System.out.println("Iva Dividido:  : " + iva);
                 total = (iva.setScale(2, RoundingMode.CEILING)).add(subTotal.setScale(2, RoundingMode.CEILING), MathContext.UNLIMITED);
-                // System.out.println("Total: " + total);
             }
 
         }
-    }
-
-    public void agregarDescuento() {
-
-    }
-
-    public void agregarProducto() {
-
     }
 
     public void removeProductoSugerido() {
@@ -539,24 +522,44 @@ public class BeanFacturacion implements Serializable {
 
     public void buscarDatosCliente(int v) {
 
+        String rfc = getRfcDatosEmisor();
+
         switch (v) {
             case 1:
                 if (ventaMayoreo != null && ventaMayoreo.getIdClienteFk() != null) {
                     datosCliente = new Cliente();
                     datosCliente = ifaceCatCliente.getClienteById(ventaMayoreo.getIdClienteFk());
+
+                    getCorreoCliente(ventaMayoreo.getIdClienteFk(), rfc, 0);
                 }
                 break;
             case 2:
                 datosCliente = new Cliente();
                 datosCliente = ifaceCatCliente.getClienteById(idClienteVentaMostradorPk);
+                getCorreoCliente(idClienteVentaMostradorPk, rfc, 0);
+
                 break;
             case 3:
                 if (datosCliente != null && datosCliente.getIdClientePk() != null) {
                     datosCliente = ifaceCatCliente.getClienteById(datosCliente.getIdClientePk());
+                    getCorreoCliente(datosCliente.getIdClientePk(), rfc, 0);
                 }
+                if (filtroMostrador == 3) {
+                    data.setNombreArchivoTimbrado(datosCliente.getRfc() + "_" + ventaMayoreo.getIdSucursalFk().toString() + "_" + ventaMayoreo.getVentaSucursal().toString() + ".xml");
+                    data.setRfcCliente(datosCliente.getRfc());
+                    getCorreoCliente(datosCliente.getIdClientePk(), rfc, 0);//
+                }
+
                 break;
+            //Busca por folio de abono
+
+            case 4:
+                datosCliente = ifaceCatCliente.getClienteByIdAbono(folioVentaG);
+                break;
+
             default:
                 JsfUtil.addErrorMessageClean("Ocurrio un error al buscar los datos del cliente");
+                correo = "";
                 break;
         }
 
@@ -580,6 +583,10 @@ public class BeanFacturacion implements Serializable {
 
     public void buscarDatosEmisor() {
         listaDatosEmisor = ifaceDatosFacturacion.getDatosFacturacionByIdSucursal(new BigDecimal(usuario.getSucId()));
+        if (listaDatosEmisor != null && !listaDatosEmisor.isEmpty()) {
+            idEmisorPk = listaDatosEmisor.get(0).getIdDatosFacturacionPk();
+
+        }
     }
 
     public void buscarFolioVenta() {
@@ -646,23 +653,57 @@ public class BeanFacturacion implements Serializable {
             buscarDatosCliente(1);
             calculaKilosPorFacturar();
             calcularTotales();
-        } else {
-            //buscar productos de ventas de credito no facturados
-            ventaMayoreo.setListaProductos(ifaceProductoFacturado.getProductosNoFacturadosAbonos(new BigDecimal(1), folioVentaG));
+
+        } else if (filtroMostrador == 3) {
+
+            ArrayList<VentaProductoMayoreo> lstCreditoMM = new ArrayList<VentaProductoMayoreo>();
+
+            //buscar productos de ventas de credito no facturados menudeo
+            ArrayList<VentaProductoMayoreo> lstCreditoMenudeo = ifaceProductoFacturado.getProductosNoFacturadosAbonos(new BigDecimal(1), folioVentaG);
+            for (VentaProductoMayoreo vp : lstCreditoMenudeo) {
+                lstCreditoMM.add(vp);
+            }
+
+            //buscar productos de ventas de credito no facturados mayoreo
+            ArrayList<VentaProductoMayoreo> lstCreditoMayoreo = ifaceProductoFacturado.getProductosNoFacturadosAbonos(new BigDecimal(2), folioVentaG);
+
+            for (VentaProductoMayoreo vp : lstCreditoMayoreo) {
+                lstCreditoMM.add(vp);
+            }
+
+            buscarDatosCliente(4);
+
+            listaVentaPublico = lstCreditoMM;
+            ArrayList<VentaProductoMayoreo> lstVentaProducto = new ArrayList<VentaProductoMayoreo>();
+            ventaMayoreo.setListaProductos(lstVentaProducto);
+
+            for (VentaProductoMayoreo vp : listaVentaPublico) {
+                ventaMayoreo.getListaProductos().add(vp);
+            }
+
+            ventaMayoreo.setTotalVenta(datosCliente.getUtilizadoTotal());
+
+            importeVentaPublico = ventaMayoreo.getTotalVenta();
+            ventaMayoreo.setIdClienteFk(datosCliente.getIdClientePk());
+
+            ventaMayoreo.setIdSucursalFk(new BigDecimal(usuario.getSucId()));
+            ventaMayoreo.setVentaSucursal(folioVentaG);
+
+            data.setRfcCliente(datosCliente.getRfc());
+            data.setNombreArchivoTimbrado(datosCliente.getRfc() + "_" + ventaMayoreo.getIdSucursalFk().toString() + "_" + ventaMayoreo.getVentaSucursal().toString() + ".xml");
+
+            calculaKilosPorFacturar();
+            calcularTotales();
+            calculaImportePublico();
+
+            if (lstCreditoMM.isEmpty()) {
+                JsfUtil.addErrorMessageClean("No se Encontro el Folio del Abono.");
+            }
         }
-    }
-
-    public void descargarXML() {
-
-    }
-
-    public void descargarPDF() {
-
     }
 
     public void cancelarFactura() {
         try {
-//            String UUID = "FFFFFFFF-3861-A0BE-2044-76E36DDD09E0";
 
             try {
                 String rutaTimbradoData = Constantes.PATHLOCALFACTURACION + "Clientes" + File.separatorChar + data.getRfcCliente() + File.separatorChar + "TIMBRADO" + File.separatorChar + data.getNombreArchivoTimbrado();
@@ -684,62 +725,55 @@ public class BeanFacturacion implements Serializable {
             } catch (Exception e) {
                 System.out.println("Error: " + e.getMessage());
             }
-            System.out.println("DAta: " + data.toString());
 
             String pathCancelar = Constantes.PATHLOCALFACTURACION + "Empresas" + File.separatorChar + data.getRfcEmisor() + File.separatorChar;
             //
             Path pathKey = Paths.get(pathCancelar + data.getKeyCancelar());
-            System.out.println("PathKey: " + pathKey);
             byte[] keyPem = Files.readAllBytes(pathKey);
             String strKeyPem = new String(keyPem, Charset.defaultCharset());
-            System.out.println("keypem " + strKeyPem);
 
             Path pathCert = Paths.get(pathCancelar + data.getCertificadoCancelar());
-            System.out.println("pathCert: " + pathCert);
             byte[] cerPem = Files.readAllBytes(pathCert);
             String strCerPem = new String(cerPem, Charset.defaultCharset());
-            System.out.println("CERpem " + strCerPem);
 
             RespuestaCancelacion respuesta = new RespuestaCancelacion();
             AdvanswsdlLocator service = new AdvanswsdlLocator();
 
-            System.out.println("se acrgaron variable");
-
             advanswsdl_pkg.AdvanswsdlPortType port = service.getadvanswsdlPort();
-            System.out.println("Antes de Cancelar");
             respuesta = port.cancelar(API_KEY, data.getRfcEmisor(), data.getUuid(), strKeyPem, strCerPem);
-            System.out.println("despues de cancelar");
-            System.out.println("codes:  " + respuesta.getCode());
-            System.out.println("mensajes: " + respuesta.getMessage());
-            System.out.println("subcodes:  " + respuesta.getSubCode());
+
+            System.out.println("code:  " + respuesta.getCode());
+            System.out.println("mensaje: " + respuesta.getMessage());
+            System.out.println("subcode:  " + respuesta.getSubCode());
             System.out.println("Acuse:  " + respuesta.getAcuse());
 
-            data.setIdStatusFk(new BigDecimal(2));
-            if (ifaceFacturas.update(data.getIdFacturaPk(), data.getIdStatusFk()) >= 1) {
-                System.out.println("Entro aqui");
-                if (ifaceProductoFacturado.deleteByIdFacturaFk(data.getIdFacturaPk()) >= 1) {
-                    JsfUtil.addSuccessMessageClean("Se ha cancelado la factura con éxito");
-                    buscarFacturas();
-                    System.out.println("Entro aqui 2");
+            if (respuesta.getCode().equals("201")) {
+                data.setIdStatusFk(new BigDecimal(2));
+                if (ifaceFacturas.update(data.getIdFacturaPk(), data.getIdStatusFk()) >= 1) {
+                    if (ifaceProductoFacturado.deleteByIdFacturaFk(data.getIdFacturaPk()) >= 1) {
+                        JsfUtil.addSuccessMessageClean("Se ha cancelado la factura con éxito");
+                        buscarFacturas();
+                    } else {
+                        JsfUtil.addErrorMessageClean("Ha ocurrido un error al cancelar la factura");
+                    }
                 } else {
-                    JsfUtil.addErrorMessageClean("Ha ocurrido un error al cancelar la factura");
-                    System.out.println("Entro aqui 3");
+                    JsfUtil.addErrorMessageClean("Se cancelo la factura, error al actualizar estatus");
                 }
             } else {
-                JsfUtil.addErrorMessageClean("Se cancelo la factura, error al actualizar estatus");
+                JsfUtil.addErrorMessage("Error > :" + respuesta.getCode() + ".- " + respuesta.getMessage());
             }
 
         } catch (IOException ex) {
+            JsfUtil.addErrorMessage("No se Encontro el Archvio: " + ex.getMessage());
             Logger.getLogger(BeanFacturacion.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
+            JsfUtil.addErrorMessage("Error : " + ex.getMessage());
             Logger.getLogger(BeanFacturacion.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
 
     public void enviarFactura() {
-
-        System.out.println("data " + data.toString());
 
         ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
         String temporal = "";
@@ -750,6 +784,7 @@ public class BeanFacturacion implements Serializable {
         }
 
         abreXML(0);
+
         String filePathXML = Constantes.PATHLOCALFACTURACION + "Clientes" + File.separatorChar + data.getRfcCliente() + File.separatorChar + "TIMBRADO" + File.separatorChar + data.getNombreArchivoTimbrado();
         String filePathPDF = temporal + File.separatorChar + rutaPDF;
 
@@ -758,30 +793,36 @@ public class BeanFacturacion implements Serializable {
                 + "Saludos";
 
         String asunto = "Factura";
-        System.out.println("filePathPDF " + filePathPDF);
-        System.out.println("filePathXML " + filePathXML);
 
         ArrayList<String> lstCorreoPara = new ArrayList<String>();
-
         if (correo != null) {
             String correos[] = correo.split(";");
-            System.out.println("correo lengt " + correo.length());
             for (int i = 0; i <= correos.length - 1; i++) {
-                System.out.println("correo " + correos[i]);
-                lstCorreoPara.add(correos[i]);
+                if (!correos[i].trim().equals("")) {
+                    lstCorreoPara.add(correos[i]);
+                }
             }
 
         }
 
-        if (lstCorreoPara != null && !lstCorreoPara.isEmpty()) {
+        if (rCorreo != null) {
+            String correos[] = rCorreo.split(";");
+            for (int i = 0; i <= correos.length - 1; i++) {
+                if (!correos[i].trim().equals("")) {
+                    lstCorreoPara.add(correos[i]);
+                }
+
+            }
+
+        }
+
+        if (!lstCorreoPara.isEmpty()) {
             FileDataSource pdf = new FileDataSource(filePathPDF);
             FileDataSource xml = new FileDataSource(filePathXML);
 
             ArrayList<FileDataSource> lstFileDataSource = new ArrayList<FileDataSource>();
-
             lstFileDataSource.add(xml);
             lstFileDataSource.add(pdf);
-
             SendEmail.sendAdjunto(asunto, mensaje, lstFileDataSource, "juancruzh91@gmail.com", lstCorreoPara);
         } else {
             JsfUtil.addErrorMessage("No se a especificado un Correo.");
@@ -802,9 +843,9 @@ public class BeanFacturacion implements Serializable {
 
     public void abreXML(int imprime) {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        System.out.println("//////////DATA: " + data.toString());
-        //DocumentBuilder builder = factory.newDocumentBuilder();
+        listaProductosReporte = new ArrayList<VentaProductoMayoreo>();
 
+        //DocumentBuilder builder = factory.newDocumentBuilder();
         try {
             String rutaTimbradoData = Constantes.PATHLOCALFACTURACION + "Clientes" + File.separatorChar + data.getRfcCliente() + File.separatorChar + "TIMBRADO" + File.separatorChar + data.getNombreArchivoTimbrado();
             paramReport.put("cadena", data.getCadena());
@@ -1051,6 +1092,7 @@ public class BeanFacturacion implements Serializable {
         //Se genera un numero aleatorio para que no traiga el mismo reporte por la cache
         int numberRandom = random.nextInt(999);
 
+        System.out.println("genera reporte");
         generateReport(data, usuario.getIdUsuario(), new BigDecimal(numberRandom));
         if (imprime == 1) {
             RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
@@ -1139,14 +1181,19 @@ public class BeanFacturacion implements Serializable {
             ventaMayoreo.setVentaSucursal(selectedProductosVentas.get(0).getFolioVenta());
             ventaMayoreo.setIdSucursalFk(new BigDecimal(usuario.getSucId()));
         }
+        if (filtroMostrador != 3) {
+            if (ventaMayoreo == null || ventaMayoreo.getIdVentaMayoreoPk() == null) {
+                mensaje += "  Ese folio de venta no existe.";
+            }
+            if (ventaMayoreo.getListaProductos() == null || ventaMayoreo.getListaProductos().isEmpty() || ventaMayoreo.getListaProductos().size() == 0) {
+                mensaje += "  Ese folio de venta ya se encuentra facturado totalmente";
+                //System.out.println("Entro a validacion");
+            }
+            //cuando es un credito
+        } else {
 
-        if (ventaMayoreo == null || ventaMayoreo.getIdVentaMayoreoPk() == null) {
-            mensaje += "  Ese folio de venta no existe.";
         }
-        if (ventaMayoreo.getListaProductos() == null || ventaMayoreo.getListaProductos().isEmpty() || ventaMayoreo.getListaProductos().size() == 0) {
-            mensaje += "  Ese folio de venta ya se encuentra facturado totalmente";
-            //System.out.println("Entro a validacion");
-        }
+
         //System.out.println("Total: " + total);
         if (total.setScale(2, RoundingMode.CEILING).compareTo(new BigDecimal(0).setScale(2, RoundingMode.CEILING)) < 1) {
             mensaje += "  El total de la factura es igual o menor que cero";
@@ -1196,14 +1243,21 @@ public class BeanFacturacion implements Serializable {
     public void changeViewMostrador() {
         ventaMayoreo = new VentaMayoreo();
         statusButtonFacturar = true;
+        subTotal = CERO;
+        total = CERO;
+
         if (filtroMostrador == 1) {
             setViewEstate("generate");
             disableBotonBuscarVenta = false;
             disableTextFolioVenta = false;
-        } else {
+        } else if (filtroMostrador == 2) {
             setViewEstate("generateVentaMostrador");
             disableBotonBuscarVenta = true;
             disableTextFolioVenta = true;
+        } else if (filtroMostrador == 3) {
+            setViewEstate("generate");
+            disableBotonBuscarVenta = false;
+            disableTextFolioVenta = false;
         }
         buscarDatosCliente(2);
         verificarComboPublico();
@@ -1251,8 +1305,8 @@ public class BeanFacturacion implements Serializable {
         nuevaFactura.setRfcCliente(datosCliente.getRfc());
 
         Path path = Paths.get(pathFacturaClienteTimbrado);
-        byte[] data = Files.readAllBytes(path);
-        nuevaFactura.setFichero(data);
+        byte[] bFile = Files.readAllBytes(path);
+        nuevaFactura.setFichero(bFile);
         nuevaFactura.setImporte(ventaMayoreo.getTotalVenta());
         nuevaFactura.setDescuento(descuento);
         nuevaFactura.setIva1(iva);
@@ -1275,6 +1329,7 @@ public class BeanFacturacion implements Serializable {
             }
             //Generar PDF
             JsfUtil.addSuccessMessageClean("Se ha generado la factura exitosamente");
+            data = nuevaFactura;
             return 1;
         } else {
 
@@ -1298,19 +1353,16 @@ public class BeanFacturacion implements Serializable {
             String xmlCfdi = IOUtils.toString(in);
             advanswsdl_pkg.AdvanswsdlPortType port = service.getadvanswsdlPort();
             respuesta = port.timbrar2(API_KEY, xmlCfdi);
-            if (respuesta.getCode().equals(200)) {
+            if (respuesta.getCode().equals("200")) {
                 //Solictud de timbrado procesada.
-
                 try {
                     PrintWriter writer = new PrintWriter(pathFacturaClienteTimbrado, "UTF-8");
                     writer.println(respuesta.getCFDI());
                     writer.close();
-                    //System.out.println("Se Guardo Correctamente el archivo Timbrado");
                     if (insertarFactura() == 1) {
                         bandera = 1;
                     }
                 } catch (IOException e) {
-                    //System.out.println("Error al generar archivo Timbrado");
                     JsfUtil.addErrorMessageClean("Ocurrió un error al generar archivo timbrado");
                     bandera = 0;
                 }
@@ -1389,6 +1441,7 @@ public class BeanFacturacion implements Serializable {
 
     public String crearFactura() throws Exception {
         String men = verificarDatos();
+        System.out.println("correo -2 " + correo);
         //System.out.println("MensajeBean: " + men);
         if (men.equals("")) {
             for (DatosFacturacion df : listaDatosEmisor) {
@@ -1433,6 +1486,7 @@ public class BeanFacturacion implements Serializable {
             }
             if (!folderClienteTimbrado.exists()) {
                 folderClienteTimbrado.mkdirs();
+
             }
 
             pathFacturaClienteComprobante = Constantes.PATHLOCALFACTURACION + "Clientes" + File.separatorChar + datosCliente.getRfc() + File.separatorChar + "COMPROBANTE" + File.separatorChar + datosCliente.getRfc() + "_" + ventaMayoreo.getIdSucursalFk().toString() + "_" + ventaMayoreo.getVentaSucursal().toString() + ".xml";
@@ -1471,13 +1525,16 @@ public class BeanFacturacion implements Serializable {
             if (timbrar() == 1) {
                 datosCliente = new Cliente();
                 ventaMayoreo = new VentaMayoreo();
+
                 if (selectedProductosVentas != null) {
                     selectedProductosVentas.clear();
                 }
+
                 importeParcialidad = null;
                 formaPago = "01";
                 subTotal = null;
                 total = null;
+                enviarFactura();
             }
 
             return "facturacion";
@@ -1738,8 +1795,8 @@ public class BeanFacturacion implements Serializable {
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
             exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, outputStream);
 
-            byte[] bytes = outputStream.toByteArray();
-            rutaPDF = UtilUpload.saveFileTemp(bytes, "factura", idSucu.intValue(), random.intValue());
+            byte[] byts = outputStream.toByteArray();
+            rutaPDF = UtilUpload.saveFileTemp(byts, "factura", idSucu.intValue(), random.intValue());
 
         } catch (Exception exception) {
             System.out.println("Error >" + exception.getMessage());
@@ -1747,21 +1804,53 @@ public class BeanFacturacion implements Serializable {
         }
     }
 
-    public void getCorreoCliente() {
-        Cliente c = ifaceCatCliente.getClienteById(data.getIdClienteFk());
-        DatosFacturacion df = ifaceDatosFacturacion.getByRfc(data.getRfcEmisor());
+    public void getCorreoCliente(BigDecimal idCliente, String rfcEmisor, int reenviar) {
 
-        if (c != null && c.getCorreo() != null) {
-            correo = c.getCorreo();
-        }
+        Cliente c = ifaceCatCliente.getClienteById(idCliente);
+        DatosFacturacion df = ifaceDatosFacturacion.getByRfc(rfcEmisor);
+        correo = "";
+        rCorreo = "";
 
-        if (df != null && df.getCorreo() != null) {
-            if (correo != null && !correo.isEmpty()) {
-                correo += ";" + df.getCorreo();
-            } else {
-                correo = df.getCorreo();
+        if (reenviar == 1) {
+            if (c != null && c.getCorreo() != null) {
+                rCorreo = c.getCorreo();
+            }
+
+            if (df != null && df.getCorreo() != null) {
+                if (rCorreo != null && !rCorreo.isEmpty()) {
+                    rCorreo += ";" + df.getCorreo();
+                } else {
+                    rCorreo = df.getCorreo();
+                }
+            }
+        } else {
+            if (c != null && c.getCorreo() != null) {
+                correo = c.getCorreo();
+            }
+
+            if (df != null && df.getCorreo() != null) {
+                if (correo != null && !correo.isEmpty()) {
+                    correo += ";" + df.getCorreo();
+                } else {
+                    correo = df.getCorreo();
+                }
             }
         }
+
+    }
+
+    private String getRfcDatosEmisor() {
+        String rfc = "";
+        if (listaDatosEmisor != null && !listaDatosEmisor.isEmpty()) {
+
+            for (DatosFacturacion df : listaDatosEmisor) {
+                if (idEmisorPk.equals(df.getIdDatosFacturacionPk())) {
+                    rfc = df.getRfc();
+                }
+            }
+
+        }
+        return rfc;
     }
 
     public String getRutaPDF() {
@@ -2306,6 +2395,14 @@ public class BeanFacturacion implements Serializable {
 
     public void setCorreo(String correo) {
         this.correo = correo;
+    }
+
+    public String getrCorreo() {
+        return rCorreo;
+    }
+
+    public void setrCorreo(String rCorreo) {
+        this.rCorreo = rCorreo;
     }
 
 }

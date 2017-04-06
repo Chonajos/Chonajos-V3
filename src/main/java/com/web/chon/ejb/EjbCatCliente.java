@@ -112,7 +112,7 @@ public class EjbCatCliente implements NegocioCatCliente {
 
         //System.out.println("EJB_INSERTA_CLIENTE");
         try {
-            
+
             //System.out.println("insert : " + clie.toString());
             Query query = em.createNativeQuery("INSERT INTO CLIENTE (ID_CLIENTE,NOMBRE,APELLIDO_PATERNO,APELLIDO_MATERNO,EMPRESA,CALLE,SEXO,TELEFONO_CELULAR,TELEFONO_FIJO,EXTENSION,NUM_INT,NUM_EXT,ID_CP,NEXTEL,RAZON,RFC,STATUS,FECHA_ALTA,DIAS_CREDITO,MONTO_CREDITO,TIPO_PERSONA,LOCALIDAD,PAIS,CORREO) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,sysdate,?,?,?,?,?,?)");
             query.setParameter(1, clie.getIdClientePk());
@@ -294,6 +294,24 @@ public class EjbCatCliente implements NegocioCatCliente {
                     + "WHERE CLI.ID_CLIENTE = ? GROUP BY CLI.ID_CLIENTE");
 
             query.setParameter(1, idCliente);
+
+            return query.getResultList();
+        } catch (Exception ex) {
+            logger.error("Error > " + ex.getMessage());
+            return null;
+
+        }
+    }
+
+    @Override
+    public List<Object[]> getClienteByIdAbono(BigDecimal folioAbono) {
+        try {
+            Query query = em.createNativeQuery("SELECT CLI.ID_CLIENTE, CLI.NOMBRE ||' '|| CLI.APELLIDO_PATERNO ||' '|| CLI.APELLIDO_MATERNO AS NOMBRE_COMPLETO, SUM(AC.MONTO_ABONO),CLI.RFC FROM CLIENTE CLI "
+                    + "INNER JOIN CREDITO CR ON CR.ID_CLIENTE_FK = CLI.ID_CLIENTE "
+                    + "INNER JOIN ABONO_CREDITO AC ON AC.ID_CREDITO_FK = CR.ID_CREDITO_PK "
+                    + "WHERE AC.NUMERO_ABONO = ? GROUP BY CLI.ID_CLIENTE,CLI.NOMBRE ,CLI.APELLIDO_PATERNO,CLI.APELLIDO_MATERNO,CLI.RFC ");
+
+            query.setParameter(1, folioAbono);
 
             return query.getResultList();
         } catch (Exception ex) {

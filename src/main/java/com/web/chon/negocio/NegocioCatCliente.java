@@ -41,5 +41,7 @@ public interface NegocioCatCliente {
     
     public List<Object[]> getReporteClienteVentasUtilidad(BigDecimal idCliente,String fechaInicio,String fechaFin);
     
+    public List<Object[]> getClienteByIdAbono(BigDecimal folioAbono);
+    
   
 }
