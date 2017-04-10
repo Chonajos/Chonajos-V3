@@ -82,7 +82,7 @@ public final class CFDv33Factory {
         Comprobante.Conceptos.Concepto c1 = of.createComprobanteConceptosConcepto();
         c1.setCantidad(new BigDecimal("55"));
         c1.setClaveProdServ("01010101");
-        c1.setClaveUnidad("F52");
+        c1.setClaveUnidad("KGM");
         c1.setUnidad("KILOS");
         c1.setDescripcion("AJO CHILENO");
         c1.setValorUnitario(new BigDecimal("62.00"));

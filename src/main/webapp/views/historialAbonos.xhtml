@@ -136,7 +136,7 @@
                                 <p:rowToggler />
                             </p:column>
                             <p:column headerText="Folio Abono" width="60px;" class="alignCenter">
-                                <h:outputText value="#{model.idAbonoCreditoPk}" />
+                                <h:outputText value="#{model.numeroAbono}" />
                             </p:column>
 
                             <p:column headerText="Cliente" width="150px;" sortBy="#{model.nombreCliente}" class="alignLeft">
@@ -218,7 +218,7 @@
                                             <h:outputText value="#{mode.idCreditoFk}" />
                                         </p:column>
 
-                                        <p:column headerText="Monto" width="50px;" class="alignRight">
+                                        <p:column headerText="Monto" width="50px;" sortBy="#{mode.montoAbono}" class="alignRight">
                                             <h:outputText value="#{mode.montoAbono}">
                                                 <f:convertNumber type="currency" currencySymbol="$" />
                                             </h:outputText>

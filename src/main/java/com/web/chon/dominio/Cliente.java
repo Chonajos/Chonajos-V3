@@ -71,10 +71,11 @@ public class Cliente implements Serializable {
     
    
     public String getNombreCompleto() {
-        String nombre = this.nombre == null ? "" : this.nombre;
-        String paterno = this.paterno == null ? "" : this.paterno;
-        String materno = this.materno == null ? "" : this.materno;
-        return nombreCompleto == null? nombre.trim()+" "+paterno.trim()+" "+materno.trim():nombreCompleto.trim();
+        String sNombre = this.nombre == null ? "" : this.nombre.trim();
+        String sPaterno = this.paterno == null ? "" : this.paterno.trim();
+        String sMaterno = this.materno == null ? "" : this.materno.trim();
+        String sNombreCompleto = nombreCompleto == null? sNombre+" "+sPaterno+" "+sMaterno:nombreCompleto;
+        return sNombreCompleto.trim();
 
     }
 
@@ -391,5 +392,12 @@ public class Cliente implements Serializable {
     public void setPromedioRecuperacion(BigDecimal promedioRecuperacion) {
         this.promedioRecuperacion = promedioRecuperacion;
     }
+
+    @Override
+    public String toString() {
+        return "Cliente{" + "idClientePk=" + idClientePk + ", nombre=" + nombre + ", paterno=" + paterno + ", materno=" + materno + ", nombreCompleto=" + nombreCompleto + ", sexo=" + sexo + ", idStatusFk=" + idStatusFk + ", fechaAlta=" + fechaAlta + ", empresa=" + empresa + ", rfc=" + rfc + ", razonSocial=" + razonSocial + ", calle=" + calle + ", idCodigoPostalFk=" + idCodigoPostalFk + ", nombreEstado=" + nombreEstado + ", nombreMunicipio=" + nombreMunicipio + ", nombreColonia=" + nombreColonia + ", numInterior=" + numInterior + ", numExterior=" + numExterior + ", localidad=" + localidad + ", pais=" + pais + ", codigoPostal=" + codigoPostal + ", idMunicipioFk=" + idMunicipioFk + ", idEntidadFk=" + idEntidadFk + ", idColoniaFk=" + idColoniaFk + ", telefonoCelular=" + telefonoCelular + ", nextel=" + nextel + ", telefonoOficina=" + telefonoOficina + ", ext=" + ext + ", correo=" + correo + ", tipoPersona=" + tipoPersona + ", diasCredito=" + diasCredito + ", limiteCredito=" + limiteCredito + ", utilizadoMenudeo=" + utilizadoMenudeo + ", utilizadoMayoreo=" + utilizadoMayoreo + ", utilizadoTotal=" + utilizadoTotal + ", creditoDisponible=" + creditoDisponible + ", utilizadoDocumentos=" + utilizadoDocumentos + ", promedioRecuperacionTres=" + promedioRecuperacionTres + ", promedioRecuperacion=" + promedioRecuperacion + '}';
+    }
+    
+    
 
 }

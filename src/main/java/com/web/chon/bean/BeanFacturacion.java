@@ -547,14 +547,24 @@ public class BeanFacturacion implements Serializable {
                 if (filtroMostrador == 3) {
                     data.setNombreArchivoTimbrado(datosCliente.getRfc() + "_" + ventaMayoreo.getIdSucursalFk().toString() + "_" + ventaMayoreo.getVentaSucursal().toString() + ".xml");
                     data.setRfcCliente(datosCliente.getRfc());
-                    getCorreoCliente(datosCliente.getIdClientePk(), rfc, 0);//
+                    getCorreoCliente(datosCliente.getIdClientePk(), rfc, 0);
                 }
 
                 break;
             //Busca por folio de abono
 
             case 4:
-                datosCliente = ifaceCatCliente.getClienteByIdAbono(folioVentaG);
+                Cliente clienteTemp = new Cliente();
+                clienteTemp = ifaceCatCliente.getClienteByIdAbono(folioVentaG);
+                
+                datosCliente = ifaceCatCliente.getClienteById(clienteTemp.getIdClientePk());
+                
+                datosCliente.setNombreCompleto(clienteTemp.getNombreCompleto());
+                datosCliente.setUtilizadoTotal(clienteTemp.getUtilizadoTotal());
+                datosCliente.setRfc(clienteTemp.getRfc());
+                
+                getCorreoCliente(datosCliente.getIdClientePk(), rfc, 0);
+                
                 break;
 
             default:
@@ -708,19 +718,25 @@ public class BeanFacturacion implements Serializable {
             try {
                 String rutaTimbradoData = Constantes.PATHLOCALFACTURACION + "Clientes" + File.separatorChar + data.getRfcCliente() + File.separatorChar + "TIMBRADO" + File.separatorChar + data.getNombreArchivoTimbrado();
                 File inputFile = new File(rutaTimbradoData);
+                
+                Logger.getLogger(BeanFacturacion.class.getName()).log(Level.INFO, "Ruta "+rutaTimbradoData);
+                
                 DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
                 DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
                 Document doc = dBuilder.parse(inputFile);
+
                 doc.getDocumentElement().normalize();
-                NodeList nList = doc.getElementsByTagName("tfd:TimbreFiscaldigital");
+                NodeList nList = doc.getElementsByTagName("tfd:TimbreFiscalDigital");
                 for (int temp = 0; temp < nList.getLength(); temp++) {
                     Node nNode = nList.item(temp);
                     if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                         Element eElement = (Element) nNode;
-                        //System.out.println("Version : " + eElement.getAttribute("version"));
                         data.setUuid(eElement.getAttribute("UUID"));
                     }
                 }
+
+                Logger.getLogger(BeanFacturacion.class.getName()).log(Level.INFO, "UUID "+data.getUuid());
+                
 
             } catch (Exception e) {
                 System.out.println("Error: " + e.getMessage());
@@ -742,10 +758,8 @@ public class BeanFacturacion implements Serializable {
             advanswsdl_pkg.AdvanswsdlPortType port = service.getadvanswsdlPort();
             respuesta = port.cancelar(API_KEY, data.getRfcEmisor(), data.getUuid(), strKeyPem, strCerPem);
 
-            System.out.println("code:  " + respuesta.getCode());
-            System.out.println("mensaje: " + respuesta.getMessage());
-            System.out.println("subcode:  " + respuesta.getSubCode());
-            System.out.println("Acuse:  " + respuesta.getAcuse());
+            Logger.getLogger(BeanFacturacion.class.getName()).log(Level.INFO, "code "+respuesta.getCode());
+            Logger.getLogger(BeanFacturacion.class.getName()).log(Level.INFO, "mensaje "+respuesta.getMessage());
 
             if (respuesta.getCode().equals("201")) {
                 data.setIdStatusFk(new BigDecimal(2));
@@ -1288,7 +1302,7 @@ public class BeanFacturacion implements Serializable {
         nuevaFactura.setIdClienteFk(datosCliente.getIdClientePk());
         nuevaFactura.setIdSucursalFk(new BigDecimal(usuario.getSucId()));
         nuevaFactura.setFechaCertificacion(new Date());
-        nuevaFactura.setComentarios("Pruebas de Factucion");
+        nuevaFactura.setComentarios("Pruebas de Facturacion");
         //nuevaFactura.setFichero(fichero);
         nuevaFactura.setIdUsuarioFk(usuario.getIdUsuario());
         nuevaFactura.setIdStatusFk(new BigDecimal(1));
@@ -1441,8 +1455,7 @@ public class BeanFacturacion implements Serializable {
 
     public String crearFactura() throws Exception {
         String men = verificarDatos();
-        System.out.println("correo -2 " + correo);
-        //System.out.println("MensajeBean: " + men);
+
         if (men.equals("")) {
             for (DatosFacturacion df : listaDatosEmisor) {
                 if (df.getIdDatosFacturacionPk().intValue() == idEmisorPk.intValue()) {
@@ -1631,7 +1644,7 @@ public class BeanFacturacion implements Serializable {
     private Comprobante.Receptor createReceptor(ObjectFactory of) {
 
         Comprobante.Receptor receptor = of.createComprobanteReceptor();
-        receptor.setNombre(datosCliente.getNombre());
+        receptor.setNombre(datosCliente.getNombreCompleto());
         receptor.setRfc(datosCliente.getRfc());
 
         mx.bigdata.sat.cfdi.v32.schema.TUbicacion uf = of.createTUbicacion();
