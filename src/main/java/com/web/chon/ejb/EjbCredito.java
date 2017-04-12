@@ -10,7 +10,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.xml.transform.Source;
 
 /**
  *
@@ -255,22 +254,22 @@ public class EjbCredito implements NegocioCredito {
 
     public List<Object[]> getAllCreditosActivos(BigDecimal idSucursal, BigDecimal tipoVenta) {
 
-        StringBuffer txtQuery = new StringBuffer("SELECT CRE.ID_CREDITO_PK AS FOLIO,STC.NOMBRE_STATUS,CRE.FECHA_INICIO_CREDITO,CRE.PLAZOS,CRE.MONTO_CREDITO, \n" +
-"(SELECT NVL(SUM(ac.MONTO_ABONO),0)FROM ABONO_CREDITO AC \n" +
-"WHERE AC.ID_CREDITO_FK= CRE.ID_CREDITO_PK AND AC.ESTATUS=1) \n" +
-"AS Total_Abonado, \n" +
-"CRE.ESTATUS_CREDITO,CRE.ACUENTA,CRE.STATUSACUENTA, CRE.NUMERO_PAGOS, \n" +
-"(SELECT NVL(SUM(ac.MONTO_ABONO),0)from ABONO_CREDITO AC \n" +
-"WHERE AC.ID_CREDITO_FK= CRE.ID_CREDITO_PK AND AC.ESTATUS=2) \n" +
-"AS CHEQUES_PENDIENTES,(C.NOMBRE ||' '||C.APELLIDO_PATERNO||' '||C.APELLIDO_MATERNO)AS NOMBRE_COMPLETO,\n" +
-"C.TELEFONO_FIJO,C.TELEFONO_CELULAR, C.CORREO,CRE.FECHA_PROMESA_FIN_PAGO,C.ID_CLIENTE\n" +
-"FROM CREDITO CRE \n" +
-"INNER JOIN STATUS_CREDITO STC \n" +
-"ON STC.ID_STATUS_CREDITO_PK = CRE.ESTATUS_CREDITO \n" +
-"INNER JOIN CLIENTE C ON C.ID_CLIENTE = CRE.ID_CLIENTE_FK \n" +
-"INNER JOIN USUARIO US ON US.ID_USUARIO_PK = CRE.ID_USUARIO_CREDITO \n" +
-"INNER JOIN SUCURSAL SUC ON SUC.ID_SUCURSAL_PK =US.ID_SUCURSAL_FK\n" +
-"WHERE CRE.ESTATUS_CREDITO=1");
+        StringBuffer txtQuery = new StringBuffer("SELECT CRE.ID_CREDITO_PK AS FOLIO,STC.NOMBRE_STATUS,CRE.FECHA_INICIO_CREDITO,CRE.PLAZOS,CRE.MONTO_CREDITO, \n"
+                + "(SELECT NVL(SUM(ac.MONTO_ABONO),0)FROM ABONO_CREDITO AC \n"
+                + "WHERE AC.ID_CREDITO_FK= CRE.ID_CREDITO_PK AND AC.ESTATUS=1) \n"
+                + "AS Total_Abonado, \n"
+                + "CRE.ESTATUS_CREDITO,CRE.ACUENTA,CRE.STATUSACUENTA, CRE.NUMERO_PAGOS, \n"
+                + "(SELECT NVL(SUM(ac.MONTO_ABONO),0)from ABONO_CREDITO AC \n"
+                + "WHERE AC.ID_CREDITO_FK= CRE.ID_CREDITO_PK AND AC.ESTATUS=2) \n"
+                + "AS CHEQUES_PENDIENTES,(C.NOMBRE ||' '||C.APELLIDO_PATERNO||' '||C.APELLIDO_MATERNO)AS NOMBRE_COMPLETO,\n"
+                + "C.TELEFONO_FIJO,C.TELEFONO_CELULAR, C.CORREO,CRE.FECHA_PROMESA_FIN_PAGO,C.ID_CLIENTE\n"
+                + "FROM CREDITO CRE \n"
+                + "INNER JOIN STATUS_CREDITO STC \n"
+                + "ON STC.ID_STATUS_CREDITO_PK = CRE.ESTATUS_CREDITO \n"
+                + "INNER JOIN CLIENTE C ON C.ID_CLIENTE = CRE.ID_CLIENTE_FK \n"
+                + "INNER JOIN USUARIO US ON US.ID_USUARIO_PK = CRE.ID_USUARIO_CREDITO \n"
+                + "INNER JOIN SUCURSAL SUC ON SUC.ID_SUCURSAL_PK =US.ID_SUCURSAL_FK\n"
+                + "WHERE CRE.ESTATUS_CREDITO=1");
 
         if (idSucursal != null) {
             txtQuery.append(" AND SUC.ID_SUCURSAL_PK = " + idSucursal);
@@ -377,17 +376,51 @@ public class EjbCredito implements NegocioCredito {
             return null;
         }
     }
+
     public BigDecimal getTotalCargos(BigDecimal idClienteFk, String fechaInicio) {
-        Query query = em.createNativeQuery("select nvl(sum(cre.MONTO_CREDITO),0) as monto \n" +
-" from  credito cre \n" +
-" WHERE TO_DATE(TO_CHAR(cre.FECHA_INICIO_CREDITO,'dd/mm/yyyy'),'dd/mm/yyyy') < '" + fechaInicio + "' \n" +
-"  and cre.ID_CLIENTE_FK = "+idClienteFk);
-        
-        BigDecimal d = new BigDecimal (query.getSingleResult().toString());
-        
+        Query query = em.createNativeQuery("select nvl(sum(cre.MONTO_CREDITO),0) as monto "
+                + " from  credito cre "
+                + " WHERE TO_DATE(TO_CHAR(cre.FECHA_INICIO_CREDITO,'dd/mm/yyyy'),'dd/mm/yyyy') < '" + fechaInicio + "' "
+                + "  and cre.ID_CLIENTE_FK = " + idClienteFk);
+
+        BigDecimal d = new BigDecimal(query.getSingleResult().toString());
+
         return (d);
-    
-    
+
     }
 
+    @Override
+    public List<Object[]> getCreditoByIdClienteAndEstatus(BigDecimal idCliente, int estatus, int numRegistros) {
+        try {
+            Query query;
+            
+            StringBuffer cadena = new StringBuffer("");
+            List<Object[]> resultList = null;
+
+            if (estatus == 2 && numRegistros != 0) {
+                cadena.append("SELECT * FROM (SELECT C.ID_CREDITO_PK,C.ESTATUS_CREDITO,C.FECHA_INICIO_CREDITO,NVL(C.FECHA_FIN_CREDITO,SYSDATE) AS FECHA_FIN, "
+                        + "C.MONTO_CREDITO,ROUND(NVL(C.FECHA_FIN_CREDITO,SYSDATE)-C.FECHA_INICIO_CREDITO,0) AS DIAS FROM CREDITO C "
+                        + "WHERE C.ID_CLIENTE_FK = "+idCliente+" AND C.ESTATUS_CREDITO ="+estatus
+                        + " ORDER BY C.FECHA_FIN_CREDITO DESC) T1 WHERE ROWNUM <="+numRegistros);
+
+                
+
+            } else {
+                cadena.append("SELECT C.ID_CREDITO_PK,C.ESTATUS_CREDITO,C.FECHA_INICIO_CREDITO,NVL(C.FECHA_FIN_CREDITO,SYSDATE) AS FECHA_FIN, "
+                        + "C.MONTO_CREDITO,ROUND(NVL(C.FECHA_FIN_CREDITO,SYSDATE)-C.FECHA_INICIO_CREDITO) AS DIAS FROM CREDITO C "
+                        + "WHERE C.ID_CLIENTE_FK ="+idCliente+" AND C.ESTATUS_CREDITO ="+estatus
+                        + " ORDER BY C.FECHA_FIN_CREDITO");
+
+            }
+            
+            query = em.createNativeQuery(cadena.toString());
+
+            resultList = query.getResultList();
+            
+            return resultList;
+        } catch (Exception ex) {
+            Logger.getLogger(EjbCredito.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
 }

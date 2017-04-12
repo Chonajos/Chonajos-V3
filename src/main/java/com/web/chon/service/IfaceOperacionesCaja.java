@@ -43,5 +43,15 @@ public interface IfaceOperacionesCaja {
     public ArrayList<OperacionesCaja> getGenerales(BigDecimal idCajaFk,BigDecimal idEntradaSalida,BigDecimal idUsuarioFk,BigDecimal idStatusFk, BigDecimal idSucursalFk,BigDecimal TIPO);
     public int updateCortebyIdCaja(BigDecimal idCajaFk,BigDecimal idCorteFk);
     
+    /**
+     * Obtiene las operaciones de caja por id de sucursal, fecha de inicio y de fin
+     * 
+     * @param idSucursal
+     * @param fechaInicio
+     * @param fechaFin
+     * @return 
+     */
+    public ArrayList<OperacionesCaja> getByIdSucuralAndDate(BigDecimal idSucursal,String fechaInicio, String fechaFin);
+    
 
 }

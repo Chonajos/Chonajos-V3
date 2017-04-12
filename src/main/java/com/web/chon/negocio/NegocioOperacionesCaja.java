@@ -41,4 +41,6 @@ public interface NegocioOperacionesCaja {
     //nuevo cortre
     public List<Object[]> getGenerales(BigDecimal idCajaFk, BigDecimal idEntradaSalida, BigDecimal idUsuarioFk, BigDecimal idStatusFk, BigDecimal idSucursalFk,BigDecimal TIPO);
     public int updateCortebyIdCaja(BigDecimal idCajaFk, BigDecimal idCorteFk);
+    
+    public List<Object[]> getByIdSucuralAndDate(BigDecimal idSucursal, String fechaInicio, String fechaFin);
 }

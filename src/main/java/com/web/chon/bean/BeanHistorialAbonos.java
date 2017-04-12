@@ -372,7 +372,7 @@ public class BeanHistorialAbonos implements Serializable {
                         //ifaceCredito.updateStatus(abono.getIdCreditoFk(), new BigDecimal(1));
                         JsfUtil.addSuccessMessageClean("Se ha cancelado el abono con éxito");
                     } else {
-                        JsfUtil.addErrorMessageClean("Error 2, no se puede cancelar el abono");
+                        JsfUtil.addErrorMessageClean("Error 2, no se puede cancelar el abono, el cheque ya fue cobrado");
                     }
 
                 } else {

@@ -53,6 +53,15 @@ public interface IfaceCredito {
      public int eliminarCreditoByIdCreditoPk(BigDecimal idCreditoPk);
     
      public int activarCredito(Credito credito);
+     
+     /**
+      * Obtiene los creditos por medio del id de cliente y estatus del credito asi como numero de registros a obtener
+      * @param idCliente
+      * @param estatus
+      * @param numRegistros
+      * @return 
+      */
+     public ArrayList<Credito> getCreditoByIdClienteAndEstatus(BigDecimal idCliente,int estatus, int numRegistros);
     
     
 }

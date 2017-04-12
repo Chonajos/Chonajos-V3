@@ -308,32 +308,33 @@ INSERT INTO STATUS (id_pk,status,descripcion_status) values (s_status.NextVal,'I
 
 CREATE TABLE CLIENTE(
 	ID_CLIENTE  NUMBER, 
-	NOMBRE  VARCHAR(50), 
-	APELLIDO_PATERNO  VARCHAR(50), 
-	APELLIDO_MATERNO  VARCHAR(50), 
-	EMPRESA  VARCHAR(20), 
-	CALLE  VARCHAR(60), 
+	NOMBRE  VARCHAR(128), 
+	APELLIDO_PATERNO  VARCHAR(128), 
+	APELLIDO_MATERNO  VARCHAR(128), 
+	EMPRESA  VARCHAR(128), 
+	CALLE  VARCHAR(150), 
 	SEXO  CHAR(1), 
 	FECHA_NACIMIENTO  DATE, 
 	TELEFONO_MOVIL  NUMBER, 
 	TELEFONO_FIJO  NUMBER, 
 	EXTENSION  NUMBER, 
-	NUM_INT  NUMBER, 
-	NUM_EXT  NUMBER, 
+	NUM_INT  VARCHAR(64), 
+	NUM_EXT  VARCHAR(64), 
 	CLAVECELULAR  NUMBER, 
 	LADACELULAR  NUMBER, 
 	ID_CP NUMBER, 
-	CALLEFISCAL  VARCHAR(50), 
+	CALLEFISCAL  VARCHAR(128), 
 	NUMINTFIS  NUMBER, 
 	NUMEXTFIS  NUMBER,  
 	ID_CP_FISCAL NUMBER, 
 	NEXTEL  VARCHAR(20), 
-	RAZON  VARCHAR(100), 
+	RAZON  VARCHAR(128), 
 	RFC  VARCHAR(20),  
 	LADAOFICINA  VARCHAR(20), 
 	CLAVEOFICINA  VARCHAR(20), 
 	NEXTELCLAVE  VARCHAR(20),
 	STATUS NUMBER,
+        CORREO VARCHAR(255), 
 	CONSTRAINT c_id_cliente_pk PRIMARY KEY (ID_CLIENTE),
 	CONSTRAINT c_id_cod_fk FOREIGN KEY(ID_CP) references CODIGOS_POSTALES(ID_PK),
 	CONSTRAINT c_id_cod__FIS_fk FOREIGN KEY(ID_CP_FISCAL) references CODIGOS_POSTALES(ID_PK),
@@ -750,10 +751,6 @@ INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Recibir Depositos', 0,'90.12','/views/recibirDeposito.xhtml');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Historial de Cortes', 0,'90.13','/views/historialCortes.xhtml');
 
-INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Historial de Cortes', 0,'90.13','/views/historialCortes.xhtml');
-INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Facturación', 0,'90.15','/views/facturacion.xhtml');
-
-
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Corte Caja', 0,'90.5','/views/corteCaja.xhtml');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Pago de Servicios', 0,'90.7','/views/pagoServicios.xhtml');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Ajuste de Caja', 0,'90.8','/views/ajusteCaja.xhtml');
@@ -767,8 +764,14 @@ INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Recibir Depósitos', 0,'10.1','/views/recibirDeposito.xhtml');
 INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Recibir Depósitos', 0,'10.1','/views/recibirDeposito.xhtml');
 
-INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'RH', 1,'11','NULL');
-INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Asignacion de Horarios', 1,'11.1','/views/asignacionHorario.xhtml');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Facturación', 1,'100','NULL');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Facturación', 0,'100.1','/views/facturacion.xhtml');
+
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'RH', 1,'110','NULL');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Asignacion de Horarios', 0,'110.1','/views/asignacionHorario.xhtml');
+
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Reportes', 1,'999','NULL');
+INSERT INTO menu (id_menu,descripcion,tipo, nivel, url_sistema)  values (s_menu.nextVal, 'Reporte de Gastos', 0,'999.1','/views/reporteGastos.xhtml');
 
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(1,1);
 INSERT INTO acces_menu (id_menu_fk, ID_ROL_FK) values(2,1);

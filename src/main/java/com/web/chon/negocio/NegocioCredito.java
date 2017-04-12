@@ -40,7 +40,9 @@ public interface NegocioCredito {
 
     /**
      * Obtiene todos los creditos activos
-     *
+     * @param idSucursal
+     * @param tipoVenta
+     * @return 
      */
     public List<Object[]> getAllCreditosActivos(BigDecimal idSucursal,BigDecimal tipoVenta);
     
@@ -54,5 +56,7 @@ public interface NegocioCredito {
     public List<Object[]>  getHistorialCrediticio(BigDecimal idClienteFk, String fechaInicio, String fechaFin);
     
     public BigDecimal  getTotalCargos(BigDecimal idClienteFk,String fechaInicio);
+    
+    public List<Object[]> getCreditoByIdClienteAndEstatus(BigDecimal idCliente, int estatus, int numRegistros);
 
 }

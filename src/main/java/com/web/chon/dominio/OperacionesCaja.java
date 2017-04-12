@@ -7,6 +7,7 @@ package com.web.chon.dominio;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import org.primefaces.model.StreamedContent;
 
@@ -45,18 +46,19 @@ public class OperacionesCaja implements Serializable {
     private BigDecimal idFormaPago;
     private String nombrePago;
     private StreamedContent productImage;
-    
-    
+
+    private ArrayList<OperacionesCaja> lstOperacionesCajas;
+
     private byte[] fichero;
 
     @Override
     public String toString() {
         return "OperacionesCaja{" + "idOperacionesCajaPk=" + idOperacionesCajaPk + ", idCorteCajaFk=" + idCorteCajaFk + ", idCajaFk=" + idCajaFk + ", idCajaDestinoFk=" + idCajaDestinoFk + ", idConceptoFk=" + idConceptoFk + ", fecha=" + fecha + ", idStatusFk=" + idStatusFk + ", idUserFk=" + idUserFk + ", comentarios=" + comentarios + ", monto=" + monto + ", nombreUsuario=" + nombreUsuario + ", nombreCaja=" + nombreCaja + ", nombreCajaDestino=" + nombreCajaDestino + ", nombreStatus=" + nombreStatus + ", nombreConcepto=" + nombreConcepto + ", nombreOperacion=" + nombreOperacion + ", idTipoOperacionFk=" + idTipoOperacionFk + ", entradaSalida=" + entradaSalida + ", nombreEntradaSalida=" + nombreEntradaSalida + ", numero=" + numero + ", idCuentaDestinoFk=" + idCuentaDestinoFk + ", nombreBanco=" + nombreBanco + ", cuentaBanco=" + cuentaBanco + ", idSucursalFk=" + idSucursalFk + '}';
     }
-    
+
     public void reset() {
-        idFormaPago=null;
-        nombrePago=null;
+        idFormaPago = null;
+        nombrePago = null;
         idOperacionesCajaPk = null;
         idCorteCajaFk = null;
         idCajaFk = null;
@@ -71,15 +73,15 @@ public class OperacionesCaja implements Serializable {
         nombreCaja = null;
         nombreCajaDestino = null;
         nombreStatus = null;
-        entradaSalida=null;
-        nombreConcepto=null;
-        nombreOperacion=null;
-        idTipoOperacionFk=null;
-        nombreEntradaSalida=null;
-        idCuentaDestinoFk=null;
+        entradaSalida = null;
+        nombreConcepto = null;
+        nombreOperacion = null;
+        idTipoOperacionFk = null;
+        nombreEntradaSalida = null;
+        idCuentaDestinoFk = null;
         idSucursalFk = null;
         nombreSucursal = null;
-       
+
     }
 
     public StreamedContent getProductImage() {
@@ -98,7 +100,6 @@ public class OperacionesCaja implements Serializable {
         this.fichero = fichero;
     }
 
-    
     public BigDecimal getIdFormaPago() {
         return idFormaPago;
     }
@@ -115,9 +116,6 @@ public class OperacionesCaja implements Serializable {
         this.nombrePago = nombrePago;
     }
 
-    
-    
-
     public String getNombreSucursal() {
         return nombreSucursal;
     }
@@ -125,7 +123,6 @@ public class OperacionesCaja implements Serializable {
     public void setNombreSucursal(String nombreSucursal) {
         this.nombreSucursal = nombreSucursal;
     }
-    
 
     public String getNombreBanco() {
         return nombreBanco;
@@ -142,7 +139,6 @@ public class OperacionesCaja implements Serializable {
     public void setCuentaBanco(BigDecimal cuentaBanco) {
         this.cuentaBanco = cuentaBanco;
     }
-    
 
     public BigDecimal getIdCuentaDestinoFk() {
         return idCuentaDestinoFk;
@@ -152,7 +148,6 @@ public class OperacionesCaja implements Serializable {
         this.idCuentaDestinoFk = idCuentaDestinoFk;
     }
 
-    
     public int getNumero() {
         return numero;
     }
@@ -161,7 +156,6 @@ public class OperacionesCaja implements Serializable {
         this.numero = numero;
     }
 
-    
     public String getNombreEntradaSalida() {
         return nombreEntradaSalida;
     }
@@ -170,7 +164,6 @@ public class OperacionesCaja implements Serializable {
         this.nombreEntradaSalida = nombreEntradaSalida;
     }
 
-    
     public String getNombreOperacion() {
         return nombreOperacion;
     }
@@ -187,9 +180,6 @@ public class OperacionesCaja implements Serializable {
         this.idTipoOperacionFk = idTipoOperacionFk;
     }
 
-
-    
-    
     public String getNombreConcepto() {
         return nombreConcepto;
     }
@@ -198,7 +188,6 @@ public class OperacionesCaja implements Serializable {
         this.nombreConcepto = nombreConcepto;
     }
 
-    
     public BigDecimal getEntradaSalida() {
         return entradaSalida;
     }
@@ -207,7 +196,6 @@ public class OperacionesCaja implements Serializable {
         this.entradaSalida = entradaSalida;
     }
 
-    
     public BigDecimal getIdConceptoFk() {
         return idConceptoFk;
     }
@@ -328,5 +316,15 @@ public class OperacionesCaja implements Serializable {
         this.idSucursalFk = idSucursalFk;
     }
 
+    public ArrayList<OperacionesCaja> getLstOperacionesCajas() {
+        return lstOperacionesCajas;
+    }
+
+    public void setLstOperacionesCajas(ArrayList<OperacionesCaja> lstOperacionesCajas) {
+        this.lstOperacionesCajas = lstOperacionesCajas;
+    }
+
     
+
+
 }

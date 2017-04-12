@@ -103,6 +103,7 @@ public class BeanHistorialCortes implements Serializable {
 
     @PostConstruct
     public void init() {
+        
         usuario = context.getUsuarioAutenticado();
         setTitle("Historial de Cortes de Caja");
         setViewEstate("init");

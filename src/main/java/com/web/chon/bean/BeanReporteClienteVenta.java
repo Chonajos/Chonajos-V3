@@ -2,11 +2,13 @@ package com.web.chon.bean;
 
 import com.web.chon.dominio.AnalisisMercado;
 import com.web.chon.dominio.Cliente;
+import com.web.chon.dominio.Credito;
 import com.web.chon.dominio.Entidad;
 import com.web.chon.dominio.Motivos;
 import com.web.chon.dominio.Municipios;
 import com.web.chon.dominio.ReporteClienteVentas;
 import com.web.chon.service.IfaceCatCliente;
+import com.web.chon.service.IfaceCredito;
 import com.web.chon.util.JsfUtil;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -35,7 +37,12 @@ public class BeanReporteClienteVenta implements BeanSimple {
     @Autowired
     private IfaceCatCliente ifaceCatCliente;
 
+    @Autowired
+    private IfaceCredito ifaceCredito;
+
     private ArrayList<Cliente> lstCliente;
+    private ArrayList<Credito> lstCreditoActivos;
+    private ArrayList<Credito> lstCredito;
     private ArrayList<ReporteClienteVentas> model;
 
     private String title;
@@ -49,6 +56,11 @@ public class BeanReporteClienteVenta implements BeanSimple {
     private BigDecimal maxChartValue;
     private BigDecimal diasRecuperacion;
     private BigDecimal diasRecuperacionTres;
+
+    private BigDecimal diasPromedioActivo;
+    private BigDecimal diasPromedioInactivo;
+
+    private final static BigDecimal ZERO = new BigDecimal(0);
 
     @PostConstruct
     public void init() {
@@ -143,11 +155,7 @@ public class BeanReporteClienteVenta implements BeanSimple {
 //        yAxis.setTickFormat("${:,.2f}");
 //        yAxis.setTickFormat("$%,d.%02d");
 //yAxis.setTickFormat("%d");
-
-
-        
 //        yAxis.setMin(-1);
-
         int interval = 50;
         int iMaxChartValue = 0;
 
@@ -231,7 +239,12 @@ public class BeanReporteClienteVenta implements BeanSimple {
 
     @Override
     public void searchById() {
+
         model = ifaceCatCliente.getReporteClienteVentasUtilidad(data.getIdClientePk(), null, null);
+
+        lstCreditoActivos = ifaceCredito.getCreditoByIdClienteAndEstatus(data.getIdClientePk(), 1, 0);
+        lstCredito = ifaceCredito.getCreditoByIdClienteAndEstatus(data.getIdClientePk(), 2, 5);
+
         if (model != null && !model.isEmpty()) {
             generateChartLine();
             generateChartBar();
@@ -239,6 +252,34 @@ public class BeanReporteClienteVenta implements BeanSimple {
             JsfUtil.addWarnMessage("No se Encontraron Registros.");
         }
 
+        calculaDiasPromedio();
+
+    }
+
+    private void calculaDiasPromedio() {
+        diasPromedioActivo = ZERO;
+        diasPromedioInactivo = ZERO;
+
+        int numCreditoActivo = 0;
+        int numCreditoInactivo = 0;
+
+        for (Credito c : lstCredito) {
+            diasPromedioInactivo = diasPromedioInactivo.add(c.getDiasCredito());
+        }
+
+        for (Credito c : lstCreditoActivos) {
+            diasPromedioActivo = diasPromedioActivo.add(c.getDiasCredito());
+        }
+
+        if (!diasPromedioActivo.equals(ZERO)) {
+            numCreditoActivo = lstCreditoActivos.size();
+            diasPromedioActivo = diasPromedioActivo.divide(new BigDecimal(numCreditoActivo), 2, RoundingMode.CEILING);
+        }
+
+        if (!diasPromedioInactivo.equals(ZERO)) {
+            numCreditoInactivo = lstCredito.size();
+            diasPromedioInactivo = diasPromedioInactivo.divide(new BigDecimal(numCreditoInactivo), 2, RoundingMode.CEILING);
+        }
     }
 
     public ArrayList<Cliente> autoCompleteCliente(String nombreCliente) {
@@ -352,6 +393,38 @@ public class BeanReporteClienteVenta implements BeanSimple {
 
     public void setDiasRecuperacionTres(BigDecimal diasRecuperacionTres) {
         this.diasRecuperacionTres = diasRecuperacionTres;
+    }
+
+    public ArrayList<Credito> getLstCreditoActivos() {
+        return lstCreditoActivos;
+    }
+
+    public void setLstCreditoActivos(ArrayList<Credito> lstCreditoActivos) {
+        this.lstCreditoActivos = lstCreditoActivos;
+    }
+
+    public ArrayList<Credito> getLstCredito() {
+        return lstCredito;
+    }
+
+    public void setLstCredito(ArrayList<Credito> lstCredito) {
+        this.lstCredito = lstCredito;
+    }
+
+    public BigDecimal getDiasPromedioActivo() {
+        return diasPromedioActivo;
+    }
+
+    public void setDiasPromedioActivo(BigDecimal diasPromedioActivo) {
+        this.diasPromedioActivo = diasPromedioActivo;
+    }
+
+    public BigDecimal getDiasPromedioInactivo() {
+        return diasPromedioInactivo;
+    }
+
+    public void setDiasPromedioInactivo(BigDecimal diasPromedioInactivo) {
+        this.diasPromedioInactivo = diasPromedioInactivo;
     }
 
 }

@@ -486,4 +486,29 @@ public class ServiceCredito implements IfaceCredito {
 
     }
 
+    @Override
+    public ArrayList<Credito> getCreditoByIdClienteAndEstatus(BigDecimal idCliente, int estatus, int numRegistros) {
+        getEjb();
+        
+        ArrayList<Credito> lstCredito = new ArrayList<Credito>();
+        List<Object[]> lstObject = new ArrayList<Object[]>();
+        lstObject = ejb.getCreditoByIdClienteAndEstatus(idCliente, estatus, numRegistros);
+        
+        for (Object[] object : lstObject) {
+            Credito credito = new Credito();
+
+            credito.setIdCreditoPk(object[0] == null ? null : new BigDecimal(object[0].toString()));
+            credito.setEstatusCredito(object[1] == null ? null : new BigDecimal(object[1].toString()));
+            credito.setFechaInicioCredito(object[2] == null ? null : (Date) object[2]);
+            credito.setFechaFinCredito(object[3] == null ? null : (Date) object[3]);
+            credito.setMontoCredito(object[4] == null ? null : new BigDecimal(object[4].toString()));
+            credito.setDiasCredito(object[5] == null ? new BigDecimal(0) : new BigDecimal(object[5].toString()));
+            
+            lstCredito.add(credito);
+        }
+
+        return lstCredito;
+
+    }
+
 }

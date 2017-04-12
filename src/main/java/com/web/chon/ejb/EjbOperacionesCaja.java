@@ -12,7 +12,6 @@ import javax.persistence.Query;
 import com.web.chon.negocio.NegocioOperacionesCaja;
 import java.sql.SQLException;
 
-
 @Stateless(mappedName = "ejbOperacionesCaja")
 public class EjbOperacionesCaja implements NegocioOperacionesCaja {
 
@@ -70,19 +69,18 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
             query.setParameter(2, es.getIdCajaFk());
             query.setParameter(3, es.getIdCajaDestinoFk());
             query.setParameter(4, es.getIdConceptoFk());
-            
+
             query.setParameter(5, es.getIdStatusFk());
             query.setParameter(6, es.getIdUserFk());
             query.setParameter(7, es.getComentarios());
             query.setParameter(8, es.getMonto());
-            
+
             query.setParameter(9, es.getEntradaSalida());
             query.setParameter(10, es.getIdSucursalFk());
             query.setParameter(11, es.getIdFormaPago());
             query.setParameter(12, es.getIdTipoOperacionFk());
             query.setParameter(13, es.getIdOperacionesCajaPk());
-            
-            
+
             return query.executeUpdate();
 
         } catch (Exception ex) {
@@ -348,7 +346,6 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
 
     }
 
-    
     @Override
     public void insertarDocumento(BigDecimal id, byte[] fichero) throws SQLException {
 
@@ -361,19 +358,19 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
 
     @Override
     public List<Object[]> getOperacionesByCategoria(BigDecimal idCategoriaFk, BigDecimal idSucursalFk, BigDecimal idCajaFk, BigDecimal idStatusFk, BigDecimal idConceptoFk, BigDecimal idTipoOperacionFk, String fechaInicio, String fechaFin) {
-        StringBuffer cadena = new StringBuffer("select op.ID_OPERACIONES_CAJA_PK,op.ID_CORTE_CAJA_FK,op.ID_CAJA_FK,\n" +
-"op.ID_CAJA_DESTINO_FK,op.FECHA,op.ID_STATUS_FK,op.ID_USER_FK,op.COMENTARIOS,op.MONTO,\n" +
-"op.E_S,op.ID_CUENTA_DESTINO_FK,op.ID_SUCURSAL_FK,op.ID_FORM_PAGO_FK,op.ID_TIPO_OPERACION_FK,\n" +
-"op.FICHERO,\n" +
-"sucu.NOMBRE_SUCURSAL,cj.NOMBRE,sto.NOMBRE,tip.NOMBRE as OPERACION,cn.NOMBRE AS CONCEPTO,op.ID_CONCEPTO_FK\n" +
-"from OPERACIONES_CAJA op\n" +
-"inner join CONCEPTOS cn on cn.ID_CONCEPTOS_PK = op.ID_CONCEPTO_FK\n" +
-"inner join TIPOS_OPERACION tip on tip.ID_TIPO_OPERACION_PK = op.ID_TIPO_OPERACION_FK\n" +
-"inner join GRUPO_CATEGORIAS gc on gc.ID_GRUPO_CATEGORIAS_PK=tip.ID_GRUPO_FK\n" +
-"inner join SUCURSAL sucu on sucu.ID_SUCURSAL_PK = op.ID_SUCURSAL_FK\n" +
-"inner join STATUS_OPERACIONES sto on sto.ID_STATUS_OPERACIONES_PK=op.ID_STATUS_FK\n" +
-"inner join CAJA cj on cj.ID_CAJA_PK = op.ID_CAJA_FK\n" +
-"where ");
+        StringBuffer cadena = new StringBuffer("select op.ID_OPERACIONES_CAJA_PK,op.ID_CORTE_CAJA_FK,op.ID_CAJA_FK,\n"
+                + "op.ID_CAJA_DESTINO_FK,op.FECHA,op.ID_STATUS_FK,op.ID_USER_FK,op.COMENTARIOS,op.MONTO,\n"
+                + "op.E_S,op.ID_CUENTA_DESTINO_FK,op.ID_SUCURSAL_FK,op.ID_FORM_PAGO_FK,op.ID_TIPO_OPERACION_FK,\n"
+                + "op.FICHERO,\n"
+                + "sucu.NOMBRE_SUCURSAL,cj.NOMBRE,sto.NOMBRE,tip.NOMBRE as OPERACION,cn.NOMBRE AS CONCEPTO,op.ID_CONCEPTO_FK\n"
+                + "from OPERACIONES_CAJA op\n"
+                + "inner join CONCEPTOS cn on cn.ID_CONCEPTOS_PK = op.ID_CONCEPTO_FK\n"
+                + "inner join TIPOS_OPERACION tip on tip.ID_TIPO_OPERACION_PK = op.ID_TIPO_OPERACION_FK\n"
+                + "inner join GRUPO_CATEGORIAS gc on gc.ID_GRUPO_CATEGORIAS_PK=tip.ID_GRUPO_FK\n"
+                + "inner join SUCURSAL sucu on sucu.ID_SUCURSAL_PK = op.ID_SUCURSAL_FK\n"
+                + "inner join STATUS_OPERACIONES sto on sto.ID_STATUS_OPERACIONES_PK=op.ID_STATUS_FK\n"
+                + "inner join CAJA cj on cj.ID_CAJA_PK = op.ID_CAJA_FK\n"
+                + "where ");
 
         if (idCategoriaFk != null && idCategoriaFk.intValue() != 0) {
             cadena.append(" gc.ID_GRUPO_CATEGORIAS_PK= '" + idCategoriaFk + "' ");
@@ -408,27 +405,24 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
 
     @Override
     public List<Object[]> getGenerales(BigDecimal idCajaFk, BigDecimal idEntradaSalida, BigDecimal idUsuarioFk, BigDecimal idStatusFk, BigDecimal idSucursalFk, BigDecimal TIPO) {
-        StringBuffer cadena=null;
-        if (TIPO != null && TIPO.intValue() == 1) 
-        {
+        StringBuffer cadena = null;
+        if (TIPO != null && TIPO.intValue() == 1) {
             cadena = new StringBuffer("SELECT ta.NOMBRE_ABONO,SUM(OC.MONTO) as monto,ta.ID_TIPO_ABONO_PK FROM OPERACIONES_CAJA OC  \n"
                     + "inner join TIPO_ABONO ta on ta.ID_TIPO_ABONO_PK = oc.ID_FORM_PAGO_FK\n"
                     + "where  oc.ID_CORTE_CAJA_FK is null  ");
-        }
-        else
-        {
-            cadena = new StringBuffer("select tio.NOMBRE as operacion,cn.NOMBRE as concepto,ta.NOMBRE_ABONO, sum(oc.MONTO) as monto\n" +
-"from OPERACIONES_CAJA oc inner join\n" +
-"CONCEPTOS cn on cn.ID_CONCEPTOS_PK = oc.ID_CONCEPTO_FK\n" +
-"inner join TIPOS_OPERACION tio on tio.ID_TIPO_OPERACION_PK = oc.ID_TIPO_OPERACION_FK\n" +
-"inner join TIPO_ABONO ta on ta.ID_TIPO_ABONO_PK = oc.ID_FORM_PAGO_FK\n" +
-"where oc.ID_CORTE_CAJA_FK is null");
+        } else {
+            cadena = new StringBuffer("select tio.NOMBRE as operacion,cn.NOMBRE as concepto,ta.NOMBRE_ABONO, sum(oc.MONTO) as monto\n"
+                    + "from OPERACIONES_CAJA oc inner join\n"
+                    + "CONCEPTOS cn on cn.ID_CONCEPTOS_PK = oc.ID_CONCEPTO_FK\n"
+                    + "inner join TIPOS_OPERACION tio on tio.ID_TIPO_OPERACION_PK = oc.ID_TIPO_OPERACION_FK\n"
+                    + "inner join TIPO_ABONO ta on ta.ID_TIPO_ABONO_PK = oc.ID_FORM_PAGO_FK\n"
+                    + "where oc.ID_CORTE_CAJA_FK is null");
         }
 
         if (idCajaFk != null && idCajaFk.intValue() != 0) {
             cadena.append(" and oc.ID_CAJA_FK= " + idCajaFk + "");
         }
-        
+
         if (idStatusFk != null && idStatusFk.intValue() != 0) {
             cadena.append(" and oc.ID_STATUS_FK = " + idStatusFk + "");
         }
@@ -438,17 +432,14 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
         if (idUsuarioFk != null && idUsuarioFk.intValue() != 0) {
             cadena.append(" and oc.ID_USER_FK =  " + idUsuarioFk + "");
         }
-        
-        if (TIPO != null && TIPO.intValue() == 1) 
-        {
-           cadena.append(" group by ta.NOMBRE_ABONO,ta.ID_TIPO_ABONO_PK ");
-        }
-        else
-        {
+
+        if (TIPO != null && TIPO.intValue() == 1) {
+            cadena.append(" group by ta.NOMBRE_ABONO,ta.ID_TIPO_ABONO_PK ");
+        } else {
             cadena.append(" group by tio.NOMBRE ,cn.NOMBRE ,ta.NOMBRE_ABONO ");
         }
-        System.out.println("idEntradaSalida : "+idEntradaSalida +" idCajaFk:"+idCajaFk+ " idUsuarioFk:  "+idUsuarioFk+" idStatusFk: "+idStatusFk + " idSucursalFk: "+idSucursalFk +" TIPO :"+TIPO);
-        
+        System.out.println("idEntradaSalida : " + idEntradaSalida + " idCajaFk:" + idCajaFk + " idUsuarioFk:  " + idUsuarioFk + " idStatusFk: " + idStatusFk + " idSucursalFk: " + idSucursalFk + " TIPO :" + TIPO);
+
         Query query;
         query = em.createNativeQuery(cadena.toString());
         System.out.println("====================================================");
@@ -460,18 +451,40 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
     @Override
     public int updateCortebyIdCaja(BigDecimal idCajaFk, BigDecimal idCorteFk) {
         try {
-            System.out.println("Parametros: "+idCajaFk + "  "+idCorteFk);
+            System.out.println("Parametros: " + idCajaFk + "  " + idCorteFk);
             Query query = em.createNativeQuery("UPDATE OPERACIONES_CAJA SET ID_CORTE_CAJA_FK = ? WHERE ID_CAJA_FK = ? and ID_STATUS_FK=1 and ID_CORTE_CAJA_FK is null");
             query.setParameter(1, idCorteFk);
             query.setParameter(2, idCajaFk);
-            System.out.println("Query: "+query.toString());
+            System.out.println("Query: " + query.toString());
             return query.executeUpdate();
         } catch (Exception ex) {
-            System.out.println("Error> "+ex.toString());
+            System.out.println("Error> " + ex.toString());
             Logger.getLogger(EjbOperacionesCaja.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
-    
+
+    }
+
+    @Override
+    public List<Object[]> getByIdSucuralAndDate(BigDecimal idSucursal, String fechaInicio, String fechaFin) {
+        try {
+            Query query = em.createNativeQuery("SELECT oc.FECHA,s.NOMBRE_SUCURSAL,TOP.ID_TIPO_OPERACION_PK,TOP.NOMBRE,con.ID_CONCEPTOS_PK,con.NOMBRE,oc.MONTO,oc.COMENTARIOS from OPERACIONES_CAJA oc "
+                    + "INNER JOIN SUCURSAL s on s.ID_SUCURSAL_PK = oc.ID_SUCURSAL_FK "
+                    + "INNER JOIN CONCEPTOS con on con.ID_CONCEPTOS_PK = oc.ID_CONCEPTO_FK "
+                    + "INNER JOIN TIPOS_OPERACION TOP ON TOP.ID_TIPO_OPERACION_PK = con.ID_TIPO_OPERACION_FK AND TOP.ID_GRUPO_FK = 1 "
+                    + "WHERE oc.E_S = 2 and TO_DATE(TO_CHAR(oc.FECHA,'YYYY/MM/DD'),'YYYY/MM/DD') BETWEEN ? AND ? AND oc.ID_SUCURSAL_FK = ? "
+                    + "ORDER BY s.NOMBRE_SUCURSAL,TOP.NOMBRE,con.NOMBRE");
+
+            query.setParameter(1, fechaInicio);
+            query.setParameter(2, fechaFin);
+            query.setParameter(3, idSucursal);
+            
+            return query.getResultList();
+
+        } catch (Exception ex) {
+            Logger.getLogger(EjbOperacionesCaja.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 
 }

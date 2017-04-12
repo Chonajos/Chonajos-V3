@@ -27,6 +27,8 @@ public class Credito extends ValueObject {
     private BigDecimal montoCredito;
     private BigDecimal numeroPagos;
     private BigDecimal totalAbonado;
+    
+    private BigDecimal diasCredito;
 
     @Override
     public String toString() {
@@ -179,6 +181,16 @@ public class Credito extends ValueObject {
         this.numeroPagos = numeroPagos;
     }
 
+    public BigDecimal getDiasCredito() {
+        return diasCredito;
+    }
+
+    public void setDiasCredito(BigDecimal diasCredito) {
+        this.diasCredito = diasCredito;
+    }
+    
+    
+
     @Override
     public void reset() {
 
@@ -198,6 +210,8 @@ public class Credito extends ValueObject {
         fechaPromesaPago = null;
         numeroPromesaPago = null;
         fechaInicioCredito = null;
+        
+        diasCredito = null;
 
     }
 
