@@ -95,7 +95,9 @@ public class BeanRecibirTransferencias implements Serializable {
     }
 
     public void aceptar() {
+        
         if (caja.getIdCajaPk() != null) {
+
             opcaja.setIdOperacionesCajaPk(new BigDecimal(ifaceOperacionesCaja.getNextVal()));
             opcaja.setMonto(data.getMonto());
             opcaja.setIdConceptoFk(data.getIdConceptoFk());
@@ -104,7 +106,7 @@ public class BeanRecibirTransferencias implements Serializable {
             opcaja.setComentarios("SISTEMA: TRANSFERENCIA: OC:" + data.getIdOperacionesCajaPk());
 
             opcaja.setIdStatusFk(STATUS_REALIZADA);
-
+            
             if (ifaceOperacionesCaja.insertaOperacion(opcaja) == 1) {
                 ifaceOperacionesCaja.updateStatusConcepto(data.getIdOperacionesCajaPk(), STATUS_REALIZADA, data.getIdConceptoFk());
                 lstTransferenciasEntrantes = ifaceOperacionesCaja.getTransferenciasEntrantes(opcaja.getIdCajaFk());
@@ -115,6 +117,8 @@ public class BeanRecibirTransferencias implements Serializable {
         } else {
             JsfUtil.addErrorMessageClean("Su usuario no cuenta con caja registrada para realizar el pago de servicios");
         }
+        init();
+
     }
 
     public void rechazarTransferencia() {

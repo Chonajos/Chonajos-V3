@@ -55,8 +55,7 @@
                             </p:column>
                             <p:column headerText="Recibir" width="60px;" class="alignCenter">
                                 <p:commandButton id="print" ajax="true" process="@this" action="#{beanRecibirTransferencias.aceptar()}" 
-                                                 icon="ui-icon-transfer-e-w" styleClass="ui-priority-primary" update=":formContent"
-                                                 oncomplete="window.frames.miFrame.print();">
+                                                 icon="ui-icon-transfer-e-w" styleClass="ui-priority-primary" update=":formContent">
                                     <f:setPropertyActionListener value="#{model}" target="#{beanRecibirTransferencias.data}"/>
                                     <p:confirm header="Confirmación" message="¿Estás seguro de  aceptar la transferencia?" icon="ui-icon-alert"/>
                                 </p:commandButton>

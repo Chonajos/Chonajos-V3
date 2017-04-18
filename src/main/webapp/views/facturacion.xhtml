@@ -23,7 +23,7 @@
                     <div class="col-lg-7 col-md-6 col-sm-12 col-xs-12 alignRight ">
                         <div class="form-group" align="right">
                             <p:commandButton value="Consultar" onclick="PF('statusDialog').show()" update=":formContent" rendered="#{beanFacturacion.viewEstate=='init'}" ajax="true" disabled="false" action="#{beanFacturacion.buscarFacturas()}"/>
-                            <p:outputLabel class="col-lg-3 col-md-5 col-sm-4 col-xs-12 alignRight" rendered="#{beanFacturacion.viewEstate=='generate' || beanFacturacion.viewEstate=='generateVentaMostrador'}"  for="selectFiltro" value ="Tipo de Factura:" /> 
+                            <p:outputLabel class="col-lg-3 col-md-5 col-sm-4 col-xs-12" rendered="#{beanFacturacion.viewEstate=='generate' || beanFacturacion.viewEstate=='generateVentaMostrador'}"  for="selectFiltro" value ="Tipo de Factura:" /> 
                             <p:selectOneMenu  style="width: 30% !important" id="selectTipoFactura" rendered="#{beanFacturacion.viewEstate=='generate' || beanFacturacion.viewEstate=='generateVentaMostrador'}" class="col-lg-5 col-md-7 col-sm-8 col-xs-12" value="#{beanFacturacion.filtroMostrador}" >
                                 <f:selectItem itemLabel="Factura  sobre Venta" itemValue="1"/>
                                 <f:selectItem itemLabel="Factura sobre Venta General" itemValue="2"/>
@@ -57,23 +57,23 @@
             <p:panel rendered="#{beanFacturacion.viewEstate=='init'}"> 
                 <iframe id="miFrame" name="miFrame"  style="position: absolute;" class="hidden" src="#{beanFacturacion.rutaPDF}"/>
                 <div class="container-fluid">
-                    <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 form-group">
-                        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 ">
-                            <p:outputLabel  class="col-lg-5 col-md-3 col-sm-4 col-xs-6 alignLeft"  for="txtFolioFactura" id="labelFolioFactura" value ="Folio Factura:" /> 
-                            <p:inputText id="txtFolioFactura" maxlength="8" class=" col-lg-4 col-md-4 col-sm-8 col-xs-6" value="#{beanFacturacion.folioFactura}" required="false">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 ">
+                            <p:outputLabel  class="col-lg-5 col-md-5 col-sm-12 col-xs-12"  for="txtFolioFactura" id="labelFolioFactura" value ="Folio Factura:" /> 
+                            <p:inputText id="txtFolioFactura" maxlength="8" class=" col-lg-4 col-md-4 col-sm-12 col-xs-12" value="#{beanFacturacion.folioFactura}" required="false">
                                 <pe:keyFilter regEx="/[0-9 .]/i"/>
                             </p:inputText>
                         </div>
 
-                        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignRight"  for="comboSucursal" value ="Sucursal:" rendered="#{beanFacturacion.viewEstate =='init'}" /> 
-                            <p:selectOneMenu  style="width: 65% !important"   id="comboSucursal" class="col-lg-8 col-md-8 col-sm-8 col-xs-12" value="#{beanFacturacion.idSucursalFk}" rendered="#{beanRelacionGastos.viewEstate =='init'}" >
+                        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-12 col-xs-12"  for="comboSucursal" value ="Sucursal:" rendered="#{beanFacturacion.viewEstate =='init'}" /> 
+                            <p:selectOneMenu  style="width:65% !important"   id="comboSucursal" class="col-lg-8 col-md-8 col-sm-12 col-xs-12" value="#{beanFacturacion.idSucursalFk}" rendered="#{beanRelacionGastos.viewEstate =='init'}" >
                                 <f:selectItem itemLabel="Selecciona" itemValue="" />
                                 <f:selectItems value="#{beanFacturacion.listaSucursales}" var="sucu" itemLabel="#{sucu.nombreSucursal}" itemValue="#{sucu.idSucursalPk}"/>
                             </p:selectOneMenu>
                         </div>
-                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12 alignLeft"  for="autocompleteCliente" value ="Cliente:" /> 
+                        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-12 col-xs-12"  for="autocompleteCliente" value ="Cliente:" /> 
                             <p:autoComplete  placeholder="Seleccione un Cliente" id="autocompleteCliente"  styleClass="autocomplete-input-text-media ui-state-highlight-autocomplete" class="ui-state-highlight-autocomplete"
                                              value="#{beanFacturacion.cliente}" completeMethod="#{beanFacturacion.autoCompleteCliente}" forceSelection="true" var="cliente"  inputStyle="width: 179px"
                                              itemLabel="#{cliente.nombreCompleto}"
@@ -82,10 +82,10 @@
                             <pe:keyFilter for="autocompleteCliente" regEx="/[a-z0-9-_Ã±\s]/i" />
                         </div>
                     </div>
-                    <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12 alignLeft">
-                            <p:outputLabel class="col-lg-3 col-md-5 col-sm-4 col-xs-12 alignRight"  for="selectFiltro" value ="Fechas:" rendered="#{beanFacturacion.viewEstate =='init'}"/> 
-                            <p:selectOneMenu  style="width: 40% !important" id="selectFiltro" class="col-lg-9 col-md-7 col-sm-8 col-xs-12" value="#{beanFacturacion.filtro}" rendered="#{beanFacturacion.viewEstate =='init'}">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-12 col-xs-12"  for="selectFiltro" value ="Fechas:" rendered="#{beanFacturacion.viewEstate =='init'}"/> 
+                            <p:selectOneMenu  style="width: 40% !important" id="selectFiltro" class="col-lg-9 col-md-7 col-sm-12 col-xs-12" value="#{beanFacturacion.filtro}" rendered="#{beanFacturacion.viewEstate =='init'}">
                                 <f:selectItem itemLabel="Selecciona" itemValue="-1" />
                                 <f:selectItem itemLabel="Día" itemValue="1"/>
                                 <f:selectItem itemLabel="Mes" itemValue="2"/>
@@ -95,30 +95,30 @@
                             </p:selectOneMenu>
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 form-group">
-                            <p:outputLabel class="col-lg-5 col-md-4 col-sm-4 col-xs-12 alignRight "  
+                            <p:outputLabel class="col-lg-5 col-md-5 col-sm-12 col-xs-12"  
                                            for="calendarInicio" value ="Fecha Inicio:" 
                                            rendered="#{beanFacturacion.viewEstate =='init'}"/> 
                             <p:calendar id="calendarInicio" 
-                                        class="col-lg-7 col-md-8 col-sm-8 col-xs-12 
+                                        class="col-lg-7 col-md-7 col-sm-12 col-xs-12 
                                         calendario alignLeft" navigator="true" placeholder="dd/mm/yyyy"
                                         value="#{beanFacturacion.fechaFiltroInicio}" locale="es" pattern="dd/MM/yyyy" 
                                         readonlyInput="true" showOn="button" rendered="#{beanFacturacion.viewEstate =='init'}">
                             </p:calendar>
                         </div>
-                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                            <p:outputLabel class="col-lg-5 col-md-4 col-sm-4 col-xs-12 alignRight "  
+                        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-5 col-md-5 col-sm-12 col-xs-12"  
                                            for="calendarFin" value ="Fecha Fin:" 
                                            rendered="#{beanFacturacion.viewEstate =='init'}"/> 
                             <p:calendar  id="calendarFin" 
-                                         class="col-lg-7 col-md-8 col-sm-8 col-xs-12 
+                                         class="col-lg-7 col-md-7 col-sm-12 col-xs-12 
                                          calendario alignLeft" navigator="true" placeholder="dd/mm/yyyy"
                                          value="#{beanFacturacion.fechaFiltroFin}" locale="es" pattern="dd/MM/yyyy" 
                                          readonlyInput="true" showOn="button" rendered="#{beanFacturacion.viewEstate =='init'}">
                             </p:calendar>
                         </div>
-                        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-3 col-md-5 col-sm-4 col-xs-12 alignRight" for="txtStatus" value="Estatus:" rendered="#{beanFacturacion.viewEstate =='init'}"/>    
-                            <p:selectOneMenu class="col-lg-9 col-md-7 col-sm-8 col-xs-12"  style="width: 60% !important"  id="txtStatus"  value="#{beanFacturacion.idStatusFk}" rendered="#{beanFacturacion.viewEstate =='init'}">
+                        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-3 col-md-3 col-sm-12 col-xs-12" for="txtStatus" value="Estatus:" rendered="#{beanFacturacion.viewEstate =='init'}"/>    
+                            <p:selectOneMenu class="col-lg-9 col-md-9 col-sm-12 col-xs-12"  style="width: 60% !important"  id="txtStatus"  value="#{beanFacturacion.idStatusFk}" rendered="#{beanFacturacion.viewEstate =='init'}">
                                 <f:selectItem  itemLabel="Todas" itemValue=""/>
                                 <f:selectItem  itemLabel="Emitida" itemValue="1"/>
                                 <f:selectItem  itemLabel="Cancelada" itemValue="2"/>
@@ -140,11 +140,11 @@
                             <p:column headerText="N° Factura" sortBy="#{model.numeroFactura}" width="60px;" class="alignCenter">
                                 <h:outputText value="#{model.numeroFactura}"/>
                             </p:column>
-                            <p:column headerText="Sucursal" sortBy="#{model.nombreSucursal}" width="100px;" class="alignCenter">
+                            <p:column headerText="Sucursal" sortBy="#{model.nombreSucursal}" width="100px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreSucursal}" />
                             </p:column>
 
-                            <p:column headerText="Fecha Emisión" sortBy="#{model.fechaEmision}" width="80px;" class="alignCenter">
+                            <p:column headerText="Fecha Emisión" sortBy="#{model.fechaEmision}" width="80px;" class="alignLeft">
                                 <h:outputText value="#{model.fechaEmision}">
                                     <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
                                 </h:outputText>
@@ -154,7 +154,7 @@
                                 </h:outputText>
                             </p:column>
 
-                            <p:column headerText="Estatus" sortBy="#{model.nombreEstatus}" width="80px;" class="alignCenter">
+                            <p:column headerText="Estatus" sortBy="#{model.nombreEstatus}" width="80px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreEstatus}">
                                 </h:outputText>
                             </p:column>
@@ -222,23 +222,23 @@
             <!-- PANEL CON LOS DATOS DEL EMISOR -->
             <p:panel  rendered="#{beanFacturacion.viewEstate=='generate' || beanFacturacion.viewEstate=='generateVentaMostrador'}"> 
                 <div class="container-fluid">
-                    <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 form-group">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <p:fragment rendered="#{beanFacturacion.viewEstate=='generate'}">
-                            <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
-                                <p:outputLabel  class="col-lg-7 col-md-3 col-sm-4 col-xs-6 alignLeft" rendered="#{beanFacturacion.viewEstate=='generate'}" for="folioVentaG" id="labelfolioVentaG" value ="Folio:" /> 
-                                <p:inputText id="folioVentaG" maxlength="8" rendered="#{beanFacturacion.viewEstate=='generate'}" disabled="#{beanFacturacion.disableTextFolioVenta}" class=" col-lg-5 col-md-4 col-sm-8 col-xs-6" value="#{beanFacturacion.folioVentaG}" required="false">
+                            <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 ">
+                                <p:outputLabel  class="col-lg-7 col-md-7 col-sm-12 col-xs-12" rendered="#{beanFacturacion.viewEstate=='generate'}" for="folioVentaG" id="labelfolioVentaG" value ="Folio:" /> 
+                                <p:inputText id="folioVentaG" maxlength="8" rendered="#{beanFacturacion.viewEstate=='generate'}" disabled="#{beanFacturacion.disableTextFolioVenta}" class=" col-lg-5 col-md-5 col-sm-12 col-xs-12" value="#{beanFacturacion.folioVentaG}" required="false">
                                     <pe:keyFilter regEx="/[0-9 .]/i"/>
                                 </p:inputText>
                             </div>
-                            <div class="col-lg-1 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="col-lg-1 col-md-1 col-sm-12 col-xs-12 ">
                                 <p:commandButton value="Buscar" disabled="#{beanFacturacion.disableBotonBuscarVenta}" rendered="#{beanFacturacion.viewEstate=='generate'}"  onclick="PF('statusDialog').show()"  update=":formContent" ajax="true"  action="#{beanFacturacion.buscarFolioVenta()}"/>
                             </div>
                         </p:fragment>
                         <p:fragment rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}">
 
-                            <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12 alignLeft">
-                                <p:outputLabel class="col-lg-5 col-md-5 col-sm-4 col-xs-12 alignRight"  for="comboFechasPublico" value ="Fechas:"  rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}" /> 
-                                <p:selectOneMenu  style="width: 55% !important" id="comboFechasPublico" class="col-lg-9 col-md-7 col-sm-8 col-xs-12" value="#{beanFacturacion.filtroPublico}"  rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}" >
+                            <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                <p:outputLabel class="col-lg-5 col-md-5 col-sm-12 col-xs-12"  for="comboFechasPublico" value ="Fechas:"  rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}" /> 
+                                <p:selectOneMenu  style="width: 55% !important" id="comboFechasPublico" class="col-lg-9 col-md-9 col-sm-8 col-xs-12" value="#{beanFacturacion.filtroPublico}"  rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}" >
                                     <f:selectItem itemLabel="Selecciona" itemValue="-1"/>
                                     <f:selectItem itemLabel="Semana" itemValue="3"/>
                                     <f:selectItem itemLabel="Día" itemValue="1"/>
@@ -247,79 +247,77 @@
                                 </p:selectOneMenu>
                             </div>
 
-                            <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12 form-group">
-                                <p:outputLabel class="col-lg-3 col-md-4 col-sm-4 col-xs-12 alignRight "  
+                            <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 form-group">
+                                <p:outputLabel class="col-lg-3 col-md-3 col-sm-12 col-xs-12"  
                                                for="calendarInicioPublico" value ="Inicio:" 
                                                rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}" /> 
                                 <p:calendar  id="calendarInicioPublico" 
-                                             class="col-lg-9 col-md-8 col-sm-8 col-xs-12 
+                                             class="col-lg-9 col-md-9 col-sm-12 col-xs-12 
                                              calendario alignLeft" navigator="true" placeholder="dd/mm/yyyy"
                                              value="#{beanFacturacion.fechaFiltroInicioPublico}" locale="es" pattern="dd/MM/yyyy" 
                                              readonlyInput="true" showOn="button"  rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}" >
                                 </p:calendar>
                             </div>
-                            <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12" rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}">
-                                <p:outputLabel class="col-lg-3 col-md-4 col-sm-4 col-xs-12 alignRight "  
+                            <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12" rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}">
+                                <p:outputLabel class="col-lg-3 col-md-3 col-sm-12 col-xs-12"  
                                                for="calendarFinPublico" value ="Fin:" 
                                                rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}" /> 
                                 <p:calendar  id="calendarFinPublico" 
-                                             class="col-lg-9 col-md-8 col-sm-8 col-xs-12 
+                                             class="col-lg-9 col-md-9 col-sm-12 col-xs-12 
                                              calendario alignLeft" navigator="true" placeholder="dd/mm/yyyy"
                                              value="#{beanFacturacion.fechaFiltroFinPublico}" locale="es" pattern="dd/MM/yyyy" 
                                              readonlyInput="true" showOn="button"  rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}" >
                                 </p:calendar>
                             </div>
-                            <div class="col-lg-1 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="col-lg-1 col-md-1 col-sm-12 col-xs-12 ">
                                 <p:commandButton value="Buscar" rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}"  onclick="PF('statusDialog').show()"  update=":formContent" ajax="true"  action="#{beanFacturacion.buscaVentasNoFacturadas()}"/>
                             </div>
                         </p:fragment>
-                        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-5 col-md-4 col-sm-4 col-xs-12 alignRight"  for="comboRFCEmisor" value ="RFC Emisor: "  /> 
-                            <p:selectOneMenu  style="width: 55% !important"   id="comboRFCEmisor" class="col-lg-7 col-md-8 col-sm-8 col-xs-12" value="#{beanFacturacion.idEmisorPk}" >
+                        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-5 col-md-5 col-sm-12 col-xs-12"  for="comboRFCEmisor" value ="RFC Emisor: "  /> 
+                            <p:selectOneMenu  style="width: 55% !important"   id="comboRFCEmisor" class="col-lg-7 col-md-7 col-sm-12 col-xs-12" value="#{beanFacturacion.idEmisorPk}" >
                                 <f:selectItems value="#{beanFacturacion.listaDatosEmisor}" var="emi" itemLabel="#{emi.rfc}" itemValue="#{emi.idDatosFacturacionPk}"/>
                             </p:selectOneMenu>
                         </div>
 
-                        <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12 alignLeft">
-                            <p:outputLabel class="col-lg-6 col-md-5 col-sm-4 col-xs-12 alignRight"  for="filtroMoneda" value ="Moneda:" /> 
-                            <p:selectOneMenu  style="width: 50% !important" id="filtroMoneda" class="col-lg-5 col-md-7 col-sm-8 col-xs-12" value="#{beanFacturacion.moneda}" >
+                        <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-6 col-md-6 col-sm-12 col-xs-12"  for="filtroMoneda" value ="Moneda:" /> 
+                            <p:selectOneMenu  style="width: 50% !important" id="filtroMoneda" class="col-lg-5 col-md-5 col-sm-12 col-xs-12" value="#{beanFacturacion.moneda}" >
                                 <f:selectItems value="#{beanFacturacion.listaMonedas}" var="monedas" itemLabel="#{monedas.descripcion}" itemValue="#{monedas.codigo}"/>
                             </p:selectOneMenu>
                         </div>
                     </div>
-                    <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 ">
-                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 alignLeft">
-                            <p:outputLabel class="col-lg-4 col-md-5 col-sm-4 col-xs-12 alignRight"  for="filtroDocumento" value ="Tipo Documento" /> 
-                            <p:selectOneMenu  style="width: 50% !important" id="filtroDocumento" class="col-lg-5 col-md-7 col-sm-8 col-xs-12" value="#{beanFacturacion.tipoDocumento}" >
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-12 col-xs-12"  for="filtroDocumento" value ="Tipo Documento" /> 
+                            <p:selectOneMenu  style="width: 50% !important" id="filtroDocumento" class="col-lg-5 col-md-5 col-sm-12 col-xs-12" value="#{beanFacturacion.tipoDocumento}" >
                                 <f:selectItems value="#{beanFacturacion.listaTipoDocumento}" var="documento" itemLabel="#{documento.descripcion} #{documento.valor} %" itemValue="#{documento.idCatalogoSatPk}"/>
                                 <p:ajax event="change" update=":formContent" listener="#{beanFacturacion.calcularTotales()}"/>
                             </p:selectOneMenu>
                         </div>
-                        <div class="col-lg-5 col-md-4 col-sm-12 col-xs-12 alignLeft">
-                            <p:outputLabel class="col-lg-4 col-md-5 col-sm-4 col-xs-12 alignRight"  for="formaPago" value ="Forma de Pago:" /> 
-                            <p:selectOneMenu  style="width: 65% !important" id="formaPago" class="col-lg-8 col-md-7 col-sm-8 col-xs-12" value="#{beanFacturacion.formaPago}" >
+                        <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-12 col-xs-12"  for="formaPago" value ="Forma de Pago:" /> 
+                            <p:selectOneMenu  style="width: 65% !important" id="formaPago" class="col-lg-8 col-md-8 col-sm-12 col-xs-12" value="#{beanFacturacion.formaPago}" >
                                 <f:selectItems value="#{beanFacturacion.listaFormaPago}" var="forma" itemLabel="#{forma.descripcion}" itemValue="#{forma.codigo}"/>
                                 <p:ajax event="change" update=":formContent" listener="#{beanFacturacion.habilitarImporteParcial()}"/>
                             </p:selectOneMenu>
                         </div>
 
-                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12 alignLeft">
-                            <p:outputLabel class="col-lg-6 col-md-5 col-sm-4 col-xs-12 alignRight"  for="metodoPago" value ="Método de Pago:" /> 
-                            <p:selectOneMenu  style="width: 50% !important" id="metodoPago" class="col-lg-5 col-md-7 col-sm-8 col-xs-12" value="#{beanFacturacion.metodoPago}" >
+                        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                            <p:outputLabel class="col-lg-6 col-md-6 col-sm-12 col-xs-12"  for="metodoPago" value ="Método de Pago:" /> 
+                            <p:selectOneMenu  style="width: 50% !important" id="metodoPago" class="col-lg-5 col-md-5 col-sm-12 col-xs-12" value="#{beanFacturacion.metodoPago}" >
                                 <f:selectItems value="#{beanFacturacion.listaMetodosPago}" var="metodo" itemLabel="#{metodo.descripcion}" itemValue="#{metodo.codigo}"/>
                                 <p:ajax event="change" update=":formContent" listener="#{beanFacturacion.habilitarNumcuenta()}"/>
-
-
                             </p:selectOneMenu>
                         </div>
                     </div>
                     <!-- Datos de Cliente  -->
-                    <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 ">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
 
                         <h4>Datos del Cliente</h4>
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
-                            <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                                <p:outputLabel class="col-lg-3 col-md-4 col-sm-4 col-xs-12 "  for="autocompleteCliente2" value ="Cliente:" /> 
+                            <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                <p:outputLabel class="col-lg-3 col-md-3 col-sm-12 col-xs-12"  for="autocompleteCliente2" value ="Cliente:" /> 
                                 <p:autoComplete  placeholder="Seleccione un Cliente" id="autocompleteCliente2"  required="true" requiredMessage="Ingresa un valor para el campo Cliente." styleClass="autocomplete-input-text-media ui-state-highlight-autocomplete" class="ui-state-highlight-autocomplete"
                                                  value="#{beanFacturacion.datosCliente}" completeMethod="#{beanFacturacion.autoCompleteCliente}" forceSelection="true" var="cliente"  inputStyle="width: 179px"
                                                  itemLabel="#{cliente.nombreCompleto.trim()}"
@@ -327,85 +325,83 @@
                                     <p:ajax event="itemSelect" update=":formContent:txtRazonCli :formContent:txtRfcCli :formContent:txtCodigoPCli :formContent:txtCodigoPCli :formContent:txtCalleCli :formContent:txtColoniaCli :formContent:txtPaisCli :formContent:txtNoExtCli :formContent:txtNoIntCli :formContent:txtenviarCorreo :formContent:txtEstadoCli :formContent:txtMunicipioCli" listener="#{beanFacturacion.buscarDatosCliente(3)}" />
                                     <p:ajax event="change" update=":formContent:txtRazonCli :formContent:txtRfcCli :formContent:txtCodigoPCli :formContent:txtCodigoPCli :formContent:txtCalleCli :formContent:txtColoniaCli :formContent:txtPaisCli :formContent:txtNoExtCli :formContent:txtNoIntCli :formContent:txtenviarCorreo :formContent:txtEstadoCli :formContent:txtMunicipioCli"  listener="#{beanFacturacion.buscarDatosCliente(3)}"/>                                                                                                              
                                 </p:autoComplete>
-
                                 <pe:keyFilter for="autocompleteCliente" regEx="/[a-z0-9-_Ã±\s]/i" />
                             </div>
-                            <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 ">
-                                <p:outputLabel class="col-lg-6 col-md-2 col-sm-3 col-xs-12"  for="txtRazonCli" value ="Razón Social:" /> 
-                                <p:inputText id="txtRazonCli" required="true" class=" col-lg-6 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.nombre}" />
+                            <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                <p:outputLabel class="col-lg-6 col-md-6 col-sm-12 col-xs-12"  for="txtRazonCli" value ="Razón Social:" /> 
+                                <p:inputText id="txtRazonCli" required="true" class=" col-lg-6 col-md-6 col-sm-12 col-xs-12" value="#{beanFacturacion.datosCliente.nombre}" />
                             </div>
-                            <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
-                                <p:outputLabel class="col-lg-3 col-md-2 col-sm-3 col-xs-12"  for="txtRfcCli" value ="RFC:" /> 
-                                <p:inputText id="txtRfcCli" required="true" class=" col-lg-9 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.rfc}" />
+                            <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                <p:outputLabel class="col-lg-3 col-md-3 col-sm-12 col-xs-12"  for="txtRfcCli" value ="RFC:" /> 
+                                <p:inputText id="txtRfcCli" required="true" class=" col-lg-9 col-md-9 col-sm-12 col-xs-12" value="#{beanFacturacion.datosCliente.rfc}" />
                             </div>
-                            <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
-                                <p:outputLabel class="col-lg-8 col-md-2 col-sm-3 col-xs-12"  for="txtCodigoPCli" value ="Codigo Postal" /> 
-                                <p:inputText id="txtCodigoPCli" required="true" class=" col-lg-4 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.codigoPostal}" />
+                            <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                <p:outputLabel class="col-lg-8 col-md-8 col-sm-12 col-xs-12"  for="txtCodigoPCli" value ="Codigo Postal" /> 
+                                <p:inputText id="txtCodigoPCli" required="true" class=" col-lg-4 col-md-4 col-sm-12 col-xs-12" value="#{beanFacturacion.datosCliente.codigoPostal}" />
                             </div>
-                            <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
-                                <p:outputLabel class="col-lg-4 col-md-2 col-sm-3 col-xs-12"  for="txtCalleCli" value ="Calle:" /> 
-                                <p:inputText id="txtCalleCli" required="true" class=" col-lg-8 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.calle}" />
+                            <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                <p:outputLabel class="col-lg-4 col-md-4 col-sm-12 col-xs-12"  for="txtCalleCli" value ="Calle:" /> 
+                                <p:inputText id="txtCalleCli" required="true" class=" col-lg-8 col-md-4 col-sm-12 col-xs-12" value="#{beanFacturacion.datosCliente.calle}" />
                             </div>
                         </div>
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
-
-                            <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
-                                <p:outputLabel class="col-lg-5 col-md-2 col-sm-3 col-xs-12"  for="txtColoniaCli" value ="Colonia:" /> 
-                                <p:inputText id="txtColoniaCli" required="true" class=" col-lg-7 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.nombreColonia}" />
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                <p:outputLabel class="col-lg-5 col-md-5 col-sm-12 col-xs-12"  for="txtColoniaCli" value ="Colonia:" /> 
+                                <p:inputText id="txtColoniaCli" required="true" class=" col-lg-7 col-md-7 col-sm-12 col-xs-12" value="#{beanFacturacion.datosCliente.nombreColonia}" />
                             </div>
-                            <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
-                                <p:outputLabel class="col-lg-5 col-md-2 col-sm-3 col-xs-12"  for="txtMunicipioCli" value ="Municipio: " /> 
-                                <p:inputText id="txtMunicipioCli" required="true" class=" col-lg-7 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.nombreMunicipio}" />
+                            <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                <p:outputLabel class="col-lg-5 col-md-5 col-sm-12 col-xs-12"  for="txtMunicipioCli" value ="Municipio: " /> 
+                                <p:inputText id="txtMunicipioCli" required="true" class=" col-lg-7 col-md-7 col-sm-12 col-xs-12" value="#{beanFacturacion.datosCliente.nombreMunicipio}" />
                             </div>
-                            <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
-                                <p:outputLabel class="col-lg-4 col-md-2 col-sm-3 col-xs-12"  for="txtEstadoCli" value ="Estado: " /> 
-                                <p:inputText id="txtEstadoCli" required="true" class=" col-lg-8 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.nombreEstado}" />
+                            <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                <p:outputLabel class="col-lg-4 col-md-4 col-sm-12 col-xs-12"  for="txtEstadoCli" value ="Estado: " /> 
+                                <p:inputText id="txtEstadoCli" required="true" class=" col-lg-8 col-md-8 col-sm-12 col-xs-12" value="#{beanFacturacion.datosCliente.nombreEstado}" />
                             </div>
-                            <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
-                                <p:outputLabel class="col-lg-4 col-md-2 col-sm-3 col-xs-12"  for="txtPaisCli" value ="País: " /> 
-                                <p:inputText id="txtPaisCli" required="true" class=" col-lg-8 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.pais}" />
+                            <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                <p:outputLabel class="col-lg-4 col-md-4 col-sm-12 col-xs-12"  for="txtPaisCli" value ="País: " /> 
+                                <p:inputText id="txtPaisCli" required="true" class=" col-lg-8 col-md-8 col-sm-12 col-xs-12" value="#{beanFacturacion.datosCliente.pais}" />
                             </div>
-                            <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
-                                <p:outputLabel class="col-lg-10 col-md-2 col-sm-3 col-xs-12"  for="txtNoExtCli" value ="No. Exterior" /> 
-                                <p:inputText id="txtNoExtCli" required="true" class=" col-lg-2 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.numExterior}">
+                            <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                <p:outputLabel class="col-lg-10 col-md-10 col-sm-12 col-xs-12"  for="txtNoExtCli" value ="No. Exterior" /> 
+                                <p:inputText id="txtNoExtCli" required="true" class=" col-lg-2 col-md-2 col-sm-12 col-xs-12" value="#{beanFacturacion.datosCliente.numExterior}">
                                     <pe:keyFilter regEx="/[0-9_]/i"/>
                                 </p:inputText>
                             </div>
-                            <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 ">
-                                <p:outputLabel class="col-lg-10 col-md-2 col-sm-3 col-xs-12"  for="txtNoIntCli" value ="No. Interior" /> 
-                                <p:inputText id="txtNoIntCli" required="true" class=" col-lg-2 col-md-2 col-sm-3 col-xs-12" value="#{beanFacturacion.datosCliente.numInterior}">
+                            <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                <p:outputLabel class="col-lg-10 col-md-10 col-sm-12 col-xs-12"  for="txtNoIntCli" value ="No. Interior" /> 
+                                <p:inputText id="txtNoIntCli" required="true" class=" col-lg-2 col-md-2 col-sm-12 col-xs-12" value="#{beanFacturacion.datosCliente.numInterior}">
                                     <pe:keyFilter regEx="/[0-9_]/i"/>
                                 </p:inputText>
                             </div>
                             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                <p:outputLabel class="col-lg-1 col-md-2 col-sm-4 col-xs-12" for="txtenviarCorreo" value ="Correo: " /> 
-                                <p:inputText id="txtenviarCorreo"  class="col-lg-6 col-md-6 col-sm-8 col-xs-12"  value="#{beanFacturacion.correo}" title="Separa los correos con ;"/>
+                                <p:outputLabel class="col-lg-1 col-md-1 col-sm-12 col-xs-12" for="txtenviarCorreo" value ="Correo: " /> 
+                                <p:inputText id="txtenviarCorreo"  class="col-lg-6 col-md-6 col-sm-12 col-xs-12"  value="#{beanFacturacion.correo}" title="Separa los correos con ;"/>
                                 <p:tooltip id="toltip" for="txtenviarCorreo" showEffect="clip" hideEffect="explode" />
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-12 col-md-3 col-sm-12 col-xs-12 ">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
                         <h4>Datos de la Venta</h4>
-                        <div class="col-lg-4 col-md-3 col-sm-12 col-xs-12  alignRight">
+                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12  alignRight">
 
                         </div>
-                        <div class="col-lg-8 col-md-3 col-sm-12 col-xs-12  alignRight">
+                        <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12  alignRight">
                             <div class="form-group" align="right">
                                 <!--<p:commandButton value="Agregar Otro Producto" onclick="PF('statusDialog').show()" update=":formContent"  rendered="{beanFacturacion.viewEstate=='generateVentaMostrador'}" ajax="true" disabled="false" action="{beanFacturacion.agregarProducto()}"/>-->
-                                <div class="col-lg-5 col-md-12 col-sm-12 col-xs-12  alignRight">
-                                    <p:outputLabel class="col-lg-8 col-md-2 col-sm-3 col-xs-12"  rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}"  for="txtImportePublico" value ="Importe Venta Público: " /> 
-                                    <p:inputText id="txtImportePublico"  class=" col-lg-4 col-md-2 col-sm-3 col-xs-12" rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}" value="#{beanFacturacion.importeVentaPublico}">
+                                <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
+                                    <p:outputLabel class="col-lg-8 col-md-8 col-sm-12 col-xs-12"  rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}"  for="txtImportePublico" value ="Importe Venta Público: " /> 
+                                    <p:inputText id="txtImportePublico"  class=" col-lg-4 col-md-4 col-sm-12 col-xs-12" rendered="#{beanFacturacion.viewEstate=='generateVentaMostrador'}" value="#{beanFacturacion.importeVentaPublico}">
                                         <p:ajax event="blur" update=":formContent" listener ="#{beanFacturacion.calculaImportePublico()}"/>
                                     </p:inputText>
                                 </div>
-                                <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12  alignRight">
-                                    <p:outputLabel class="col-lg-8 col-md-2 col-sm-3 col-xs-12"  rendered="#{beanFacturacion.banderanumCuenta=='true'}" for="txtNumCuenta" value ="Número de Cuenta: " /> 
-                                    <p:inputText id="txtNumCuenta"  class=" col-lg-4 col-md-2 col-sm-3 col-xs-12" rendered="#{beanFacturacion.banderanumCuenta=='true'}" value="#{beanFacturacion.numeroCuenta}" />
+                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                    <p:outputLabel class="col-lg-8 col-md-8 col-sm-12 col-xs-12"  rendered="#{beanFacturacion.banderanumCuenta=='true'}" for="txtNumCuenta" value ="Número de Cuenta: " /> 
+                                    <p:inputText id="txtNumCuenta"  class=" col-lg-4 col-md-4 col-sm-12 col-xs-12" rendered="#{beanFacturacion.banderanumCuenta=='true'}" value="#{beanFacturacion.numeroCuenta}" />
                                 </div>
 
-                                <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12  alignRight">
-                                    <p:outputLabel class="col-lg-8 col-md-2 col-sm-3 col-xs-12"  rendered="#{beanFacturacion.banderaImporteParcialidad=='true'}" for="txtParcialidad" value ="Importe Parcialidad: " /> 
-                                    <p:inputText id="txtParcialidad"  class=" col-lg-4 col-md-2 col-sm-3 col-xs-12" rendered="#{beanFacturacion.banderaImporteParcialidad=='true'}" value="#{beanFacturacion.importeParcialidad}">
+                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                    <p:outputLabel class="col-lg-8 col-md-8 col-sm-12 col-xs-12"  rendered="#{beanFacturacion.banderaImporteParcialidad=='true'}" for="txtParcialidad" value ="Importe Parcialidad: " /> 
+                                    <p:inputText id="txtParcialidad"  class=" col-lg-4 col-md-4 col-sm-12 col-xs-12" rendered="#{beanFacturacion.banderaImporteParcialidad=='true'}" value="#{beanFacturacion.importeParcialidad}">
                                         <p:ajax event="blur" update="formContent:tablaProductos" listener ="#{beanFacturacion.calculaParcialidad()}"/>
                                     </p:inputText>
                                 </div>
