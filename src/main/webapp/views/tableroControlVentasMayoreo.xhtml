@@ -332,7 +332,7 @@
                             </p:column>
                             <p:column headerText="Kg. Entrada" width="60px;" class="alignRight">
                                 <h:outputText value="#{model.kiloEntrada}">
-                                    <f:convertNumber pattern="###,###.00"/>
+                                    <f:convertNumber pattern="###,##0.00"/>
                                 </h:outputText>
                             </p:column>
                             <p:column headerText="Empaques Vendidos" width="70px;" class="alignRight">
@@ -342,7 +342,7 @@
                             </p:column>
                             <p:column headerText="Kg. Vendidos" width="70px;" class="alignRight">
                                 <h:outputText value="#{model.kiloVendidos}" >
-                                    <f:convertNumber  pattern="###,###.00"/>
+                                    <f:convertNumber  pattern="###,##0.00"/>
                                 </h:outputText>
                             </p:column>
                             <p:column headerText="$Promedio de Venta" width="100px;" class="alignRight">

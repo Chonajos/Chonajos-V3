@@ -45,6 +45,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -307,7 +308,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
         //Se genera un numero aleatorio para que no traiga el mismo reporte por la cache
         int numberRandom = random.nextInt(999);
         setParameterTicket(data);
-        generateReport(data.getIdCarroSucursal().intValue()+numberRandom);
+        generateReport(data.getIdCarroSucursal().intValue() + numberRandom);
         RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
 
     }
@@ -654,6 +655,13 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
     public void onRowEdit(RowEditEvent event) {
 
         dataProductEdit = (EntradaMercanciaProducto) event.getObject();
+
+        if (dataProductEdit.getKilosTotalesProducto().intValue() > 0 && dataProductEdit.getCantidadPaquetes().intValue() > 0) {
+            dataProductEdit.setKilospromprod(dataProductEdit.getKilosTotalesProducto().divide(dataProductEdit.getCantidadPaquetes(), 2, RoundingMode.CEILING));
+        } else {
+            dataProductEdit.setKilospromprod(BigDecimal.ZERO);
+        }
+
         boolean cambioProducto = false;
         BigDecimal cantidadAnterior = new BigDecimal(0);
         BigDecimal kilosAnterior = new BigDecimal(0);
@@ -700,6 +708,7 @@ public class BeanRelOperEntradaMercancia implements Serializable, BeanSimple {
 
                 ep.setKilosTotalesProducto(e.getKilosTotalesProducto());
                 ep.setCantidadPaquetes(e.getCantidadPaquetes());
+                ep.setKilospromprod(dataProductEdit.getKilospromprod());
                 ep.setIdExistenciaProductoPk(e.getIdExistenciaProductoPk());
 
                 if (ifaceNegocioExistencia.update(ep) == 1) {

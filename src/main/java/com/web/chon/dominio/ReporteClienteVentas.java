@@ -11,6 +11,7 @@ public class ReporteClienteVentas implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private String nombreCliente;
     private BigDecimal idClientePk;
     private BigDecimal totalMenudeoContado;
     private BigDecimal totalMenudeoCredito;
@@ -22,6 +23,8 @@ public class ReporteClienteVentas implements Serializable {
     private BigDecimal utilidadMayoreoPacto;
     private BigDecimal diasRecuperacion;
     private BigDecimal recuperacion;
+    private BigDecimal porcentajeUtilidad;
+    private int clasificacion;
 
     @Override
     public String toString() {
@@ -116,8 +119,34 @@ public class ReporteClienteVentas implements Serializable {
         this.recuperacion = recuperacion;
     }
 
+    public String getNombreCliente() {
+        return nombreCliente;
+    }
+
+    public void setNombreCliente(String nombreCliente) {
+        this.nombreCliente = nombreCliente;
+    }
+
+    public int getClasificacion() {
+        return clasificacion;
+    }
+
+    public void setClasificacion(int clasificacion) {
+        this.clasificacion = clasificacion;
+    }
+
+    public BigDecimal getPorcentajeUtilidad() {
+        return porcentajeUtilidad;
+    }
+
+    public void setPorcentajeUtilidad(BigDecimal porcentajeUtilidad) {
+        this.porcentajeUtilidad = porcentajeUtilidad;
+    }
+
     public void reset() {
 
+        porcentajeUtilidad = null;
+        clasificacion = 0;
         idClientePk = null;
         totalMenudeoContado = null;
         totalMenudeoCredito = null;
@@ -129,6 +158,7 @@ public class ReporteClienteVentas implements Serializable {
         utilidadMayoreoPacto = null;
         diasRecuperacion = null;
         recuperacion = null;
+        nombreCliente = null;
 
     }
 

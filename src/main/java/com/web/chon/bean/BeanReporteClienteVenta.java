@@ -75,6 +75,8 @@ public class BeanReporteClienteVenta implements BeanSimple {
         setTitle("Reporte de Ventas del Cliente.");
         setViewEstate("init");
 
+        searchById();
+
     }
 
     public void generateChartLine() {
@@ -239,20 +241,31 @@ public class BeanReporteClienteVenta implements BeanSimple {
 
     @Override
     public void searchById() {
+        try {
 
-        model = ifaceCatCliente.getReporteClienteVentasUtilidad(data.getIdClientePk(), null, null);
+            if (data == null) {
+                data = new Cliente();
+            }
 
-        lstCreditoActivos = ifaceCredito.getCreditoByIdClienteAndEstatus(data.getIdClientePk(), 1, 0);
-        lstCredito = ifaceCredito.getCreditoByIdClienteAndEstatus(data.getIdClientePk(), 2, 5);
+            model = ifaceCatCliente.getReporteClienteVentasUtilidad(data.getIdClientePk(), null, null);
 
-        if (model != null && !model.isEmpty()) {
-            generateChartLine();
-            generateChartBar();
-        } else {
-            JsfUtil.addWarnMessage("No se Encontraron Registros.");
+            lstCreditoActivos = ifaceCredito.getCreditoByIdClienteAndEstatus(data.getIdClientePk(), 1, 0);
+            lstCredito = ifaceCredito.getCreditoByIdClienteAndEstatus(data.getIdClientePk(), 2, 5);
+
+            if (model != null && !model.isEmpty() && data.getIdClientePk() != null) {
+                setViewEstate("searchById");
+                generateChartLine();
+                generateChartBar();
+            } else {
+                chartBar = null;
+                chartLine = null;
+                setViewEstate("init");
+            }
+
+            calculaDiasPromedio();
+        } catch (Exception ex) {
+            JsfUtil.addErrorMessage("Error " + ex.getMessage());
         }
-
-        calculaDiasPromedio();
 
     }
 

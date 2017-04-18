@@ -37,7 +37,7 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
     private IfaceVentaMayoreoProducto ifaceVentaMayoreoProducto;
     @Autowired
     private IfaceComprobantes ifaceComprobantes;
-    
+
     private static final Logger logger = LoggerFactory.getLogger(ServiceVentaMayoreo.class);
 
     private void getEjb() {
@@ -47,7 +47,7 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
             }
 
         } catch (Exception e) {
-            logger.error("Error > "+e.getMessage());
+            logger.error("Error > " + e.getMessage());
         }
     }
 
@@ -236,7 +236,9 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
                         BigDecimal totalVentaDominio = dominio.getPrecioVenta().multiply(dominio.getKiloVendidos());
                         temp.setEmpaqueVendidos(temp.getEmpaqueVendidos().add(dominio.getEmpaqueVendidos()));
                         temp.setKiloVendidos(temp.getKiloVendidos().add(dominio.getKiloVendidos()));
-                        temp.setPrecioVenta((totalVentaTemp.add(totalVentaDominio)).divide(temp.getKiloVendidos(), 10, RoundingMode.UP));
+                        if ((totalVentaTemp.add(totalVentaDominio).intValue()) > 0 && temp.getKiloVendidos().intValue() > 0) {
+                            temp.setPrecioVenta((totalVentaTemp.add(totalVentaDominio)).divide(temp.getKiloVendidos(), 10, RoundingMode.UP));
+                        }
 
 //                        precioVenta
                     }
@@ -265,7 +267,7 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
 
             return lstPrincipal;
         } catch (Exception ex) {
-            logger.error("Error >"+ex.getMessage());
+            logger.error("Error >" + ex.getMessage());
             return null;
         }
 
@@ -339,7 +341,7 @@ public class ServiceVentaMayoreo implements IfaceVentaMayoreo {
 
             return lstCarroDetalle;
         } catch (Exception ex) {
-            logger.error("Error >"+ex.getMessage());
+            logger.error("Error >" + ex.getMessage());
             return null;
         }
     }
