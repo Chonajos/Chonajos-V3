@@ -582,6 +582,7 @@ public class ServiceOperacionesCaja implements IfaceOperacionesCaja {
             operacionesCaja.setNombreConcepto(obj[5] == null ? null : obj[5].toString());
             operacionesCaja.setMonto(obj[6] == null ? new BigDecimal(0) : new BigDecimal(obj[6].toString()));
             operacionesCaja.setComentarios(obj[7] == null ? "" : obj[7].toString());
+            operacionesCaja.setIdOperacionesCajaPk(obj[8] == null ? null : new BigDecimal(obj[8].toString()));
 
             lstOperacionesCaja.add(operacionesCaja);
         }

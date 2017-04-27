@@ -29,14 +29,12 @@ public class EjbFacturas implements NeogocioFacturas {
 
     @Override
     public int insert(FacturaPDFDomain factura) {
-        System.out.println("==================================================factura: "+factura.toString());
-
         try {
             Query query = em.createNativeQuery("INSERT INTO FACTURAS "
                     + "(ID_FACTURA_PK,ID_NUMERO_FACTURA,FECHA_TIMBRADO,ID_CLIENTE_FK,"
                     + "ID_SUCURSAL_FK,ID_LLAVE_VENTA_FK, "
                     + "ID_TIPO_LLAVE_FK,OBSERVACIONES,FECHA_EMISION,ID_USUARIO_FK,ID_STATUS_FK,NOMBRE_FACTURA_TIMBRADA, "
-                    + "RFC_EMISOR,CADENA_ORIGINAL,IMPORTE,DESCUENTO,IVA,RFC_CLIENTE,UUID) values (?,?,?,?,?,?,?,?,sysdate,?,?,?,?,?,?,?,?,?,?)");
+                    + "RFC_EMISOR,CADENA_ORIGINAL,IMPORTE,DESCUENTO,IVA,RFC_CLIENTE,UUID,METODO_PAGO) values (?,?,?,?,?,?,?,?,sysdate,?,?,?,?,?,?,?,?,?,?,?)");
             query.setParameter(1, factura.getIdFacturaPk());
             query.setParameter(2, factura.getNumeroFactura());
             query.setParameter(3, factura.getFechaCertificacion());
@@ -45,8 +43,7 @@ public class EjbFacturas implements NeogocioFacturas {
             query.setParameter(6, factura.getIdLlaveFk());
             query.setParameter(7, factura.getIdTipoLlaveFk());
             query.setParameter(8, factura.getComentarios());
-            //Fecha Emsión
-            //Fichero;
+    
             query.setParameter(9, factura.getIdUsuarioFk());
             query.setParameter(10, factura.getIdStatusFk());
             query.setParameter(11, factura.getNombreArchivoTimbrado());
@@ -60,6 +57,7 @@ public class EjbFacturas implements NeogocioFacturas {
             query.setParameter(16, factura.getIva1());
             query.setParameter(17, factura.getRfcCliente());
             query.setParameter(18, factura.getUuid());
+            query.setParameter(19, factura.getMetodoPago());
 
             return query.executeUpdate();
         } catch (Exception ex) {
@@ -76,7 +74,6 @@ public class EjbFacturas implements NeogocioFacturas {
 
     @Override
     public int update(BigDecimal  idFacturaFk,BigDecimal idStatusFk) {
-        System.out.println("Entro a Update Facturas: Data: "+idFacturaFk +"idStatus: "+idStatusFk);
             
         try {
             Query query = em.createNativeQuery("UPDATE  FACTURAS SET ID_STATUS_FK = ? WHERE ID_FACTURA_PK = ? ");
@@ -104,23 +101,20 @@ public class EjbFacturas implements NeogocioFacturas {
 
     @Override
     public List<Object[]> getFacturasBy(BigDecimal idClienteFk, BigDecimal idSucursalFk, BigDecimal folioFactura, String fechaInicio, String fechaFin, BigDecimal idStatusFk) {
-//        System.out.println("idCliente: " + idClienteFk);
-//        System.out.println("idSucursal: " + idSucursalFk);
-//        System.out.println("folioVenta: " + idFolioVentaFk);
-//        System.out.println("FechaIni: " + fechaInicio);
-//        System.out.println("FechaFin: " + fechaFin);
+
         Query query;
         int cont = 0;
-        StringBuffer cadena = new StringBuffer("select fa.ID_FACTURA_PK,fa.ID_NUMERO_FACTURA,fa.FECHA_TIMBRADO,fa.ID_CLIENTE_FK,fa.ID_SUCURSAL_FK,fa.ID_LLAVE_VENTA_FK, \n"
-                + "fa.OBSERVACIONES,\n"
-                + "fa.FECHA_EMISION,fa.FICHERO,fa.ID_USUARIO_FK,(CLI.NOMBRE||' '||CLI.APELLIDO_PATERNO ||' '||CLI.APELLIDO_MATERNO ) \n"
-                + "AS CLIENTE,\n"
-                + "suc.NOMBRE_SUCURSAL,fa.ID_STATUS_FK,fa.NOMBRE_FACTURA_TIMBRADA,fa.RFC_EMISOR,fa.CADENA_ORIGINAL,\n"
-                + "fa.IMPORTE,fa.DESCUENTO,fa.IVA,fa.UUID,df.RUTA_CERTIFICADO_CANCEL,df.RUTA_LLAVE_PRIVADA_CANCEL,RFC_CLIENTE \n"
-                + "from FACTURAS fa\n"
-                + "inner join CLIENTE cli on cli.ID_CLIENTE = fa.ID_CLIENTE_FK\n"
-                + "inner join SUCURSAL suc on suc.ID_SUCURSAL_PK = fa.ID_SUCURSAL_FK\n"
-                + "left join DATOS_FACTURACION df on df.RFC = fa.RFC_EMISOR");
+        StringBuffer cadena = new StringBuffer("select fa.ID_FACTURA_PK,fa.ID_NUMERO_FACTURA,fa.FECHA_TIMBRADO,fa.ID_CLIENTE_FK,fa.ID_SUCURSAL_FK,fa.ID_LLAVE_VENTA_FK, "
+                + "fa.OBSERVACIONES, "
+                + "fa.FECHA_EMISION,fa.FICHERO,fa.ID_USUARIO_FK,(CLI.NOMBRE||' '||CLI.APELLIDO_PATERNO ||' '||CLI.APELLIDO_MATERNO ) "
+                + "AS CLIENTE, "
+                + "suc.NOMBRE_SUCURSAL,fa.ID_STATUS_FK,fa.NOMBRE_FACTURA_TIMBRADA,fa.RFC_EMISOR,fa.CADENA_ORIGINAL, "
+                + "fa.IMPORTE,fa.DESCUENTO,fa.IVA,fa.UUID,df.RUTA_CERTIFICADO_CANCEL,df.RUTA_LLAVE_PRIVADA_CANCEL,RFC_CLIENTE,'B' AS SERIE,FA.METODO_PAGO,CS.DESCRIPCION "
+                + "from FACTURAS fa "
+                + "inner join CLIENTE cli on cli.ID_CLIENTE = fa.ID_CLIENTE_FK "
+                + "inner join SUCURSAL suc on suc.ID_SUCURSAL_PK = fa.ID_SUCURSAL_FK "
+                + "left join DATOS_FACTURACION df on df.RFC = fa.RFC_EMISOR "
+                + "LEFT JOIN CATALOGO_SAT CS ON CS.CODIGO = FA.METODO_PAGO AND CS.TIPO = 2");
 
         if (!fechaInicio.equals("")) {
             if (cont == 0) {
@@ -178,10 +172,10 @@ public class EjbFacturas implements NeogocioFacturas {
             cont++;
         }
 
-        cadena.append(" order by fa.FECHA_TIMBRADO");
+        cadena.append(" ORDER BY FA.FECHA_TIMBRADO");
 
         query = em.createNativeQuery(cadena.toString());
-        //System.out.println("Query: " + query.toString());
+//        System.out.println("Query factuea: " + query.toString());
 
         try {
             List<Object[]> lstObject = query.getResultList();

@@ -24,6 +24,7 @@ public class ReporteClienteVentas implements Serializable {
     private BigDecimal diasRecuperacion;
     private BigDecimal recuperacion;
     private BigDecimal porcentajeUtilidad;
+    private BigDecimal promedioGenaralRecuperacion;
     private int clasificacion;
 
     @Override
@@ -143,6 +144,14 @@ public class ReporteClienteVentas implements Serializable {
         this.porcentajeUtilidad = porcentajeUtilidad;
     }
 
+    public BigDecimal getPromedioGenaralRecuperacion() {
+        return promedioGenaralRecuperacion;
+    }
+
+    public void setPromedioGenaralRecuperacion(BigDecimal promedioGenaralRecuperacion) {
+        this.promedioGenaralRecuperacion = promedioGenaralRecuperacion;
+    }
+
     public void reset() {
 
         porcentajeUtilidad = null;
@@ -159,6 +168,7 @@ public class ReporteClienteVentas implements Serializable {
         diasRecuperacion = null;
         recuperacion = null;
         nombreCliente = null;
+        promedioGenaralRecuperacion = null;
 
     }
 

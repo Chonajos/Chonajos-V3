@@ -392,7 +392,6 @@ public class BeanVenta implements Serializable, BeanSimple {
                     generateReport(idVenta, folioVenta);
                     data.setIdTipoVentaFk(new BigDecimal("1"));
                     init();
-                    
 
                     lstVenta.clear();
                     totalVenta = new BigDecimal(0);
@@ -476,7 +475,7 @@ public class BeanVenta implements Serializable, BeanSimple {
 
         if (data.getPrecioProducto() != null) {
             if (data.getPrecioProducto().intValue() < min.intValue() || data.getPrecioProducto().intValue() > max.intValue()) {
-                JsfUtil.addErrorMessage( "Error!", "El precio de venta esta fuera de valores permitidos: Mínimo:" + min + " Máximo: " + max);
+                JsfUtil.addErrorMessage("Error!", "El precio de venta esta fuera de valores permitidos: Mínimo:" + min + " Máximo: " + max);
                 //Verifica si hay existencias disponibles y si hay repetidos
             } else if (verificaExistencia(1) && !addRepetidos()) {
 
@@ -872,7 +871,6 @@ public class BeanVenta implements Serializable, BeanSimple {
 
     }
 
-
     public void validaPrecioMinimoMaximo(AjaxBehaviorEvent event) {
         InputText input = (InputText) event.getSource();
         if (input.getSubmittedValue() != null && !input.getSubmittedValue().toString().isEmpty()) {
@@ -957,6 +955,8 @@ public class BeanVenta implements Serializable, BeanSimple {
         c.setPlasos(data.getTipoPago());
         //El numero de dias del plaso
         c.setNumeroPagos(data.getNumeroPagos());
+
+        c.setIdSucursal(new BigDecimal(context.getUsuarioAutenticado().getSucId()));
 
         folioCredito = ifaceCredito.insert(c);
 

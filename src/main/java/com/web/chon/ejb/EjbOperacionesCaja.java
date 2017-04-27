@@ -92,8 +92,8 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
     @Override
     public List<Object[]> getOperacionByIdOperacionPK(BigDecimal idOperacionPk) {
         System.out.println("idOperacionPk: " + idOperacionPk);
-        //System.out.println("getOperacionByIdOperacionPK : " + idOperacionPk);
         Query query = em.createNativeQuery("SELECT OPC.ID_OPERACIONES_CAJA_PK,OPC.ID_CORTE_CAJA_FK,OPC.ID_CAJA_FK,OPC.ID_CAJA_DESTINO_FK,OPC.ID_CONCEPTO_FK,OPC.FECHA,OPC.ID_STATUS_FK,OPC.ID_USER_FK,OPC.COMENTARIOS,OPC.MONTO,OPC.E_S,OPC.ID_CUENTA_DESTINO_FK,OPC.ID_SUCURSAL_FK,OPC.ID_FORM_PAGO_FK,OPC.ID_TIPO_OPERACION_FK,OPC.FICHERO FROM OPERACIONES_CAJA OPC WHERE ID_OPERACIONES_CAJA_PK = ?");
+
         query.setParameter(1, idOperacionPk);
         return query.getResultList();
     }
@@ -468,7 +468,7 @@ public class EjbOperacionesCaja implements NegocioOperacionesCaja {
     @Override
     public List<Object[]> getByIdSucuralAndDate(BigDecimal idSucursal, String fechaInicio, String fechaFin) {
         try {
-            Query query = em.createNativeQuery("SELECT oc.FECHA,s.NOMBRE_SUCURSAL,TOP.ID_TIPO_OPERACION_PK,TOP.NOMBRE,con.ID_CONCEPTOS_PK,con.NOMBRE,oc.MONTO,oc.COMENTARIOS from OPERACIONES_CAJA oc "
+            Query query = em.createNativeQuery("SELECT oc.FECHA,s.NOMBRE_SUCURSAL,TOP.ID_TIPO_OPERACION_PK,TOP.NOMBRE,con.ID_CONCEPTOS_PK,con.NOMBRE,oc.MONTO,oc.COMENTARIOS,oc.ID_OPERACIONES_CAJA_PK from OPERACIONES_CAJA oc "
                     + "INNER JOIN SUCURSAL s on s.ID_SUCURSAL_PK = oc.ID_SUCURSAL_FK "
                     + "INNER JOIN CONCEPTOS con on con.ID_CONCEPTOS_PK = oc.ID_CONCEPTO_FK "
                     + "INNER JOIN TIPOS_OPERACION TOP ON TOP.ID_TIPO_OPERACION_PK = con.ID_TIPO_OPERACION_FK AND TOP.ID_GRUPO_FK = 1 "

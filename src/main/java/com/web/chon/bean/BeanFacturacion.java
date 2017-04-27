@@ -5,6 +5,13 @@
  */
 package com.web.chon.bean;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+
 import advanswsdl_pkg.AdvanswsdlLocator;
 import advanswsdl_pkg.RespuestaCancelacion;
 import advanswsdl_pkg.RespuestaTimbre2;
@@ -81,6 +88,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 import com.web.chon.service.IfaceFacturas;
 import com.web.chon.service.IfaceProductoFacturado;
+import com.web.chon.util.HttpJSFUtil;
 import com.web.chon.util.SendEmail;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -97,6 +105,14 @@ import java.nio.file.Paths;
 import java.nio.file.Path;
 import java.util.Random;
 import javax.activation.FileDataSource;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.ParserConfigurationException;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DataFormat;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -217,6 +233,7 @@ public class BeanFacturacion implements Serializable {
     Comprobante comp;
     private BigDecimal numeroCuenta;
     private BigDecimal importeVentaPublico;
+    private BigDecimal totalFacturas;
 
     private String correo;
     private String rCorreo;
@@ -235,6 +252,7 @@ public class BeanFacturacion implements Serializable {
         subTotal = CERO;
         iva = CERO;
         total = CERO;
+        totalFacturas = CERO;
         listaProductosReporte = new ArrayList<VentaProductoMayoreo>();
         of = new ObjectFactory();
         comp = of.createComprobante();
@@ -556,15 +574,15 @@ public class BeanFacturacion implements Serializable {
             case 4:
                 Cliente clienteTemp = new Cliente();
                 clienteTemp = ifaceCatCliente.getClienteByIdAbono(folioVentaG);
-                
+
                 datosCliente = ifaceCatCliente.getClienteById(clienteTemp.getIdClientePk());
-                
+
                 datosCliente.setNombreCompleto(clienteTemp.getNombreCompleto());
                 datosCliente.setUtilizadoTotal(clienteTemp.getUtilizadoTotal());
                 datosCliente.setRfc(clienteTemp.getRfc());
-                
+
                 getCorreoCliente(datosCliente.getIdClientePk(), rfc, 0);
-                
+
                 break;
 
             default:
@@ -718,9 +736,9 @@ public class BeanFacturacion implements Serializable {
             try {
                 String rutaTimbradoData = Constantes.PATHLOCALFACTURACION + "Clientes" + File.separatorChar + data.getRfcCliente() + File.separatorChar + "TIMBRADO" + File.separatorChar + data.getNombreArchivoTimbrado();
                 File inputFile = new File(rutaTimbradoData);
-                
-                Logger.getLogger(BeanFacturacion.class.getName()).log(Level.INFO, "Ruta "+rutaTimbradoData);
-                
+
+                Logger.getLogger(BeanFacturacion.class.getName()).log(Level.INFO, "Ruta " + rutaTimbradoData);
+
                 DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
                 DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
                 Document doc = dBuilder.parse(inputFile);
@@ -735,8 +753,7 @@ public class BeanFacturacion implements Serializable {
                     }
                 }
 
-                Logger.getLogger(BeanFacturacion.class.getName()).log(Level.INFO, "UUID "+data.getUuid());
-                
+                Logger.getLogger(BeanFacturacion.class.getName()).log(Level.INFO, "UUID " + data.getUuid());
 
             } catch (Exception e) {
                 System.out.println("Error: " + e.getMessage());
@@ -758,8 +775,8 @@ public class BeanFacturacion implements Serializable {
             advanswsdl_pkg.AdvanswsdlPortType port = service.getadvanswsdlPort();
             respuesta = port.cancelar(API_KEY, data.getRfcEmisor(), data.getUuid(), strKeyPem, strCerPem);
 
-            Logger.getLogger(BeanFacturacion.class.getName()).log(Level.INFO, "code "+respuesta.getCode());
-            Logger.getLogger(BeanFacturacion.class.getName()).log(Level.INFO, "mensaje "+respuesta.getMessage());
+            Logger.getLogger(BeanFacturacion.class.getName()).log(Level.INFO, "code " + respuesta.getCode());
+            Logger.getLogger(BeanFacturacion.class.getName()).log(Level.INFO, "mensaje " + respuesta.getMessage());
 
             if (respuesta.getCode().equals("201")) {
                 data.setIdStatusFk(new BigDecimal(2));
@@ -789,68 +806,81 @@ public class BeanFacturacion implements Serializable {
 
     public void enviarFactura() {
 
-        ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-        String temporal = "";
-        if (servletContext.getRealPath("") == null) {
-            temporal = Constantes.PATHSERVER;
-        } else {
-            temporal = servletContext.getRealPath("");
-        }
+        try {
 
-        abreXML(0);
-
-        String filePathXML = Constantes.PATHLOCALFACTURACION + "Clientes" + File.separatorChar + data.getRfcCliente() + File.separatorChar + "TIMBRADO" + File.separatorChar + data.getNombreArchivoTimbrado();
-        String filePathPDF = temporal + File.separatorChar + rutaPDF;
-
-        String mensaje = "Gracias por comprar en chonajos;\n"
-                + "adjuntamos archivos digitales de su factura.\n\n"
-                + "Saludos";
-
-        String asunto = "Factura";
-
-        ArrayList<String> lstCorreoPara = new ArrayList<String>();
-        if (correo != null) {
-            String correos[] = correo.split(";");
-            for (int i = 0; i <= correos.length - 1; i++) {
-                if (!correos[i].trim().equals("")) {
-                    lstCorreoPara.add(correos[i]);
-                }
+            ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+            String temporal = "";
+            if (servletContext.getRealPath("") == null) {
+                temporal = Constantes.PATHSERVER;
+            } else {
+                temporal = servletContext.getRealPath("");
             }
 
-        }
+            abreXML(0);
 
-        if (rCorreo != null) {
-            String correos[] = rCorreo.split(";");
-            for (int i = 0; i <= correos.length - 1; i++) {
-                if (!correos[i].trim().equals("")) {
-                    lstCorreoPara.add(correos[i]);
+            String filePathXML = Constantes.PATHLOCALFACTURACION + "Clientes" + File.separatorChar + data.getRfcCliente() + File.separatorChar + "TIMBRADO" + File.separatorChar + data.getNombreArchivoTimbrado();
+            String filePathPDF = temporal + File.separatorChar + rutaPDF;
+
+            String mensaje = "Gracias por comprar en chonajos;\n"
+                    + "adjuntamos archivos digitales de su factura.\n\n"
+                    + "Saludos";
+
+            String asunto = "Factura";
+
+            ArrayList<String> lstCorreoPara = new ArrayList<String>();
+            if (correo != null) {
+                String correos[] = correo.split(";");
+                for (int i = 0; i <= correos.length - 1; i++) {
+                    if (!correos[i].trim().equals("")) {
+                        lstCorreoPara.add(correos[i]);
+                    }
                 }
 
             }
 
-        }
+            if (rCorreo != null) {
+                String correos[] = rCorreo.split(";");
+                for (int i = 0; i <= correos.length - 1; i++) {
+                    if (!correos[i].trim().equals("")) {
+                        lstCorreoPara.add(correos[i]);
+                    }
 
-        if (!lstCorreoPara.isEmpty()) {
-            FileDataSource pdf = new FileDataSource(filePathPDF);
-            FileDataSource xml = new FileDataSource(filePathXML);
+                }
 
-            ArrayList<FileDataSource> lstFileDataSource = new ArrayList<FileDataSource>();
-            lstFileDataSource.add(xml);
-            lstFileDataSource.add(pdf);
-            SendEmail.sendAdjunto(asunto, mensaje, lstFileDataSource, "juancruzh91@gmail.com", lstCorreoPara);
-        } else {
-            JsfUtil.addErrorMessage("No se a especificado un Correo.");
+            }
+
+            if (!lstCorreoPara.isEmpty()) {
+                FileDataSource pdf = new FileDataSource(filePathPDF);
+                FileDataSource xml = new FileDataSource(filePathXML);
+
+                ArrayList<FileDataSource> lstFileDataSource = new ArrayList<FileDataSource>();
+                lstFileDataSource.add(xml);
+                lstFileDataSource.add(pdf);
+                SendEmail.sendAdjunto(asunto, mensaje, lstFileDataSource, "juancruzh91@gmail.com", lstCorreoPara);
+            } else {
+                JsfUtil.addErrorMessage("No se a especificado un Correo.");
+            }
+        } catch (Exception ex) {
+            JsfUtil.addErrorMessage("No se envio Correo." + ex.getMessage());
+            init();
+            ex.printStackTrace();
         }
 
     }
 
     public void buscarFacturas() {
         modelo.clear();
+        totalFacturas = CERO;
         if (cliente != null && cliente.getIdClientePk() != null) {
             modelo = ifaceFacturas.getFacturasBy(cliente.getIdClientePk(), idSucursalFk, folioFactura, TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicio), TiempoUtil.getFechaDDMMYYYY(fechaFiltroFin), idStatusFk);
         } else {
             modelo = ifaceFacturas.getFacturasBy(null, idSucursalFk, folioFactura, TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicio), TiempoUtil.getFechaDDMMYYYY(fechaFiltroFin), idStatusFk);
 
+        }
+
+        for (FacturaPDFDomain fd : modelo) {
+
+            totalFacturas = totalFacturas.add(fd.getImporte());
         }
 
     }
@@ -1106,7 +1136,6 @@ public class BeanFacturacion implements Serializable {
         //Se genera un numero aleatorio para que no traiga el mismo reporte por la cache
         int numberRandom = random.nextInt(999);
 
-        System.out.println("genera reporte");
         generateReport(data, usuario.getIdUsuario(), new BigDecimal(numberRandom));
         if (imprime == 1) {
             RequestContext.getCurrentInstance().execute("window.frames.miFrame.print();");
@@ -1184,12 +1213,6 @@ public class BeanFacturacion implements Serializable {
         }//fin for
 
         //Verificando Datos de Cliente
-        //Verificar Venta:
-//        System.out.println("---------------------------------------");
-//        System.out.println(ventaMayoreo.toString());
-//        System.out.println(ventaMayoreo.getListaProductos());
-//        System.out.println("Tamaño: " + ventaMayoreo.getListaProductos().size());
-//        System.out.println("----------------------------------------");
         if (selectedProductosVentas != null && !selectedProductosVentas.isEmpty()) {
             ventaMayoreo.setIdVentaMayoreoPk(selectedProductosVentas.get(0).getFolioVenta());
             ventaMayoreo.setVentaSucursal(selectedProductosVentas.get(0).getFolioVenta());
@@ -1201,18 +1224,16 @@ public class BeanFacturacion implements Serializable {
             }
             if (ventaMayoreo.getListaProductos() == null || ventaMayoreo.getListaProductos().isEmpty() || ventaMayoreo.getListaProductos().size() == 0) {
                 mensaje += "  Ese folio de venta ya se encuentra facturado totalmente";
-                //System.out.println("Entro a validacion");
             }
             //cuando es un credito
         } else {
 
         }
 
-        //System.out.println("Total: " + total);
         if (total.setScale(2, RoundingMode.CEILING).compareTo(new BigDecimal(0).setScale(2, RoundingMode.CEILING)) < 1) {
             mensaje += "  El total de la factura es igual o menor que cero";
         }
-        //System.out.println("Mensaje: " + mensaje);
+
         return mensaje;
 
     }
@@ -1227,7 +1248,6 @@ public class BeanFacturacion implements Serializable {
     }
 
     public void habilitarImporteParcial() {
-        //System.out.println("forma de pago: " + formaPago);
         if (formaPago.equals("02") || formaPago.equals("03")) {
             banderaImporteParcialidad = "true";
 
@@ -1237,7 +1257,7 @@ public class BeanFacturacion implements Serializable {
     }
 
     public void habilitarNumcuenta() {
-        //System.out.println("Método de pago: " + metodoPago);
+
         if (!metodoPago.equals("01")) {
             banderanumCuenta = "true";
 
@@ -1295,59 +1315,91 @@ public class BeanFacturacion implements Serializable {
     }
 
     public int insertarFactura() throws IOException {
-        nuevaFactura.setIdFacturaPk(new BigDecimal(ifaceFacturas.getNextVal()));
-        int n = ifaceFacturas.getLastNumeroFactura() + 1;
-        nuevaFactura.setNumeroFactura(Integer.toString(n));
 
-        nuevaFactura.setIdClienteFk(datosCliente.getIdClientePk());
-        nuevaFactura.setIdSucursalFk(new BigDecimal(usuario.getSucId()));
-        nuevaFactura.setFechaCertificacion(new Date());
-        nuevaFactura.setComentarios("Pruebas de Facturacion");
-        //nuevaFactura.setFichero(fichero);
-        nuevaFactura.setIdUsuarioFk(usuario.getIdUsuario());
-        nuevaFactura.setIdStatusFk(new BigDecimal(1));
+        try {
 
-        if (ventaMayoreo.isBanderaVentaMenudeo()) {
-            nuevaFactura.setIdTipoLlaveFk(new BigDecimal(1));
-        } else {
-            nuevaFactura.setIdTipoLlaveFk(new BigDecimal(2));
+            Logger.getLogger(BeanFacturacion.class.getName()).log(Level.INFO, "Ruta para conseguir el uuid" + pathFacturaClienteTimbrado);
 
-        }
-        nuevaFactura.setIdLlaveFk(ventaMayoreo.getIdVentaMayoreoPk());
-        nuevaFactura.setNombreArchivoTimbrado(datosCliente.getRfc() + "_" + ventaMayoreo.getIdSucursalFk().toString() + "_" + ventaMayoreo.getVentaSucursal().toString() + ".xml");
-        nuevaFactura.setRfcEmisor(datosEmisor.getRfc());
-        nuevaFactura.setRfcCliente(datosCliente.getRfc());
+            File inputFile = new File(pathFacturaClienteTimbrado);
 
-        Path path = Paths.get(pathFacturaClienteTimbrado);
-        byte[] bFile = Files.readAllBytes(path);
-        nuevaFactura.setFichero(bFile);
-        nuevaFactura.setImporte(ventaMayoreo.getTotalVenta());
-        nuevaFactura.setDescuento(descuento);
-        nuevaFactura.setIva1(iva);
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(inputFile);
 
-        if (ifaceFacturas.insert(nuevaFactura) == 1) {
-            //Convertir el archivo a Bytes y Guardarlo
-            if (selectedProductosVentas != null && !selectedProductosVentas.isEmpty()) {
+            doc.getDocumentElement().normalize();
+            NodeList nList = doc.getElementsByTagName("tfd:TimbreFiscalDigital");
+            for (int temp = 0; temp < nList.getLength(); temp++) {
+                Node nNode = nList.item(temp);
+                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element eElement = (Element) nNode;
+                    nuevaFactura.setUuid(eElement.getAttribute("UUID"));
+                }
+            }
+
+            nuevaFactura.setIdFacturaPk(new BigDecimal(ifaceFacturas.getNextVal()));
+            int n = ifaceFacturas.getLastNumeroFactura() + 1;
+            nuevaFactura.setNumeroFactura(Integer.toString(n));
+            nuevaFactura.setMetodoPago(metodoPago);
+
+            nuevaFactura.setIdClienteFk(datosCliente.getIdClientePk());
+            nuevaFactura.setIdSucursalFk(new BigDecimal(usuario.getSucId()));
+            nuevaFactura.setFechaCertificacion(new Date());
+            nuevaFactura.setComentarios("Facturacion");
+//nuevaFactura.setFichero(fichero);
+            nuevaFactura.setIdUsuarioFk(usuario.getIdUsuario());
+            nuevaFactura.setIdStatusFk(new BigDecimal(1));
+
+            if (ventaMayoreo.isBanderaVentaMenudeo()) {
+                nuevaFactura.setIdTipoLlaveFk(new BigDecimal(1));
+            } else {
+                nuevaFactura.setIdTipoLlaveFk(new BigDecimal(2));
 
             }
-            for (VentaProductoMayoreo vmp : ventaMayoreo.getListaProductos()) {
-                ProductoFacturado pf = new ProductoFacturado();
-                pf.setCantidad(new BigDecimal(0));
-                pf.setIdFacturaFk(nuevaFactura.getIdFacturaPk());
-                pf.setIdTipoLlaveFk(vmp.getIdTipoVenta());
-                pf.setIdLlaveFk(vmp.getIdVentaMayProdPk());
-                pf.setIdProductoFacturadoPk(new BigDecimal(ifaceProductoFacturado.getNextVal()));
-                pf.setImporte(vmp.getTotalVenta());
-                pf.setKilos(vmp.getKilosVendidos());
-                ifaceProductoFacturado.insert(pf);
-            }
-            //Generar PDF
-            JsfUtil.addSuccessMessageClean("Se ha generado la factura exitosamente");
-            data = nuevaFactura;
-            return 1;
-        } else {
+            nuevaFactura.setIdLlaveFk(ventaMayoreo.getIdVentaMayoreoPk());
+            nuevaFactura.setNombreArchivoTimbrado(datosCliente.getRfc() + "_" + ventaMayoreo.getIdSucursalFk().toString() + "_" + ventaMayoreo.getVentaSucursal().toString() + ".xml");
+            nuevaFactura.setRfcEmisor(datosEmisor.getRfc());
+            nuevaFactura.setRfcCliente(datosCliente.getRfc());
 
-            JsfUtil.addErrorMessageClean("Ocurrió un error al insertar la factura");
+            Path path = Paths.get(pathFacturaClienteTimbrado);
+            byte[] bFile = Files.readAllBytes(path);
+            nuevaFactura.setFichero(bFile);
+            nuevaFactura.setImporte(ventaMayoreo.getTotalVenta());
+            nuevaFactura.setDescuento(descuento);
+            nuevaFactura.setIva1(iva);
+
+            if (ifaceFacturas.insert(nuevaFactura) == 1) {
+                //Convertir el archivo a Bytes y Guardarlo
+                if (selectedProductosVentas != null && !selectedProductosVentas.isEmpty()) {
+
+                }
+                for (VentaProductoMayoreo vmp : ventaMayoreo.getListaProductos()) {
+                    ProductoFacturado pf = new ProductoFacturado();
+                    pf.setCantidad(new BigDecimal(0));
+                    pf.setIdFacturaFk(nuevaFactura.getIdFacturaPk());
+                    pf.setIdTipoLlaveFk(vmp.getIdTipoVenta());
+                    pf.setIdLlaveFk(vmp.getIdVentaMayProdPk());
+                    pf.setIdProductoFacturadoPk(new BigDecimal(ifaceProductoFacturado.getNextVal()));
+                    pf.setImporte(vmp.getTotalVenta());
+                    pf.setKilos(vmp.getKilosVendidos());
+                    ifaceProductoFacturado.insert(pf);
+                }
+                //Generar PDF
+                JsfUtil.addSuccessMessageClean("Se ha generado la factura exitosamente");
+                data = nuevaFactura;
+                return 1;
+            } else {
+
+                JsfUtil.addErrorMessageClean("Ocurrió un error al insertar la factura");
+                return 0;
+            }
+
+        } catch (ParserConfigurationException ex) {
+            Logger.getLogger(BeanFacturacion.class.getName()).log(Level.SEVERE, null, ex);
+            JsfUtil.addErrorMessageClean("Ocurrió un error al insertar la factura " + ex.getMessage());
+            return 0;
+        } catch (SAXException ex) {
+            Logger.getLogger(BeanFacturacion.class.getName()).log(Level.SEVERE, null, ex);
+            JsfUtil.addErrorMessageClean("Ocurrió un error al insertar la factura " + ex.getMessage());
             return 0;
         }
 
@@ -1355,20 +1407,23 @@ public class BeanFacturacion implements Serializable {
 
     public int timbrar() {
         int bandera = 0;
-//        String xmlPruebasTimbrado = "<?xml version='1.0' encoding='UTF-8'?>\n"
-//                + "<cfdi:Comprobante xmlns:cfdi='http://www.sat.gob.mx/cfd/3' xmlns:tfd='http://www.sat.gob.mx/TimbreFiscalDigital' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv32.xsd' version='3.2' serie='A' folio='15861' fecha='2017-03-15T09:33:14' sello='TdH9hapysPLZOLUe2fnsgLpXR8n7Xvh9VJ+yHHqjaYHLHmI6uhJi+N7IfwbVpK0KDIAs6XWQSt4iQzhn+lLiMn92SouG5QQJSA3aylrcs+vUi8hj0uoe2YA6V/XIc0GDfiHuOrEx/Rk3UWLwpJAO9ORSKx0PtYy3ANedvX2cSio=' formaDePago='PAGO EN UNA SOLA EXHIBICION' noCertificado='20001000000200001428' certificado='MIIEYTCCA0mgAwIBAgIUMjAwMDEwMDAwMDAyMDAwMDE0MjgwDQYJKoZIhvcNAQEFBQAwggFcMRowGAYDVQQDDBFBLkMuIDIgZGUgcHJ1ZWJhczEvMC0GA1UECgwmU2VydmljaW8gZGUgQWRtaW5pc3RyYWNpw7NuIFRyaWJ1dGFyaWExODA2BgNVBAsML0FkbWluaXN0cmFjacOzbiBkZSBTZWd1cmlkYWQgZGUgbGEgSW5mb3JtYWNpw7NuMSkwJwYJKoZIhvcNAQkBFhphc2lzbmV0QHBydWViYXMuc2F0LmdvYi5teDEmMCQGA1UECQwdQXYuIEhpZGFsZ28gNzcsIENvbC4gR3VlcnJlcm8xDjAMBgNVBBEMBTA2MzAwMQswCQYDVQQGEwJNWDEZMBcGA1UECAwQRGlzdHJpdG8gRmVkZXJhbDESMBAGA1UEBwwJQ295b2Fjw6FuMTQwMgYJKoZIhvcNAQkCDCVSZXNwb25zYWJsZTogQXJhY2VsaSBHYW5kYXJhIEJhdXRpc3RhMB4XDTEzMDUwNzE2MDEyOVoXDTE3MDUwNzE2MDEyOVowgdsxKTAnBgNVBAMTIEFDQ0VNIFNFUlZJQ0lPUyBFTVBSRVNBUklBTEVTIFNDMSkwJwYDVQQpEyBBQ0NFTSBTRVJWSUNJT1MgRU1QUkVTQVJJQUxFUyBTQzEpMCcGA1UEChMgQUNDRU0gU0VSVklDSU9TIEVNUFJFU0FSSUFMRVMgU0MxJTAjBgNVBC0THEFBQTAxMDEwMUFBQSAvIEhFR1Q3NjEwMDM0UzIxHjAcBgNVBAUTFSAvIEhFR1Q3NjEwMDNNREZOU1IwODERMA8GA1UECxMIcHJvZHVjdG8wgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAKS/beUVy6E3aODaNuLd2S3PXaQre0tGxmYTeUxa55x2t/7919ttgOpKF6hPF5KvlYh4ztqQqP4yEV+HjH7yy/2d/+e7t+J61jTrbdLqT3WD0+s5fCL6JOrF4hqy//EGdfvYftdGRNrZH+dAjWWml2S/hrN9aUxraS5qqO1b7btlAgMBAAGjHTAbMAwGA1UdEwEB/wQCMAAwCwYDVR0PBAQDAgbAMA0GCSqGSIb3DQEBBQUAA4IBAQACPXAWZX2DuKiZVv35RS1WFKgT2ubUO9C+byfZapV6ZzYNOiA4KmpkqHU/bkZHqKjR+R59hoYhVdn+ClUIliZf2ChHh8s0a0vBRNJ3IHfA1akWdzocYZLXjz3m0Er31BY+uS3qWUtPsONGVDyZL6IUBBUlFoecQhP9AO39er8zIbeU2b0MMBJxCt4vbDKFvT9i3V0Puoo+kmmkf15D2rBGR+drd8H8Yg8TDGFKf2zKmRsgT7nIeou6WpfYp570WIvLJQY+fsMp334D05Up5ykYSAxUGa30RdUzA4rxN5hT+W9whWVGD88TD33Nw55uNRUcRO3ZUVHmdWRG+GjhlfsD' subTotal='11040.00' descuento='0' Moneda='MXN' total='11040.00' tipoDeComprobante='egreso' metodoDePago='01' LugarExpedicion='09040'><cfdi:Emisor rfc='AAA010101AAA' nombre='COMERCIALIZADORA Y EXPORTADORA CHONAJOS S DE RL DE CV'><cfdi:DomicilioFiscal calle='AVENIDA TRABAJADORES SOCIALES EJE 5 ZONA V SECCION 5 NAVE 2' noExterior='BODEGA Q 85' colonia='Central de Abasto' localidad='MEXICO' municipio='Iztapalapa' estado='Ciudad de México' pais='MEXICO' codigoPostal='09040'/><cfdi:RegimenFiscal Regimen='REGIMEN GENERAL DE LEY'/></cfdi:Emisor><cfdi:Receptor rfc='VEHC761003U32' nombre='Juan  De la cruz  Sistemas'><cfdi:Domicilio calle='CALLESITA' colonia='Maguey Blanco' municipio='Ixmiquilpan' estado='Hidalgo' pais='MEXICO' codigoPostal='42320'/></cfdi:Receptor><cfdi:Conceptos><cfdi:Concepto cantidad='150' unidad='KILOS' descripcion='Ajo Fancy' valorUnitario='56' importe='8400'/><cfdi:Concepto cantidad='30' unidad='KILOS' descripcion='Ajo CHILENO 6X' valorUnitario='63' importe='1890'/><cfdi:Concepto cantidad='15' unidad='KILOS' descripcion='Morita' valorUnitario='50' importe='750'/></cfdi:Conceptos><cfdi:Impuestos><cfdi:Traslados><cfdi:Traslado impuesto='IVA' tasa='16.00' importe='0'/></cfdi:Traslados></cfdi:Impuestos><cfdi:Complemento><tfd:TimbreFiscalDigital xsi:schemaLocation='http://www.sat.gob.mx/TimbreFiscalDigital http://www.sat.gob.mx/sitio_internet/TimbreFiscalDigital/TimbreFiscalDigital.xsd' version='1.0' UUID='FFFFFFFF-3D6D-180C-2272-6941C55B4D59' FechaTimbrado='2017-03-15T09:33:26' selloCFD='TdH9hapysPLZOLUe2fnsgLpXR8n7Xvh9VJ+yHHqjaYHLHmI6uhJi+N7IfwbVpK0KDIAs6XWQSt4iQzhn+lLiMn92SouG5QQJSA3aylrcs+vUi8hj0uoe2YA6V/XIc0GDfiHuOrEx/Rk3UWLwpJAO9ORSKx0PtYy3ANedvX2cSio=' noCertificadoSAT='30001000000100000801' selloSAT='C0FgUTSh++khoKQ5QTXIql5U/mHgu++H5Niga9ldPt9fB9Y5mqjxMI+QRmQlFGImxVYKVQyiMF4tcpnzMp8Ue5zDNmjYsMk+bjkyZy5jCBaH9AXZAqOGwvbI5y570pUV5WEzltQ3SzUUKdLx3hLh/KOYQwBD4RvefmzOkzMsbMY='/></cfdi:Complemento></cfdi:Comprobante>";
 
         try {
+
             RespuestaTimbre2 respuesta = new RespuestaTimbre2();
             AdvanswsdlLocator service = new AdvanswsdlLocator();
+
             pathFacturaClienteComprobante = Constantes.PATHLOCALFACTURACIONINVERTIDA + "Clientes" + File.separatorChar + datosCliente.getRfc() + File.separatorChar + "COMPROBANTE" + File.separatorChar + datosCliente.getRfc() + "_" + ventaMayoreo.getIdSucursalFk().toString() + "_" + ventaMayoreo.getVentaSucursal().toString() + ".xml";
             URL url = new URL(pathFacturaClienteComprobante);
             InputStreamReader in = new InputStreamReader(url.openStream());
+
             String xmlCfdi = IOUtils.toString(in);
+
             advanswsdl_pkg.AdvanswsdlPortType port = service.getadvanswsdlPort();
             respuesta = port.timbrar2(API_KEY, xmlCfdi);
+
             if (respuesta.getCode().equals("200")) {
-                //Solictud de timbrado procesada.
+
                 try {
                     PrintWriter writer = new PrintWriter(pathFacturaClienteTimbrado, "UTF-8");
                     writer.println(respuesta.getCFDI());
@@ -1399,58 +1454,7 @@ public class BeanFacturacion implements Serializable {
     }
 
     public void imprimirDatosFactura() {
-//        System.out.println("Certificado: " + comp.getCertificado());
-//        System.out.println("Condiciones de Pago: " + comp.getCondicionesDePago());
-//        System.out.println("Folio: " + comp.getFolio());
-//        System.out.println("Folio Fiscal Origen: " + comp.getFolioFiscalOrig());
-//        System.out.println("Forma de Pago: " + comp.getFormaDePago());
-//        System.out.println("Lugar de Expedicion: " + comp.getLugarExpedicion());
-//        System.out.println("Metodo de Pago: " + comp.getMetodoDePago());
-//        System.out.println("Moneda: " + comp.getMoneda());
-//        System.out.println("Motivo Descuento: " + comp.getMotivoDescuento());
-//        System.out.println("No Certificado: " + comp.getNoCertificado());
-//        System.out.println("Num Cta Pago: " + comp.getNumCtaPago());
-//        System.out.println("Sello: " + comp.getSello());
-//        System.out.println("Serie: " + comp.getSerie());
-//        System.out.println("Folio Fiscal Origen: " + comp.getSerieFolioFiscalOrig());
-//        System.out.println("Tipo Cambio: " + comp.getTipoCambio());
-//        System.out.println("Tipo Comprobante: " + comp.getTipoDeComprobante());
-//        System.out.println("Version: " + comp.getVersion());
-//        System.out.println("Descuento: " + comp.getDescuento());
-//        System.out.println("Fecha: " + comp.getFecha());
-//        System.out.println("Certificado: " + comp.getCertificado());
-//        System.out.println("---------------------DATOS DE EMISOR------------------------------");
-//        System.out.println("Nombre Emisor: " + comp.getEmisor().getNombre());
-//        System.out.println("RFC Emisor: " + comp.getEmisor().getRfc());
-//        System.out.println("Domicilo Fiscal Emisor:");
-//        System.out.println("    Calle: " + comp.getEmisor().getDomicilioFiscal().getCalle());
-//        System.out.println("    Codigo Postal: " + comp.getEmisor().getDomicilioFiscal().getCodigoPostal());
-//        System.out.println("    Colonia: " + comp.getEmisor().getDomicilioFiscal().getColonia());
-//        System.out.println("    Estado: " + comp.getEmisor().getDomicilioFiscal().getEstado());
-//        System.out.println("    Municipio: " + comp.getEmisor().getDomicilioFiscal().getMunicipio());
-//        System.out.println("    Localidad: " + comp.getEmisor().getDomicilioFiscal().getLocalidad());
-//        System.out.println("    No. Exterior: " + comp.getEmisor().getDomicilioFiscal().getNoExterior());
-//        System.out.println("    No. Interior " + comp.getEmisor().getDomicilioFiscal().getNoInterior());
-//        System.out.println("    Pais: " + comp.getEmisor().getDomicilioFiscal().getPais());
-//        System.out.println("    Referencia: " + comp.getEmisor().getDomicilioFiscal().getReferencia());
-//
-//        System.out.println("Expedido en: " + comp.getEmisor().getExpedidoEn());
-//
-//        System.out.println("---------------------DATOS CLIENTE------------------------------");
-//        System.out.println("Nombre Receptor: " + comp.getReceptor().getNombre());
-//        System.out.println("RFC Receptor: " + comp.getReceptor().getRfc());
-//        System.out.println("Domicilo Fiscal Receptor:");
-//        System.out.println("    Calle: " + comp.getReceptor().getDomicilio().getCalle());
-//        System.out.println("    Codigo Postal: " + comp.getReceptor().getDomicilio().getCodigoPostal());
-//        System.out.println("    Colonia: " + comp.getReceptor().getDomicilio().getColonia());
-//        System.out.println("    Estado: " + comp.getReceptor().getDomicilio().getEstado());
-//        System.out.println("    Municipio: " + comp.getReceptor().getDomicilio().getMunicipio());
-//        System.out.println("    Localidad: " + comp.getReceptor().getDomicilio().getLocalidad());
-//        System.out.println("    No. Exterior: " + comp.getReceptor().getDomicilio().getNoExterior());
-//        System.out.println("    No. Interior " + comp.getReceptor().getDomicilio().getNoInterior());
-//        System.out.println("    Pais: " + comp.getReceptor().getDomicilio().getPais());
-//        System.out.println("    Referencia: " + comp.getReceptor().getDomicilio().getReferencia());
-//   
+
     }
 
     public String crearFactura() throws Exception {
@@ -1508,12 +1512,10 @@ public class BeanFacturacion implements Serializable {
             CFDv32 cfd = new CFDv32(createComprobante(), "mx.bigdata.sat.cfdi.examples");
             //Cargamos el archivo con la llave
 
-            //System.out.println("Ruta llave: " + datosEmisor.getRuta_llave_privada());
-            //System.out.println("Ruta Certificado: " + datosEmisor.getRuta_certificado());
             PrivateKey key = KeyLoaderFactory.createInstance(KeyLoaderEnumeration.PRIVATE_KEY_LOADER, new FileInputStream(datosEmisor.getRuta_llave_privada()), datosEmisor.getClavePublica()).getKey();
             //Cargamos el archivo con el certificado
             String[] ce;
-            //System.out.println("***************");
+
             ce = datosEmisor.getRuta_certificado().split("\\.");
             comp.setNoCertificado(ce[0]);//es el numero del certificado
 
@@ -1523,14 +1525,10 @@ public class BeanFacturacion implements Serializable {
             mx.bigdata.sat.cfdi.v32.schema.Comprobante sellado = cfd.sellarComprobante(key, cert);
 
             FileOutputStream outFile = new FileOutputStream(pathFacturaClienteComprobante);
-            imprimirDatosFactura();
+
             cfd.validar();
-//        //System.out.println("Se valido el cdf ");
             cfd.verificar();
-            // System.out.println("Se verifico el cfd ");
             cfd.guardar(outFile);
-            // System.out.println("Se guardo el cdf ");
-            // System.out.println("cadema original " + cfd.getCadenaOriginal());
 
             nuevaFactura.setCadena(cfd.getCadenaOriginal());
             outFile.close();
@@ -1864,6 +1862,162 @@ public class BeanFacturacion implements Serializable {
 
         }
         return rfc;
+    }
+
+    public void generateReport() {
+
+        HSSFWorkbook wb = new HSSFWorkbook();
+        HSSFSheet sheet = wb.createSheet();
+        wb.setSheetName(wb.getSheetIndex(sheet), "data");
+
+        HSSFRow row;
+
+        HSSFCellStyle cellStyleHeader = wb.createCellStyle();
+        cellStyleHeader = wb.createCellStyle();
+        HSSFFont hSSFFontHeader = wb.createFont();
+        hSSFFontHeader.setFontName(HSSFFont.FONT_ARIAL);
+        hSSFFontHeader.setFontHeight((short) (7.5 * 20));
+        cellStyleHeader.setFont(hSSFFontHeader);
+        cellStyleHeader.setBorderLeft((short) 1);
+        cellStyleHeader.setBorderRight((short) 1);
+        cellStyleHeader.setBorderTop((short) 1);
+        cellStyleHeader.setBorderBottom((short) 1);
+        cellStyleHeader.setAlignment(HorizontalAlignment.CENTER);
+
+        row = sheet.createRow(0);
+
+        HSSFCell cell1 = row.createCell(0);
+        HSSFCell cell2 = row.createCell(1);
+        HSSFCell cell3 = row.createCell(2);
+        HSSFCell cell4 = row.createCell(3);
+        HSSFCell cell5 = row.createCell(4);
+        HSSFCell cell6 = row.createCell(5);
+        HSSFCell cell7 = row.createCell(6);
+        HSSFCell cell8 = row.createCell(7);
+        HSSFCell cell9 = row.createCell(8);
+
+        cell1.setCellValue("RFC EMISOR");
+        sheet.setColumnWidth(0, 4000);
+        cell1.setCellStyle(cellStyleHeader);
+
+        cell2.setCellValue("SELLO DIGITAL");
+        sheet.setColumnWidth(1, 8500);
+        cell2.setCellStyle(cellStyleHeader);
+
+        cell3.setCellValue("SERIE");
+        sheet.setColumnWidth(2, 1500);
+        cell3.setCellStyle(cellStyleHeader);
+
+        cell4.setCellValue("FOLIO");
+        sheet.setColumnWidth(3, 2000);
+        cell4.setCellStyle(cellStyleHeader);
+
+        cell5.setCellValue("FECHA HORA");
+        sheet.setColumnWidth(4, 4000);
+        cell5.setCellStyle(cellStyleHeader);
+
+        cell6.setCellValue("RFC RECEPTOR");
+        sheet.setColumnWidth(5, 4000);
+        cell6.setCellStyle(cellStyleHeader);
+
+        cell7.setCellValue("NOMBRE");
+        sheet.setColumnWidth(6, 9000);
+        cell7.setCellStyle(cellStyleHeader);
+
+        cell8.setCellValue("IMPORTE");
+        sheet.setColumnWidth(7, 3000);
+        cell8.setCellStyle(cellStyleHeader);
+        cell9.setCellType(CellType.NUMERIC);
+
+        cell9.setCellValue("PAGO");
+        sheet.setColumnWidth(8, 6000);
+        cell9.setCellStyle(cellStyleHeader);
+
+        for (int i = 0; i < modelo.size(); i++) {
+
+            row = sheet.createRow((short) i + 1);
+
+            HSSFCell contentCell1 = row.createCell(0);
+            HSSFCell contentCell2 = row.createCell(1);
+            HSSFCell contentCell3 = row.createCell(2);
+            HSSFCell contentCell4 = row.createCell(3);
+            HSSFCell contentCell5 = row.createCell(4);
+            HSSFCell contentCell6 = row.createCell(5);
+            HSSFCell contentCell7 = row.createCell(6);
+            HSSFCell contentCell8 = row.createCell(7);
+            HSSFCell contentCell9 = row.createCell(8);
+
+            HSSFCellStyle cellStyle = wb.createCellStyle();
+            HSSFFont hSSFFont = wb.createFont();
+            hSSFFont.setFontName(HSSFFont.FONT_ARIAL);
+            hSSFFont.setFontHeight((short) (7.5 * 20));
+
+            HSSFCellStyle cellStyleMoney = wb.createCellStyle();
+            HSSFFont hSSFFontMoney = wb.createFont();
+            hSSFFontMoney.setFontName(HSSFFont.FONT_ARIAL);
+            hSSFFontMoney.setFontHeight((short) (7.5 * 20));
+
+            if (!modelo.get(i).getIdStatusFk().equals(new BigDecimal("1"))) {
+                hSSFFont.setColor(HSSFColor.RED.index);
+                hSSFFontMoney.setColor(HSSFColor.RED.index);
+            }
+
+            cellStyle.setFont(hSSFFont);
+            cellStyle.setBorderLeft((short) 1);
+            cellStyle.setBorderRight((short) 1);
+            cellStyle.setBorderTop((short) 1);
+            cellStyle.setBorderBottom((short) 1);
+
+            cellStyleMoney.setFont(hSSFFontMoney);
+            cellStyleMoney.setBorderLeft((short) 1);
+            cellStyleMoney.setBorderRight((short) 1);
+            cellStyleMoney.setBorderTop((short) 1);
+            cellStyleMoney.setBorderBottom((short) 1);
+            cellStyleMoney.setAlignment(HorizontalAlignment.RIGHT);
+
+            DataFormat df = wb.createDataFormat();
+            cellStyleMoney.setDataFormat(df.getFormat("$#,#0.00"));
+
+            contentCell1.setCellValue(modelo.get(i).getRfcEmisor());
+            contentCell1.setCellStyle(cellStyle);
+            contentCell2.setCellValue(modelo.get(i).getUuid());
+            contentCell2.setCellStyle(cellStyle);
+            contentCell3.setCellValue(modelo.get(i).getSerie());
+            contentCell3.setCellStyle(cellStyle);
+            contentCell4.setCellValue(modelo.get(i).getNumeroFactura());
+            contentCell4.setCellStyle(cellStyle);
+            contentCell5.setCellValue(TiempoUtil.getFechaDDMMYYYYHHMM(modelo.get(i).getFechaCertificacion()));
+            contentCell5.setCellStyle(cellStyle);
+            contentCell6.setCellValue(modelo.get(i).getRfcCliente());
+            contentCell6.setCellStyle(cellStyle);
+            contentCell7.setCellValue(modelo.get(i).getNombreCliente().toUpperCase());
+            contentCell7.setCellStyle(cellStyle);
+            contentCell8.setCellValue(modelo.get(i).getImporte().doubleValue());
+            contentCell8.setCellStyle(cellStyleMoney);
+            contentCell9.setCellValue(modelo.get(i).getMetodoPago());
+            contentCell9.setCellStyle(cellStyle);
+
+        }
+
+        HttpServletResponse res = HttpJSFUtil.getResponse();
+        res.setContentType("application/vnd.ms-excel");
+        res.setHeader("Content-disposition", "attachment; filename=data.xls");
+
+        try {
+            ServletOutputStream out = res.getOutputStream();
+
+            wb.write(out);
+            wb.close();
+            out.flush();
+            out.close();
+
+        } catch (IOException ex) {
+//            manageException(ex);
+            JsfUtil.addErrorMessage("Error > " + ex.getMessage());
+        }
+
+        FacesContext faces = FacesContext.getCurrentInstance();
+        faces.responseComplete();
     }
 
     public String getRutaPDF() {
@@ -2417,5 +2571,14 @@ public class BeanFacturacion implements Serializable {
     public void setrCorreo(String rCorreo) {
         this.rCorreo = rCorreo;
     }
+
+    public BigDecimal getTotalFacturas() {
+        return totalFacturas;
+    }
+
+    public void setTotalFacturas(BigDecimal totalFacturas) {
+        this.totalFacturas = totalFacturas;
+    }
+    
 
 }

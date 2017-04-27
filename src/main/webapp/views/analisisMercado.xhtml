@@ -7,7 +7,6 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions">
-
     <ui:define name="content">
         <div>
             <h3>#{beanAnalisisMercado.title}</h3>
@@ -21,13 +20,12 @@
             <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" />
             <p:panel>
                 <div class="container-fluid">
-
                     <div class="form-group" align="right">
                         <p:commandButton value="Atras" resetValues="true" immediate="true" update=":formContent" action="#{beanAnalisisMercado.cancel}" rendered="#{beanAnalisisMercado.state =='SEARCH'}" onclick="PF('statusDialog').show()"/>
                         <p:commandButton rendered="#{beanAnalisisMercado.state =='INIT'}" value="Guardar" resetValues="true" update=":formContent" action="#{beanAnalisisMercado.save}" onclick="PF('statusDialog').show()"/>
                         <p:commandButton value="Reportes" resetValues="true" update=":formContent" immediate="true" actionListener="#{beanAnalisisMercado.search}" rendered="#{beanAnalisisMercado.state =='INIT'}" onclick="PF('statusDialog').show()"/>
                     </div>
-                    <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group ">
                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 alignLeftRadioButton">
                             <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12" value ="Ingresar:" rendered="#{beanAnalisisMercado.state =='INIT'}"/> 
                             <p:selectOneRadio value="#{beanAnalisisMercado.insertar}" class="col-lg-8 col-md-8 col-sm-8 col-xs-12 alignLeftRadioButton" rendered="#{beanAnalisisMercado.state =='INIT'}">
@@ -37,70 +35,58 @@
                             </p:selectOneRadio>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="selectProductosA" value ="Categoría:" /> 
-                            <h:selectOneMenu  id="selectProductos"  value="#{beanAnalisisMercado.data.idProductoFk}" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" requiredMessage="Ingresa un valor para el campo Producto." rendered="#{beanAnalisisMercado.state =='SEARCH'}">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="selectProductosA" value ="Producto:" /> 
+                            <p:selectOneMenu  id="selectProductos"  value="#{beanAnalisisMercado.data.idProductoFk}" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" requiredMessage="Ingresa un valor para el campo Producto." rendered="#{beanAnalisisMercado.state =='SEARCH'}">
                                 <f:selectItem itemLabel="Seleccione la opción" itemValue="#{null}" noSelectionOption="true" />
                                 <f:selectItems value="#{beanAnalisisMercado.lstProducto}" var="producto" itemLabel="#{producto.nombreSubproducto}" itemValue="#{producto.idSubproductoPk}" />
                                 <p:ajax event="change" update=":formContent" listener="#{beanAnalisisMercado.filtroPorProducto}"/>
-                            </h:selectOneMenu>
-                            <h:selectOneMenu id="selectProductosA" required="true" value="#{beanAnalisisMercado.data.idProductoFk}"  class="col-lg-6 col-md-8 col-sm-8 col-xs-12" requiredMessage="Ingresa un valor para el campo Producto." rendered="#{beanAnalisisMercado.state =='INIT'}">
+                            </p:selectOneMenu>
+                            <p:selectOneMenu id="selectProductosA" required="true" value="#{beanAnalisisMercado.data.idProductoFk}"  class="col-lg-6 col-md-8 col-sm-8 col-xs-12" requiredMessage="Ingresa un valor para el campo Producto." rendered="#{beanAnalisisMercado.state =='INIT'}">
                                 <f:selectItem itemLabel="Seleccione la opción" itemValue="#{null}" noSelectionOption="true" />
                                 <f:selectItems value="#{beanAnalisisMercado.lstProducto}" var="producto" itemLabel="#{producto.nombreSubproducto}" itemValue="#{producto.idSubproductoPk}" />
                                 <p:ajax event="change" update=":formContent" listener="#{beanAnalisisMercado.searchDatabyIdProducto}"/>
-                            </h:selectOneMenu>
+                            </p:selectOneMenu>
                         </div>
-
-                        <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-group">
+                        <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
                             <p:outputLabel class="col-lg-4 col-md-3 col-sm-4 col-xs-6"  for="txtToneladas" value ="Toneladas:" rendered="#{beanAnalisisMercado.state =='INIT' and beanAnalisisMercado.insertar =='precioPromedio'}"/> 
                             <p:inputText id="txtToneladas" maxlength="7" class=" col-lg-3 col-md-4 col-sm-8 col-xs-6" value="#{beanAnalisisMercado.data.cantidadToneladas}" required="true" requiredMessage="Ingresa un valor para el campo Toneladas." rendered="#{beanAnalisisMercado.state =='INIT' and beanAnalisisMercado.insertar =='precioPromedio'}"/>
                             <pe:keyFilter for="txtToneladas" regEx="/[0-9.]/i" />
                         </div>
-                        <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-group">
+                        <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
                             <p:outputLabel class="col-lg-5 col-md-3 col-sm-4 col-xs-6"  for="txtPrecioPromedio" value ="Precio Promedio:" rendered="#{beanAnalisisMercado.state =='INIT' and beanAnalisisMercado.insertar =='precioPromedio'}"/> 
                             <p:inputText id="txtPrecioPromedio" maxlength="6" class=" col-lg-3 col-md-4 col-sm-8 col-xs-6" value="#{beanAnalisisMercado.data.precio}" required="true" requiredMessage="Ingresa un valor para el campo Precio Promedio." rendered="#{beanAnalisisMercado.state =='INIT' and beanAnalisisMercado.insertar =='precioPromedio'}"/>
                             <pe:keyFilter for="txtPrecioPromedio" regEx="/[0-9.]/i" />
                         </div>
-
                     </div>
-
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
-                            <p:outputLabel class="col-lg-4 col-md-3 col-sm-4 col-xs-6"  for="calendarInicio" value ="Fecha:" rendered="#{beanAnalisisMercado.state =='INIT'}"/> 
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-6"  for="calendarInicio" value ="Fecha:" rendered="#{beanAnalisisMercado.state =='INIT'}"/> 
                             <p:calendar id="calendarRemanente" class="col-lg-6 col-md-4 col-sm-8 col-xs-6 calendario" navigator="true" placeholder="dd/mm/yyyy"
                                         value="#{beanAnalisisMercado.fechaRemanente}" locale="es" pattern="dd/MM/yyyy" showOn="button" rendered="#{beanAnalisisMercado.state =='INIT'}">
-                                <p:ajax event="dateSelect" update=":formContent"
-                                        listener="#{beanAnalisisMercado.searchRemanente}"/>
-
+                                <p:ajax event="dateSelect" update=":formContent" listener="#{beanAnalisisMercado.searchRemanente}"/>
                             </p:calendar>
                         </div>
-
-                        <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-group">
-                            <p:outputLabel class="col-lg-4 col-md-3 col-sm-4 col-xs-6"  for="txtRemanente" value ="Remanente:" rendered="#{beanAnalisisMercado.state =='INIT' and beanAnalisisMercado.insertar !='precioPromedio'}"/> 
+                        <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-6"  for="txtRemanente" value ="Remanente:" rendered="#{beanAnalisisMercado.state =='INIT' and beanAnalisisMercado.insertar !='precioPromedio'}"/> 
                             <p:inputText id="txtRemanente" maxlength="6" class=" col-lg-3 col-md-4 col-sm-8 col-xs-6" value="#{beanAnalisisMercado.data.remantePorSemana}" required="true" requiredMessage="Ingresa un valor para el campo Remanete." rendered="#{beanAnalisisMercado.state =='INIT' and beanAnalisisMercado.insertar !='precioPromedio'}" />
                         </div>
                     </div>
-
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
                         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                            <p:outputLabel class="col-lg-5 col-md-4 col-sm-4 col-xs-12"  for="calendarInicio" value ="Fecha de Inicio:" rendered="#{beanAnalisisMercado.state =='SEARCH'}"/> 
+                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="calendarInicio" value ="Fecha:" rendered="#{beanAnalisisMercado.state =='SEARCH'}"/> 
                             <p:calendar id="calendarInicio" class="col-lg-7 col-md-8 col-sm-8 col-xs-12 calendario" navigator="true" placeholder="dd/mm/yyyy"
                                         value="#{beanAnalisisMercado.filtroFechaInicio}" locale="es" pattern="dd/MM/yyyy" readonlyInput="true" showOn="button" rendered="#{beanAnalisisMercado.state =='SEARCH'}">
-                                <p:ajax event="dateSelect" update=":formContent"
-                                        listener="#{beanAnalisisMercado.filtroPorProducto}"/>
-
+                                <p:ajax event="dateSelect" update=":formContent" listener="#{beanAnalisisMercado.filtroPorProducto}"/>
                             </p:calendar>
-
                         </div>
-
                         <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
                             <h:outputText value="Grafica Lineal:" class="col-lg-6 col-md-5 col-sm-6 col-xs-6" rendered="#{beanAnalisisMercado.state =='SEARCH'}"/>
                             <p:selectBooleanCheckbox value="#{beanAnalisisMercado.charLine}" rendered="#{beanAnalisisMercado.state =='SEARCH'}">
                                 <p:ajax event="change" update=":formContent"/>
                             </p:selectBooleanCheckbox>
                         </div>
-
                         <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
                             <h:outputText value="Expander Grafica:" class="col-lg-8 col-md-5 col-sm-6 col-xs-6" rendered="#{beanAnalisisMercado.state =='SEARCH'}"/>
                             <p:selectBooleanCheckbox value="#{beanAnalisisMercado.charExpander}" rendered="#{beanAnalisisMercado.state =='SEARCH'}">
@@ -116,10 +102,12 @@
                         <p:chart style="height:500px;" type="line" responsive="true" rendered ="#{beanAnalisisMercado.chartLineByDias != null and beanAnalisisMercado.state =='SEARCH' and beanAnalisisMercado.charLine == true}" model="#{beanAnalisisMercado.chartLineByDias}"/>
                         <p:chart style="height:500px;" type="bar" responsive="true" rendered ="#{beanAnalisisMercado.chartBarByDias != null and beanAnalisisMercado.state =='SEARCH' and beanAnalisisMercado.charLine == false}" model="#{beanAnalisisMercado.chartBarByDias}" />
                     </div>
-                    <div id="chartByName" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <div class="form-group">
-                            <p:outputLabel class="col-lg-4 col-md-4 col-sm-4 col-xs-12"  for="selectDay" value ="Dia:" rendered ="#{beanAnalisisMercado.chartLineByNameDay != null and beanAnalisisMercado.state =='SEARCH' and beanAnalisisMercado.chartBarByNameDay != null}"/> 
-                            <p:selectOneMenu  id="selectDay"  value="#{beanAnalisisMercado.filtroDiaSemana}" class="col-lg-6 col-md-8 col-sm-8 col-xs-12" requiredMessage="Ingresa un valor para el campo Producto." rendered ="#{beanAnalisisMercado.chartLineByNameDay != null and beanAnalisisMercado.state =='SEARCH' and beanAnalisisMercado.chartBarByNameDay != null}">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                            <p:outputLabel class="col-lg-12 col-md-12 col-sm-12 col-xs-12"  for="selectDay" value ="Dia:" rendered ="#{beanAnalisisMercado.chartLineByNameDay != null and beanAnalisisMercado.state =='SEARCH' and beanAnalisisMercado.chartBarByNameDay != null}"/> 
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                            <p:selectOneMenu  id="selectDay"  value="#{beanAnalisisMercado.filtroDiaSemana}"  requiredMessage="Ingresa un valor para el campo Producto." rendered ="#{beanAnalisisMercado.chartLineByNameDay != null and beanAnalisisMercado.state =='SEARCH' and beanAnalisisMercado.chartBarByNameDay != null}">
                                 <f:selectItem itemLabel="Domingo" itemValue="0" noSelectionOption="true" />
                                 <f:selectItem itemLabel="Lunes" itemValue="1" />
                                 <f:selectItem itemLabel="Martes" itemValue="2" />
@@ -130,7 +118,8 @@
                                 <p:ajax event="change" update=":formContent" listener="#{beanAnalisisMercado.filtroPorProducto}"/>
                             </p:selectOneMenu>
                         </div>
-
+                    </div>
+                    <div id="chartByName" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <p:chart  style="height:500px;" type="line" responsive="true" rendered ="#{beanAnalisisMercado.chartLineByNameDay != null and beanAnalisisMercado.state =='SEARCH' and beanAnalisisMercado.charLine == true}" model="#{beanAnalisisMercado.chartLineByNameDay}"/>
                         <p:chart style="height:500px;" type="bar" responsive="true" rendered ="#{beanAnalisisMercado.chartBarByNameDay != null and beanAnalisisMercado.state =='SEARCH' and beanAnalisisMercado.charLine == false}" model="#{beanAnalisisMercado.chartBarByNameDay}" />
                     </div>
@@ -138,7 +127,6 @@
                         <p:chart style="height:800px;" type="line" responsive="true" rendered ="#{beanAnalisisMercado.chartLineBMes != null and beanAnalisisMercado.state =='SEARCH' and beanAnalisisMercado.charLine == true}" model="#{beanAnalisisMercado.chartLineBMes}"/>
                         <p:chart style="height:800px;" type="bar" responsive="true" rendered ="#{beanAnalisisMercado.chartBarByMes != null and beanAnalisisMercado.state =='SEARCH' and beanAnalisisMercado.charLine == false}" model="#{beanAnalisisMercado.chartBarByMes}" />
                     </div>
-
                 </div>
             </p:panel>
         </h:form>

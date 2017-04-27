@@ -50,7 +50,7 @@ public interface IfaceCatCliente
      * @param fechaFin
      * @return 
      */
-    public ArrayList<ReporteClienteVentas> getReporteClienteVentasUtilidad(BigDecimal idCliente,String fechaInicio,String fechaFin);
+    public ArrayList<ReporteClienteVentas> getReporteClienteVentasUtilidad(BigDecimal idCliente,String fechaInicio,String fechaFin,BigDecimal idSucursal);
     
     /**
      * Obtiene los datos del cliente por medio del folio del abono

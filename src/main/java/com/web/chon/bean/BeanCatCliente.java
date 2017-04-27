@@ -3,7 +3,6 @@ package com.web.chon.bean;
 import com.web.chon.dominio.BajaClientes;
 import com.web.chon.dominio.Cliente;
 import com.web.chon.dominio.CodigoPostal;
-import com.web.chon.dominio.Correos;
 import com.web.chon.dominio.Entidad;
 import com.web.chon.dominio.Motivos;
 import com.web.chon.dominio.Municipios;
@@ -17,7 +16,6 @@ import com.web.chon.service.IfaceCatMunicipio;
 import com.web.chon.util.JsfUtil;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -41,8 +39,6 @@ public class BeanCatCliente implements BeanSimple {
     private IfaceCatMunicipio ifaceCatMunicipio;
     @Autowired
     private IfaceCatCodigosPostales ifaceCatCodigosPostales;
-    @Autowired
-    private IfaceCatCorreos ifaceCatCorreos;
     @Autowired
     private IfaceCatMotivos ifaceCatMotivos;
     @Autowired

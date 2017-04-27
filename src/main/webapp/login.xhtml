@@ -6,19 +6,30 @@
     xmlns:p="http://primefaces.org/ui" 
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:pe="http://primefaces.org/ui/extensions">
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="css/dashboard.css"/>
+    <link rel="stylesheet" href="resources/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="resources/css/dashboard.css"/>
     <h:head>
         <title>Login</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
     </h:head>
 
     <h:body>
+        <h:panelGroup id="script">
+            <h:outputScript>
+                $(function () {
+                $(document).keyup(function (e) {
+                if(e.keyCode == 13) {
+                document.getElementById("#{p:component('btnLogin')}").focus();
+                } 
+                });
+                });
+            </h:outputScript>
+        </h:panelGroup>
 
         <div  align="center" style="zoom:100%">
             <div class="form-group" align="center">
-                <a class="hidden-xs hidden-sm col-lg-2 col-md-5"><img style="height:100px; width:200px;" src="../resources/img/logo.png" alt="logo"></img></a>
-                <a class="hidden-lg hidden-md col-lg-2 col-md-5"><img align="center" style="height:100px; width:200px;" src="../resources/img/logo.png" alt="logo"></img></a>
+                <a class="hidden-xs hidden-sm col-lg-2 col-md-5"><img style="height:100px; width:170px;" src="../resources/img/logo.png" alt="logo"></img></a>
+                <a class="hidden-lg hidden-md col-lg-2 col-md-5"><img align="center" style="height:100px; width:170px;" src="../resources/img/logo.png" alt="logo"></img></a>
             </div>
 
             <p:spacer class="hidden-xs hidden-md hidden-sm" height="150"/>
@@ -42,19 +53,16 @@
                             <h:outputLabel for="j_password" value="Contraseña:" class="col-lg-12 col-md-12 col-sm-12 col-xs-12"/>
                             <p:password value="#{securityBean.password}" style="margin-bottom: 10px;" class="col-lg-12 col-md-12 col-sm-12 col-xs-12"
                                         id="j_password" required="true" maxlength="15" requiredMessage="Password Requerido" label="password" autocomplete="off"/>
-                            <div align="center"  class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
-                                <p:spacer height="60"/>
-                                <p:commandButton id="btnLogin" value="iniciar" action="#{securityBean.doLogin}" ajax="false" styleClass="btnLoginPanel" update=":growl :loginFormId" icon="ui-icon-circle-check"/>
-                            </div>
                             <p:panel class="col-lg-12 col-md-12 col-sm-12 col-xs-12 zeroPaddingPanel" style="padding-right: 0px !important; padding-left:0px !important;">
                                 <p:outputLabel value="Capcha" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 alignCenter"/>
                                 <p:outputLabel id="defaultRealHash" value="#{securityBean.capcha}" style="padding-right: 0px !important; padding-left:0px !important;"/>
                                 <p:inputText id="defaultReal" required="true" requiredMessage="Capcha Requerido." value="#{securityBean.capchaUser}" title="Ingresa el Resultado de la Suma." style="padding-right: 0px !important; padding-left:0px !important; width:30px !important; height: 20px !important;" maxlength="3"/>
-                                
                                 <p:commandButton icon="ui-icon-refresh" immediate="true" ajax="true" resetValues="true" action ="#{securityBean.updateCapcha}" update="@this defaultRealHash defaultReal" title="Actualizar Capcha." class="cptch_reload_button dashicons dashicons-update"/>
-
-
-                        </p:panel>
+                            </p:panel>
+                            <div align="center"  class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                <p:spacer height="30"/>
+                                <p:commandButton id="btnLogin" value="iniciar" action="#{securityBean.doLogin}" ajax="false" styleClass="btnLoginPanel" update=":growl :loginFormId" icon="ui-icon-circle-check"/>
+                            </div>
                         </div>
 
 
@@ -67,7 +75,7 @@
                             <div style="font-size:10px;">Mediante esta opción podrás cambiar tu contraseña, será necesario que proporciones tu pregunta y respuesta de seguridad. </div>
                         </div>
 
-                       
+
 
 
                         <!--                                <p:captcha label="Captcha"  theme="clean" language="es" requiredMessage="Necesita Solucionar el Capcha." validatorMessage="Error de validación."/>    

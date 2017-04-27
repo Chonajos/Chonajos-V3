@@ -58,7 +58,7 @@
                         </div>
                     </div> 
                     <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12 col-lg-offset-1 col-md-offset-1">
-                        <p:dataTable var="model" value="#{beanReporteGasto.lstOperacionescajas}">
+                        <p:dataTable id="tabla" var="model" rowIndexVar="varTable" value="#{beanReporteGasto.lstOperacionescajas}">
                             <p:column style="width:30px">
                                 <p:rowToggler />
                             </p:column>
@@ -88,7 +88,7 @@
 
 
                             <p:rowExpansion>
-                                <p:dataTable var="item" value="#{model.lstOperacionesCajas}">
+                                <p:dataTable id="item" var="item" rowIndexVar="varItem" value="#{model.lstOperacionesCajas}">
                                     <p:column style="width:30px">
                                         <p:rowToggler />
                                     </p:column>
@@ -103,22 +103,51 @@
 
 
                                     <p:rowExpansion>
-                                        <p:dataTable var="itemTwo" value="#{item.lstOperacionesCajas}">
-                                            <p:column headerText="Fecha">
+                                        <p:dataTable id="itemTwo" rowIndexVar="varItemTwo"  var="itemTwo" value="#{item.lstOperacionesCajas}" editable="true">
+                                            <p:ajax event="rowEdit" listener="#{beanReporteGasto.onRowEdit}" update=":formContent:tabla"/>
+                                            <p:ajax event="rowEditCancel"/>
+                                            <p:column headerText="Fecha" width="120px;">
                                                 <h:outputText value="#{itemTwo.fecha}" >
                                                     <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
                                                 </h:outputText>
                                             </p:column>
-                                            <p:column headerText="Concepto">
-                                                <h:outputText value="#{itemTwo.nombreConcepto}" />
+                                            <p:column headerText="Tipo Operación" width="200px;" class="alignLeft">
+                                                <p:cellEditor>
+                                                    <f:facet name="output">
+                                                        <h:outputText  value="#{itemTwo.nombreOperacion}" />
+                                                    </f:facet>
+                                                    <f:facet name="input">
+                                                        <p:selectOneMenu  id="comboOperacion"  value="#{itemTwo.idTipoOperacionFk}" style="width: 97% !important">
+                                                            <f:selectItem itemLabel="Selecciona" itemValue="#{model.idTipoOperacionFk}" />
+                                                            <f:selectItems value="#{beanReporteGasto.lstTiposOperaciones}" var="lstOperacion" itemLabel="#{lstOperacion.nombre}" itemValue="#{lstOperacion.idTipoOperacionPk}"/>
+                                                            <p:ajax event="change" listener="#{beanReporteGasto.buscaConceptos(itemTwo)}" update="formContent:tabla:#{varTable}:item:#{varItem}:itemTwo:#{varItemTwo}:comboConcepto" />
+                                                        </p:selectOneMenu>
+                                                    </f:facet>
+                                                </p:cellEditor>
                                             </p:column>
-                                            <p:column headerText="Comentarios">
+                                            <p:column headerText="Concepto" width="200px;" class="alignLeft">
+                                                <p:cellEditor>
+                                                    <f:facet name="output">
+                                                        <h:outputText value="#{itemTwo.nombreConcepto}" />
+                                                    </f:facet>
+                                                    <f:facet name="input">
+                                                        <p:selectOneMenu  id="comboConcepto"  value="#{itemTwo.idConceptoFk}" style="width: 97% !important">
+                                                            <f:selectItem itemLabel="Selecciona" itemValue="#{itemTwo.idConceptoFk}" />
+                                                            <f:selectItems value="#{beanReporteGasto.lstConceptos}" var="lst" itemLabel="#{lst.nombre}" itemValue="#{lst.idConceptoPk}"/>
+                                                        </p:selectOneMenu>
+                                                    </f:facet>
+                                                </p:cellEditor>
+                                            </p:column>
+                                            <p:column headerText="Comentarios" width="200px;">
                                                 <h:outputText value="#{itemTwo.comentarios}" />
                                             </p:column>
-                                            <p:column headerText="Monto" class="alignRight">
+                                            <p:column headerText="Monto" width="100px;" class="alignRight">
                                                 <h:outputText value="#{itemTwo.monto}" >
                                                     <f:convertNumber type="currency" currencySymbol="$" />
                                                 </h:outputText>
+                                            </p:column>
+                                            <p:column width="60px;" class="alignCenter" headerText="Editar">
+                                                <p:rowEditor/>
                                             </p:column>
                                         </p:dataTable>
                                     </p:rowExpansion>

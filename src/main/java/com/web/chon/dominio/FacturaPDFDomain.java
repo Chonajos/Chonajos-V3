@@ -28,13 +28,11 @@ public class FacturaPDFDomain implements Serializable {
     private byte[] fichero;
     private String nombreArchivoTimbrado;
     
-    
     private String nombreEstatus;
     private BigDecimal idStatusFk;
     private String comentarios;
     private String nombreSucursal;
     private BigDecimal idSucursalFk;
-    
     
     //Datos de Emisor:
     private String nombreEmisor;
@@ -50,7 +48,6 @@ public class FacturaPDFDomain implements Serializable {
     private String domicilioFiscalEmisor;
     private String noInteriorEmisor;
     
-    
     //========Datos para PDF======//
     //detail 1
     private String razonSocialEmpresa;
@@ -64,7 +61,6 @@ public class FacturaPDFDomain implements Serializable {
     private String parametroB;
     private Date fechaEmision;
     private String lugarEmision;
-    
     
     //detail 2
     //Datos de Cliente:
@@ -118,6 +114,8 @@ public class FacturaPDFDomain implements Serializable {
     private String certificadoCancelar;
     
     private String uuid;
+    
+    private String serie;
 
     @Override
     public String toString() {
@@ -125,8 +123,7 @@ public class FacturaPDFDomain implements Serializable {
     }
 
   
-   
-    
+  
     
     //========Datos para PDF======//
 
@@ -145,10 +142,7 @@ public class FacturaPDFDomain implements Serializable {
     public void setIdTipoLlaveFk(BigDecimal idTipoLlaveFk) {
         this.idTipoLlaveFk = idTipoLlaveFk;
     }
-
-    
-    
-    
+ 
     public BigDecimal getIdClienteFk() {
         return idClienteFk;
     }
@@ -156,8 +150,6 @@ public class FacturaPDFDomain implements Serializable {
     public void setIdClienteFk(BigDecimal idClienteFk) {
         this.idClienteFk = idClienteFk;
     }
-
-   
 
     public String getColoniaEmisor() {
         return coloniaEmisor;
@@ -284,7 +276,6 @@ public class FacturaPDFDomain implements Serializable {
     }
 
     
-
     public ArrayList<VentaProductoMayoreo> getListaProductosMayoreo() {
         return listaProductosMayoreo;
     }
@@ -724,6 +715,14 @@ public class FacturaPDFDomain implements Serializable {
 
     public void setCertificadoCancelar(String certificadoCancelar) {
         this.certificadoCancelar = certificadoCancelar;
+    }
+
+    public String getSerie() {
+        return serie;
+    }
+
+    public void setSerie(String serie) {
+        this.serie = serie;
     }
     
     

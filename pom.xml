@@ -7,13 +7,6 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
-    <repositories>
-        <repository>
-            <id>google-api-services</id>
-            <url>http://google-api-client-libraries.appspot.com/mavenrepo</url>
-        </repository>
-    </repositories>
-
     <name>Chonajos</name>
 
     <properties>
@@ -36,11 +29,7 @@
             <version>5.3</version>
             <type>jar</type>
         </dependency>
-        <dependency>
-            <groupId>org.primefaces.extensions</groupId>
-            <artifactId>all-themes</artifactId>
-            <version>1.0.8</version>
-        </dependency>
+        
         <dependency>
             <groupId>org.omnifaces</groupId>
             <artifactId>omnifaces</artifactId>
@@ -51,6 +40,14 @@
             <artifactId>primefaces-extensions</artifactId>
             <version>4.0.0</version>
         </dependency>
+        <!--        
+        <dependency>
+            <groupId>org.primefaces.themes</groupId>
+            <artifactId>all-themes</artifactId>
+            <version>1.0.10</version>
+        </dependency>-->
+        
+        
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>
@@ -293,6 +290,17 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.3.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.16</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>3.16</version>
+        </dependency>
+        
         
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -403,9 +411,15 @@
         <!--DEPENDECIAS-->
 
 
-
-
     </dependencies>
+    
+    <repositories>
+        
+        <repository>
+            <id>google-api-services</id>
+            <url>http://google-api-client-libraries.appspot.com/mavenrepo</url>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>

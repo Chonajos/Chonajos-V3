@@ -105,8 +105,8 @@ public class ServiceFacturas implements IfaceFacturas {
         for (Object[] obj : lstObject) {
             FacturaPDFDomain factura = new FacturaPDFDomain();
             factura.setIdFacturaPk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
-            String nombreFactura = obj[1] == null ? null : obj[1].toString();
-            factura.setNumeroFactura("B-" + nombreFactura);
+            
+            factura.setNumeroFactura(obj[1] == null ? null : obj[1].toString());
             factura.setFechaCertificacion(obj[2] == null ? null : (Date) obj[2]);
             factura.setIdClienteFk(obj[3] == null ? null : new BigDecimal(obj[3].toString()));
             factura.setIdSucursalFk(obj[4] == null ? null : new BigDecimal(obj[4].toString()));
@@ -136,6 +136,10 @@ public class ServiceFacturas implements IfaceFacturas {
             factura.setKeyCancelar(obj[21] == null ? null : obj[21].toString());
 
             factura.setRfcCliente(obj[22] == null ? null : obj[22].toString());
+            
+            factura.setSerie(obj[23] == null ? null : obj[23].toString());
+            factura.setMetodoPago(obj[24] == null ? null : obj[24].toString()+"-"+(obj[25] == null ? null : obj[25].toString()));
+            
 
             if (factura.getIdStatusFk().intValue() == 1) {
                 factura.setNombreEstatus("EMITIDA");
@@ -152,6 +156,7 @@ public class ServiceFacturas implements IfaceFacturas {
                 file = new DefaultStreamedContent(stream, "xml", "" + factura.getRfcCliente() + "_" + factura.getNumeroFactura() + ".xml");
                 factura.setFile(file);
             }
+            
 
             listaDatos.add(factura);
         }

@@ -110,13 +110,11 @@
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
 
-                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 form-group ">
-                            <h:outputLabel class="col-lg-4 col-md-3 col-sm-3 col-xs-12 alignLeft" for="radioTipoPersona" 
-                                           value="Tipo de Persona:" style="padding: 0px" />
-                            <p:selectOneRadio class="col-lg-8 col-md-3 col-sm-3 col-xs-12 alignLeftRadioButton"  
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 form-group alignLeftRadioButton">
+                            <p:selectOneRadio class="col-lg-8 col-md-12 col-sm-12 col-xs-12"  
                                               id="radioTipoPersona" label="Sexo" value="#{beanCatCliente.data.tipoPersona}" 
                                               disabled="#{beanCatCliente.permissionToWrite}">
-                                <f:selectItem itemLabel="Persona Fisica" itemValue="1"/>
+                                <f:selectItem itemLabel="Persona Fisica"  itemValue="1"/>
                                 <f:selectItem itemLabel="Persona Moral" itemValue="2"/>
                                 <p:ajax event="change" listener="#{beanCatCliente.changeView()}" update=":formCliente" />
                             </p:selectOneRadio>
@@ -226,7 +224,7 @@
                                 </p:selectOneMenu>
                             </div>
                             <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12">
-                                <p:outputLabel class="col-lg-12 col-md-2 col-sm-3 col-xs-12"  for="txtColonia" value ="Colonia" /> 
+                                <p:outputLabel class="col-lg-12 col-md-2 col-sm-3 col-xs-12"  for="txtColonia" value ="Colonia:" /> 
                                 <p:selectOneMenu  id="txtColonia" class=" col-lg-12 col-md-2 col-sm-3 col-xs-12" value="#{beanCatCliente.data.idColoniaFk}" disabled="#{beanCatCliente.permissionToWrite}" style="width:97% !important;">
                                     <f:selectItem itemLabel="Selecciona un Colonia" itemValue="" />
                                     <f:selectItems value="#{beanCatCliente.lista_codigos_postales}" var="colonita" itemLabel="#{colonita.nombreColonia}" itemValue="#{colonita.id_cp}"/>

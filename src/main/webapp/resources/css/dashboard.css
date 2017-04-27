@@ -1,0 +1,899 @@
+
+
+html{
+    height: 100%;
+}
+
+.menu {
+    float: right !important;
+    margin-top: 15px;
+    width: 900px;
+}
+
+.logoBanner{	 
+    background-image:url("../resources/img/bannerChonajos.jpg");
+    background-repeat: no-repeat;
+    height: 70px; 
+    width:30%;
+    margin-right: 0px;
+}
+
+/*Estilos para las fechas de Pago */
+.pagoAtrasado{
+    /*status: 4 */
+    color:red;
+}
+.sinAdeudos{
+    color:blue;
+    /*status: 1*/
+}
+.conAdeudos{
+    /* status = 2 */
+    color: #FACC2E;
+}
+
+.calendario input
+{
+    width:81px;
+}
+.calendario
+{
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+}
+.statusActivo
+{
+    color:green;
+}
+.statusInactivo
+{
+    color:red;
+}
+.statusPagado
+{
+    /*    background:#d9B3FF;
+    */
+    border-color: black !important;
+    background-image:-webkit-linear-gradient(top, #FE9A2E, #FACC2E) !important;
+    font-weight:bold
+}
+.statusEntregado
+{
+    /*background:#4cae4c;*/
+    border-color: black !important;
+    background-image:-webkit-linear-gradient(top, #A9E2F3, #04B404) !important;
+    font-weight:bold
+
+}
+.statusPedido
+{
+    /*    background-color: #d9edf7;
+        border-color: #bce8f1;*/
+    border-color: black !important;
+    background-image:-webkit-linear-gradient(top, #A9E2F3, #81BEF7) !important;
+    font-weight:bold
+}
+.statusCancelado
+{
+    /*background:#f2dede !important;*/
+    border-color: black !important;
+    background-image:-webkit-linear-gradient(top, #FE642E, #FE2E2E) !important;
+    font-weight:bold
+}
+
+.menuPrincipal{
+    font-weight: bold;
+}
+
+.ui-widget .ui-widget {
+    font-size: 1.1em !important;
+}
+/*Tamaño de letras en las graficas*/
+.jqplot-target{
+    font-size:1.3em !important;
+}
+
+/*Se modifica el tamaño del los componentes de las tablas*/
+.ui-datatable-selectable{
+    font-size: 12px!important;
+} 
+.ui-datatable-selectable thead th{
+
+    font-size: 12px!important;
+}
+
+/*Se cambio el tamaño del contenido de las tablas*/
+.ui-datatable tbody td
+{font-size: 12px!important;
+}
+.ui-datatable thead th
+{
+    font-weight: normal ;    
+    font-size: 12px!important;
+    text-align:center !important;
+}
+
+.ui-datatable tfoot td
+{
+    font-size: 13px!important;
+}
+
+/*Se cambio el tamaño del componente h4*/
+.h3, h3 {
+    margin-left: 10px!important;
+    font-weight: bold;
+    font-size: 17px;
+}
+
+.menuTercerNivel {
+    margin-left: 30px !important;
+}
+
+.ui-priority-primary{
+    color:white;
+    background-color:#0088cc  !important;  
+}
+
+/*Color azul en autocomplete*/
+ul .ui-state-highlight {
+    background-image:-webkit-linear-gradient(top, #0088cc, #0077b3) !important;
+    color: white !important;
+
+}
+
+/*estilos para las tablas secundarias*/
+.seconTable th{
+    color: white;
+    background-image:-webkit-linear-gradient(top, rgba(0, 136, 204, 0.2), rgba(0, 119, 179, 0.44)) !important;
+}
+
+
+.ui-priority-primary, .ui-widget-content .ui-priority-primary, .ui-widget-header .ui-priority-primary{
+    background:#ffffff;
+    color: blue;
+    background-image:linear-gradient(to bottom, #DCDCDC, rgb(208, 209, 212)) !important;
+    background-color:#0081c2;
+
+}
+
+.ui-state{
+    background-color:#00acd6  !important;  
+}
+.primaryButton{
+    margin-right:4px !important;
+    width: 102px !important;
+}
+/*Cambiar el fondo de columna de una tabla*/
+.diaDescanso{
+    background: #f7ecb5 !important;
+}
+/*letras en color rojo*/
+.letterRed{
+    color:red !important;
+}
+
+.letterYellow{
+    color: #FACC2E !important;
+}
+
+
+
+/*Color azul a los botones*/
+/*.ui-button-text{
+    background:#0081c2;
+    background-image:-webkit-linear-gradient(top, #2399e5, #239ce5);
+    color: white;
+    border-radius: 5px;
+    border: 1px solid #0016b0 !important;
+}
+.ui-state-error{
+    color: black !important;
+    background:none !important;
+}*/
+/*Color azul a los botones*/
+/*Label a la derecha*/
+div label{
+    text-align: right !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+}
+
+.alignLeftRadioButton table  label{
+    text-align: left !important;
+}
+
+/*quitar bordes de paneles*/
+/*.ui-panel .ui-panel-content{
+    padding: 0.2em 0.2em !important;
+}*/
+
+.zeroPaddingPanel div{
+    padding: 0.0em 0.0em !important;
+}
+
+/*quitar bordes de paneles*/
+/*Letra mas chica en combos*/
+select{
+    font-size: 0.8em !important;
+}
+
+/*Se acomoda el tamaño del boton del selecone menu*/
+/*.ui-selectonemenu > div {
+    box-sizing: content-box !important;
+}*/
+
+.selects .ui-selectonemenu-list-item {
+    width: 99px !important;
+    font-size: 11px !important;
+}
+
+.selects .ui-state-highlight, .ui-widget-content .ui-state-highlight,
+.ui-widget-header .ui-state-highlight {
+    color: #3A3232;
+    width: auto !important;
+    background-image: linear-gradient(to bottom, #EDECED, #EDECED);
+}
+
+.selects .ui-widget-content .ui-state-hover {
+    color: #3A3232;
+    width: auto !important;
+    background-image: linear-gradient(to bottom, #EDECED, #EDECED);
+}
+
+.noPadding  tr > td{
+    padding: 2px !important;
+    padding-right: 2px !important;
+
+}
+
+.paddingZero{
+    padding: 2px !important;
+}
+
+.zeroPadding{
+    padding: 0px !important;
+}
+
+.input{
+    width: 90% !important;
+}
+/*cortar label */
+/*div label { 
+    overflow:hidden; 
+    white-space:nowrap; 
+    text-overflow:ellipsis; 
+    width:100px;
+}
+div label:hover{
+    overflow:visible;
+    white-space:initial;
+}*/
+/*cortar label*/
+
+/*Botones*/
+/*button span:hover{
+    font-weight: bold;
+    color:#0088cc;
+    background-image:-webkit-linear-gradient(top, #FFFFFF, #FFFFFF);
+}*/
+/*Botones*/
+
+/*alinght left*/
+.alignLeft{
+    text-align: left !important;
+}
+.alignRight{
+    text-align: right !important;
+}
+.alignCenter{
+    text-align:center !important;
+}
+
+.alignLeftRadioButton table tbody tr td{
+    text-align: left !important;
+} 
+/*tamaño en el header de la aplicacion con menu*/
+.navbar-fixed-top {
+    top: 0;
+    border-width: 0 0 1px;
+    height: 100px;
+}
+
+/*tamaño en el header de la aplicacion sin menu*/
+.navbar-fixed-top-menu {
+    top: 0;
+    border-width: 0 0 1px;
+    height: 70px;
+}
+
+/**Boton flotante de abrir y cerrar menu**/
+.flotante {
+    display:scroll;
+    position:fixed;
+    height:10px;
+    width:10px;
+    bottom:5px;
+    right:0px;
+    left:5px;
+}
+.flotante span
+{
+    display:scroll;
+    position:fixed;
+    height:10px;
+    width:10px;
+    bottom:30px;
+    right:0px;
+}
+
+/*Iconos color negro si se quita esta linea son grices*/
+/*.ui-widget-content .ui-icon {
+    background-image: url("/javax.faces.resource/images/ui-icons_222222_256x240.png.xhtml?ln=primefaces-casablanca") !important;
+}*/
+
+/* Clase para cambiar color de fuente de un link seleccionado*/
+.checkedFontColor  .ui-state-highlight a, .ui-state-highlight a {
+    color: #2D4DF0 !important;
+    text-decoration: underline !important; 
+}
+
+/* Clase para cambiar color de fuente de un link */
+.commandLinkColor {
+    color: #2D4DF0 !important;
+    text-decoration: underline !important; 
+}
+/*paddin de input*/
+.ui-inputfield{
+    padding:2px !important;
+}
+
+
+/*Se quitarin padin de selecOneMenu*/
+.ui-selectonemenu {
+
+    width: inherit !important;
+    padding-right: 1em !important; 
+    padding-left: 0px !important;
+
+}
+/*Se alinean las etiquetas de los componente selecOnemenu a la izquierda*/
+.ui-selectonemenu label{
+    text-align: left !important;
+}
+/*Clase para timerPicker tome un tamaño mas grande default 1.2 se le puso 2*/
+.ui-timepicker-table td a {
+    width: 2em !important;
+}
+
+
+/*Pantalla celular*/
+@media ( max-width : 767px) {
+    .navbar {
+        border-radius: 4px;
+        height: 45px !important;
+        border-bottom: 4px;
+        border-bottom: 4px solid #3A3232 !important;
+
+    }
+    .padinTopRes{
+        padding-top:30px !important;
+    }
+
+    body {
+        padding-top: 50px; 
+        background-image:none !important;  		
+        height: 100%; 
+    }
+
+    div label{
+        text-align: left !important;
+    }
+
+}
+@media (max-width : 767px){
+    .padinTopRes{
+        padding-top:1px;
+    }
+
+}
+/*pantalla de escritorio*/
+@media (min-width : 767px){
+    .padinTopRes{
+        padding-top:120px;
+    }
+
+}
+
+/*Se ocultan componente en el tamño 768*/
+@media (min-width:767px) and (max-width : 768px){
+
+    .hidden-button-toggle{
+        display:none;
+    }
+}
+
+.alert-orange {
+    color: #735332 !important;
+    background-color: #F8E9DB !important;
+    border-color: #F3D9BE !important;
+}
+.alert-orange hr {
+    border-top-color: #EECAA7;
+}
+.alert-orange .alert-link {
+    color: #694A24;
+}
+
+/*complemento */
+/* Sidebar navigation */
+.nav-sidebar {
+    margin-right: -21px; /* 20px padding + 1px border */
+    margin-bottom: 20px;
+    margin-left: -20px;
+}
+
+.nav-sidebar>li>a {
+    padding-right: 30px;
+    padding-left: 30px;
+    color: #0C2E82;
+}
+
+.nav-sidebar>.active>a, .nav-sidebar>.active>a:hover, .nav-sidebar>.active>a:focus
+{
+    color: #fff;
+    background-color: #428bca;
+}
+
+/*
+ * Main
+ */
+.main {
+    padding: 40px;
+    background-color: white;
+}
+
+@media ( min-width : 768px) {
+    .main {
+        padding-right: 40px;
+        padding-left: 40px;
+        padding-top: 110px;
+        background-color: white;
+    }
+
+}
+
+.main .page-header {
+    margin-top: 0;
+}
+
+/*
+ * Placeholder
+ */
+.placeholders {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.placeholders h4 {
+    margin-bottom: 0;
+}
+
+.placeholder {
+    margin-bottom: 20px;
+}
+
+.placeholder img {
+    display: inline-block;
+    border-radius: 50%;
+}
+
+
+.row {
+    margin-right: 0px;
+    margin-left: 0px;
+}
+
+/*
+* Menu 
+*/
+
+.ui-menu .ui-menu-parent .ui-menu-child {
+    width: 16.5em !important;
+}
+
+
+.ui-selectonemenu .ui-selectonemenu-trigger {
+    width: 23px !important;
+}
+
+.ui-selectonemenu .ui-selectonemenu-label {
+    width: 100% !important;
+}
+
+.ui-selectonemenu-label .ui-inputfield .ui-corner-all {
+    width: 100%;
+}
+
+.selects .ui-selectonemenu-list-item {
+    width: 99px !important;
+    font-size: 10px !important;
+    font-family: Verdana, sans-serif;
+}
+
+.selects .ui-state-highlight, .ui-widget-content .ui-state-highlight,
+.ui-widget-header .ui-state-highlight {
+    color: #3A3232;
+    width: auto !important;
+    background-image: linear-gradient(to bottom, #EDECED, #EDECED);
+}
+
+.selects .ui-widget-content .ui-state-hover {
+    color: #3A3232;
+    width: auto !important;
+    background-image: linear-gradient(to bottom, #EDECED, #EDECED);
+}
+
+th {
+    /*    background-image: -webkit-linear-gradient(top, #0C2E82, #0C2E82)
+            !important; azul*/
+    background-image: -webkit-linear-gradient(top, #ff0808, #e60202) !important;
+    background-image: -moz-linear-gradient(top, #0C2E82, #0C2E82) !important;
+    background-image: -o-linear-gradient(top, #0C2E82, #0C2E82) !important;
+    background-image: -ms-linear-gradient(top, #0C2E82, #0C2E82) !important;
+    color: white !important;
+    border-color: white !important;
+    text-shadow: 0px 1px 1px rgba(4, 23, 236, 0.75) !important;
+}
+
+
+
+@media ( max-width : 767px) {
+    .navbar {
+        border-radius: 4px;
+        height: 30px !important;
+        border-bottom: 2px;
+        border-bottom: 1px solid #eee !important;
+    }
+    img {
+        /* height: 50px !important; */
+        padding-top: 0px;
+    }
+    navbar-header {
+        padding-bottom: 0px !important;
+        height: 50px !important;
+    }
+    .main {
+        padding: 20px;		
+    }
+
+    .espaciado-superior {
+        margin-top: 10px !important;
+    }
+    .btn-crud {
+        margin-right: 10px !important;
+        width: 120px;
+        margin-bottom: 10px !important;
+    }
+    .autocomplete-input-text-media input.ui-inputfield
+    {
+        width : 190px !important;
+
+    }
+    body {
+        padding-top: 50px; 
+        background-image:none !important;  		
+        height: 100%; 
+    }
+}
+
+
+.selects .ui-selectonemenu-list-item {
+    font-size: 10px !important;
+    font-family: Verdana, sans-serif;
+}
+
+.ui-buttonset .ui-state-active {
+    color: white !important;
+    background-color: rgb(12, 46, 130) !important;
+}
+
+
+.commandLinkStyleButton:hover {
+    color: #333333;
+    text-decoration: none;
+    background-color: #e6e6e6;
+    *background-color: #d9d9d9;
+    /* Buttons in IE7 don't get borders, so darken on hover */
+    background-position: 0 -15px;
+    -webkit-transition: background-position 0.1s linear;
+    -moz-transition: background-position 0.1s linear;
+    -ms-transition: background-position 0.1s linear;
+    -o-transition: background-position 0.1s linear;
+    transition: background-position 0.1s linear;
+}
+
+.commandLinkStyleButton {
+    height: 23px;
+    padding: 2px !important;
+}
+
+.menuTercerNivel {
+    margin-left: 30px !important;
+}
+
+/* Smartphones (Vertical y Horizontal) ----------- */
+@media ( min-width : 295px) and (max-width : 991px) {
+    .comboSmartphone {
+        width: 240px !important;
+    }
+}
+
+/* Smartphones (Vertical y Horizontal) ----------- */
+@media ( min-width : 100px) and (max-width : 992px) {
+    .margin-in-top {
+        margin-top: 15px !important;
+    }
+    .combo {
+        width: 240px !important;
+    }
+    .espaciadoInferior {
+        margin-bottom: 20px !important;
+    }
+}
+
+/* Smartphones (Vertical) ------------- */
+@media ( max-width : 320px) {
+
+    .map-width {
+        width:274px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .autocomplete-input-text input.ui-inputfield
+    {
+        width : 213px !important;
+
+    }
+
+    .menuDesplegableRes {
+        top: 10;
+        border-width: 0 0 1px;
+        position: fixed;
+        right: 0;
+        left: 0;
+        z-index: 1030;
+        background-color: white;
+        max-height: 168px;
+        overflow-y: auto;
+        width: 106%;
+    }
+
+}
+
+/* Smartphones (Horizontal) ------------- */
+@media ( min-width : 321px) and (max-width : 767px) {
+
+    .map-width {
+        width:409px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .autocomplete-input-text input.ui-inputfield
+    {
+        width : 213px !important;
+
+    }
+    .menuDesplegableRes {
+        top: 10;
+        border-width: 0 0 1px;
+        position: fixed;
+        right: 0;
+        left: 0;
+        z-index: 1030;
+        background-color: white;
+        max-height: 168px;
+        overflow-y: auto;
+        width: 106%;
+    }
+}
+
+
+
+.height-components {
+    height: 30px !important;
+}
+
+/* label text align left----------- */
+@media ( min-width : 768px) and (max-width : 1048px) {
+    .text-align-left {
+        text-align: left !important;
+    }
+    .padingInput {
+        margin-top: 10px !important;
+    }
+}
+
+/* label text align left gerente, catalogo proyectos----------- */
+@media ( min-width : 768px) and (max-width : 990px) {
+    .text-align-left-gerente {
+        text-align: left !important;
+    }
+
+    .autocomplete-input-text-media input.ui-inputfield
+    {
+        width : 124px !important;
+
+    }
+
+    .map-width {
+        width:498px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .autocomplete-input-text input.ui-inputfield
+    {
+        width : 214px !important;
+
+    }
+
+    .margin-left-panel {
+
+        margin-left: -50px !important;
+    }
+}
+
+/* media query para tablet en posicion horizontal----------- */
+@media ( min-width : 990px) and (max-width : 1024px) {
+
+    .autocomplete-input-text-media input.ui-inputfield
+    {
+        width : 208px !important;
+
+    }	
+    .map-width {
+        width:710px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .autocomplete-input-text input.ui-inputfield
+    {
+        width : 200px !important;
+
+    }
+}
+
+
+/* Clase para ocultar scroll horizontal de selectOneMenu*/
+.hiddenHorizontalScroll .ui-selectonemenu-list-item {
+    overflow-x: hidden !important;
+}
+
+/* Clase para la separacion entre items de un selectOneradio*/
+.selectRadio label {
+    padding-right: 18px;
+}
+
+.ui-radiobutton .ui-radiobutton-box {
+    width: 12px !important;
+    height: 12px !important;
+
+}
+.ui-radiobutton-icon {
+    margin-left: -1px !important;
+    margin-top: -2px !important;
+}
+
+
+/* Clase para borde de p:panel en blanco*/
+.noBorderPanel {
+    border: 1px solid #FFF;
+}
+
+/* Clase para cambiar color de fuente de un link seleccionado*/
+.checkedFontColor  .ui-state-highlight a, .ui-state-highlight a {
+    color: #2D4DF0 !important;
+    text-decoration: underline !important; 
+}
+
+.no-underline-link  .ui-state-highlight a, .ui-state-highlight a {
+    color: black !important;
+    text-decoration: none !important; 
+}
+
+/* Clase para cambiar color de fuente de un link */
+.commandLinkColor {
+    color: #2D4DF0 !important;
+    text-decoration: underline !important; 
+}
+
+
+.marker-text-title {
+    border-style: solid none none none;
+    border-color: #ffffff;
+    background-color: #e6e6e6;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+
+/*Clase para colorear celdas de una tabla */
+.cell-color {
+
+    background-image: -webkit-linear-gradient(top, #F0F0F0, #F0F0F0)!important;
+    background-image: -moz-linear-gradient(top, #F0F0F0, #F0F0F0) !important;
+    background-image: -o-linear-gradient(top, #F0F0F0, #F0F0F0) !important;
+    background-image: -ms-linear-gradient(top, #F0F0F0, #F0F0F0) !important;
+    color: black !important;
+}
+
+.cell-color-blue {
+
+    background-image: -webkit-linear-gradient(top, #4A9BE7, #4A9BE7) !important;
+    color: black !important;
+}
+
+.cell-color-yellow {
+
+    background-image: -webkit-linear-gradient(top, #FCFF00, #FCFF00) !important;
+    color: black !important;
+}
+
+.cell-color-red {
+
+    background-image: -webkit-linear-gradient(top, #FC0A0A, #FC0A0A) !important;
+    color: black !important;
+}
+
+
+
+/*Estilo para eliminar el background Gris del paginador en dataTable */
+.sinHeaderBackgroundDataTable .ui-widget-header {
+    background: white !important;
+
+}
+
+
+/* Clase para la separacion entre items de un selectOneradio rentabilidad*/
+.selectRadioRenta label {
+    margin-left: 10px !important;
+    margin-right: 30px !important;
+    width : 100%;
+}
+
+/* Acordion */
+.accordion-panel-style{
+    border: 1px solid #dddddd !important;
+    padding: 0 !important;
+}
+.accordion-panel-style .accordion-title-style{	
+    border: none !important;
+    border-bottom: 1px solid #eee !important;
+}
+.accordion-panel-style .ui-accordion-content{
+    padding: 5px 5px !important;
+}
+.accordion-panel-style .content-accordion-panel{
+    border: none !important;
+    padding: 0 !important;
+}
+
+.margin-bottom-components{
+    margin-bottom: 15px;
+}
+.text-section-style{
+    text-align: justify;
+}
+
+.ui-selectmanycheckbox label, .ui-selectoneradio label {
+    margin-right: 20px;
+}
+
+
+.list-width-autocomplete .ui-autocomplete-list-item {
+    width: 260px !important;
+
+}

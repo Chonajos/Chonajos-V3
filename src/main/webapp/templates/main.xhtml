@@ -15,13 +15,19 @@
             <title>SIV</title>
         </f:facet>
 
+
+
         <f:facet name="middle">
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"/>
-            <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css"/>
-            <link rel="stylesheet" href="../css/dashboard.css"/>
-            <script src="../bootstrap/js/bootstrap.min.js"></script>
-            <!--<script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript" />-->
-            <script src ="../js/siv.js"/>
+            <h:outputStylesheet name="bootstrap/css/bootstrap.css" />
+            <h:outputStylesheet name="css/dashboard.css" />
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
+<!--            <script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript" />-->
+            <h:outputScript name ="js/siv.js"/>
+        </f:facet>
+
+        <f:facet name="last">
+            <h:outputStylesheet name="css/font-awesome.css" />
+            <h:outputScript name="bootstrap/js/bootstrap.js" />
         </f:facet>
 
     </h:head>
@@ -30,7 +36,7 @@
     <h:body>
         <h:form>
             <!--<p:hotkey bind="f5" handler="alert('Enter swee')" actionListener="#{encuestaClienteViewController.search}"/>-->
-            
+
             <!--<p:hotkey bind="backspace" />-->
 
         </h:form>

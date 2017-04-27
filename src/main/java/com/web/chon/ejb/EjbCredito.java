@@ -26,8 +26,8 @@ public class EjbCredito implements NegocioCredito {
 
         try {
 
-            Query query = em.createNativeQuery("INSERT INTO  CREDITO (ID_CREDITO_PK ,ID_CLIENTE_FK ,ID_VENTA_MENUDEO ,ID_VENTA_MAYOREO ,ID_USUARIO_CREDITO  ,ESTATUS_CREDITO ,NUMERO_PROMESA_PAGO ,FECHA_INICIO_CREDITO ,FECHA_FIN_CREDITO ,FECHA_PROMESA_FIN_PAGO ,TAZA_INTERES,PLAZOS,NUMERO_PAGOS,MONTO_CREDITO,ACUENTA,STATUSACUENTA) "
-                    + " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            Query query = em.createNativeQuery("INSERT INTO  CREDITO (ID_CREDITO_PK ,ID_CLIENTE_FK ,ID_VENTA_MENUDEO ,ID_VENTA_MAYOREO ,ID_USUARIO_CREDITO  ,ESTATUS_CREDITO ,NUMERO_PROMESA_PAGO ,FECHA_INICIO_CREDITO ,FECHA_FIN_CREDITO ,FECHA_PROMESA_FIN_PAGO ,TAZA_INTERES,PLAZOS,NUMERO_PAGOS,MONTO_CREDITO,ACUENTA,STATUSACUENTA,ID_SUCURSAL_FK) "
+                    + " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
             query.setParameter(1, IdCredito);
             query.setParameter(2, credito.getIdClienteFk());
             query.setParameter(3, credito.getIdVentaMenudeo());
@@ -44,6 +44,7 @@ public class EjbCredito implements NegocioCredito {
             query.setParameter(14, credito.getMontoCredito());
             query.setParameter(15, credito.getDejaCuenta());
             query.setParameter(16, credito.getStatusACuenta());
+            query.setParameter(17, credito.getIdSucursal());
 
             return query.executeUpdate();
 

@@ -3,11 +3,11 @@ var DOM = {
         this.init();
     },
     init: function () {
-        this.calendarLocaleEspaniol();
+        this.calendarLocaleEspañol();
         this.menu();
 
     },
-    calendarLocaleEspaniol: function () {
+    calendarLocaleEspañol: function () {
         PrimeFaces.locales['es'] = {
             closeText: 'Cerrar',
             prevText: 'Anterior',
@@ -33,9 +33,9 @@ var DOM = {
             week: 'Semana',
             day: 'Día',
             allDayText: 'Todo el día'
-
         };
     },
+
     menu: function () {
 
         $('[data-toggle=collapse]').click(function () {
@@ -44,7 +44,6 @@ var DOM = {
             if ($(this).attr('tercerNivel') != "nivelTres") {
                 $('.collapse').each(function () {
                     if ($(this).hasClass('in')) {
-
                         $(this).collapse('toggle');
                     }
                 });
@@ -113,8 +112,4 @@ function trimSpaces(component) {
     s = s.replace(/\n /, "\n");
     document.getElementById(componenteId).value = s;
 
-}
-
-function setClassH3() {
-    $("h3").addClass("col-lg-6 col-md-7 col-sm-8 col-xs-12");
 }

@@ -27,6 +27,7 @@ public class Credito extends ValueObject {
     private BigDecimal montoCredito;
     private BigDecimal numeroPagos;
     private BigDecimal totalAbonado;
+    private BigDecimal idSucursal;
     
     private BigDecimal diasCredito;
 
@@ -188,6 +189,16 @@ public class Credito extends ValueObject {
     public void setDiasCredito(BigDecimal diasCredito) {
         this.diasCredito = diasCredito;
     }
+
+    public BigDecimal getIdSucursal() {
+        return idSucursal;
+    }
+
+    public void setIdSucursal(BigDecimal idSucursal) {
+        this.idSucursal = idSucursal;
+    }
+    
+    
     
     
 
@@ -195,6 +206,7 @@ public class Credito extends ValueObject {
     public void reset() {
 
         plasos = null;
+        idSucursal = null;
         dejaCuenta = null;
         tazaInteres = null;
         idCreditoPk = null;

@@ -20,9 +20,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ServiceCatCliente implements IfaceCatCliente {
-    
+
     NegocioCatCliente ejb;
-    
+
     private void getEjb() {
         if (ejb == null) {
             try {
@@ -32,7 +32,7 @@ public class ServiceCatCliente implements IfaceCatCliente {
             }
         }
     }
-    
+
     @Override
     public ArrayList<Cliente> getClientes() {
         getEjb();
@@ -73,11 +73,11 @@ public class ServiceCatCliente implements IfaceCatCliente {
             cliente.setIdMunicipioFk(obj[29] == null ? null : new BigDecimal(obj[29].toString()));
             cliente.setIdEntidadFk(obj[30] == null ? null : new BigDecimal(obj[30].toString()));
             lista_clientes.add(cliente);
-            
+
         }
         return lista_clientes;
     }
-    
+
     @Override
     public Cliente getClienteById(BigDecimal idClientePk) {
         getEjb();
@@ -115,21 +115,21 @@ public class ServiceCatCliente implements IfaceCatCliente {
             cliente.setNombreEstado(obj[27] == null ? "" : obj[27].toString());
         }
         return cliente;
-        
+
     }
-    
+
     @Override
     public int deleteCliente(BigDecimal idCliente) {
         getEjb();
         return ejb.deleteCliente(idCliente);
     }
-    
+
     @Override
     public int updateCliente(Cliente cliente) {
         getEjb();
         return ejb.updateCliente(cliente);
     }
-    
+
     @Override
     public int insertCliente(Cliente cliente) {
         getEjb();
@@ -137,7 +137,7 @@ public class ServiceCatCliente implements IfaceCatCliente {
         return ejb.insertCliente(cliente);
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     @Override
     public ArrayList<Cliente> getClienteByNombreCompleto(String nombre) {
         getEjb();
@@ -145,25 +145,25 @@ public class ServiceCatCliente implements IfaceCatCliente {
             ArrayList<Cliente> lstCliente = new ArrayList<Cliente>();
             ejb = (NegocioCatCliente) Utilidades.getEJBRemote("ejbCatCliente", NegocioCatCliente.class.getName());
             List<Object[]> object = ejb.getClienteByNombreCompleto(nombre.trim());
-            
+
             for (Object[] obj : object) {
-                
+
                 Cliente cliente = new Cliente();
                 cliente.setIdClientePk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
                 cliente.setNombre(obj[1] == null ? "" : obj[1].toString().trim());
                 cliente.setPaterno(obj[2] == null ? "" : obj[2].toString().trim());
                 cliente.setMaterno(obj[3] == null ? "" : obj[3].toString().trim());
-                
+
                 lstCliente.add(cliente);
             }
-            
+
             return lstCliente;
         } catch (Exception ex) {
             Logger.getLogger(ServiceCatCliente.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
     }
-    
+
     @Override
     public int getNextVal() {
         getEjb();
@@ -174,9 +174,9 @@ public class ServiceCatCliente implements IfaceCatCliente {
             Logger.getLogger(ServiceCatCliente.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
-        
+
     }
-    
+
     @Override
     public Cliente getClienteCreditoById(BigDecimal idCliente) {
         getEjb();
@@ -184,7 +184,7 @@ public class ServiceCatCliente implements IfaceCatCliente {
             Cliente cliente = new Cliente();
             ejb = (NegocioCatCliente) Utilidades.getEJBRemote("ejbCatCliente", NegocioCatCliente.class.getName());
             List<Object[]> lstObject = ejb.getClienteCreditoById(idCliente);
-            
+
             for (Object[] obj : lstObject) {
                 cliente.setIdClientePk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
                 cliente.setNombre(obj[1] == null ? "" : obj[1].toString());
@@ -195,17 +195,17 @@ public class ServiceCatCliente implements IfaceCatCliente {
                 cliente.setUtilizadoMayoreo(obj[6] == null ? new BigDecimal("0") : new BigDecimal(obj[6].toString()));
                 cliente.setUtilizadoTotal(cliente.getUtilizadoMenudeo().add(cliente.getUtilizadoMayoreo(), MathContext.UNLIMITED));
                 cliente.setCreditoDisponible(cliente.getLimiteCredito().subtract(cliente.getUtilizadoTotal(), MathContext.UNLIMITED));
-                
+
             }
-            
+
             return cliente;
         } catch (Exception ex) {
             Logger.getLogger(ServiceCatCliente.class.getName()).log(Level.SEVERE, null, ex);
             return null;
-            
+
         }
     }
-    
+
     @Override
     public Cliente getCreditoClienteByIdCliente(BigDecimal idCliente) {
         getEjb();
@@ -213,7 +213,7 @@ public class ServiceCatCliente implements IfaceCatCliente {
             Cliente cliente = new Cliente();
             ejb = (NegocioCatCliente) Utilidades.getEJBRemote("ejbCatCliente", NegocioCatCliente.class.getName());
             List<Object[]> lstObject = ejb.getCreditoClienteByIdCliente(idCliente);
-            
+
             for (Object[] obj : lstObject) {
                 cliente.setIdClientePk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
                 cliente.setNombreCompleto(obj[1] == null ? "" : obj[1].toString());
@@ -223,17 +223,17 @@ public class ServiceCatCliente implements IfaceCatCliente {
                 cliente.setPromedioRecuperacionTres(obj[5] == null ? new BigDecimal("0") : new BigDecimal(obj[5].toString()).setScale(2, RoundingMode.CEILING));
                 cliente.setPromedioRecuperacion(obj[6] == null ? new BigDecimal("0") : new BigDecimal(obj[6].toString()).setScale(2, RoundingMode.CEILING));
                 cliente.setCreditoDisponible((cliente.getLimiteCredito().subtract(cliente.getUtilizadoTotal(), MathContext.UNLIMITED)).subtract(cliente.getUtilizadoDocumentos(), MathContext.UNLIMITED));
-                
+
             }
-            
+
             return cliente;
         } catch (Exception ex) {
             Logger.getLogger(ServiceCatCliente.class.getName()).log(Level.SEVERE, null, ex);
             return null;
-            
+
         }
     }
-    
+
     @Override
     public ArrayList<Cliente> getClientesActivos() {
         getEjb();
@@ -241,7 +241,7 @@ public class ServiceCatCliente implements IfaceCatCliente {
             ArrayList<Cliente> lista_clientes = new ArrayList<Cliente>();
             ejb = (NegocioCatCliente) Utilidades.getEJBRemote("ejbCatCliente", NegocioCatCliente.class.getName());
             List<Object[]> lstObject = ejb.getClientes();
-            
+
             for (Object[] obj : lstObject) {
                 Cliente cliente = new Cliente();
                 cliente.setIdClientePk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
@@ -281,49 +281,49 @@ public class ServiceCatCliente implements IfaceCatCliente {
             return null;
         }
     }
-    
+
     @Override
     public ArrayList<Cliente> getClienteByIdSubProducto(String idSubProducto, BigDecimal idSucursal) {
         getEjb();
         try {
             ArrayList<Cliente> lstCliente = new ArrayList<Cliente>();
             List<Object[]> lstObject = ejb.getClienteByIdSubProducto(idSubProducto, idSucursal);
-            
+
             for (Object[] obj : lstObject) {
                 Cliente cliente = new Cliente();
-                
+
                 cliente.setNombreCompleto(obj[0] == null ? "" : obj[0].toString());
                 cliente.setCorreo(obj[1] == null ? null : obj[1].toString());
-                
+
                 lstCliente.add(cliente);
-                
+
             }
             return lstCliente;
         } catch (Exception ex) {
             Logger.getLogger(ServiceCatCliente.class.getName()).log(Level.SEVERE, null, ex);
             return null;
-            
+
         }
     }
-    
+
     @Override
-    public ArrayList<ReporteClienteVentas> getReporteClienteVentasUtilidad(BigDecimal idCliente, String fechaInicio, String fechaFin) {
+    public ArrayList<ReporteClienteVentas> getReporteClienteVentasUtilidad(BigDecimal idCliente, String fechaInicio, String fechaFin, BigDecimal idSucursal) {
         getEjb();
         try {
             ArrayList<ReporteClienteVentas> lstReporteClienteVentas = new ArrayList<ReporteClienteVentas>();
             ejb = (NegocioCatCliente) Utilidades.getEJBRemote("ejbCatCliente", NegocioCatCliente.class.getName());
-            List<Object[]> lstObject = ejb.getReporteClienteVentasUtilidad(idCliente, fechaInicio, fechaFin);
-            
+            List<Object[]> lstObject = ejb.getReporteClienteVentasUtilidad(idCliente, fechaInicio, fechaFin, idSucursal);
+
             BigDecimal ZERO = new BigDecimal(0);
             BigDecimal CIEN = new BigDecimal(100);
-            
+
             for (Object[] obj : lstObject) {
-                
+
                 ReporteClienteVentas reporteClienteVentas = new ReporteClienteVentas();
-                
+
                 BigDecimal totalVenta = ZERO;
                 BigDecimal totalUtilidad = ZERO;
-                
+
                 reporteClienteVentas.setNombreCliente(obj[0] == null ? "" : obj[0].toString());
                 reporteClienteVentas.setIdClientePk(obj[1] == null ? null : new BigDecimal(obj[1].toString()));
                 reporteClienteVentas.setTotalMenudeoContado(obj[2] == null ? new BigDecimal("0") : new BigDecimal(obj[2].toString()));
@@ -336,48 +336,76 @@ public class ServiceCatCliente implements IfaceCatCliente {
                 reporteClienteVentas.setUtilidadMayoreoPacto(obj[9] == null ? new BigDecimal("0") : new BigDecimal(obj[9].toString()));
                 reporteClienteVentas.setDiasRecuperacion(obj[10] == null ? new BigDecimal("0") : new BigDecimal(obj[10].toString()));
                 reporteClienteVentas.setRecuperacion(obj[11] == null ? new BigDecimal("0") : new BigDecimal(obj[11].toString()));
-                
+                reporteClienteVentas.setPromedioGenaralRecuperacion(obj[12] == null ? new BigDecimal("0") : new BigDecimal(obj[12].toString()));
+
                 totalVenta = reporteClienteVentas.getTotalMayoreoContado().add(reporteClienteVentas.getTotalMayoreoCredito().add(reporteClienteVentas.getTotalMenudeoContado().add(reporteClienteVentas.getTotalMenudeoCredito())));
                 totalUtilidad = reporteClienteVentas.getUtilidadMayoreoComision().add(reporteClienteVentas.getUtilidadMayoreoCosto().add(reporteClienteVentas.getUtilidadMayoreoPacto().add(reporteClienteVentas.getUtilidadMenudeo())));
-                
+
                 if (!totalVenta.equals(ZERO)) {
-                    reporteClienteVentas.setPorcentajeUtilidad(totalUtilidad.divide(totalVenta,2, RoundingMode.CEILING));                    
+                    reporteClienteVentas.setPorcentajeUtilidad(totalUtilidad.divide(totalVenta, 2, RoundingMode.CEILING));
                 } else {
                     reporteClienteVentas.setPorcentajeUtilidad(ZERO);
                 }
-                
-                lstReporteClienteVentas.add(reporteClienteVentas);
+
+                if (idSucursal == null) {
+                    lstReporteClienteVentas.add(reporteClienteVentas);
+                } else {
+                    if (!(reporteClienteVentas.getTotalMayoreoContado().equals(ZERO) && reporteClienteVentas.getTotalMenudeoContado().equals(ZERO) && reporteClienteVentas.getDiasRecuperacion().equals(ZERO))) {
+
+                        lstReporteClienteVentas.add(reporteClienteVentas);
+                    }
+
+                }
+
             }
-            
+
             return lstReporteClienteVentas;
         } catch (Exception ex) {
             Logger.getLogger(ServiceCatCliente.class.getName()).log(Level.SEVERE, null, ex);
             return null;
-            
+
         }
     }
-    
+
     @Override
-    public Cliente getClienteByIdAbono(BigDecimal folioAbono) {
+    public Cliente
+            getClienteByIdAbono(BigDecimal folioAbono
+            ) {
         getEjb();
+
         try {
-            Cliente cliente = new Cliente();
-            
-            List<Object[]> lstObject = ejb.getClienteByIdAbono(folioAbono);
-            
-            for (Object[] obj : lstObject) {
-                cliente.setIdClientePk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
-                cliente.setNombreCompleto(obj[1] == null ? "" : obj[1].toString());
-                cliente.setUtilizadoTotal(obj[2] == null ? new BigDecimal(0) : new BigDecimal(obj[2].toString()));
-                cliente.setRfc(obj[3] == null ? "" : obj[3].toString());
-                
+            Cliente cliente
+                    = new Cliente();
+
+            List<Object[]> lstObject
+                    = ejb
+                            .getClienteByIdAbono(folioAbono
+                            );
+
+            for (Object[] obj
+                    : lstObject) {
+                cliente
+                        .setIdClientePk(obj[0] == null ? null : new BigDecimal(obj[0].toString()));
+                cliente
+                        .setNombreCompleto(obj[1] == null ? "" : obj[1].toString());
+                cliente
+                        .setUtilizadoTotal(obj[2] == null ? new BigDecimal(0) : new BigDecimal(obj[2].toString()));
+                cliente
+                        .setRfc(obj[3] == null ? "" : obj[3].toString());
+
             }
-            
+
             return cliente;
+
         } catch (Exception ex) {
-            Logger.getLogger(ServiceCatCliente.class.getName()).log(Level.SEVERE, null, ex);
+            Logger
+                    .getLogger(ServiceCatCliente.class
+                            .getName()).log(Level.SEVERE,
+                             null, ex
+                    );
+
             return null;
-            
+
         }
     }
 }

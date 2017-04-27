@@ -161,7 +161,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
     public void generateChartLine() {
 
         chartLineByDias = initChartLine();
-        chartLineByDias.setSeriesColors("0404B4,088A08,81BEF7,D0F5A9");
+        chartLineByDias.setSeriesColors("0404B4,088A08,22AAFF,7BBB39");
         chartLineByDias.setTitle("Análisis de Mercado");
         chartLineByDias.setLegendPosition("ne");
         chartLineByDias.setZoom(true);
@@ -223,7 +223,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
     public void generateChartBar() {
 
         chartBarByDias = initChartBar();
-        chartBarByDias.setSeriesColors("0404B4,088A08,81BEF7,D0F5A9,");
+        chartBarByDias.setSeriesColors("0404B4,088A08,22AAFF,7BBB39");
         chartBarByDias.setTitle("Análisis de Mercado por Semana");
         chartBarByDias.setLegendPosition("ne");
         chartBarByDias.setZoom(true);
@@ -277,7 +277,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
     public void generateChartLineSemana() {
 
         chartLineBySemana = initChartLineSemana();
-        chartLineBySemana.setSeriesColors("0404B4,088A08,81BEF7,D0F5A9,FF0040,FFFFFF");
+        chartLineBySemana.setSeriesColors("0404B4,088A08,22AAFF,7BBB39,FF0040,FFFFFF");
         chartLineBySemana.setTitle("Análisis de Mercado por Semana");
         chartLineBySemana.setLegendPosition("nw");
         chartLineBySemana.setZoom(true);
@@ -374,7 +374,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
     public void generateChartBarSemana() {
 
         chartBarBySemana = initChartBarSemana();
-        chartBarBySemana.setSeriesColors("0404B4,088A08,81BEF7,D0F5A9,FF0040,FFFFFF");
+        chartBarBySemana.setSeriesColors("0404B4,088A08,22AAFF,7BBB39,FF0040,FFFFFF");
         chartBarBySemana.setTitle("Análisis de Mercado");
         chartBarBySemana.setLegendPosition("nw");
         chartBarBySemana.setZoom(true);
@@ -468,7 +468,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
     public void generateChartLineMes() {
 
         chartLineBMes = initChartLineMes();
-        chartLineBMes.setSeriesColors("0404B4,088A08,81BEF7,D0F5A9,FF0040,FFFFFF");
+        chartLineBMes.setSeriesColors("0404B4,088A08,22AAFF,7BBB39,FF0040,FFFFFF");
         chartLineBMes.setTitle("Análisis de Mercado por Mes");
         chartLineBMes.setLegendPosition("nw");
         chartLineBMes.setZoom(true);
@@ -557,7 +557,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
     public void generateChartBarMes() {
 
         chartBarByMes = initChartBarMes();
-        chartBarByMes.setSeriesColors("0404B4,088A08,81BEF7,D0F5A9,FF0040,FFFFFF");
+        chartBarByMes.setSeriesColors("0404B4,088A08,22AAFF,7BBB39,FF0040,FFFFFF");
         chartBarByMes.setTitle("Análisis de Mercado por Mes");
         chartBarByMes.setLegendPosition("nw");
         chartBarByMes.setZoom(true);
@@ -649,7 +649,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
     public void generateChartLineNameDay() {
 
         chartLineByNameDay = initChartLineNameDay();
-        chartLineByNameDay.setSeriesColors("0404B4,088A08,81BEF7,D0F5A9,");
+        chartLineByNameDay.setSeriesColors("0404B4,088A08,22AAFF,7BBB39,");
         chartLineByNameDay.setTitle("Análisis de Mercado por Día de la Semana");
         chartLineByNameDay.setLegendPosition("ne");
         chartLineByNameDay.setZoom(true);
@@ -710,7 +710,7 @@ public class BeanAnalisisMercado extends SimpleViewBean<AnalisisMercado> impleme
     public void generateChartBarNameDay() {
 
         chartBarByNameDay = initChartBarNameDay();
-        chartBarByNameDay.setSeriesColors("0404B4,088A08,81BEF7,D0F5A9,");
+        chartBarByNameDay.setSeriesColors("0404B4,088A08,22AAFF,7BBB39,");
         chartBarByNameDay.setTitle("Análisis de Mercado por Día de la Semana");
         chartBarByNameDay.setLegendPosition("ne");
         chartBarByNameDay.setZoom(true);

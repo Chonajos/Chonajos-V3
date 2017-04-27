@@ -121,7 +121,7 @@
                     </div>
 
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <p:dataTable id="tabla" var="model" 
+                        <p:dataTable id="tabla" var="model" rowIndexVar="varTable"
                                      rowStyleClass="#{model.idStatusFk.intValue() eq 1 ? 'alert-success': (model.idStatusFk.intValue()  eq 2 ? 'alert-info':(model.idStatusFk.intValue()  eq 3 ? 'alert-warning':'alert-danger'))}"
                                      value="#{beanRelacionGastos.listaOperaciones}" 
                                      rows="20"
@@ -131,8 +131,7 @@
                                      rendered="#{beanRelacionGastos.viewEstate =='init'}">
                             <p:ajax event="rowEdit" listener="#{beanRelacionGastos.onRowEdit}" update=":formContent:tabla"/>
                             <p:ajax event="rowEditCancel" listener="#{beanRelacionGastos.onRowCancel}" update=":formContent:tabla" />
-
-
+                            
                             <p:column headerText="Sucursal" width="80px;" class="alignCenter">
                                 <h:outputText value="#{model.nombreSucursal}" />
                             </p:column>
@@ -147,51 +146,41 @@
                             <p:column headerText="Caja" width="100px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreCaja}" />
                             </p:column>
-                            <p:column headerText="Tipo Operación" width="100px;" class="alignLeft">
-
+                            <p:column headerText="Tipo Operación" width="200px;" class="alignLeft">
                                 <p:cellEditor>
                                     <f:facet name="output">
                                         <h:outputText  value="#{model.nombreOperacion}" />
                                     </f:facet>
                                     <f:facet name="input">
-                                        <h:selectOneMenu  id="comboOperacion"  value="#{model.idTipoOperacionFk}">
+                                        <p:selectOneMenu  id="comboOperacion"  value="#{model.idTipoOperacionFk}" style="width: 97% !important">
                                             <f:selectItem itemLabel="Selecciona" itemValue="#{model.idTipoOperacionFk}" />
-                                            <f:selectItems value="#{beanRelacionGastos.listaTiposOperaciones}" 
-                                                           var="listitaOpe" itemLabel="#{listitaOpe.nombre}" 
-                                                           itemValue="#{listitaOpe.idTipoOperacionPk}"/>
-                                        </h:selectOneMenu>
+                                            <f:selectItems value="#{beanRelacionGastos.listaTiposOperaciones}" var="lstOperacion" itemLabel="#{lstOperacion.nombre}" itemValue="#{lstOperacion.idTipoOperacionPk}"/>
+                                            <p:ajax event="change" listener="#{beanRelacionGastos.buscaConceptos(model)}" update="formContent:tabla:#{varTable}:comboConcepto" />
+                                        </p:selectOneMenu>
                                     </f:facet>
                                 </p:cellEditor>
                             </p:column>
-
-                            <p:column headerText="Concepto" width="150px;" class="alignLeft">
-
+                            <p:column headerText="Concepto" width="200px;" class="alignLeft">
                                 <p:cellEditor>
                                     <f:facet name="output">
                                         <h:outputText value="#{model.nombreConcepto}" />
                                     </f:facet>
                                     <f:facet name="input">
-                                        <h:selectOneMenu  id="comboConcepto"  value="#{model.idConceptoFk}">
-                                            <f:selectItem itemLabel="Selecciona" itemValue="#{model.idConceptoFk}" />
-                                            <f:selectItems value="#{beanRelacionGastos.listaConceptos}" 
-                                                           var="listitacon" itemLabel="#{listitacon.nombre}" 
-                                                           itemValue="#{listitacon.idConceptoPk}"/>
-                                        </h:selectOneMenu>
+                                        <p:selectOneMenu  id="comboConcepto"  value="#{model.idConceptoFk}" style="width: 97% !important">
+                                            <f:selectItem itemLabel="Selecciona" itemValue="#{itemTwo.idConceptoFk}" />
+                                            <f:selectItems value="#{beanRelacionGastos.listaConceptos}" var="lst" itemLabel="#{lst.nombre}" itemValue="#{lst.idConceptoPk}"/>
+                                        </p:selectOneMenu>
                                     </f:facet>
                                 </p:cellEditor>
                             </p:column>
-
                             <p:column headerText="Comentarios" width="200px;" class="alignLeft">
                                 <h:outputText value="#{model.comentarios}">
                                 </h:outputText>
                             </p:column>
-
-
                             <p:column headerText="Estatus" width="80px;" class="alignCenter">
                                 <h:outputText value="#{model.nombreStatus}">
                                 </h:outputText>
                             </p:column>
-
                             <p:column headerText="Monto" width="100px;" class="alignRight">
                                 <h:outputText value="#{model.monto}">
                                     <f:convertNumber type="currency" currencySymbol="$" />
@@ -225,10 +214,7 @@
                                 <p:column colspan="1" />
                                 <p:column colspan="1" />
                                 <p:column colspan="1" />
-
-
                                 <p:column colspan="1" footerText="Total: " style="text-align:right"/>
-
                                 <p:column colspan="1" class="alignRight">
                                     <f:facet name="footer">
                                         <h:outputText value="#{beanRelacionGastos.total}" class="alignRight">
@@ -242,7 +228,6 @@
                                 <p:column colspan="1" />
                             </p:columnGroup>
                         </p:dataTable>
-
                     </div>
                     <p:dialog id="picture"  widgetVar="dlg" header="Comprobante" resizable="false" showEffect="clip" hideEffect="clip">
                         <div>

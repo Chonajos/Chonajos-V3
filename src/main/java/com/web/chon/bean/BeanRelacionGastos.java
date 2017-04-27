@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.web.chon.bean;
 
 import com.web.chon.dominio.Caja;
@@ -28,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseId;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -77,7 +71,7 @@ public class BeanRelacionGastos implements Serializable {
     private Date fechaFiltroInicio;
     private Date fechaFiltroFin;
     private boolean enableCalendar;
-    
+
     private BigDecimal idStatusFk;
     private BigDecimal idSucursalFk;
     private BigDecimal idCajaFk;
@@ -88,7 +82,7 @@ public class BeanRelacionGastos implements Serializable {
     private BigDecimal total;
     private StreamedContent variable;
     private int filtro;
-    
+
     //--Constrantes--//
     private static final BigDecimal STATUS_REALIZADA = new BigDecimal(1);
     private static final BigDecimal STATUS_PENDIENTE = new BigDecimal(2);
@@ -97,93 +91,85 @@ public class BeanRelacionGastos implements Serializable {
 
     @PostConstruct
     public void init() {
-        idCategoriaFk= new BigDecimal(1);
+
+        idCategoriaFk = new BigDecimal(1);
         usuario = context.getUsuarioAutenticado();
         caja = new Caja();
         caja = ifaceCaja.getCajaByIdUsuarioPk(usuario.getIdUsuario());
-        idSucursalFk =new BigDecimal(usuario.getSucId());
+        idSucursalFk = new BigDecimal(usuario.getSucId());
         setTitle("Relación de Gastos");
-        idCajaFk= caja.getIdCajaPk();
+        idCajaFk = caja.getIdCajaPk();
         setViewEstate("init");
-        idStatusFk= new BigDecimal(2);
+        idStatusFk = new BigDecimal(2);
         listaSucursales = ifaceCatSucursales.getSucursales();
-        listaConceptos =ifaceConceptos.getConceptosByIdCategoria(new BigDecimal(1));
-        listaTiposOperaciones=new ArrayList<TipoOperacion>();
+        listaConceptos = ifaceConceptos.getConceptosByIdCategoria(new BigDecimal(1));
+        listaTiposOperaciones = new ArrayList<TipoOperacion>();
         listaTiposOperaciones = ifaceTiposOperacion.getOperacionesByIdCategoria(new BigDecimal(1));
         data = new OperacionesCaja();
         buscaCajas();
         buscar();
-        
+
     }
+
     public void onRowCancel(RowEditEvent event) {
         System.out.println("cancel");
 
     }
-    public void onRowEdit(RowEditEvent event) 
-    {
+
+    public void onRowEdit(RowEditEvent event) {
         dataEdit = (OperacionesCaja) event.getObject();
-        System.out.println("DataEdit: "+dataEdit.toString());
-        if(ifaceOperacionesCaja.updateOperacion(dataEdit)==1)
-        {
+        System.out.println("DataEdit: " + dataEdit.toString());
+        if (ifaceOperacionesCaja.updateOperacion(dataEdit) == 1) {
             buscar();
             JsfUtil.addSuccessMessageClean("Se ha actualizado el gasto correctamente");
-        }
-        else
-        {
+        } else {
             JsfUtil.addErrorMessageClean("Ha ocurrido un error al actualizar el gasto");
         }
-        
+
     }
-    public void buscaCajas()
-    {
+
+    public void buscaCajas() {
         listaCajas = ifaceCaja.getCajasByIdSucusal(idSucursalFk);
     }
-    public void rechazarGasto()
-    {
+
+    public void rechazarGasto() {
         data.setIdStatusFk(STATUS_RECHAZADA);
-        if(ifaceOperacionesCaja.updateStatusConcepto(data.getIdOperacionesCajaPk(), data.getIdStatusFk(), data.getIdConceptoFk())==1)
-        {
+        if (ifaceOperacionesCaja.updateStatusConcepto(data.getIdOperacionesCajaPk(), data.getIdStatusFk(), data.getIdConceptoFk()) == 1) {
             JsfUtil.addSuccessMessageClean("Se ha rechazado el gasto correctamente");
-        }
-        else
-        {
+        } else {
             JsfUtil.addErrorMessageClean("Ocurrió un error al rechazar el gasto");
         }
         buscar();
-        
+
     }
-    public void aceptarGasto()
-    {
+
+    public void aceptarGasto() {
         data.setIdStatusFk(STATUS_REALIZADA);
-        if(ifaceOperacionesCaja.updateStatusConcepto(data.getIdOperacionesCajaPk(), data.getIdStatusFk(), data.getIdConceptoFk())==1)
-        {
+        if (ifaceOperacionesCaja.updateStatusConcepto(data.getIdOperacionesCajaPk(), data.getIdStatusFk(), data.getIdConceptoFk()) == 1) {
             JsfUtil.addSuccessMessageClean("Se ha aceptado el gasto correctamente");
-        }
-        else
-        {
+        } else {
             JsfUtil.addErrorMessageClean("Ocurrió un error al aceptar el gasto");
         }
         buscar();
     }
+
     public StreamedContent getProductImage() throws IOException, SQLException {
         FacesContext context = FacesContext.getCurrentInstance();
         String imageType = "image/jpg";
-        if(data.getFichero()==null)
-        {
+        if (data.getFichero() == null) {
             JsfUtil.addErrorMessageClean("Esta operación no cuenta con comprobante");
             return variable;
-        }
-        else{
+        } else {
             variable = null;
-            System.out.println("Data:" +data.toString());
-             byte[] image = data.getFichero();
-             variable = new DefaultStreamedContent(new ByteArrayInputStream(image), imageType, data.getIdOperacionesCajaPk().toString());
+            System.out.println("Data:" + data.toString());
+            byte[] image = data.getFichero();
+            variable = new DefaultStreamedContent(new ByteArrayInputStream(image), imageType, data.getIdOperacionesCajaPk().toString());
             return variable;
         }
-           
+
     }
-    public void verificarCombo() 
-    {
+
+    public void verificarCombo() {
         if (filtro == -1) {
             //se habilitan los calendarios.
             //fechaFiltroInicio = null;
@@ -194,31 +180,34 @@ public class BeanRelacionGastos implements Serializable {
                 case 1:
                     fechaFiltroInicio = new Date();
                     fechaFiltroFin = new Date();
-                   
+
                     break;
                 case 2:
                     fechaFiltroInicio = TiempoUtil.getDayOneOfMonth(new Date());
                     fechaFiltroFin = TiempoUtil.getDayEndOfMonth(new Date());
-                    
+
                     break;
                 case 3:
                     fechaFiltroInicio = TiempoUtil.getDayOneYear(new Date());
                     fechaFiltroFin = TiempoUtil.getDayEndYear(new Date());
-                   
+
                     break;
                 default:
                     fechaFiltroFin = null;
                     fechaFiltroFin = null;
-                    
+
                     break;
             }
             enableCalendar = true;
         }
     }
 
-    public void buscar() 
-    {
-        listaOperaciones = ifaceOperacionesCaja.getOperacionesByCategoria(idCategoriaFk,  idSucursalFk, idCajaFk, idStatusFk, idConceptoFk, idTipoOperacionFk,TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicio),TiempoUtil.getFechaDDMMYYYY(fechaFiltroFin));
+    public void buscar() {
+        listaOperaciones = ifaceOperacionesCaja.getOperacionesByCategoria(idCategoriaFk, idSucursalFk, idCajaFk, idStatusFk, idConceptoFk, idTipoOperacionFk, TiempoUtil.getFechaDDMMYYYY(fechaFiltroInicio), TiempoUtil.getFechaDDMMYYYY(fechaFiltroFin));
+    }
+
+    public void buscaConceptos(OperacionesCaja model) {
+        listaConceptos = ifaceConceptos.getConceptosByTipoOperacion(model.getIdTipoOperacionFk());
     }
 
     public BigDecimal getTotal() {
@@ -229,7 +218,6 @@ public class BeanRelacionGastos implements Serializable {
         this.total = total;
     }
 
-    
     public ArrayList<OperacionesCaja> getListaOperaciones() {
         return listaOperaciones;
     }
@@ -405,7 +393,5 @@ public class BeanRelacionGastos implements Serializable {
     public void setDataEdit(OperacionesCaja dataEdit) {
         this.dataEdit = dataEdit;
     }
-    
-    
 
 }

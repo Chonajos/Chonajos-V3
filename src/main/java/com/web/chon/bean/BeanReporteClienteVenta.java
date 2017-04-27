@@ -1,19 +1,19 @@
 package com.web.chon.bean;
 
-import com.web.chon.dominio.AnalisisMercado;
 import com.web.chon.dominio.Cliente;
 import com.web.chon.dominio.Credito;
-import com.web.chon.dominio.Entidad;
-import com.web.chon.dominio.Motivos;
-import com.web.chon.dominio.Municipios;
 import com.web.chon.dominio.ReporteClienteVentas;
+import com.web.chon.dominio.Sucursal;
 import com.web.chon.service.IfaceCatCliente;
+import com.web.chon.service.IfaceCatSucursales;
 import com.web.chon.service.IfaceCredito;
 import com.web.chon.util.JsfUtil;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import org.primefaces.model.chart.Axis;
@@ -39,10 +39,13 @@ public class BeanReporteClienteVenta implements BeanSimple {
 
     @Autowired
     private IfaceCredito ifaceCredito;
+    @Autowired
+    private IfaceCatSucursales ifaceCatSucursales;
 
     private ArrayList<Cliente> lstCliente;
     private ArrayList<Credito> lstCreditoActivos;
     private ArrayList<Credito> lstCredito;
+    private ArrayList<Sucursal> lstSucursales;
     private ArrayList<ReporteClienteVentas> model;
 
     private String title;
@@ -59,6 +62,7 @@ public class BeanReporteClienteVenta implements BeanSimple {
 
     private BigDecimal diasPromedioActivo;
     private BigDecimal diasPromedioInactivo;
+    private BigDecimal idSucursal;
 
     private final static BigDecimal ZERO = new BigDecimal(0);
 
@@ -67,6 +71,10 @@ public class BeanReporteClienteVenta implements BeanSimple {
 
         data = new Cliente();
         model = new ArrayList<ReporteClienteVentas>();
+        
+        idSucursal = null;
+
+        lstSucursales = ifaceCatSucursales.getSucursales();
 
         diasRecuperacion = new BigDecimal(0);
         diasRecuperacionTres = new BigDecimal(0);
@@ -215,8 +223,6 @@ public class BeanReporteClienteVenta implements BeanSimple {
 
         diasRecuperacion = model.get(0).getDiasRecuperacion().setScale(2, RoundingMode.DOWN);
         diasRecuperacionTres = data.getPromedioRecuperacionTres();
-//        System.out.println("data.getPromedioRecuperacionTres() "+diasRecuperacionTres);
-//        System.out.println("data.getPromedioRecuperacion() "+data.getPromedioRecuperacion());
 
         porcentaje = bVenta.multiply(cien).divide(bVenta, 2, RoundingMode.CEILING);
         ventaTotal.set("Venta", bVenta);
@@ -247,7 +253,7 @@ public class BeanReporteClienteVenta implements BeanSimple {
                 data = new Cliente();
             }
 
-            model = ifaceCatCliente.getReporteClienteVentasUtilidad(data.getIdClientePk(), null, null);
+            model = ifaceCatCliente.getReporteClienteVentasUtilidad(data.getIdClientePk(), null, null, idSucursal);
 
             lstCreditoActivos = ifaceCredito.getCreditoByIdClienteAndEstatus(data.getIdClientePk(), 1, 0);
             lstCredito = ifaceCredito.getCreditoByIdClienteAndEstatus(data.getIdClientePk(), 2, 5);
@@ -256,11 +262,37 @@ public class BeanReporteClienteVenta implements BeanSimple {
                 setViewEstate("searchById");
                 generateChartLine();
                 generateChartBar();
-            } else {
+            } else if (model != null) {
                 chartBar = null;
                 chartLine = null;
                 setViewEstate("init");
+
+                diasRecuperacion = model.get(0).getPromedioGenaralRecuperacion();
+
             }
+
+            Collections.sort(model, new Comparator<ReporteClienteVentas>() {
+                @Override
+                public int compare(ReporteClienteVentas s1, ReporteClienteVentas s2) {
+
+                    int valOne = s1.getDiasRecuperacion().compareTo(s2.getDiasRecuperacion());
+                    int valTwo = (s1.getTotalMayoreoContado().add(s1.getTotalMayoreoCredito().add(s1.getTotalMenudeoContado().add(s1.getTotalMenudeoCredito())))).compareTo(s2.getTotalMayoreoContado().add(s2.getTotalMayoreoCredito().add(s2.getTotalMenudeoContado().add(s2.getTotalMenudeoCredito()))));
+
+                    int value = valOne;
+
+                    if (valOne == 1) {
+                        value = 1;
+                    } else if (valOne == -1) {
+                        value = -1;
+                    } else if (valOne == 0 && valTwo == 1) {
+                        value = -1;
+                    } else if (valOne == 0 && valTwo == -1) {
+                        value = 1;
+                    }
+
+                    return value;
+                }
+            });
 
             calculaDiasPromedio();
         } catch (Exception ex) {
@@ -293,6 +325,7 @@ public class BeanReporteClienteVenta implements BeanSimple {
             numCreditoInactivo = lstCredito.size();
             diasPromedioInactivo = diasPromedioInactivo.divide(new BigDecimal(numCreditoInactivo), 2, RoundingMode.CEILING);
         }
+
     }
 
     public ArrayList<Cliente> autoCompleteCliente(String nombreCliente) {
@@ -312,6 +345,8 @@ public class BeanReporteClienteVenta implements BeanSimple {
     }
 
     public void backView() {
+        data = new Cliente();
+        searchById();
         setViewEstate("init");
     }
 
@@ -438,6 +473,22 @@ public class BeanReporteClienteVenta implements BeanSimple {
 
     public void setDiasPromedioInactivo(BigDecimal diasPromedioInactivo) {
         this.diasPromedioInactivo = diasPromedioInactivo;
+    }
+
+    public ArrayList<Sucursal> getLstSucursales() {
+        return lstSucursales;
+    }
+
+    public void setLstSucursales(ArrayList<Sucursal> lstSucursales) {
+        this.lstSucursales = lstSucursales;
+    }
+
+    public BigDecimal getIdSucursal() {
+        return idSucursal;
+    }
+
+    public void setIdSucursal(BigDecimal idSucursal) {
+        this.idSucursal = idSucursal;
     }
 
 }

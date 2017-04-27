@@ -128,22 +128,28 @@
                     </div>
 
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+
                         <p:dataTable id="tabla" var="model" 
                                      rowStyleClass="#{model.idStatusFk.intValue() eq 1 ? 'alert-success':'alert-danger'}"
                                      value="#{beanFacturacion.modelo}" 
-                                     rows="20"
+                                     rows="20" style="margin-bottom:20px"
                                      editable="true" 
                                      paginator="true" styleClass="ui-datatable-hor-scroll" 
                                      emptyMessage="No se encontraron Registros" 
                                      rendered="#{beanFacturacion.viewEstate =='init'}">
+                            <f:facet name="header">
+                                <div style="float: right">
+                                    <h:commandButton action="#{beanFacturacion.generateReport}" image="../resources/img/excel.png"/>
+                                </div>
+
+                            </f:facet>
 
                             <p:column headerText="N° Factura" sortBy="#{model.numeroFactura}" width="60px;" class="alignCenter">
-                                <h:outputText value="#{model.numeroFactura}"/>
+                                <h:outputText value="#{model.serie}-#{model.numeroFactura}"/>
                             </p:column>
                             <p:column headerText="Sucursal" sortBy="#{model.nombreSucursal}" width="100px;" class="alignLeft">
                                 <h:outputText value="#{model.nombreSucursal}" />
                             </p:column>
-
                             <p:column headerText="Fecha Emisión" sortBy="#{model.fechaEmision}" width="80px;" class="alignLeft">
                                 <h:outputText value="#{model.fechaEmision}">
                                     <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
@@ -198,25 +204,23 @@
                                 <p:column colspan="1" />
                                 <p:column colspan="1" />
                                 <p:column colspan="1" />
+                                
                                 <p:column colspan="1" footerText="Total: " style="text-align:right"/>
                                 <p:column colspan="1" class="alignRight">
                                     <f:facet name="footer">
-                                        <h:outputText value="#{beanFacturacion.total}" class="alignRight">
+                                        <h:outputText value="#{beanFacturacion.totalFacturas}" class="alignRight">
                                             <f:convertNumber type="currency" currencySymbol="$" />
                                         </h:outputText>
                                     </f:facet>
                                 </p:column>
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
+                                <p:column colspan="1" />
                                 
-                                <p:column colspan="1" />
-                                <p:column colspan="1" />
-                                <p:column colspan="1" />
-                                <p:column colspan="1" />
-
                             </p:columnGroup>
                         </p:dataTable>
-
                     </div>
-
                 </div>
             </p:panel>
             <!-- PANEL CON LOS DATOS DEL EMISOR -->

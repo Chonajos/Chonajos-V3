@@ -1106,6 +1106,8 @@ public class BeanVentaMayoreo implements Serializable, BeanSimple {
         c.setPlasos(data.getTipoPago());
         //El numero de dias del plaso
         c.setNumeroPagos(data.getNumeroPagos());
+        
+        c.setIdSucursal(new BigDecimal(context.getUsuarioAutenticado().getSucId()));
 
         folioCredito = ifaceCredito.insert(c);
 
