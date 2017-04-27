@@ -1,0 +1,15 @@
+eclipse.preferences.version=1
+encoding//src/main/java=UTF-8
+encoding//src/main/java/advanswsdl_pkg/Advanswsdl.java=UTF-8
+encoding//src/main/java/advanswsdl_pkg/AdvanswsdlBindingStub.java=UTF-8
+encoding//src/main/java/advanswsdl_pkg/AdvanswsdlLocator.java=UTF-8
+encoding//src/main/java/advanswsdl_pkg/AdvanswsdlPortType.java=UTF-8
+encoding//src/main/java/advanswsdl_pkg/RespuestaCancelacion.java=UTF-8
+encoding//src/main/java/advanswsdl_pkg/RespuestaConsulta.java=UTF-8
+encoding//src/main/java/advanswsdl_pkg/RespuestaConsultaHora.java=UTF-8
+encoding//src/main/java/advanswsdl_pkg/RespuestaTimbre.java=UTF-8
+encoding//src/main/java/advanswsdl_pkg/RespuestaTimbre2.java=UTF-8
+encoding//src/main/java/advanswsdl_pkg/RespuestaValidarCertificado.java=UTF-8
+encoding//src/main/resources=UTF-8
+encoding//src/test/java=UTF-8
+encoding/<project>=UTF-8

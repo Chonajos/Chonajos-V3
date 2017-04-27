@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<jdbcDataAdapter class="net.sf.jasperreports.data.jdbc.JdbcDataAdapterImpl"><name>AdaptadorChoni</name><driver>oracle.jdbc.driver.OracleDriver</driver><username>choniTest</username><password>choniTest</password><savePassword>true</savePassword><url>jdbc:oracle:thin:@192.168.1.77:1521:xe</url><database></database><serverAddress></serverAddress><classpath>C:\Users\JesusAlfredo\Downloads\ojdbc6.jar</classpath></jdbcDataAdapter>

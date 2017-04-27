@@ -137,20 +137,15 @@ public final class CFDv32 implements CFDI {
     }
 
     public void validar(ErrorHandler handler) throws Exception {
-        System.out.println("1");
+
         SchemaFactory sf
                 = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         Source[] schemas = new Source[XSD.length];
-        System.out.println("2");
         for (int i = 0; i < XSD.length; i++) {
             schemas[i] = new StreamSource(getClass().getResourceAsStream(XSD[i]));
-            System.out.println("3");
         }
-        System.out.println("4");
         Schema schema = sf.newSchema(schemas);
-        System.out.println("5");
         Validator validator = schema.newValidator();
-        System.out.println("6");
         if (handler != null) {
             validator.setErrorHandler(handler);
         }
